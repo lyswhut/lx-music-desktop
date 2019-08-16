@@ -20,7 +20,7 @@
 
 所用技术栈：
 
-- Electron 7.x
+- Electron 6.x
 - Vue 2.x
 
 其他说明：TODO
@@ -40,3 +40,7 @@ npm run pack:dir
 npm run pack
 
 ```
+
+## License
+
+Apache License 2.0

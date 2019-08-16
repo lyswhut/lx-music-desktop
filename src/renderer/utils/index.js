@@ -194,3 +194,11 @@ export const updateSetting = setting => {
   }
   return setting
 }
+
+/**
+ * 在浏览器打开URL
+ * @param {*} url
+ */
+export const openUrl = url => {
+  shell.openExternal(url)
+}

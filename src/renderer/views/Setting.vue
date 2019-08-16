@@ -59,36 +59,35 @@ div.scroll(:class="$style.setting")
         material-btn(:class="[$style.btn, $style.gap]" min @click="handleExportAllData") 导出
     dt 关于洛雪音乐
     dd
+      p.small
+        | 本软件完全免费，代码已开源，开源地址：
+        span.hover(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop')") https://github.com/lyswhut/lx-music-desktop
       p
         small 当前版本：
         | {{version.version}}
-      p
-        small By：
-        | 落雪无痕
-      p
-        small
-          |  本软件仅用于学习交流使用，禁止将本软件用于
-          strong 非法用途
-          | 或
-          strong 商业用途
-          | 。
-      p
-        small
+      p.small
+        |  本软件仅用于学习交流使用，禁止将本软件用于
+        strong 非法用途
+        | 或
+        strong 商业用途
+        | 。
+      p.small
           | 使用本软件造成的一切后果由
           strong 使用者
           | 承担！
-      p
-        small
+      p.small
           | 本软件的部分接口使用自 https://github.com/messoer ，非常感谢
           strong @messoer
           | ！
+      p.small 若有问题可 mail to：lyswhut@qq.com 或到 github 提交 issue
       p
-        small 若有问题可 mail to：lyswhut@qq.com
+        small By：
+        | 落雪无痕
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting } from '../utils'
+import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl } from '../utils'
 import fs from 'fs'
 export default {
   name: 'Setting',
@@ -308,6 +307,9 @@ export default {
         this.exportPlayList(result.filePath)
       })
     },
+    handleOpenUrl(url) {
+      openUrl(url)
+    },
   },
 }
 </script>
@@ -345,7 +347,7 @@ export default {
     margin: 25px 0 15px;
   }
   p {
-    padding: 3px 0;
+    padding: 5px 0;
     .btn {
       + .btn {
         margin-left: 10px;
