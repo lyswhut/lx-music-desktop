@@ -25,6 +25,8 @@
 
 其他说明：TODO
 
+软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)
+
 感谢 <https://github.com/messoer> 提供的部分音乐API！
 
 ## 使用方法
