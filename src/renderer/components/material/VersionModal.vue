@@ -1,0 +1,156 @@
+<template lang="pug">
+material-modal(:show="version.showModal" @close="handleClose")
+  main(:class="$style.main" v-if="version.newVersion")
+    h2 🚀程序更新🚀
+
+    div.scroll(:class="$style.info")
+      div(:class="$style.current")
+        h3 最新版本：{{version.newVersion.version}}
+        h3 当前版本：{{version.version}}
+        h3 版本变化：
+        p(v-html="version.newVersion.desc")
+      div(:class="$style.history" v-if="history.length")
+        h3 历史版本：
+        div(:class="$style.item" v-for="ver in history")
+          h4 v{{ver.version}}
+          p(v-html="ver.desc")
+
+    div(:class="$style.footer")
+      div(:class="$style.desc")
+        p 新版本已下载完毕，
+        p
+          | 你可以选择
+          strong 立即重启更新
+          | 或稍后
+          strong 关闭程序时
+          | 自动更新~
+      material-btn(:class="$style.btn" @click.onec="handleClick") 立即重启更新
+
+</template>
+
+<script>
+import { mapGetters, mapMutations } from 'vuex'
+import { rendererSend } from '../../../common/icp'
+import { checkVersion } from '../../utils'
+
+export default {
+  computed: {
+    ...mapGetters(['version']),
+    history() {
+      if (!this.version.newVersion) return []
+      let arr = []
+      let currentVer = this.version.version
+      this.version.newVersion.history.forEach(ver => {
+        if (checkVersion(currentVer, ver.version)) arr.push(ver)
+      })
+
+      return arr
+    },
+  },
+  methods: {
+    ...mapMutations(['setVersionVisible']),
+    handleClose() {
+      this.setVersionVisible(false)
+    },
+    handleClick(event) {
+      this.handleClose()
+      event.target.disabled = true
+      rendererSend('quit-update')
+    },
+  },
+}
+</script>
+
+
+<style lang="less" module>
+@import '../../assets/styles/layout.less';
+
+.main {
+  position: relative;
+  padding: 15px;
+  max-width: 500px;
+  min-width: 300px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  // overflow-y: auto;
+  * {
+    box-sizing: border-box;
+  }
+  h2 {
+    flex: 0 0 none;
+    font-size: 16px;
+    color: @color-theme_2-font;
+    line-height: 1.3;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  h3 {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+}
+
+.info {
+  flex: 1 1 auto;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-y: auto;
+  height: 100%;
+}
+.current {
+  > p {
+    padding-left: 15px;
+  }
+}
+.history {
+  h3 {
+    padding-top: 15px;
+  }
+
+  .item {
+    + .item {
+      padding-top: 15px;
+    }
+    h4 {
+      font-weight: 700;
+    }
+    > p {
+      padding-left: 10px;
+    }
+  }
+
+}
+.footer {
+  flex: 0 0 none;
+  .desc {
+    font-size: 12px;
+    padding: 10px 0;
+    color: @color-theme;
+    line-height: 1.2;
+    strong {
+      text-decoration: underline;
+    }
+  }
+}
+.btn {
+  display: block;
+  width: 100%;
+}
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .main {
+      h2 {
+        color: ~'@{color-@{value}-theme_2-font}';
+      }
+    }
+    .footer {
+      .desc {
+        color: ~'@{color-@{value}-theme}';
+      }
+    }
+  }
+})
+
+</style>

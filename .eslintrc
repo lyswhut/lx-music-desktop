@@ -1,0 +1,24 @@
+{
+  "extends": "standard",
+  "plugins": [
+    "html"
+  ],
+  "parser": "babel-eslint",
+  "rules": {
+    "no-new": "off",
+    "camelcase": "off",
+    "no-return-assign": "off",
+    "space-before-function-paren": ["error", "never"],
+    "no-var": "error",
+    "no-fallthrough": "off",
+    "prefer-promise-reject-errors": "off",
+    "eqeqeq": "off",
+    "no-multiple-empty-lines": [1, {"max": 2}],
+    "comma-dangle": [2, "always-multiline"],
+    "standard/no-callback-literal": "off",
+    "prefer-const": "off"
+  },
+  "settings": {
+    "html/html-extensions": [".html", ".vue"]
+  }
+}

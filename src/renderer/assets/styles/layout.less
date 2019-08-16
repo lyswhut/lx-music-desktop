@@ -1,0 +1,30 @@
+@import './variables.less';
+
+
+/*自动隐藏文字*/
+.mixin-ellipsis-1() {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.mixin-ellipsis() {
+	display: -webkit-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	word-break: break-all;
+	white-space: normal !important;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+.mixin-ellipsis-2() {
+	display: -webkit-box;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	word-break: break-all;
+	white-space: normal !important;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+}
+

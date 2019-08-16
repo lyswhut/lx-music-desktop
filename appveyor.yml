@@ -1,0 +1,20 @@
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - '%APPDATA%\npm-cache'
+  # - '%USERPROFILE%\.electron'
+
+install:
+  - ps: Install-Product node 12 x64
+  - npm install
+
+build_script:
+  - npm run pub:gh
+
+test: off
+
+branches:
+  only:
+    - master

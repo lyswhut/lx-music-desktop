@@ -1,0 +1,141 @@
+{
+  "name": "lx-music-desktop",
+  "version": "0.1.0",
+  "description": "一个免费的音乐下载助手",
+  "main": "./dist/electron/main.js",
+  "scripts": {
+    "publish": "node publish",
+    "pub:gh": "node build-config/pack.js && electron-builder --win -p always",
+    "pack": "node build-config/pack.js && electron-builder",
+    "pack:dir": "node build-config/pack.js && electron-builder --dir",
+    "dev": "node build-config/runner-dev.js",
+    "clean:electron": "rimraf dist/electron",
+    "clean:web": "rimraf dist/web",
+    "clean": "rimraf dist && rimraf build",
+    "build:main": "cross-env NODE_ENV=production webpack --config build-config/main/webpack.config.prod.js --progress --hide-modules",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config build-config/renderer/webpack.config.prod.js --progress --hide-modules",
+    "build:web": "npm run clean:web && cross-env NODE_ENV=production webpack --config build-config/web/webpack.config.prod.js --progress --hide-modules",
+    "build": "npm run clean:electron && npm run build:main && npm run build:renderer",
+    "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly src",
+    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
+  },
+  "browserslist": [
+    "Chrome >= 76"
+  ],
+  "engines": {
+    "node": ">= 12"
+  },
+  "build": {
+    "appId": "cn.toside.music.desktop",
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      "dist/electron/**/*"
+    ],
+    "win": {
+      "icon": "src/static/icons/lunch.ico",
+      "legalTrademarks": "lyswhut"
+    },
+    "nsis": {
+      "oneClick": false,
+      "language": "2052",
+      "allowToChangeInstallationDirectory": true,
+      "differentialPackage": true,
+      "license": "./license.txt"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "lyswhut",
+        "repo": "lx-music-desktop"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyswhut/lx-music-desktop.git"
+  },
+  "keywords": [],
+  "author": "lyswhut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lyswhut/lx-music-desktop/issues"
+  },
+  "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.5.5",
+    "autoprefixer": "^9.6.1",
+    "babel-eslint": "^10.0.2",
+    "babel-loader": "^8.0.6",
+    "babel-minify-webpack-plugin": "^0.3.1",
+    "babel-preset-minify": "^0.5.0",
+    "cfonts": "^2.4.4",
+    "chalk": "^2.4.2",
+    "copy-webpack-plugin": "^5.0.4",
+    "core-js": "^3.2.1",
+    "cos-nodejs-sdk-v5": "^2.5.11",
+    "cross-env": "^5.2.0",
+    "css-loader": "^3.2.0",
+    "del": "^3.0.0",
+    "electron": "^6.0.2",
+    "electron-builder": "^21.2.0",
+    "electron-debug": "^3.0.1",
+    "electron-devtools-installer": "^2.2.4",
+    "eslint": "^6.1.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-formatter-friendly": "^7.0.0",
+    "eslint-loader": "^2.2.1",
+    "eslint-plugin-html": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "file-loader": "^4.2.0",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0",
+    "markdown-it": "^9.1.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "multispinner": "^0.2.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "pug": "^2.0.4",
+    "pug-loader": "^2.4.0",
+    "pug-plain-loader": "^1.0.0",
+    "raw-loader": "^3.1.0",
+    "rimraf": "^3.0.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "terser-webpack-plugin": "^1.4.1",
+    "url-loader": "^2.1.0",
+    "vue-loader": "^15.7.1",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-merge": "^4.2.1"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "electron-log": "^3.0.7",
+    "electron-store": "^4.0.0",
+    "electron-updater": "^4.1.2",
+    "js-htmlencode": "^0.3.0",
+    "lrc-file-parser": "^0.1.12",
+    "node-downloader-helper": "^1.0.10",
+    "request": "^2.88.0",
+    "vue": "^2.6.10",
+    "vue-electron": "^1.0.6",
+    "vue-router": "^3.1.2",
+    "vuex": "^3.1.1",
+    "vuex-electron": "^1.0.3",
+    "vuex-router-sync": "^5.0.0"
+  }
+}
