@@ -19,7 +19,14 @@ const getters = {
 // actions
 const actions = {
   getUrl({ commit, state }, { musicInfo, type }) {
-    return music[musicInfo.source].getMusicUrl(musicInfo, type).then(result => commit('setUrl', { musicInfo, url: result.url, type }))
+    if (state.cancelFn) state.cancelFn()
+    const { promise, cancelHttp } = music[musicInfo.source].getMusicUrl(musicInfo, type)
+    state.cancelFn = cancelHttp
+    return promise.then(result => {
+      return commit('setUrl', { musicInfo, url: result.url, type })
+    }).finally(() => {
+      state.cancelFn = null
+    })
   },
   getPic({ commit, state }, musicInfo) {
     return music[musicInfo.source].getPic(musicInfo).then(url => commit('getPic', { musicInfo, url }))

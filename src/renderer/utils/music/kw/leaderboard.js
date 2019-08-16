@@ -65,19 +65,19 @@ export default {
 
   },
   limit: 30,
-  _cancelIndex: null,
+  _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
-  _cancelIndex2: null,
+  _cancelRequestObj2: null,
   _cancelPromiseCancelFn2: null,
   getData(url) {
-    if (this._cancelIndex != null) {
-      cancelHttp(this._cancelIndex)
+    if (this._cancelRequestObj != null) {
+      cancelHttp(this._cancelRequestObj)
       this._cancelPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn = reject
-      this._cancelIndex = httpGet(url, (err, resp, body) => {
-        this._cancelIndex = null
+      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
+        this._cancelRequestObj = null
         this._cancelPromiseCancelFn = null
         if (err) {
           console.log(err)
@@ -88,14 +88,14 @@ export default {
     })
   },
   getData2(url) {
-    if (this._cancelIndex2 != null) {
-      cancelHttp(this._cancelIndex2)
+    if (this._cancelRequestObj2 != null) {
+      cancelHttp(this._cancelRequestObj2)
       this._cancelPromiseCancelFn2(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn2 = reject
-      this._cancelIndex2 = httpGet(url, (err, resp, body) => {
-        this._cancelIndex2 = null
+      this._cancelRequestObj2 = httpGet(url, (err, resp, body) => {
+        this._cancelRequestObj2 = null
         this._cancelPromiseCancelFn2 = null
         if (err) {
           console.log(err)

@@ -6,9 +6,9 @@ import leaderboard from './leaderboard'
 import lyric from './lyric'
 
 const kw = {
-  _musicInfoIndex: null,
+  _musicInfoRequestObj: null,
   _musicInfoPromiseCancelFn: null,
-  _musicPicIndex: null,
+  _musicPicRequestObj: null,
   _musicPicPromiseCancelFn: null,
   // context: null,
 
@@ -52,26 +52,45 @@ const kw = {
   },
 
   getMusicUrl(songInfo, type) {
-    return new Promise((resolve, reject) => {
-      httpGet(`https://v1.itooi.cn/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, (err, resp, body) => {
+    let requestObj
+    let cancelFn
+    const p = new Promise((resolve, reject) => {
+      cancelFn = reject
+      requestObj = httpGet(`https://v1.itooi.cn/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, (err, resp, body) => {
+        requestObj = null
+        cancelFn = null
         if (err) {
           console.log(err)
-          return this.getMusicUrl(songInfo, type)
+          const { promise, cancelHttp } = this.getMusicUrl(songInfo, type)
+          obj.cancelHttp = cancelHttp
+          return promise
         }
         body.code === 200 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
       })
     })
+    const obj = {
+      promise: p,
+      cancelHttp() {
+        console.log('cancel')
+        if (!requestObj) return
+        cancelHttp(requestObj)
+        cancelFn(new Error('取消http请求'))
+        requestObj = null
+        cancelFn = null
+      },
+    }
+    return obj
   },
 
   getMusicInfo(songInfo) {
-    if (this._musicInfoIndex != null) {
-      cancelHttp(this._musicInfoIndex)
+    if (this._musicInfoRequestObj != null) {
+      cancelHttp(this._musicInfoRequestObj)
       this._musicInfoPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._musicInfoPromiseCancelFn = reject
-      this._musicInfoIndex = httpGet(`http://www.kuwo.cn/api/www/music/musicInfo?mid=${songInfo.songmid}`, (err, resp, body) => {
-        this._musicInfoIndex = null
+      this._musicInfoRequestObj = httpGet(`http://www.kuwo.cn/api/www/music/musicInfo?mid=${songInfo.songmid}`, (err, resp, body) => {
+        this._musicInfoRequestObj = null
         this._musicInfoPromiseCancelFn = null
         if (err) {
           console.log(err)
@@ -86,7 +105,7 @@ const kw = {
     let tasks = []
     let songId = musicInfo.songmid
     musicInfo.types.forEach(type => {
-      tasks.push(kw.getMusicUrl(songId, type.type))
+      tasks.push(kw.getMusicUrl(songId, type.type).promise)
     })
     Promise.all(tasks).then(urlInfo => {
       let typeUrl = {}
@@ -98,20 +117,19 @@ const kw = {
   },
 
   getPic(songInfo) {
-    if (this._musicPicIndex != null) {
-      cancelHttp(this._musicPicIndex)
+    if (this._musicPicRequestObj != null) {
+      cancelHttp(this._musicPicRequestObj)
       this._musicPicPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._musicPicPromiseCancelFn = reject
-      this._musicPicIndex = httpGet(`https://v1.itooi.cn/kuwo/pic?id=${songInfo.songmid}&isRedirect=0`, (err, resp, body) => {
-        this._musicPicIndex = null
+      this._musicPicRequestObj = httpGet(`https://v1.itooi.cn/kuwo/pic?id=${songInfo.songmid}&isRedirect=0`, (err, resp, body) => {
+        this._musicPicRequestObj = null
         this._musicPicPromiseCancelFn = null
         if (err) {
           console.log(err)
           reject(err)
         }
-        console.log(body)
         body.code === 200 ? resolve(body.data) : reject(new Error(body.msg))
       })
     })

@@ -3,46 +3,25 @@ import request from 'request'
 import { debugRequest } from './env'
 // import fs from 'fs'
 
-const tasks = []
-
-const fatchData = (url, method, options, callback) => {
-  let index = pushTask(tasks, request(url, {
-    method,
-    headers: options.headers,
-    Origin: options.origin,
-    data: options.data,
-    json: options.format === undefined || options.format === 'json',
-  }, (err, resp, body) => {
-    tasks[index] = null
-    if (err) return callback(err, null)
-    callback(null, resp, body)
-  }))
-  return index
-}
+const fatchData = (url, method, options, callback) => request(url, {
+  method,
+  headers: options.headers,
+  Origin: options.origin,
+  data: options.data,
+  json: options.format === undefined || options.format === 'json',
+}, (err, resp, body) => {
+  if (err) return callback(err, null)
+  callback(null, resp, body)
+})
 
 /**
  * 取消请求
  * @param {*} index
  */
-export const cancelHttp = index => {
-  if (index == null) return
-  console.log('cancel: ', index)
-  let r = tasks[index]
-  if (r == null) return
-  r.abort()
-  tasks[index] = null
-}
-
-
-const pushTask = (tasks, newTask) => {
-  for (const [index, task] of tasks.entries()) {
-    if (task == null) {
-      tasks[index] = newTask
-      return index
-    }
-  }
-  tasks.push(newTask)
-  return tasks.length - 1
+export const cancelHttp = requestObj => {
+  if (!requestObj) return
+  console.log('cancel:', requestObj.href)
+  requestObj.abort()
 }
 
 

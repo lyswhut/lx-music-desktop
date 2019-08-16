@@ -41,7 +41,7 @@ const getExt = type => {
 const checkList = (list, musicInfo, type) => list.some(s => s.musicInfo.songmid === musicInfo.songmid && s.type === type)
 
 const refreshUrl = downloadInfo => {
-  return music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type)
+  return music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
 }
 
 // actions

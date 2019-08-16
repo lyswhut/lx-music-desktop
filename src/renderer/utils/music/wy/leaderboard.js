@@ -61,17 +61,17 @@ export default {
   regExps: {
     list: /<textarea id="song-list-pre-data" style="display:none;">(.+?)<\/textarea>/,
   },
-  _cancelIndex: null,
+  _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
   getData(url) {
-    if (this._cancelIndex != null) {
-      cancelHttp(this._cancelIndex)
+    if (this._cancelRequestObj != null) {
+      cancelHttp(this._cancelRequestObj)
       this._cancelPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn = reject
-      this._cancelIndex = httpGet(url, (err, resp, body) => {
-        this._cancelIndex = null
+      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
+        this._cancelRequestObj = null
         this._cancelPromiseCancelFn = null
         if (err) {
           console.log(err)

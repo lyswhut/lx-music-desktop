@@ -98,6 +98,8 @@ export default {
   watch: {
     changePlay(n) {
       if (!n) return
+      // console.log('changePlay')
+      this.handleRemoveMusic()
       this.resetChangePlay()
       if (this.playIndex < 0) return
       this.stopPlay()
@@ -112,7 +114,7 @@ export default {
           ? n.findIndex(s => s.musicInfo.songmid === this.musicInfo.songmid)
           : n.findIndex(s => s.songmid === this.musicInfo.songmid)
         if (index < 0) {
-          this.handleRemoveMusic()
+          this.fixPlayIndex(this.playIndex - 1)
           if (n.length) this.handleNext()
         } else {
           this.fixPlayIndex(index)
@@ -362,7 +364,6 @@ export default {
       this.musicInfo.url = null
       this.nowPlayTime = 0
       this.maxPlayTime = 0
-      this.fixPlayIndex(this.playIndex - 1)
     },
     sendProgressEvent(status, mode) {
       // console.log(status)

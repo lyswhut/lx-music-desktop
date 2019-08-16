@@ -83,17 +83,17 @@ export default {
   },
   periods: {},
   periodUrl: 'https://c.y.qq.com/node/pc/wk_v15/top.html',
-  _cancelIndex: null,
+  _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
   getData(url) {
-    if (this._cancelIndex != null) {
-      cancelHttp(this._cancelIndex)
+    if (this._cancelRequestObj != null) {
+      cancelHttp(this._cancelRequestObj)
       this._cancelPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn = reject
-      this._cancelIndex = httpGet(url, (err, resp, body) => {
-        this._cancelIndex = null
+      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
+        this._cancelRequestObj = null
         this._cancelPromiseCancelFn = null
         if (err) {
           console.log(err)
@@ -143,7 +143,7 @@ export default {
           size,
         }
       }
-      types.reverse()
+      // types.reverse()
       return {
         singer: this.getSinger(item.singer),
         name: item.title,

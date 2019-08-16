@@ -5,17 +5,17 @@ export default {
   regExps: {
     relWord: /RELWORD=(.+)/,
   },
-  _musicTempSearchIndex: null,
+  _musicTempSearchRequestObj: null,
   _musicTempSearchPromiseCancelFn: null,
   tempSearch(str) {
-    if (this._musicTempSearchIndex != null) {
-      cancelHttp(this._musicTempSearchIndex)
+    if (this._musicTempSearchRequestObj != null) {
+      cancelHttp(this._musicTempSearchRequestObj)
       this._musicTempSearchPromiseCancelFn(new Error('取消http请求'))
     }
     return new Promise((resolve, reject) => {
       this._musicTempSearchPromiseCancelFn = reject
-      this._musicTempSearchIndex = httpGet(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, (err, resp, body) => {
-        this._musicTempSearchIndex = null
+      this._musicTempSearchRequestObj = httpGet(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, (err, resp, body) => {
+        this._musicTempSearchRequestObj = null
         this._musicTempSearchPromiseCancelFn = null
         if (err) {
           console.log(err)
@@ -32,8 +32,8 @@ export default {
     })
   },
   cancelTempSearch() {
-    if (this._musicTempSearchIndex != null) {
-      cancelHttp(this._musicTempSearchIndex)
+    if (this._musicTempSearchRequestObj != null) {
+      cancelHttp(this._musicTempSearchRequestObj)
       this._musicTempSearchPromiseCancelFn(new Error('取消http请求'))
     }
   },
