@@ -8,8 +8,8 @@ material-modal(:show="version.showModal" @close="handleClose")
         h3 最新版本：{{version.newVersion.version}}
         h3 当前版本：{{version.version}}
         h3 版本变化：
-        p(v-html="version.newVersion.desc")
-      div(:class="$style.history" v-if="history.length")
+        p(:class="$style.desc" v-html="version.newVersion.desc")
+      div(:class="[$style.history, $style.desc]" v-if="history.length")
         h3 历史版本：
         div(:class="$style.item" v-for="ver in history")
           h4 v{{ver.version}}
@@ -73,6 +73,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+  overflow: hidden;
   // overflow-y: auto;
   * {
     box-sizing: border-box;
@@ -103,12 +104,30 @@ export default {
     padding-left: 15px;
   }
 }
+
+.desc {
+  h3, h4 {
+    font-weight: bold;
+  }
+  h3 {
+    padding: 5px 0 3px;
+  }
+  ul {
+    list-style: initial;
+    padding-inline-start: 30px;
+  }
+}
+
 .history {
   h3 {
     padding-top: 15px;
   }
 
   .item {
+    h3 {
+      padding: 5px 0 3px;
+    }
+    padding-left: 15px;
     + .item {
       padding-top: 15px;
     }
@@ -116,7 +135,7 @@ export default {
       font-weight: 700;
     }
     > p {
-      padding-left: 10px;
+      padding-left: 15px;
     }
   }
 

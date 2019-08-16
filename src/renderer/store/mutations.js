@@ -16,7 +16,7 @@ export default {
     val.history.forEach(ver => {
       ver.desc = ver.desc.replace(/\n/g, '<br>')
     })
-    val.desc = val.desc.replace(/\n/g, '<br>')
+    // val.desc = val.desc.replace(/\n/g, '<br>')
     state.version.newVersion = val
   },
   setVersionVisible(state, val) {
