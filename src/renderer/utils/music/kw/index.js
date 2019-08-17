@@ -56,16 +56,18 @@ const kw = {
     let cancelFn
     const p = new Promise((resolve, reject) => {
       cancelFn = reject
-      requestObj = httpGet(`https://v1.itooi.cn/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, (err, resp, body) => {
+      // requestObj = httpGet(`https://v1.itooi.cn/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, (err, resp, body) => {
+      requestObj = httpGet(`https://www.stsky.cn/api/temp/getMusicUrl.php?id=${songInfo.songmid}&type=${type}`, (err, resp, body) => {
         requestObj = null
         cancelFn = null
         if (err) {
-          console.log(err)
+          if (err.message === 'socket hang up') return reject(new Error('接口挂了'))
           const { promise, cancelHttp } = this.getMusicUrl(songInfo, type)
           obj.cancelHttp = cancelHttp
           return promise
         }
-        body.code === 200 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
+        // body.code === 200 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
+        body.code === 0 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
       })
     })
     const obj = {
@@ -123,14 +125,16 @@ const kw = {
     }
     return new Promise((resolve, reject) => {
       this._musicPicPromiseCancelFn = reject
-      this._musicPicRequestObj = httpGet(`https://v1.itooi.cn/kuwo/pic?id=${songInfo.songmid}&isRedirect=0`, (err, resp, body) => {
+      // this._musicPicRequestObj = httpGet(`https://v1.itooi.cn/kuwo/pic?id=${songInfo.songmid}&isRedirect=0`, (err, resp, body) => {
+      this._musicPicRequestObj = httpGet(`https://www.stsky.cn/api/temp/getPic.php?size=320&songmid=${songInfo.songmid}`, (err, resp, body) => {
         this._musicPicRequestObj = null
         this._musicPicPromiseCancelFn = null
         if (err) {
           console.log(err)
           reject(err)
         }
-        body.code === 200 ? resolve(body.data) : reject(new Error(body.msg))
+        // body.code === 200 ? resolve(body.data) : reject(new Error(body.msg))
+        body.code === 0 ? resolve(body.data) : reject(new Error(body.msg))
       })
     })
   },

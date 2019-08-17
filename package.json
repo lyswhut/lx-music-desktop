@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -39,7 +39,10 @@
       "legalTrademarks": "lyswhut",
       "target": [
         {
-          "arch": ["ia32", "x64"],
+          "arch": [
+            "ia32",
+            "x64"
+          ],
           "target": "nsis"
         }
       ]
@@ -48,14 +51,21 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
-          "arch": ["ia32", "x64"],
+          "arch": [
+            "ia32",
+            "x64"
+          ],
           "target": "deb"
         },
         {
-          "arch": ["x64"],
+          "arch": [
+            "x64"
+          ],
           "target": "snap"
         }
       ],

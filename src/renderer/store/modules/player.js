@@ -8,6 +8,8 @@ const state = {
   changePlay: false,
 }
 
+let request
+
 // getters
 const getters = {
   list: state => state.list || [],
@@ -19,13 +21,12 @@ const getters = {
 // actions
 const actions = {
   getUrl({ commit, state }, { musicInfo, type }) {
-    if (state.cancelFn) state.cancelFn()
-    const { promise, cancelHttp } = music[musicInfo.source].getMusicUrl(musicInfo, type)
-    state.cancelFn = cancelHttp
-    return promise.then(result => {
-      return commit('setUrl', { musicInfo, url: result.url, type })
+    if (request && request.cancelHttp) request.cancelHttp()
+    request = music[musicInfo.source].getMusicUrl(musicInfo, type)
+    return request.promise.then(result => {
+      commit('setUrl', { musicInfo, url: result.url, type })
     }).finally(() => {
-      state.cancelFn = null
+      request = null
     })
   },
   getPic({ commit, state }, musicInfo) {

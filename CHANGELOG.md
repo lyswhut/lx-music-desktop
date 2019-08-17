@@ -6,6 +6,21 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.1.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.2...v0.1.3) - 2019-08-17
+
+### 新增
+
+- 新增win32应用构建
+
+### 修复
+
+- 修复安装包许可协议乱码问题
+- **messoer 提供的接口已挂**，暂时切换到临时接口！
+
+### 移除
+
+- 由于messoer接口无法使用，QQ音乐排行榜直接播放/下载功能暂时关闭
+
 ## [0.1.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.1...v0.1.2) - 2019-08-17
 
 ### 修复

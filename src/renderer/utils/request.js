@@ -3,16 +3,58 @@ import request from 'request'
 import { debugRequest } from './env'
 // import fs from 'fs'
 
-const fatchData = (url, method, options, callback) => request(url, {
-  method,
-  headers: options.headers,
-  Origin: options.origin,
-  data: options.data,
-  json: options.format === undefined || options.format === 'json',
-}, (err, resp, body) => {
-  if (err) return callback(err, null)
-  callback(null, resp, body)
-})
+const fatchData = (url, method, options, callback) => {
+  console.log('---start---', url)
+  return request(url, {
+    method,
+    headers: options.headers,
+    Origin: options.origin,
+    data: options.data,
+    // timeout: 5000,
+    json: options.format === undefined || options.format === 'json',
+  }, (err, resp, body) => {
+    if (err) return callback(err, null)
+    console.log('---end---', url)
+    callback(null, resp, body)
+  })
+}
+
+export const httpFatch = (url, options = { method: 'get' }) => {
+  let requestObj
+  let cancelFn
+  const p = new Promise((resolve, reject) => {
+    cancelFn = reject
+    debugRequest && console.log(`\n---send request------${url}------------`)
+    requestObj = fatchData(url, options.method, options, (err, resp, body) => {
+    // options.isShowProgress && window.api.hideProgress()
+      debugRequest && console.log(`\n---response------${url}------------`)
+      debugRequest && console.log(JSON.stringify(body))
+      requestObj = null
+      cancelFn = null
+      if (err) {
+        console.log(err)
+        if (err.code === 'ETIMEDOUT') {
+          const { promise, cancelHttp } = httpFatch(url, options)
+          obj.cancelHttp = cancelHttp
+          return promise
+        }
+      }
+      resolve(resp)
+    })
+  })
+  const obj = {
+    promise: p,
+    cancelHttp() {
+      console.log('cancel')
+      if (!requestObj) return
+      cancelHttp(requestObj)
+      cancelFn(new Error('取消http请求'))
+      requestObj = null
+      cancelFn = null
+    },
+  }
+  return obj
+}
 
 /**
  * 取消请求
