@@ -6,7 +6,8 @@
   "scripts": {
     "publish": "node publish",
     "pub:gh": "node build-config/pack.js && electron-builder --win -p always",
-    "pack": "node build-config/pack.js && electron-builder",
+    "pack": "node build-config/pack.js && electron-builder -w",
+    "pack:linux": "node build-config/pack.js && electron-builder -l",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "dev": "node build-config/runner-dev.js",
     "clean:electron": "rimraf dist/electron",
@@ -35,7 +36,30 @@
     ],
     "win": {
       "icon": "src/static/icons/lunch.ico",
-      "legalTrademarks": "lyswhut"
+      "legalTrademarks": "lyswhut",
+      "target": [
+        {
+          "arch": ["ia32", "x64"],
+          "target": "nsis"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "arch": ["ia32", "x64"],
+          "target": "deb"
+        },
+        {
+          "arch": ["x64"],
+          "target": "snap"
+        }
+      ],
+      "maintainer": "lyswhut <lyswuhut@qq.com>"
     },
     "nsis": {
       "oneClick": false,
