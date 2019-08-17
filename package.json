@@ -42,7 +42,7 @@
       "language": "2052",
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": true,
-      "license": "./license.txt"
+      "license": "./license.rtf"
     },
     "publish": [
       {
