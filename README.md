@@ -2,17 +2,21 @@
 
 [![GitHub release][1]][2]
 [![Build status][3]][4]
-[![GitHub All Releases Download][5]][6]
+[![GitHub Releases Download][5]][6]
 [![dev branch][7]][8]
+<!-- [![GitHub license][9]][10] -->
 
 [1]: https://img.shields.io/github/release/lyswhut/lx-music-desktop
 [2]: https://github.com/lyswhut/lx-music-desktop/releases
 [3]: https://ci.appveyor.com/api/projects/status/flrsqd5ymp8fnte5?svg=true
 [4]: https://ci.appveyor.com/project/lyswhut/lx-music-desktop
-[5]: https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/total
+[5]: https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/latest/total
+<!-- [5]: https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/total -->
 [6]: https://github.com/lyswhut/lx-music-desktop/releases
 [7]: https://img.shields.io/github/package-json/v/lyswhut/lx-music-desktop/dev
 [8]: https://github.com/lyswhut/lx-music-desktop/tree/dev
+[9]: https://img.shields.io/github/license/lyswhut/lx-music-desktop
+<!-- [10]: https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE -->
 
 ## 说明
 
