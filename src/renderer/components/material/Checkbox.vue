@@ -1,18 +1,26 @@
 <template lang="pug">
 div(:class="$style.checkbox")
-  input(:type="need ? 'radio' : 'checkbox'" :id="id" :value="target" :name="name" @change="change" v-model="val")
+  input(:type="need ? 'radio' : 'checkbox'" :id="id" :value="value" :name="name" @change="change" v-model="bool")
   label(:for="id" :class="$style.content")
-    div
+    div(v-if="indeterminate")
+      svg(v-show="indeterminate" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
+        use(xlink:href='#icon-check-indeterminate')
+      svg(v-show="!indeterminate" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 0 448 512' space='preserve')
+        use(xlink:href='#icon-check-true')
+    div(v-else)
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
-        use(xlink:href='#icon-check')
-    span
-      slot
+        use(xlink:href='#icon-check-true')
+    span(v-if="label != null") {{label}}
 </template>
 
 <script>
 export default {
+  model: {
+    prop: 'checked',
+    event: 'input',
+  },
   props: {
-    target: {},
+    checked: {},
     value: {},
     id: {
       type: String,
@@ -25,41 +33,69 @@ export default {
       type: Boolean,
       default: false,
     },
+    label: {},
+    indeterminate: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      val: false,
+      bool: false,
     }
   },
   watch: {
-    value(n) {
-      if (this.target && n !== this.target) {
-        this.val = this.need
-          ? n === this.target
-            ? this.target
-            : false
-          : n === this.target
-      } else if (n !== this.val) {
-        this.val = n
-      }
+    checked(n) {
+      this.setValue(n)
     },
   },
   mounted() {
-    if (this.target) {
-      this.val = this.need
-        ? this.value === this.target
-          ? this.target
-          : false
-        : this.value === this.target
-    } else {
-      this.val = this.value
-    }
+    this.setValue(this.checked)
   },
   methods: {
     change() {
-      let val = this.target == null ? this.val : this.val ? this.target : null
-      this.$emit('input', val)
-      this.$emit('change', val)
+      let checked
+      if (Array.isArray(this.checked)) {
+        checked = [...this.checked]
+        const index = checked.indexOf(this.value)
+        if (index < 0) {
+          checked.push(this.value)
+        } else {
+          checked.splice(index, 1)
+        }
+      } else if (typeof this.checked == 'string') {
+        checked = this.bool ? this.value : ''
+      } else if (typeof this.checked == 'boolean') {
+        let bool = this.bool
+        if (this.indeterminate) {
+          bool = true
+          this.$nextTick(() => {
+            this.bool = true
+          })
+        }
+        checked = bool
+      }
+      this.$emit('input', checked)
+      this.$emit('change', checked)
+    },
+    setValue(value) {
+      let bool
+      if (Array.isArray(value)) {
+        bool = value.includes(this.value)
+      } else {
+        switch (typeof value) {
+          case 'string':
+            bool = value === this.value
+            break
+          case 'boolean':
+            bool = value
+            break
+          default:
+            return
+        }
+      }
+
+      this.bool = this.need ? bool && this.value : bool
     },
   },
 }

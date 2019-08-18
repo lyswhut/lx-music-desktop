@@ -6,7 +6,9 @@
         table
           thead
             tr
-              th.nobreak(style="width: 30%;") 歌曲名
+              th.nobreak.center(style="width: 37px;")
+                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData" :indeterminate="isIndeterminate")
+              th.nobreak(style="width: 25%;") 歌曲名
               th.nobreak(style="width: 20%;") 歌手
               th.nobreak(style="width: 25%;") 专辑
               th.nobreak(style="width: 15%;") 操作
@@ -15,7 +17,9 @@
         table
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
-              td.break(style="width: 30%;")
+              td.nobreak.center(style="width: 37px;" @click.stop)
+                material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
+              td.break(style="width: 25%;")
                 | {{item.name}}
                 span.badge.badge-info(v-if="item._types['320k']") 高品质
                 span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
@@ -26,7 +30,8 @@
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="limit" :page="page" @btn-click="handleTogglePage")
-    div(v-else :class="$style.noItem")
+    div(v-else :class="$style.noitem")
+      p 搜我所想~~😉
     material-download-modal(:show="showDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="showDownload = false")
 </template>
 
@@ -44,6 +49,10 @@ export default {
       clickIndex: -1,
       showDownload: false,
       musicInfo: null,
+      selectdData: [],
+      isSelectAll: false,
+      isIndeterminate: false,
+      isShowEditBtn: false,
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -70,6 +79,22 @@ export default {
       this.page = 1
       this.handleSearch(this.text, this.page)
     }
+  },
+  watch: {
+    selectdData(n) {
+      const len = n.length
+      if (len) {
+        this.isSelectAll = true
+        this.isIndeterminate = len !== this.list.length
+        this.isShowEditBtn = true
+      } else {
+        this.isSelectAll = false
+        this.isShowEditBtn = false
+      }
+    },
+    list() {
+      this.resetSelect()
+    },
   },
   computed: {
     ...mapGetters(['userInfo']),
@@ -118,7 +143,6 @@ export default {
           break
       }
     },
-    openDownloadModal() {},
     testPlay(index) {
       let targetSong = this.list[index]
       this.defaultListAdd(targetSong)
@@ -139,6 +163,13 @@ export default {
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
       this.showDownload = false
+    },
+    handleSelectAllData(isSelect) {
+      this.selectdData = isSelect ? [...this.list] : []
+    },
+    resetSelect() {
+      this.isSelectAll = false
+      this.selectdData = []
     },
   },
 }
@@ -183,7 +214,17 @@ export default {
   // left: 50%;
   // transform: translateX(-50%);
 }
-// .noItem {
+.noitem {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 
-// }
+  p {
+    font-size: 24px;
+    color: #ccc;
+  }
+}
 </style>

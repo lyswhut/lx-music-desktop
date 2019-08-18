@@ -13,18 +13,18 @@ div.scroll(:class="$style.setting")
     dd(title='弹出层的动画效果')
       h3 弹出层随机动画
       div
-        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate") 是否启用
+        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" label="是否启用")
 
     dt 播放设置
     dd(title="都不选时播放完当前歌曲就停止播放")
       h3 歌曲切换方式
       div
-        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gap" :target="item.value" :key="item.value"
-            v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods") {{item.name}}
+        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gap" :value="item.value" :key="item.value"
+            v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
     dd(title='启用时将优先播放320K品质的歌曲')
       h3 优先播放高品质音乐
       div
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality") 是否启用
+        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" label="是否启用")
     dt 下载设置
     dd(title='下载歌曲保存的路径')
       h3 下载路径
@@ -37,13 +37,13 @@ div.scroll(:class="$style.setting")
     dd(title='下载歌曲时的命名方式')
       h3 文件命名方式
       div
-        material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gap" name="setting_download_musicName" :target="item.value" :key="item.value" need
-            v-model="current_setting.download.fileName" v-for="item in musicNames") {{item.name}}
+        material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gap" name="setting_download_musicName" :value="item.value" :key="item.value" need
+            v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
     dt 列表设置
     dd(title='播放列表是否显示专辑栏')
       h3 专辑栏
       div
-        material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName") 是否显示专辑栏
+        material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt 备份与恢复
     dd
       h3 部分数据

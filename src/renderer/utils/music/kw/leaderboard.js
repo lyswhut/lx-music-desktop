@@ -140,7 +140,7 @@ export default {
           size: null,
         }
       }
-      types.reverse()
+      // types.reverse()
       return {
         singer: item.artist,
         name: item.name,

@@ -4,7 +4,7 @@ import { debugRequest } from './env'
 // import fs from 'fs'
 
 const fatchData = (url, method, options, callback) => {
-  console.log('---start---', url)
+  // console.log('---start---', url)
   return request(url, {
     method,
     headers: options.headers,
@@ -14,11 +14,16 @@ const fatchData = (url, method, options, callback) => {
     json: options.format === undefined || options.format === 'json',
   }, (err, resp, body) => {
     if (err) return callback(err, null)
-    console.log('---end---', url)
+    // console.log('---end---', url)
     callback(null, resp, body)
   })
 }
 
+/**
+ * promise 形式的请求方法
+ * @param {*} url
+ * @param {*} options
+ */
 export const httpFatch = (url, options = { method: 'get' }) => {
   let requestObj
   let cancelFn
