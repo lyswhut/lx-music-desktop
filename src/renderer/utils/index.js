@@ -157,7 +157,7 @@ export const isChildren = (parent, children) => {
 }
 
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.1'
+  const defaultVersion = '1.0.2'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -177,6 +177,7 @@ export const updateSetting = setting => {
     },
     themeId: 0,
     sourceId: 'kw',
+    apiSource: 'messoer',
     randomAnimate: true,
   }
   const overwriteSetting = {

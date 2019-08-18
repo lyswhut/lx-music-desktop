@@ -106,6 +106,7 @@ export default {
     })
   },
   filterData(rawList, rawList2) {
+    // console.log(rawList.length, rawList2.length)
     return rawList.map((item, inedx) => {
       let formats = item.formats.split('|')
       let types = []
@@ -148,7 +149,7 @@ export default {
         albumId: item.albumid,
         songmid: item.id,
         source: 'kw',
-        interval: formatPlayTime(rawList2[inedx].duration),
+        interval: rawList2[inedx] && formatPlayTime(rawList2[inedx].duration),
         img: item.pic,
         lrc: null,
         types,

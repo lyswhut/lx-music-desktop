@@ -4,6 +4,7 @@ import musicSearch from './musicSearch'
 import { formatSinger } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
+import api_source from '../api-source'
 
 const kw = {
   _musicInfoRequestObj: null,
@@ -52,36 +53,7 @@ const kw = {
   },
 
   getMusicUrl(songInfo, type) {
-    let requestObj
-    let cancelFn
-    const p = new Promise((resolve, reject) => {
-      cancelFn = reject
-      // requestObj = httpGet(`https://v1.itooi.cn/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, (err, resp, body) => {
-      requestObj = httpGet(`https://www.stsky.cn/api/temp/getMusicUrl.php?id=${songInfo.songmid}&type=${type}`, (err, resp, body) => {
-        requestObj = null
-        cancelFn = null
-        if (err) {
-          if (err.message === 'socket hang up') return reject(new Error('接口挂了'))
-          const { promise, cancelHttp } = this.getMusicUrl(songInfo, type)
-          obj.cancelHttp = cancelHttp
-          return promise
-        }
-        // body.code === 200 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
-        body.code === 0 ? resolve({ type, url: body.data }) : reject(new Error(body.msg))
-      })
-    })
-    const obj = {
-      promise: p,
-      cancelHttp() {
-        console.log('cancel')
-        if (!requestObj) return
-        cancelHttp(requestObj)
-        cancelFn(new Error('取消http请求'))
-        requestObj = null
-        cancelFn = null
-      },
-    }
-    return obj
+    return api_source('kw').getMusicUrl(songInfo, type)
   },
 
   getMusicInfo(songInfo) {
@@ -119,24 +91,7 @@ const kw = {
   },
 
   getPic(songInfo) {
-    if (this._musicPicRequestObj != null) {
-      cancelHttp(this._musicPicRequestObj)
-      this._musicPicPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._musicPicPromiseCancelFn = reject
-      // this._musicPicRequestObj = httpGet(`https://v1.itooi.cn/kuwo/pic?id=${songInfo.songmid}&isRedirect=0`, (err, resp, body) => {
-      this._musicPicRequestObj = httpGet(`https://www.stsky.cn/api/temp/getPic.php?size=320&songmid=${songInfo.songmid}`, (err, resp, body) => {
-        this._musicPicRequestObj = null
-        this._musicPicPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        // body.code === 200 ? resolve(body.data) : reject(new Error(body.msg))
-        body.code === 0 ? resolve(body.data) : reject(new Error(body.msg))
-      })
-    })
+    return api_source('kw').getPic(songInfo)
   },
 }
 

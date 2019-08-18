@@ -3,17 +3,26 @@ import request from 'request'
 import { debugRequest } from './env'
 // import fs from 'fs'
 
+const headers = {
+  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
+}
+
 const fatchData = (url, method, options, callback) => {
+  console.log(url, options)
   // console.log('---start---', url)
   return request(url, {
     method,
-    headers: options.headers,
+    headers: Object.assign({}, headers, options.headers || {}),
     Origin: options.origin,
     data: options.data,
-    // timeout: 5000,
+    timeout: options.timeout || 10000,
     json: options.format === undefined || options.format === 'json',
   }, (err, resp, body) => {
-    if (err) return callback(err, null)
+    if (err) {
+      if (err.message === 'socket hang up') window.globalObj.apiSource = 'temp'
+      return callback(err, null)
+    }
+
     // console.log('---end---', url)
     callback(null, resp, body)
   })
@@ -24,7 +33,7 @@ const fatchData = (url, method, options, callback) => {
  * @param {*} url
  * @param {*} options
  */
-export const httpFatch = (url, options = { method: 'get' }) => {
+const buildHttpPromose = (url, options) => {
   let requestObj
   let cancelFn
   const p = new Promise((resolve, reject) => {
@@ -37,12 +46,13 @@ export const httpFatch = (url, options = { method: 'get' }) => {
       requestObj = null
       cancelFn = null
       if (err) {
-        console.log(err)
-        if (err.code === 'ETIMEDOUT') {
+        console.log(err.code)
+        if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
           const { promise, cancelHttp } = httpFatch(url, options)
           obj.cancelHttp = cancelHttp
-          return promise
+          promise.then()
         }
+        return reject(err)
       }
       resolve(resp)
     })
@@ -59,6 +69,27 @@ export const httpFatch = (url, options = { method: 'get' }) => {
     },
   }
   return obj
+}
+
+/**
+ * 请求超时自动重试
+ * @param {*} url
+ * @param {*} options
+ */
+export const httpFatch = (url, options = { method: 'get' }) => {
+  const requestObj = buildHttpPromose(url, options)
+  requestObj.promise = requestObj.promise.catch(err => {
+    if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
+      const { promise, cancelHttp } = httpFatch(url, options)
+      requestObj.cancelHttp()
+      requestObj.cancelHttp = cancelHttp
+      return promise
+    }
+    if (err.message === 'socket hang up') return Promise.reject(new Error('哦No😱...接口挂了！已帮你切换到临时接口，重试下看能不能播放吧~'))
+    if (err.code === 'ENOTFOUND') return Promise.reject(new Error('无法连接网络'))
+    return Promise.reject(err)
+  })
+  return requestObj
 }
 
 /**

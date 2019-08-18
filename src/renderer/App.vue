@@ -28,6 +28,9 @@ export default {
   data() {
     return {
       isProd: process.env.NODE_ENV === 'production',
+      globalObj: {
+        apiSource: 'messoer',
+      },
     }
   },
   computed: {
@@ -59,12 +62,20 @@ export default {
       },
       deep: true,
     },
+    'globalObj.apiSource'(n) {
+      if (n != this.setting.apiSource) {
+        this.setSetting(Object.assign({}, this.setting, {
+          apiSource: n,
+        }))
+      }
+    },
   },
   methods: {
     ...mapActions(['getVersionInfo']),
     ...mapMutations(['setNewVersion', 'setVersionVisible']),
     ...mapMutations('list', ['initDefaultList']),
     ...mapMutations('download', ['updateDownloadList']),
+    ...mapMutations(['setSetting']),
     init() {
       if (this.isProd) {
         body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
@@ -80,6 +91,8 @@ export default {
       })
 
       this.initData()
+      this.globalObj.apiSource = this.setting.apiSource
+      window.globalObj = this.globalObj
     },
     enableIgnoreMouseEvents() {
       win.setIgnoreMouseEvents(false)

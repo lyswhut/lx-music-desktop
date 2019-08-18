@@ -15,11 +15,17 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" label="是否启用")
 
+    dd(title='选择音乐来源')
+      h3 音乐来源
+      div
+        material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
+          need v-model="current_setting.apiSource" :value="item.id" :label="item.label" :key="item.id")
+
     dt 播放设置
     dd(title="都不选时播放完当前歌曲就停止播放")
       h3 歌曲切换方式
       div
-        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gap" :value="item.value" :key="item.value"
+        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
             v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
     dd(title='启用时将优先播放320K品质的歌曲')
       h3 优先播放高品质音乐
@@ -37,7 +43,7 @@ div.scroll(:class="$style.setting")
     dd(title='下载歌曲时的命名方式')
       h3 文件命名方式
       div
-        material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gap" name="setting_download_musicName" :value="item.value" :key="item.value" need
+        material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
     dt 列表设置
     dd(title='播放列表是否显示专辑栏')
@@ -48,15 +54,15 @@ div.scroll(:class="$style.setting")
     dd
       h3 部分数据
       div
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleImportPlayList") 导入列表
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleExportPlayList") 导出列表
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleImportSetting") 导入设置
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleExportSetting") 导出设置
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") 导入列表
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") 导出列表
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") 导入设置
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") 导出设置
     dd
       h3 所有数据（设置与试听列表）
       div
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleImportAllData") 导入
-        material-btn(:class="[$style.btn, $style.gap]" min @click="handleExportAllData") 导出
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") 导入
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
     dt 关于洛雪音乐
     dd
       p.small
@@ -113,6 +119,7 @@ export default {
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
+        apiSource: 'messoer',
       },
       togglePlayMethods: [
         {
@@ -130,6 +137,16 @@ export default {
         {
           name: '单曲循环',
           value: 'singleLoop',
+        },
+      ],
+      apiSources: [
+        {
+          id: 'messoer',
+          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
+        },
+        {
+          id: 'temp',
+          label: '临时接口（软件的某些功能将不可用，建议在messoer不可用时再切换到本选项）',
         },
       ],
       musicNames: [
@@ -310,6 +327,11 @@ export default {
     handleOpenUrl(url) {
       openUrl(url)
     },
+    handleAPISourceChange(id) {
+      this.$nextTick(() => {
+        window.globalObj.apiSource = id
+      })
+    },
   },
 }
 </script>
@@ -357,9 +379,14 @@ export default {
 
 }
 
-.gap {
-  + .gap {
+.gap-left {
+  + .gap-left {
     margin-left: 20px;
+  }
+}
+.gap-top {
+  + .gap-top {
+    margin-top: 10px;
   }
 }
 

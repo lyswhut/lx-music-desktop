@@ -7,7 +7,8 @@
           thead
             tr
               th.nobreak.center(style="width: 37px;")
-                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData" :indeterminate="isIndeterminate")
+                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
               th.nobreak(style="width: 25%;") 歌曲名
               th.nobreak(style="width: 20%;") 歌手
               th.nobreak(style="width: 25%;") 专辑

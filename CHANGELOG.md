@@ -6,6 +6,20 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.1.4](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.3...v0.1.4) - 2019-08-18
+
+### 新增
+
+- 新增音乐来源切换，可到设置页面-基本设置 look look !
+- 为搜索结果列表添加多选功能。
+P.S：暂时没想好多选后的操作按钮放哪...
+
+### 优化
+
+- 重构与改进checkbox组件，使其支持不定选中状态
+- 完善上一个版本的http请求封装并切换部分请求到该方法上
+- 优化其他一些细节
+
 ## [0.1.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.2...v0.1.3) - 2019-08-17
 
 ### 新增

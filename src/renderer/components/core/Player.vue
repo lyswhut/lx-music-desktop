@@ -90,6 +90,9 @@ export default {
       // return 50
       return this.nowPlayTime / this.maxPlayTime || 0
     },
+    isAPITemp() {
+      return this.setting.apiSource == 'temp'
+    },
   },
   mounted() {
     this.setProgessWidth()
@@ -249,7 +252,8 @@ export default {
     },
     handleNext() {
       // if (this.list.listName === null) return
-      if (!this.list.length) return
+      const list = this.isAPITemp ? this.list.filter(s => s.source == 'kw') : this.list
+      if (!list.length) return
       let index
       switch (this.setting.player.togglePlayMethod) {
         case 'listLoop':
@@ -267,14 +271,17 @@ export default {
       if (index < 0) return
       this.setPlayIndex(index)
     },
-    hanldeListLoop() {
-      return this.playIndex === this.list.length - 1 ? 0 : this.playIndex + 1
+    hanldeListLoop(index = this.playIndex) {
+      index = index === this.list.length - 1 ? 0 : index + 1
+      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListLoop(index) : index
     },
-    hanldeListNext() {
-      return this.playIndex === this.list.length - 1 ? -1 : this.playIndex + 1
+    hanldeListNext(index = this.playIndex) {
+      index = index === this.list.length - 1 ? -1 : index + 1
+      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListNext(index) : index
     },
-    hanldeListRandom() {
-      return getRandom(0, this.list.length)
+    hanldeListRandom(index = this.playIndex) {
+      index = getRandom(0, this.list.length)
+      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListRandom(index) : index
     },
     startPlay() {
       this.isPlay = true
@@ -314,6 +321,7 @@ export default {
     setUrl(targetSong) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       this.musicInfo.url = targetSong.typeUrl[type]
+      this.status = '歌曲链接获取中...'
 
       let urlP = this.musicInfo.url
         ? Promise.resolve()
@@ -323,6 +331,8 @@ export default {
 
       urlP.then(() => {
         this.audio.src = this.musicInfo.url
+      }).catch(err => {
+        this.status = err.message
       })
     },
     setImg(targetSong) {

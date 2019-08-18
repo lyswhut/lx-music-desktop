@@ -14,7 +14,8 @@
       div.scroll(:class="$style.tbody")
         table
           tbody
-            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)" :class="isPlayList && playIndex === index ? $style.active : ''")
+            tr(v-for='(item, index) in list' :key='item.songmid'
+              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', isAPITemp && item.source != 'kw' ? $style.disabled : '']")
               td.break(style="width: 25%;") {{item.name}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
@@ -61,6 +62,9 @@ export default {
         ? this.defaultList.list
         : this.userList.find(l => l._id == this.$route.query.id) || []
     },
+    isAPITemp() {
+      return this.setting.apiSource == 'temp'
+    },
   },
   // beforeRouteUpdate(to, from, next) {
   //   // if (to.query.id === undefined) return
@@ -105,6 +109,7 @@ export default {
       this.clickIndex = -1
     },
     testPlay(index) {
+      if (this.isAPITemp && this.list[index].source != 'kw') return
       this.setList({ list: this.list, listId: 'test', index })
     },
     handleRemove(index) {
@@ -176,6 +181,10 @@ export default {
       color: @color-theme;
     }
   }
+}
+
+.disabled {
+  opacity: .5;
 }
 
 each(@themes, {

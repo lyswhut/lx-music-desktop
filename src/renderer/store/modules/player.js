@@ -8,7 +8,9 @@ const state = {
   changePlay: false,
 }
 
-let request
+let urlRequest
+let picRequest
+let lrcRequest
 
 // getters
 const getters = {
@@ -21,19 +23,32 @@ const getters = {
 // actions
 const actions = {
   getUrl({ commit, state }, { musicInfo, type }) {
-    if (request && request.cancelHttp) request.cancelHttp()
-    request = music[musicInfo.source].getMusicUrl(musicInfo, type)
-    return request.promise.then(result => {
+    if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
+    urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
+    return urlRequest.promise.then(result => {
       commit('setUrl', { musicInfo, url: result.url, type })
     }).finally(() => {
-      request = null
+      urlRequest = null
     })
   },
   getPic({ commit, state }, musicInfo) {
-    return music[musicInfo.source].getPic(musicInfo).then(url => commit('getPic', { musicInfo, url }))
+    if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
+    picRequest = music[musicInfo.source].getPic(musicInfo)
+    return picRequest.promise.then(url => {
+      console.log(url)
+      commit('getPic', { musicInfo, url })
+    }).finally(() => {
+      picRequest = null
+    })
   },
   getLrc({ commit, state }, musicInfo) {
-    return music[musicInfo.source].getLyric(musicInfo).then(lrc => commit('setLrc', { musicInfo, lrc }))
+    if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
+    lrcRequest = music[musicInfo.source].getLyric(musicInfo)
+    return lrcRequest.promise.then(lrc => {
+      commit('setLrc', { musicInfo, lrc })
+    }).finally(() => {
+      lrcRequest = null
+    })
   },
 }
 
