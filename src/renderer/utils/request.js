@@ -8,7 +8,7 @@ const headers = {
 }
 
 const fatchData = (url, method, options, callback) => {
-  console.log(url, options)
+  // console.log(url, options)
   // console.log('---start---', url)
   return request(url, {
     method,
@@ -18,10 +18,7 @@ const fatchData = (url, method, options, callback) => {
     timeout: options.timeout || 10000,
     json: options.format === undefined || options.format === 'json',
   }, (err, resp, body) => {
-    if (err) {
-      if (err.message === 'socket hang up') window.globalObj.apiSource = 'temp'
-      return callback(err, null)
-    }
+    if (err) return callback(err, null)
 
     // console.log('---end---', url)
     callback(null, resp, body)
@@ -85,7 +82,10 @@ export const httpFatch = (url, options = { method: 'get' }) => {
       requestObj.cancelHttp = cancelHttp
       return promise
     }
-    if (err.message === 'socket hang up') return Promise.reject(new Error('哦No😱...接口挂了！已帮你切换到临时接口，重试下看能不能播放吧~'))
+    if (err.message === 'socket hang up') {
+      window.globalObj.apiSource = 'temp'
+      return Promise.reject(new Error('哦No😱...接口无法访问了！已帮你切换到临时接口，重试下看能不能播放吧~'))
+    }
     if (err.code === 'ENOTFOUND') return Promise.reject(new Error('无法连接网络'))
     return Promise.reject(err)
   })
