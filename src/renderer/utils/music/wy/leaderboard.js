@@ -91,6 +91,42 @@ export default {
   filterData(rawList) {
     // console.log(rawList)
     return rawList.map(item => {
+      const types = []
+      const _types = {}
+      let size
+      switch (item.privilege.maxbr) {
+        case 999000:
+          size = null
+          types.push({ type: 'flac', size })
+          _types['flac'] = {
+            size,
+          }
+        case 320000:
+          size = null
+          types.push({ type: '320k', size })
+          _types['320k'] = {
+            size,
+          }
+        case 192000:
+        case 190000:
+          size = null
+          types.push({ type: '192k', size })
+          _types['192k'] = {
+            size,
+          }
+          // case '160000':
+
+        default:
+          size = null
+          types.push({ type: '128k', size })
+          _types['128k'] = {
+            size,
+          }
+          break
+      }
+
+      types.reverse()
+
       return {
         singer: this.getSinger(item.artists),
         name: item.name,
@@ -101,6 +137,8 @@ export default {
         songmid: item.id,
         img: item.album.picUrl,
         lrc: null,
+        types,
+        _types,
         typeUrl: {},
       }
     })

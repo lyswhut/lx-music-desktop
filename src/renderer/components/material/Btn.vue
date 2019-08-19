@@ -1,5 +1,5 @@
 <template lang="pug">
-  button(:class="[$style.btn, min ? $style.min : '']" @click="$emit('click', $event)")
+  button(:class="[$style.btn, min ? $style.min : '']" :disabled="disabled" @click="$emit('click', $event)")
     slot
 </template>
 
@@ -8,6 +8,10 @@ export default {
   props: {
     min: {
       type: Boolean,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
 }
@@ -27,6 +31,9 @@ export default {
   outline: none;
   transition: background-color 0.2s ease;
   background-color: @color-btn-background;
+  &[disabled] {
+    opacity: .4;
+  }
 
   &:hover {
     background-color: @color-theme_2-hover;

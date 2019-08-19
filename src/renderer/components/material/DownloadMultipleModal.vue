@@ -37,18 +37,6 @@ export default {
     handleClose() {
       this.$emit('close')
     },
-    getTypeName(type) {
-      switch (type) {
-        case 'flac':
-        case 'ape':
-          return '无损音质'
-        case '320k':
-          return '高品音质'
-        case '192k':
-        case '128k':
-          return '普通音质'
-      }
-    },
   },
 }
 </script>

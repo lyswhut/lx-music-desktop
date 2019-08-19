@@ -7,11 +7,12 @@ const clearAssets = require('./utils/clearAssets')
 const updateVersionFile = require('./utils/updateChangeLog')
 // const copyFile = require('./utils/copyFile')
 // const githubRelease = require('./utils/githubRelease')
-const { parseArgv } = require('./utils')
+// const { parseArgv } = require('./utils')
 
 const run = async() => {
-  const params = parseArgv(process.argv.slice(2))
-  const bak = await updateVersionFile(params.ver)
+  // const params = parseArgv(process.argv.slice(2))
+  // const bak = await updateVersionFile(params.ver)
+  const bak = await updateVersionFile(process.argv.slice(2)[0])
 
   try {
     console.log(chalk.blue('Clearing assets...'))

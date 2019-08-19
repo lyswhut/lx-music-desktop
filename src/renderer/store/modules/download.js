@@ -55,7 +55,7 @@ const checkList = (list, musicInfo, type) => list.some(s => s.musicInfo.songmid 
 const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   let downloadCount = 0
   const waitList = list.filter(item => item.status == downloadStatus.WAITING ? true : (item.status === downloadStatus.RUN && ++downloadCount && false))
-  console.log(downloadCount, waitList)
+  // console.log(downloadCount, waitList)
   return downloadCount < maxDownloadNum && waitList.length > 0 && waitList.shift()
 }
 
@@ -168,7 +168,9 @@ const actions = {
               console.log(err)
               _this.dispatch('download/startTask')
             })
+            return
         }
+        _this.dispatch('download/startTask')
       },
       // onStateChanged(state) {
       //   console.log(state)
@@ -191,20 +193,22 @@ const actions = {
     }
     let p = options.url ? Promise.resolve() : refreshUrl(downloadInfo).then(result => {
       commit('updateUrl', { downloadInfo, url: result.url })
+      if (!result.url) return Promise.reject(new Error('获取URL失败'))
       options.url = result.url
-    }).catch(err => {
-      commit('onError', downloadInfo)
-      commit('setStatusText', { downloadInfo, text: err.message })
-      return Promise.reject(err)
     })
     p.then(() => {
       tryNum[downloadInfo.key] = 0
       dls[downloadInfo.key] = download(options)
+    }).catch(err => {
+      // console.log(err.message)
+      commit('onError', downloadInfo)
+      commit('setStatusText', { downloadInfo, text: err.message })
+      this.dispatch('download/startTask')
     })
   },
-  startTaskMultiple({ state, rootState }, list) {
+  // startTaskMultiple({ state, rootState }, list) {
 
-  },
+  // },
   removeTask({ commit, state }, index) {
     let info = state.list[index]
     if (state.list[index].status == state.downloadStatus.RUN) {

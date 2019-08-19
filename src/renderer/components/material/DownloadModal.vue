@@ -5,7 +5,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       | {{ info.name }}
       br
       | {{ info.singer }}
-    material-btn(:class="$style.btn" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
+    material-btn(:class="$style.btn" :title="!checkSource(type.type) && '目前酷狗、网易云音源仅支持下载128k音质'" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
 
 </template>
 
@@ -47,6 +47,16 @@ export default {
         case '192k':
         case '128k':
           return '普通音质'
+      }
+    },
+    checkSource(type) {
+      switch (this.musicInfo.source) {
+        case 'wy':
+        case 'kg':
+          return type == '128k'
+
+        default:
+          return true
       }
     },
   },

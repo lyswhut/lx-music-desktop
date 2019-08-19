@@ -1,5 +1,5 @@
 import { httpGet, cancelHttp } from '../../request'
-import { formatPlayTime } from '../../index'
+import { formatPlayTime, sizeFormate } from '../../index'
 
 export default {
   list: [
@@ -89,18 +89,58 @@ export default {
     })
   },
   filterData(rawList) {
-    return rawList.map(item => ({
-      singer: item.singername,
-      name: item.songname,
-      albumName: item.album_name,
-      albumId: item.album_id,
-      songmid: item.audio_id,
-      source: 'kg',
-      interval: formatPlayTime(item.duration / 1000),
-      img: null,
-      lrc: null,
-      typeUrl: {},
-    }))
+    // console.log(rawList)
+    return rawList.map(item => {
+      const types = []
+      const _types = {}
+      if (item.filesize !== 0) {
+        let size = sizeFormate(item.filesize)
+        types.push({ type: '128k', size, hash: item.hash })
+        _types['128k'] = {
+          size,
+          hash: item.hash,
+        }
+      }
+      if (item.filesize_320 !== 0) {
+        let size = sizeFormate(item.filesize_320)
+        types.push({ type: '320k', size, hash: item.hash_320 })
+        _types['320k'] = {
+          size,
+          hash: item.hash_320,
+        }
+      }
+      if (item.filesize_ape !== 0) {
+        let size = sizeFormate(item.filesize_ape)
+        types.push({ type: 'ape', size, hash: item.hash_ape })
+        _types.ape = {
+          size,
+          hash: item.hash_ape,
+        }
+      }
+      if (item.filesize_flac !== 0) {
+        let size = sizeFormate(item.filesize_flac)
+        types.push({ type: 'flac', size, hash: item.hash_flac })
+        _types.flac = {
+          size,
+          hash: item.hash_flac,
+        }
+      }
+      return {
+        singer: item.singername,
+        name: item.songname,
+        albumName: item.album_name,
+        albumId: item.album_id,
+        songmid: item.audio_id,
+        source: 'kg',
+        interval: formatPlayTime(item.duration / 1000),
+        img: null,
+        lrc: null,
+        hash: item.HASH,
+        types,
+        _types,
+        typeUrl: {},
+      }
+    })
   },
   getList(id, page) {
     let type = this.list.find(s => s.id === id)

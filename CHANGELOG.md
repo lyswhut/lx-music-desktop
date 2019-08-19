@@ -6,6 +6,17 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.2.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.6...v0.2.0) - 2019-08-20
+
+### 新增
+
+- 新增网易云排行榜音乐直接试听与下载（目前仅支持128k音质）
+- 新增酷狗排行榜音乐直接试听与下载（目前仅支持128k音质）
+
+### 修复
+
+- 修复更新弹窗历史版本描述多余的换行问题
+
 ## [0.1.6](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.5...v0.1.6) - 2019-08-19
 
 ### 修复
