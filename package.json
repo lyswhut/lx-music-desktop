@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "scripts": {

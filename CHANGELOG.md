@@ -6,6 +6,19 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.1.5](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.4...v0.1.5) - 2019-08-19
+
+### 新增
+
+- 新增搜索列表批量试听与下载功能
+- 新增排行榜列表批量试听与下载功能
+- 新增试听列表批量移除与下载功能
+- 新增下载列表批量开始、暂停与移除功能
+
+### 优化
+
+- 优化歌曲切换机制
+
 ## [0.1.4](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.3...v0.1.4) - 2019-08-18
 
 ### 新增
