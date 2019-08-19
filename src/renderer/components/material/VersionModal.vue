@@ -127,7 +127,7 @@ export default {
     h3 {
       padding: 5px 0 3px;
     }
-    padding-left: 15px;
+    padding: 0 15px;
     + .item {
       padding-top: 15px;
     }
