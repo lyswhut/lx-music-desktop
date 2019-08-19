@@ -39,7 +39,7 @@
             material-pagination(:count="info.total" :limit="info.limit" :page="info.page" @btn-click="handleTogglePage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn && (source == 'kw' || (!isAPITemp && source == 'tx'))" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>

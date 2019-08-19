@@ -173,7 +173,8 @@ export default {
       this.selectdData = []
     },
     handleAddDownloadMultiple(type) {
-      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : [...this.selectdData]
+      this.createDownloadMultiple({ list, type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
     },
