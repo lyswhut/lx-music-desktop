@@ -10,7 +10,7 @@ const { mergeCSSLoaderDev } = require('../utils')
 
 module.exports = merge(baseConfig, {
   mode: 'development',
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
@@ -46,7 +46,7 @@ module.exports = merge(baseConfig, {
         NODE_ENV: '"development"',
         ELECTRON_DISABLE_SECURITY_WARNINGS: 'true',
       },
-      '__static': `"${path.join(__dirname, '../../src/static').replace(/\\/g, '\\\\')}"`,
+      __static: `"${path.join(__dirname, '../../src/static').replace(/\\/g, '\\\\')}"`,
     }),
   ],
   performance: {

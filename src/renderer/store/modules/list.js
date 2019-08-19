@@ -30,8 +30,21 @@ const mutations = {
     if (state.defaultList.list.some(s => s.songmid === musicInfo.songmid)) return
     state.defaultList.list.push(musicInfo)
   },
+  defaultListAddMultiple(state, list) {
+    list.forEach(musicInfo => {
+      if (state.defaultList.list.some(s => s.songmid === musicInfo.songmid)) return
+      state.defaultList.list.push(musicInfo)
+    })
+  },
   defaultListRemove(state, index) {
     state.defaultList.list.splice(index, 1)
+  },
+  defaultListRemoveMultiple(state, list) {
+    list.forEach(musicInfo => {
+      let index = state.defaultList.list.indexOf(musicInfo)
+      if (index < 0) return
+      state.defaultList.list.splice(index, 1)
+    })
   },
   defaultListClear(state) {
     state.defaultList.list.length = 0

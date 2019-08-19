@@ -6,9 +6,12 @@
         table
           thead
             tr
+              th.nobreak.center(style="width: 37px;")
+                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
               th.nobreak(style="width: 25%;") 歌曲名
               th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 25%;" v-if="setting.list.isShowAlbumName") 专辑
+              th.nobreak(style="width: 20%;" v-if="setting.list.isShowAlbumName") 专辑
               th.nobreak(style="width: 20%;") 操作
               th.nobreak(style="width: 10%;") 时长
       div.scroll(:class="$style.tbody")
@@ -16,6 +19,8 @@
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid'
               @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', isAPITemp && item.source != 'kw' ? $style.disabled : '']")
+              td.nobreak.center(style="width: 37px;" @click.stop)
+                  material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;") {{item.name}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
@@ -23,16 +28,18 @@
                 //- span.badge.badge-info(v-if="item._types.ape") APE
                 //- span.badge.badge-success(v-if="item._types.flac") FLAC
               td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 25%;" v-if="setting.list.isShowAlbumName") {{item.albumName}}
+              td.break(style="width: 20%;" v-if="setting.list.isShowAlbumName") {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
-                material-list-buttons(:index="index" @btn-click="handleBtnClick")
+                material-list-buttons(:index="index" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
               td(style="width: 10%;") {{item.interval}}
     div(:class="$style.noItem" v-else)
-    material-download-modal(:show="showDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="showDownload = false")
+    material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
+    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-flow-btn(:show="isShowEditBtn" :add-btn="false" :play-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -43,8 +50,13 @@ export default {
     return {
       clickTime: window.performance.now(),
       clickIndex: -1,
-      showDownload: false,
+      isShowDownload: false,
       musicInfo: null,
+      selectdData: [],
+      isSelectAll: false,
+      isIndeterminate: false,
+      isShowEditBtn: false,
+      isShowDownloadMultiple: false,
     }
   },
   computed: {
@@ -64,6 +76,22 @@ export default {
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
+    },
+  },
+  watch: {
+    selectdData(n) {
+      const len = n.length
+      if (len) {
+        this.isSelectAll = true
+        this.isIndeterminate = len !== this.list.length
+        this.isShowEditBtn = true
+      } else {
+        this.isSelectAll = false
+        this.isShowEditBtn = false
+      }
+    },
+    list() {
+      this.resetSelect()
     },
   },
   // beforeRouteUpdate(to, from, next) {
@@ -92,9 +120,9 @@ export default {
   // }
   // },
   methods: {
-    ...mapMutations('list', ['defaultListRemove']),
+    ...mapMutations('list', ['defaultListRemove', 'defaultListRemoveMultiple']),
+    ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', ['setList']),
-    ...mapActions('download', ['createDownload']),
     handleDoubleClick(index) {
       if (
         window.performance.now() - this.clickTime > 400 ||
@@ -115,12 +143,12 @@ export default {
     handleRemove(index) {
       this.defaultListRemove(index)
     },
-    handleBtnClick(info) {
+    handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
           this.musicInfo = this.list[info.index]
           this.$nextTick(() => {
-            this.showDownload = true
+            this.isShowDownload = true
           })
           break
         case 'play':
@@ -135,7 +163,30 @@ export default {
     },
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
-      this.showDownload = false
+      this.isShowDownload = false
+    },
+    handleSelectAllData(isSelect) {
+      this.selectdData = isSelect ? [...this.list] : []
+    },
+    resetSelect() {
+      this.isSelectAll = false
+      this.selectdData = []
+    },
+    handleAddDownloadMultiple(type) {
+      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.resetSelect()
+      this.isShowDownloadMultiple = false
+    },
+    handleFlowBtnClick(action) {
+      switch (action) {
+        case 'download':
+          this.isShowDownloadMultiple = true
+          break
+        case 'remove':
+          this.defaultListRemoveMultiple(this.selectdData)
+          this.resetSelect()
+          break
+      }
     },
   },
 }

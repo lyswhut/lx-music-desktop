@@ -10,7 +10,7 @@ div(:class="$style.checkbox")
     div(v-else)
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
         use(xlink:href='#icon-check-true')
-    span(v-if="label != null") {{label}}
+    span(v-if="label != null" v-html="label")
 </template>
 
 <script>

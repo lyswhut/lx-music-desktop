@@ -45,9 +45,8 @@ export default ({
     onEnd()
     debugDownload && console.log('Download Completed')
   }).on('error', err => {
+    if (err.message === 'socket hang up') return
     onError(err)
-    dl.resume()
-    console.log('Download failed, Attempting Retry')
     debugDownload && console.error('Something happend', err)
   }).on('stateChanged', state => {
     onStateChanged(state)

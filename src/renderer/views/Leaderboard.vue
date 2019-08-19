@@ -9,30 +9,37 @@
           table
             thead
               tr
-                th.nobreak(style="width: 27%;") 歌曲名
+                th.nobreak.center(style="width: 37px;")
+                  material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
+                    :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
+                th.nobreak(style="width: 25%;") 歌曲名
                 th.nobreak(style="width: 20%;") 歌手
-                th.nobreak(style="width: 25%;") 专辑
+                th.nobreak(style="width: 22%;") 专辑
                 th.nobreak(style="width: 18%;") 操作
                 th.nobreak(style="width: 10%;") 时长
         div.scroll(:class="$style.tbody" ref="dom_scrollContent")
           table
             tbody
               tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
-                td.break(style="width: 27%;")
+                td.nobreak.center(style="width: 37px;" @click.stop)
+                  material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
+                td.break(style="width: 25%;")
                   | {{item.name}}
                   //- span.badge.badge-info(v-if="item._types['320k']") 高品质
                   //- span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
                 td.break(style="width: 20%;") {{item.singer}}
-                td.break(style="width: 25%;") {{item.albumName}}
+                td.break(style="width: 22%;") {{item.albumName}}
                 td(style="width: 18%;")
-                  material-list-buttons(:index="index" :search-btn="true" :play-btn="item.source == 'kw' || (!isAPITemp && item.source == 'tx')" :download-btn="item.source == 'kw' || (!isAPITemp && item.source == 'tx')" :remove-btn="false" @btn-click="handleBtnClick")
+                  material-list-buttons(:index="index" :search-btn="true" :play-btn="item.source == 'kw' || (!isAPITemp && item.source == 'tx')" :download-btn="item.source == 'kw' || (!isAPITemp && item.source == 'tx')" :remove-btn="false" @btn-click="handleListBtnClick")
                   //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                   //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                   //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
                 td(style="width: 10%;") {{item.interval}}
           div(:class="$style.pagination")
             material-pagination(:count="info.total" :limit="info.limit" :page="info.page" @btn-click="handleTogglePage")
-    material-download-modal(:show="showDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="showDownload = false")
+    material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
+    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-flow-btn(:show="isShowEditBtn" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -48,8 +55,13 @@ export default {
       page: 1,
       clickTime: 0,
       clickIndex: -1,
-      showDownload: false,
+      isShowDownload: false,
       musicInfo: null,
+      selectdData: [],
+      isSelectAll: false,
+      isIndeterminate: false,
+      isShowEditBtn: false,
+      isShowDownloadMultiple: false,
     }
   },
   computed: {
@@ -76,6 +88,20 @@ export default {
       this.setLeaderboard({ source: n })
       if (o) this.tabId = this.types[0] && this.types[0].id
     },
+    selectdData(n) {
+      const len = n.length
+      if (len) {
+        this.isSelectAll = true
+        this.isIndeterminate = len !== this.list.length
+        this.isShowEditBtn = true
+      } else {
+        this.isSelectAll = false
+        this.isShowEditBtn = false
+      }
+    },
+    list() {
+      this.resetSelect()
+    },
   },
   mounted() {
     this.source = this.setting.leaderboard.source
@@ -85,8 +111,8 @@ export default {
   methods: {
     ...mapMutations(['setLeaderboard']),
     ...mapActions('leaderboard', ['getList']),
-    ...mapActions('download', ['createDownload']),
-    ...mapMutations('list', ['defaultListAdd']),
+    ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
+    ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
     handleDoubleClick(index) {
       if (
@@ -101,12 +127,12 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
-    handleBtnClick(info) {
+    handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
           this.musicInfo = this.list[info.index]
           this.$nextTick(() => {
-            this.showDownload = true
+            this.isShowDownload = true
           })
           break
         case 'play':
@@ -120,8 +146,14 @@ export default {
       }
     },
     testPlay(index) {
-      let targetSong = this.list[index]
-      this.defaultListAdd(targetSong)
+      let targetSong
+      if (index == null) {
+        targetSong = this.selectdData[0]
+        this.defaultListAddMultiple(this.selectdData)
+      } else {
+        targetSong = this.list[index]
+        this.defaultListAdd(targetSong)
+      }
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid
       )
@@ -150,9 +182,36 @@ export default {
         })
       })
     },
+    handleSelectAllData(isSelect) {
+      this.selectdData = isSelect ? [...this.list] : []
+    },
+    resetSelect() {
+      this.isSelectAll = false
+      this.selectdData = []
+    },
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
-      this.showDownload = false
+      this.isShowDownload = false
+    },
+    handleAddDownloadMultiple(type) {
+      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.resetSelect()
+      this.isShowDownloadMultiple = false
+    },
+    handleFlowBtnClick(action) {
+      switch (action) {
+        case 'download':
+          this.isShowDownloadMultiple = true
+          break
+        case 'play':
+          this.testPlay()
+          this.resetSelect()
+          break
+        case 'add':
+          this.defaultListAddMultiple(this.selectdData)
+          this.resetSelect()
+          break
+      }
     },
   },
 }

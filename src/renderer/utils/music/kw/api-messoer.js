@@ -1,4 +1,5 @@
 import { httpFatch } from '../../request'
+import { requestMsg } from '../../message'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
@@ -7,7 +8,7 @@ const api_messoer = {
       timeout: 5000,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return body.code === 200 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(body.msg))
+      return body.code === 200 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
     })
     return requestObj
   },
@@ -17,7 +18,7 @@ const api_messoer = {
       timeout: 5000,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return body.code === 200 ? Promise.resolve(body.data) : Promise.reject(new Error(body.msg))
+      return body.code === 200 ? Promise.resolve(body.data) : Promise.reject(new Error(requestMsg.fail))
     })
     return requestObj
   },

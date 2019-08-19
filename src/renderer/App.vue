@@ -38,6 +38,7 @@ export default {
     ...mapGetters('list', ['defaultList']),
     ...mapGetters('download', {
       downloadList: 'list',
+      downloadStatus: 'downloadStatus',
     }),
   },
   mounted() {
@@ -119,6 +120,12 @@ export default {
     initDownloadList() {
       let downloadList = this.electronStore.get('download.list')
       if (downloadList) {
+        downloadList.forEach(item => {
+          if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
+            item.status = this.downloadStatus.PAUSE
+            item.statusText = '暂停下载'
+          }
+        })
         this.updateDownloadList(downloadList)
       }
     },

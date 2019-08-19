@@ -252,36 +252,43 @@ export default {
     },
     handleNext() {
       // if (this.list.listName === null) return
-      const list = this.isAPITemp ? this.list.filter(s => s.source == 'kw') : this.list
-      if (!list.length) return
+      let list
+      if (this.listId == 'download') {
+        list = this.list.filter(s => !(!checkPath(s.filePath) || !s.isComplate || /\.ape$/.test(s.filePath)))
+      } else if (this.isAPITemp) {
+        list = this.list.filter(s => s.source == 'kw')
+      } else {
+        list = this.list
+      }
+      if (!list.length) return this.setPlayIndex(-1)
+      let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])
+
       let index
       switch (this.setting.player.togglePlayMethod) {
         case 'listLoop':
-          index = this.hanldeListLoop()
+          index = this.hanldeListLoop(list, playIndex)
           break
         case 'random':
-          index = this.hanldeListRandom()
+          index = this.hanldeListRandom(list, playIndex)
           break
         case 'list':
-          index = this.hanldeListNext()
+          index = this.hanldeListNext(list, playIndex)
           break
         default:
           return
       }
       if (index < 0) return
+      if (this.list !== list) index = this.list.indexOf(list[index])
       this.setPlayIndex(index)
     },
-    hanldeListLoop(index = this.playIndex) {
-      index = index === this.list.length - 1 ? 0 : index + 1
-      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListLoop(index) : index
+    hanldeListLoop(list, index) {
+      return index === list.length - 1 ? 0 : index + 1
     },
-    hanldeListNext(index = this.playIndex) {
-      index = index === this.list.length - 1 ? -1 : index + 1
-      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListNext(index) : index
+    hanldeListNext(list, index) {
+      return index === list.length - 1 ? -1 : index + 1
     },
-    hanldeListRandom(index = this.playIndex) {
-      index = getRandom(0, this.list.length)
-      return this.isAPITemp && this.list[index].source != 'kw' ? this.hanldeListRandom(index) : index
+    hanldeListRandom(list, index) {
+      return getRandom(0, list.length)
     },
     startPlay() {
       this.isPlay = true
@@ -333,6 +340,9 @@ export default {
         this.audio.src = this.musicInfo.url
       }).catch(err => {
         this.status = err.message
+        setTimeout(() => {
+          this.handleNext()
+        }, 2000)
       })
     },
     setImg(targetSong) {

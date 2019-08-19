@@ -27,13 +27,15 @@
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 25%;") {{item.albumName}}
               td(style="width: 15%;")
-                material-list-buttons(:index="index" :remove-btn="false" @btn-click="handleBtnClick")
+                material-list-buttons(:index="index" :remove-btn="false" @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
       p 搜我所想~~😉
-    material-download-modal(:show="showDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="showDownload = false")
+    material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
+    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-flow-btn(:show="isShowEditBtn" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -48,12 +50,13 @@ export default {
       text: '',
       clickTime: 0,
       clickIndex: -1,
-      showDownload: false,
+      isShowDownload: false,
       musicInfo: null,
       selectdData: [],
       isSelectAll: false,
       isIndeterminate: false,
       isShowEditBtn: false,
+      isShowDownloadMultiple: false,
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -104,9 +107,9 @@ export default {
   },
   methods: {
     ...mapActions('search', ['search']),
-    ...mapActions('download', ['createDownload']),
+    ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('search', ['clearList', 'setPage']),
-    ...mapMutations('list', ['defaultListAdd']),
+    ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
     handleSearch(text, page) {
       this.search({ text, page, limit: this.limit }).then(data => {
@@ -129,12 +132,12 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
-    handleBtnClick(info) {
+    handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
           this.musicInfo = this.list[info.index]
           this.$nextTick(() => {
-            this.showDownload = true
+            this.isShowDownload = true
           })
           break
         case 'play':
@@ -145,8 +148,14 @@ export default {
       }
     },
     testPlay(index) {
-      let targetSong = this.list[index]
-      this.defaultListAdd(targetSong)
+      let targetSong
+      if (index == null) {
+        targetSong = this.selectdData[0]
+        this.defaultListAddMultiple(this.selectdData)
+      } else {
+        targetSong = this.list[index]
+        this.defaultListAdd(targetSong)
+      }
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid
       )
@@ -163,7 +172,12 @@ export default {
     },
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
-      this.showDownload = false
+      this.isShowDownload = false
+    },
+    handleAddDownloadMultiple(type) {
+      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.resetSelect()
+      this.isShowDownloadMultiple = false
     },
     handleSelectAllData(isSelect) {
       this.selectdData = isSelect ? [...this.list] : []
@@ -171,6 +185,21 @@ export default {
     resetSelect() {
       this.isSelectAll = false
       this.selectdData = []
+    },
+    handleFlowBtnClick(action) {
+      switch (action) {
+        case 'download':
+          this.isShowDownloadMultiple = true
+          break
+        case 'play':
+          this.testPlay()
+          this.resetSelect()
+          break
+        case 'add':
+          this.defaultListAddMultiple(this.selectdData)
+          this.resetSelect()
+          break
+      }
     },
   },
 }

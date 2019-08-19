@@ -16,7 +16,7 @@ const run = async() => {
   try {
     console.log(chalk.blue('Clearing assets...'))
     await clearAssets()
-    console.log(chalk.green('Assets clear complated...'))
+    console.log(chalk.green('Assets clear completed...'))
 
     // console.log(chalk.blue('Compileing assets...'))
     // await compileAssets()

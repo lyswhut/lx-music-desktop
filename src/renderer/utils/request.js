@@ -1,6 +1,7 @@
 import request from 'request'
 // import progress from 'request-progress'
 import { debugRequest } from './env'
+import { requestMsg } from './message'
 // import fs from 'fs'
 
 const headers = {
@@ -9,7 +10,7 @@ const headers = {
 
 const fatchData = (url, method, options, callback) => {
   // console.log(url, options)
-  // console.log('---start---', url)
+  console.log('---start---', url)
   return request(url, {
     method,
     headers: Object.assign({}, headers, options.headers || {}),
@@ -60,7 +61,7 @@ const buildHttpPromose = (url, options) => {
       console.log('cancel')
       if (!requestObj) return
       cancelHttp(requestObj)
-      cancelFn(new Error('取消http请求'))
+      cancelFn(new Error(requestMsg.cancelRequest))
       requestObj = null
       cancelFn = null
     },
@@ -84,9 +85,9 @@ export const httpFatch = (url, options = { method: 'get' }) => {
     }
     if (err.message === 'socket hang up') {
       window.globalObj.apiSource = 'temp'
-      return Promise.reject(new Error('哦No😱...接口无法访问了！已帮你切换到临时接口，重试下看能不能播放吧~'))
+      return Promise.reject(new Error(requestMsg.unachievable))
     }
-    if (err.code === 'ENOTFOUND') return Promise.reject(new Error('无法连接网络'))
+    if (err.code === 'ENOTFOUND') return Promise.reject(new Error(requestMsg.notConnectNetwork))
     return Promise.reject(err)
   })
   return requestObj

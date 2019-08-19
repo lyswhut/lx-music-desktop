@@ -156,8 +156,12 @@ export const isChildren = (parent, children) => {
   return children.parentNode ? children.parentNode === parent ? true : isChildren(parent, children.parentNode) : false
 }
 
+/**
+ * 升级设置
+ * @param {*} setting
+ */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.2'
+  const defaultVersion = '1.0.3'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -170,6 +174,7 @@ export const updateSetting = setting => {
     download: {
       savePath: path.join(os.homedir(), 'Desktop'),
       fileName: '歌名 - 歌手',
+      maxDownloadNum: 3,
     },
     leaderboard: {
       source: 'kw',
@@ -203,3 +208,4 @@ export const updateSetting = setting => {
 export const openUrl = url => {
   shell.openExternal(url)
 }
+

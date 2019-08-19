@@ -142,7 +142,7 @@ export default {
       apiSources: [
         {
           id: 'messoer',
-          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
+          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）<br><span style="line-height: 1.5;"><strong>注意：</strong>本接口10秒内请求数超过100次会封10小时的IP</span>',
         },
         {
           id: 'temp',

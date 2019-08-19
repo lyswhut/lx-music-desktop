@@ -7,11 +7,6 @@ const api_temp = {
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
       return body.code === 0 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(body.msg))
-    }).catch(err => {
-      console.log(err)
-      if (err.message === 'socket hang up') return Promise.reject(new Error('接口挂了'))
-      if (err.code === 'ENOTFOUND') return Promise.reject(new Error('无法连接网络'))
-      return Promise.reject(err)
     })
     return requestObj
   },
@@ -21,10 +16,6 @@ const api_temp = {
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
       return body.code === 0 ? Promise.resolve(body.data) : Promise.reject(new Error(body.msg))
-    }).catch(err => {
-      if (err.message === 'socket hang up') return Promise.reject(new Error('接口挂了'))
-      if (err.code === 'ENOTFOUND') return Promise.reject(new Error('无法连接网络'))
-      return Promise.reject(err)
     })
     return requestObj
   },

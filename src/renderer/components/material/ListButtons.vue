@@ -9,6 +9,12 @@ div(:class="$style.btns")
   button(type="button" title="添加" v-if="userInfo" @click.stop="handleClick('add')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
       use(xlink:href='#icon-addTo')
+  button(type="button" v-if="startBtn" title="开始" @click.stop="handleClick('start')")
+    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
+      use(xlink:href='#icon-play')
+  button(type="button" v-if="pauseBtn" title="暂停" @click.stop="handleClick('pause')")
+    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
+      use(xlink:href='#icon-pause')
   button(type="button" v-if="removeBtn" title="移除" @click.stop="handleClick('remove')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
       use(xlink:href='#icon-delete')
@@ -26,6 +32,14 @@ export default {
     index: {
       type: Number,
       required: true,
+    },
+    startBtn: {
+      type: Boolean,
+      default: false,
+    },
+    pauseBtn: {
+      type: Boolean,
+      default: false,
     },
     removeBtn: {
       type: Boolean,
