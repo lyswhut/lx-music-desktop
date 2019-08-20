@@ -116,12 +116,12 @@ const actions = {
     // 检查是否可以开始任务
     if (downloadInfo && downloadInfo != state.downloadStatus.WAITING) commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
     let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
-    if (!result) return downloadInfo && commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
+    if (!result) return
     if (!downloadInfo) downloadInfo = result
 
     // 开始任务
-    commit('setStatusText', { downloadInfo, text: '任务初始化中' })
     commit('onDownload', downloadInfo)
+    commit('setStatusText', { downloadInfo, text: '任务初始化中' })
     let msg = checkPath(rootState.setting.download.savePath)
     if (msg) return commit('setStatusText', '检查下载目录出错: ' + msg)
     const _this = this
