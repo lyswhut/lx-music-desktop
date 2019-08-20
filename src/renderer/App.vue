@@ -53,6 +53,7 @@ export default {
     },
     defaultList: {
       handler(n) {
+        console.log(n)
         this.electronStore.set('list.defaultList', n)
       },
       deep: true,
@@ -110,10 +111,11 @@ export default {
     },
     initPlayList() {
       let defaultList = this.electronStore.get('list.defaultList')
+      console.log(defaultList)
       if (defaultList) {
-        defaultList.list.forEach(m => {
-          m.typeUrl = {}
-        })
+        // defaultList.list.forEach(m => {
+        //   m.typeUrl = {}
+        // })
         this.initDefaultList(defaultList)
       }
     },

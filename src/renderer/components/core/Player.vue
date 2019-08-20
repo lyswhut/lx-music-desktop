@@ -43,6 +43,7 @@ import Lyric from 'lrc-file-parser'
 import { rendererSend } from '../../../common/icp'
 import { formatPlayTime2, getRandom, checkPath } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { requestMsg } from '../../utils/message'
 
 export default {
   data() {
@@ -68,7 +69,8 @@ export default {
         text: '',
         line: 0,
       },
-      retryNum: 0,
+      delayNextTimeout: null,
+      // retryNum: 0,
     }
   },
   computed: {
@@ -119,8 +121,13 @@ export default {
           ? n.findIndex(s => s.musicInfo.songmid === this.musicInfo.songmid)
           : n.findIndex(s => s.songmid === this.musicInfo.songmid)
         if (index < 0) {
-          this.fixPlayIndex(this.playIndex - 1)
-          if (n.length) this.handleNext()
+          // console.log(this.playIndex)
+          if (n.length) {
+            this.fixPlayIndex(this.playIndex - 1)
+            this.handleNext()
+          } else {
+            this.setPlayIndex(-1)
+          }
         } else {
           this.fixPlayIndex(index)
         }
@@ -167,7 +174,7 @@ export default {
         // console.log('code', this.audio.error.code)
         if (!this.musicInfo.songmid) return
         console.log('出错')
-        if (this.audio.error.code == 4 && this.retryNum < 5) {
+        if (this.audio.error.code == 4 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
           // console.log(this.retryNum)
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
@@ -191,10 +198,8 @@ export default {
         // } else {
         //   this.handleNext()
         // }
-        this.status = '音频加载出错，2 两秒后切换下一首'
-        setTimeout(() => {
-          this.handleNext()
-        }, 2000)
+        this.status = '音频加载出错，5 秒后切换下一首'
+        this.addDelayNextTimeout()
       })
       this.audio.addEventListener('loadeddata', () => {
         this.maxPlayTime = this.audio.duration
@@ -241,6 +246,7 @@ export default {
     },
     play() {
       console.log('play', this.playIndex)
+      this.checkDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
       this.retryNum = 0
 
@@ -264,6 +270,20 @@ export default {
         this.setLrc(targetSong)
       }
     },
+    checkDelayNextTimeout() {
+      console.log(this.delayNextTimeout)
+      if (this.delayNextTimeout) {
+        clearTimeout(this.delayNextTimeout)
+        this.delayNextTimeout = null
+      }
+    },
+    addDelayNextTimeout() {
+      this.checkDelayNextTimeout()
+      this.delayNextTimeout = setTimeout(() => {
+        this.delayNextTimeout = null
+        this.handleNext()
+      }, 5000)
+    },
     handleNext() {
       // if (this.list.listName === null) return
       let list
@@ -276,7 +296,7 @@ export default {
       }
       if (!list.length) return this.setPlayIndex(-1)
       let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])
-
+      console.log(playIndex)
       let index
       switch (this.setting.player.togglePlayMethod) {
         case 'listLoop':
@@ -349,19 +369,12 @@ export default {
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = '歌曲链接获取中...'
 
-      let urlP = this.musicInfo.url && !isRefresh
-        ? Promise.resolve()
-        : this.getUrl({ musicInfo: targetSong, type }).then(() => {
-          this.musicInfo.url = targetSong.typeUrl[type]
-        })
-
-      urlP.then(() => {
-        this.audio.src = this.musicInfo.url
+      this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
+        this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
+        if (err.message == requestMsg.cancelRequest) return
         this.status = err.message
-        setTimeout(() => {
-          this.handleNext()
-        }, 2000)
+        this.addDelayNextTimeout()
       })
     },
     setImg(targetSong) {

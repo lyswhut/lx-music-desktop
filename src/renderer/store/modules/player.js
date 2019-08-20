@@ -22,8 +22,9 @@ const getters = {
 
 // actions
 const actions = {
-  getUrl({ commit, state }, { musicInfo, type }) {
+  getUrl({ commit, state }, { musicInfo, type, isRefresh }) {
     if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
+    if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve()
     urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
     return urlRequest.promise.then(result => {
       commit('setUrl', { musicInfo, url: result.url, type })
@@ -72,6 +73,7 @@ const mutations = {
   setPlayIndex(state, index) {
     state.playIndex = index
     state.changePlay = true
+    // console.log(state.changePlay)
   },
   fixPlayIndex(state, index) {
     state.playIndex = index

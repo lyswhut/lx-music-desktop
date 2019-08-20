@@ -6,6 +6,17 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.2.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.2.0...v0.2.1) - 2019-08-20
+
+### 优化
+
+- 新增歌曲URL存储，当URL无效时才重新获取，以减少接口不稳定的影响
+
+### 修复
+
+- 修复歌曲加载无法加载时自动切换混乱的Bug
+- 修复移除列表最后一首歌曲时播放器不停止播放的问题
+
 ## [0.2.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.6...v0.2.0) - 2019-08-20
 
 ### 新增

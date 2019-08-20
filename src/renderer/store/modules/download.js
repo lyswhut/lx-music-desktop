@@ -70,8 +70,9 @@ const addTask = (list, type, store) => {
   })
 }
 
-const refreshUrl = downloadInfo => {
-  return music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
+const getUrl = (downloadInfo, isRefresh) => {
+  const url = downloadInfo.musicInfo.typeUrl[downloadInfo.type]
+  return url && !isRefresh ? Promise.resolve({ url }) : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
 }
 
 // actions
@@ -137,15 +138,15 @@ const actions = {
         console.log('on complate')
       },
       onError(err) {
-        console.log(err.message)
+        console.log(err.code, err.message)
         commit('onError', downloadInfo)
         // console.log(tryNum[downloadInfo.key])
         if (++tryNum[downloadInfo.key] > 5) return
         let code
         if (err.message.includes('Response status was')) {
           code = err.message.replace(/Response status was (\d+)$/, '$1')
-        } if (err.code === 'ETIMEDOUT') {
-          code = 'ETIMEDOUT'
+        } else if (err.code === 'ETIMEDOUT' || err.code == 'ENOTFOUND') {
+          code = err.code
         } else {
           console.log('Download failed, Attempting Retry')
           dls[downloadInfo.key].resume()
@@ -157,8 +158,9 @@ const actions = {
           case '403':
           case '410':
           case 'ETIMEDOUT':
+          case 'ENOTFOUND':
             commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
-            refreshUrl(downloadInfo).then(result => {
+            getUrl(downloadInfo, true).then(result => {
               commit('updateUrl', { downloadInfo, url: result.url })
               commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
               dls[downloadInfo.key].url = dls[downloadInfo.key].requestURL = result.url
@@ -192,7 +194,7 @@ const actions = {
       },
     }
     commit('setStatusText', { downloadInfo, text: '获取URL中...' })
-    let p = options.url ? Promise.resolve() : refreshUrl(downloadInfo).then(result => {
+    let p = options.url ? Promise.resolve() : getUrl(downloadInfo).then(result => {
       commit('updateUrl', { downloadInfo, url: result.url })
       if (!result.url) return Promise.reject(new Error('获取URL失败'))
       options.url = result.url
