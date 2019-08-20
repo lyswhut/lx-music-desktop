@@ -10,12 +10,14 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### 新增
 
+- 新增**百度音乐**排行榜及其音乐直接试听与下载
 - 新增网易云排行榜音乐直接试听与下载（目前仅支持128k音质）
 - 新增酷狗排行榜音乐直接试听与下载（目前仅支持128k音质）
 
 ### 修复
 
 - 修复更新弹窗历史版本描述多余的换行问题
+- 修复歌曲无法播放的情况下歌词仍会播放的问题
 
 ## [0.1.6](https://github.com/lyswhut/lx-music-desktop/compare/v0.1.5...v0.1.6) - 2019-08-19
 
