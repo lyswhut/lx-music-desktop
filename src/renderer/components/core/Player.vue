@@ -61,12 +61,14 @@ export default {
         name: '^',
         singer: '^',
       },
+      targetSong: null,
       pregessWidth: 0,
       lyric: {
         lrc: null,
         text: '',
         line: 0,
       },
+      retryNum: 0,
     }
   },
   computed: {
@@ -137,6 +139,7 @@ export default {
       'fixPlayIndex',
       'resetChangePlay',
     ]),
+    ...mapMutations('list', ['updateMusicInfo']),
     init() {
       this.audio = document.createElement('audio')
       this.audio.controls = false
@@ -161,10 +164,16 @@ export default {
         this.handleNext()
       })
       this.audio.addEventListener('error', () => {
+        // console.log('code', this.audio.error.code)
         if (!this.musicInfo.songmid) return
         console.log('出错')
+        if (this.audio.error.code == 4 && this.retryNum < 5) {
+          // console.log(this.retryNum)
+          this.retryNum++
+          this.setUrl(this.list[this.playIndex], true)
+          return
+        }
         this.stopPlay()
-        this.status = '加载出错'
         this.sendProgressEvent(this.progress, 'error')
 
         // let urls = this.player_info.targetSong.urls
@@ -182,10 +191,14 @@ export default {
         // } else {
         //   this.handleNext()
         // }
-        this.handleNext()
+        this.status = '音频加载出错，2 两秒后切换下一首'
+        setTimeout(() => {
+          this.handleNext()
+        }, 2000)
       })
       this.audio.addEventListener('loadeddata', () => {
         this.maxPlayTime = this.audio.duration
+        if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         this.status = '音乐加载中...'
       })
       // this.audio.addEventListener('loadstart', () => {
@@ -228,7 +241,8 @@ export default {
     },
     play() {
       console.log('play', this.playIndex)
-      let targetSong = this.list[this.playIndex]
+      let targetSong = this.targetSong = this.list[this.playIndex]
+      this.retryNum = 0
 
       if (this.listId == 'download') {
         if (!checkPath(targetSong.filePath) || !targetSong.isComplate || /\.ape$/.test(targetSong.filePath)) {
@@ -321,16 +335,21 @@ export default {
       this.musicInfo.img = null
     },
     getPlayType(highQuality, songInfo) {
+      switch (songInfo.source) {
+        case 'wy':
+        case 'kg':
+          return '128k'
+      }
       let type = songInfo._types['192k'] ? '192k' : '128k'
       if (highQuality && songInfo._types['320k']) type = '320k'
       return type
     },
-    setUrl(targetSong) {
+    setUrl(targetSong, isRefresh) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = '歌曲链接获取中...'
 
-      let urlP = this.musicInfo.url
+      let urlP = this.musicInfo.url && !isRefresh
         ? Promise.resolve()
         : this.getUrl({ musicInfo: targetSong, type }).then(() => {
           this.musicInfo.url = targetSong.typeUrl[type]
@@ -366,7 +385,7 @@ export default {
       lrcP
         .then(() => {
           this.lyric.lrc.setLyric(this.musicInfo.lrc)
-          if (this.isPlay) this.lyric.lrc.play(this.audio.currentTime * 1000)
+          if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) this.lyric.lrc.play(this.audio.currentTime * 1000)
         })
         .catch(err => {
           this.status = err.message

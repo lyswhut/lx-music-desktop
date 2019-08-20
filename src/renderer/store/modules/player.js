@@ -35,7 +35,6 @@ const actions = {
     if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
     picRequest = music[musicInfo.source].getPic(musicInfo)
     return picRequest.promise.then(url => {
-      console.log(url)
       commit('getPic', { musicInfo, url })
     }).finally(() => {
       picRequest = null

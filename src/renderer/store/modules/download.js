@@ -191,6 +191,7 @@ const actions = {
         commit('resumeTask', downloadInfo)
       },
     }
+    commit('setStatusText', { downloadInfo, text: '获取URL中...' })
     let p = options.url ? Promise.resolve() : refreshUrl(downloadInfo).then(result => {
       commit('updateUrl', { downloadInfo, url: result.url })
       if (!result.url) return Promise.reject(new Error('获取URL失败'))

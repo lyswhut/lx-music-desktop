@@ -7,7 +7,6 @@ const wy = {
     return api_source('wy').getMusicUrl(songInfo, type)
   },
   getLyric(songInfo) {
-    console.log(api_source('wy'))
     return api_source('wy').getLyric(songInfo)
   },
   getPic(songInfo) {

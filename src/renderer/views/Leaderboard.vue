@@ -34,7 +34,7 @@
                   //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                   //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                   //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-                td(style="width: 10%;") {{item.interval}}
+                td(style="width: 10%;") {{item.interval || '--/--'}}
           div(:class="$style.pagination")
             material-pagination(:count="info.total" :limit="info.limit" :page="info.page" @btn-click="handleTogglePage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -170,7 +170,7 @@ export default {
       this.$router.push({
         path: 'search',
         query: {
-          text: `${info.name} - ${info.singer}`,
+          text: `${info.name} ${info.singer}`,
         },
       })
     },

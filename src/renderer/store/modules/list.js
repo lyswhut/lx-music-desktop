@@ -39,6 +39,9 @@ const mutations = {
   defaultListRemove(state, index) {
     state.defaultList.list.splice(index, 1)
   },
+  updateMusicInfo(state, { index, data }) {
+    Object.assign(state.defaultList.list[index], data)
+  },
   defaultListRemoveMultiple(state, list) {
     list.forEach(musicInfo => {
       let index = state.defaultList.list.indexOf(musicInfo)

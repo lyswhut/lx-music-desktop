@@ -35,7 +35,7 @@
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;") {{item.interval}}
+              td(style="width: 10%;") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
