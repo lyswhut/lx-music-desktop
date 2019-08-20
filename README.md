@@ -1,4 +1,4 @@
-<p align="center"><a href="https://github.com/lyswhut/lx-music-desktop" target="_blank" rel="noopener noreferrer"><img width="100" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/icon.png" alt="lx-music logo"></a></p>
+<p align="center"><img width="200" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/icon.png" alt="lx-music logo"></p>
 
 <p align="center">
   <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/lyswhut/lx-music-desktop" alt="Release version"></a>
@@ -56,6 +56,10 @@ npm run pack:dir
 npm run pack
 
 ```
+
+### UI界面
+
+<p><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></p>
 
 ### License
 
