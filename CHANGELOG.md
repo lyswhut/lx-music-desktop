@@ -6,6 +6,13 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.2.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.2.1...v0.2.2) - 2019-08-21
+
+### 修复
+
+- 修复下载过程中出错重试5次都失败后不会自动开始下一个任务的Bug
+- 修复播放到一半URL过期时不会刷新URL直接播放下一首的问题
+
 ## [0.2.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.2.0...v0.2.1) - 2019-08-20
 
 ### 优化

@@ -70,6 +70,7 @@ export default {
         line: 0,
       },
       delayNextTimeout: null,
+      audioErrorTime: 0,
       // retryNum: 0,
     }
   },
@@ -174,8 +175,9 @@ export default {
         // console.log('code', this.audio.error.code)
         if (!this.musicInfo.songmid) return
         console.log('出错')
-        if (this.audio.error.code == 4 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
+        if (this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
           // console.log(this.retryNum)
+          this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
           return
@@ -203,6 +205,10 @@ export default {
       })
       this.audio.addEventListener('loadeddata', () => {
         this.maxPlayTime = this.audio.duration
+        if (this.audioErrorTime) {
+          this.audio.currentTime = this.audioErrorTime
+          this.audioErrorTime = 0
+        }
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         this.status = '音乐加载中...'
       })
@@ -249,6 +255,7 @@ export default {
       this.checkDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
       this.retryNum = 0
+      this.audioErrorTime = 0
 
       if (this.listId == 'download') {
         if (!checkPath(targetSong.filePath) || !targetSong.isComplate || /\.ape$/.test(targetSong.filePath)) {
@@ -369,12 +376,13 @@ export default {
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = '歌曲链接获取中...'
 
-      this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
+      return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
         this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
         if (err.message == requestMsg.cancelRequest) return
         this.status = err.message
         this.addDelayNextTimeout()
+        return Promise.reject(err)
       })
     },
     setImg(targetSong) {

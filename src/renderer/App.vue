@@ -111,7 +111,7 @@ export default {
     },
     initPlayList() {
       let defaultList = this.electronStore.get('list.defaultList')
-      console.log(defaultList)
+      // console.log(defaultList)
       if (defaultList) {
         // defaultList.list.forEach(m => {
         //   m.typeUrl = {}
