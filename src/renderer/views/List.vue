@@ -11,7 +11,7 @@
                   :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
               th.nobreak(style="width: 25%;") 歌曲名
               th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 20%;" v-if="setting.list.isShowAlbumName") 专辑
+              th.nobreak(style="width: 20%;") 专辑
               th.nobreak(style="width: 20%;") 操作
               th.nobreak(style="width: 10%;") 时长
       div.scroll(:class="$style.tbody")
@@ -28,7 +28,7 @@
                 //- span.badge.badge-info(v-if="item._types.ape") APE
                 //- span.badge.badge-success(v-if="item._types.flac") FLAC
               td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 20%;" v-if="setting.list.isShowAlbumName") {{item.albumName}}
+              td.break(style="width: 20%;") {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载

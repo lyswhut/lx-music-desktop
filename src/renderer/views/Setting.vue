@@ -45,8 +45,8 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
-    dt 列表设置
-    dd(title='播放列表是否显示专辑栏')
+    //- dt 列表设置
+    //- dd(title='播放列表是否显示专辑栏')
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
