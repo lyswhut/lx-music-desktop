@@ -137,7 +137,6 @@ export default {
       this.clickIndex = -1
     },
     testPlay(index) {
-      if (this.isAPITemp && this.list[index].source != 'kw') return
       this.setList({ list: this.list, listId: 'test', index })
     },
     handleRemove(index) {
@@ -146,15 +145,16 @@ export default {
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
-          this.musicInfo = this.list[info.index]
+          const minfo = this.list[info.index]
+          if (this.isAPITemp && minfo.source != 'kw') return
+          this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
           })
           break
         case 'play':
+          if (this.isAPITemp && this.list[info.index].source != 'kw') return
           this.testPlay(info.index)
-          break
-        case 'add':
           break
         case 'remove':
           this.handleRemove(info.index)
