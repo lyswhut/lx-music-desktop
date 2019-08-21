@@ -53,7 +53,7 @@ export default {
     },
     defaultList: {
       handler(n) {
-        console.log(n)
+        // console.log(n)
         this.electronStore.set('list.defaultList', n)
       },
       deep: true,

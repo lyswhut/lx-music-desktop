@@ -296,7 +296,7 @@ export default {
       }
       if (!list.length) return this.setPlayIndex(-1)
       let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])
-      console.log(playIndex)
+      // console.log(playIndex)
       let index
       switch (this.setting.player.togglePlayMethod) {
         case 'listLoop':

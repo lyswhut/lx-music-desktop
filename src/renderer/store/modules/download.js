@@ -138,10 +138,13 @@ const actions = {
         console.log('on complate')
       },
       onError(err) {
-        console.log(err.code, err.message)
+        // console.log(err.code, err.message)
         commit('onError', downloadInfo)
         // console.log(tryNum[downloadInfo.key])
-        if (++tryNum[downloadInfo.key] > 5) return
+        if (++tryNum[downloadInfo.key] > 5) {
+          _this.dispatch('download/startTask')
+          return
+        }
         let code
         if (err.message.includes('Response status was')) {
           code = err.message.replace(/Response status was (\d+)$/, '$1')
@@ -170,9 +173,7 @@ const actions = {
               console.log(err)
               _this.dispatch('download/startTask')
             })
-            return
         }
-        _this.dispatch('download/startTask')
       },
       // onStateChanged(state) {
       //   console.log(state)
