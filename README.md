@@ -37,15 +37,20 @@
 - Electron 6.x
 - Vue 2.x
 
-其他说明：TODO
-
-软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)
-
+软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)
 
-感谢 <https://github.com/messoer> 提供的部分音乐API！
+其他说明：TODO
 
-### 使用方法
+#### 关于软件更新
+
+软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
+若下载未完成时软件被关闭，下次启动软件会再次自动下载。<br>
+目前暂未添加跳过更新某个版本的功能。<br>
+
+### 源码使用方法
+
+环境要求：Node.js 12.x
 
 ```bash
 # 开发模式
@@ -63,6 +68,10 @@ npm run pack
 
 <p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
 
-### License
+### 致谢
 
-Apache License 2.0
+感谢 [@messoer](https://github.com/messoer) 提供的部分音乐API！
+
+### 许可证
+
+[Apache License 2.0](https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE)

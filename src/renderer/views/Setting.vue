@@ -86,6 +86,10 @@ div.scroll(:class="$style.setting")
           strong @messoer
           | ！
       p.small 若有问题可 mail to：lyswhut@qq.com 或到 github 提交 issue
+      p.small
+        | 若觉得好用的话去GitHub点个
+        strong star
+        | 支持作者吧~
       p
         small By：
         | 落雪无痕
