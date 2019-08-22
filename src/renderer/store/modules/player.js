@@ -56,7 +56,7 @@ const actions = {
 // mitations
 const mutations = {
   setUrl(state, datas) {
-    datas.musicInfo.typeUrl[datas.type] = datas.url
+    datas.musicInfo.typeUrl = Object.assign({}, datas.musicInfo.typeUrl, { [datas.type]: datas.url })
   },
   getPic(state, datas) {
     datas.musicInfo.img = datas.url

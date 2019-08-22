@@ -3,6 +3,7 @@ const { autoUpdater } = require('electron-updater')
 const { mainOn } = require('../../common/icp')
 
 autoUpdater.logger = log
+// autoUpdater.autoDownload = false
 autoUpdater.logger.transports.file.level = 'info'
 log.info('App starting...')
 
@@ -62,12 +63,14 @@ module.exports = win => {
   })
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.')
+    // win.webContents.send('update-available')
   })
   autoUpdater.on('update-not-available', (ev, info) => {
     sendStatusToWindow('Update not available.')
   })
   autoUpdater.on('error', (ev, err) => {
     sendStatusToWindow('Error in auto-updater.')
+    // win.webContents.send('update-error')
   })
   autoUpdater.on('download-progress', (ev, progressObj) => {
     sendStatusToWindow('Download progress...')

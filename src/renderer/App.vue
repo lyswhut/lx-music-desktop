@@ -87,7 +87,7 @@ export default {
         this.getVersionInfo().then(body => {
           this.setNewVersion(body)
           this.$nextTick(() => {
-            this.setVersionVisible(true)
+            this.setVersionVisible({ isShow: true })
           })
         })
       })

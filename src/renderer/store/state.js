@@ -49,6 +49,7 @@ export default {
     version,
     newVersion: null,
     showModal: false,
+    isError: false,
   },
   userInfo: null,
   setting,

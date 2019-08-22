@@ -209,3 +209,10 @@ export const openUrl = url => {
   shell.openExternal(url)
 }
 
+/**
+ * 设置标题
+ */
+let dom_title = document.getElementsByTagName('title')[0]
+export const setTitle = title => {
+  dom_title.innerText = title || '洛雪音乐助手'
+}

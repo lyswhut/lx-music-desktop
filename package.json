@@ -1,12 +1,31 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
+  "productName": "lx-music-desktop",
   "scripts": {
+    "pack": "node build-config/pack.js && npm run pack:win:setup",
+    "pack:win": "npm run pack:win:setup && npm run pack:win:7z",
+    "pack:win:setup": "cross-env TARGET=Setup ARCH=x64_x86 electron-builder -w=nsis",
+    "pack:win:portable": "npm run pack:win:portable:x64_x86 && npm run pack:win:portable:x64 && npm run pack:win:portable:x86",
+    "pack:win:portable:x64_x86": "cross-env TARGET=便携版 ARCH=x64_x86 electron-builder -w=portable --x64 --ia32",
+    "pack:win:portable:x64": "cross-env TARGET=便携版 ARCH=x64 electron-builder -w=portable --x64",
+    "pack:win:portable:x86": "cross-env TARGET=便携版 ARCH=x86 electron-builder -w=portable --ia32",
+    "pack:win:7z": "npm run pack:win:7z:x64 && npm run pack:win:7z:x86",
+    "pack:win:7z:x64": "cross-env TARGET=绿色版 ARCH=x64 electron-builder -w=7z --x64",
+    "pack:win:7z:x86": "cross-env TARGET=绿色版 ARCH=x86 electron-builder -w=7z --ia32",
     "publish": "node publish",
-    "pub:gh": "node build-config/pack.js && electron-builder --win -p always",
-    "pack": "node build-config/pack.js && electron-builder -w",
+    "publish:gh": "node build-config/pack.js && npm run publish:win",
+    "publish:win": "npm run publish:win:setup && npm run publish:win:7z",
+    "publish:win:setup": "cross-env TARGET=Setup ARCH=x64_x86 electron-builder -w=nsis --x64 --ia32 -p always",
+    "publish:win:portable": "npm run publish:win:portable:x64_x86 && npm run publish:win:portable:x64 && npm run publish:win:portable:x86",
+    "publish:win:portable:x64_x86": "cross-env TARGET=portable ARCH=x64_x86 electron-builder -w=portable --x64 --ia32 -p onTagOrDraft",
+    "publish:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p onTagOrDraft",
+    "publish:win:portable:x86": "cross-env TARGET=portable ARCH=x86 electron-builder -w=portable --ia32 -p onTagOrDraft",
+    "publish:win:7z": "npm run publish:win:7z:x64 && npm run publish:win:7z:x86",
+    "publish:win:7z:x64": "cross-env TARGET=green ARCH=x64 electron-builder -w=7z --x64 -p onTagOrDraft",
+    "publish:win:7z:x86": "cross-env TARGET=green ARCH=x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
     "pack:linux": "node build-config/pack.js && electron-builder -l",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "dev": "node build-config/runner-dev.js",
@@ -37,15 +56,7 @@
     "win": {
       "icon": "src/static/icons/lunch.ico",
       "legalTrademarks": "lyswhut",
-      "target": [
-        {
-          "arch": [
-            "ia32",
-            "x64"
-          ],
-          "target": "nsis"
-        }
-      ]
+      "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
     "linux": {
       "target": [
@@ -76,7 +87,8 @@
       "language": "2052",
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": true,
-      "license": "./license.rtf"
+      "license": "./license.rtf",
+      "shortcutName": "lx-music"
     },
     "publish": [
       {
@@ -90,8 +102,15 @@
     "type": "git",
     "url": "git+https://github.com/lyswhut/lx-music-desktop.git"
   },
-  "keywords": [],
-  "author": "lyswhut",
+  "keywords": [
+    "music-player",
+    "electron-app",
+    "vuejs2"
+  ],
+  "author": {
+    "name": "lyswhut",
+    "email": "lyswuhut@qq.com"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/lyswhut/lx-music-desktop/issues"

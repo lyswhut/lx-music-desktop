@@ -19,7 +19,7 @@ div.scroll(:class="$style.setting")
       h3 音乐来源
       div
         material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
-          need v-model="current_setting.apiSource" :value="item.id" :label="item.label" :key="item.id")
+          need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label" :key="item.id")
 
     dt 播放设置
     dd(title="都不选时播放完当前歌曲就停止播放")
@@ -87,9 +87,9 @@ div.scroll(:class="$style.setting")
           | ！
       p.small 若有问题可 mail to：lyswhut@qq.com 或到 github 提交 issue
       p.small
-        | 若觉得好用的话去GitHub点个
+        | 若觉得好用的话可以去GitHub点个
         strong star
-        | 支持作者吧~
+        | 支持作者哦~~🍻
       p
         small By：
         | 落雪无痕
@@ -146,11 +146,14 @@ export default {
       apiSources: [
         {
           id: 'messoer',
-          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）<br><span style="line-height: 1.5;"><strong>注意：</strong>本接口10秒内请求数超过100次会封10小时的IP</span>',
+          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
+          disabled: false,
         },
         {
           id: 'temp',
-          label: '临时接口（软件的某些功能将不可用，建议在messoer不可用时再切换到本选项）',
+          // label: '临时接口（软件的某些功能将不可用，建议在messoer不可用时再切换到本选项）',
+          label: '临时接口（因服务器被攻击，本接口已关闭）',
+          disabled: true,
         },
       ],
       musicNames: [

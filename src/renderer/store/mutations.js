@@ -19,7 +19,7 @@ export default {
     // val.desc = val.desc.replace(/\n/g, '<br>')
     state.version.newVersion = val
   },
-  setVersionVisible(state, val) {
-    state.version.showModal = val
+  setVersionVisible(state, { isShow }) {
+    state.version.showModal = isShow
   },
 }

@@ -41,7 +41,7 @@ div(:class="$style.player")
 <script>
 import Lyric from 'lrc-file-parser'
 import { rendererSend } from '../../../common/icp'
-import { formatPlayTime2, getRandom, checkPath } from '../../utils'
+import { formatPlayTime2, getRandom, checkPath, setTitle } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 
@@ -334,14 +334,14 @@ export default {
     startPlay() {
       this.isPlay = true
       if (this.musicInfo.lrc) this.lyric.lrc.play(this.audio.currentTime * 1000)
-      this.setAppName()
+      this.setAppTitle()
       this.sendProgressEvent(this.progress, 'normal')
     },
     stopPlay() {
       this.isPlay = false
       this.lyric.lrc.pause()
       this.sendProgressEvent(this.progress, 'paused')
-      this.clearAppName()
+      this.clearAppTitle()
     },
     setProgess(e) {
       this.audio.currentTime =
@@ -432,13 +432,11 @@ export default {
         mode: mode || 'normal',
       })
     },
-    setAppName() {
-    //   rendererSend('appName', {
-    //     name: `${this.musicInfo.name} - ${this.musicInfo.singer}`,
-    //   })
+    setAppTitle() {
+      setTitle(`${this.musicInfo.name} - ${this.musicInfo.singer}`)
     },
-    clearAppName() {
-      // rendererSend('appName')
+    clearAppTitle() {
+      setTitle()
     },
   },
 }

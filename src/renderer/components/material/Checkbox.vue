@@ -1,6 +1,6 @@
 <template lang="pug">
 div(:class="$style.checkbox")
-  input(:type="need ? 'radio' : 'checkbox'" :id="id" :value="value" :name="name" @change="change" v-model="bool")
+  input(:type="need ? 'radio' : 'checkbox'" :id="id" :disabled="disabled" :value="value" :name="name" @change="change" v-model="bool")
   label(:for="id" :class="$style.content")
     div(v-if="indeterminate")
       svg(v-show="indeterminate" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
@@ -34,6 +34,10 @@ export default {
       default: false,
     },
     label: {},
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     indeterminate: {
       type: Boolean,
       default: false,
@@ -111,6 +115,11 @@ export default {
 
   > input {
     display: none;
+    &[disabled] {
+      + .content {
+        opacity: .5;
+      }
+    }
     &:checked {
       + .content {
         > div {

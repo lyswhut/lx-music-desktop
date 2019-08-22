@@ -38,15 +38,17 @@
 - Vue 2.x
 
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
-软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)
-
-其他说明：TODO
+软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
+或者到网盘下载：<br>
+`https://www.lanzous.com/b906260/`<br>
+`密码:glqw`
 
 #### 关于软件更新
 
 软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
 若下载未完成时软件被关闭，下次启动软件会再次自动下载。<br>
 目前暂未添加跳过更新某个版本的功能。<br>
+**注意：**绿色版的软件更新功能不可用！
 
 ### 源码使用方法
 

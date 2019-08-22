@@ -7,11 +7,6 @@ module.exports = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../../dist/electron'),
   },
-  externals: [
-    // suppress electron-debug warning
-    // see https://github.com/SimulatedGREG/electron-vue/issues/498
-    { 'electron-debug': 'electron-debug' },
-  ],
   resolve: {
     alias: {
       common: path.join(__dirname, '../../src/common'),
