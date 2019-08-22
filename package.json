@@ -5,9 +5,9 @@
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
   "scripts": {
-    "pack": "node build-config/pack.js && npm run pack:win:setup",
+    "pack": "node build-config/pack.js && npm run pack:win",
     "pack:win": "npm run pack:win:setup && npm run pack:win:7z",
-    "pack:win:setup": "cross-env TARGET=Setup ARCH=x64_x86 electron-builder -w=nsis",
+    "pack:win:setup": "cross-env TARGET=Setup ARCH=x64_x86 electron-builder -w=nsis --x64 --ia32",
     "pack:win:portable": "npm run pack:win:portable:x64_x86 && npm run pack:win:portable:x64 && npm run pack:win:portable:x86",
     "pack:win:portable:x64_x86": "cross-env TARGET=便携版 ARCH=x64_x86 electron-builder -w=portable --x64 --ia32",
     "pack:win:portable:x64": "cross-env TARGET=便携版 ARCH=x64 electron-builder -w=portable --x64",
