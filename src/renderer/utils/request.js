@@ -84,7 +84,7 @@ export const httpFatch = (url, options = { method: 'get' }) => {
       return promise
     }
     if (err.message === 'socket hang up') {
-      window.globalObj.apiSource = 'temp'
+      // window.globalObj.apiSource = 'temp'
       return Promise.reject(new Error(requestMsg.unachievable))
     }
     if (err.code === 'ENOTFOUND') return Promise.reject(new Error(requestMsg.notConnectNetwork))

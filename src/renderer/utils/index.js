@@ -198,6 +198,7 @@ export const updateSetting = setting => {
     objectDeepMerge(defaultSetting, overwriteSetting)
     setting = defaultSetting
   }
+  setting.apiSource = 'messoer' // 强制设置回 messoer 接口源
   return setting
 }
 
