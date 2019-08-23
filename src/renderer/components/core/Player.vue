@@ -427,7 +427,7 @@ export default {
     },
     sendProgressEvent(status, mode) {
       // console.log(status)
-      rendererSend('progress', {
+      this.setting.player.isShowTaskProgess && rendererSend('progress', {
         status: status < 0.01 ? 0.01 : status,
         mode: mode || 'normal',
       })

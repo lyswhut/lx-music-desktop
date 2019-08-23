@@ -1,10 +1,11 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 
 require('./events')
 const progressBar = require('./events/progressBar')
 const trafficLight = require('./events/trafficLight')
 const autoUpdate = require('./utils/autoUpdate')
+const { isLinux, isMac } = require('../common/utils')
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -33,8 +34,8 @@ function createWindow() {
     useContentSize: true,
     width: 920,
     frame: false,
-    transparent: true,
-    icon: path.join(global.__static, 'icons/lunch.ico'),
+    transparent: !isLinux,
+    // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
     maximizable: false,
     fullscreenable: false,
@@ -56,6 +57,24 @@ function createWindow() {
   trafficLight(mainWindow)
   progressBar(mainWindow)
   if (!isDev) autoUpdate(mainWindow)
+}
+
+if (isMac) {
+  const template = [
+    {
+      label: app.getName(),
+      submenu: [{ label: '关于洛雪音乐', role: 'about' }, { type: 'separator' }, { label: '隐藏', role: 'hide' }, { label: '显示其他', role: 'hideothers' }, { label: '显示全部', role: 'unhide' }, { type: 'separator' }, { label: '退出', click: () => app.quit() }],
+    },
+    {
+      label: '窗口',
+      role: 'window',
+      submenu: [{ label: '最小化', role: 'minimize' }, { label: '关闭', role: 'close' }],
+    },
+  ]
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+} else {
+  Menu.setApplicationMenu(null)
 }
 
 app.once('ready', createWindow)

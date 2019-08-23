@@ -1,5 +1,5 @@
 <template lang="pug">
-#container(v-if="isProd" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
+#container(v-if="isProd && !isLinux" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
   core-aside#left
   #right
     core-toolbar#toolbar
@@ -20,14 +20,20 @@
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn } from '../common/icp'
+import { isLinux } from '../common/utils'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
-const win = require('electron').remote.getCurrentWindow()
-const body = document.body
+let win
+let body
+if (!isLinux) {
+  win = require('electron').remote.getCurrentWindow()
+  body = document.body
+}
 
 export default {
   data() {
     return {
       isProd: process.env.NODE_ENV === 'production',
+      isLinux,
       globalObj: {
         apiSource: 'messoer',
       },
@@ -42,6 +48,7 @@ export default {
     }),
   },
   mounted() {
+    document.body.classList.add(this.isLinux ? 'noTransparent' : 'transparent')
     this.init()
   },
   watch: {
@@ -79,7 +86,7 @@ export default {
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
     init() {
-      if (this.isProd) {
+      if (this.isProd && !isLinux) {
         body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
@@ -97,10 +104,12 @@ export default {
       window.globalObj = this.globalObj
     },
     enableIgnoreMouseEvents() {
+      if (isLinux) return
       win.setIgnoreMouseEvents(false)
       // console.log('content enable')
     },
     dieableIgnoreMouseEvents() {
+      if (isLinux) return
       // console.log('content disable')
       win.setIgnoreMouseEvents(true, { forward: true })
     },
@@ -146,22 +155,30 @@ export default {
 @import './assets/styles/layout.less';
 
 body {
-  // background-color: #fff;
-  padding: @shadow-app;
   user-select: none;
   height: 100vh;
   box-sizing: border-box;
+}
+
+.transparent {
+  padding: @shadow-app;
+  #container {
+    box-shadow: 0 0 @shadow-app rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    background-color: transparent;
+  }
+}
+.noTransparent {
+  background-color: #fff;
 }
 
 #container {
   position: relative;
   display: flex;
   height: 100%;
-  box-shadow: 0 0 @shadow-app rgba(0, 0, 0, 0.5);
-  // background-color: #fff;
-  border-radius: 4px;
   overflow: hidden;
 }
+
 #left {
   flex: none;
   width: @width-app-left;

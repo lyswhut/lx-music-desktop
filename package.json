@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -26,6 +26,15 @@
     "publish:win:7z": "npm run publish:win:7z:x64 && npm run publish:win:7z:x86",
     "publish:win:7z:x64": "cross-env TARGET=green ARCH=x64 electron-builder -w=7z --x64 -p onTagOrDraft",
     "publish:win:7z:x86": "cross-env TARGET=green ARCH=x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
+    "publish:gh:mac": "node build-config/pack.js && npm run publish:mac",
+    "publish:mac": "npm run publish:mac:dmg",
+    "publish:mac:dmg": "electron-builder -m=dmg -p onTagOrDraft",
+    "publish:gh:linux": "node build-config/pack.js && npm run publish:linux",
+    "publish:linux": "npm run publish:linux:appImage && npm run publish:linux:deb",
+    "publish:linux:appImage": "cross-env ARCH=x64 electron-builder -l=AppImage -p onTagOrDraft",
+    "publish:linux:deb": "npm run publish:linux:deb:x64 && npm run publish:linux:deb:x86",
+    "publish:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p onTagOrDraft",
+    "publish:linux:deb:x86": "cross-env ARCH=x86 electron-builder -l=deb --ia32 -p onTagOrDraft",
     "pack:linux": "node build-config/pack.js && electron-builder -l",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "dev": "node build-config/runner-dev.js",
@@ -53,42 +62,50 @@
     "files": [
       "dist/electron/**/*"
     ],
+    "extraResources": [
+      "./licenses"
+    ],
     "win": {
-      "icon": "src/static/icons/lunch.ico",
+      "icon": "./resources/icons/256x256.ico",
       "legalTrademarks": "lyswhut",
       "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
+    "mac": {
+      "icon": "./resources/icons/512x512.png",
+      "category": "public.app-category.music"
+    },
     "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "arch": [
-            "ia32",
-            "x64"
-          ],
-          "target": "deb"
-        },
-        {
-          "arch": [
-            "x64"
-          ],
-          "target": "snap"
-        }
-      ],
-      "maintainer": "lyswhut <lyswuhut@qq.com>"
+      "maintainer": "lyswhut <lyswuhut@qq.com>",
+      "artifactName": "${productName} v${version} ${env.ARCH}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "language": "2052",
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": true,
-      "license": "./license.rtf",
+      "license": "./licenses/license.rtf",
       "shortcutName": "lx-music"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150,
+          "name": "lx-music"
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications",
+          "name": "lx-music"
+        }
+      ],
+      "title": "洛雪音乐助手 v${version}"
+    },
+    "appImage": {
+      "license": "./licenses/license_zh.txt",
+      "category": "Audio"
     },
     "publish": [
       {

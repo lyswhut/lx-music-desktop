@@ -31,6 +31,10 @@ div.scroll(:class="$style.setting")
       h3 优先播放高品质音乐
       div
         material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" label="是否启用")
+    dd(title='在任务栏上显示当前歌曲播放进度')
+      h3 是否启用任务栏播放进度条
+      div
+        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" label="是否启用")
     dt 下载设置
     dd(title='下载歌曲保存的路径')
       h3 下载路径
@@ -85,9 +89,9 @@ div.scroll(:class="$style.setting")
           | 本软件的部分接口使用自 https://github.com/messoer ，非常感谢
           strong @messoer
           | ！
-      p.small 若有问题可 mail to：lyswhut@qq.com 或到 github 提交 issue
+      p.small 若有问题可 mail to：lyswhut@qq.com 或到 GitHub 提交 issue
       p.small
-        | 若觉得好用的话可以去GitHub点个
+        | 若觉得好用的话可以去 GitHub 点个
         strong star
         | 支持作者哦~~🍻
       p
@@ -99,6 +103,8 @@ div.scroll(:class="$style.setting")
 import { mapGetters, mapMutations } from 'vuex'
 import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl } from '../utils'
 import fs from 'fs'
+
+
 export default {
   name: 'Setting',
   computed: {
@@ -112,6 +118,7 @@ export default {
         player: {
           togglePlayMethod: 'random',
           highQuality: false,
+          isShowTaskProgess: true,
         },
         list: {
           isShowAlbumName: true,
