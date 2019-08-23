@@ -31,18 +31,22 @@
 
 ### 说明
 
-一个基于 Electron + Vue 开发的 Windows 版音乐软件。
+一个基于 Electron + Vue 开发的音乐软件。
 
 所用技术栈：
 
 - Electron 6.x
 - Vue 2.x
 
+已支持的平台：
+
+- Windows 7 及以上
+- mac OS
+- Linux
+
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载：<br>
-`https://www.lanzous.com/b906260/`<br>
-`密码:glqw`
+或者到网盘下载：`https://www.lanzous.com/b906260/` 密码:`glqw`
 
 #### 关于软件更新
 
