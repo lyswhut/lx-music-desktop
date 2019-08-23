@@ -102,6 +102,7 @@ div.scroll(:class="$style.setting")
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl } from '../utils'
+import { rendererSend } from '../../common/icp'
 import fs from 'fs'
 
 
@@ -124,7 +125,7 @@ export default {
           isShowAlbumName: true,
         },
         download: {
-          savePath: 'C:\\',
+          savePath: '',
           fileName: '歌名 - 歌手',
         },
         themeId: 0,
@@ -186,6 +187,15 @@ export default {
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
+    },
+    'current_setting.player.isShowTaskProgess'(n) {
+      if (n) return
+      this.$nextTick(() => {
+        rendererSend('progress', {
+          status: -1,
+          mode: 'normal',
+        })
+      })
     },
   },
   mounted() {

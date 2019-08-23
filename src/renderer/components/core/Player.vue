@@ -71,7 +71,7 @@ export default {
       },
       delayNextTimeout: null,
       audioErrorTime: 0,
-      // retryNum: 0,
+      retryNum: 0,
     }
   },
   computed: {
