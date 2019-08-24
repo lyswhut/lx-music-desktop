@@ -41,19 +41,19 @@
 已支持的平台：
 
 - Windows 7 及以上
-- mac OS
+- Mac OS
 - Linux
 
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载：`https://www.lanzous.com/b906260/` 密码:`glqw`
+或者到网盘下载：`https://www.lanzous.com/b906260/` 密码：`glqw`
 
 #### 关于软件更新
 
 软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
 若下载未完成时软件被关闭，下次启动软件会再次自动下载。<br>
 目前暂未添加跳过更新某个版本的功能。<br>
-注意：**绿色版**的软件更新功能不可用！
+注意：**绿色版**的软件更新功能**不可用**，为了能及时地获取更新，建议使用安装版！！
 
 ### 源码使用方法
 
@@ -66,7 +66,7 @@ npm run dev
 # 构建免安装版
 npm run pack:dir
 
-# 构建安装包
+# 构建安装包（windows版）
 npm run pack
 
 ```
