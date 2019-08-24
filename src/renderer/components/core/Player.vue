@@ -111,8 +111,10 @@ export default {
     },
   },
   mounted() {
-    this.setProgessWidth()
     this.init()
+    this.$nextTick(() => {
+      this.setProgessWidth()
+    })
   },
   watch: {
     changePlay(n) {
@@ -168,6 +170,7 @@ export default {
       this.volume = this.audio.volume = this.setting.player.volume
       this.audio.controls = false
       this.audio.autoplay = true
+      this.audio.preload = 'auto'
       this.audio.loop = this.setting.player.togglePlayMethod === 'singleLoop'
 
       this.audio.addEventListener('playing', () => {
@@ -360,6 +363,7 @@ export default {
       this.clearAppTitle()
     },
     setProgess(e) {
+      if (!this.audio.src) return
       this.audio.currentTime =
         (e.offsetX / this.pregessWidth) * this.maxPlayTime
       if (!this.isPlay) this.audio.play()
