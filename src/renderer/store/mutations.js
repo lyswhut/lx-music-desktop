@@ -19,7 +19,8 @@ export default {
     // val.desc = val.desc.replace(/\n/g, '<br>')
     state.version.newVersion = val
   },
-  setVersionVisible(state, { isShow }) {
-    state.version.showModal = isShow
+  setVersionModalVisible(state, { isShow, isError }) {
+    if (isShow !== undefined) state.version.showModal = isShow
+    if (isError !== undefined) state.version.isError = isError
   },
 }

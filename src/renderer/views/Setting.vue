@@ -67,14 +67,21 @@ div.scroll(:class="$style.setting")
       div
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") 导入
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
+    dt 软件更新
+    dd
+      p.small
+        | 最新版本：{{version.newVersion ? version.newVersion.version : '未知'}}
+      p.small 当前版本：{{version.version}}
+      p.small(v-if="version.newVersion")
+        span(v-if="isLatestVer") 软件已是最新，尽情地体验吧~🥂
+        material-btn(v-else-if="setting.ignoreVersion" :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口
+        span(v-else) 发现新版本并在努力下载中，请稍等...⏳
+      p.small(v-else) 检查更新中...
     dt 关于洛雪音乐
     dd
       p.small
         | 本软件完全免费，代码已开源，开源地址：
         span.hover(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop')") https://github.com/lyswhut/lx-music-desktop
-      p
-        small 当前版本：
-        | {{version.version}}
       p.small
         |  本软件仅用于学习交流使用，禁止将本软件用于
         strong 非法用途
@@ -111,6 +118,9 @@ export default {
   computed: {
     ...mapGetters(['setting', 'themes', 'version']),
     ...mapGetters('list', ['defaultList']),
+    isLatestVer() {
+      return this.version.newVersion && this.version.version === this.version.newVersion.version
+    },
   },
   data() {
     return {
@@ -202,7 +212,7 @@ export default {
     this.init()
   },
   methods: {
-    ...mapMutations(['setSetting']),
+    ...mapMutations(['setSetting', 'setVersionModalVisible']),
     ...mapMutations('list', ['setDefaultList']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
@@ -355,6 +365,9 @@ export default {
       this.$nextTick(() => {
         window.globalObj.apiSource = id
       })
+    },
+    showUpdateModal() {
+      this.setVersionModalVisible({ isShow: true })
     },
   },
 }

@@ -1,7 +1,7 @@
 <template lang="pug">
 material-modal(:show="version.showModal" @close="handleClose")
   main(:class="$style.main" v-if="version.newVersion")
-    h2 🚀程序更新🚀
+    h2 {{ version.isError ? '🌟发现新版本🌟' : '🚀程序更新🚀'}}
 
     div.scroll(:class="$style.info")
       div(:class="$style.current")
@@ -15,7 +15,20 @@ material-modal(:show="version.showModal" @close="handleClose")
           h4 v{{ver.version}}
           p(v-html="ver.desc")
 
-    div(:class="$style.footer")
+    div(:class="$style.footer" v-if="version.isError")
+      div(:class="$style.desc")
+        p 发现有新版本啦，但是自动更新功能出问题了
+        p
+          | 如果你所用的软件是
+          strong 安装版
+          | ，可以到QQ群：830125506 反馈哦
+        p
+          | 你现在可以选择继续使用当前版本或
+          strong 去发布页下载新版本
+      div(:class="$style.btns")
+        material-btn(:class="$style.btn" @click.onec="handleIgnoreClick") 忽略该版本
+        material-btn(:class="$style.btn" @click.onec="handleOpenPageClick") 去下载新版本
+    div(:class="$style.footer" v-else)
       div(:class="$style.desc")
         p 新版本已下载完毕，
         p
@@ -24,18 +37,18 @@ material-modal(:show="version.showModal" @close="handleClose")
           | 或稍后
           strong 关闭程序时
           | 自动更新~
-      material-btn(:class="$style.btn" @click.onec="handleClick") 立即重启更新
+      material-btn(:class="$style.btn" @click.onec="handleRestartClick") 立即重启更新
 
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { rendererSend } from '../../../common/icp'
-import { checkVersion } from '../../utils'
+import { checkVersion, openUrl } from '../../utils'
 
 export default {
   computed: {
-    ...mapGetters(['version']),
+    ...mapGetters(['version', 'setting']),
     history() {
       if (!this.version.newVersion) return []
       let arr = []
@@ -48,11 +61,21 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['setVersionVisible']),
+    ...mapMutations(['setVersionModalVisible', 'setSetting']),
     handleClose() {
-      this.setVersionVisible(false)
+      this.setVersionModalVisible({
+        isShow: false,
+      })
     },
-    handleClick(event) {
+    handleIgnoreClick(event) {
+      this.handleClose()
+      // event.target.disabled = true
+      this.setSetting(Object.assign({}, this.setting, { ignoreVersion: this.version.newVersion.version }))
+    },
+    handleOpenPageClick() {
+      openUrl('https://github.com/lyswhut/lx-music-desktop')
+    },
+    handleRestartClick(event) {
       this.handleClose()
       event.target.disabled = true
       rendererSend('quit-update')
@@ -68,7 +91,7 @@ export default {
 .main {
   position: relative;
   padding: 15px;
-  max-width: 500px;
+  max-width: 450px;
   min-width: 300px;
   display: flex;
   flex-flow: column nowrap;
@@ -155,6 +178,11 @@ export default {
 .btn {
   display: block;
   width: 100%;
+}
+.btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0 10px;
 }
 
 each(@themes, {

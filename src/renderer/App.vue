@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     ...mapActions(['getVersionInfo']),
-    ...mapMutations(['setNewVersion', 'setVersionVisible']),
+    ...mapMutations(['setNewVersion', 'setVersionModalVisible']),
     ...mapMutations('list', ['initDefaultList']),
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
@@ -90,12 +90,25 @@ export default {
         body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
+      rendererOn('update-available', (e, info) => {
+        // this.showUpdateModal(true)
+        this.setNewVersion({
+          version: info.version,
+        })
+      })
+      rendererOn('update-error', () => {
+        this.setVersionModalVisible({ isError: true })
+        this.$nextTick(() => {
+          this.showUpdateModal()
+        })
+      })
       rendererOn('update-downloaded', () => {
-        this.getVersionInfo().then(body => {
-          this.setNewVersion(body)
-          this.$nextTick(() => {
-            this.setVersionVisible({ isShow: true })
-          })
+        this.showUpdateModal()
+      })
+      rendererOn('update-not-available', () => {
+        if (this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
+        this.setNewVersion({
+          version: this.version.version,
         })
       })
 
@@ -139,6 +152,20 @@ export default {
         })
         this.updateDownloadList(downloadList)
       }
+    },
+    showUpdateModal() {
+      (this.version.newVersion && this.version.newVersion.history ? Promise.resolve(this.version.newVersion) : this.getVersionInfo().then(body => {
+        this.setNewVersion(body)
+        if (body.version !== this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
+        return body
+      })).then(body => {
+        if (body.version === this.version.version) return
+        if (this.version.isError && body.version === this.setting.ignoreVersion) return
+
+        this.$nextTick(() => {
+          this.setVersionModalVisible({ isShow: true })
+        })
+      })
     },
   },
   beforeDestroy() {

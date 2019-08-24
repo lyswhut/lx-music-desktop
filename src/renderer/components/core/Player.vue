@@ -212,9 +212,9 @@ export default {
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         this.status = '音乐加载中...'
       })
-      // this.audio.addEventListener('loadstart', () => {
-      //   this.status = '开始加载音乐信息...'
-      // })
+      this.audio.addEventListener('loadstart', () => {
+        this.status = '音乐加载中...'
+      })
       this.audio.addEventListener('canplay', () => {
         console.log('加载完成开始播放')
         // if (this.musicInfo.lrc) this.lyric.lrc.play(this.audio.currentTime * 1000)

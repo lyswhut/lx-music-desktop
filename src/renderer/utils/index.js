@@ -161,7 +161,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.3'
+  const defaultVersion = '1.0.4'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -185,6 +185,7 @@ export const updateSetting = setting => {
     sourceId: 'kw',
     apiSource: 'messoer',
     randomAnimate: true,
+    ignoreVersion: null,
   }
   const overwriteSetting = {
     version: defaultVersion,
