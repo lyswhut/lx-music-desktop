@@ -1,7 +1,11 @@
 {
-  "version": "0.3.1",
-  "desc": "<h3>修复</h3>\n<ul>\n<li>修复音量条主题适配</li>\n</ul>\n",
+  "version": "0.3.2",
+  "desc": "<h3>新增</h3>\n<ul>\n<li>新增酷狗排行榜其他音质下载</li>\n</ul>\n",
   "history": [
+    {
+      "version": "0.3.1",
+      "desc": "<h3>修复</h3>\n<ul>\n<li>修复音量条主题适配</li>\n</ul>\n"
+    },
     {
       "version": "0.3.0",
       "desc": "<h3>新增</h3>\n<ul>\n<li>新增<strong>MAC</strong>及<strong>Linux</strong>版本（需要的可自行下载）</li>\n<li>新增音量调整</li>\n<li>新增任务栏播放进度条控制选项（现在可在设置界面关闭在任务栏显示的播放进度）</li>\n<li>新增更新出错时的弹窗提示</li>\n<li>从该版本起，非安装版也会有更新弹窗提醒了，但仍然需要手动下载新版本更新，版本信息可到设置页面查看</li>\n</ul>\n<h3>修复</h3>\n<ul>\n<li>强制把临时接口设置回 <code>messoer</code> 接口</li>\n</ul>\n"
