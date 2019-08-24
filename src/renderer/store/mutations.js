@@ -23,4 +23,7 @@ export default {
     if (isShow !== undefined) state.version.showModal = isShow
     if (isError !== undefined) state.version.isError = isError
   },
+  setVolume(state, val) {
+    state.setting.player.volume = val
+  },
 }

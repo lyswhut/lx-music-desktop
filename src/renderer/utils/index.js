@@ -168,6 +168,7 @@ export const updateSetting = setting => {
       togglePlayMethod: 'listLoop',
       highQuality: false,
       isShowTaskProgess: true,
+      volume: 1,
     },
     list: {
       isShowAlbumName: true,

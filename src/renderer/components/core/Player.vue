@@ -8,6 +8,13 @@ div(:class="$style.player")
     div(:class="$style.column1")
       div(:class="$style.container")
         div(:class="$style.title") {{title}}
+        div(:class="$style.volumeContent")
+          div(:class="$style.volume" @click.stop='handleChangeVolume' :title="`当前音量：${volumeStr}%`")
+            div(:class="$style.volumeBar" :style="{ width: volumeStr + '%' }")
+
+        //- div(:class="$style.playBtn" @click='handleNext' title="音量")
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
+            use(xlink:href='#icon-sound')
         div(:class="$style.playBtn" @click='handleNext' title="下一首")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
             use(xlink:href='#icon-nextMusic')
@@ -50,6 +57,7 @@ export default {
     return {
       show: true,
       audio: null,
+      volume: 0,
       nowPlayTime: 0,
       maxPlayTime: 0,
       isPlay: false,
@@ -98,6 +106,9 @@ export default {
     isAPITemp() {
       return this.setting.apiSource == 'temp'
     },
+    volumeStr() {
+      return parseInt(this.volume * 100)
+    },
   },
   mounted() {
     this.setProgessWidth()
@@ -139,6 +150,9 @@ export default {
       if (n.toFixed(2) === o.toFixed(2)) return
       this.sendProgressEvent(n, 'normal')
     },
+    volume(n) {
+      this.handleSaveVolume(n)
+    },
   },
   methods: {
     ...mapActions('player', ['getUrl', 'getPic', 'getLrc']),
@@ -147,9 +161,11 @@ export default {
       'fixPlayIndex',
       'resetChangePlay',
     ]),
+    ...mapMutations(['setVolume']),
     ...mapMutations('list', ['updateMusicInfo']),
     init() {
-      this.audio = document.createElement('audio')
+      window.a = this.audio = document.createElement('audio')
+      this.volume = this.audio.volume = this.setting.player.volume
       this.audio.controls = false
       this.audio.autoplay = true
       this.audio.loop = this.setting.player.togglePlayMethod === 'singleLoop'
@@ -438,6 +454,17 @@ export default {
     clearAppTitle() {
       setTitle()
     },
+    handleChangeVolume(e) {
+      let val = e.offsetX / 70
+      if (val < 0) val = 0
+      if (val > 1) val = 1
+      if (val > 0.97) val = 1
+      this.volume = val
+      if (this.audio) this.audio.volume = this.volume
+    },
+    handleSaveVolume(volume) {
+      this.setVolume(volume)
+    },
   },
 }
 </script>
@@ -507,6 +534,39 @@ export default {
   font-size: 14px;
   line-height: 18px;
   .mixin-ellipsis-1;
+}
+
+.volume-content {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+}
+
+.volume {
+  cursor: pointer;
+  width: 100%;
+  height: 0.25em;
+  border-radius: 10px;
+  // overflow: hidden;
+  transition: @transition-theme;
+  transition-property: background-color;
+  background-color: @color-player-progress;
+  // background-color: #f5f5f5;
+  position: relative;
+  border-radius: @radius-progress-border;
+}
+
+.volume-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 100%;
+  border-radius: @radius-progress-border;
+  transition-duration: 0.2s;
+  background-color: @color-player-progress-bar2;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
 .play-btn {
