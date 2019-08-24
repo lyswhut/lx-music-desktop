@@ -164,7 +164,7 @@ export default {
     ...mapMutations(['setVolume']),
     ...mapMutations('list', ['updateMusicInfo']),
     init() {
-      window.a = this.audio = document.createElement('audio')
+      this.audio = document.createElement('audio')
       this.volume = this.audio.volume = this.setting.player.volume
       this.audio.controls = false
       this.audio.autoplay = true
@@ -566,7 +566,8 @@ export default {
   border-radius: @radius-progress-border;
   transition-duration: 0.2s;
   background-color: @color-theme;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  opacity: .5;
 }
 
 .play-btn {
