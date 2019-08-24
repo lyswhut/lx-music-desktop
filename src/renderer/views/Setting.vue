@@ -74,7 +74,7 @@ div.scroll(:class="$style.setting")
       p.small 当前版本：{{version.version}}
       p.small(v-if="version.newVersion")
         span(v-if="isLatestVer") 软件已是最新，尽情地体验吧~🥂
-        material-btn(v-else-if="setting.ignoreVersion" :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口
+        material-btn(v-else-if="setting.ignoreVersion || version.isError" :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口
         span(v-else) 发现新版本并在努力下载中，请稍等...⏳
       p.small(v-else) 检查更新中...
     dt 关于洛雪音乐
