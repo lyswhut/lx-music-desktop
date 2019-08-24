@@ -6,6 +6,20 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.3.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.2.3...v0.3.0) - 2019-08-24
+
+### 新增
+
+- 新增**MAC**及**Linux**版本（需要的可自行下载）
+- 新增音量调整
+- 新增任务栏播放进度条控制选项（现在可在设置界面关闭在任务栏显示的播放进度）
+- 新增更新出错时的弹窗提示
+- 从该版本起，非安装版也会有更新弹窗提醒了，但仍然需要手动下载新版本更新，版本信息可到设置页面查看
+
+### 修复
+
+- 强制把临时接口设置回 `messoer` 接口
+
 ## [0.2.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.2.2...v0.2.3) - 2019-08-22
 
 ### 新增
