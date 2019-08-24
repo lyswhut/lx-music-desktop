@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -24,8 +24,8 @@
     "publish:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p onTagOrDraft",
     "publish:win:portable:x86": "cross-env TARGET=portable ARCH=x86 electron-builder -w=portable --ia32 -p onTagOrDraft",
     "publish:win:7z": "npm run publish:win:7z:x64 && npm run publish:win:7z:x86",
-    "publish:win:7z:x64": "cross-env TARGET=green ARCH=x64 electron-builder -w=7z --x64 -p onTagOrDraft",
-    "publish:win:7z:x86": "cross-env TARGET=green ARCH=x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
+    "publish:win:7z:x64": "cross-env TARGET=green ARCH=win_x64 electron-builder -w=7z --x64 -p onTagOrDraft",
+    "publish:win:7z:x86": "cross-env TARGET=green ARCH=win_x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
     "publish:gh:mac": "node build-config/pack.js && npm run publish:mac",
     "publish:mac": "npm run publish:mac:dmg",
     "publish:mac:dmg": "electron-builder -m=dmg -p onTagOrDraft",

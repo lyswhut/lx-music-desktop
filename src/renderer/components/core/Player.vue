@@ -565,7 +565,7 @@ export default {
   height: 100%;
   border-radius: @radius-progress-border;
   transition-duration: 0.2s;
-  background-color: @color-player-progress-bar2;
+  background-color: @color-theme;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -688,6 +688,14 @@ each(@themes, {
       svg {
         filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
       }
+    }
+    .volume {
+      background-color: ~'@{color-@{value}-player-progress}';
+    }
+
+    .volume-bar {
+      background-color: ~'@{color-@{value}-theme}';
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
     }
 
 
