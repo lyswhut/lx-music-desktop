@@ -4,8 +4,11 @@ import { formatPlayTime, sizeFormate } from '../../index'
 export default {
   _requestObj_tagInfo: null,
   _requestObj_songList: null,
-  _requestObj_songListRecommend: null,
   _requestObj_songListDetail: null,
+  currentTagInfo: {
+    id: null,
+    info: null,
+  },
   sortList: [
     {
       name: '推荐',
@@ -43,14 +46,14 @@ export default {
     return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
   },
 
-  getTypeInfo(tagId) {
+  getTagInfo(tagId) {
     if (this._requestObj_tagInfo) this._requestObj_tagInfo.cancelHttp()
     this._requestObj_tagInfo = httpFatch(this.getInfoUrl(tagId))
     return this._requestObj_tagInfo.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getTypeInfo(tagId)
+      if (body.status !== 1) return this.getTagInfo(tagId)
       return {
         hotTag: this.filterInfoHotTag(body.data.hotTag),
-        tags: this.filterTagInfo(),
+        tags: this.filterTagInfo(body.data.tagids),
         tagInfo: {
           limit: body.data.params.pagesize,
           page: body.data.params.p,
@@ -76,7 +79,7 @@ export default {
     for (const type of Object.keys(rawData)) {
       result.push({
         type,
-        list: rawData[type].map(tag => ({
+        list: rawData[type].data.map(tag => ({
           parent_id: tag.parent_id,
           parent_name: tag.pname,
           id: tag.id,
@@ -125,8 +128,7 @@ export default {
   },
   filterSongList(rawData) {
     return rawData.map(item => ({
-      play_count: item.play_count,
-      total_play_count: item.total_play_count,
+      play_count: item.total_play_count,
       id: item.specialid,
       author: item.nickname,
       name: item.specialname,
@@ -137,13 +139,18 @@ export default {
     }))
   },
 
-  getSongListDetail(id) { // 获取歌曲列表内的音乐
+  getListDetail(id, page) { // 获取歌曲列表内的音乐
     if (this._requestObj_songListDetail) this._requestObj_songListDetail.cancelHttp()
     this._requestObj_songListDetail = httpFatch(this.getSongListDetailUrl(id))
     return this._requestObj_songListDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
       if (listData) listData = this.filterData(JSON.parse(RegExp.$1))
-      return listData
+      return {
+        list: listData,
+        page: 1,
+        limit: 10000,
+        total: listData.length,
+      }
     })
   },
   filterData(rawList) {
@@ -201,8 +208,9 @@ export default {
     })
   },
 
-  getListInfo(tagId) { // 获取列表信息
-    return this.getTypeInfo(tagId).then(info => {
+  // 获取列表信息
+  getListInfo(tagId) {
+    return this.getTagInfo(tagId).then(info => {
       return {
         limit: info.tagInfo.limit,
         page: info.tagInfo.page,
@@ -211,17 +219,31 @@ export default {
     })
   },
 
-  getList(sortId, tagId, page) { // 获取列表数据
+  // 获取列表数据
+  getList(sortId, tagId, page) {
     let tasks = [this.getSongList(sortId, tagId, page)]
-    if (!tagId) tasks.push(this.getSongListRecommend())
-    Promise.all(tasks).then(([list, recommendList]) => {
+    tasks.push(
+      this.currentTagInfo.id === tagId
+        ? Promise.resolve(this.currentTagInfo.info)
+        : this.getListInfo(tagId).then(info => {
+          this.currentTagInfo.id = tagId
+          this.currentTagInfo.info = Object.assign({}, info)
+          return info
+        })
+    )
+    if (!tagId) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
+    Promise.all(tasks).then(([list, info, recommendList]) => {
       if (recommendList) list.unshift(...recommendList)
-      return list
+      return {
+        list,
+        ...info,
+      }
     })
   },
 
-  getTags() { // 获取标签
-    return this.getTypeInfo().then(info => {
+  // 获取标签
+  getTags() {
+    return this.getTagInfo().then(info => {
       return {
         hotTag: info.hotTag,
         tags: info.tags,
@@ -229,3 +251,7 @@ export default {
     })
   },
 }
+
+// getList
+// getTags
+// getListDetail
