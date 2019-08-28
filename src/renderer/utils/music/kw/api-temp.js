@@ -2,7 +2,7 @@ import { httpFatch } from '../../request'
 
 const api_temp = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`https://www.stsky.cn/api/temp/getMusicUrl.php?id=${songInfo.songmid}&type=${type}`, {
+    const requestObj = httpFatch(`http://45.32.53.128:3002/m/kw/u/${songInfo.songmid}/${type}`, {
       method: 'get',
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
@@ -11,7 +11,7 @@ const api_temp = {
     return requestObj
   },
   getPic(songInfo) {
-    const requestObj = httpFatch(`https://www.stsky.cn/api/temp/getPic.php?size=320&songmid=${songInfo.songmid}`, {
+    const requestObj = httpFatch(`http://45.32.53.128:3002/m/kw/i/${songInfo.songmid}`, {
       method: 'get',
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {

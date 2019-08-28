@@ -3,8 +3,8 @@ import { formatPlayTime, sizeFormate } from '../../index'
 
 export default {
   _requestObj_tagInfo: null,
-  _requestObj_songList: null,
-  _requestObj_songListDetail: null,
+  _requestObj_list: null,
+  _requestObj_listDetail: null,
   currentTagInfo: {
     id: null,
     info: null,
@@ -90,18 +90,18 @@ export default {
   },
 
   getSongList(sortId, tagId, page) {
-    if (this._requestObj_songList) this._requestObj_songList.cancelHttp()
-    this._requestObj_songList = httpFatch(
+    if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    this._requestObj_list = httpFatch(
       this.getSongListUrl(sortId, tagId, page)
     )
-    return this._requestObj_songList.promise.then(({ body }) => {
+    return this._requestObj_list.promise.then(({ body }) => {
       if (body.status !== 1) return this.getSongList(sortId, tagId, page)
-      return this.filterSongList(body.data)
+      return this.filterList(body.data)
     })
   },
   getSongListRecommend() {
-    if (this._requestObj_songListRecommend) this._requestObj_songListRecommend.cancelHttp()
-    this._requestObj_songListRecommendRecommend = httpFatch(
+    if (this._requestObj_listRecommend) this._requestObj_listRecommend.cancelHttp()
+    this._requestObj_listRecommendRecommend = httpFatch(
       'http://everydayrec.service.kugou.com/guess_special_recommend',
       {
         method: 'post',
@@ -121,12 +121,12 @@ export default {
         },
       }
     )
-    return this._requestObj_songListRecommend.promise.then(({ body }) => {
+    return this._requestObj_listRecommend.promise.then(({ body }) => {
       if (body.status !== 1) return this.getSongListRecommend()
-      return this.filterSongList(body.data)
+      return this.filterList(body.data)
     })
   },
-  filterSongList(rawData) {
+  filterList(rawData) {
     return rawData.map(item => ({
       play_count: item.total_play_count,
       id: item.specialid,
@@ -140,9 +140,9 @@ export default {
   },
 
   getListDetail(id, page) { // 获取歌曲列表内的音乐
-    if (this._requestObj_songListDetail) this._requestObj_songListDetail.cancelHttp()
-    this._requestObj_songListDetail = httpFatch(this.getSongListDetailUrl(id))
-    return this._requestObj_songListDetail.promise.then(({ body }) => {
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    this._requestObj_listDetail = httpFatch(this.getSongListDetailUrl(id))
+    return this._requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
       if (listData) listData = this.filterData(JSON.parse(RegExp.$1))
       return {

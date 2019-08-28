@@ -4,9 +4,9 @@ import CryptoJS from 'crypto-js'
 
 export default {
   _requestObj_tags: null,
-  _requestObj_songList: null,
-  _requestObj_songListRecommend: null,
-  _requestObj_songListDetail: null,
+  _requestObj_list: null,
+  _requestObj_listRecommend: null,
+  _requestObj_listDetail: null,
   limit_list: 20,
   limit_song: 25,
   successCode: 22000,
@@ -87,7 +87,7 @@ export default {
       version: '10.1.8',
     }, 'baidu.ting.ugcdiy.getChannels')
   },
-  getSongListUrl(sortType, tagName, page) {
+  getListUrl(sortType, tagName, page) {
     return this.createUrl({
       channelname: tagName,
       from: 'qianqianmini',
@@ -139,14 +139,14 @@ export default {
 
   // 获取列表数据
   getList(sortId, tagId, page) {
-    if (this._requestObj_songList) this._requestObj_songList.cancelHttp()
-    this._requestObj_songList = httpFatch(
-      this.getSongListUrl(sortId, tagId, page)
+    if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    this._requestObj_list = httpFatch(
+      this.getListUrl(sortId, tagId, page)
     )
-    return this._requestObj_songList.promise.then(({ body }) => {
+    return this._requestObj_list.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getSongList(sortId, tagId, page)
       return {
-        list: this.filterSongList(body.diyInfo),
+        list: this.filterList(body.diyInfo),
         total: body.nums,
         page,
         limit: this.limit_list,
@@ -164,7 +164,7 @@ export default {
     if (num > 10000) return parseInt(num / 1000) / 10 + '万'
     return num
   },
-  filterSongList(rawData) {
+  filterList(rawData) {
     return rawData.map(item => ({
       play_count: this.formatPlayCount(item.listen_num),
       id: item.list_id,
@@ -179,11 +179,11 @@ export default {
 
   // 获取歌曲列表内的音乐
   getListDetail(id, page) {
-    if (this._requestObj_songListDetail) {
-      this._requestObj_songListDetail.cancelHttp()
+    if (this._requestObj_listDetail) {
+      this._requestObj_listDetail.cancelHttp()
     }
-    this._requestObj_songListDetail = httpFatch(this.getListDetailUrl(id, page))
-    return this._requestObj_songListDetail.promise.then(({ body }) => {
+    this._requestObj_listDetail = httpFatch(this.getListDetailUrl(id, page))
+    return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getListDetail(id, page)
       let listData = this.filterData(body.result.songlist)
       return {

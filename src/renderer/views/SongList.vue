@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'About',
+  name: 'SongList',
   data() {
     return {
       count: 0,

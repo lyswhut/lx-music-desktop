@@ -74,7 +74,7 @@ div.scroll(:class="$style.setting")
       p.small 当前版本：{{version.version}}
       p.small(v-if="version.newVersion")
         span(v-if="isLatestVer") 软件已是最新，尽情地体验吧~🥂
-        material-btn(v-else-if="setting.ignoreVersion || version.isError" :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口
+        material-btn(v-else-if="setting.ignoreVersion || version.isError" :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口 🚀
         span(v-else) 发现新版本并在努力下载中，请稍等...⏳
       p.small(v-else) 检查更新中...
     dt 关于洛雪音乐
@@ -164,14 +164,19 @@ export default {
       apiSources: [
         {
           id: 'messoer',
-          label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
-          disabled: false,
+          // label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
+          label: '由 messoer 提供的接口（该接口已关闭）',
+          disabled: true,
         },
+        // {
+        //   id: 'internal',
+        //   label: '内置接口（只能试听或下载128k音质，该接口支持软件的所有功能）',
+        //   disabled: false,
+        // },
         {
           id: 'temp',
-          // label: '临时接口（软件的某些功能将不可用，建议在messoer不可用时再切换到本选项）',
-          label: '临时接口（因服务器被攻击，本接口已关闭）',
-          disabled: true,
+          label: '临时接口（软件的某些功能将不可用，但可下载无损等音质）',
+          disabled: false,
         },
       ],
       musicNames: [

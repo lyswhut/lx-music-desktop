@@ -1,5 +1,7 @@
 import { httpGet, cancelHttp } from '../../request'
-import { formatPlayTime } from '../../index'
+import { formatPlayTime, decodeName } from '../../index'
+import { formatSinger } from './util'
+
 
 export default {
   list: [
@@ -143,9 +145,9 @@ export default {
       }
       // types.reverse()
       return {
-        singer: item.artist,
-        name: item.name,
-        albumName: item.album,
+        singer: formatSinger(decodeName(item.artist)),
+        name: decodeName(item.name),
+        albumName: decodeName(item.album),
         albumId: item.albumid,
         songmid: item.id,
         source: 'kw',

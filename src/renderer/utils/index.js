@@ -2,6 +2,7 @@ import fs from 'fs'
 import { shell, remote } from 'electron'
 import path from 'path'
 import os from 'os'
+import crypto from 'crypto'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -184,7 +185,7 @@ export const updateSetting = setting => {
     },
     themeId: 0,
     sourceId: 'kw',
-    apiSource: 'messoer',
+    apiSource: 'temp',
     randomAnimate: true,
     ignoreVersion: null,
   }
@@ -201,7 +202,7 @@ export const updateSetting = setting => {
     objectDeepMerge(defaultSetting, overwriteSetting)
     setting = defaultSetting
   }
-  setting.apiSource = 'messoer' // 强制设置回 messoer 接口源
+  if (setting.apiSource == 'messoer') setting.apiSource = 'temp' // 强制设置回 temp 接口源
   return setting
 }
 
@@ -220,3 +221,10 @@ let dom_title = document.getElementsByTagName('title')[0]
 export const setTitle = title => {
   dom_title.innerText = title || '洛雪音乐助手'
 }
+
+
+/**
+ * 创建 MD5 hash
+ * @param {*} str
+ */
+export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')

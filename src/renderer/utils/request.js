@@ -2,28 +2,11 @@ import request from 'request'
 // import progress from 'request-progress'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
+import { bHh } from './music/messoer'
 // import fs from 'fs'
 
 const headers = {
-  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-}
-
-const fatchData = (url, method, options, callback) => {
-  // console.log(url, options)
-  console.log('---start---', url)
-  return request(url, {
-    method,
-    headers: Object.assign({}, headers, options.headers || {}),
-    Origin: options.origin,
-    data: options.data,
-    timeout: options.timeout || 10000,
-    json: options.format === undefined || options.format === 'json',
-  }, (err, resp, body) => {
-    if (err) return callback(err, null)
-
-    // console.log('---end---', url)
-    callback(null, resp, body)
-  })
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
 }
 
 /**
@@ -229,5 +212,28 @@ export const http_jsonp = (url, options, callback) => {
     }
 
     callback(err, resp, body)
+  })
+}
+
+const fatchData = (url, method, options, callback) => {
+  // console.log(url, options)
+  console.log('---start---', url)
+  if (options.headers && options.headers[bHh]) {
+    let s = Buffer.from(bHh, 'hex').toString()
+    s = s.replace(s.substr(-1), '')
+    s = Buffer.from(s, 'base64').toString()
+    options.headers[s] = !!s
+    delete options.headers[bHh]
+  }
+  return request(url, {
+    method,
+    headers: Object.assign({}, headers, options.headers || {}),
+    Origin: options.origin,
+    data: options.data,
+    timeout: options.timeout || 10000,
+    json: options.format === undefined || options.format === 'json',
+  }, (err, resp, body) => {
+    if (err) return callback(err, null)
+    callback(null, resp, body)
   })
 }

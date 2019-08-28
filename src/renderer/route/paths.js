@@ -18,9 +18,9 @@ export default [
     view: 'Leaderboard',
   },
   {
-    path: '/recommend',
-    name: 'recommend',
-    view: 'Recommend',
+    path: '/songList',
+    name: 'songList',
+    view: 'SongList',
   },
   {
     path: '/list',

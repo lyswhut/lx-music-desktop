@@ -9,10 +9,10 @@ div(:class="$style.aside")
       dt 在线音乐
       dd
         router-link(:active-class="$style.active" to="search") 搜索
+      //- dd
+        router-link(:active-class="$style.active" to="songList") 歌单
       dd
         router-link(:active-class="$style.active" to="leaderboard") 排行榜
-      //- dd
-        router-link(:active-class="$style.active" to="recommend") 歌单
     dl
       dt 我的音乐
       dd
