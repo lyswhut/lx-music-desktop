@@ -6,6 +6,16 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.3.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.2...v0.3.3) - 2019-08-29
+
+### 修复
+
+- **messoer**的接口已经关闭，暂时切换到临时接口使用，部分功能受限。。。
+- 修复设置界面更新出错时仍然显示更新下载中的问题
+- 修复手动定位播放进度条时存在偏差的问题
+- 屏蔽播放器中没有歌曲时对进度条的点击
+
+
 ## [0.3.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.1...v0.3.2) - 2019-08-24
 
 ### 新增
