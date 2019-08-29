@@ -2,7 +2,7 @@ import request from 'request'
 // import progress from 'request-progress'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
-import { bHh } from './music/messoer'
+import { bHh } from './music/options'
 // import fs from 'fs'
 
 const headers = {

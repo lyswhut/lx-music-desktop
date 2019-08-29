@@ -1,6 +1,6 @@
 import { httpFatch } from '../../request'
 import { requestMsg } from '../../message'
-import { headers, timeout } from '../messoer'
+import { headers, timeout } from '../options'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {

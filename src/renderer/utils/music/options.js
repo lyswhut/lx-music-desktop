@@ -6,4 +6,4 @@ export const headers = {
 }
 
 
-export const timeout = 10000
+export const timeout = 15000

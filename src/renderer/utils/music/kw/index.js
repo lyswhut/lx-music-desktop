@@ -4,6 +4,7 @@ import musicSearch from './musicSearch'
 import { formatSinger } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
+import pic from './pic'
 import api_source from '../api-source'
 
 const kw = {
@@ -91,7 +92,7 @@ const kw = {
   },
 
   getPic(songInfo) {
-    return api_source('kw').getPic(songInfo)
+    return pic.getPic(songInfo)
   },
 }
 

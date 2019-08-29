@@ -6,6 +6,16 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.3.4](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.3...v0.3.4) - 2019-08-29
+
+### 优化
+
+- 减少接口不稳定带来的影响，适当增加请求等待时间
+
+### 修复
+
+- 修复播放过程中URL过期不会刷新URL的问题
+
 ## [0.3.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.2...v0.3.3) - 2019-08-29
 
 ### 修复

@@ -194,15 +194,16 @@ export default {
         // console.log('code', this.audio.error.code)
         if (!this.musicInfo.songmid) return
         console.log('出错')
+        this.stopPlay()
+        this.sendProgressEvent(this.progress, 'error')
         if (this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
           // console.log(this.retryNum)
           this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
+          this.status = 'URL过期，正在刷新URL...'
           return
         }
-        this.stopPlay()
-        this.sendProgressEvent(this.progress, 'error')
 
         // let urls = this.player_info.targetSong.urls
         // if (urls && urls.some((url, index) => {
