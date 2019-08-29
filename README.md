@@ -48,9 +48,6 @@
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzous.com/b906260/` 密码：`glqw`
 
-歌曲默认下载到桌面，可自行到设置页面更改。<br>
-若排行榜上的某些歌曲**无法播放**，可尝试**直接搜索**该歌曲后播放。
-
 #### 关于软件更新
 
 软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
