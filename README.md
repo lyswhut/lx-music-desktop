@@ -4,7 +4,7 @@
   <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/lyswhut/lx-music-desktop" alt="Release version"></a>
   <a href="https://ci.appveyor.com/project/lyswhut/lx-music-desktop"><img src="https://ci.appveyor.com/api/projects/status/flrsqd5ymp8fnte5?svg=true" alt="Build status"></a>
   <a href="https://travis-ci.org/lyswhut/lx-music-desktop"><img src="https://travis-ci.org/lyswhut/lx-music-desktop.svg?branch=master" alt="Build status"></a>
-  <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/latest/total" alt="Downloads"></a>
+  <!-- <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/latest/total" alt="Downloads"></a> -->
   <a href="https://github.com/lyswhut/lx-music-desktop/tree/dev"><img src="https://img.shields.io/github/package-json/v/lyswhut/lx-music-desktop/dev" alt="Dev branch version"></a>
   <!-- <a href="https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lyswhut/lx-music-desktop" alt="License"></a> -->
 </p>
@@ -90,7 +90,8 @@ npm run pack
 
 ### 免责声明
 
-本软件仅用于测试 `electron 6.x` 在各种系统上的兼容性，使用本软件产生的任何涉及版权相关的数据请于24小时内删除。<br>
+本项目**不开发或者破解直接获取音频数据**的功能，所有音频数据均来自**第三方接口**！<br>
+本软件仅用于**测试 `electron 6.x` 在各种系统上的兼容性**及用于**对比各大音乐平台歌单、排行榜等数据列表的差异性**，使用本软件产生的**任何涉及版权相关的数据**请于**24小时内删除**。<br>
 使用本软件所造成的的后果由使用者承担！
 
 ### 许可证
