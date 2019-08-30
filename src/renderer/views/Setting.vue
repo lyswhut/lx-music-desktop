@@ -93,9 +93,9 @@ div.scroll(:class="$style.setting")
           strong 使用者
           | 承担！
       p.small
-          | 本软件的部分接口使用自 https://github.com/messoer ，非常感谢
+          | 怀念曾经的
           strong @messoer
-          | ！
+          | ，非常感谢曾经为本软件提供数据源！
       p.small 若有问题可 mail to：lyswhut@qq.com 或到 GitHub 提交 issue
       p.small
         | 若觉得好用的话可以去 GitHub 点个
@@ -162,17 +162,22 @@ export default {
         },
       ],
       apiSources: [
-        {
-          id: 'messoer',
-          // label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
-          label: '由 messoer 提供的接口（该接口已关闭）',
-          disabled: true,
-        },
+        // {
+        //   id: 'messoer',
+        //   // label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
+        //   label: '由 messoer 提供的接口（该接口已关闭）',
+        //   disabled: true,
+        // },
         // {
         //   id: 'internal',
         //   label: '内置接口（只能试听或下载128k音质，该接口支持软件的所有功能）',
         //   disabled: false,
         // },
+        {
+          id: 'test',
+          label: '测试接口（软件的大部分功能可用，该接口访问速度较慢，请耐心等待）',
+          disabled: false,
+        },
         {
           id: 'temp',
           label: '临时接口（软件的某些功能不可用，该接口访问速度较慢，请耐心等待）',

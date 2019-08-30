@@ -83,7 +83,7 @@ npm run pack
 
 ### 致谢
 
-感谢 [@messoer](https://github.com/messoer) 提供的部分音乐API！
+感谢 [@messoer](https://github.com/messoer) 曾经提供的部分音乐API！
 
 ### 免责声明
 

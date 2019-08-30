@@ -1,10 +1,10 @@
 import { httpFatch } from '../../request'
 import { requestMsg } from '../../message'
-import { headers, timeout } from '../messoer'
+import { headers, timeout } from '../options'
 
-const api_messoer = {
+const api_test = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`https://v1.itooi.cn/baidu/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, {
+    const requestObj = httpFatch(`http://45.32.53.128:3000/kugou/url?id=${songInfo._types[type].hash}&quality=${type.replace(/k$/, '')}`, {
       method: 'get',
       timeout,
       headers,
@@ -14,8 +14,8 @@ const api_messoer = {
     })
     return requestObj
   },
-  getPic(songInfo, size = '500') {
-    const requestObj = httpFatch(`https://v1.itooi.cn/baidu/pic?id=${songInfo.songmid}&imageSize=${size}&isRedirect=0`, {
+  getPic(songInfo) {
+    const requestObj = httpFatch(`http://45.32.53.128:3000/kugou/pic?id=${songInfo.hash}`, {
       method: 'get',
       timeout,
       headers,
@@ -26,7 +26,7 @@ const api_messoer = {
     return requestObj
   },
   getLyric(songInfo) {
-    const requestObj = httpFatch(`https://v1.itooi.cn/baidu/lrc?id=${songInfo.songmid}&isRedirect=0`, {
+    const requestObj = httpFatch(`http://45.32.53.128:3000/kugou/lrc?id=${songInfo.hash}`, {
       method: 'get',
       timeout,
       headers,
@@ -38,4 +38,4 @@ const api_messoer = {
   },
 }
 
-export default api_messoer
+export default api_test

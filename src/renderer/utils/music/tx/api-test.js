@@ -4,7 +4,7 @@ import { headers, timeout } from '../messoer'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`https://v1.itooi.cn/tencent/url?id=${songInfo.strMediaMid}&quality=${type.replace(/k$/, '')}&isRedirect=0`, {
+    const requestObj = httpFatch(`https://v1.itooi.cn/tencent/url?id=${songInfo.strMediaMid}&quality=${type.replace(/k$/, '')}`, {
       method: 'get',
       timeout,
       headers,

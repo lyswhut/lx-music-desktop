@@ -6,6 +6,21 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.3.5](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.4...v0.3.5) - 2019-08-30
+
+### 新增
+
+- 新增**测试接口**，该接口同样速度较慢，但软件的大部分功能可用，**请自行切换到该接口**，找接口辛苦，且用且珍惜！
+
+### 优化
+
+- 取消需要刷新URL时windows任务栏进度显示错误状态（现显示为暂停状态）
+
+### 修复
+
+- 修复使用临时接口时在试听列表双击灰色歌曲仍然会进行播放的Bug
+- 修复歌词加载Bug
+
 ## [0.3.4](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.3...v0.3.4) - 2019-08-29
 
 ### 优化

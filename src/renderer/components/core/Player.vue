@@ -195,7 +195,6 @@ export default {
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
-        this.sendProgressEvent(this.progress, 'error')
         if (this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
           // console.log(this.retryNum)
           this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
@@ -205,21 +204,7 @@ export default {
           return
         }
 
-        // let urls = this.player_info.targetSong.urls
-        // if (urls && urls.some((url, index) => {
-        //   if (this.musicInfo.musicUrl.includes(url)) {
-        //     let newUrl = urls[index + 1]
-        //     if (!newUrl) return false
-        //     this.musicInfo.musicUrl = this.musicInfo.musicUrl.replace(url, newUrl)
-        //     // this.musicInfo.musicUrl = newUrl ? this.musicInfo.musicUrl.replace(url, newUrl) : this.setFormTag(this.musicInfo.musicUrl.replace(url, urls[0]))
-        //     return true
-        //   }
-        // })) {
-        //   this.audio.src = this.musicInfo.musicUrl
-        //   // console.log(this.musicInfo.musicUrl)
-        // } else {
-        //   this.handleNext()
-        // }
+        this.sendProgressEvent(this.progress, 'error')
         this.status = '音频加载出错，5 秒后切换下一首'
         this.addDelayNextTimeout()
       })
@@ -416,12 +401,12 @@ export default {
       }
     },
     setLrc(targetSong) {
-      this.musicInfo.lrc = targetSong.lyric
+      this.musicInfo.lrc = targetSong.lrc
 
       let lrcP = this.musicInfo.lrc
         ? Promise.resolve()
         : this.getLrc(targetSong).then(() => {
-          this.musicInfo.lrc = targetSong.lyric
+          this.musicInfo.lrc = targetSong.lrc
         })
 
       lrcP

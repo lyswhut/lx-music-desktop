@@ -18,7 +18,7 @@
         table
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid'
-              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', isAPITemp && item.source != 'kw' ? $style.disabled : '']")
+              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') || item.source == 'tx' ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;") {{item.name}}
@@ -137,6 +137,7 @@ export default {
       this.clickIndex = -1
     },
     testPlay(index) {
+      if ((this.isAPITemp && this.list[index].source != 'kw') || this.list[index].source == 'tx') return
       this.setList({ list: this.list, listId: 'test', index })
     },
     handleRemove(index) {
@@ -146,14 +147,13 @@ export default {
       switch (info.action) {
         case 'download':
           const minfo = this.list[info.index]
-          if (this.isAPITemp && minfo.source != 'kw') return
+          if ((this.isAPITemp && minfo.source != 'kw') || minfo.source == 'tx') return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
           })
           break
         case 'play':
-          if (this.isAPITemp && this.list[info.index].source != 'kw') return
           this.testPlay(info.index)
           break
         case 'remove':
@@ -173,7 +173,7 @@ export default {
       this.selectdData = []
     },
     handleAddDownloadMultiple(type) {
-      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : [...this.selectdData]
+      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : this.selectdData.filter(s => s.source != 'tx')
       this.createDownloadMultiple({ list, type })
       this.resetSelect()
       this.isShowDownloadMultiple = false

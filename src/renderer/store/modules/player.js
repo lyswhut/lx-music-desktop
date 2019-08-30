@@ -62,7 +62,7 @@ const mutations = {
     datas.musicInfo.img = datas.url
   },
   setLrc(state, datas) {
-    datas.musicInfo.lyric = datas.lrc
+    datas.musicInfo.lrc = datas.lrc
   },
   setList(state, { list, listId, index }) {
     state.list = list

@@ -185,7 +185,7 @@ export const updateSetting = setting => {
     },
     themeId: 0,
     sourceId: 'kw',
-    apiSource: 'temp',
+    apiSource: 'test',
     randomAnimate: true,
     ignoreVersion: null,
   }
@@ -202,7 +202,7 @@ export const updateSetting = setting => {
     objectDeepMerge(defaultSetting, overwriteSetting)
     setting = defaultSetting
   }
-  if (setting.apiSource == 'messoer') setting.apiSource = 'temp' // 强制设置回 temp 接口源
+  if (setting.apiSource != 'test') setting.apiSource = 'test' // 强制设置回 test 接口源
   return setting
 }
 
