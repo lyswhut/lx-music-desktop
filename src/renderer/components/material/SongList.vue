@@ -42,6 +42,7 @@ div(:class="$style.songList")
 import { mapGetters } from 'vuex'
 import { scrollTo } from '../../utils'
 export default {
+  name: 'MaterialSongList',
   model: {
     prop: 'selectdData',
     event: 'input',

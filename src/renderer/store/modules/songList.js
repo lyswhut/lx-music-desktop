@@ -43,15 +43,15 @@ const getters = {
 const actions = {
   getTags({ state, rootState, commit }) {
     let source = rootState.setting.songList.source
-    return music[source].songList.getTags().then(result => commit('setTags', { result, source }))
+    return music[source].songList.getTags().then(result => commit('setTags', { tags: result, source }))
   },
   getList({ state, rootState, commit }, page) {
     let source = rootState.setting.songList.source
-    let tabId = rootState.setting.songList.sortId
-    let sortType = rootState.setting.songList.sortType
-    let key = `${source}${sortType}${tabId}${page}}`
+    let tabId = rootState.setting.songList.tagId
+    let sortId = rootState.setting.songList.sortId
+    let key = `${source}${sortId}${tabId}${page}`
     if (state.list.list.length && state.list.key == key) return true
-    return music[source].songList.getList(sortType, tabId, page).then(result => commit('setList', { result, key }))
+    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key }))
   },
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
@@ -72,6 +72,7 @@ const mutations = {
     state.list.limit = result.limit
     state.list.page = result.page
     state.list.key = key
+    console.log(result)
   },
   setListDetail(state, { result, key }) {
     state.listDetail.list = result.list

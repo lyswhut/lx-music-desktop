@@ -185,8 +185,8 @@ export const updateSetting = setting => {
     },
     songList: {
       source: 'kw',
-      sortId: 'kwhot',
-      tagId: '',
+      sortId: 'hot',
+      tagId: null,
     },
     themeId: 0,
     sourceId: 'kw',

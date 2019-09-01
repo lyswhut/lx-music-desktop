@@ -2,37 +2,34 @@ import { httpFatch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
 
 export default {
-  _requestObj_tagInfo: null,
+  _requestObj_tags: null,
+  _requestObj_listInfo: null,
   _requestObj_list: null,
+  _requestObj_listRecommend: null,
   _requestObj_listDetail: null,
   currentTagInfo: {
-    id: null,
-    info: null,
+    id: undefined,
+    info: undefined,
   },
   sortList: [
     {
       name: '推荐',
-      tabId: 'kgrecommend',
       id: '5',
     },
     {
       name: '最热',
-      tabId: 'kghot',
       id: '6',
     },
     {
       name: '最新',
-      tabId: 'kgnew',
       id: '7',
     },
     {
       name: '热藏',
-      tabId: 'kghotcollect',
       id: '3',
     },
     {
       name: '飙升',
-      tabId: 'kgup',
       id: '8',
     },
   ],
@@ -44,7 +41,7 @@ export default {
       ? `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&cdn=cdn&t=5&c=${tagId}`
       : `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&`
   },
-  getSongListUrl(sortId, tagId, page) {
+  getSongListUrl(sortId, tagId = '', page) {
     return `http://www2.kugou.kugou.com/yueku/v9/special/index/getData/getData.html&cdn=cdn&t=${sortId}&c=${tagId}?is_ajax=1&p=${page}`
   },
   getSongListDetailUrl(id) {
@@ -52,26 +49,13 @@ export default {
   },
 
   getTagInfo(tagId) {
-    if (this._requestObj_tagInfo) this._requestObj_tagInfo.cancelHttp()
-    this._requestObj_tagInfo = httpFatch(this.getInfoUrl(tagId))
-    return this._requestObj_tagInfo.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getTagInfo(tagId)
-      return {
-        hotTag: this.filterInfoHotTag(body.data.hotTag),
-        tags: this.filterTagInfo(body.data.tagids),
-        tagInfo: {
-          limit: body.data.params.pagesize,
-          page: body.data.params.p,
-          total: body.data.params.total,
-        },
-      }
-    })
+
   },
   filterInfoHotTag(rawData) {
     const result = []
     if (rawData.status !== 1) return result
-    for (let index = 0; index < Object.keys(rawData.data).lengt; index++) {
-      let tag = rawData.data[index.toString()]
+    for (const key of Object.keys(rawData.data)) {
+      let tag = rawData.data[key]
       result.push({
         id: tag.id,
         name: tag.special_name,
@@ -92,6 +76,7 @@ export default {
         })),
       })
     }
+    return result
   },
 
   getSongList(sortId, tagId, page) {
@@ -101,12 +86,12 @@ export default {
     )
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.status !== 1) return this.getSongList(sortId, tagId, page)
-      return this.filterList(body.data)
+      return this.filterList(body.special_db)
     })
   },
   getSongListRecommend() {
     if (this._requestObj_listRecommend) this._requestObj_listRecommend.cancelHttp()
-    this._requestObj_listRecommendRecommend = httpFatch(
+    this._requestObj_listRecommend = httpFatch(
       'http://everydayrec.service.kugou.com/guess_special_recommend',
       {
         method: 'post',
@@ -127,7 +112,8 @@ export default {
       }
     )
     return this._requestObj_listRecommend.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getSongListRecommend()
+      // if (body.status !== 1) return this.getSongListRecommend()
+      if (body.status !== 1) return []
       return this.filterList(body.data)
     })
   },
@@ -215,11 +201,14 @@ export default {
 
   // 获取列表信息
   getListInfo(tagId) {
-    return this.getTagInfo(tagId).then(info => {
+    if (this._requestObj_listInfo) this._requestObj_listInfo.cancelHttp()
+    this._requestObj_listInfo = httpFatch(this.getInfoUrl(tagId))
+    return this._requestObj_listInfo.promise.then(({ body }) => {
+      if (body.status !== 1) return this.getListInfo(tagId)
       return {
-        limit: info.tagInfo.limit,
-        page: info.tagInfo.page,
-        total: info.tagInfo.total,
+        limit: body.data.params.pagesize,
+        page: body.data.params.p,
+        total: body.data.params.total,
       }
     })
   },
@@ -237,8 +226,9 @@ export default {
         })
     )
     if (!tagId) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
-    Promise.all(tasks).then(([list, info, recommendList]) => {
+    return Promise.all(tasks).then(([list, info, recommendList]) => {
       if (recommendList) list.unshift(...recommendList)
+      console.log(info)
       return {
         list,
         ...info,
@@ -248,10 +238,13 @@ export default {
 
   // 获取标签
   getTags() {
-    return this.getTagInfo().then(info => {
+    if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    this._requestObj_tags = httpFatch(this.getInfoUrl())
+    return this._requestObj_tags.promise.then(({ body }) => {
+      if (body.status !== 1) return this.getTags()
       return {
-        hotTag: info.hotTag,
-        tags: info.tags,
+        hotTag: this.filterInfoHotTag(body.data.hotTag),
+        tags: this.filterTagInfo(body.data.tagids),
       }
     })
   },

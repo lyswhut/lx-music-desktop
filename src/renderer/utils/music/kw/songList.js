@@ -13,43 +13,41 @@ export default {
   sortList: [
     {
       name: '最热',
-      tabId: 'kwhot',
       id: 'hot',
     },
     {
       name: '最新',
-      tabId: 'kwnew',
       id: 'new',
     },
   ],
   tagsUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getTagList?cmd=rcm_keyword_playlist&user=0&prod=kwplayer_pc_9.0.5.0&vipver=9.0.5.0&source=kwplayer_pc_9.0.5.0&loginUid=0&loginSid=0&appUid=76039576',
   hotTagUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmTagList?loginUid=0&loginSid=0&appUid=76039576',
-  getListUrl({ sortType, id, page }) {
+  getListUrl({ sortId, id, page }) {
     return id
-      ? `http://wapi.kuwo.cn/api/pc/classify/playlist/getTagPlayList?loginUid=0&loginSid=0&appUid=76039576&id=${id}&pn=${page}&rn=${this.limit}`
-      : `http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmPlayList?loginUid=0&loginSid=0&appUid=76039576&pn=${page}&rn=${this.limit}&order=${sortType}`
+      ? `http://wapi.kuwo.cn/api/pc/classify/playlist/getTagPlayList?loginUid=0&loginSid=0&appUid=76039576&id=${id}&pn=${page}&rn=${this.limit_list}`
+      : `http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmPlayList?loginUid=0&loginSid=0&appUid=76039576&pn=${page}&rn=${this.limit_list}&order=${sortId}`
   },
   getListDetailUrl(id, page) {
-    return `http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${id}&pn=${page - 1}&rn=${this.limit}&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1`
+    return `http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${id}&pn=${page - 1}&rn=${this.limit_song}&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1`
   },
 
 
   // 获取标签
-  getTags() {
+  getTag() {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
     this._requestObj_tags = httpFatch(this.tagsUrl)
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getTags()
-      return this.filterTagInfo(body.data.tags)
+      if (body.code !== this.successCode) return this.getTag()
+      return this.filterTagInfo(body.data)
     })
   },
   // 获取标签
-  getHotTags() {
+  getHotTag() {
     if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
     this._requestObj_hotTags = httpFatch(this.hotTagUrl)
     return this._requestObj_hotTags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getHotTags()
-      return this.filterInfoHotTag(body.data.data)
+      if (body.code !== this.successCode) return this.getHotTag()
+      return this.filterInfoHotTag(body.data[0].data)
     })
   },
   filterInfoHotTag(rawList) {
@@ -73,11 +71,9 @@ export default {
   // 获取列表数据
   getList(sortId, tagId, page) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
-    this._requestObj_list = httpFatch(
-      this.getListUrl({ sortId, id: tagId, page })
-    )
+    this._requestObj_list = httpFatch(this.getListUrl({ sortId, id: tagId, page }))
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getList({ sortId, id: tagId, page })
+      if (body.code !== this.successCode) return this.getListUrl({ sortId, id: tagId, page })
       return {
         list: this.filterList(body.data.data),
         total: body.data.total,
@@ -167,7 +163,9 @@ export default {
       }
     })
   },
-
+  getTags() {
+    return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag }))
+  },
 }
 
 // getList

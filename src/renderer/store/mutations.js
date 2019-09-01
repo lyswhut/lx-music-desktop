@@ -12,9 +12,10 @@ export default {
     if (tabId != null) state.setting.leaderboard.tabId = tabId
     if (source != null) state.setting.leaderboard.source = source
   },
-  setSongList(state, { sortId, source }) {
-    if (sortId != null) state.setting.leaderboard.sortId = sortId
-    if (source != null) state.setting.leaderboard.source = source
+  setSongList(state, { sortId, tagId, source }) {
+    if (tagId != null) state.setting.songList.tagId = tagId
+    if (sortId != null) state.setting.songList.sortId = sortId
+    if (source != null) state.setting.songList.source = source
   },
   setNewVersion(state, val) {
     // val.history.forEach(ver => {

@@ -13,13 +13,11 @@ export default {
   sortList: [
     {
       name: '最热',
-      tabId: 'bdhot',
-      id: '最热',
+      id: '1',
     },
     {
       name: '最新',
-      tabId: 'bdnew',
-      id: '最新',
+      id: '0',
     },
   ],
   aesPassEncod(jsonData) {
@@ -91,7 +89,7 @@ export default {
   },
   getListUrl(sortType, tagName, page) {
     return this.createUrl({
-      channelname: tagName,
+      channelname: tagName || '全部',
       from: 'qianqianmini',
       offset: (page - 1) * this.limit_list,
       order_type: sortType,
@@ -116,8 +114,8 @@ export default {
     return this._requestObj_tags.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getTags()
       return {
-        hotTag: this.filterInfoHotTag(body.data.hot),
-        tags: this.filterTagInfo(body.data.tags),
+        hotTag: this.filterInfoHotTag(body.result.hot),
+        tags: this.filterTagInfo(body.result.tags),
       }
     })
   },

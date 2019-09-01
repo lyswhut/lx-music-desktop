@@ -1,8 +1,8 @@
 <template lang="pug">
   div(:class="$style.leaderboard")
     div(:class="$style.header")
-      //- material-tab(:class="$style.tab" :list="types" item-key="id" item-name="name" v-model="sortId")
-      //- material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+      material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
+      material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
 </template>
@@ -12,31 +12,27 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { scrollTo } from '../utils'
 // import music from '../utils/music'
 export default {
-  name: 'Leaderboard',
+  name: 'SongList',
   data() {
     return {
       tagId: null,
-      sortId: null,
+      sortId: undefined,
       source: null,
       listPage: 1,
       songListPage: 1,
-      clickTime: 0,
-      clickIndex: -1,
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
-      isSelectAll: false,
-      isIndeterminate: false,
-      isShowEditBtn: false,
       isShowDownloadMultiple: false,
+      isToggleSource: false,
     }
   },
   computed: {
     ...mapGetters(['setting']),
     ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'listDetail']),
     ...mapGetters('list', ['defaultList']),
-    types() {
-      return this.source ? this.sourceInfo.sources[this.source] : []
+    sorts() {
+      return this.source ? this.sourceInfo.sortList[this.source] : []
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
@@ -45,47 +41,39 @@ export default {
   watch: {
     sortId(n, o) {
       this.setSongList({ sortId: n })
-      if (!o && this.listPage !== 1) return
+      console.log(n)
+      if (o === undefined && this.listPage !== 1) return
       this.getList(1).then(() => {
-        this.listPage = this.info.listPage
-        scrollTo(this.$refs.dom_scrollContent, 0)
+        this.listPage = this.listData.listPage
       })
     },
     tagId(n, o) {
-      this.setSongList({ sortId: n })
-      if (!o && this.songListPage !== 1) return
+      this.setSongList({ tagId: n })
+      if (!o && this.listPage !== 1) return
+      if (this.isToggleSource) {
+        this.isToggleSource = false
+        return
+      }
       this.getList(1).then(() => {
-        this.songListPage = this.info.songListPage
-        scrollTo(this.$refs.dom_scrollContent, 0)
+        this.listPage = this.listData.listPage
       })
     },
     source(n, o) {
       this.setSongList({ source: n })
+      if (!this.tags[n]) this.getTags()
       if (o) {
-        this.tagId = this.tags[0] && this.tags[0].id
-        this.sortType = this.sortList[0] && this.sortList[0].id
+        this.isToggleSource = true
+        this.tagId = null
+        this.sortId = this.sorts[0] && this.sorts[0].id
       }
-    },
-    selectdData(n) {
-      const len = n.length
-      if (len) {
-        this.isSelectAll = true
-        this.isIndeterminate = len !== this.list.length
-        this.isShowEditBtn = true
-      } else {
-        this.isSelectAll = false
-        this.isShowEditBtn = false
-      }
-    },
-    list() {
-      this.resetSelect()
     },
   },
   mounted() {
     this.source = this.setting.songList.source
-    // this.sortId = this.setting.songList.sortId
+    this.tagId = this.setting.songList.tagId
     this.listPage = this.listData.page
     this.songListPage = this.listDetail.page
+    this.sortId = this.setting.songList.sortId
   },
   methods: {
     ...mapMutations(['setSongList']),
