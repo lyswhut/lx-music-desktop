@@ -1,9 +1,10 @@
 import leaderboard from './leaderboard'
 import api_source from '../api-source'
-
+import songList from './songList'
 
 const kg = {
   leaderboard,
+  songList,
   getMusicUrl(songInfo, type) {
     return api_source('kg').getMusicUrl(songInfo, type)
   },

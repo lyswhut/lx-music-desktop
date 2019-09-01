@@ -6,6 +6,7 @@ import leaderboard from './leaderboard'
 import lyric from './lyric'
 import pic from './pic'
 import api_source from '../api-source'
+import songList from './songList'
 
 const kw = {
   _musicInfoRequestObj: null,
@@ -32,6 +33,7 @@ const kw = {
   tempSearch,
   musicSearch,
   leaderboard,
+  songList,
   getLyric(songInfo) {
     // let singer = songInfo.singer.indexOf('、') > -1 ? songInfo.singer.split('、')[0] : songInfo.singer
     return lyric.getLyric(songInfo.songmid)

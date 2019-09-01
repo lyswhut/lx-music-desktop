@@ -12,22 +12,27 @@ export default {
   sortList: [
     {
       name: '推荐',
+      tabId: 'kgrecommend',
       id: '5',
     },
     {
       name: '最热',
+      tabId: 'kghot',
       id: '6',
     },
     {
       name: '最新',
+      tabId: 'kgnew',
       id: '7',
     },
     {
       name: '热藏',
+      tabId: 'kghotcollect',
       id: '3',
     },
     {
       name: '飙升',
+      tabId: 'kgup',
       id: '8',
     },
   ],

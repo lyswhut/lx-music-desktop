@@ -1,9 +1,11 @@
 import leaderboard from './leaderboard'
 import api_source from '../api-source'
 import musicInfo from './musicInfo'
+import songList from './songList'
 
 const bd = {
   leaderboard,
+  songList,
   getMusicUrl(songInfo, type) {
     return api_source('bd').getMusicUrl(songInfo, type)
   },

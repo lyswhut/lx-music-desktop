@@ -13,10 +13,12 @@ export default {
   sortList: [
     {
       name: '最热',
+      tabId: 'kwhot',
       id: 'hot',
     },
     {
       name: '最新',
+      tabId: 'kwnew',
       id: 'new',
     },
   ],

@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { shell, remote } from 'electron'
+import { shell, remote, clipboard } from 'electron'
 import path from 'path'
 import os from 'os'
 import crypto from 'crypto'
@@ -162,7 +162,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.4'
+  const defaultVersion = '1.0.5'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -183,6 +183,11 @@ export const updateSetting = setting => {
       source: 'kw',
       tabId: 'kwbiaosb',
     },
+    songList: {
+      source: 'kw',
+      sortId: 'kwhot',
+      tagId: '',
+    },
     themeId: 0,
     sourceId: 'kw',
     apiSource: 'test',
@@ -202,7 +207,7 @@ export const updateSetting = setting => {
     objectDeepMerge(defaultSetting, overwriteSetting)
     setting = defaultSetting
   }
-  if (setting.apiSource != 'test') setting.apiSource = 'test' // 强制设置回 test 接口源
+  if (setting.apiSource != 'temp') setting.apiSource = 'test' // 强制设置回 test 接口源
   return setting
 }
 
@@ -228,3 +233,9 @@ export const setTitle = title => {
  * @param {*} str
  */
 export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
+
+/**
+ * 复制文本到剪贴板
+ * @param {*} str
+ */
+export const clipboardWriteText = str => clipboard.writeText(str)

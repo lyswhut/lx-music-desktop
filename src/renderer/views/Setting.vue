@@ -81,7 +81,12 @@ div.scroll(:class="$style.setting")
     dd
       p.small
         | 本软件完全免费，代码已开源，开源地址：
-        span.hover(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop')") https://github.com/lyswhut/lx-music-desktop
+        span.hover(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+      p.small
+        | 最新版网盘下载地址（网盘内有MAC、windows版）：
+        span.hover(title="点击打开" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") https://www.lanzous.com/b906260/
+        | &nbsp;&nbsp;密码：
+        span.hover(title="点击复制" @click="clipboardWriteText('glqw')") glqw
       p.small
         |  本软件仅用于学习交流使用，禁止将本软件用于
         strong 非法用途
@@ -102,13 +107,17 @@ div.scroll(:class="$style.setting")
         strong star
         | 支持作者哦~~🍻
       p
+        span 如果你资金充裕，还可以
+        material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 打赏下作者
+        span ，以帮我分担点服务器费用~❤️
+      p
         small By：
         | 落雪无痕
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl } from '../utils'
+import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl, clipboardWriteText } from '../utils'
 import { rendererSend } from '../../common/icp'
 import fs from 'fs'
 
@@ -175,12 +184,12 @@ export default {
         // },
         {
           id: 'test',
-          label: '测试接口（软件的大部分功能可用，该接口访问速度较慢，请耐心等待）',
+          label: '测试接口（软件的大部分功能可用，该接口访问速度较慢）',
           disabled: false,
         },
         {
           id: 'temp',
-          label: '临时接口（软件的某些功能不可用，该接口访问速度较慢，请耐心等待）',
+          label: '临时接口（软件的某些功能不可用，该接口比测试接口快一些，建议测试接口不可用再使用本接口）',
           disabled: false,
         },
       ],
@@ -378,6 +387,12 @@ export default {
     },
     showUpdateModal() {
       this.setVersionModalVisible({ isShow: true })
+    },
+    clipboardWriteText(text) {
+      clipboardWriteText(text)
+    },
+    openRewardModal() {
+
     },
   },
 }
