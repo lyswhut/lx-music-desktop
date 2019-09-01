@@ -5,12 +5,12 @@ export default {
   list: [
     {
       id: 'kgtop500',
-      name: '酷狗TOP500',
+      name: 'TOP500',
       bangid: '8888',
     },
     {
       id: 'kgwlhgb',
-      name: '网络红歌榜',
+      name: '网络榜',
       bangid: '23784',
     },
     {
@@ -30,29 +30,29 @@ export default {
     },
     {
       id: 'kggfjqb',
-      name: '古风金曲榜',
+      name: '古风榜',
       bangid: '33161',
     },
     {
       id: 'kgyyjqb',
-      name: '粤语金曲榜',
+      name: '粤语榜',
       bangid: '33165',
     },
     {
       id: 'kgomjqb',
-      name: '欧美金曲榜',
+      name: '欧美榜',
       bangid: '33166',
     },
-    // {
-    //   id: 'kgdyrgb',
-    //   name: '电音热歌榜',
-    //   bangid: '33160',
-    // },
-    // {
-    //   id: 'kgjdrgb',
-    //   name: 'DJ热歌榜',
-    //   bangid: '24971',
-    // },
+    {
+      id: 'kgdyrgb',
+      name: '电音热歌榜',
+      bangid: '33160',
+    },
+    {
+      id: 'kgjdrgb',
+      name: 'DJ热歌榜',
+      bangid: '24971',
+    },
     // {
     //   id: 'kghyxgb',
     //   name: '华语新歌榜',

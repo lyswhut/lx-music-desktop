@@ -6,7 +6,6 @@
     material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -18,14 +17,9 @@ export default {
       tabId: null,
       source: null,
       page: 1,
-      clickTime: 0,
-      clickIndex: -1,
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
-      isSelectAll: false,
-      isIndeterminate: false,
-      isShowEditBtn: false,
       isShowDownloadMultiple: false,
     }
   },
@@ -52,20 +46,6 @@ export default {
       this.setLeaderboard({ source: n })
       if (o) this.tabId = this.types[0] && this.types[0].id
     },
-    // selectdData(n) {
-    //   const len = n.length
-    //   if (len) {
-    //     this.isSelectAll = true
-    //     this.isIndeterminate = len !== this.list.length
-    //     this.isShowEditBtn = true
-    //   } else {
-    //     this.isSelectAll = false
-    //     this.isShowEditBtn = false
-    //   }
-    // },
-    list() {
-      this.resetSelect()
-    },
   },
   mounted() {
     this.source = this.setting.leaderboard.source
@@ -78,19 +58,6 @@ export default {
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
-    handleDoubleClick(index) {
-      if (
-        window.performance.now() - this.clickTime > 400 ||
-        this.clickIndex !== index
-      ) {
-        this.clickTime = window.performance.now()
-        this.clickIndex = index
-        return
-      }
-      (this.source == 'kw' || (!this.isAPITemp && this.list[index].source != 'tx')) ? this.testPlay(index) : this.handleSearch(index)
-      this.clickTime = 0
-      this.clickIndex = -1
-    },
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
@@ -143,13 +110,6 @@ export default {
         this.page = this.info.page
       })
     },
-    handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.list] : []
-    },
-    resetSelect() {
-      this.isSelectAll = false
-      this.selectdData = []
-    },
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
       this.isShowDownload = false
@@ -161,7 +121,6 @@ export default {
           type = '128k'
       }
       this.createDownloadMultiple({ list: [...this.selectdData], type })
-      this.resetSelect()
       this.isShowDownloadMultiple = false
     },
     handleFlowBtnClick(action) {
@@ -171,16 +130,25 @@ export default {
           break
         case 'play':
           this.testPlay()
-          this.resetSelect()
           break
         case 'add':
           this.defaultListAddMultiple(this.selectdData)
-          this.resetSelect()
           break
       }
     },
     handleSongListAction({ action, data }) {
-      console.log(action, data)
+      switch (action) {
+        case 'listBtnClick':
+          return this.handleListBtnClick(data)
+        case 'togglePage':
+          return this.handleTogglePage(data)
+        case 'flowBtnClick':
+          return this.handleFlowBtnClick(data)
+        case 'testPlay':
+          return this.testPlay(data)
+        case 'search':
+          return this.handleSearch(data)
+      }
     },
   },
 }

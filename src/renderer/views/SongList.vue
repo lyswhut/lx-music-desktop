@@ -3,43 +3,8 @@
     div(:class="$style.header")
       //- material-tab(:class="$style.tab" :list="types" item-key="id" item-name="name" v-model="sortId")
       //- material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-    //- div(:class="$style.content")
-      div(v-if="list.length" :class="$style.list")
-        div(:class="$style.thead")
-          table
-            thead
-              tr
-                th.nobreak.center(style="width: 37px;")
-                  material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                    :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-                th.nobreak(style="width: 25%;") 歌曲名
-                th.nobreak(style="width: 20%;") 歌手
-                th.nobreak(style="width: 22%;") 专辑
-                th.nobreak(style="width: 18%;") 操作
-                th.nobreak(style="width: 10%;") 时长
-        div.scroll(:class="$style.tbody" ref="dom_scrollContent")
-          table
-            tbody
-              tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
-                td.nobreak.center(style="width: 37px;" @click.stop)
-                  material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
-                td.break(style="width: 25%;")
-                  | {{item.name}}
-                  //- span.badge.badge-info(v-if="item._types['320k']") 高品质
-                  //- span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
-                td.break(style="width: 20%;") {{item.singer}}
-                td.break(style="width: 22%;") {{item.albumName}}
-                td(style="width: 18%;")
-                  material-list-buttons(:index="index" :search-btn="true" :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx')" :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx')" :remove-btn="false" @btn-click="handleListBtnClick")
-                  //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
-                  //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
-                  //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-                td(style="width: 10%;") {{item.interval || '--/--'}}
-          div(:class="$style.pagination")
-            material-pagination(:count="info.total" :limit="info.limit" :page="info.page" @btn-click="handleTogglePage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
