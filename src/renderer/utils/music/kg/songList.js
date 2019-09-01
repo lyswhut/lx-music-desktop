@@ -48,8 +48,14 @@ export default {
     return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
   },
 
-  getTagInfo(tagId) {
-
+  /**
+   * 格式化播放数量
+   * @param {*} num
+   */
+  formatPlayCount(num) {
+    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
+    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
+    return num
   },
   filterInfoHotTag(rawData) {
     const result = []
@@ -112,19 +118,18 @@ export default {
       }
     )
     return this._requestObj_listRecommend.promise.then(({ body }) => {
-      // if (body.status !== 1) return this.getSongListRecommend()
-      if (body.status !== 1) return []
-      return this.filterList(body.data)
+      if (body.status !== 1) return this.getSongListRecommend()
+      return this.filterList(body.data.special_list)
     })
   },
   filterList(rawData) {
     return rawData.map(item => ({
-      play_count: item.total_play_count,
+      play_count: item.total_play_count || this.formatPlayCount(item.play_count),
       id: item.specialid,
       author: item.nickname,
       name: item.specialname,
-      time: item.publish_time,
-      img: item.img,
+      time: item.publish_time || item.publishtime,
+      img: item.img || item.imgurl,
       grade: item.grade,
       desc: item.intro,
     }))
@@ -227,8 +232,8 @@ export default {
     )
     if (!tagId) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
     return Promise.all(tasks).then(([list, info, recommendList]) => {
+      console.log(recommendList)
       if (recommendList) list.unshift(...recommendList)
-      console.log(info)
       return {
         list,
         ...info,

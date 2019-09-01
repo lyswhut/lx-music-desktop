@@ -72,7 +72,6 @@ const mutations = {
     state.list.limit = result.limit
     state.list.page = result.page
     state.list.key = key
-    console.log(result)
   },
   setListDetail(state, { result, key }) {
     state.listDetail.list = result.list

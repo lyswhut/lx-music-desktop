@@ -41,7 +41,6 @@ export default {
   watch: {
     sortId(n, o) {
       this.setSongList({ sortId: n })
-      console.log(n)
       if (o === undefined && this.listPage !== 1) return
       this.getList(1).then(() => {
         this.listPage = this.listData.listPage

@@ -229,7 +229,9 @@ const fatchData = (url, method, options, callback) => {
     method,
     headers: Object.assign({}, headers, options.headers || {}),
     Origin: options.origin,
-    data: options.data,
+    body: options.body,
+    form: options.form,
+    formData: options.formData,
     timeout: options.timeout || 10000,
     json: options.format === undefined || options.format === 'json',
   }, (err, resp, body) => {
