@@ -41,8 +41,9 @@ export default {
       ? `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&cdn=cdn&t=5&c=${tagId}`
       : `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&`
   },
-  getSongListUrl(sortId, tagId = '', page) {
-    return `http://www2.kugou.kugou.com/yueku/v9/special/index/getData/getData.html&cdn=cdn&t=${sortId}&c=${tagId}?is_ajax=1&p=${page}`
+  getSongListUrl(sortId, tagId, page) {
+    if (tagId == null) tagId = ''
+    return `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_ajax=1&cdn=cdn&t=${sortId}&c=${tagId}&p=${page}`
   },
   getSongListDetailUrl(id) {
     return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
@@ -71,10 +72,10 @@ export default {
   },
   filterTagInfo(rawData) {
     const result = []
-    for (const type of Object.keys(rawData)) {
+    for (const name of Object.keys(rawData)) {
       result.push({
-        type,
-        list: rawData[type].data.map(tag => ({
+        name,
+        list: rawData[name].data.map(tag => ({
           parent_id: tag.parent_id,
           parent_name: tag.pname,
           id: tag.id,
@@ -196,7 +197,7 @@ export default {
         interval: formatPlayTime(item.duration / 1000),
         img: null,
         lrc: null,
-        hash: item.HASH,
+        hash: item.hash,
         types,
         _types,
         typeUrl: {},
@@ -232,7 +233,6 @@ export default {
     )
     if (!tagId) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
     return Promise.all(tasks).then(([list, info, recommendList]) => {
-      console.log(recommendList)
       if (recommendList) list.unshift(...recommendList)
       return {
         list,

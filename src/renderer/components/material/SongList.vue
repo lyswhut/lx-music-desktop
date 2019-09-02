@@ -18,7 +18,7 @@ div(:class="$style.songList")
         tbody
           tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
             td.nobreak.center(style="width: 37px;" @click.stop)
-              material-checkbox(:id="index.toString()" v-model="selectdList" :value="item")
+              material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
             td.break(style="width: 25%;")
               | {{item.name}}
               span.badge.badge-info(v-if="item._types['320k']") 高品质
@@ -34,7 +34,7 @@ div(:class="$style.songList")
       div(:class="$style.pagination")
         material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
   div(v-else :class="$style.noitem")
-    p(v-html="noitem")
+    p(v-html="noItem")
   material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
@@ -73,9 +73,9 @@ export default {
     source: {
       type: String,
     },
-    noitem: {
+    noItem: {
       type: String,
-      default: '搜我所想~~😉',
+      default: '列表加载中...',
     },
   },
   computed: {
@@ -95,7 +95,19 @@ export default {
         this.isSelectAll = false
         this.isShowEditBtn = false
       }
-      this.$emit('input', [...n])
+    },
+    selectdData(n) {
+      const len = n.length
+      if (len) {
+        this.isSelectAll = true
+        this.isIndeterminate = len !== this.list.length
+        this.isShowEditBtn = true
+        this.selectdList = [...n]
+      } else {
+        this.isSelectAll = false
+        this.isShowEditBtn = false
+        this.resetSelect()
+      }
     },
     list(n) {
       this.resetSelect()
@@ -144,6 +156,9 @@ export default {
     },
     emitEvent(action, data) {
       this.$emit('action', { action, data })
+    },
+    handleChangeSelect() {
+      this.$emit('input', [...this.selectdList])
     },
   },
 }

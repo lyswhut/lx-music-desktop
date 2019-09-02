@@ -1,8 +1,22 @@
 <template lang="pug">
   div(:class="$style.leaderboard")
     div(:class="$style.header")
+      material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
       material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
       material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+    div(:class="$style.container")
+      div(:class="$style.materialSongList" v-show="isVisibleListDetail")
+        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
+      div.scroll(:class="$style.content" ref="dom_scrollContent" v-show="!isVisibleListDetail")
+        ul
+          li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
+            div(:class="$style.left")
+              img(:src="item.img")
+            div(:class="$style.right" :src="item.img")
+              h4(:title="item.name") {{item.name}}
+              p(:title="item.desc") {{item.desc}}
+        div(:class="$style.pagination")
+          material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleTogglePage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
 </template>
@@ -15,11 +29,12 @@ export default {
   name: 'SongList',
   data() {
     return {
-      tagId: null,
+      tagInfo: {
+        name: '全部',
+        id: null,
+      },
       sortId: undefined,
       source: null,
-      listPage: 1,
-      songListPage: 1,
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
@@ -29,7 +44,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'listDetail']),
+    ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'isVisibleListDetail', 'listDetail']),
     ...mapGetters('list', ['defaultList']),
     sorts() {
       return this.source ? this.sourceInfo.sortList[this.source] : []
@@ -37,24 +52,31 @@ export default {
     isAPITemp() {
       return this.setting.apiSource == 'temp'
     },
+    tagList() {
+      return this.tags[this.source] ? this.tags[this.source].tags : []
+    },
   },
   watch: {
     sortId(n, o) {
       this.setSongList({ sortId: n })
-      if (o === undefined && this.listPage !== 1) return
+      if (o === undefined && this.listData.page !== 1) return
       this.getList(1).then(() => {
-        this.listPage = this.listData.listPage
+        this.$nextTick(() => {
+          scrollTo(this.$refs.dom_scrollContent, 0)
+        })
       })
     },
-    tagId(n, o) {
-      this.setSongList({ tagId: n })
-      if (!o && this.listPage !== 1) return
+    tagInfo(n, o) {
+      this.setSongList({ tagInfo: n })
+      if (!o && this.listData.page !== 1) return
       if (this.isToggleSource) {
         this.isToggleSource = false
         return
       }
       this.getList(1).then(() => {
-        this.listPage = this.listData.listPage
+        this.$nextTick(() => {
+          scrollTo(this.$refs.dom_scrollContent, 0)
+        })
       })
     },
     source(n, o) {
@@ -62,41 +84,31 @@ export default {
       if (!this.tags[n]) this.getTags()
       if (o) {
         this.isToggleSource = true
-        this.tagId = null
+        this.tagInfo = {
+          name: '全部',
+          id: null,
+        }
         this.sortId = this.sorts[0] && this.sorts[0].id
       }
     },
   },
   mounted() {
     this.source = this.setting.songList.source
-    this.tagId = this.setting.songList.tagId
-    this.listPage = this.listData.page
-    this.songListPage = this.listDetail.page
+    this.isToggleSource = true
+    this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
   },
   methods: {
     ...mapMutations(['setSongList']),
     ...mapActions('songList', ['getTags', 'getList', 'getListDetail']),
+    ...mapMutations('songList', ['setVisibleListDetail']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
-    handleDoubleClick(index) {
-      if (
-        window.performance.now() - this.clickTime > 400 ||
-        this.clickIndex !== index
-      ) {
-        this.clickTime = window.performance.now()
-        this.clickIndex = index
-        return
-      }
-      (this.source == 'kw' || (!this.isAPITemp && this.list[index].source != 'tx')) ? this.testPlay(index) : this.handleSearch(index)
-      this.clickTime = 0
-      this.clickIndex = -1
-    },
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
-          this.musicInfo = this.list[info.index]
+          this.musicInfo = this.listDetail.list[info.index]
           this.$nextTick(() => {
             this.isShowDownload = true
           })
@@ -116,8 +128,9 @@ export default {
       if (index == null) {
         targetSong = this.selectdData[0]
         this.defaultListAddMultiple(this.selectdData)
+        this.resetSelect()
       } else {
-        targetSong = this.list[index]
+        targetSong = this.listDetail.list[index]
         this.defaultListAdd(targetSong)
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -132,7 +145,7 @@ export default {
       }
     },
     handleSearch(index) {
-      const info = this.list[index]
+      const info = this.listDetail.list[index]
       this.$router.push({
         path: 'search',
         query: {
@@ -142,18 +155,10 @@ export default {
     },
     handleTogglePage(page) {
       this.getList(page).then(() => {
-        this.page = this.info.page
         this.$nextTick(() => {
           scrollTo(this.$refs.dom_scrollContent, 0)
         })
       })
-    },
-    handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.list] : []
-    },
-    resetSelect() {
-      this.isSelectAll = false
-      this.selectdData = []
     },
     handleAddDownload(type) {
       this.createDownload({ musicInfo: this.musicInfo, type })
@@ -169,6 +174,10 @@ export default {
       this.resetSelect()
       this.isShowDownloadMultiple = false
     },
+    handleItemClick(index) {
+      this.setVisibleListDetail(true)
+      this.getListDetail({ id: this.listData.list[index].id, page: 1 })
+    },
     handleFlowBtnClick(action) {
       switch (action) {
         case 'download':
@@ -176,13 +185,29 @@ export default {
           break
         case 'play':
           this.testPlay()
-          this.resetSelect()
           break
         case 'add':
           this.defaultListAddMultiple(this.selectdData)
           this.resetSelect()
           break
       }
+    },
+    handleSongListAction({ action, data }) {
+      switch (action) {
+        case 'listBtnClick':
+          return this.handleListBtnClick(data)
+        case 'togglePage':
+          return this.handleTogglePage(data)
+        case 'flowBtnClick':
+          return this.handleFlowBtnClick(data)
+        case 'testPlay':
+          return this.testPlay(data)
+        case 'search':
+          return this.handleSearch(data)
+      }
+    },
+    resetSelect() {
+      this.selectdData = []
     },
   },
 }
@@ -211,46 +236,62 @@ export default {
   flex: none;
   width: 80px;
 }
-.content {
+
+.container {
   flex: auto;
-  display: flex;
   overflow: hidden;
-  flex-flow: column nowrap;
 }
-.list {
-  position: relative;
+
+.materialSongList {
+  position: absolute;
+  width: 100%;
   height: 100%;
-  font-size: 14px;
-  display: flex;
-  flex-flow: column nowrap;
-  // table {
-  //   position: relative;
-  //   thead {
-  //     position: fixed;
-  //     width: 100%;
-  //     th {
-  //       width: 100%;
-  //     }
-  //   }
-  // }
+  top: 0;
+  left: 0;
 }
-.thead {
-  flex: none;
-}
-.tbody {
-  flex: auto;
+
+.content {
+  height: 100%;
   overflow-y: auto;
-  td {
+  padding: 0 15px;
+  ul {
+    display: flex;
+    flex-flow: row wrap;
+  }
+}
+.item {
+  width: 100% / 3;
+  box-sizing: border-box;
+  display: flex;
+  padding-top: 15px;
+}
+.left {
+  flex: none;
+  width: 30%;
+  display: flex;
+  img {
+    max-width: 100%;
+  }
+}
+.right {
+  flex: auto;
+  padding: 5px 15px 5px 7px;
+  overflow: hidden;
+  h4 {
+    font-size: 14px;
+    text-align: justify;
+    line-height: 1.2;
+    .mixin-ellipsis-1;
+  }
+  p {
+    margin-top: 12px;
     font-size: 12px;
-    :global(.badge) {
-      margin-right: 3px;
-      &:first-child {
-        margin-left: 3px;
-      }
-      &:last-child {
-        margin-right: 0;
-      }
-    }
+    .mixin-ellipsis-2;
+    text-align: justify;
+    line-height: 1.2;
+    // text-indent: 24px;
+
+    color: #888;
   }
 }
 .pagination {

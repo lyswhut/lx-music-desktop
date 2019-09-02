@@ -127,7 +127,7 @@ export default {
   },
   filterTagInfo(rawList) {
     return rawList.map(type => ({
-      type: type.first,
+      name: type.first,
       list: type.second.map(item => ({
         parent_id: type.first,
         parent_name: type.first,

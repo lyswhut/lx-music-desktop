@@ -5,7 +5,7 @@ export default {
   list: [
     {
       id: 'kgtop500',
-      name: 'TOP500',
+      name: '酷狗TOP500',
       bangid: '8888',
     },
     {
@@ -45,7 +45,7 @@ export default {
     },
     {
       id: 'kgdyrgb',
-      name: '电音热歌榜',
+      name: '电音榜',
       bangid: '33160',
     },
     {

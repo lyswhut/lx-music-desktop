@@ -25,12 +25,19 @@ const state = {
     limit: 30,
     key: null,
   },
+  isVisibleListDetail: false,
 }
+
+sources.forEach(source => {
+  state.tags[source.id] = null
+})
+
 
 // getters
 const getters = {
   sourceInfo: () => ({ sources, sortList }),
   tags: state => state.tags,
+  isVisibleListDetail: state => state.isVisibleListDetail,
   listData(state) {
     return state.list
   },
@@ -47,17 +54,19 @@ const actions = {
   },
   getList({ state, rootState, commit }, page) {
     let source = rootState.setting.songList.source
-    let tabId = rootState.setting.songList.tagId
+    let tabId = rootState.setting.songList.tagInfo.id
     let sortId = rootState.setting.songList.sortId
+    console.log(sortId)
     let key = `${source}${sortId}${tabId}${page}`
     if (state.list.list.length && state.list.key == key) return true
-    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key }))
+    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
-    let key = `${source}${id}${page}}`
+    let key = `${source}${id}${page}`
     if (state.listDetail.list.length && state.listDetail.key == key) return true
-    return music[source].songList.getListDetail(id, page).then(result => commit('setListDetail', { result, key }))
+    console.log(id, page)
+    return music[source].songList.getListDetail(id, page).then(result => commit('setListDetail', { result, key, page }))
   },
 }
 
@@ -66,19 +75,22 @@ const mutations = {
   setTags(state, { tags, source }) {
     state.tags[source] = tags
   },
-  setList(state, { result, key }) {
+  setList(state, { result, key, page }) {
     state.list.list = result.list
     state.list.total = result.total
     state.list.limit = result.limit
-    state.list.page = result.page
+    state.list.page = page
     state.list.key = key
   },
-  setListDetail(state, { result, key }) {
+  setListDetail(state, { result, key, page }) {
     state.listDetail.list = result.list
     state.listDetail.total = result.total
     state.listDetail.limit = result.limit
-    state.listDetail.page = result.page
+    state.listDetail.page = page
     state.listDetail.key = key
+  },
+  setVisibleListDetail(state, bool) {
+    state.isVisibleListDetail = bool
   },
 }
 

@@ -12,8 +12,8 @@ export default {
     if (tabId != null) state.setting.leaderboard.tabId = tabId
     if (source != null) state.setting.leaderboard.source = source
   },
-  setSongList(state, { sortId, tagId, source }) {
-    if (tagId != null) state.setting.songList.tagId = tagId
+  setSongList(state, { sortId, tagInfo, source }) {
+    if (tagInfo != null) state.setting.songList.tagInfo = tagInfo
     if (sortId != null) state.setting.songList.sortId = sortId
     if (source != null) state.setting.songList.source = source
   },

@@ -186,7 +186,10 @@ export const updateSetting = setting => {
     songList: {
       source: 'kw',
       sortId: 'hot',
-      tagId: null,
+      tagInfo: {
+        name: '全部',
+        id: null,
+      },
     },
     themeId: 0,
     sourceId: 'kw',

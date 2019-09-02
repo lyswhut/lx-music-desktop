@@ -58,7 +58,7 @@ export default {
   },
   filterTagInfo(rawList) {
     return rawList.map(type => ({
-      type: type.name,
+      name: type.name,
       list: type.data.map(item => ({
         parent_id: type.id,
         parent_name: type.name,
@@ -115,7 +115,7 @@ export default {
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.result !== 'ok') return this.getListDetail(id, page)
       return {
-        list: this.filterListDetail(body.data.musiclist),
+        list: this.filterListDetail(body.musiclist),
         page,
         limit: body.rn,
         total: body.total,

@@ -1,9 +1,9 @@
 <template lang="pug">
   div(:class="$style.leaderboard")
     div(:class="$style.header")
-      material-tab(:class="$style.tab" :list="types" item-key="id" item-name="name" v-model="tabId")
+      material-tab(:class="$style.tab" :list="types" align="left" item-key="id" item-name="name" v-model="tabId")
       material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-    material-song-list(v-model="selectdData" noItem="列表加载中..." @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :list="list")
+    material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
 </template>
@@ -81,6 +81,7 @@ export default {
       if (index == null) {
         targetSong = this.selectdData[0]
         this.defaultListAddMultiple(this.selectdData)
+        this.resetSelect()
       } else {
         targetSong = this.list[index]
         this.defaultListAdd(targetSong)
@@ -122,6 +123,7 @@ export default {
       }
       this.createDownloadMultiple({ list: [...this.selectdData], type })
       this.isShowDownloadMultiple = false
+      this.resetSelect()
     },
     handleFlowBtnClick(action) {
       switch (action) {
@@ -133,6 +135,7 @@ export default {
           break
         case 'add':
           this.defaultListAddMultiple(this.selectdData)
+          this.resetSelect()
           break
       }
     },
@@ -149,6 +152,9 @@ export default {
         case 'search':
           return this.handleSearch(data)
       }
+    },
+    resetSelect() {
+      this.selectdData = []
     },
   },
 }
