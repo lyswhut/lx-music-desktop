@@ -3,7 +3,7 @@
     div(:class="$style.label" ref="dom_btn" @click="handleShow") {{value.name}}
     div.scroll(:class="$style.list" @click.stop ref="dom_list" :style="listStyle")
       div(:class="$style.tag" @click="handleClick(null)") 全部
-      dl(:class="$style.type" v-for="type in list")
+      dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
         dd(:class="$style.tag" v-for="tag in type.list" @click="handleClick(tag)") {{tag.name}}
 </template>
@@ -114,7 +114,7 @@ export default {
 .list {
   position: absolute;
   top: 100%;
-  width: 644px;
+  width: 646px;
   left: 0;
   border-bottom: 2px solid @color-tab-border-bottom;
   border-right: 2px solid @color-tab-border-bottom;
@@ -125,6 +125,8 @@ export default {
   transition: .25s ease;
   transition-property: height, opacity;
   z-index: 10;
+  padding: 10px;
+  box-sizing: border-box;
 
   li {
     cursor: pointer;
@@ -145,11 +147,18 @@ export default {
   }
 }
 
+.type {
+  padding-top: 10px;
+  padding-bottom: 3px;
+  color: #999;
+}
+
 .tag {
   display: inline-block;
   margin: 5px;
   background-color: @color-btn-background;
-  padding: 5px;
+  padding: 8px 10px;
+  border-radius: @radius-progress-border;
   cursor: pointer;
   &:hover {
     background-color: @color-theme_2-hover;
@@ -176,6 +185,7 @@ each(@themes, {
 
     .list {
       border-bottom-color: ~'@{color-@{value}-tab-border-bottom}';
+      border-right-color: ~'@{color-@{value}-tab-border-bottom}';
       // border-left-color: ~'@{color-@{value}-tab-border-bottom}';
       li {
         // color: ~'@{color-@{value}-btn}';
@@ -186,6 +196,16 @@ each(@themes, {
         &:active {
           background-color: ~'@{color-@{value}-theme_2-active}';
         }
+      }
+    }
+
+    .tag {
+      background-color: ~'@{color-@{value}-btn-background}';
+      &:hover {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+      &:active {
+        background-color: ~'@{color-@{value}-theme_2-active}';
       }
     }
   }

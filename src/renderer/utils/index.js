@@ -184,8 +184,8 @@ export const updateSetting = setting => {
       tabId: 'kwbiaosb',
     },
     songList: {
-      source: 'kw',
-      sortId: 'hot',
+      source: 'kg',
+      sortId: '5',
       tagInfo: {
         name: '全部',
         id: null,

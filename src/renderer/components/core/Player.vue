@@ -283,7 +283,7 @@ export default {
       }
     },
     checkDelayNextTimeout() {
-      console.log(this.delayNextTimeout)
+      // console.log(this.delayNextTimeout)
       if (this.delayNextTimeout) {
         clearTimeout(this.delayNextTimeout)
         this.delayNextTimeout = null

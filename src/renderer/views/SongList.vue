@@ -5,8 +5,18 @@
       material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
       material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
     div(:class="$style.container")
-      div(:class="$style.materialSongList" v-show="isVisibleListDetail")
-        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
+      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+        div(:class="$style.materialSongList" v-show="isVisibleListDetail")
+          div(:class="$style.songListHeader")
+            div(:class="$style.songListHeaderLeft")
+              img(:src="selectListInfo.img")
+              span(:class="$style.playNum" v-if="selectListInfo.play_count") {{selectListInfo.play_count}}
+            div(:class="$style.songListHeaderMiddle")
+              h3(:title="selectListInfo.name") {{selectListInfo.name}}
+              p(:title="selectListInfo.desc") {{selectListInfo.desc}}
+            div(:class="$style.songListHeaderRight")
+              material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
+          material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
       div.scroll(:class="$style.content" ref="dom_scrollContent" v-show="!isVisibleListDetail")
         ul
           li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
@@ -15,6 +25,7 @@
             div(:class="$style.right" :src="item.img")
               h4(:title="item.name") {{item.name}}
               p(:title="item.desc") {{item.desc}}
+          li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
         div(:class="$style.pagination")
           material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleTogglePage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -44,7 +55,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'isVisibleListDetail', 'listDetail']),
+    ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'isVisibleListDetail', 'selectListInfo', 'listDetail']),
     ...mapGetters('list', ['defaultList']),
     sorts() {
       return this.source ? this.sourceInfo.sortList[this.source] : []
@@ -60,11 +71,14 @@ export default {
     sortId(n, o) {
       this.setSongList({ sortId: n })
       if (o === undefined && this.listData.page !== 1) return
-      this.getList(1).then(() => {
-        this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+      this.$nextTick(() => {
+        this.getList(1).then(() => {
+          this.$nextTick(() => {
+            scrollTo(this.$refs.dom_scrollContent, 0)
+          })
         })
       })
+      // if (this.isVisibleListDetail) this.setVisibleListDetail(false)
     },
     tagInfo(n, o) {
       this.setSongList({ tagInfo: n })
@@ -73,11 +87,14 @@ export default {
         this.isToggleSource = false
         return
       }
-      this.getList(1).then(() => {
-        this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+      this.$nextTick(() => {
+        this.getList(1).then(() => {
+          this.$nextTick(() => {
+            scrollTo(this.$refs.dom_scrollContent, 0)
+          })
         })
       })
+      // if (this.isVisibleListDetail) this.setVisibleListDetail(false)
     },
     source(n, o) {
       this.setSongList({ source: n })
@@ -101,7 +118,7 @@ export default {
   methods: {
     ...mapMutations(['setSongList']),
     ...mapActions('songList', ['getTags', 'getList', 'getListDetail']),
-    ...mapMutations('songList', ['setVisibleListDetail']),
+    ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
@@ -175,8 +192,9 @@ export default {
       this.isShowDownloadMultiple = false
     },
     handleItemClick(index) {
+      this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
-      this.getListDetail({ id: this.listData.list[index].id, page: 1 })
+      this.getListDetail({ id: this.selectListInfo.id, page: 1 })
     },
     handleFlowBtnClick(action) {
       switch (action) {
@@ -209,6 +227,9 @@ export default {
     resetSelect() {
       this.selectdData = []
     },
+    hideListDetail() {
+      setTimeout(() => this.setVisibleListDetail(false), 50)
+    },
   },
 }
 </script>
@@ -240,37 +261,101 @@ export default {
 .container {
   flex: auto;
   overflow: hidden;
+  // position: relative;
 }
 
-.materialSongList {
+.song-list-header {
+  background-color: @color-theme_2;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 60px;
+}
+.song-list-header-left {
+  flex: none;
+  margin-left: 5px;
+  width: 60px;
+  position: relative;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .play-num {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    font-size: 11px;
+    text-align: right;
+    .mixin-ellipsis-1;
+  }
+}
+
+.song_list_header_middle {
+  flex: auto;
+  padding: 5px 7px;
+  h3 {
+    .mixin-ellipsis-1;
+    line-height: 1.2;
+    padding-bottom: 5px;
+  }
+  p {
+    .mixin-ellipsis-2;
+    font-size: 12px;
+    line-height: 1.2;
+    color: #888;
+  }
+}
+.song-list-header-right {
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding-right: 15px;
+}
+
+.material-song-list {
   position: absolute;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
 .content {
   height: 100%;
   overflow-y: auto;
   padding: 0 15px;
+  background-color: #fff;
   ul {
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-between;
   }
 }
 .item {
-  width: 100% / 3;
+  width: 32%;
   box-sizing: border-box;
   display: flex;
-  padding-top: 15px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: opacity @transition-theme;
+  &:hover {
+    opacity: .7;
+  }
 }
 .left {
   flex: none;
-  width: 30%;
+  width: 66px;
+  height: 66px;
   display: flex;
+
   img {
     max-width: 100%;
+    max-height: 100%;
   }
 }
 .right {

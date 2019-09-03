@@ -7,31 +7,37 @@ export default {
   _requestObj_hotTags: null,
   _requestObj_list: null,
   _requestObj_listDetail: null,
-  limit_list: 100,
-  limit_song: 25,
+  limit_list: 25,
+  limit_song: 100,
   successCode: 200,
   sortList: [
-    {
-      name: '最热',
-      id: 'hot',
-    },
     {
       name: '最新',
       id: 'new',
     },
+    {
+      name: '最热',
+      id: 'hot',
+    },
   ],
   tagsUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getTagList?cmd=rcm_keyword_playlist&user=0&prod=kwplayer_pc_9.0.5.0&vipver=9.0.5.0&source=kwplayer_pc_9.0.5.0&loginUid=0&loginSid=0&appUid=76039576',
   hotTagUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmTagList?loginUid=0&loginSid=0&appUid=76039576',
-  getListUrl({ sortId, id, page }) {
-    return id
-      ? `http://wapi.kuwo.cn/api/pc/classify/playlist/getTagPlayList?loginUid=0&loginSid=0&appUid=76039576&id=${id}&pn=${page}&rn=${this.limit_list}`
-      : `http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmPlayList?loginUid=0&loginSid=0&appUid=76039576&pn=${page}&rn=${this.limit_list}&order=${sortId}`
+  getListUrl({ sortId, id, type, page }) {
+    console.log(id, type)
+    if (!id) return `http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmPlayList?loginUid=0&loginSid=0&appUid=76039576&&pn=${page}&rn=${this.limit_list}&order=${sortId}`
+    switch (type) {
+      case '10000': return `http://wapi.kuwo.cn/api/pc/classify/playlist/getTagPlayList?loginUid=0&loginSid=0&appUid=76039576&pn=${page}&id=${id}&rn=${this.limit_list}`
+      case '43': return `http://mobileinterfaces.kuwo.cn/er.s?type=get_pc_qz_data&f=web&id=${id}&prod=pc`
+    }
+    // http://wapi.kuwo.cn/api/pc/classify/playlist/getTagPlayList?loginUid=0&loginSid=0&appUid=76039576&id=173&pn=1&rn=100
   },
   getListDetailUrl(id, page) {
+    // http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=2858093057&pn=0&rn=100&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1
     return `http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${id}&pn=${page - 1}&rn=${this.limit_song}&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1`
+    // http://mobileinterfaces.kuwo.cn/er.s?type=get_pc_qz_data&f=web&id=140&prod=pc
   },
 
-
+  // http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=2849349915&pn=0&rn=100&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1
   // 获取标签
   getTag() {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
@@ -52,7 +58,7 @@ export default {
   },
   filterInfoHotTag(rawList) {
     return rawList.map(item => ({
-      id: item.id,
+      id: `${item.id}-${item.digest}`,
       name: item.name,
     }))
   },
@@ -62,7 +68,7 @@ export default {
       list: type.data.map(item => ({
         parent_id: type.id,
         parent_name: type.name,
-        id: item.id,
+        id: `${item.id}-${item.digest}`,
         name: item.name,
       })),
     }))
@@ -71,14 +77,34 @@ export default {
   // 获取列表数据
   getList(sortId, tagId, page) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
-    this._requestObj_list = httpFatch(this.getListUrl({ sortId, id: tagId, page }))
+    let id
+    let type
+    if (tagId) {
+      let arr = tagId.split('-')
+      id = arr[0]
+      type = arr[1]
+    } else {
+      id = null
+    }
+    console.log(id, type)
+    this._requestObj_list = httpFatch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getListUrl({ sortId, id: tagId, page })
+      if (!id || type == '10000') {
+        if (body.code !== this.successCode) return this.getListUrl({ sortId, id, type, page })
+        return {
+          list: this.filterList(body.data.data),
+          total: body.data.total,
+          page: body.data.pn,
+          limit: body.data.rn,
+        }
+      } else if (!body.length) {
+        return this.getListUrl({ sortId, id, type, page })
+      }
       return {
-        list: this.filterList(body.data.data),
-        total: body.data.total,
-        page: body.data.pn,
-        limit: body.data.rn,
+        list: this.filterList2(body),
+        total: 1000,
+        page,
+        limit: 1000,
       }
     })
   },
@@ -104,6 +130,24 @@ export default {
       grade: item.favorcnt / 10,
       desc: item.desc,
     }))
+  },
+  filterList2(rawData) {
+    const list = []
+    rawData.forEach(item => {
+      if (!item.label) return
+      list.push(...item.list.map(item => ({
+        play_count: item.play_count === undefined ? null : this.formatPlayCount(item.listencnt),
+        id: item.id,
+        author: item.uname,
+        name: item.name,
+        // time: item.publish_time,
+        img: item.img,
+        grade: item.favorcnt / 10,
+        desc: item.desc,
+      })))
+    })
+    console.log(list)
+    return list
   },
 
   // 获取歌曲列表内的音乐

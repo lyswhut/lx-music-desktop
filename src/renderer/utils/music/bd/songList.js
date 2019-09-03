@@ -144,7 +144,7 @@ export default {
       this.getListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.error_code !== this.successCode) return this.getSongList(sortId, tagId, page)
+      if (body.error_code !== this.successCode) return this.getList(sortId, tagId, page)
       return {
         list: this.filterList(body.diyInfo),
         total: body.nums,

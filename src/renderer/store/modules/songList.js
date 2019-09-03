@@ -25,6 +25,7 @@ const state = {
     limit: 30,
     key: null,
   },
+  selectListInfo: {},
   isVisibleListDetail: false,
 }
 
@@ -38,6 +39,7 @@ const getters = {
   sourceInfo: () => ({ sources, sortList }),
   tags: state => state.tags,
   isVisibleListDetail: state => state.isVisibleListDetail,
+  selectListInfo: state => state.selectListInfo,
   listData(state) {
     return state.list
   },
@@ -56,7 +58,7 @@ const actions = {
     let source = rootState.setting.songList.source
     let tabId = rootState.setting.songList.tagInfo.id
     let sortId = rootState.setting.songList.sortId
-    console.log(sortId)
+    // console.log(sortId)
     let key = `${source}${sortId}${tabId}${page}`
     if (state.list.list.length && state.list.key == key) return true
     return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
@@ -65,7 +67,7 @@ const actions = {
     let source = rootState.setting.songList.source
     let key = `${source}${id}${page}`
     if (state.listDetail.list.length && state.listDetail.key == key) return true
-    console.log(id, page)
+    commit('clearListDetail')
     return music[source].songList.getListDetail(id, page).then(result => commit('setListDetail', { result, key, page }))
   },
 }
@@ -91,6 +93,12 @@ const mutations = {
   },
   setVisibleListDetail(state, bool) {
     state.isVisibleListDetail = bool
+  },
+  setSelectListInfo(state, info) {
+    state.selectListInfo = info
+  },
+  clearListDetail(state) {
+    state.listDetail.list = []
   },
 }
 
