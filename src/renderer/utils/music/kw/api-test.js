@@ -15,13 +15,13 @@ const api_test = {
   //   return requestObj
   // },
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`http://45.32.53.128:3000/kuwo/url?id=${songInfo.songmid}&quality=${type.replace(/k$/, '')}`, {
+    const requestObj = httpFatch(`http://test.tempmusic.tk/url/kw/${songInfo.songmid}/${type}`, {
       method: 'get',
       timeout,
       headers,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return body.code === 200 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
+      return body.code === 0 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
     })
     return requestObj
   },

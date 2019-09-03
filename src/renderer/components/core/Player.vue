@@ -414,8 +414,8 @@ export default {
           this.lyric.lrc.setLyric(this.musicInfo.lrc)
           if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) this.lyric.lrc.play(this.audio.currentTime * 1000)
         })
-        .catch(err => {
-          this.status = err.message
+        .catch(() => {
+          this.status = '歌词获取失败'
         })
     },
     handleRemoveMusic() {
