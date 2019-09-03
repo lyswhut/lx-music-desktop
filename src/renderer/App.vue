@@ -37,6 +37,7 @@ export default {
       globalObj: {
         apiSource: 'messoer',
       },
+      updateTimeout: null,
     }
   },
   computed: {
@@ -98,19 +99,29 @@ export default {
       })
       rendererOn('update-error', () => {
         this.setVersionModalVisible({ isError: true })
+        this.clearUpdateTimeout()
         this.$nextTick(() => {
           this.showUpdateModal()
         })
       })
       rendererOn('update-downloaded', () => {
+        this.clearUpdateTimeout()
         this.showUpdateModal()
       })
       rendererOn('update-not-available', () => {
         if (this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
+        this.clearUpdateTimeout()
         this.setNewVersion({
           version: this.version.version,
         })
       })
+      this.updateTimeout = setTimeout(() => {
+        this.updateTimeout = null
+        this.setVersionModalVisible({ isError: true })
+        this.$nextTick(() => {
+          this.showUpdateModal()
+        })
+      }, 180000)
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
@@ -173,6 +184,10 @@ export default {
       body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
       body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
+  },
+  clearUpdateTimeout() {
+    clearTimeout(this.updateTimeout)
+    this.updateTimeout = null
   },
 }
 </script>
