@@ -6,6 +6,20 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.4.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.5...v0.4.0) - 2019-09-04
+
+
+### 新增
+
+- 新增**歌单**功能，目前支持酷我、酷狗、百度源歌单
+- 在设置界面-关于洛雪音乐说明部分新增**最新版网盘下载地址**与**打赏地址**
+- 新增酷狗 电音热歌榜、DJ热歌榜
+- 新增版本更新超时功能，对于部分无法访问GitHub的用户做更新超时提醒
+
+### 移除
+
+- **注意**：0.4.0以前的版本即将失效，请更新到0.4.0版本
+
 ## [0.3.5](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.4...v0.3.5) - 2019-08-30
 
 ### 新增
