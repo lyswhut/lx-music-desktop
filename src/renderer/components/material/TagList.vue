@@ -159,6 +159,7 @@ export default {
   background-color: @color-btn-background;
   padding: 8px 10px;
   border-radius: @radius-progress-border;
+  transition: background-color @transition-theme;
   cursor: pointer;
   &:hover {
     background-color: @color-theme_2-hover;
