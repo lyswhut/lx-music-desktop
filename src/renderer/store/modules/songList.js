@@ -67,7 +67,6 @@ const actions = {
     let source = rootState.setting.songList.source
     let key = `${source}${id}${page}`
     if (state.listDetail.list.length && state.listDetail.key == key) return true
-    commit('clearListDetail')
     return music[source].songList.getListDetail(id, page).then(result => commit('setListDetail', { result, key, page }))
   },
 }
@@ -98,6 +97,7 @@ const mutations = {
     state.selectListInfo = info
   },
   clearListDetail(state) {
+    console.log('object')
     state.listDetail.list = []
   },
 }

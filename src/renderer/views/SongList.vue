@@ -27,7 +27,7 @@
               p(:title="item.desc") {{item.desc}}
           li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
         div(:class="$style.pagination")
-          material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleTogglePage")
+          material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
 </template>
@@ -118,7 +118,7 @@ export default {
   methods: {
     ...mapMutations(['setSongList']),
     ...mapActions('songList', ['getTags', 'getList', 'getListDetail']),
-    ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo']),
+    ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo', 'clearListDetail']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
@@ -170,8 +170,15 @@ export default {
         },
       })
     },
-    handleTogglePage(page) {
+    handleToggleListPage(page) {
       this.getList(page).then(() => {
+        this.$nextTick(() => {
+          scrollTo(this.$refs.dom_scrollContent, 0)
+        })
+      })
+    },
+    handleToggleListDetailPage(page) {
+      this.getListDetail({ id: this.selectListInfo.id, page }).then(() => {
         this.$nextTick(() => {
           scrollTo(this.$refs.dom_scrollContent, 0)
         })
@@ -194,7 +201,10 @@ export default {
     handleItemClick(index) {
       this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
-      this.getListDetail({ id: this.selectListInfo.id, page: 1 })
+      this.clearListDetail()
+      this.$nextTick(() => {
+        this.getListDetail({ id: this.selectListInfo.id, page: 1 })
+      })
     },
     handleFlowBtnClick(action) {
       switch (action) {
@@ -215,7 +225,7 @@ export default {
         case 'listBtnClick':
           return this.handleListBtnClick(data)
         case 'togglePage':
-          return this.handleTogglePage(data)
+          return this.handleToggleListDetailPage(data)
         case 'flowBtnClick':
           return this.handleFlowBtnClick(data)
         case 'testPlay':

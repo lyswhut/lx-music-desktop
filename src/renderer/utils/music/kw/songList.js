@@ -86,7 +86,6 @@ export default {
     } else {
       id = null
     }
-    console.log(id, type)
     this._requestObj_list = httpFatch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
       if (!id || type == '10000') {
