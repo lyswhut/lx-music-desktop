@@ -1,6 +1,20 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 
+// 单例应用程序
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+  return
+}
+app.on('second-instance', (event, argv, cwd) => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore()
+    mainWindow.focus()
+  } else {
+    app.quit()
+  }
+})
+
 require('./events')
 const progressBar = require('./events/progressBar')
 const trafficLight = require('./events/trafficLight')
@@ -90,4 +104,3 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
