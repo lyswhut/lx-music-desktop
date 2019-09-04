@@ -6,6 +6,25 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.4.0...v0.5.0) - 2019-09-05
+
+### 新增
+
+- 新增**封面嵌入**（默认开启，可到设置-下载设置关闭）
+- 新增**歌词下载**（默认关闭，可到设置-下载设置开启）
+- 新增单例应用功能（实现软件单开功能，禁止软件多开）
+
+### 优化
+
+- 优化歌单列表动画
+
+### 修复
+
+- 修复歌单无法翻页的问题
+- 修复在某些情况下，添加下载歌曲导致下载列表崩溃的问题
+- 修复版本更新弹窗Bug
+- 修复酷狗歌单推荐歌单出现在其他分类中的Bug
+
 ## [0.4.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.3.5...v0.4.0) - 2019-09-04
 
 

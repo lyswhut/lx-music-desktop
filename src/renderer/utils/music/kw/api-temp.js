@@ -3,7 +3,7 @@ import { headers, timeout } from '../options'
 
 const api_temp = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`http://45.32.53.128:3002/m/kw/u/${songInfo.songmid}/${type}`, {
+    const requestObj = httpFatch(`http://temp.tempmusic.tk/url/kw/${songInfo.songmid}/${type}`, {
       method: 'get',
       headers,
       timeout,
