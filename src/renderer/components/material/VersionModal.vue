@@ -1,7 +1,7 @@
 <template lang="pug">
 material-modal(:show="version.showModal" @close="handleClose")
   main(:class="$style.main" v-if="version.newVersion")
-    h2 {{ version.isError ? '🌟发现新版本🌟' : '🚀程序更新🚀'}}
+    h2 {{ version.isError ? isUnknow ? '❓ 版本信息获取失败 ❓' : '🌟发现新版本🌟' : '🚀程序更新🚀'}}
 
     div.scroll(:class="$style.info")
       div(:class="$style.current")
@@ -16,7 +16,7 @@ material-modal(:show="version.showModal" @close="handleClose")
           p(v-html="ver.desc")
 
     div(:class="$style.footer" v-if="version.isError")
-      div(:class="$style.desc")
+      div(:class="$style.desc" v-if="!isUnknow")
         p 发现有新版本啦，但是自动更新功能出问题了
         p
           | 如果你所用的软件是
@@ -58,6 +58,9 @@ export default {
       })
 
       return arr
+    },
+    isUnknow() {
+      return this.version.newVersion.version == '0.0.0'
     },
   },
   methods: {
