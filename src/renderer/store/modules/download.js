@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import music from '../../utils/music'
 import { getMusicType } from '../../utils/music/utils'
+import { setMeta, saveLrc } from '../../utils'
 
 // state
 const state = {
@@ -75,6 +76,43 @@ const getUrl = (downloadInfo, isRefresh) => {
   return url && !isRefresh ? Promise.resolve({ url }) : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
 }
 
+/**
+ * 设置歌曲meta信息
+ * @param {*} downloadInfo
+ * @param {*} filePath
+ * @param {*} isEmbedPic
+ */
+const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
+  if (downloadInfo.type === 'ape') return
+  const promise = isEmbedPic
+    ? downloadInfo.musicInfo.img
+      ? Promise.resolve(downloadInfo.musicInfo.img)
+      : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise
+    : Promise.resolve()
+  promise.then(url => {
+    setMeta(filePath, {
+      title: downloadInfo.musicInfo.name,
+      artist: downloadInfo.musicInfo.singer,
+      album: downloadInfo.musicInfo.albumName,
+      APIC: url,
+    })
+  })
+}
+
+/**
+ * 保存歌词
+ * @param {*} downloadInfo
+ * @param {*} filePath
+ */
+const downloadLyric = (downloadInfo, filePath) => {
+  const promise = downloadInfo.musicInfo.lrc
+    ? Promise.resolve(downloadInfo.musicInfo.lrc)
+    : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
+  promise.then(lrc => {
+    if (lrc) saveLrc(filePath.replace(/(mp3|flac|ape)$/, 'lrc'), lrc)
+  })
+}
+
 // actions
 const actions = {
   createDownload({ state, rootState, commit }, { musicInfo, type }) {
@@ -133,8 +171,16 @@ const actions = {
       method: 'get',
       override: true,
       onEnd() {
+        if (downloadInfo.progress.progress != '100.00') {
+          delete dls[downloadInfo.key]
+          return this.dispatch('download/startTask', downloadInfo)
+        }
         commit('onEnd', downloadInfo)
         _this.dispatch('download/startTask')
+        const filePath = path.join(options.path, options.fileName)
+
+        saveMeta(downloadInfo, filePath, rootState.setting.download.isEmbedPic)
+        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, filePath)
         console.log('on complate')
       },
       onError(err) {

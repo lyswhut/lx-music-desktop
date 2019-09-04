@@ -2,7 +2,7 @@
   div(:class="$style.tagList")
     div(:class="$style.label" ref="dom_btn" @click="handleShow") {{value.name}}
     div.scroll(:class="$style.list" @click.stop ref="dom_list" :style="listStyle")
-      div(:class="$style.tag" @click="handleClick(null)") 全部
+      div(:class="$style.tag" @click="handleClick(null)") 默认
       dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
         dd(:class="$style.tag" v-for="tag in type.list" @click="handleClick(tag)") {{tag.name}}
@@ -66,7 +66,7 @@ export default {
     handleClick(item) {
       if (!item) {
         item = {
-          name: '全部',
+          name: '默认',
           id: null,
         }
       }

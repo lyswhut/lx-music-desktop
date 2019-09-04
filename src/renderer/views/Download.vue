@@ -23,7 +23,7 @@ div(:class="$style.download")
             td.break(style="width: 28%;") {{item.musicInfo.name}} - {{item.musicInfo.singer}}
             td.break(style="width: 22%;") {{item.progress.progress}}%
             td.break(style="width: 15%;") {{item.statusText}}
-            td.break(style="width: 10%;") {{item.type.toUpperCase()}}
+            td.break(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
             td(style="width: 20%; padding-left: 0; padding-right: 0;")
               material-list-buttons(:index="index" :download-btn="false" :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
                 :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)"

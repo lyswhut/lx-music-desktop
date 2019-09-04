@@ -3,6 +3,7 @@ import { shell, remote, clipboard } from 'electron'
 import path from 'path'
 import os from 'os'
 import crypto from 'crypto'
+import { rendererSend } from '../../common/icp'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -162,7 +163,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.5'
+  const defaultVersion = '1.0.6'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -178,6 +179,8 @@ export const updateSetting = setting => {
       savePath: path.join(os.homedir(), 'Desktop'),
       fileName: '歌名 - 歌手',
       maxDownloadNum: 3,
+      isDownloadLrc: false,
+      isEmbedPic: true,
     },
     leaderboard: {
       source: 'kw',
@@ -187,7 +190,7 @@ export const updateSetting = setting => {
       source: 'kg',
       sortId: '5',
       tagInfo: {
-        name: '全部',
+        name: '默认',
         id: null,
       },
     },
@@ -242,3 +245,23 @@ export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
  * @param {*} str
  */
 export const clipboardWriteText = str => clipboard.writeText(str)
+
+/**
+ * 设置音频 meta 信息
+ * @param {*} filePath
+ * @param {*} meta
+ */
+export const setMeta = (filePath, meta) => {
+  rendererSend('setMusicMeta', { filePath, meta })
+}
+
+/**
+ * 保存歌词文件
+ * @param {*} filePath
+ * @param {*} lrc
+ */
+export const saveLrc = (filePath, lrc) => {
+  fs.writeFile(filePath, lrc, 'utf8', err => {
+    if (err) console.log(err)
+  })
+}

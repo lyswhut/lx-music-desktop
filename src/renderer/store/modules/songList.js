@@ -97,7 +97,6 @@ const mutations = {
     state.selectListInfo = info
   },
   clearListDetail(state) {
-    console.log('object')
     state.listDetail.list = []
   },
 }

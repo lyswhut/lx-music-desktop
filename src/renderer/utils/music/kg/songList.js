@@ -231,7 +231,7 @@ export default {
           return info
         })
     )
-    if (!tagId && page === 1) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
+    if (!tagId && page === 1 && sortId === this.sortList[0].id) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
     return Promise.all(tasks).then(([list, info, recommendList]) => {
       if (recommendList) list.unshift(...recommendList)
       return {

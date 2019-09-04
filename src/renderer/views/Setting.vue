@@ -49,6 +49,14 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
+    dd(title='封面嵌入')
+      h3 是否将封面嵌入音频文件中（只支持MP3格式）
+      div
+        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" label="是否启用")
+    dd(title='歌词下载')
+      h3 是否同时下载歌词文件
+      div
+        material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
     //- dt 列表设置
     //- dd(title='播放列表是否显示专辑栏')
       h3 专辑栏
@@ -146,6 +154,8 @@ export default {
         download: {
           savePath: '',
           fileName: '歌名 - 歌手',
+          isDownloadLrc: false,
+          isEmbedPic: true,
         },
         themeId: 0,
         sourceId: 0,

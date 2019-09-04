@@ -89,7 +89,7 @@ export default {
   },
   getListUrl(sortType, tagName, page) {
     return this.createUrl({
-      channelname: tagName || '全部',
+      channelname: tagName || '默认',
       from: 'qianqianmini',
       offset: (page - 1) * this.limit_list,
       order_type: sortType,

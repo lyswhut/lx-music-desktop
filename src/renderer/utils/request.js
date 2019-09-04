@@ -41,8 +41,8 @@ const buildHttpPromose = (url, options) => {
   const obj = {
     promise: p,
     cancelHttp() {
-      console.log('cancel')
       if (!requestObj) return
+      console.log('cancel')
       cancelHttp(requestObj)
       cancelFn(new Error(requestMsg.cancelRequest))
       requestObj = null

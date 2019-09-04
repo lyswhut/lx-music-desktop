@@ -15,4 +15,5 @@ export const getMusicType = (info, type) => {
   for (const type of rangeType) {
     if (info._types[type]) return type
   }
+  return '128k'
 }

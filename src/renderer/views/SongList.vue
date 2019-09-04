@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       tagInfo: {
-        name: '全部',
+        name: '默认',
         id: null,
       },
       sortId: undefined,
@@ -103,7 +103,7 @@ export default {
       if (o) {
         this.isToggleSource = true
         this.tagInfo = {
-          name: '全部',
+          name: '默认',
           id: null,
         }
         this.sortId = this.sorts[0] && this.sorts[0].id
