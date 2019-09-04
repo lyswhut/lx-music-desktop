@@ -98,6 +98,7 @@ export default {
         })
       })
       rendererOn('update-error', () => {
+        if (!this.updateTimeout) return
         this.setVersionModalVisible({ isError: true })
         this.clearUpdateTimeout()
         this.$nextTick(() => {
@@ -109,12 +110,14 @@ export default {
         this.showUpdateModal()
       })
       rendererOn('update-not-available', () => {
+        if (!this.updateTimeout) return
         if (this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
         this.clearUpdateTimeout()
         this.setNewVersion({
           version: this.version.version,
         })
       })
+      // 更新超时定时器
       this.updateTimeout = setTimeout(() => {
         this.updateTimeout = null
         this.setVersionModalVisible({ isError: true })

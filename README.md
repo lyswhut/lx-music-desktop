@@ -44,11 +44,11 @@
 - Mac OS
 - Linux
 
+注意：win7需要开启**透明效果**软件才可使用
+
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzous.com/b906260/` 密码：`glqw`
-
-注意：win7需要开启**透明效果**软件才可使用
 
 #### 关于软件更新
 
