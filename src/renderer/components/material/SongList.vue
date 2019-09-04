@@ -175,6 +175,7 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  background-color: @color-theme_2;
 }
 
 .list {
@@ -186,7 +187,6 @@ export default {
 }
 .thead {
   flex: none;
-  background-color: @color-theme_2;
 }
 .tbody {
   flex: auto;

@@ -1,12 +1,12 @@
 <template lang="pug">
-  div(:class="$style.leaderboard")
+  div(:class="$style.container")
     div(:class="$style.header")
       material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
       material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
       material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-    div(:class="$style.container")
+    div(:class="$style.main")
       transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-        div(:class="$style.materialSongList" v-show="isVisibleListDetail")
+        div(:class="$style.songListDetail" v-show="isVisibleListDetail")
           div(:class="$style.songListHeader")
             div(:class="$style.songListHeaderLeft")
               img(:src="selectListInfo.img")
@@ -17,17 +17,18 @@
             div(:class="$style.songListHeaderRight")
               material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
           material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
-      div.scroll(:class="$style.content" ref="dom_scrollContent" v-show="!isVisibleListDetail")
-        ul
-          li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
-            div(:class="$style.left")
-              img(:src="item.img")
-            div(:class="$style.right" :src="item.img")
-              h4(:title="item.name") {{item.name}}
-              p(:title="item.desc") {{item.desc}}
-          li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
-        div(:class="$style.pagination")
-          material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
+      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+        div.scroll(:class="$style.songList" ref="dom_scrollContent" v-show="!isVisibleListDetail")
+          ul
+            li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
+              div(:class="$style.left")
+                img(:src="item.img")
+              div(:class="$style.right" :src="item.img")
+                h4(:title="item.name") {{item.name}}
+                p(:title="item.desc") {{item.desc}}
+            li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
+          div(:class="$style.pagination")
+            material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
 </template>
@@ -248,7 +249,7 @@ export default {
 <style lang="less" module>
 @import '../assets/styles/layout.less';
 
-.leaderboard {
+.container {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -268,7 +269,7 @@ export default {
   width: 80px;
 }
 
-.container {
+.main {
   flex: auto;
   overflow: hidden;
   // position: relative;
@@ -303,7 +304,7 @@ export default {
   }
 }
 
-.song_list_header_middle {
+.song-list-header-middle {
   flex: auto;
   padding: 5px 7px;
   h3 {
@@ -325,7 +326,7 @@ export default {
   padding-right: 15px;
 }
 
-.material-song-list {
+.song-list-detail {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -335,7 +336,7 @@ export default {
   flex-flow: column nowrap;
 }
 
-.content {
+.songList {
   height: 100%;
   overflow-y: auto;
   padding: 0 15px;
