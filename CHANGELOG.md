@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.0...v0.5.1) - 2019-09-05
+
+### 新增
+
+- 新增右上角最小化/关闭按钮鼠标滑过符号
+- 新增下载列表定位文件按钮
+
+### 修复
+
+- 修复百度源歌单全部分类无法加载的问题
+- 修复更新弹窗无法弹出的问题
+
 ## [0.5.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.4.0...v0.5.0) - 2019-09-05
 
 ### 新增
