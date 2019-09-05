@@ -183,6 +183,7 @@ export default {
     },
   },
   beforeDestroy() {
+    this.clearUpdateTimeout()
     if (this.isProd) {
       body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
       body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)

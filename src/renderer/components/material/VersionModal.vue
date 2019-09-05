@@ -1,7 +1,7 @@
 <template lang="pug">
 material-modal(:show="version.showModal" @close="handleClose")
   main(:class="$style.main" v-if="version.newVersion")
-    h2 {{ version.isError ? isUnknow ? '❓ 版本信息获取失败 ❓' : '🌟发现新版本🌟' : '🚀程序更新🚀'}}
+    h2 {{ version.isError ? (isUnknow ? '❓ 版本信息获取失败 ❓' : '🌟发现新版本🌟') : '🚀程序更新🚀'}}
 
     div.scroll(:class="$style.info")
       div(:class="$style.current")

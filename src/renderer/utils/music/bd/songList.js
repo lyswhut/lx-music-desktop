@@ -89,7 +89,7 @@ export default {
   },
   getListUrl(sortType, tagName, page) {
     return this.createUrl({
-      channelname: tagName || '默认',
+      channelname: tagName || '全部',
       from: 'qianqianmini',
       offset: (page - 1) * this.limit_list,
       order_type: sortType,
@@ -144,7 +144,7 @@ export default {
       this.getListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.error_code !== this.successCode) return this.getList(sortId, tagId, page)
+      // if (body.error_code !== this.successCode) return this.getList(sortId, tagId, page)
       return {
         list: this.filterList(body.diyInfo),
         total: body.nums,
