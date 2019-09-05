@@ -181,6 +181,11 @@ export default {
         })
       })
     },
+    clearUpdateTimeout() {
+      if (!this.updateTimeout) return
+      clearTimeout(this.updateTimeout)
+      this.updateTimeout = null
+    },
   },
   beforeDestroy() {
     this.clearUpdateTimeout()
@@ -188,10 +193,6 @@ export default {
       body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
       body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
-  },
-  clearUpdateTimeout() {
-    clearTimeout(this.updateTimeout)
-    this.updateTimeout = null
   },
 }
 </script>
