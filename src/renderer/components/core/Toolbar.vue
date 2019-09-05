@@ -83,8 +83,14 @@ each(@themes, {
   display: flex;
   height: 100%;
   -webkit-app-region: no-drag;
-
+  &:hover {
+    button:before {
+      opacity: 1;
+    }
+  }
+  
   button {
+    position: relative;
     width: @height-toolbar;
     background: none;
     border: none;
@@ -104,6 +110,19 @@ each(@themes, {
       transition: background-color 0.2s ease-in-out;
     }
 
+    &:before {
+      display: block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      line-height: 1;
+      color: #fff;
+      opacity: 0;
+      transition: opacity @transition-theme;
+    }
+
     &.min:after {
       background-color: @color-minBtn;
     }
@@ -116,6 +135,7 @@ each(@themes, {
 
     &.min:hover:after {
       background-color: lighten(@color-minBtn, 10%);
+      opacity: 1;
     }
     &.max:hover:after {
       background-color: lighten(@color-maxBtn, 10%);
@@ -123,6 +143,17 @@ each(@themes, {
     &.close:hover:after {
       background-color: lighten(@color-closeBtn, 10%);
     }
+  }
+}
+.min {
+  &:before {
+    content: '－';
+    font-size: 15px;
+  }
+}
+.close {
+  &:before {
+    content: '×';
   }
 }
 </style>
