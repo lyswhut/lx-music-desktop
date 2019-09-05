@@ -25,7 +25,7 @@ div(:class="$style.download")
             td.break(style="width: 15%;") {{item.statusText}}
             td.break(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
             td(style="width: 20%; padding-left: 0; padding-right: 0;")
-              material-list-buttons(:index="index" :download-btn="false" :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
+              material-list-buttons(:index="index" :download-btn="false" :file-btn="true" :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
                 :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)"
                 :play-btn="item.status == downloadStatus.COMPLETED" @btn-click="handleListBtnClick")
     material-flow-btn(:show="isShowEditBtn" :play-btn="false" :download-btn="false" :add-btn="false" :start-btn="true" :pause-btn="true" @btn-click="handleFlowBtnClick")
@@ -34,8 +34,7 @@ div(:class="$style.download")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { checkPath } from '../utils'
-
+import { checkPath, openDirInExplorer } from '../utils'
 export default {
   name: 'Download',
   data() {
@@ -128,6 +127,8 @@ export default {
           break
         case 'remove':
           this.removeTask(info.index)
+        case 'file':
+          this.handleOpenFolder(info.index)
           break
       }
     },
@@ -169,6 +170,9 @@ export default {
           break
       }
       this.resetSelect()
+    },
+    handleOpenFolder(index) {
+      openDirInExplorer(this.list[index].filePath)
     },
   },
 }

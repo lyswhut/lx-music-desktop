@@ -13,6 +13,7 @@ module.exports = win => {
   // })
   mainOn('close', event => {
     if (win) {
+      // window.destroy()
       win.close()
     }
   })

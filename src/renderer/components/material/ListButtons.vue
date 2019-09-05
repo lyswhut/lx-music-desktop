@@ -15,6 +15,9 @@ div(:class="$style.btns")
   button(type="button" v-if="pauseBtn" title="暂停" @click.stop="handleClick('pause')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
       use(xlink:href='#icon-pause')
+  button(type="button" v-if="fileBtn" title="定位文件" @click.stop="handleClick('file')")
+    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='-61 0 512 512' space='preserve')
+      use(xlink:href='#icon-musicFile')
   button(type="button" v-if="removeBtn" title="移除" @click.stop="handleClick('remove')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
       use(xlink:href='#icon-delete')
@@ -54,6 +57,10 @@ export default {
       default: true,
     },
     searchBtn: {
+      type: Boolean,
+      default: false,
+    },
+    fileBtn: {
       type: Boolean,
       default: false,
     },
