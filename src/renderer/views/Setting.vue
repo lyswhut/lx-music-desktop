@@ -32,7 +32,7 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" label="是否启用")
     dd(title='在任务栏上显示当前歌曲播放进度')
-      h3 是否启用任务栏播放进度条
+      h3 任务栏播放进度条
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" label="是否启用")
     dt 下载设置
@@ -49,12 +49,12 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
-    dd(title='封面嵌入')
-      h3 是否将封面嵌入音频文件中（只支持MP3格式）
+    dd(title='是否将封面嵌入音频文件中')
+      h3 封面嵌入（只支持MP3格式）
       div
         material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" label="是否启用")
-    dd(title='歌词下载')
-      h3 是否同时下载歌词文件
+    dd(title='是否同时下载歌词文件')
+      h3 歌词下载
       div
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
     //- dt 列表设置
