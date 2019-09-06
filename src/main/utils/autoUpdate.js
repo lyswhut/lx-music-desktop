@@ -1,4 +1,4 @@
-const log = require('electron-log')
+const { log } = require('../../common/utils')
 const { autoUpdater } = require('electron-updater')
 const { mainOn } = require('../../common/icp')
 

@@ -1,3 +1,4 @@
+// const { app } = require('electron')
 const { mainOn } = require('../../common/icp')
 
 module.exports = win => {
@@ -14,6 +15,8 @@ module.exports = win => {
   mainOn('close', event => {
     if (win) {
       // window.destroy()
+      // console.log('close')
+      // app.quit()
       win.close()
     }
   })

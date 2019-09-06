@@ -63,7 +63,7 @@ function createWindow() {
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
-    mainWindow = null
+    if (!isMac) mainWindow = null
   })
 
   // mainWindow.webContents.openDevTools()
@@ -94,9 +94,7 @@ if (isMac) {
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  if (!isMac) app.quit()
 })
 
 app.on('activate', () => {
