@@ -88,7 +88,7 @@ each(@themes, {
       opacity: 1;
     }
   }
-  
+
   button {
     position: relative;
     width: @height-toolbar;
@@ -113,12 +113,6 @@ each(@themes, {
     &:before {
       display: block;
       position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 14px;
-      line-height: 1;
-      color: #fff;
       opacity: 0;
       transition: opacity @transition-theme;
     }
@@ -147,13 +141,23 @@ each(@themes, {
 }
 .min {
   &:before {
-    content: '－';
-    font-size: 15px;
+    content: ' ';
+    width: 8px;
+    height: 2px;
+    left: @height-toolbar / 2 - 4;
+    top: @height-toolbar / 2;
+    background-color: #fff;
   }
 }
 .close {
   &:before {
     content: '×';
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    line-height: 1;
+    color: #fff;
   }
 }
 </style>

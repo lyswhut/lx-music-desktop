@@ -34,8 +34,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['source']),
+    ...mapGetters(['source', 'route', 'setting']),
     ...mapGetters('search', ['info']),
+    isAutoClearInput() {
+      return this.setting.odc.isAutoClearSearchInput
+    },
   },
   watch: {
     list(n) {
@@ -45,6 +48,9 @@ export default {
     },
     'info.text'(n) {
       if (n !== this.text) this.text = n
+    },
+    route(n) {
+      if (this.isAutoClearInput && n.name != 'search' && this.text) this.text = ''
     },
   },
   methods: {

@@ -62,6 +62,11 @@ div.scroll(:class="$style.setting")
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
+    dt 强迫症设置
+    dd
+      h3 离开搜索界面时清空搜索框
+      div
+        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" label="是否启用")
     dt 备份与恢复
     dd
       h3 部分数据
@@ -156,6 +161,9 @@ export default {
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,
           isEmbedPic: true,
+        },
+        odc: {
+          isAutoClearSearchInput: false,
         },
         themeId: 0,
         sourceId: 0,

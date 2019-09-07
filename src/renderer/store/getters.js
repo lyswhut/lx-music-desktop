@@ -31,4 +31,7 @@ export default {
   version(state) {
     return state.version
   },
+  route(state) {
+    return state.route
+  },
 }

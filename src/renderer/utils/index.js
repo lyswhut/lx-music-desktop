@@ -163,7 +163,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.6'
+  const defaultVersion = '1.0.7'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -193,6 +193,9 @@ export const updateSetting = setting => {
         name: '默认',
         id: null,
       },
+    },
+    odc: {
+      isAutoClearSearchInput: false,
     },
     themeId: 0,
     sourceId: 'kw',

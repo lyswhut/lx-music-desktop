@@ -1,5 +1,5 @@
 import Vue from 'vue'
-// import { sync } from 'vuex-router-sync'
+import { sync } from 'vuex-router-sync'
 
 // Components
 import './components'
@@ -11,7 +11,7 @@ import App from './App'
 import router from './route'
 import store from './store'
 
-// sync(store, router)
+sync(store, router)
 
 if (!process.env.IS_WEB) {
 
