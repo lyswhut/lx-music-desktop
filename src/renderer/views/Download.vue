@@ -127,6 +127,7 @@ export default {
           break
         case 'remove':
           this.removeTask(info.index)
+          break
         case 'file':
           this.handleOpenFolder(info.index)
           break
@@ -172,7 +173,9 @@ export default {
       this.resetSelect()
     },
     handleOpenFolder(index) {
-      openDirInExplorer(this.list[index].filePath)
+      let path = this.list[index].filePath
+      if (!checkPath(path)) return
+      openDirInExplorer(path)
     },
   },
 }
