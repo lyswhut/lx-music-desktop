@@ -94,9 +94,9 @@ div.scroll(:class="$style.setting")
     dd
       p.small
         | 本软件完全免费，代码已开源，开源地址：
-        span.hover(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
-        | 最新版网盘下载地址（网盘内有MAC、windows版）：
+        | 最新版网盘下载地址（网盘内有Windows、MAC版）：
         span.hover.underline(title="点击打开" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
         | &nbsp;&nbsp;密码：
         span.hover(title="点击复制" @click="clipboardWriteText('glqw')") glqw
@@ -117,7 +117,11 @@ div.scroll(:class="$style.setting")
           | 怀念曾经的
           strong @messoer
           | ，非常感谢曾经为本软件提供数据源！
-      p.small 若有问题可 mail to：lyswhut@qq.com 或到 GitHub 提交 issue
+      p.small
+        | 阅读常见问题后仍有问题可 mail to：
+        span.hover(title="点击复制" @click="clipboardWriteText('lyswhut@qq.com')") lyswhut@qq.com
+        | &nbsp;或到 GitHub 提交&nbsp;
+        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
       p.small
         | 若觉得好用的话可以去 GitHub 点个
         strong star
