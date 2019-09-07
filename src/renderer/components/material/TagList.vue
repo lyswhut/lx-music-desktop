@@ -115,6 +115,7 @@ export default {
   .icon {
     flex: none;
     margin-left: 7px;
+    line-height: 0;
     svg {
       width: 1em;
       transition: transform .2s ease;
