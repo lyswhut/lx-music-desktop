@@ -97,9 +97,12 @@ div.scroll(:class="$style.setting")
         span.hover(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有MAC、windows版）：
-        span.hover(title="点击打开" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") https://www.lanzous.com/b906260/
+        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
         | &nbsp;&nbsp;密码：
         span.hover(title="点击复制" @click="clipboardWriteText('glqw')") glqw
+      p.small
+        | 软件的常见问题可转至：
+        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#常见问题')") 常见问题
       p.small
         |  本软件仅用于学习交流使用，禁止将本软件用于
         strong 非法用途
@@ -110,7 +113,7 @@ div.scroll(:class="$style.setting")
           | 使用本软件造成的一切后果由
           strong 使用者
           | 承担！
-      p.small
+      //- p.small
           | 怀念曾经的
           strong @messoer
           | ，非常感谢曾经为本软件提供数据源！

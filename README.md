@@ -44,19 +44,10 @@
 - Mac OS
 - Linux
 
-注意：win7需要开启**透明效果**软件才可使用
-
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzous.com/b906260/` 密码：`glqw`
-
-#### 关于软件更新
-
-软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
-若下载未完成时软件被关闭，下次启动软件会再次自动下载。<br>
-目前暂未添加跳过更新某个版本的功能。<br>
-注意：**绿色版**的软件更新功能**不可用**，为了能及时地获取更新，建议使用安装版！！<br>
-注意：**Mac版**、**Linux deb**版不支持自动更新！
+或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzous.com/b906260/` 密码：`glqw`<br>
+使用常见问题请转至：[常见问题](https://github.com/lyswhut/lx-music-desktop#常见问题)
 
 #### TODO
 
@@ -82,6 +73,29 @@ npm run pack
 ### UI界面
 
 <p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
+
+### 常见问题
+
+#### 歌曲无法试听与下载
+
+该问题解决顺序如下：
+
+1. 尝试更新到最新版本
+2. 尝试切换其他歌曲，若全部歌曲都无法试听与下载
+3. 尝试切换网络（比如切到移动网络）
+4. 若还不行请到这个链接查看详情：<https://github.com/lyswhut/lx-music-desktop/issues/5>
+
+#### Windows 7 下界面异常
+
+当 win7 没有开启**透明效果**时界面将会显示异常，开启方法请自行百度
+
+#### 软件更新
+
+软件启动时若发现新版本时会自动从本仓库下载安装包，下载完毕会弹窗提示更新。<br>
+若下载未完成时软件被关闭，下次启动软件会再次自动下载。<br>
+目前暂未添加跳过更新某个版本的功能。<br>
+注意：**绿色版**的软件更新功能**不可用**，为了能及时地获取更新，建议使用安装版！！<br>
+注意：**Mac版**、**Linux deb**版不支持自动更新！
 
 ### 致谢
 
