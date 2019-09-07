@@ -1,6 +1,10 @@
 <template lang="pug">
   div(:class="$style.tagList")
-    div(:class="$style.label" ref="dom_btn" @click="handleShow") {{value.name}}
+    div(:class="$style.label" ref="dom_btn" @click="handleShow")
+      span {{value.name}}
+      div(:class="[$style.icon, show ? $style.active : '']")
+        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
+          use(xlink:href='#icon-down')
     div.scroll(:class="$style.list" @click.stop ref="dom_list" :style="listStyle")
       div(:class="$style.tag" @click="handleClick(null)") 默认
       dl(v-for="type in list")
@@ -9,7 +13,7 @@
 </template>
 
 <script>
-// import { isChildren } from '../../utils'
+import { isChildren } from '../../utils'
 export default {
   props: {
     list: {
@@ -58,7 +62,7 @@ export default {
   methods: {
     handleHide(e) {
       // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
-      if (e && e.target == this.$refs.dom_btn) return
+      if (e && (e.target == this.$refs.dom_btn || isChildren(this.$refs.dom_btn, e.target))) return
       setTimeout(() => {
         this.show = false
       }, 50)
@@ -102,6 +106,26 @@ export default {
   // border-top-left-radius: 3px;
   color: @color-btn;
   cursor: pointer;
+
+  display: flex;
+
+  span {
+    flex: auto;
+  }
+  .icon {
+    flex: none;
+    margin-left: 7px;
+    svg {
+      width: 1em;
+      transition: transform .2s ease;
+      transform: rotate(0);
+    }
+    &.active {
+      svg{
+        transform: rotate(180deg);
+      }
+    }
+  }
 
   &:hover {
     background-color: @color-theme_2-hover;
