@@ -103,16 +103,6 @@ div.scroll(:class="$style.setting")
       p.small
         | 软件的常见问题可转至：
         span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#常见问题')") 常见问题
-      p.small
-        |  本软件仅用于学习交流使用，禁止将本软件用于
-        strong 非法用途
-        | 或
-        strong 商业用途
-        | 。
-      p.small
-          | 使用本软件造成的一切后果由
-          strong 使用者
-          | 承担！
       //- p.small
           | 怀念曾经的
           strong @messoer
@@ -130,6 +120,16 @@ div.scroll(:class="$style.setting")
         span 如果你资金充裕，还可以
         material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 打赏下作者
         span ，以帮我分担点服务器费用~❤️
+      p.small
+        |  本软件仅用于学习交流使用，禁止将本软件用于
+        strong 非法用途
+        | 或
+        strong 商业用途
+        | 。
+      p.small
+          | 使用本软件造成的一切后果由
+          strong 使用者
+          | 承担！
       p
         small By：
         | 落雪无痕

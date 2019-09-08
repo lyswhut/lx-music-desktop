@@ -105,8 +105,8 @@ each(@themes, {
       content: ' ';
       display: block;
       border-radius: 50%;
-      width: 13px;
-      height: 13px;
+      width: 14px;
+      height: 14px;
       transition: background-color 0.2s ease-in-out;
     }
 
@@ -145,7 +145,7 @@ each(@themes, {
     width: 8px;
     height: 2px;
     left: @height-toolbar / 2 - 4;
-    top: @height-toolbar / 2;
+    top: @height-toolbar / 2 - 1;
     background-color: #fff;
   }
 }

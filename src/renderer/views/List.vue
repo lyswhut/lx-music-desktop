@@ -1,7 +1,7 @@
 <template lang="pug">
   div(:class="$style.list")
     //- transition
-    div(v-if="list.length" :class="$style.content")
+    div(v-if="delayShow && list.length" :class="$style.content")
       div(:class="$style.thead")
         table
           thead
@@ -18,7 +18,7 @@
         table
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid'
-              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') || item.source == 'tx' ? $style.disabled : '']")
+              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') || item.source == 'tx' || item.source == 'wy' ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;") {{item.name}}
@@ -37,6 +37,7 @@
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
               td(style="width: 10%;") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
+      p 加载中...
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn" :add-btn="false" :play-btn="false" @btn-click="handleFlowBtnClick")
@@ -57,6 +58,7 @@ export default {
       isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
+      delayShow: false,
     }
   },
   computed: {
@@ -119,6 +121,11 @@ export default {
   //   this.handleSearch(this.text, this.page)
   // }
   // },
+  mounted() {
+    if (this.list.length > 150) {
+      setTimeout(() => this.delayShow = true, 200)
+    } else this.delayShow = true
+  },
   methods: {
     ...mapMutations('list', ['defaultListRemove', 'defaultListRemoveMultiple']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
@@ -137,7 +144,7 @@ export default {
       this.clickIndex = -1
     },
     testPlay(index) {
-      if ((this.isAPITemp && this.list[index].source != 'kw') || this.list[index].source == 'tx') return
+      if ((this.isAPITemp && this.list[index].source != 'kw') || this.list[index].source == 'tx' || this.list[index].source == 'wy') return
       this.setList({ list: this.list, listId: 'test', index })
     },
     handleRemove(index) {
@@ -147,7 +154,7 @@ export default {
       switch (info.action) {
         case 'download':
           const minfo = this.list[info.index]
-          if ((this.isAPITemp && minfo.source != 'kw') || minfo.source == 'tx') return
+          if ((this.isAPITemp && minfo.source != 'kw') || minfo.source == 'tx' || minfo.source == 'wy') return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
@@ -173,7 +180,7 @@ export default {
       this.selectdData = []
     },
     handleAddDownloadMultiple(type) {
-      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : this.selectdData.filter(s => s.source != 'tx')
+      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : this.selectdData.filter(s => s.source != 'tx' && s.source != 'wy')
       this.createDownloadMultiple({ list, type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
@@ -237,6 +244,20 @@ export default {
 
 .disabled {
   opacity: .5;
+}
+
+.no-item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-size: 24px;
+    color: #ccc;
+  }
 }
 
 each(@themes, {

@@ -7,7 +7,7 @@
 const types = ['flac', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
   switch (window.globalObj.apiSource) {
-    // case 'kg':
+    case 'kg':
     case 'wy':
       return '128k'
   }
