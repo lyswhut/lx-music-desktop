@@ -152,7 +152,7 @@ export default {
     },
     handleListBtnClick(info) {
       switch (info.action) {
-        case 'download':
+        case 'download': {
           const minfo = this.list[info.index]
           if ((this.isAPITemp && minfo.source != 'kw') || minfo.source == 'tx' || minfo.source == 'wy') return
           this.musicInfo = minfo
@@ -160,6 +160,7 @@ export default {
             this.isShowDownload = true
           })
           break
+        }
         case 'play':
           this.testPlay(info.index)
           break

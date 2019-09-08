@@ -39,7 +39,7 @@ export default {
   getInfoUrl(tagId) {
     return tagId
       ? `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&cdn=cdn&t=5&c=${tagId}`
-      : `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&`
+      : 'http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&'
   },
   getSongListUrl(sortId, tagId, page) {
     if (tagId == null) tagId = ''

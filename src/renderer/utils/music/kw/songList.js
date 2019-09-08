@@ -183,7 +183,7 @@ export default {
       }
       if (formats.indexOf('ALFLAC')) {
         types.push({ type: 'flac', size: null })
-        _types['flac'] = {
+        _types.flac = {
           size: null,
         }
       }

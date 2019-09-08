@@ -370,7 +370,7 @@ export default {
     getPlayType(highQuality, songInfo) {
       switch (songInfo.source) {
         case 'wy':
-        // case 'kg':
+        case 'kg':
           return '128k'
       }
       let type = songInfo._types['192k'] ? '192k' : '128k'

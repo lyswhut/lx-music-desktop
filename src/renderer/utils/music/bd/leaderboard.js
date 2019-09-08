@@ -85,7 +85,7 @@ export default {
           size,
         }
         types.push({ type: 'flac', size })
-        _types['flac'] = {
+        _types.flac = {
           size,
         }
       }

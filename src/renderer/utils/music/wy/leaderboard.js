@@ -98,7 +98,7 @@ export default {
         case 999000:
           size = null
           types.push({ type: 'flac', size })
-          _types['flac'] = {
+          _types.flac = {
             size,
           }
         case 320000:

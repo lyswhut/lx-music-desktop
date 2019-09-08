@@ -150,7 +150,7 @@ export default {
             this.handleStartTask(index)
           })
           break
-        case 'pause':
+        case 'pause': {
           let runs = []
           this.selectdData.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
@@ -166,6 +166,7 @@ export default {
             this.handlePauseTask(index)
           })
           break
+        }
         case 'remove':
           this.removeTaskMultiple(this.selectdData)
           break

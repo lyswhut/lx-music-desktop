@@ -215,7 +215,7 @@ export default {
       }
       if (itemTypes.includes('flac')) {
         types.push({ type: 'flac', size })
-        _types['flac'] = {
+        _types.flac = {
           size,
         }
       }

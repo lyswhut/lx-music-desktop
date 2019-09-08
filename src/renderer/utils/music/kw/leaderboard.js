@@ -133,13 +133,13 @@ export default {
       }
       if (formats.indexOf('AL')) {
         types.push({ type: 'ape', size: null })
-        _types['ape'] = {
+        _types.ape = {
           size: null,
         }
       }
       if (formats.indexOf('ALFLAC')) {
         types.push({ type: 'flac', size: null })
-        _types['flac'] = {
+        _types.flac = {
           size: null,
         }
       }

@@ -6,6 +6,16 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.2...v0.5.3) - 2019-09-09
+
+### 优化
+
+- 更新所有依赖包到最新
+
+### 修复
+
+- 修复试听酷狗源的音乐仍然获取320k音质导致获取失败的Bug
+
 ## [0.5.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.1...v0.5.2) - 2019-09-09
 
 ### 新增

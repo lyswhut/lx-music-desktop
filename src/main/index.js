@@ -33,7 +33,7 @@ let winURL
 
 if (isDev) {
   global.__static = path.join(__dirname, '../static')
-  winURL = `http://localhost:9080`
+  winURL = 'http://localhost:9080'
 } else {
   global.__static = path.join(__dirname, '/static')
   winURL = `file://${__dirname}/index.html`
