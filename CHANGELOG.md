@@ -6,6 +6,27 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.1...v0.5.2) - 2019-09-09
+
+### 新增
+
+- 新增强迫症设置-离开搜索界面时是否清空搜索框
+- 设置-关于板块新增常见问题链接
+- 歌单左上角的分类按钮添加一个**向下图标**，方便识别该按钮为下拉框（该按钮可选择歌单类型，请自行尝试）
+
+### 优化
+
+- 略微优化最小化按钮字符
+- 优化试听列表的加载体验，当歌曲数过多时列表将延迟加载
+
+### 修复
+
+- 修复下载管理的一些Bug
+
+### 移除
+
+- 因接口失效，移除网易云音源，酷狗音源仅支持播放128k音质
+
 ## [0.5.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.0...v0.5.1) - 2019-09-05
 
 ### 新增
