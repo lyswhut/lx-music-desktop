@@ -107,6 +107,7 @@ export default {
       })
       rendererOn('update-downloaded', () => {
         this.clearUpdateTimeout()
+        this.setVersionModalVisible({ isError: false })
         this.showUpdateModal()
       })
       rendererOn('update-not-available', () => {
