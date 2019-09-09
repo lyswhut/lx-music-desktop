@@ -202,7 +202,7 @@
     "flac-metadata": "^0.1.1",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^0.1.12",
-    "node-downloader-helper": "^1.0.11",
+    "node-downloader-helper": "^1.0.10",
     "node-id3": "^0.1.11",
     "request": "^2.88.0",
     "vue": "^2.6.10",
