@@ -1,23 +1,22 @@
 // const { app } = require('electron')
 const { mainOn } = require('../../common/icp')
 
-module.exports = win => {
-  mainOn('min', event => {
-    if (win) {
-      win.minimize()
-    }
-  })
-  // mainOn('max', event => {
-  //   if (win) {
-  //     win.maximize()
-  //   }
-  // })
-  mainOn('close', event => {
-    if (win) {
-      // window.destroy()
-      // console.log('close')
-      // app.quit()
-      win.close()
-    }
-  })
-}
+
+mainOn('min', event => {
+  if (global.mainWindow) {
+    global.mainWindow.minimize()
+  }
+})
+// mainOn('max', event => {
+//   if (global.mainWindow) {
+//     global.mainWindow.maximize()
+//   }
+// })
+mainOn('close', event => {
+  if (global.mainWindow) {
+    // global.mainWindowdow.destroy()
+    // console.log('close')
+    // app.quit()
+    global.mainWindow.close()
+  }
+})

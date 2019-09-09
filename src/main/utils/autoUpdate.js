@@ -21,7 +21,7 @@ log.info('App starting...')
 
 function sendStatusToWindow(text) {
   log.info(text)
-  // win.webContents.send('message', text)
+  // global.mainWindow.webContents.send('message', text)
 }
 
 
@@ -57,24 +57,24 @@ function sendStatusToWindow(text) {
 // })
 
 
-module.exports = win => {
+module.exports = () => {
   autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...')
   })
   autoUpdater.on('update-available', info => {
     sendStatusToWindow('Update available.')
-    win.webContents.send('update-available', info)
+    global.mainWindow.webContents.send('update-available', info)
   })
   autoUpdater.on('update-not-available', info => {
     sendStatusToWindow('Update not available.')
     setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      win.webContents.send('update-not-available')
+      global.mainWindow.webContents.send('update-not-available')
     }, 5000)
   })
   autoUpdater.on('error', () => {
     sendStatusToWindow('Error in auto-updater.')
     setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      win.webContents.send('update-error')
+      global.mainWindow.webContents.send('update-error')
     }, 6000)
   })
   autoUpdater.on('download-progress', progressObj => {
@@ -83,7 +83,7 @@ module.exports = win => {
   autoUpdater.on('update-downloaded', info => {
     sendStatusToWindow('Update downloaded.')
     setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      win.webContents.send('update-downloaded')
+      global.mainWindow.webContents.send('update-downloaded')
     }, 2000)
   })
   mainOn('quit-update', () => {

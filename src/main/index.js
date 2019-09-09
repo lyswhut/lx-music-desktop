@@ -16,8 +16,8 @@ app.on('second-instance', (event, argv, cwd) => {
 })
 
 require('./events')
-const progressBar = require('./events/progressBar')
-const trafficLight = require('./events/trafficLight')
+require('./events/progressBar')
+require('./events/trafficLight')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
 
@@ -30,6 +30,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 let mainWindow
 let winURL
+let isCheckedUpdate = false
 
 if (isDev) {
   global.__static = path.join(__dirname, '../static')
@@ -43,7 +44,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  mainWindow = new BrowserWindow({
+  mainWindow = global.mainWindow = new BrowserWindow({
     height: 590,
     useContentSize: true,
     width: 920,
@@ -63,14 +64,15 @@ function createWindow() {
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
-    if (!isMac) mainWindow = null
+    mainWindow = global.mainWindow = null
   })
 
   // mainWindow.webContents.openDevTools()
 
-  trafficLight(mainWindow)
-  progressBar(mainWindow)
-  if (!isDev) autoUpdate(mainWindow)
+  if (!isDev && !isCheckedUpdate) {
+    autoUpdate()
+    isCheckedUpdate = true
+  }
 }
 
 if (isMac) {
