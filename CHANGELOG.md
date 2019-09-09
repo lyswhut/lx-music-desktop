@@ -6,6 +6,14 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.5.4](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.3...v0.5.4) - 2019-09-09
+
+### 移除
+
+- 下载的FLAC文件在修改歌曲信息后，软件无法播放，但使用本地播放器可以播放
+- 为了稳妥起见，暂时移除FLAC格式的meta信息修改
+- MP3格式无此问题
+
 ## [0.5.3](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.2...v0.5.3) - 2019-09-09
 
 ### 优化
