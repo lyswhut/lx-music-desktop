@@ -76,7 +76,7 @@ export default {
       this.setSetting(Object.assign({}, this.setting, { ignoreVersion: this.version.newVersion.version }))
     },
     handleOpenPageClick() {
-      openUrl('https://github.com/lyswhut/lx-music-desktop')
+      openUrl('https://github.com/lyswhut/lx-music-desktop#readme')
     },
     handleRestartClick(event) {
       this.handleClose()
