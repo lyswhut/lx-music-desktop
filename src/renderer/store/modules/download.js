@@ -83,7 +83,7 @@ const getUrl = (downloadInfo, isRefresh) => {
  * @param {*} isEmbedPic
  */
 const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
-  if (downloadInfo.type === 'ape') return
+  if (downloadInfo.type === 'ape' || downloadInfo.type === 'flac') return
   const promise = isEmbedPic
     ? downloadInfo.musicInfo.img
       ? Promise.resolve(downloadInfo.musicInfo.img)

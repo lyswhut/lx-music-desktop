@@ -195,7 +195,7 @@ export default {
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
-        if (this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
+        if (this.listId != 'download' && this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
           // console.log(this.retryNum)
           this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
@@ -263,6 +263,7 @@ export default {
       this.audioErrorTime = 0
 
       if (this.listId == 'download') {
+        console.log(targetSong.filePath)
         if (!checkPath(targetSong.filePath) || !targetSong.isComplate || /\.ape$/.test(targetSong.filePath)) {
           return this.list.length == 1 ? null : this.handleNext()
         }
