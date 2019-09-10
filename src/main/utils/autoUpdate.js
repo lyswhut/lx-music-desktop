@@ -69,11 +69,14 @@ const handleSendEvent = action => {
 
 module.exports = isFirstCheckedUpdate => {
   if (!isFirstCheckedUpdate) {
-    waitEvent.forEach((event, index) => {
-      setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
-        global.mainWindow.webContents.send(event.type, event.info)
-      }, 2000 * (index + 1))
-    })
+    if (waitEvent.length) {
+      waitEvent.forEach((event, index) => {
+        setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
+          global.mainWindow.webContents.send(event.type, event.info)
+        }, 2000 * (index + 1))
+      })
+      waitEvent = []
+    }
     return
   }
   autoUpdater.on('checking-for-update', () => {
