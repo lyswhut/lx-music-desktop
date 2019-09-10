@@ -30,7 +30,7 @@ const isDev = process.env.NODE_ENV !== 'production'
 
 let mainWindow
 let winURL
-let isCheckedUpdate = false
+let isFirstCheckedUpdate = true
 
 if (isDev) {
   global.__static = path.join(__dirname, '../static')
@@ -63,15 +63,18 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
+  mainWindow.on('close', () => {
+    mainWindow.setProgressBar(-1)
+  })
   mainWindow.on('closed', () => {
     mainWindow = global.mainWindow = null
   })
 
   // mainWindow.webContents.openDevTools()
 
-  if (!isDev && !isCheckedUpdate) {
-    autoUpdate()
-    isCheckedUpdate = true
+  if (!isDev) {
+    autoUpdate(isFirstCheckedUpdate)
+    isFirstCheckedUpdate = false
   }
 }
 

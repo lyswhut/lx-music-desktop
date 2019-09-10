@@ -56,35 +56,47 @@ function sendStatusToWindow(text) {
 
 // })
 
+let waitEvent = []
+const handleSendEvent = action => {
+  if (global.mainWindow) {
+    setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
+      global.mainWindow.webContents.send(action.type, action.info)
+    }, 2000)
+  } else {
+    waitEvent.push(action)
+  }
+}
 
-module.exports = () => {
+module.exports = isFirstCheckedUpdate => {
+  if (!isFirstCheckedUpdate) {
+    waitEvent.forEach((event, index) => {
+      setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
+        global.mainWindow.webContents.send(event.type, event.info)
+      }, 2000 * (index + 1))
+    })
+    return
+  }
   autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...')
   })
   autoUpdater.on('update-available', info => {
     sendStatusToWindow('Update available.')
-    global.mainWindow.webContents.send('update-available', info)
+    handleSendEvent({ type: 'update-available', info })
   })
   autoUpdater.on('update-not-available', info => {
     sendStatusToWindow('Update not available.')
-    setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      global.mainWindow.webContents.send('update-not-available')
-    }, 5000)
+    handleSendEvent({ type: 'update-not-available' })
   })
   autoUpdater.on('error', () => {
     sendStatusToWindow('Error in auto-updater.')
-    setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      global.mainWindow.webContents.send('update-error')
-    }, 6000)
+    handleSendEvent({ type: 'update-error' })
   })
   autoUpdater.on('download-progress', progressObj => {
     sendStatusToWindow('Download progress...')
   })
   autoUpdater.on('update-downloaded', info => {
     sendStatusToWindow('Update downloaded.')
-    setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还启动完成
-      global.mainWindow.webContents.send('update-downloaded')
-    }, 2000)
+    handleSendEvent({ type: 'update-downloaded' })
   })
   mainOn('quit-update', () => {
     setTimeout(() => {
