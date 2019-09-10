@@ -22,6 +22,8 @@ const state = {
 const dls = {}
 const tryNum = {}
 
+const filterFileName = /[\\/:*?#"<>|]/g
+
 // getters
 const getters = {
   list: state => state.list || [],
@@ -125,7 +127,7 @@ const actions = {
       url: null,
       fileName: `${rootState.setting.download.fileName
         .replace('歌名', musicInfo.name)
-        .replace('歌手', musicInfo.singer)}.${ext}`,
+        .replace('歌手', musicInfo.singer)}.${ext}`.replace(filterFileName, ''),
       progress: {
         downloaded: 0,
         total: 0,
