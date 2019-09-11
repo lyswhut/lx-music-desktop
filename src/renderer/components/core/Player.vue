@@ -7,7 +7,7 @@ div(:class="$style.player")
   div(:class="$style.right")
     div(:class="$style.column1")
       div(:class="$style.container")
-        div(:class="$style.title") {{title}}
+        div(:class="$style.title" @click="handleCopy(title)" :title="title + '（点击复制）'") {{title}}
         div(:class="$style.volumeContent")
           div(:class="$style.volume" @click.stop='handleChangeVolume' :title="`当前音量：${volumeStr}%`")
             div(:class="$style.volumeBar" :style="{ width: volumeStr + '%' }")
@@ -48,7 +48,7 @@ div(:class="$style.player")
 <script>
 import Lyric from 'lrc-file-parser'
 import { rendererSend } from '../../../common/icp'
-import { formatPlayTime2, getRandom, checkPath, setTitle } from '../../utils'
+import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 
@@ -455,6 +455,9 @@ export default {
     },
     handleSaveVolume(volume) {
       this.setVolume(volume)
+    },
+    handleCopy(text) {
+      clipboardWriteText(text)
     },
   },
 }
