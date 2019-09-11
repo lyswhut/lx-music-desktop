@@ -83,12 +83,13 @@ if (isMac) {
     {
       label: app.getName(),
       submenu: [
-        { label: '关于洛雪音乐', role: 'about' }, { type: 'separator' },
+        { label: '关于洛雪音乐', role: 'about' },
+        { type: 'separator' },
         { label: '隐藏', role: 'hide' },
         { label: '显示其他', role: 'hideothers' },
         { label: '显示全部', role: 'unhide' },
         { type: 'separator' },
-        { label: '退出', click: () => app.quit() },
+        { label: '退出', accelerator: 'Command+Q', click: () => app.quit() },
       ],
     },
     {
