@@ -82,8 +82,9 @@ npm run pack
 
 1. 尝试更新到最新版本
 2. 尝试切换其他歌曲（或直接搜索该歌曲），若全部歌曲都无法试听与下载则进行下一步
-3. 尝试切换网络（比如切到移动网络）
-4. 若还不行请到这个链接查看详情：<https://github.com/lyswhut/lx-music-desktop/issues/5>
+3. 尝试到设置-接口来源切换到其他接口
+4. 尝试切换网络（比如切到移动网络）
+5. 若还不行请到这个链接查看详情：<https://github.com/lyswhut/lx-music-desktop/issues/5>
 
 #### Windows 7 下界面异常
 
