@@ -227,6 +227,8 @@ body {
   overflow: hidden;
   background: @color-theme-bgimg center center no-repeat;
   background-size: auto 100%;
+  transition: background-color @transition-theme;
+  background-color: @color-theme;
 }
 
 #left {
@@ -250,6 +252,7 @@ body {
 
 each(@themes, {
   #container.@{value} {
+    background-color: ~'@{color-@{value}-theme}';
     background-image: ~'@{color-@{value}-theme-bgimg}';
     #right {
       background-color: ~'@{color-@{value}-theme_2}';
