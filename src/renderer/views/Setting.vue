@@ -479,7 +479,9 @@ export default {
 
 .theme {
   display: flex;
+  flex-flow: row wrap;
   // padding: 0 15px;
+  margin-bottom: -20px;
 
   li {
     display: flex;
@@ -489,6 +491,7 @@ export default {
     // color: @color-theme;
     margin-right: 30px;
     transition: color .3s ease;
+    margin-bottom: 20px;
 
     &:last-child {
       margin-right: 0;
@@ -509,6 +512,9 @@ export default {
         width: 100%;
         height: 100%;
         border-radius: 4px;
+        background-position: center;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
       }
     }
 
@@ -517,6 +523,7 @@ export default {
         span {
           &:after {
             background-color: ~'@{color-@{value}-theme}';
+            background-image: ~'@{color-@{value}-theme-bgimg}';
           }
         }
       }

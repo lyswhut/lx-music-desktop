@@ -175,7 +175,6 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  background-color: @color-theme_2;
 }
 
 .list {
@@ -220,16 +219,17 @@ export default {
 
   p {
     font-size: 24px;
-    color: #ccc;
+    color: @color-theme_2-font-label;
   }
 }
 
 each(@themes, {
   :global(#container.@{value}) {
-    .thead {
-      background-color: ~'@color-@{value}-theme_2';
+    .noitem {
+      p {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
     }
   }
 })
-
 </style>

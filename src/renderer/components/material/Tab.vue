@@ -95,15 +95,15 @@ export default {
         margin-left: 0;
         button {
           border-top-left-radius: 3px;
-          // border-bottom-left-radius: 3px;
+          // border-bottom-left-radius: 4px;
         }
       }
       &:last-child {
         border-right: 2px solid @color-tab-border-top;
-        border-top-right-radius: 3px;
+        border-top-right-radius: 4px;
         button {
           border-top-right-radius: 3px;
-          // border-bottom-right-radius: 3px;
+          // border-bottom-right-radius: 4px;
         }
       }
       button {
@@ -122,7 +122,7 @@ export default {
         // border-left-color: @color-theme_2-hover;
         // border-right-color: @color-theme_2-hover;
         button {
-          background-color: @color-theme_2-hover;
+          background-color: @color-tab-btn-background-hover;
         }
       }
       &:active {
@@ -133,7 +133,7 @@ export default {
         }
       }
       &.active {
-        border-bottom-color: @color-theme_2;
+        border-bottom-color: @color-theme_2-background_2;
         border-top-color: @color-tab-border-bottom;
         border-left-color: @color-tab-border-bottom;
         border-right-color: @color-tab-border-bottom;
@@ -144,7 +144,7 @@ export default {
           width: 0;
         }
         button {
-          background-color: @color-theme_2;
+          background-color: @color-theme_2-background_2;
         }
       }
     }
@@ -193,7 +193,7 @@ each(@themes, {
             // border-left-color: ~'@{color-@{value}-theme_2-hover}';
             // border-right-color: ~'@{color-@{value}-theme_2-hover}';
             button {
-              background-color: ~'@{color-@{value}-theme_2-hover}';
+              background-color: ~'@{color-@{value}-tab-btn-background-hover}';
             }
           }
           &:active {
@@ -209,7 +209,7 @@ each(@themes, {
             border-left-color: ~'@{color-@{value}-tab-border-bottom}';
             border-right-color: ~'@{color-@{value}-tab-border-bottom}';
             button {
-              background-color: ~'@{color-@{value}-theme_2}';
+              background-color: ~'@{color-@{value}-theme_2-background_2}';
             }
           }
         }

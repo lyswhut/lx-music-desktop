@@ -156,7 +156,7 @@ export default {
       bottom: 0;
       left: 0;
       right: 0;
-      border: 1px solid #ccc;
+      border: 1px solid @color-theme_2-font-label;
       transition: border-color 0.2s ease;
       border-radius: 15%;
     }
@@ -196,7 +196,7 @@ each(@themes, {
         color: ~'@{color-@{value}-theme}';
         // border: 1px solid #ccc;
         &:after {
-          border-color: #ccc;
+          border-color: ~'@{color-@{value}-theme_2-font-label}';
         }
       }
     }

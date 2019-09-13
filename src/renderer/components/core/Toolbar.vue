@@ -48,7 +48,6 @@ export default {
   display: flex;
   height: @height-toolbar;
   justify-content: flex-end;
-  background-color: @color-theme_2;
   align-items: center;
   padding-left: 15px;
   -webkit-app-region: drag;
@@ -58,13 +57,6 @@ export default {
 .input {
   -webkit-app-region: no-drag;
 }
-each(@themes, {
-  :global(#container.@{value}) {
-    .toolbar {
-      background-color: ~'@{color-@{value}-theme_2}';
-    }
-  }
-})
 
 // img {
 //   flex: none;

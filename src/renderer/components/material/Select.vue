@@ -90,7 +90,7 @@ export default {
   border-left: 2px solid @color-tab-border-bottom;
   box-sizing: border-box;
   text-align: center;
-  border-top-left-radius: 3px;
+  border-top-left-radius: 4px;
   color: @color-btn;
   cursor: pointer;
 
@@ -108,7 +108,7 @@ export default {
   left: 0;
   border-bottom: 2px solid @color-tab-border-bottom;
   border-left: 2px solid @color-tab-border-bottom;
-  border-bottom-left-radius: 3px;
+  border-bottom-left-radius: 4px;
   background-color: @color-theme_2;
   overflow: hidden;
   opacity: 0;

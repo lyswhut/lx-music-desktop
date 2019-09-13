@@ -44,6 +44,11 @@ export default {
       name: '灰常美丽',
       class: 'grey',
     },
+    {
+      id: 7,
+      name: '月里嫦娥',
+      class: 'midAutumn',
+    },
   ],
   version: {
     version,

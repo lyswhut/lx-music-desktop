@@ -225,6 +225,8 @@ body {
   display: flex;
   height: 100%;
   overflow: hidden;
+  background: @color-theme-bgimg center center no-repeat;
+  background-size: auto 100%;
 }
 
 #left {
@@ -235,6 +237,8 @@ body {
   flex: auto;
   display: flex;
   flex-flow: column nowrap;
+  transition: background-color @transition-theme;
+  background-color: @color-theme_2;
 }
 #toolbar, #player {
   flex: none;
@@ -243,5 +247,14 @@ body {
   flex: auto;
   height: 0;
 }
+
+each(@themes, {
+  #container.@{value} {
+    background-image: ~'@{color-@{value}-theme-bgimg}';
+    #right {
+      background-color: ~'@{color-@{value}-theme_2}';
+    }
+  }
+})
 </style>
 

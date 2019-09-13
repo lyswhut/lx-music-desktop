@@ -1,12 +1,8 @@
 <template lang="pug">
   div(:class="$style.container")
-    div(:class="$style.header")
-      material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
-      material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
-      material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-    div(:class="$style.main")
-      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-        div(:class="$style.songListDetail" v-show="isVisibleListDetail")
+    transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+      div(:class="$style.songListDetailContent" v-show="isVisibleListDetail")
+        div(:class="$style.songListDetail")
           div(:class="$style.songListHeader")
             div(:class="$style.songListHeaderLeft")
               img(:src="selectListInfo.img")
@@ -17,8 +13,13 @@
             div(:class="$style.songListHeaderRight")
               material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
           material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
-      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-        div.scroll(:class="$style.songList" ref="dom_scrollContent" v-show="!isVisibleListDetail")
+    transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+      div(:class="$style.songListContent" v-show="!isVisibleListDetail")
+        div(:class="$style.header")
+          material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
+          material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
+          material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+        div.scroll(:class="$style.songList" ref="dom_scrollContent")
           ul
             li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
               div(:class="$style.left")
@@ -269,14 +270,18 @@ export default {
   width: 80px;
 }
 
-.main {
+.songListContent, .songListDetailContent {
   flex: auto;
   overflow: hidden;
+}
+
+.songListContent {
+  display: flex;
+  flex-flow: column nowrap;
   // position: relative;
 }
 
 .song-list-header {
-  background-color: @color-theme_2;
   display: flex;
   flex-flow: row nowrap;
   height: 60px;
@@ -340,7 +345,6 @@ export default {
   height: 100%;
   overflow-y: auto;
   padding: 0 15px;
-  background-color: #fff;
   ul {
     display: flex;
     flex-flow: row wrap;

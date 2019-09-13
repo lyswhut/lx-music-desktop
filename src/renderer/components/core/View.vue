@@ -13,7 +13,6 @@ div(:class="$style.view")
 
 .view {
   position: relative;
-  background-color: @color-theme_2;
   > * {
     position: absolute;
     width: 100%;
@@ -21,13 +20,5 @@ div(:class="$style.view")
   // background: #fff;
   // overflow: hidden;
 }
-
-each(@themes, {
-  :global(#container.@{value}) {
-    .view {
-      background-color: ~'@{color-@{value}-theme_2}';
-    }
-  }
-})
 
 </style>

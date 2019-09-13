@@ -36,11 +36,11 @@ table {
   }
   tbody {
     tr {
-      border-top: 1px solid #e0e0e0;
+      border-top: 1px solid @color-theme_2-line;
       // border-top: 1px solid rgba(0, 0, 0, 0.12);
       transition: background-color 0.2s ease;
       &:hover {
-        background-color: #eee;
+        background-color: @color-theme_2-hover;
       }
       &:first-child {
         border-top: none;
@@ -170,6 +170,16 @@ each(@themes, {
       }
       &::-webkit-scrollbar-thumb:hover {
         background-color: ~'@{color-@{value}-scrollbar-thumb-hover}';
+      }
+    }
+    table {
+      tbody {
+        tr {
+          border-top-color: ~'@{color-@{value}-theme_2-line}';
+          &:hover {
+            background-color: ~'@{color-@{value}-theme_2-hover}';
+          }
+        }
       }
     }
   }

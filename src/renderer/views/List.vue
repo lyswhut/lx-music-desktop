@@ -257,7 +257,7 @@ export default {
 
   p {
     font-size: 24px;
-    color: #ccc;
+    color: @color-theme_2-font-label;
   }
 }
 
@@ -270,6 +270,12 @@ each(@themes, {
         }
       }
     }
+    .no-item {
+      p {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
   }
 })
+
 </style>

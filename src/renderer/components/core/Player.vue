@@ -471,8 +471,7 @@ export default {
   height: @height-player;
   // background-color: rgb(245, 245, 245);
   transition: @transition-theme;
-  transition-property: background-color, border-color;
-  background-color: @color-theme_2;
+  transition-property: border-color;
   border-top: 2px solid @color-theme;
   box-sizing: border-box;
   display: flex;
@@ -496,7 +495,7 @@ export default {
     max-height: 100%;
     transition: @transition-theme;
     transition-property: border-color;
-    border: 2px solid @color-theme_2;
+    border: 2px solid @color-theme_2-background_2;
   }
 }
 .right {
@@ -669,13 +668,12 @@ export default {
 each(@themes, {
   :global(#container.@{value}) {
     .player {
-      background-color: ~'@{color-@{value}-theme_2}';
       border-top-color: ~'@{color-@{value}-theme}';
     }
     .left {
       color: ~'@{color-@{value}-theme}';
       img {
-        border-color: ~'@{color-@{value}-theme_2}';
+        border-color: ~'@{color-@{value}-theme_2-background_2}';
       }
     }
     .play-btn {

@@ -57,7 +57,7 @@ export default {
   // box-shadow: 0 0 5px rgba(0, 0, 0, .3);
   transition: @transition-theme;
   transition-property: background-color;
-  background-color: @color-theme;
+  background-color: @color-theme-sidebar;
   // background-color: @color-aside-background;
   // border-right: 2px solid @color-theme;
   -webkit-app-region: drag;
@@ -122,7 +122,7 @@ export default {
 each(@themes, {
   :global(#container.@{value}) {
     .aside {
-      background-color: ~'@{color-@{value}-theme}';
+      background-color: ~'@{color-@{value}-theme-sidebar}';
     }
     .logo {
       color: ~'@{color-@{value}-theme-font}';
