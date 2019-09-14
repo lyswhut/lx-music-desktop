@@ -37,7 +37,7 @@
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
               td(style="width: 10%;") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
-      p 加载中...
+      p(v-text="list.length ? '加载中...' : '列表竟然是空的...'")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn" :add-btn="false" :play-btn="false" @btn-click="handleFlowBtnClick")
