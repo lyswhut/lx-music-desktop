@@ -217,11 +217,9 @@ export const http_jsonp = (url, options, callback) => {
   })
 }
 
-const getProxyInfo = () => {
-  return window.globalObj.proxy.enable
-    ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
-    : undefined
-}
+const getProxyInfo = () => window.globalObj.proxy.enable
+  ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
+  : undefined
 
 const fatchData = (url, method, options, callback) => {
   // console.log(url, options)

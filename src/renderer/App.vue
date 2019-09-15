@@ -132,7 +132,7 @@ export default {
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
-      this.globalObj.proxy = this.setting.network.proxy
+      this.globalObj.proxy = Object.assign({}, this.setting.network.proxy)
       window.globalObj = this.globalObj
     },
     enableIgnoreMouseEvents() {

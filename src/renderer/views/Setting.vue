@@ -64,10 +64,10 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt 网络设置
     dd
-      h3 代理设置
+      h3 代理设置（歌曲下载暂不支持代理）
       div
         p
-          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enabel')" label="是否启用")
+          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" label="是否启用")
         p
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" placeholder="主机")
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" placeholder="端口")
