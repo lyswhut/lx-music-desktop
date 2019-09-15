@@ -35,7 +35,10 @@ export default {
       isProd: process.env.NODE_ENV === 'production',
       isLinux,
       globalObj: {
-        apiSource: 'messoer',
+        apiSource: 'test',
+        proxy: {
+
+        },
       },
       updateTimeout: null,
     }
@@ -129,6 +132,7 @@ export default {
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
+      this.globalObj.proxy = this.setting.network.proxy
       window.globalObj = this.globalObj
     },
     enableIgnoreMouseEvents() {

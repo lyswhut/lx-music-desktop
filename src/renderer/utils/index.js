@@ -163,7 +163,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.7'
+  const defaultVersion = '1.0.8'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -196,6 +196,15 @@ export const updateSetting = setting => {
     },
     odc: {
       isAutoClearSearchInput: false,
+    },
+    network: {
+      proxy: {
+        enable: false,
+        host: '',
+        port: '',
+        username: '',
+        password: '',
+      },
     },
     themeId: 0,
     sourceId: 'kw',

@@ -8,6 +8,8 @@ import { bHh } from './music/options'
 const headers = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
 }
+// var proxyUrl = "http://" + user + ":" + password + "@" + host + ":" + port;
+// var proxiedRequest = request.defaults({'proxy': proxyUrl});
 
 /**
  * promise 形式的请求方法
@@ -215,6 +217,12 @@ export const http_jsonp = (url, options, callback) => {
   })
 }
 
+const getProxyInfo = () => {
+  return window.globalObj.proxy.enable
+    ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
+    : undefined
+}
+
 const fatchData = (url, method, options, callback) => {
   // console.log(url, options)
   console.log('---start---', url)
@@ -233,6 +241,7 @@ const fatchData = (url, method, options, callback) => {
     form: options.form,
     formData: options.formData,
     timeout: options.timeout || 10000,
+    proxy: getProxyInfo(),
     json: options.format === undefined || options.format === 'json',
   }, (err, resp, body) => {
     if (err) return callback(err, null)

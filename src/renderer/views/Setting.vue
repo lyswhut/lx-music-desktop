@@ -62,6 +62,18 @@ div.scroll(:class="$style.setting")
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
+    dt 网络设置
+    dd
+      h3 代理设置
+      div
+        p
+          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enabel')" label="是否启用")
+        p
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" placeholder="主机")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" placeholder="端口")
+        p
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" placeholder="用户名")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" placeholder="密码")
     dt 强迫症设置
     dd
       h3 离开搜索界面时清空搜索框
@@ -168,6 +180,15 @@ export default {
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,
           isEmbedPic: true,
+        },
+        network: {
+          proxy: {
+            enable: false,
+            host: '',
+            port: '',
+            username: '',
+            password: '',
+          },
         },
         odc: {
           isAutoClearSearchInput: false,
@@ -415,6 +436,9 @@ export default {
     },
     clipboardWriteText(text) {
       clipboardWriteText(text)
+    },
+    handleProxyChange(key) {
+      window.globalObj.proxy[key] = this.current_setting.network.proxy[key]
     },
     openRewardModal() {
 
