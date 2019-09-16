@@ -4,7 +4,7 @@ import { headers, timeout } from '../options'
 
 const api_test = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`http://test.tempmusic.tk/url/bd/${songInfo.songmid}/${type}`, {
+    const requestObj = httpFatch(`http://ts.tempmusic.tk/url/bd/${songInfo.songmid}/${type}`, {
       method: 'get',
       timeout,
       headers,
@@ -15,7 +15,7 @@ const api_test = {
     return requestObj
   },
   getPic(songInfo, size = '500') {
-    const requestObj = httpFatch(`http://test.tempmusic.tk/pic/bd/${songInfo.songmid}/${size}`, {
+    const requestObj = httpFatch(`http://ts.tempmusic.tk/pic/bd/${songInfo.songmid}/${size}`, {
       method: 'get',
       timeout,
       headers,
@@ -26,7 +26,7 @@ const api_test = {
     return requestObj
   },
   getLyric(songInfo) {
-    const requestObj = httpFatch(`http://test.tempmusic.tk/lrc/bd/${songInfo.songmid}`, {
+    const requestObj = httpFatch(`http://ts.tempmusic.tk/lrc/bd/${songInfo.songmid}`, {
       method: 'get',
       timeout,
       headers,
