@@ -73,7 +73,7 @@ div.scroll(:class="$style.setting")
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" placeholder="端口")
         p
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" placeholder="用户名")
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" placeholder="密码")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" placeholder="密码")
     dt 强迫症设置
     dd
       h3 离开搜索界面时清空搜索框

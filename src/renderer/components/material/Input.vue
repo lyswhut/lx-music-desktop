@@ -1,5 +1,5 @@
 <template lang="pug">
-  input(:class="$style.input" :placeholder="placeholder" v-model.trim="text" :disabled="disabled"
+  input(:class="$style.input" :type="type" :placeholder="placeholder" v-model.trim="text" :disabled="disabled"
     @focus="$emit('focus', $event)" @blur="$emit('blur', $event)" @input="$emit('input', text)" @change="$emit('change', text)"
     @keyup.enter="submit")
 </template>
@@ -18,6 +18,10 @@ export default {
     value: {
       type: String,
       default: '',
+    },
+    type: {
+      type: String,
+      default: 'text',
     },
   },
   data() {
