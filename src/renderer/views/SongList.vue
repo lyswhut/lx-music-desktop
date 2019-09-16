@@ -2,17 +2,16 @@
   div(:class="$style.container")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(:class="$style.songListDetailContent" v-show="isVisibleListDetail")
-        div(:class="$style.songListDetail")
-          div(:class="$style.songListHeader")
-            div(:class="$style.songListHeaderLeft")
-              img(:src="selectListInfo.img")
-              span(:class="$style.playNum" v-if="selectListInfo.play_count") {{selectListInfo.play_count}}
-            div(:class="$style.songListHeaderMiddle")
-              h3(:title="selectListInfo.name") {{selectListInfo.name}}
-              p(:title="selectListInfo.desc") {{selectListInfo.desc}}
-            div(:class="$style.songListHeaderRight")
-              material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
-          material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
+        div(:class="$style.songListHeader")
+          div(:class="$style.songListHeaderLeft")
+            img(:src="selectListInfo.img")
+            span(:class="$style.playNum" v-if="selectListInfo.play_count") {{selectListInfo.play_count}}
+          div(:class="$style.songListHeaderMiddle")
+            h3(:title="selectListInfo.name") {{selectListInfo.name}}
+            p(:title="selectListInfo.desc") {{selectListInfo.desc}}
+          div(:class="$style.songListHeaderRight")
+            material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
+        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(:class="$style.songListContent" v-show="!isVisibleListDetail")
         div(:class="$style.header")
@@ -270,8 +269,8 @@ export default {
   width: 80px;
 }
 
-.songListContent, .songListDetailContent {
-  flex: auto;
+.songListContent, .song-list-detail-content {
+  // flex: auto;
   overflow: hidden;
 }
 
@@ -331,7 +330,7 @@ export default {
   padding-right: 15px;
 }
 
-.song-list-detail {
+.song-list-detail-content {
   position: absolute;
   width: 100%;
   height: 100%;
