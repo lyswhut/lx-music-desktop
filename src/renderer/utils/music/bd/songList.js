@@ -116,6 +116,7 @@ export default {
       return {
         hotTag: this.filterInfoHotTag(body.result.hot),
         tags: this.filterTagInfo(body.result.tags),
+        source: 'bd',
       }
     })
   },
@@ -123,6 +124,7 @@ export default {
     return rawList.map(item => ({
       name: item,
       id: item,
+      source: 'bd',
     }))
   },
   filterTagInfo(rawList) {
@@ -133,6 +135,7 @@ export default {
         parent_name: type.first,
         id: item,
         name: item,
+        source: 'bd',
       })),
     }))
   },
@@ -150,6 +153,7 @@ export default {
         total: body.nums,
         page,
         limit: this.limit_list,
+        source: 'bd',
       }
     })
   },
@@ -174,6 +178,7 @@ export default {
       img: item.list_pic_large || item.list_pic,
       grade: item.grade,
       desc: item.desc || item.tag,
+      source: 'bd',
     }))
   },
 
@@ -191,6 +196,7 @@ export default {
         page,
         limit: this.limit_song,
         total: body.result.song_num,
+        source: 'bd',
       }
     })
   },

@@ -80,6 +80,7 @@ export default {
           parent_name: tag.pname,
           id: tag.id,
           name: tag.name,
+          source: 'kg',
         })),
       })
     }
@@ -133,6 +134,7 @@ export default {
       img: item.img || item.imgurl,
       grade: item.grade,
       desc: item.intro,
+      source: 'kg',
     }))
   },
 
@@ -147,6 +149,7 @@ export default {
         page: 1,
         limit: 10000,
         total: listData.length,
+        source: 'kg',
       }
     })
   },
@@ -215,6 +218,7 @@ export default {
         limit: body.data.params.pagesize,
         page: body.data.params.p,
         total: body.data.params.total,
+        source: 'kg',
       }
     })
   },
@@ -250,6 +254,7 @@ export default {
       return {
         hotTag: this.filterInfoHotTag(body.data.hotTag),
         tags: this.filterTagInfo(body.data.tagids),
+        source: 'kg',
       }
     })
   },

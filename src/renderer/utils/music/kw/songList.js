@@ -59,6 +59,7 @@ export default {
     return rawList.map(item => ({
       id: `${item.id}-${item.digest}`,
       name: item.name,
+      source: 'kw',
     }))
   },
   filterTagInfo(rawList) {
@@ -69,6 +70,7 @@ export default {
         parent_name: type.name,
         id: `${item.id}-${item.digest}`,
         name: item.name,
+        source: 'kw',
       })),
     }))
   },
@@ -94,6 +96,7 @@ export default {
           total: body.data.total,
           page: body.data.pn,
           limit: body.data.rn,
+          source: 'kw',
         }
       } else if (!body.length) {
         return this.getListUrl({ sortId, id, type, page })
@@ -103,6 +106,7 @@ export default {
         total: 1000,
         page,
         limit: 1000,
+        source: 'kw',
       }
     })
   },
@@ -127,6 +131,7 @@ export default {
       img: item.img,
       grade: item.favorcnt / 10,
       desc: item.desc,
+      source: 'kw',
     }))
   },
   filterList2(rawData) {
@@ -160,6 +165,7 @@ export default {
         page,
         limit: body.rn,
         total: body.total,
+        source: 'kw',
       }
     })
   },

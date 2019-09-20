@@ -138,7 +138,6 @@ export default {
         list,
         allPage: this.allPage,
         total: this.total,
-        source: 'kw',
       })
     })
   },

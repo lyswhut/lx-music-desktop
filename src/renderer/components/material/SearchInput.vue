@@ -34,10 +34,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['source', 'route', 'setting']),
-    ...mapGetters('search', ['info']),
+    ...mapGetters(['route', 'setting']),
+    ...mapGetters('search', ['searchText']),
     isAutoClearInput() {
       return this.setting.odc.isAutoClearSearchInput
+    },
+    source() {
+      return this.setting.search.tempSearchSource
     },
   },
   watch: {
@@ -46,7 +49,7 @@ export default {
         this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
       })
     },
-    'info.text'(n) {
+    'searchText'(n) {
       if (n !== this.text) this.text = n
     },
     route(n) {
@@ -81,11 +84,11 @@ export default {
     handleInput() {
       if (this.text === '') {
         this.list.splice(0, this.list.length)
-        music[this.source.id].tempSearch.cancelTempSearch()
+        music[this.source].tempSearch.cancelTempSearch()
         return
       }
       if (!this.isShow) this.showList()
-      music[this.source.id].tempSearch.search(this.text).then(list => {
+      music[this.source].tempSearch.search(this.text).then(list => {
         this.list = list
       }).catch(() => {})
     },

@@ -2,8 +2,9 @@ export default {
   setTheme(state, val) {
     state.setting.themeId = val
   },
-  setSource(state, val) {
-    state.setting.sourceId = val
+  setSearchSource(state, { searchSource, tempSearchSource }) {
+    if (searchSource != null) state.setting.search.searchSource = searchSource
+    if (tempSearchSource != null) state.setting.search.tempSearchSource = tempSearchSource
   },
   setSetting(state, val) {
     state.setting = val

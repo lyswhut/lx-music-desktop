@@ -1,7 +1,9 @@
 <template lang="pug">
   div(:class="$style.search")
     //- transition
-    div(v-if="list.length" :class="$style.list")
+    div(v-if="listInfo.list.length" :class="$style.list")
+      div(:class="$style.header")
+        material-tab(:class="$style.tab" :list="sources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
       div(:class="$style.thead")
         table
           thead
@@ -17,7 +19,7 @@
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody
-            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
+            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick(index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
@@ -30,7 +32,7 @@
                 material-list-buttons(:index="index" :remove-btn="false" @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
-          material-pagination(:count="listInfo.total" :limit="limit" :page="page" @btn-click="handleTogglePage")
+          material-pagination(:count="info.total" :limit="limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
       p 搜我所想~~😉
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -57,6 +59,7 @@ export default {
       isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
+      searchSourceId: null,
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -72,10 +75,10 @@ export default {
   },
   mounted() {
     // console.log('mounted')
+    this.searchSourceId = this.setting.search.searchSource
     if (this.$route.query.text === undefined) {
-      let info = this.$store.getters['search/info']
-      this.text = info.text
-      this.page = info.page
+      this.text = this.$store.getters['search/text']
+      this.page = this.listInfo.page
     } else if (this.$route.query.text === '') {
       this.clearList()
     } else {
@@ -89,23 +92,33 @@ export default {
       const len = n.length
       if (len) {
         this.isSelectAll = true
-        this.isIndeterminate = len !== this.list.length
+        this.isIndeterminate = len !== this.listInfo.list.length
         this.isShowEditBtn = true
       } else {
         this.isSelectAll = false
         this.isShowEditBtn = false
       }
     },
-    list() {
+    'listInfo.list'() {
       this.resetSelect()
+    },
+    searchSourceId(n) {
+      if (n === this.setting.search.searchSource) return
+      this.setSearchSource({
+        searchSource: n,
+      })
     },
   },
   computed: {
-    ...mapGetters(['userInfo']),
-    ...mapGetters('search', ['list', 'limit', 'listInfo']),
+    ...mapGetters(['userInfo', 'setting']),
+    ...mapGetters('search', ['sourceList', 'allList', 'sources']),
     ...mapGetters('list', ['defaultList']),
+    listInfo() {
+      return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
+    },
   },
   methods: {
+    ...mapMutations(['setSearchSource']),
     ...mapActions('search', ['search']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('search', ['clearList', 'setPage']),
@@ -135,7 +148,7 @@ export default {
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
-          this.musicInfo = this.list[info.index]
+          this.musicInfo = this.listInfo.list[info.index]
           this.$nextTick(() => {
             this.isShowDownload = true
           })
@@ -153,7 +166,7 @@ export default {
         targetSong = this.selectdData[0]
         this.defaultListAddMultiple(this.selectdData)
       } else {
-        targetSong = this.list[index]
+        targetSong = this.listInfo.list[index]
         this.defaultListAdd(targetSong)
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -180,7 +193,7 @@ export default {
       this.isShowDownloadMultiple = false
     },
     handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.list] : []
+      this.selectdData = isSelect ? [...this.listInfo.list] : []
     },
     resetSelect() {
       this.isSelectAll = false

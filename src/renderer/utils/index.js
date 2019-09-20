@@ -163,7 +163,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.8'
+  const defaultVersion = '1.0.9'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -197,6 +197,10 @@ export const updateSetting = setting => {
     odc: {
       isAutoClearSearchInput: false,
     },
+    search: {
+      searchSource: 'kw',
+      tempSearchSource: 'kw',
+    },
     network: {
       proxy: {
         enable: false,
@@ -214,7 +218,6 @@ export const updateSetting = setting => {
   }
   const overwriteSetting = {
     version: defaultVersion,
-    sourceId: 'kw',
   }
 
 

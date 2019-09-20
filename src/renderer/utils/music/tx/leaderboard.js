@@ -196,6 +196,7 @@ export default {
           list: this.filterData(data.toplist.data.songInfoList),
           limit: this.limit,
           page: 1,
+          source: 'tx',
         }
       })
     })
