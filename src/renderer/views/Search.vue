@@ -29,7 +29,10 @@
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 25%;") {{item.albumName}}
               td(style="width: 15%;")
-                material-list-buttons(:index="index" :remove-btn="false" @btn-click="handleListBtnClick")
+                material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
+                  :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
+                  :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
+                  @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
@@ -37,7 +40,7 @@
       p 搜我所想~~😉
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -116,6 +119,9 @@ export default {
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
     },
+    isAPITemp() {
+      return this.setting.apiSource == 'temp'
+    },
   },
   methods: {
     ...mapMutations(['setSearchSource']),
@@ -166,8 +172,9 @@ export default {
       let targetSong
       if (index == null) {
         targetSong = this.selectdData[0]
-        this.defaultListAddMultiple(this.selectdData)
+        this.defaultListAddMultiple(this.filterList(this.selectdData))
       } else {
+        if ((this.isAPITemp && this.listInfo.list[index].source != 'kw') || this.listInfo.list[index].source == 'tx' || this.listInfo.list[index].source == 'wy') return
         targetSong = this.listInfo.list[index]
         this.defaultListAdd(targetSong)
       }
@@ -190,7 +197,7 @@ export default {
       this.isShowDownload = false
     },
     handleAddDownloadMultiple(type) {
-      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
     },
@@ -211,10 +218,13 @@ export default {
           this.resetSelect()
           break
         case 'add':
-          this.defaultListAddMultiple(this.selectdData)
+          this.defaultListAddMultiple(this.filterList(this.selectdData))
           this.resetSelect()
           break
       }
+    },
+    filterList(list) {
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx' && s.source != 'wy')
     },
   },
 }
@@ -259,6 +269,9 @@ export default {
       }
     }
   }
+}
+.listBtn {
+  min-height: 24px;
 }
 .pagination {
   text-align: center;
