@@ -17,8 +17,11 @@ export default {
     return searchRequest.promise.then(({ body }) => body)
   },
   handleResult(rawData) {
-    // console.log(rawData)
-    return rawData.map(item => {
+    let ids = new Set()
+    const list = []
+    rawData.forEach(item => {
+      if (ids.has(item.song_id)) return
+      ids.add(item.song_id)
       const types = []
       const _types = {}
       let size = null
@@ -43,7 +46,7 @@ export default {
       }
       // types.reverse()
 
-      return {
+      list.push({
         singer: item.author.replace(',', '、'),
         name: item.title,
         albumName: item.album_title,
@@ -56,8 +59,9 @@ export default {
         types,
         _types,
         typeUrl: {},
-      }
+      })
     })
+    return list
   },
   search(str, page = 1, { limit } = {}) {
     if (limit != null) this.limit = limit
