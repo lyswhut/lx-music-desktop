@@ -21,8 +21,7 @@ material-modal(:show="version.showModal" @close="handleClose")
         p
           | 你现在可以选择继续使用当前版本或
           strong 去发布页下载新版本
-        p
-          | 推荐到
+          | ，推荐到
           strong 网盘
           | 下载
       div(:class="$style.btns")
