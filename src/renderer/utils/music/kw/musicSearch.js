@@ -121,7 +121,7 @@ export default {
     }
     return result
   },
-  search(str, page = 1, { limit }) {
+  search(str, page = 1, { limit } = {}) {
     if (limit != null) this.limit = limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page).then(result => {
@@ -138,6 +138,7 @@ export default {
         list,
         allPage: this.allPage,
         total: this.total,
+        limit: this.limit,
         source: 'kw',
       })
     })

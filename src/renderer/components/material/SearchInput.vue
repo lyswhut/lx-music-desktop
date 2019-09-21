@@ -79,7 +79,7 @@ export default {
         query: {
           text: this.text,
         },
-      })
+      }).catch(_ => _)
     },
     handleInput() {
       if (this.text === '') {

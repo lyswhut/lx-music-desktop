@@ -1,9 +1,9 @@
 <template lang="pug">
   div(:class="$style.search")
     //- transition
+    div(:class="$style.header")
+      material-tab(:class="$style.tab" :list="sources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
     div(v-if="listInfo.list.length" :class="$style.list")
-      div(:class="$style.header")
-        material-tab(:class="$style.tab" :list="sources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
       div(:class="$style.thead")
         table
           thead
@@ -32,7 +32,7 @@
                 material-list-buttons(:index="index" :remove-btn="false" @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
-          material-pagination(:count="info.total" :limit="limit" :page="page" @btn-click="handleTogglePage")
+          material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
       p 搜我所想~~😉
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -64,20 +64,16 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (to.query.text === undefined) return
-    if (to.query.text === '') {
-      this.clearList()
-    } else {
-      this.text = to.query.text
-      this.page = 1
-      this.handleSearch(this.text, this.page)
-    }
+    this.text = to.query.text
+    this.page = 1
+    this.handleSearch(this.text, this.page)
     next()
   },
   mounted() {
     // console.log('mounted')
     this.searchSourceId = this.setting.search.searchSource
     if (this.$route.query.text === undefined) {
-      this.text = this.$store.getters['search/text']
+      this.text = this.$store.getters['search/searchText']
       this.page = this.listInfo.page
     } else if (this.$route.query.text === '') {
       this.clearList()
@@ -104,6 +100,10 @@ export default {
     },
     searchSourceId(n) {
       if (n === this.setting.search.searchSource) return
+      this.$nextTick(() => {
+        this.page = 1
+        this.handleSearch(this.text, this.page)
+      })
       this.setSearchSource({
         searchSource: n,
       })
@@ -125,7 +125,9 @@ export default {
     ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
     ...mapMutations('player', ['setList']),
     handleSearch(text, page) {
-      this.search({ text, page, limit: this.limit }).then(data => {
+      if (text === '') return this.clearList()
+
+      this.search({ text, page, limit: this.listInfo.limit }).then(data => {
         this.page = page
         this.$nextTick(() => {
           scrollTo(this.$refs.dom_scrollContent, 0)
@@ -224,6 +226,11 @@ export default {
 .search {
   overflow: hidden;
   height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.header {
+  flex: none;
 }
 .list {
   position: relative;
@@ -231,6 +238,8 @@ export default {
   font-size: 14px;
   display: flex;
   flex-flow: column nowrap;
+  flex: auto;
+  overflow: hidden;
 }
 .thead {
   flex: none;
@@ -258,8 +267,9 @@ export default {
   // transform: translateX(-50%);
 }
 .noitem {
+  flex: auto;
+  overflow: hidden;
   position: relative;
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

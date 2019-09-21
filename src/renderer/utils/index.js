@@ -43,6 +43,7 @@ export const b64DecodeUnicode = str => {
 export const decodeName = str => str.replace(/&apos;/g, '\'')
 
 export const scrollTo = (element, to, duration = 300, fn = function() {}) => {
+  if (!element) return
   const start = element.scrollTop || element.scrollY
   const change = to - start
   const increment = 10
