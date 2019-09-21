@@ -19,12 +19,12 @@ material-modal(:show="version.showModal" @close="handleClose")
       div(:class="$style.desc" v-if="!isUnknow")
         p 发现有新版本啦，但是自动更新功能出问题了
         p
-          | 如果你所用的软件是
-          strong 安装版
-          | ，可以到QQ群：830125506 反馈哦
-        p
           | 你现在可以选择继续使用当前版本或
           strong 去发布页下载新版本
+        p
+          | 推荐到
+          strong 网盘
+          | 下载
       div(:class="$style.btns")
         material-btn(:class="$style.btn" @click.onec="handleIgnoreClick") 忽略该版本
         material-btn(:class="$style.btn" @click.onec="handleOpenPageClick") 去下载新版本
