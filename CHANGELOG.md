@@ -6,6 +6,22 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.6.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.5...v0.6.0) - 2019-09-21
+
+### 新增
+
+- 新增音乐**聚合搜索**，目前支持酷我、酷狗、百度源搜索
+- 新增代理功能
+
+### 优化
+
+- 优化从《梦里嫦娥》皮肤切换到其他皮肤时侧栏动画的切换效果
+
+### 修复
+
+- 修复试听列表没有歌曲时会显示列表加载中的Bug
+- 修复切换歌单列表详情时的UI Bug
+
 ## [0.5.5](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.4...v0.5.5) - 2019-09-13
 
 ### 新增
