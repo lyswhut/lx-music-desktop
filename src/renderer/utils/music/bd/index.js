@@ -3,10 +3,12 @@ import api_source from '../api-source'
 import musicInfo from './musicInfo'
 import songList from './songList'
 import { httpFatch } from '../../request'
+import musicSearch from './musicSearch'
 
 const bd = {
   leaderboard,
   songList,
+  musicSearch,
   getMusicUrl(songInfo, type) {
     return api_source('bd').getMusicUrl(songInfo, type)
   },

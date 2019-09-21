@@ -1,8 +1,5 @@
 import music from '../../utils/music'
-const sources = [{
-  id: 'all',
-  name: '聚合搜索',
-}]
+const sources = []
 const sourceList = {}
 const sourceMaxPage = {}
 for (const source of music.sources) {
@@ -18,6 +15,11 @@ for (const source of music.sources) {
   }
   sourceMaxPage[source.id] = 0
 }
+
+sources.push({
+  id: 'all',
+  name: '聚合搜索',
+})
 
 // state
 const state = {
@@ -80,7 +82,7 @@ const mutations = {
       total += source.total
       limit += source.limit
     }
-    list.sort()
+    list.sort((a, b) => b.name.charCodeAt(0) - a.name.charCodeAt(0))
     state.allPage = Math.max(...pages)
     state.total = total
     state.limit = limit
