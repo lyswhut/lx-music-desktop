@@ -1,4 +1,4 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 // import { formatPlayTime } from '../../index'
 // import jshtmlencode from 'js-htmlencode'
 
@@ -66,7 +66,7 @@ export default {
   requestObj: null,
   getData(url) {
     if (this.requestObj) this.requestObj.cancelHttp()
-    this.requestObj = httpFatch(url)
+    this.requestObj = httpFetch(url)
     return this.requestObj.promise
   },
   filterData(rawList) {

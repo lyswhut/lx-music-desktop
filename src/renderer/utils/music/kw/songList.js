@@ -1,4 +1,4 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
 import { formatSinger } from './util'
 
@@ -40,7 +40,7 @@ export default {
   // 获取标签
   getTag() {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
-    this._requestObj_tags = httpFatch(this.tagsUrl)
+    this._requestObj_tags = httpFetch(this.tagsUrl)
     return this._requestObj_tags.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getTag()
       return this.filterTagInfo(body.data)
@@ -49,7 +49,7 @@ export default {
   // 获取标签
   getHotTag() {
     if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
-    this._requestObj_hotTags = httpFatch(this.hotTagUrl)
+    this._requestObj_hotTags = httpFetch(this.hotTagUrl)
     return this._requestObj_hotTags.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getHotTag()
       return this.filterInfoHotTag(body.data[0].data)
@@ -87,7 +87,7 @@ export default {
     } else {
       id = null
     }
-    this._requestObj_list = httpFatch(this.getListUrl({ sortId, id, type, page }))
+    this._requestObj_list = httpFetch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
       if (!id || type == '10000') {
         if (body.code !== this.successCode) return this.getListUrl({ sortId, id, type, page })
@@ -157,7 +157,7 @@ export default {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
-    this._requestObj_listDetail = httpFatch(this.getListDetailUrl(id, page))
+    this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.result !== 'ok') return this.getListDetail(id, page)
       return {

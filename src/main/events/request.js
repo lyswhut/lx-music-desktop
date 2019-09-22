@@ -7,7 +7,7 @@ const tasks = []
 mainOn('request', (event, options) => {
   // console.log(args)
   if (!options) return
-  let index = fatchData(options, (err, resp) => {
+  let index = fetchData(options, (err, resp) => {
     tasks[index] = null
     if (err) {
       console.log(err)
@@ -27,7 +27,7 @@ mainOn('cancelRequest', (event, index) => {
   tasks[index] = null
 })
 
-const fatchData = (options, callback) => pushTask(tasks, request(options.url, {
+const fetchData = (options, callback) => pushTask(tasks, request(options.url, {
   method: options.method,
   headers: options.headers,
   Origin: options.origin,

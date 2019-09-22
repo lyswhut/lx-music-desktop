@@ -22,7 +22,7 @@ const buildHttpPromose = (url, options) => {
   const p = new Promise((resolve, reject) => {
     cancelFn = reject
     debugRequest && console.log(`\n---send request------${url}------------`)
-    requestObj = fatchData(url, options.method, options, (err, resp, body) => {
+    requestObj = fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
       debugRequest && console.log(`\n---response------${url}------------`)
       debugRequest && console.log(JSON.stringify(body))
@@ -31,7 +31,7 @@ const buildHttpPromose = (url, options) => {
       if (err) {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
-          const { promise, cancelHttp } = httpFatch(url, options)
+          const { promise, cancelHttp } = httpFetch(url, options)
           obj.cancelHttp = cancelHttp
           promise.then()
         }
@@ -59,11 +59,11 @@ const buildHttpPromose = (url, options) => {
  * @param {*} url
  * @param {*} options
  */
-export const httpFatch = (url, options = { method: 'get' }) => {
+export const httpFetch = (url, options = { method: 'get' }) => {
   const requestObj = buildHttpPromose(url, options)
   requestObj.promise = requestObj.promise.catch(err => {
     if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
-      const { promise, cancelHttp } = httpFatch(url, options)
+      const { promise, cancelHttp } = httpFetch(url, options)
       requestObj.cancelHttp()
       requestObj.cancelHttp = cancelHttp
       return promise
@@ -106,7 +106,7 @@ export const http = (url, options, cb) => {
   if (options.method == null) options.method = 'get'
 
   debugRequest && console.log(`\n---send request------${url}------------`)
-  return fatchData(url, options.method, options, (err, resp, body) => {
+  return fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
     debugRequest && console.log(JSON.stringify(body))
@@ -135,7 +135,7 @@ export const httpGet = (url, options, callback) => {
   // })
 
   debugRequest && console.log(`\n---send request-------${url}------------`)
-  return fatchData(url, 'get', options, function(err, resp, body) {
+  return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
     debugRequest && console.log(JSON.stringify(body))
@@ -166,7 +166,7 @@ export const httpPost = (url, data, options, callback) => {
   options.data = data
 
   debugRequest && console.log(`\n---send request-------${url}------------`)
-  return fatchData(url, 'post', options, function(err, resp, body) {
+  return fetchData(url, 'post', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
     debugRequest && console.log(JSON.stringify(body))
@@ -203,7 +203,7 @@ export const http_jsonp = (url, options, callback) => {
   // })
 
   debugRequest && console.log(`\n---send request-------${url}------------`)
-  return fatchData(url, 'get', options, function(err, resp, body) {
+  return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
     debugRequest && console.log(JSON.stringify(body))
@@ -221,7 +221,7 @@ const getProxyInfo = () => window.globalObj.proxy.enable
   ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
   : undefined
 
-const fatchData = (url, method, options, callback) => {
+const fetchData = (url, method, options, callback) => {
   // console.log(url, options)
   console.log('---start---', url)
   if (options.headers && options.headers[bHh]) {

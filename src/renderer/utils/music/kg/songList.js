@@ -1,4 +1,4 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
 
 export default {
@@ -89,7 +89,7 @@ export default {
 
   getSongList(sortId, tagId, page) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
-    this._requestObj_list = httpFatch(
+    this._requestObj_list = httpFetch(
       this.getSongListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
@@ -99,7 +99,7 @@ export default {
   },
   getSongListRecommend() {
     if (this._requestObj_listRecommend) this._requestObj_listRecommend.cancelHttp()
-    this._requestObj_listRecommend = httpFatch(
+    this._requestObj_listRecommend = httpFetch(
       'http://everydayrec.service.kugou.com/guess_special_recommend',
       {
         method: 'post',
@@ -140,7 +140,7 @@ export default {
 
   getListDetail(id, page) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
-    this._requestObj_listDetail = httpFatch(this.getSongListDetailUrl(id))
+    this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
       if (listData) listData = this.filterData(JSON.parse(RegExp.$1))
@@ -211,7 +211,7 @@ export default {
   // 获取列表信息
   getListInfo(tagId) {
     if (this._requestObj_listInfo) this._requestObj_listInfo.cancelHttp()
-    this._requestObj_listInfo = httpFatch(this.getInfoUrl(tagId))
+    this._requestObj_listInfo = httpFetch(this.getInfoUrl(tagId))
     return this._requestObj_listInfo.promise.then(({ body }) => {
       if (body.status !== 1) return this.getListInfo(tagId)
       return {
@@ -248,7 +248,7 @@ export default {
   // 获取标签
   getTags() {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
-    this._requestObj_tags = httpFatch(this.getInfoUrl())
+    this._requestObj_tags = httpFetch(this.getInfoUrl())
     return this._requestObj_tags.promise.then(({ body }) => {
       if (body.status !== 1) return this.getTags()
       return {

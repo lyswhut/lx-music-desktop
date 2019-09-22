@@ -2,7 +2,7 @@ import leaderboard from './leaderboard'
 import api_source from '../api-source'
 import musicInfo from './musicInfo'
 import songList from './songList'
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import musicSearch from './musicSearch'
 
 const bd = {
@@ -19,7 +19,7 @@ const bd = {
   },
   getLyric(songInfo) {
     const requestObj = this.getMusicInfo(songInfo)
-    requestObj.promise = requestObj.promise.then(info => httpFatch(info.lrclink).promise.then(resp => resp.body))
+    requestObj.promise = requestObj.promise.then(info => httpFetch(info.lrclink).promise.then(resp => resp.body))
     return requestObj
   },
   // getLyric(songInfo) {

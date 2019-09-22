@@ -1,6 +1,6 @@
 // import '../../polyfill/array.find'
 // import jshtmlencode from 'js-htmlencode'
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
 // import { debug } from '../../utils/env'
 // import { formatSinger } from './util'
@@ -13,7 +13,7 @@ export default {
   allPage: 1,
   musicSearch(str, page) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFatch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${this.limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
+    searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${this.limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => body)
   },
   handleResult(rawData) {

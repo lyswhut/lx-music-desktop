@@ -1,6 +1,6 @@
 // import '../../polyfill/array.find'
 // import jshtmlencode from 'js-htmlencode'
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime } from '../../index'
 // import { debug } from '../../utils/env'
 // import { formatSinger } from './util'
@@ -13,7 +13,7 @@ export default {
   allPage: 1,
   musicSearch(str, page) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFatch(`http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version=5.6.5.6&method=baidu.ting.search.merge&format=json&query=${encodeURIComponent(str)}&page_no=${page}&page_size=${this.limit}&type=0&data_source=0&use_cluster=1`)
+    searchRequest = httpFetch(`http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version=5.6.5.6&method=baidu.ting.search.merge&format=json&query=${encodeURIComponent(str)}&page_no=${page}&page_size=${this.limit}&type=0&data_source=0&use_cluster=1`)
     return searchRequest.promise.then(({ body }) => body)
   },
   handleResult(rawData) {

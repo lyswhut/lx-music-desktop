@@ -1,4 +1,4 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, toMD5 } from '../../index'
 import CryptoJS from 'crypto-js'
 
@@ -110,7 +110,7 @@ export default {
   // 获取标签
   getTags() {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
-    this._requestObj_tags = httpFatch(this.getTagsUrl())
+    this._requestObj_tags = httpFetch(this.getTagsUrl())
     return this._requestObj_tags.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getTags()
       return {
@@ -143,7 +143,7 @@ export default {
   // 获取列表数据
   getList(sortId, tagId, page) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
-    this._requestObj_list = httpFatch(
+    this._requestObj_list = httpFetch(
       this.getListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
@@ -187,7 +187,7 @@ export default {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
-    this._requestObj_listDetail = httpFatch(this.getListDetailUrl(id, page))
+    this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getListDetail(id, page)
       let listData = this.filterData(body.result.songlist)

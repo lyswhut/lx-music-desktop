@@ -1,4 +1,4 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 
 export default {
   formatTime(time) {
@@ -10,7 +10,7 @@ export default {
     return `[ti:${songinfo.songName}]\n[ar:${songinfo.artist}]\n[al:${songinfo.album}]\n[by:]\n[offset:0]\n${lrclist ? lrclist.map(l => `[${this.formatTime(l.time)}]${l.lineLyric}\n`).join('') : '暂无歌词'}`
   },
   getLyric(songId) {
-    const requestObj = httpFatch(`http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${songId}`)
+    const requestObj = httpFetch(`http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${songId}`)
     requestObj.promise = requestObj.promise.then(({ body }) => {
       return this.transformLrc(body.data)
     })

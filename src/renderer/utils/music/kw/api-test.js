@@ -1,10 +1,10 @@
-import { httpFatch } from '../../request'
+import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
 import { headers, timeout } from '../options'
 
 const api_test = {
   // getMusicUrl(songInfo, type) {
-  //   const requestObj = httpFatch(`http://45.32.53.128:3002/m/kw/u/${songInfo.songmid}/${type}`, {
+  //   const requestObj = httpFetch(`http://45.32.53.128:3002/m/kw/u/${songInfo.songmid}/${type}`, {
   //     method: 'get',
   //     headers,
   //     timeout,
@@ -15,7 +15,7 @@ const api_test = {
   //   return requestObj
   // },
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFatch(`http://ts.tempmusic.tk/url/kw/${songInfo.songmid}/${type}`, {
+    const requestObj = httpFetch(`http://ts.tempmusic.tk/url/kw/${songInfo.songmid}/${type}`, {
       method: 'get',
       timeout,
       headers,
