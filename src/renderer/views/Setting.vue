@@ -35,6 +35,15 @@ div.scroll(:class="$style.setting")
       h3 任务栏播放进度条
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" label="是否启用")
+    dt 列表设置
+    dd(title='是否恢复播放列表滚动条位置')
+      h3 恢复列表滚动位置（仅对我的音乐分类有效）
+      div
+        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.scroll.enable" label="是否启用")
+    //- dd(title='播放列表是否显示专辑栏')
+      h3 专辑栏
+      div
+        material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt 下载设置
     dd(title='下载歌曲保存的路径')
       h3 下载路径
@@ -57,11 +66,6 @@ div.scroll(:class="$style.setting")
       h3 歌词下载
       div
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
-    //- dt 列表设置
-    //- dd(title='播放列表是否显示专辑栏')
-      h3 专辑栏
-      div
-        material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt 网络设置
     dd
       h3 代理设置（歌曲下载暂不支持代理）
@@ -174,6 +178,10 @@ export default {
         },
         list: {
           isShowAlbumName: true,
+          scroll: {
+            enable: true,
+            location: 0,
+          },
         },
         download: {
           savePath: '',

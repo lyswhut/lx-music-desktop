@@ -18,6 +18,9 @@ export default {
     if (sortId != null) state.setting.songList.sortId = sortId
     if (source != null) state.setting.songList.source = source
   },
+  setListScroll(state, scrollTop) {
+    state.setting.list.scroll.location = scrollTop
+  },
   setNewVersion(state, val) {
     // val.history.forEach(ver => {
     //   ver.desc = ver.desc.replace(/\n/g, '<br>')

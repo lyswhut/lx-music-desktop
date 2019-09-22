@@ -44,7 +44,7 @@ export const decodeName = str => str.replace(/&apos;/g, '\'')
 
 export const scrollTo = (element, to, duration = 300, fn = function() {}) => {
   if (!element) return
-  const start = element.scrollTop || element.scrollY
+  const start = element.scrollTop || element.scrollY || 0
   const change = to - start
   const increment = 10
   if (!change) {
@@ -164,7 +164,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.9'
+  const defaultVersion = '1.0.10'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -175,6 +175,10 @@ export const updateSetting = setting => {
     },
     list: {
       isShowAlbumName: true,
+      scroll: {
+        enable: true,
+        location: 0,
+      },
     },
     download: {
       savePath: path.join(os.homedir(), 'Desktop'),
@@ -280,4 +284,22 @@ export const saveLrc = (filePath, lrc) => {
   fs.writeFile(filePath, lrc, 'utf8', err => {
     if (err) console.log(err)
   })
+}
+
+/**
+ * 生成节流函数
+ * @param {*} fn
+ * @param {*} delay
+ */
+export const throttle = (fn, delay = 100) => {
+  let timer = null
+  let _args = null
+  return function(...args) {
+    _args = args
+    if (timer) return
+    timer = setTimeout(() => {
+      timer = null
+      fn.apply(this, _args)
+    }, delay)
+  }
 }

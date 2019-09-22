@@ -14,7 +14,7 @@
               th.nobreak(style="width: 20%;") 专辑
               th.nobreak(style="width: 20%;") 操作
               th.nobreak(style="width: 10%;") 时长
-      div.scroll(:class="$style.tbody")
+      div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid'
@@ -45,6 +45,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { throttle } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -59,6 +60,7 @@ export default {
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
       delayShow: false,
+      routeLeaveLocation: null,
     }
   },
   computed: {
@@ -121,12 +123,33 @@ export default {
   //   this.handleSearch(this.text, this.page)
   // }
   // },
+  beforeRouteLeave(to, from, next) {
+    this.routeLeaveLocation = this.$refs.dom_scrollContent.scrollTop
+    next()
+  },
+  created() {
+    this.handleScroll = throttle(e => {
+      if (this.routeLeaveLocation) {
+        this.setListScroll(this.routeLeaveLocation)
+      } else {
+        this.setListScroll(e.target.scrollTop)
+      }
+    }, 1000)
+  },
   mounted() {
     if (this.list.length > 150) {
-      setTimeout(() => this.delayShow = true, 200)
-    } else this.delayShow = true
+      setTimeout(() => {
+        this.delayShow = true
+        if (this.setting.list.scroll.enable && this.setting.list.scroll.location) {
+          this.$nextTick(() => this.$refs.dom_scrollContent.scrollTo(0, this.setting.list.scroll.location))
+        }
+      }, 200)
+    } else {
+      this.delayShow = true
+    }
   },
   methods: {
+    ...mapMutations(['setListScroll']),
     ...mapMutations('list', ['defaultListRemove', 'defaultListRemoveMultiple']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', ['setList']),
@@ -197,6 +220,9 @@ export default {
           break
       }
     },
+    // handleScroll(e) {
+    //   console.log(e.target.scrollTop)
+    // },
   },
 }
 </script>
