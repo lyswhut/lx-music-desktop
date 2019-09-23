@@ -5,7 +5,14 @@ import { requestMsg } from './message'
 import { bHh } from './music/options'
 // import fs from 'fs'
 
-const headers = {
+import dnscache from 'dnscache'
+dnscache({
+  enable: true,
+  ttl: 21600,
+  cachesize: 1000,
+})
+
+const defaultHeaders = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
 }
 // var proxyUrl = "http://" + user + ":" + password + "@" + host + ":" + port;
@@ -221,26 +228,28 @@ const getProxyInfo = () => window.globalObj.proxy.enable
   ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
   : undefined
 
-const fetchData = (url, method, options, callback) => {
+const fetchData = (url, method, {
+  headers = {},
+  format = 'json',
+  timeout = 1000,
+  ...options
+}, callback) => {
   // console.log(url, options)
   console.log('---start---', url)
-  if (options.headers && options.headers[bHh]) {
+  if (headers[bHh]) {
     let s = Buffer.from(bHh, 'hex').toString()
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
-    options.headers[s] = !!s
-    delete options.headers[bHh]
+    headers[s] = !!s
+    delete headers[bHh]
   }
   return request(url, {
+    ...options,
     method,
-    headers: Object.assign({}, headers, options.headers || {}),
-    Origin: options.origin,
-    body: options.body,
-    form: options.form,
-    formData: options.formData,
-    timeout: options.timeout || 10000,
+    headers: Object.assign({}, defaultHeaders, headers),
+    timeout,
     proxy: getProxyInfo(),
-    json: options.format === undefined || options.format === 'json',
+    json: format === 'json',
   }, (err, resp, body) => {
     if (err) return callback(err, null)
     callback(null, resp, body)

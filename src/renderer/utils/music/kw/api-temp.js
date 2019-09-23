@@ -7,6 +7,7 @@ const api_temp = {
       method: 'get',
       headers,
       timeout,
+      family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
       return body.code === 0 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(body.msg))

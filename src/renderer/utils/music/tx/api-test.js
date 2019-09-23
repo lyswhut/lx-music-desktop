@@ -8,6 +8,7 @@ const api_messoer = {
       method: 'get',
       timeout,
       headers,
+      family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
       return body.code === 200 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
