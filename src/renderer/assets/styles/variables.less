@@ -1,12 +1,13 @@
 @import './colors.less';
 
-@themes: green, yellow, blue, red, purple, orange, grey, midAutumn;
+@themes: green, yellow, blue, red, purple, orange, grey, midAutumn, dhHzw;
 
 
 // Colors
 // @color-theme: #03a678;
 @color-theme: #4daf7c;
 @color-theme-bgimg: none;
+@color-theme-bgsize: auto auto;
 @color-theme-hover: fadeout(lighten(@color-theme, 10%), 30%);
 @color-theme-active: fadeout(darken(@color-theme, 20%), 60%);
 @color-theme-font: #fff;
@@ -56,6 +57,7 @@
 
 @color-green-theme: #4daf7c;
 @color-green-theme-bgimg: none;
+@color-green-theme-bgsize: auto auto;
 @color-green-theme-hover: fadeout(lighten(@color-green-theme, 10%), 30%);
 @color-green-theme-active: fadeout(darken(@color-green-theme, 20%), 60%);
 @color-green-theme-font: #fff;
@@ -93,6 +95,7 @@
 
 @color-yellow-theme: #f2d35b;
 @color-yellow-theme-bgimg: none;
+@color-yellow-theme-bgsize: auto auto;
 @color-yellow-theme-hover: fadeout(lighten(@color-yellow-theme, 10%), 30%);
 @color-yellow-theme-active: fadeout(darken(@color-yellow-theme, 20%), 60%);
 @color-yellow-theme-font: #fff;
@@ -129,6 +132,7 @@
 
 @color-orange-theme: #f5ab35;
 @color-orange-theme-bgimg: none;
+@color-orange-theme-bgsize: auto auto;
 @color-orange-theme-hover: fadeout(lighten(@color-orange-theme, 10%), 30%);
 @color-orange-theme-active: fadeout(darken(@color-orange-theme, 20%), 60%);
 @color-orange-theme-font: #fff;
@@ -165,6 +169,7 @@
 
 @color-blue-theme: #3498db;
 @color-blue-theme-bgimg: none;
+@color-blue-theme-bgsize: auto auto;
 @color-blue-theme-hover: fadeout(lighten(@color-blue-theme, 10%), 30%);
 @color-blue-theme-active: fadeout(darken(@color-blue-theme, 20%), 60%);
 @color-blue-theme-font: #fff;
@@ -201,6 +206,7 @@
 
 @color-red-theme: #d64541;
 @color-red-theme-bgimg: none;
+@color-red-theme-bgsize: auto auto;
 @color-red-theme-hover: fadeout(lighten(@color-red-theme, 10%), 30%);
 @color-red-theme-active: fadeout(darken(@color-red-theme, 20%), 60%);
 @color-red-theme-font: #fff;
@@ -239,6 +245,7 @@
 
 @color-purple-theme: #9b59b6;
 @color-purple-theme-bgimg: none;
+@color-purple-theme-bgsize: auto auto;
 @color-purple-theme-hover: fadeout(lighten(@color-purple-theme, 10%), 30%);
 @color-purple-theme-active: fadeout(darken(@color-purple-theme, 20%), 60%);
 @color-purple-theme-font: #fff;
@@ -275,6 +282,7 @@
 
 @color-grey-theme: #6c7a89;
 @color-grey-theme-bgimg: none;
+@color-grey-theme-bgsize: auto auto;
 @color-grey-theme-hover: fadeout(lighten(@color-grey-theme, 10%), 30%);
 @color-grey-theme-active: fadeout(darken(@color-grey-theme, 20%), 60%);
 @color-grey-theme-font: #fff;
@@ -311,6 +319,7 @@
 
 @color-midAutumn-theme: rgba(74, 55, 82, 1);
 @color-midAutumn-theme-bgimg: url(../images/jqbg.jpg);
+@color-midAutumn-theme-bgsize: auto 100%;
 @color-midAutumn-theme-hover: fadeout(lighten(@color-midAutumn-theme, 10%), 30%);
 @color-midAutumn-theme-active: fadeout(lighten(@color-midAutumn-theme, 15%), 60%);
 @color-midAutumn-theme-font: rgba(246, 233, 255, 0.9);
@@ -344,6 +353,43 @@
 @color-midAutumn-tab-btn-background-hover: @color-midAutumn-theme_2-hover;
 @color-midAutumn-tab-border-top: fadeout(lighten(@color-midAutumn-theme, 5%), 50%);
 @color-midAutumn-tab-border-bottom: lighten(@color-midAutumn-theme, 5%);
+
+@color-dhHzw-theme: rgb(87, 144, 167);
+@color-dhHzw-theme-bgimg: url(../images/hzwbg.jpeg);
+@color-dhHzw-theme-bgsize: auto 100%;
+@color-dhHzw-theme-hover: fadeout(lighten(@color-dhHzw-theme, 10%), 45%);
+@color-dhHzw-theme-active: fadeout(lighten(@color-dhHzw-theme, 15%), 60%);
+@color-dhHzw-theme-font: rgba(67, 118, 148, 0.9);
+@color-dhHzw-theme-font-label: fadeout(darken(@color-dhHzw-theme, 20%), 20%);
+@color-dhHzw-theme_2: rgba(255, 255, 255, 0.8);
+@color-dhHzw-theme_2-background_2: #e9faff;
+@color-dhHzw-theme_2-hover: fadeout(lighten(@color-dhHzw-theme, 10%), 65%);
+@color-dhHzw-theme_2-active: fadeout(darken(@color-dhHzw-theme, 5%), 70%);
+@color-dhHzw-theme_2-font: darken(@color-dhHzw-theme_2, 80%);
+@color-dhHzw-theme_2-font-label: lighten(@color-dhHzw-theme, 10%);
+@color-dhHzw-theme_2-line: lighten(@color-dhHzw-theme, 36%);
+@color-dhHzw-theme-sidebar: rgba(255, 255, 255, .3);
+@color-dhHzw-btn: fadeout(darken(@color-dhHzw-theme, 5%), 15%);
+@color-dhHzw-btn-background: fadeout(lighten(@color-dhHzw-theme, 35%), 70%);
+@color-dhHzw-pagination-background: fadeout(lighten(@color-dhHzw-theme, 45%), 50%);
+@color-dhHzw-pagination-hover: fadeout(lighten(@color-dhHzw-theme, 10%), 70%);
+@color-dhHzw-pagination-active: fadeout(darken(@color-dhHzw-theme, 10%), 70%);
+@color-dhHzw-pagination-select: fadeout(lighten(@color-dhHzw-theme, 10%), 55%);
+@color-dhHzw-search-form-background: fadeout(lighten(@color-dhHzw-theme, 30%), 20%);
+@color-dhHzw-search-list-hover: fadeout(darken(@color-dhHzw-theme, 10%), 50%);
+@color-dhHzw-scrollbar-track: fadeout(@color-dhHzw-theme, 80%);
+@color-dhHzw-scrollbar-thumb: fadeout(@color-dhHzw-theme, 60%);
+@color-dhHzw-scrollbar-thumb-hover: fadeout(@color-dhHzw-theme, 40%);
+@color-dhHzw-player-pic-c1: fadeout(@color-dhHzw-theme_2, 50%);
+@color-dhHzw-player-pic-c2: darken(@color-dhHzw-theme_2, 30%);
+@color-dhHzw-player-progress: darken(@color-dhHzw-theme_2, 6%);
+@color-dhHzw-player-progress-bar1: darken(@color-dhHzw-theme_2, 12%);
+@color-dhHzw-player-progress-bar2: lighten(@color-dhHzw-theme, 12%);
+@color-dhHzw-player-status-text: lighten(@color-dhHzw-theme_2-font, 10%);
+@color-dhHzw-tab-btn-background: fadeout(lighten(@color-dhHzw-theme, 10%), 80%);
+@color-dhHzw-tab-btn-background-hover: @color-dhHzw-theme_2-hover;
+@color-dhHzw-tab-border-top: fadeout(lighten(@color-dhHzw-theme, 5%), 50%);
+@color-dhHzw-tab-border-bottom: lighten(@color-dhHzw-theme, 5%);
 
 
 // Width

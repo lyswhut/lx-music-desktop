@@ -36,9 +36,7 @@ export default {
       isLinux,
       globalObj: {
         apiSource: 'test',
-        proxy: {
-
-        },
+        proxy: {},
       },
       updateTimeout: null,
     }
@@ -230,7 +228,7 @@ body {
   height: 100%;
   overflow: hidden;
   background: @color-theme-bgimg center center no-repeat;
-  background-size: auto 100%;
+  background-size: @color-theme-bgsize;
   transition: background-color @transition-theme;
   background-color: @color-theme;
 }
@@ -258,6 +256,7 @@ each(@themes, {
   #container.@{value} {
     background-color: ~'@{color-@{value}-theme}';
     background-image: ~'@{color-@{value}-theme-bgimg}';
+    background-size: ~'@{color-@{value}-theme-bgsize}';
     #right {
       background-color: ~'@{color-@{value}-theme_2}';
     }

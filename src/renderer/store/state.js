@@ -49,6 +49,11 @@ export default {
       name: '月里嫦娥',
       class: 'midAutumn',
     },
+    {
+      id: 8,
+      name: '海贝戎王',
+      class: 'dhHzw',
+    },
   ],
   version: {
     version,
