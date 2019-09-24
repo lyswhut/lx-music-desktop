@@ -495,7 +495,7 @@ export default {
     max-height: 100%;
     transition: @transition-theme;
     transition-property: border-color;
-    border: 2px solid @color-theme_2-background_2;
+    border: 2px solid @color-theme_2-background_1;
   }
 }
 .right {
@@ -673,7 +673,7 @@ each(@themes, {
     .left {
       color: ~'@{color-@{value}-theme}';
       img {
-        border-color: ~'@{color-@{value}-theme_2-background_2}';
+        border-color: ~'@{color-@{value}-theme_2-background_1}';
       }
     }
     .play-btn {

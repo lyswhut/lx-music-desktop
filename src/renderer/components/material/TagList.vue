@@ -144,7 +144,7 @@ export default {
   border-bottom: 2px solid @color-tab-border-bottom;
   border-right: 2px solid @color-tab-border-bottom;
   border-bottom-right-radius: 5px;
-  background-color: @color-theme_2;
+  background-color: @color-theme_2-background_2;
   overflow: hidden;
   opacity: 0;
   transition: .25s ease;
@@ -212,6 +212,7 @@ each(@themes, {
     .list {
       border-bottom-color: ~'@{color-@{value}-tab-border-bottom}';
       border-right-color: ~'@{color-@{value}-tab-border-bottom}';
+      background-color: ~'@{color-@{value}-theme_2-background_2}';
       // border-left-color: ~'@{color-@{value}-tab-border-bottom}';
       li {
         // color: ~'@{color-@{value}-btn}';

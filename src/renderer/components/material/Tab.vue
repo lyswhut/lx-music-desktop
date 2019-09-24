@@ -133,7 +133,7 @@ export default {
         }
       }
       &.active {
-        border-bottom-color: @color-theme_2-background_2;
+        border-bottom-color: @color-theme_2-background_1;
         border-top-color: @color-tab-border-bottom;
         border-left-color: @color-tab-border-bottom;
         border-right-color: @color-tab-border-bottom;
@@ -144,7 +144,7 @@ export default {
           width: 0;
         }
         button {
-          background-color: @color-theme_2-background_2;
+          background-color: @color-theme_2-background_1;
         }
       }
     }
@@ -209,7 +209,7 @@ each(@themes, {
             border-left-color: ~'@{color-@{value}-tab-border-bottom}';
             border-right-color: ~'@{color-@{value}-tab-border-bottom}';
             button {
-              background-color: ~'@{color-@{value}-theme_2-background_2}';
+              background-color: ~'@{color-@{value}-theme_2-background_1}';
             }
           }
         }
