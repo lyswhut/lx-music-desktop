@@ -119,12 +119,12 @@ export default {
           size: null,
         }
       }
-      if (formats.indexOf('MP3192')) {
-        types.push({ type: '192k', size: null })
-        _types['192k'] = {
-          size: null,
-        }
-      }
+      // if (formats.indexOf('MP3192')) {
+      //   types.push({ type: '192k', size: null })
+      //   _types['192k'] = {
+      //     size: null,
+      //   }
+      // }
       if (formats.indexOf('MP3H')) {
         types.push({ type: '320k', size: null })
         _types['320k'] = {

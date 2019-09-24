@@ -107,13 +107,13 @@ export default {
           _types['320k'] = {
             size,
           }
-        case 192000:
-        case 190000:
-          size = null
-          types.push({ type: '192k', size })
-          _types['192k'] = {
-            size,
-          }
+          // case 192000:
+          // case 190000:
+          //   size = null
+          //   types.push({ type: '192k', size })
+          //   _types['192k'] = {
+          //     size,
+          //   }
           // case '160000':
 
         default:
