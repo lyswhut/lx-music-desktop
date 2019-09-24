@@ -227,7 +227,7 @@ body {
   display: flex;
   height: 100%;
   overflow: hidden;
-  background: @color-theme-bgimg center center no-repeat;
+  background: @color-theme-bgimg @color-theme-bgposition no-repeat;
   background-size: @color-theme-bgsize;
   transition: background-color @transition-theme;
   background-color: @color-theme;
@@ -257,6 +257,7 @@ each(@themes, {
     background-color: ~'@{color-@{value}-theme}';
     background-image: ~'@{color-@{value}-theme-bgimg}';
     background-size: ~'@{color-@{value}-theme-bgsize}';
+    background-position: ~'@{color-@{value}-theme-bgposition}';
     #right {
       background-color: ~'@{color-@{value}-theme_2}';
     }
