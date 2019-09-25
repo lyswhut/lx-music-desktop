@@ -17,16 +17,19 @@ material-modal(:show="version.showModal" @close="handleClose")
 
     div(:class="$style.footer" v-if="version.isError")
       div(:class="$style.desc" v-if="!isUnknow")
-        p 发现有新版本啦，但是自动更新功能出问题了
+        p 发现有新版本啦，但是自动更新功能出问题了，
         p
           | 你现在可以选择继续使用当前版本或
           strong 去发布页下载新版本
-          | ，推荐到
-          strong 网盘
-          | 下载
+          | ，
+        p
+          | 国内Windows/MAC用户推荐到
+          strong.hover.underline(@click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘(点击打开)
+          | 下载，密码：
+          strong.hover(@click="handleCopy('glqw')" title="点击复制") glqw
       div(:class="$style.btns")
         material-btn(:class="$style.btn" @click.onec="handleIgnoreClick") 忽略该版本
-        material-btn(:class="$style.btn" @click.onec="handleOpenPageClick") 去下载新版本
+        material-btn(:class="$style.btn" @click.onec="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") 去软件发布页
     div(:class="$style.footer" v-else)
       div(:class="$style.desc")
         p 新版本已下载完毕，
@@ -43,7 +46,7 @@ material-modal(:show="version.showModal" @close="handleClose")
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { rendererSend } from '../../../common/icp'
-import { checkVersion, openUrl } from '../../utils'
+import { checkVersion, openUrl, clipboardWriteText } from '../../utils'
 
 export default {
   computed: {
@@ -74,13 +77,16 @@ export default {
       // event.target.disabled = true
       this.setSetting(Object.assign({}, this.setting, { ignoreVersion: this.version.newVersion.version }))
     },
-    handleOpenPageClick() {
-      openUrl('https://github.com/lyswhut/lx-music-desktop#readme')
+    handleOpenUrl(url) {
+      openUrl(url)
     },
     handleRestartClick(event) {
       this.handleClose()
       event.target.disabled = true
       rendererSend('quit-update')
+    },
+    handleCopy(text) {
+      clipboardWriteText(text)
     },
   },
 }
@@ -123,6 +129,7 @@ export default {
   line-height: 1.5;
   overflow-y: auto;
   height: 100%;
+  padding-right: 5px;
 }
 .current {
   > p {
@@ -169,12 +176,9 @@ export default {
   flex: 0 0 none;
   .desc {
     font-size: 12px;
-    padding: 10px 0;
+    padding-top: 10px;
     color: @color-theme;
     line-height: 1.2;
-    strong {
-      text-decoration: underline;
-    }
   }
 }
 .btn {
@@ -183,6 +187,7 @@ export default {
 }
 .btns {
   display: grid;
+  padding-top: 10px;
   grid-template-columns: 1fr 1fr;
   grid-gap: 0 10px;
 }

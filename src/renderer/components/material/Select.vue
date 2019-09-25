@@ -99,7 +99,7 @@ export default {
   border-bottom: 2px solid @color-tab-border-bottom;
   border-left: 2px solid @color-tab-border-bottom;
   border-bottom-left-radius: 4px;
-  background-color: @color-theme_2;
+  background-color: @color-theme_2-background_2;
   opacity: 0;
   transform: scaleY(0);
   transform-origin: 0 0 0;
@@ -144,6 +144,7 @@ each(@themes, {
     .list {
       border-bottom-color: ~'@{color-@{value}-tab-border-bottom}';
       border-left-color: ~'@{color-@{value}-tab-border-bottom}';
+      background-color: ~'@{color-@{value}-theme_2-background_2}';
       li {
         // color: ~'@{color-@{value}-btn}';
         background-color: ~'@{color-@{value}-btn-background}';

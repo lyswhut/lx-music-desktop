@@ -231,7 +231,7 @@ const getProxyInfo = () => window.globalObj.proxy.enable
 const fetchData = (url, method, {
   headers = {},
   format = 'json',
-  timeout = 1000,
+  timeout = 15000,
   ...options
 }, callback) => {
   // console.log(url, options)

@@ -134,7 +134,7 @@ export default {
   flex-flow: column nowrap;
 
   > * {
-    background-color: @color-theme_2;
+    background-color: @color-theme_2-background_2;
   }
 }
 
@@ -176,7 +176,7 @@ each(@themes, {
     .content {
       box-shadow: 0 0 3px rgba(0, 0, 0, .3);
       > * {
-        background-color: ~'@{color-@{value}-theme_2}';
+        background-color: ~'@{color-@{value}-theme_2-background_2}';
       }
     }
 

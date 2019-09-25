@@ -622,7 +622,7 @@ export default {
   height: 100%;
   transform-origin: 0;
   transition-property: transform;
-  transition-timing-function: ease;
+  transition-timing-function: ease-out;
   border-radius: @radius-progress-border;
 }
 .progress-bar1 {

@@ -134,7 +134,7 @@ div.scroll(:class="$style.setting")
         | 支持作者哦~~🍻
       p
         span 如果你资金充裕，还可以
-        material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 打赏下作者
+        material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 捐赠下作者
         span ，以帮我分担点服务器费用~❤️
       p.small
         |  本软件仅用于学习交流使用，禁止将本软件用于

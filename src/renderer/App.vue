@@ -106,6 +106,11 @@ export default {
           this.showUpdateModal()
         })
       })
+      this.setVersionModalVisible({ isError: true })
+      this.clearUpdateTimeout()
+      this.$nextTick(() => {
+        this.showUpdateModal()
+      })
       rendererOn('update-downloaded', () => {
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isError: false })
