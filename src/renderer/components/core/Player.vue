@@ -9,8 +9,8 @@ div(:class="$style.player")
       div(:class="$style.container")
         div(:class="$style.title" @click="handleCopy(title)" :title="title + '（点击复制）'") {{title}}
         div(:class="$style.volumeContent")
-          div(:class="$style.volume" @click.stop='handleChangeVolume' :title="`当前音量：${volumeStr}%`")
-            div(:class="$style.volumeBar" :style="{ width: volumeStr + '%' }")
+          div(:class="$style.volume" @click.stop='handleChangeVolume' :title="`当前音量：${parseInt(volume * 100)}%`")
+            div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
 
         //- div(:class="$style.playBtn" @click='handleNext' title="音量")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
@@ -23,11 +23,11 @@ div(:class="$style.player")
             use(xlink:href='#icon-pause')
           svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
             use(xlink:href='#icon-play')
-    div(:class="$style.column2" @click='setProgess' ref="dom_progress")
+    div(:class="$style.column2")
       div(:class="$style.progress")
-        //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ width: progress + '%' }")
-        div(:class="[$style.progressBar, $style.progressBar2]" :style="{ width: (progress * 100 || 0) + '%' }")
-
+        //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
+        div(:class="[$style.progressBar, $style.progressBar2]" :style="{ transform: `scaleX(${progress || 0})` }")
+      div(:class="$style.progressMask" @click='setProgess' ref="dom_progress")
     div(:class="$style.column3")
       span {{nowPlayTimeStr}}
       span(:class="$style.statusText") {{status}}
@@ -100,14 +100,10 @@ export default {
       return this.maxPlayTime ? formatPlayTime2(this.maxPlayTime) : '00:00'
     },
     progress() {
-      // return 50
       return this.nowPlayTime / this.maxPlayTime || 0
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
-    },
-    volumeStr() {
-      return parseInt(this.volume * 100)
     },
   },
   mounted() {
@@ -554,7 +550,11 @@ export default {
   position: absolute;
   left: 0;
   top: 0;
-  width: 0;
+  transform: scaleX(0);
+  transform-origin: 0;
+  transition-property: transform;
+  transition-timing-function: ease;
+  width: 100%;
   height: 100%;
   border-radius: @radius-progress-border;
   transition-duration: 0.2s;
@@ -591,7 +591,7 @@ export default {
 .column2 {
   flex: none;
   padding: 3px 0;
-  cursor: pointer;
+  position: relative;
 }
 
 .progress {
@@ -606,12 +606,23 @@ export default {
   position: relative;
   border-radius: @radius-progress-border;
 }
+.progress-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
 .progress-bar {
   position: absolute;
   left: 0;
   top: 0;
-  width: 0;
+  width: 100%;
   height: 100%;
+  transform-origin: 0;
+  transition-property: transform;
+  transition-timing-function: ease;
   border-radius: @radius-progress-border;
 }
 .progress-bar1 {
