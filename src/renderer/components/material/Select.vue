@@ -1,7 +1,7 @@
 <template lang="pug">
-  div(:class="$style.select")
+  div(:class="[$style.select, show ? $style.active : '']")
     div(:class="$style.label" ref="dom_btn" @click="handleShow") {{value ? itemName ? list.find(l => l.id == value).name : value : ''}}
-    ul(:class="$style.list" ref="dom_list" :style="listStyle")
+    ul(:class="$style.list")
       li(v-for="item in list" @click="handleClick(itemKey ? item[itemKey] : item)") {{itemName ? item[itemName] : item}}
 </template>
 
@@ -28,24 +28,7 @@ export default {
   data() {
     return {
       show: false,
-      listStyle: {
-        height: 0,
-        opacity: 0,
-      },
     }
-  },
-  watch: {
-    show(n) {
-      this.$nextTick(() => {
-        if (n) {
-          this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
-          this.listStyle.opacity = 1
-        } else {
-          this.listStyle.height = 0
-          this.listStyle.opacity = 0
-        }
-      })
-    },
   },
   mounted() {
     document.addEventListener('click', this.handleHide)
@@ -80,6 +63,13 @@ export default {
 .select {
   font-size: 12px;
   position: relative;
+
+  &.active {
+    .list {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
 }
 
 .label {
@@ -110,10 +100,11 @@ export default {
   border-left: 2px solid @color-tab-border-bottom;
   border-bottom-left-radius: 4px;
   background-color: @color-theme_2;
-  overflow: hidden;
   opacity: 0;
+  transform: scaleY(0);
+  transform-origin: 0 0 0;
   transition: .25s ease;
-  transition-property: height, opacity;
+  transition-property: transform, opacity;
   z-index: 10;
 
   li {

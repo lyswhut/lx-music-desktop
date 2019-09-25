@@ -1,11 +1,11 @@
 <template lang="pug">
-  div(:class="$style.tagList")
+  div(:class="[$style.tagList, show ? $style.active : '']")
     div(:class="$style.label" ref="dom_btn" @click="handleShow")
       span {{value.name}}
-      div(:class="[$style.icon, show ? $style.active : '']")
+      div(:class="$style.icon")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
-    div.scroll(:class="$style.list" @click.stop ref="dom_list" :style="listStyle")
+    div.scroll(:class="$style.list" @click.stop ref="dom_list")
       div(:class="$style.tag" @click="handleClick(null)") 默认
       dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
@@ -29,29 +29,7 @@ export default {
   data() {
     return {
       show: false,
-      listStyle: {
-        height: 0,
-        opacity: 0,
-      },
     }
-  },
-  watch: {
-    show(n) {
-      this.$nextTick(() => {
-        if (n) {
-          let sh = this.$refs.dom_list.scrollHeight
-          this.listStyle.height = (sh > 250 ? 250 : sh) + 'px'
-          this.listStyle.opacity = 1
-          this.listStyle.overflow = 'auto'
-        } else {
-          this.listStyle.height = 0
-          this.listStyle.opacity = 0
-        }
-      })
-    },
-    list() {
-      this.$refs.dom_list.scrollTop = 0
-    },
   },
   mounted() {
     document.addEventListener('click', this.handleHide)
@@ -93,6 +71,20 @@ export default {
 .tag-list {
   font-size: 12px;
   position: relative;
+
+  &.active {
+    .label {
+      .icon {
+        svg{
+          transform: rotate(180deg);
+        }
+      }
+    }
+    .list {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
 }
 
 .label {
@@ -121,11 +113,6 @@ export default {
       transition: transform .2s ease;
       transform: rotate(0);
     }
-    &.active {
-      svg{
-        transform: rotate(180deg);
-      }
-    }
   }
 
   &:hover {
@@ -145,10 +132,13 @@ export default {
   border-right: 2px solid @color-tab-border-bottom;
   border-bottom-right-radius: 5px;
   background-color: @color-theme_2-background_2;
-  overflow: hidden;
   opacity: 0;
+  transform: scaleY(0);
+  overflow-y: auto;
+  transform-origin: 0 0 0;
+  max-height: 250px;
   transition: .25s ease;
-  transition-property: height, opacity;
+  transition-property: transform, opacity;
   z-index: 10;
   padding: 10px;
   box-sizing: border-box;
