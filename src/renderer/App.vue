@@ -18,10 +18,16 @@
 </template>
 
 <script>
+import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn } from '../common/icp'
 import { isLinux } from '../common/utils'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
+dnscache({
+  enable: true,
+  ttl: 21600,
+  cachesize: 1000,
+})
 let win
 let body
 if (!isLinux) {

@@ -8,10 +8,7 @@ export default {
   _musicTempSearchRequestObj: null,
   _musicTempSearchPromiseCancelFn: null,
   tempSearch(str) {
-    if (this._musicTempSearchRequestObj != null) {
-      cancelHttp(this._musicTempSearchRequestObj)
-      this._musicTempSearchPromiseCancelFn(new Error('取消http请求'))
-    }
+    this.cancelTempSearch()
     return new Promise((resolve, reject) => {
       this._musicTempSearchPromiseCancelFn = reject
       this._musicTempSearchRequestObj = httpGet(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, (err, resp, body) => {

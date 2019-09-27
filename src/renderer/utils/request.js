@@ -5,13 +5,6 @@ import { requestMsg } from './message'
 import { bHh } from './music/options'
 // import fs from 'fs'
 
-import dnscache from 'dnscache'
-dnscache({
-  enable: true,
-  ttl: 21600,
-  cachesize: 1000,
-})
-
 const defaultHeaders = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
 }
@@ -26,7 +19,7 @@ const defaultHeaders = {
 const buildHttpPromose = (url, options) => {
   let requestObj
   let cancelFn
-  const p = new Promise((resolve, reject) => {
+  let p = new Promise((resolve, reject) => {
     cancelFn = reject
     debugRequest && console.log(`\n---send request------${url}------------`)
     requestObj = fetchData(url, options.method, options, (err, resp, body) => {
@@ -36,11 +29,12 @@ const buildHttpPromose = (url, options) => {
       requestObj = null
       cancelFn = null
       if (err) {
-        console.log(err.code)
+        // console.log('出错', err.code)
         if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
           const { promise, cancelHttp } = httpFetch(url, options)
           obj.cancelHttp = cancelHttp
-          promise.then()
+          promise.then(resp => resolve(resp)).catch(err => reject(err))
+          return
         }
         return reject(err)
       }
@@ -51,11 +45,11 @@ const buildHttpPromose = (url, options) => {
     promise: p,
     cancelHttp() {
       if (!requestObj) return
-      console.log('cancel')
-      cancelHttp(requestObj)
       cancelFn(new Error(requestMsg.cancelRequest))
+      cancelHttp(requestObj)
       requestObj = null
       cancelFn = null
+      p = null
     },
   }
   return obj
