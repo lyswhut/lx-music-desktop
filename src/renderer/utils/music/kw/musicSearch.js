@@ -66,12 +66,12 @@ export default {
                 size: info[3].toLocaleUpperCase(),
               }
               break
-            case 'ape':
-              types.push({ type: 'ape', size: info[3] })
-              _types.ape = {
-                size: info[3].toLocaleUpperCase(),
-              }
-              break
+            // case 'ape':
+            //   types.push({ type: 'ape', size: info[3] })
+            //   _types.ape = {
+            //     size: info[3].toLocaleUpperCase(),
+            //   }
+            //   break
             case 'mp3':
               switch (info[1]) {
                 case '320':

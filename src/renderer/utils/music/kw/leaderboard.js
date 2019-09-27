@@ -131,12 +131,12 @@ export default {
           size: null,
         }
       }
-      if (formats.indexOf('AL')) {
-        types.push({ type: 'ape', size: null })
-        _types.ape = {
-          size: null,
-        }
-      }
+      // if (formats.indexOf('AL')) {
+      //   types.push({ type: 'ape', size: null })
+      //   _types.ape = {
+      //     size: null,
+      //   }
+      // }
       if (formats.indexOf('ALFLAC')) {
         types.push({ type: 'flac', size: null })
         _types.flac = {
