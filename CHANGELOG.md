@@ -6,6 +6,30 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.6.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.0...v0.6.1) - 2019-09-28
+
+### 新增
+
+- 新增试听列表**滚动条位置恢复**设置（可自动恢复到上次离开时的列表滚动位置），本功能默认开启，若不需要可到设置-列表设置将其关闭
+- 新增 **《海贼王》** 皮肤，喜欢个性化的可以试试~
+
+### 优化
+
+- 新增DNS解析缓存，加快请求速度
+- 优化代码逻辑，减少软件对系统资源的占用
+- 优化新版本信息检测，尽量减少弹出版本获取失败弹窗弹出的概率
+- 优化下拉列表动画效果
+
+### 修复
+
+- 修复请求超时的逻辑处理Bug，尝试修复请求无法取消导致的正在播放的歌曲与界面显示的信息不一致的问题
+- 修复其他一些小Bug
+
+### 移除
+
+- 移除 `192k` 音质
+- 移除酷我音源 `ape` 音质，无损推荐 `flac` 格式
+
 ## [0.6.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.5.5...v0.6.0) - 2019-09-21
 
 ### 新增
