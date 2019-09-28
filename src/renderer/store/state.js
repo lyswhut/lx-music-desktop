@@ -51,8 +51,8 @@ export default {
     },
     {
       id: 8,
-      name: '海贝戎王',
-      class: 'dhHzw',
+      name: '木叶之村',
+      class: 'dhHyrz',
     },
   ],
   version: {
