@@ -124,7 +124,7 @@ export default {
   // }
   // },
   beforeRouteLeave(to, from, next) {
-    this.routeLeaveLocation = this.$refs.dom_scrollContent.scrollTop
+    this.routeLeaveLocation = (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0
     next()
   },
   created() {
