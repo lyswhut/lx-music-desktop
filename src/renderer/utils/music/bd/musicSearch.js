@@ -19,6 +19,7 @@ export default {
   handleResult(rawData) {
     let ids = new Set()
     const list = []
+    if (!rawData) return list
     rawData.forEach(item => {
       if (ids.has(item.song_id)) return
       ids.add(item.song_id)
