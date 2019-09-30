@@ -1,9 +1,11 @@
 import leaderboard from './leaderboard'
 import lyric from './lyric'
+import songList from './songList'
 import api_source from '../api-source'
 
 const tx = {
   leaderboard,
+  songList,
 
   getMusicUrl(songInfo, type) {
     return api_source('tx').getMusicUrl(songInfo, type)
