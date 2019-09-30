@@ -5,7 +5,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       | {{ info.name }}
       br
       | {{ info.singer }}
-    material-btn(:class="$style.btn" :title="!checkSource(type.type) && '目前酷狗音源仅支持下载128k音质'" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
+    material-btn(:class="$style.btn" :title="!checkSource(type.type) && '目前腾讯、酷狗音源仅支持下载128k音质'" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
 
 </template>
 
@@ -53,6 +53,7 @@ export default {
       switch (this.musicInfo.source) {
         case 'wy':
         case 'kg':
+        case 'tx':
           return type == '128k'
 
         default:

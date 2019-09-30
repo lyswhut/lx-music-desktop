@@ -27,7 +27,7 @@ div(:class="$style.songList")
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 22%;") {{item.albumName}}
               td(style="width: 18%;")
-                material-list-buttons(:index="index" :search-btn="true" :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')" :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')" :remove-btn="false" @btn-click="handleListBtnClick")
+                material-list-buttons(:index="index" :search-btn="true" :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')" :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')" :remove-btn="false" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
@@ -136,7 +136,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.emitEvent((this.source == 'kw' || (!this.isAPITemp && this.list[index].source != 'tx' && this.list[index].source != 'wy')) ? 'testPlay' : 'search', index)
+      this.emitEvent((this.source == 'kw' || (!this.isAPITemp && this.list[index].source != 'wy')) ? 'testPlay' : 'search', index)
       this.clickTime = 0
       this.clickIndex = -1
     },

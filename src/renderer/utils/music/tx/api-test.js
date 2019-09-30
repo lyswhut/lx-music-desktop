@@ -1,10 +1,10 @@
 import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
-import { headers, timeout } from '../messoer'
+import { headers, timeout } from '../options'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`https://v1.itooi.cn/tencent/url?id=${songInfo.strMediaMid}&quality=${type.replace(/k$/, '')}`, {
+    const requestObj = httpFetch(`http://ts.tempmusic.tk/url/tx/${songInfo.strMediaMid}/${type}`, {
       method: 'get',
       timeout,
       headers,

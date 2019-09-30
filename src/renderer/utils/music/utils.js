@@ -9,6 +9,7 @@ export const getMusicType = (info, type) => {
   switch (window.globalObj.apiSource) {
     case 'kg':
     case 'wy':
+    case 'tx':
       return '128k'
   }
   const rangeType = types.slice(types.indexOf(type))
