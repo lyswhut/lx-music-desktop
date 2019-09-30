@@ -20,6 +20,7 @@ const state = {
   },
   listDetail: {
     list: [],
+    desc: null,
     total: 0,
     page: 1,
     limit: 30,
@@ -83,12 +84,13 @@ const mutations = {
     state.list.page = page
     state.list.key = key
   },
-  setListDetail(state, { result, key, page }) {
+  setListDetail(state, { result, key, page, desc }) {
     state.listDetail.list = result.list
     state.listDetail.total = result.total
     state.listDetail.limit = result.limit
     state.listDetail.page = page
     state.listDetail.key = key
+    state.listDetail.desc = result.desc
   },
   setVisibleListDetail(state, bool) {
     state.isVisibleListDetail = bool

@@ -52,7 +52,7 @@ export default {
     checkSource(type) {
       switch (this.musicInfo.source) {
         case 'wy':
-        case 'kg':
+        // case 'kg':
           return type == '128k'
 
         default:
