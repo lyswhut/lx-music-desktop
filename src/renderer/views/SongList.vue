@@ -8,7 +8,7 @@
             span(:class="$style.playNum" v-if="selectListInfo.play_count") {{selectListInfo.play_count}}
           div(:class="$style.songListHeaderMiddle")
             h3(:title="selectListInfo.name") {{selectListInfo.name}}
-            p(:title="selectListInfo.desc") {{selectListInfo.desc}}
+            p(:title="selectListInfo.desc") {{listDetail.desc || selectListInfo.desc}}
           div(:class="$style.songListHeaderRight")
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
         material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
@@ -191,7 +191,7 @@ export default {
     },
     handleAddDownloadMultiple(type) {
       switch (this.source) {
-        case 'kg':
+        // case 'kg':
         case 'wy':
           type = '128k'
       }
