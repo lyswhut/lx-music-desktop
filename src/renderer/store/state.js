@@ -6,6 +6,7 @@ import { version } from '../../../package.json'
 let electronStore = new Store()
 const setting = updateSetting(electronStore.get('setting'))
 electronStore.set('setting', setting)
+process.versions.app = version
 
 export default {
   themes: [

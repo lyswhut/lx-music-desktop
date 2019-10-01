@@ -10,6 +10,6 @@ html(lang="cn")
     //- if htmlWebpackPlugin.options.isProd
     //-   script.
     //-     window.__static = '!{require('path').join(htmlWebpackPlugin.options.__dirname, '/static').replace(/\\/g, '\\\\')}'
-    if !htmlWebpackPlugin.options.browser && htmlWebpackPlugin.options.isProd
+    //- if !htmlWebpackPlugin.options.browser && htmlWebpackPlugin.options.isProd
       script.
-        window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+        window.__static = require('path').join(__dirname, '/resources').replace(/\\/g, '\\\\')

@@ -234,7 +234,7 @@ const fetchData = (url, method, {
     let s = Buffer.from(bHh, 'hex').toString()
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
-    headers[s] = !!s
+    headers[s] = !s || parseInt(process.versions.app.split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join(''))
     delete headers[bHh]
   }
   return request(url, {
