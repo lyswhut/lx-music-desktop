@@ -57,6 +57,7 @@ export default {
         songmid: item.audio_id,
         source: 'kg',
         interval: formatPlayTime(item.duration),
+        _interval: item.duration,
         img: null,
         lrc: null,
         hash: item.hash,
