@@ -6,6 +6,21 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.6.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.1...v0.6.2) - 2019-10-01
+
+祝贺祖国成立70周年~！
+
+#### 新增
+
+- 新增QQ音乐源歌单
+
+#### 修复
+
+- 修正火影皮肤名字
+- 修复当试听列表为空时，无法切到其他界面的Bug
+- 修复百度源搜索结果为空时的接口处理Bug
+- 恢复**酷狗**其他音质播放
+
 ## [0.6.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.0...v0.6.1) - 2019-09-28
 
 ### 新增
