@@ -1,7 +1,13 @@
 // state
 const state = {
   defaultList: {
+    id: 'default',
     name: '试听列表',
+    list: [],
+  },
+  loveList: {
+    id: 'love',
+    name: '我喜欢',
     list: [],
   },
   userList: [],
@@ -10,6 +16,7 @@ const state = {
 // getters
 const getters = {
   defaultList: state => state.defaultList || {},
+  loveList: state => state.loveList || {},
   userList: state => state.userList,
 }
 
@@ -18,39 +25,72 @@ const actions = {
 
 }
 
+const getList = (state, id) => {
+  let targetList
+  switch (id) {
+    case 'default':
+      targetList = state.defaultList
+      break
+    case 'love':
+      targetList = state.loveList
+      break
+    default:
+      targetList = state.userList.find(l => l.id === id)
+      break
+  }
+  return targetList
+}
+
 // mitations
 const mutations = {
-  initDefaultList(state, data) {
-    state.defaultList = data
+  initList(state, { defaultList, loveList }) {
+    if (defaultList !== undefined) state.defaultList = defaultList
+    if (loveList !== undefined) state.loveList = loveList
   },
-  setDefaultList(state, list) {
-    state.defaultList.list = list
+  setList(state, { id, list }) {
+    const targetList = getList(state, id)
+    if (!targetList) return
+    targetList.list = list
   },
-  defaultListAdd(state, musicInfo) {
-    if (state.defaultList.list.some(s => s.songmid === musicInfo.songmid)) return
-    state.defaultList.list.push(musicInfo)
+  listAdd(state, { id, musicInfo }) {
+    const targetList = getList(state, id)
+    if (!targetList) return
+    if (targetList.list.some(s => s.songmid === musicInfo.songmid)) return
+    targetList.list.push(musicInfo)
   },
-  defaultListAddMultiple(state, list) {
+  listAddMultiple(state, { id, list }) {
+    let targetList = getList(state, id)
+    if (!targetList) return
+    targetList = targetList.list
     list.forEach(musicInfo => {
-      if (state.defaultList.list.some(s => s.songmid === musicInfo.songmid)) return
-      state.defaultList.list.push(musicInfo)
+      if (targetList.some(s => s.songmid === musicInfo.songmid)) return
+      targetList.push(musicInfo)
     })
   },
-  defaultListRemove(state, index) {
-    state.defaultList.list.splice(index, 1)
+  listRemove(state, { id, index }) {
+    let targetList = getList(state, id)
+    if (!targetList) return
+    targetList.list.splice(index, 1)
   },
-  updateMusicInfo(state, { index, data }) {
-    Object.assign(state.defaultList.list[index], data)
-  },
-  defaultListRemoveMultiple(state, list) {
+  listRemoveMultiple(state, { id, list }) {
+    let targetList = getList(state, id)
+    if (!targetList) return
+    targetList = targetList.list
     list.forEach(musicInfo => {
-      let index = state.defaultList.list.indexOf(musicInfo)
+      let index = targetList.indexOf(musicInfo)
       if (index < 0) return
-      state.defaultList.list.splice(index, 1)
+      targetList.splice(index, 1)
     })
   },
-  defaultListClear(state) {
-    state.defaultList.list.length = 0
+  listClear(state, id) {
+    let targetList = getList(state, id)
+    if (!targetList) return
+    targetList.list.length = 0
+  },
+  updateMusicInfo(state, { id, index, data }) {
+    let targetList = getList(state, id)
+    if (!targetList) return
+    Object.assign(targetList.list[index], data)
   },
 }
 

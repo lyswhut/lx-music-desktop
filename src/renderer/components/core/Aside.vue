@@ -16,8 +16,9 @@ div(:class="$style.aside")
     dl
       dt 我的音乐
       dd
-        router-link(:active-class="$style.active" to="list") {{defaultList.name}}
-        router-link(:active-class="$style.active" v-for="item in userList" :to="`list?id=${item._id}`" :key="item._id") {{item.name}}
+        router-link(:active-class="($route.query.id === defaultList.id || $route.query.id == '') ? $style.active : ''" :to="`list?id=${defaultList.id || ''}`") {{defaultList.name}}
+        router-link(:active-class="$route.query.id === loveList.id ? $style.active : ''" :to="`list?id=${loveList.id}`") {{loveList.name}}
+        router-link(:active-class="$route.query.id === item.id ? $style.active : ''" v-for="item in userList" :to="`list?id=${item._id}`" :key="item._id") {{item.name}}
     dl
       dt 其他
       dd
@@ -43,7 +44,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('list', ['defaultList', 'userList']),
+    ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
   },
   methods: {},
 }

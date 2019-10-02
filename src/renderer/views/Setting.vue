@@ -286,7 +286,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setSetting', 'setVersionModalVisible']),
-    ...mapMutations('list', ['setDefaultList']),
+    ...mapMutations('list', ['setList']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
     },
@@ -332,7 +332,7 @@ export default {
         return
       }
       if (defautlList.type !== 'defautlList') return
-      this.setDefaultList(defautlList.data.list)
+      this.setList({ id: 'default', list: defautlList.data.list })
     },
     exportPlayList(path) {
       const data = {
@@ -353,7 +353,7 @@ export default {
       if (allData.type !== 'allData') return
       this.setSetting(updateSetting(allData.setting))
       this.init()
-      this.setDefaultList(allData.defaultList.list)
+      this.setList({ id: 'default', list: allData.defaultList.list })
     },
     exportAllData(path) {
       let allData = {

@@ -128,7 +128,7 @@ export default {
     ...mapActions('search', ['search']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('search', ['clearList', 'setPage']),
-    ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
+    ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
     handleSearch(text, page) {
       if (text === '') return this.clearList()
@@ -172,11 +172,11 @@ export default {
       let targetSong
       if (index == null) {
         targetSong = this.selectdData[0]
-        this.defaultListAddMultiple(this.filterList(this.selectdData))
+        this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
       } else {
         if ((this.isAPITemp && this.listInfo.list[index].source != 'kw') || this.listInfo.list[index].source == 'tx' || this.listInfo.list[index].source == 'wy') return
         targetSong = this.listInfo.list[index]
-        this.defaultListAdd(targetSong)
+        this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid
@@ -218,7 +218,7 @@ export default {
           this.resetSelect()
           break
         case 'add':
-          this.defaultListAddMultiple(this.filterList(this.selectdData))
+          this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
           this.resetSelect()
           break
       }

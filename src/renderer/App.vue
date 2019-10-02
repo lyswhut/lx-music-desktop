@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     ...mapGetters(['electronStore', 'setting', 'theme', 'version']),
-    ...mapGetters('list', ['defaultList']),
+    ...mapGetters('list', ['defaultList', 'loveList']),
     ...mapGetters('download', {
       downloadList: 'list',
       downloadStatus: 'downloadStatus',
@@ -73,6 +73,13 @@ export default {
       },
       deep: true,
     },
+    loveList: {
+      handler(n) {
+        // console.log(n)
+        this.electronStore.set('list.loveList', n)
+      },
+      deep: true,
+    },
     downloadList: {
       handler(n) {
         this.electronStore.set('download.list', n)
@@ -90,7 +97,7 @@ export default {
   methods: {
     ...mapActions(['getVersionInfo']),
     ...mapMutations(['setNewVersion', 'setVersionModalVisible']),
-    ...mapMutations('list', ['initDefaultList']),
+    ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
     init() {
@@ -156,13 +163,9 @@ export default {
     },
     initPlayList() {
       let defaultList = this.electronStore.get('list.defaultList')
+      let loveList = this.electronStore.get('list.loveList')
       // console.log(defaultList)
-      if (defaultList) {
-        // defaultList.list.forEach(m => {
-        //   m.typeUrl = {}
-        // })
-        this.initDefaultList(defaultList)
-      }
+      if (defaultList) this.initList({ defaultList, loveList })
     },
     initDownloadList() {
       let downloadList = this.electronStore.get('download.list')

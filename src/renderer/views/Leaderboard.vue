@@ -56,7 +56,7 @@ export default {
     ...mapMutations(['setLeaderboard']),
     ...mapActions('leaderboard', ['getList']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('list', ['defaultListAdd', 'defaultListAddMultiple']),
+    ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
     handleListBtnClick(info) {
       switch (info.action) {
@@ -80,11 +80,11 @@ export default {
       let targetSong
       if (index == null) {
         targetSong = this.selectdData[0]
-        this.defaultListAddMultiple(this.selectdData)
+        this.listAddMultiple({ id: 'default', list: this.selectdData })
         this.resetSelect()
       } else {
         targetSong = this.list[index]
-        this.defaultListAdd(targetSong)
+        this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid
@@ -134,7 +134,7 @@ export default {
           this.testPlay()
           break
         case 'add':
-          this.defaultListAddMultiple(this.selectdData)
+          this.listAddMultiple({ id: 'default', list: this.selectdData })
           this.resetSelect()
           break
       }

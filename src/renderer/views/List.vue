@@ -50,6 +50,7 @@ export default {
   name: 'List',
   data() {
     return {
+      listId: null,
       clickTime: window.performance.now(),
       clickIndex: -1,
       isShowDownload: false,
@@ -65,12 +66,15 @@ export default {
   },
   computed: {
     ...mapGetters(['userInfo', 'setting']),
-    ...mapGetters('list', ['defaultList', 'userList']),
-    ...mapGetters('player', ['listId', 'playIndex']),
+    ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
+    ...mapGetters('player', {
+      playerListId: 'listId',
+      playIndex: 'playIndex',
+    }),
     isPlayList() {
-      return this.listId != 'download' && (
-        ((!this.$route.query.id || this.$route.query.id == 'test') && this.listId == 'test') ||
-        this.$route.query.id == this.listId
+      return this.playerListId != 'download' && (
+        ((!this.$route.query.id || this.$route.query.id == 'test') && this.playerListId == 'test') ||
+        this.$route.query.id == this.playerListId
       )
     },
     list() {
@@ -80,6 +84,22 @@ export default {
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
+    },
+    listData() {
+      if (this.listId == null) return this.defaultList
+      let targetList
+      switch (this.listId) {
+        case 'default':
+          targetList = this.defaultList
+          break
+        case 'love':
+          targetList = this.loveList
+          break
+        default:
+          targetList = this.userList.find(l => l.id === this.listId)
+          break
+      }
+      return targetList
     },
   },
   watch: {
@@ -98,17 +118,11 @@ export default {
       this.resetSelect()
     },
   },
-  // beforeRouteUpdate(to, from, next) {
-  //   // if (to.query.id === undefined) return
-  //   // if (to.query.text === '') {
-  //   //   this.clearList()
-  //   // } else {
-  //   //   this.text = to.query.text
-  //   //   this.page = 1
-  //   //   this.handleSearch(this.text, this.page)
-  //   // }
-  //   next()
-  // },
+  beforeRouteUpdate(to, from, next) {
+    if (to.query.id === undefined) return
+    this.listId = to.query.id
+    next()
+  },
   // mounted() {
   // console.log('mounted')
   // if (this.$route.query.text === undefined) {
@@ -137,22 +151,25 @@ export default {
     }, 1000)
   },
   mounted() {
-    if (this.list.length > 150) {
-      setTimeout(() => {
-        this.delayShow = true
-        if (this.setting.list.scroll.enable && this.setting.list.scroll.location) {
-          this.$nextTick(() => this.$refs.dom_scrollContent.scrollTo(0, this.setting.list.scroll.location))
-        }
-      }, 200)
-    } else {
-      this.delayShow = true
-    }
+    this.handleDelayShow()
   },
   methods: {
     ...mapMutations(['setListScroll']),
-    ...mapMutations('list', ['defaultListRemove', 'defaultListRemoveMultiple']),
+    ...mapMutations('list', ['listRemove', 'listRemoveMultiple']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', ['setList']),
+    handleDelayShow() {
+      if (this.list.length > 150) {
+        setTimeout(() => {
+          this.delayShow = true
+          if (this.setting.list.scroll.enable && this.setting.list.scroll.location) {
+            this.$nextTick(() => this.$refs.dom_scrollContent.scrollTo(0, this.setting.list.scroll.location))
+          }
+        }, 200)
+      } else {
+        this.delayShow = true
+      }
+    },
     handleDoubleClick(index) {
       if (
         window.performance.now() - this.clickTime > 400 ||
@@ -171,7 +188,7 @@ export default {
       this.setList({ list: this.list, listId: 'test', index })
     },
     handleRemove(index) {
-      this.defaultListRemove(index)
+      this.listRemove({ id: 'default', index })
     },
     handleListBtnClick(info) {
       switch (info.action) {
@@ -215,7 +232,7 @@ export default {
           this.isShowDownloadMultiple = true
           break
         case 'remove':
-          this.defaultListRemoveMultiple(this.selectdData)
+          this.listRemoveMultiple({ id: 'default', list: this.selectdData })
           this.resetSelect()
           break
       }
