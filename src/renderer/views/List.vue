@@ -40,7 +40,9 @@
       p(v-text="list.length ? '加载中...' : '列表竟然是空的...'")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn" :add-btn="false" :play-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn" :play-btn="false" @btn-click="handleFlowBtnClick")
+    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" :exclude-list-id="excludeListId" @close="isShowListAdd = false")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" :exclude-list-id="excludeListId" @close="handleListAddModalClose")
 </template>
 
 <script>
@@ -62,6 +64,8 @@ export default {
       isShowDownloadMultiple: false,
       delayShow: false,
       routeLeaveLocation: null,
+      isShowListAdd: false,
+      isShowListAddMultiple: false,
     }
   },
   computed: {
@@ -72,21 +76,16 @@ export default {
       playIndex: 'playIndex',
     }),
     isPlayList() {
-      return this.playerListId != 'download' && (
-        ((!this.$route.query.id || this.$route.query.id == 'test') && this.playerListId == 'test') ||
-        this.$route.query.id == this.playerListId
-      )
+      return this.playerListId == this.listId
     },
     list() {
-      return !this.$route.query.id || this.$route.query.id == 'test'
-        ? this.defaultList.list
-        : this.userList.find(l => l._id == this.$route.query.id) || []
+      return this.listData.list
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
     },
     listData() {
-      if (this.listId == null) return this.defaultList
+      if (!this.listId) return this.defaultList
       let targetList
       switch (this.listId) {
         case 'default':
@@ -100,6 +99,9 @@ export default {
           break
       }
       return targetList
+    },
+    excludeListId() {
+      return [this.listId]
     },
   },
   watch: {
@@ -120,7 +122,13 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     if (to.query.id === undefined) return
-    this.listId = to.query.id
+    this.delayShow = false
+    this.$nextTick(() => {
+      this.listId = to.query.id
+      this.$nextTick(() => {
+        this.handleDelayShow()
+      })
+    })
     next()
   },
   // mounted() {
@@ -142,6 +150,7 @@ export default {
     next()
   },
   created() {
+    this.listId = this.$route.query.id
     this.handleScroll = throttle(e => {
       if (this.routeLeaveLocation) {
         this.setListScroll(this.routeLeaveLocation)
@@ -157,7 +166,9 @@ export default {
     ...mapMutations(['setListScroll']),
     ...mapMutations('list', ['listRemove', 'listRemoveMultiple']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('player', {
+      setPlayList: 'setList',
+    }),
     handleDelayShow() {
       if (this.list.length > 150) {
         setTimeout(() => {
@@ -185,10 +196,10 @@ export default {
     },
     testPlay(index) {
       if ((this.isAPITemp && this.list[index].source != 'kw') || this.list[index].source == 'tx' || this.list[index].source == 'wy') return
-      this.setList({ list: this.list, listId: 'test', index })
+      this.setPlayList({ list: this.list, listId: this.listId, index })
     },
     handleRemove(index) {
-      this.listRemove({ id: 'default', index })
+      this.listRemove({ id: this.listId, index })
     },
     handleListBtnClick(info) {
       switch (info.action) {
@@ -206,6 +217,12 @@ export default {
           break
         case 'remove':
           this.handleRemove(info.index)
+          break
+        case 'listAdd':
+          this.musicInfo = this.list[info.index]
+          this.$nextTick(() => {
+            this.isShowListAdd = true
+          })
           break
       }
     },
@@ -232,10 +249,17 @@ export default {
           this.isShowDownloadMultiple = true
           break
         case 'remove':
-          this.listRemoveMultiple({ id: 'default', list: this.selectdData })
+          this.listRemoveMultiple({ id: this.listId, list: this.selectdData })
           this.resetSelect()
           break
+        case 'add':
+          this.isShowListAddMultiple = true
+          break
       }
+    },
+    handleListAddModalClose(isSelect) {
+      if (isSelect) this.resetSelect()
+      this.isShowListAddMultiple = false
     },
     // handleScroll(e) {
     //   console.log(e.target.scrollTop)

@@ -162,7 +162,7 @@ export default {
   name: 'Setting',
   computed: {
     ...mapGetters(['setting', 'themes', 'version']),
-    ...mapGetters('list', ['defaultList']),
+    ...mapGetters('list', ['defaultList', 'loveList']),
     isLatestVer() {
       return this.version.newVersion && this.version.version === this.version.newVersion.version
     },
@@ -325,19 +325,30 @@ export default {
       })
     },
     importPlayList(path) {
-      let defautlList
+      let listData
       try {
-        defautlList = JSON.parse(fs.readFileSync(path, 'utf8'))
+        listData = JSON.parse(fs.readFileSync(path, 'utf8'))
       } catch (error) {
         return
       }
-      if (defautlList.type !== 'defautlList') return
-      this.setList({ id: 'default', list: defautlList.data.list })
+      console.log(listData.type)
+
+      // 兼容0.6.2及以前版本的列表数据
+      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list })
+
+      if (listData.type !== 'playList') return
+
+      for (const list of listData.data) {
+        this.setList({ id: list.id, list: list.list })
+      }
     },
     exportPlayList(path) {
       const data = {
-        type: 'defautlList',
-        data: this.defaultList,
+        type: 'playList',
+        data: [
+          this.defaultList,
+          this.loveList,
+        ],
       }
       fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
         console.log(err)
@@ -353,13 +364,20 @@ export default {
       if (allData.type !== 'allData') return
       this.setSetting(updateSetting(allData.setting))
       this.init()
-      this.setList({ id: 'default', list: allData.defaultList.list })
+      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list })
+
+      for (const list of allData.playList) {
+        this.setList({ id: list.id, list: list.list })
+      }
     },
     exportAllData(path) {
       let allData = {
         type: 'allData',
         setting: this.setting,
-        defaultList: this.defaultList,
+        playList: [
+          this.defaultList,
+          this.loveList,
+        ],
       }
       fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
         console.log(err)

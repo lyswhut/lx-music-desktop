@@ -28,7 +28,7 @@
                 span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 25%;") {{item.albumName}}
-              td(style="width: 15%;")
+              td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
                   :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
                   :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
@@ -41,6 +41,8 @@
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
 </template>
 
 <script>
@@ -63,6 +65,8 @@ export default {
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
       searchSourceId: null,
+      isShowListAdd: false,
+      isShowListAddMultiple: false,
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -164,7 +168,11 @@ export default {
         case 'play':
           this.testPlay(info.index)
           break
-        case 'add':
+        case 'listAdd':
+          this.musicInfo = this.listInfo.list[info.index]
+          this.$nextTick(() => {
+            this.isShowListAdd = true
+          })
           break
       }
     },
@@ -218,13 +226,16 @@ export default {
           this.resetSelect()
           break
         case 'add':
-          this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
-          this.resetSelect()
+          this.isShowListAddMultiple = true
           break
       }
     },
     filterList(list) {
       return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx' && s.source != 'wy')
+    },
+    handleListAddModalClose(isSelect) {
+      if (isSelect) this.resetSelect()
+      this.isShowListAddMultiple = false
     },
   },
 }

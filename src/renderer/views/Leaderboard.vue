@@ -6,6 +6,8 @@
     material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
 </template>
 
 <script>
@@ -21,6 +23,8 @@ export default {
       musicInfo: null,
       selectdData: [],
       isShowDownloadMultiple: false,
+      isShowListAdd: false,
+      isShowListAddMultiple: false,
     }
   },
   computed: {
@@ -72,8 +76,12 @@ export default {
         case 'search':
           this.handleSearch(info.index)
           break
-        // case 'add':
-        //   break
+        case 'listAdd':
+          this.musicInfo = this.list[info.index]
+          this.$nextTick(() => {
+            this.isShowListAdd = true
+          })
+          break
       }
     },
     testPlay(index) {
@@ -125,6 +133,10 @@ export default {
       this.isShowDownloadMultiple = false
       this.resetSelect()
     },
+    handleListAddModalClose(isSelect) {
+      if (isSelect) this.resetSelect()
+      this.isShowListAddMultiple = false
+    },
     handleFlowBtnClick(action) {
       switch (action) {
         case 'download':
@@ -134,8 +146,7 @@ export default {
           this.testPlay()
           break
         case 'add':
-          this.listAddMultiple({ id: 'default', list: this.selectdData })
-          this.resetSelect()
+          this.isShowListAddMultiple = true
           break
       }
     },

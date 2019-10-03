@@ -3,6 +3,9 @@ div(:class="$style.btns")
   button(type="button" v-if="playBtn" title="播放" @click.stop="handleClick('play')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 287.386 287.386' space='preserve')
       use(xlink:href='#icon-testPlay')
+  button(type="button" v-if="listAddBtn" title="添加到..." @click.stop="handleClick('listAdd')")
+    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
+      use(xlink:href='#icon-addTo')
   button(type="button" v-if="downloadBtn" title="下载" @click.stop="handleClick('download')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 475.078 475.077' space='preserve')
       use(xlink:href='#icon-download')
@@ -53,6 +56,10 @@ export default {
       default: true,
     },
     playBtn: {
+      type: Boolean,
+      default: true,
+    },
+    listAddBtn: {
       type: Boolean,
       default: true,
     },
