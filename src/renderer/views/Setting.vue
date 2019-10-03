@@ -180,7 +180,7 @@ export default {
           isShowAlbumName: true,
           scroll: {
             enable: true,
-            location: 0,
+            locations: {},
           },
         },
         download: {

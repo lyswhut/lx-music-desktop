@@ -153,9 +153,9 @@ export default {
     this.listId = this.$route.query.id
     this.handleScroll = throttle(e => {
       if (this.routeLeaveLocation) {
-        this.setListScroll(this.routeLeaveLocation)
+        this.setListScroll({ id: this.listId, location: this.routeLeaveLocation })
       } else {
-        this.setListScroll(e.target.scrollTop)
+        this.setListScroll({ id: this.listId, location: e.target.scrollTop })
       }
     }, 1000)
   },
@@ -173,12 +173,19 @@ export default {
       if (this.list.length > 150) {
         setTimeout(() => {
           this.delayShow = true
-          if (this.setting.list.scroll.enable && this.setting.list.scroll.location) {
-            this.$nextTick(() => this.$refs.dom_scrollContent.scrollTo(0, this.setting.list.scroll.location))
-          }
+          this.restoreScroll()
         }, 200)
       } else {
         this.delayShow = true
+        this.restoreScroll()
+      }
+    },
+    restoreScroll() {
+      let location = this.setting.list.scroll.locations[this.listId]
+      if (this.setting.list.scroll.enable && location) {
+        this.$nextTick(() => {
+          this.$refs.dom_scrollContent.scrollTo(0, location)
+        })
       }
     },
     handleDoubleClick(index) {

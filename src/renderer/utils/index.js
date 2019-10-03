@@ -164,7 +164,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.10'
+  const defaultVersion = '1.0.11'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -177,7 +177,7 @@ export const updateSetting = setting => {
       isShowAlbumName: true,
       scroll: {
         enable: true,
-        location: 0,
+        locations: {},
       },
     },
     download: {
