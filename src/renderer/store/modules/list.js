@@ -7,7 +7,7 @@ const state = {
   },
   loveList: {
     id: 'love',
-    name: '我喜欢',
+    name: '我的收藏',
     list: [],
   },
   userList: [],
@@ -44,13 +44,8 @@ const getList = (state, id) => {
 // mitations
 const mutations = {
   initList(state, { defaultList, loveList }) {
-    if (defaultList !== undefined) {
-      // 处理0.6.2及以前的版本默认列表没有ID的兼容问题
-      if (!defaultList.id) defaultList.id = 'default'
-
-      state.defaultList = defaultList
-    }
-    if (loveList !== undefined) state.loveList = loveList
+    if (defaultList !== undefined) state.defaultList.list = defaultList.list
+    if (loveList !== undefined) state.loveList.list = loveList.list
   },
   setList(state, { id, list }) {
     const targetList = getList(state, id)
