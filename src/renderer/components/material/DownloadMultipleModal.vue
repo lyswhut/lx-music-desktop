@@ -7,7 +7,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       | 请选择要优先下载的音质
     material-btn(:class="$style.btn" @click="handleClick('128k')") 普通音质 - 128K
     material-btn(:class="$style.btn" @click="handleClick('320k')") 高品音质 - 320K
-    material-btn(:class="$style.btn" @click="handleClick('ape')") 无损音质 - APE
+    //- material-btn(:class="$style.btn" @click="handleClick('ape')") 无损音质 - APE
     material-btn(:class="$style.btn" @click="handleClick('flac')") 无损音质 - FLAC
 </template>
 
