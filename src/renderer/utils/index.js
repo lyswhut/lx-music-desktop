@@ -303,3 +303,37 @@ export const throttle = (fn, delay = 100) => {
     }, delay)
   }
 }
+
+const async_removeItem = (arr, num, callback) => window.requestAnimationFrame(() => {
+  let len = arr.length
+  if (len > num) {
+    arr.splice(0, num)
+    return async_removeItem(arr, num, callback)
+  } else {
+    arr.splice(0, len)
+    return callback()
+  }
+})
+const async_addItem = (arr, newArr, num, callback) => window.requestAnimationFrame(() => {
+  let len = newArr.length
+  if (len > num) {
+    arr.push(...newArr.splice(0, num))
+    return async_addItem(arr, newArr, num, callback)
+  } else {
+    arr.push(...newArr.splice(0, len))
+    return callback()
+  }
+})
+/**
+ * 异步设置数组
+ * @param {*} from 原数组
+ * @param {*} to 设置后的数组内容
+ * @param {*} num 每次设置的个数
+ */
+export const asyncSetArray = (from, to, num = 100) => new Promise(resolve => {
+  async_removeItem(from, num, () => {
+    async_addItem(from, Array.from(to), num, () => {
+      resolve()
+    })
+  })
+})

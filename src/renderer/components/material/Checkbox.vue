@@ -3,9 +3,9 @@ div(:class="$style.checkbox")
   input(:type="need ? 'radio' : 'checkbox'" :class="$style.input" :id="id" :disabled="disabled" :value="value" :name="name" @change="change" v-model="bool")
   label(:for="id" :class="$style.content")
     div(v-if="indeterminate" :class="$style.container")
-      svg(v-show="indeterminate" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
+      svg(v-show="indeterminate" :class="$style.icon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
         use(xlink:href='#icon-check-indeterminate')
-      svg(v-show="!indeterminate" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 0 448 512' space='preserve')
+      svg(v-show="!indeterminate" :class="$style.icon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 0 448 512' space='preserve')
         use(xlink:href='#icon-check-true')
     div(v-else :class="$style.container")
       svg(version='1.1' :class="$style.icon" xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' width="100%" viewBox='0 32 448 448' space='preserve')
@@ -73,9 +73,9 @@ export default {
         let bool = this.bool
         if (this.indeterminate) {
           bool = true
-          this.$nextTick(() => {
-            this.bool = true
-          })
+          // this.$nextTick(() => {
+          this.bool = true
+          // })
         }
         checked = bool
       }

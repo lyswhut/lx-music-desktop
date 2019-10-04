@@ -47,7 +47,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle } from '../utils'
+import { throttle, asyncSetArray } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -66,6 +66,7 @@ export default {
       routeLeaveLocation: null,
       isShowListAdd: false,
       isShowListAddMultiple: false,
+      delayTimeout: null,
     }
   },
   computed: {
@@ -146,6 +147,7 @@ export default {
   // }
   // },
   beforeRouteLeave(to, from, next) {
+    this.clearDelayTimeout()
     this.routeLeaveLocation = (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0
     next()
   },
@@ -170,8 +172,10 @@ export default {
       setPlayList: 'setList',
     }),
     handleDelayShow() {
+      this.clearDelayTimeout()
       if (this.list.length > 150) {
-        setTimeout(() => {
+        this.delayTimeout = setTimeout(() => {
+          this.delayTimeout = null
           this.delayShow = true
           this.restoreScroll()
         }, 200)
@@ -180,7 +184,14 @@ export default {
         this.restoreScroll()
       }
     },
+    clearDelayTimeout() {
+      if (this.delayTimeout) {
+        clearTimeout(this.delayTimeout)
+        this.delayTimeout = null
+      }
+    },
     restoreScroll() {
+      if (!this.list.length) return
       let location = this.setting.list.scroll.locations[this.listId]
       if (this.setting.list.scroll.enable && location) {
         this.$nextTick(() => {
@@ -238,7 +249,7 @@ export default {
       this.isShowDownload = false
     },
     handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.list] : []
+      asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
     },
     resetSelect() {
       this.isSelectAll = false
