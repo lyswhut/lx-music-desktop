@@ -96,6 +96,15 @@ div.scroll(:class="$style.setting")
       div
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") 导入
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
+    dt 其他
+    dd
+      h3 缓存大小（清理缓存后图片等资源将需要重新下载）
+      div
+        p
+          | 软件已使用缓存大小：
+          span.auto-hidden(title="当前已用缓存") {{cacheSize}}
+        p
+          material-btn(:class="$style.btn" min @click="clearCache") 清理缓存
     dt 软件更新
     dd
       p.small
@@ -153,7 +162,17 @@ div.scroll(:class="$style.setting")
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { openDirInExplorer, openSelectDir, openSaveDir, updateSetting, openUrl, clipboardWriteText } from '../utils'
+import {
+  openDirInExplorer,
+  openSelectDir,
+  openSaveDir,
+  updateSetting,
+  openUrl,
+  clipboardWriteText,
+  getCacheSize,
+  clearCache,
+  sizeFormate,
+} from '../utils'
 import { rendererSend } from '../../common/icp'
 import fs from 'fs'
 
@@ -261,6 +280,7 @@ export default {
           value: '歌名',
         },
       ],
+      cacheSize: '0 B',
     }
   },
   watch: {
@@ -289,6 +309,7 @@ export default {
     ...mapMutations('list', ['setList']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
+      this.getCacheSize()
     },
     handleChangeSavePath() {
       openSelectDir({
@@ -466,8 +487,15 @@ export default {
     handleProxyChange(key) {
       window.globalObj.proxy[key] = this.current_setting.network.proxy[key]
     },
-    openRewardModal() {
-
+    getCacheSize() {
+      getCacheSize().then(size => {
+        this.cacheSize = sizeFormate(size)
+      })
+    },
+    clearCache() {
+      clearCache().then(() => {
+        this.getCacheSize()
+      })
     },
   },
 }

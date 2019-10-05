@@ -16,8 +16,6 @@ app.on('second-instance', (event, argv, cwd) => {
 })
 
 require('./events')
-require('./events/progressBar')
-require('./events/trafficLight')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
 

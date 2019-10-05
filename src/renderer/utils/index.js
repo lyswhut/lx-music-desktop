@@ -15,8 +15,8 @@ export const getRandom = (min, max) => Math.floor(Math.random() * (max - min)) +
 
 export const sizeFormate = size => {
   // https://gist.github.com/thomseddon/3511330
-  if (!size) return '0 b'
-  let units = ['b', 'kB', 'MB', 'GB', 'TB']
+  if (!size) return '0 B'
+  let units = ['B', 'KB', 'MB', 'GB', 'TB']
   let number = Math.floor(Math.log(size) / Math.log(1024))
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
@@ -337,3 +337,16 @@ export const asyncSetArray = (from, to, num = 100) => new Promise(resolve => {
     })
   })
 })
+
+
+/**
+ * 获取缓存大小
+ * @param {*} win
+ */
+export const getCacheSize = () => remote.getCurrentWindow().webContents.session.getCacheSize()
+
+/**
+ * 清除缓存
+ * @param {*} win
+ */
+export const clearCache = () => remote.getCurrentWindow().webContents.session.clearCache()
