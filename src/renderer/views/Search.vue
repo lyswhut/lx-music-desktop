@@ -78,6 +78,13 @@ export default {
   },
   mounted() {
     // console.log('mounted')
+
+    // 处理搜索源不存在时页面报错的问题
+    if (!this.sourceList[this.setting.search.searchSource]) {
+      this.setSearchSource({
+        searchSource: 'kw',
+      })
+    }
     this.searchSourceId = this.setting.search.searchSource
     if (this.$route.query.text === undefined) {
       this.text = this.$store.getters['search/searchText']
