@@ -100,7 +100,7 @@ export default {
       if (targetIndex > -1) {
         this.setList({
           list: this.defaultList.list,
-          listId: 'test',
+          listId: this.defaultList.id,
           index: targetIndex,
         })
       }
