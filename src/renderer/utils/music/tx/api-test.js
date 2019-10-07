@@ -1,17 +1,17 @@
 import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
-import { headers, timeout } from '../messoer'
+import { headers, timeout } from '../options'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`https://v1.itooi.cn/tencent/url?id=${songInfo.strMediaMid}&quality=${type.replace(/k$/, '')}`, {
+    const requestObj = httpFetch(`http://ts.tempmusic.tk/url/tx/${songInfo.strMediaMid}/${type}`, {
       method: 'get',
       timeout,
       headers,
       family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return body.code === 200 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
+      return body.code === 0 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(requestMsg.fail))
     })
     return requestObj
   },

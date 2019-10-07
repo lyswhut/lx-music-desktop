@@ -1,6 +1,6 @@
 import kw_api_temp from './kw/api-temp'
 import kw_api_test from './kw/api-test'
-// import tx_api_messoer from './tx/api-messoer'
+import tx_api_test from './tx/api-test'
 import kg_api_test from './kg/api-test'
 import wy_api_test from './wy/api-test'
 import bd_api_test from './bd/api-test'
@@ -12,7 +12,7 @@ import bd_api_test from './bd/api-test'
 
 const apis = {
   kw_api_test,
-  // tx_api_messoer,
+  tx_api_test,
   kg_api_test,
   wy_api_test,
   bd_api_test,

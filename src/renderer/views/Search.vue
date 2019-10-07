@@ -30,8 +30,8 @@
               td.break(style="width: 25%;") {{item.albumName}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
-                  :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
-                  :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'tx' && item.source != 'wy')"
+                  :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')"
+                  :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')"
                   @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval}}
         div(:class="$style.pagination")
@@ -189,7 +189,7 @@ export default {
         targetSong = this.selectdData[0]
         this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
       } else {
-        if ((this.isAPITemp && this.listInfo.list[index].source != 'kw') || this.listInfo.list[index].source == 'tx' || this.listInfo.list[index].source == 'wy') return
+        if ((this.isAPITemp && this.listInfo.list[index].source != 'kw') || this.listInfo.list[index].source == 'wy') return
         targetSong = this.listInfo.list[index]
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
@@ -238,7 +238,7 @@ export default {
       }
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx' && s.source != 'wy')
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'wy')
     },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
