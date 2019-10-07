@@ -6,6 +6,28 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.7.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.2...v0.7.0) - 2019-10-07
+
+#### 新增
+
+- 新增“我的收藏”本地播放列表
+- 新增缓存清理功能，可到**设置-其他**查看与清理软件缓存
+- 新增QQ音乐源搜索
+- 新增咪咕源搜索
+- 新增咪咕源歌单
+- 新增咪咕源排行榜
+- 新增我的音乐列表歌曲源显示，默认关闭，可到**设置-列表设置**开启
+
+#### 优化
+
+- 优化选择框动画效果
+- 尝试优化选我的音乐列表内容很多时多选的卡顿问题
+
+#### 修复
+
+- 修复列表延迟显示的Bug
+- 修复QQ音源128k音质试听
+
 ## [0.6.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.1...v0.6.2) - 2019-10-01
 
 祝贺祖国成立70周年~！
