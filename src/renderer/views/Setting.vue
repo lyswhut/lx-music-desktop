@@ -36,6 +36,10 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" label="是否启用")
     dt 列表设置
+    dd(title='是否显示歌曲源')
+      h3 是否显示歌曲源（仅对我的音乐分类有效）
+      div
+        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" label="是否显示")
     dd(title='是否恢复播放列表滚动条位置')
       h3 恢复列表滚动位置（仅对我的音乐分类有效）
       div
@@ -197,6 +201,7 @@ export default {
         },
         list: {
           isShowAlbumName: true,
+          isShowSource: true,
           scroll: {
             enable: true,
             locations: {},

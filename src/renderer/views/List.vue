@@ -21,7 +21,9 @@
               @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') || item.source == 'wy' ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
-              td.break(style="width: 25%;") {{item.name}}
+              td.break(style="width: 25%;")
+                | {{item.name}}
+                span(:class="$style.labelSource" v-if="isShowSource") {{item.source}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
                 //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
@@ -103,6 +105,9 @@ export default {
     },
     excludeListId() {
       return [this.listId]
+    },
+    isShowSource() {
+      return this.setting.list.isShowSource
     },
   },
   watch: {
@@ -279,6 +284,14 @@ export default {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
+    getSource(source) {
+      switch (source) {
+        case 'kw':
+          return '酷我'
+        default:
+          break
+      }
+    },
     // handleScroll(e) {
     //   console.log(e.target.scrollTop)
     // },
@@ -328,6 +341,14 @@ export default {
   }
 }
 
+.labelSource {
+  color: @color-theme;
+  padding: 5px;
+  font-size: .8em;
+  line-height: 1;
+  opacity: .75;
+}
+
 .disabled {
   opacity: .5;
 }
@@ -354,6 +375,9 @@ each(@themes, {
           color: ~'@{color-@{value}-theme}';
         }
       }
+    }
+    .labelSource {
+      color: ~'@{color-@{value}-theme}';
     }
     .no-item {
       p {
