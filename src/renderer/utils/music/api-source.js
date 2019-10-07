@@ -4,6 +4,7 @@ import tx_api_test from './tx/api-test'
 import kg_api_test from './kg/api-test'
 import wy_api_test from './wy/api-test'
 import bd_api_test from './bd/api-test'
+import mg_api_test from './mg/api-test'
 // import kw_api_internal from './kw/api-internal'
 // import tx_api_internal from './tx/api-internal'
 // import kg_api_internal from './kg/api-internal'
@@ -16,6 +17,7 @@ const apis = {
   kg_api_test,
   wy_api_test,
   bd_api_test,
+  mg_api_test,
   // kw_api_internal,
   // tx_api_internal,
   // kg_api_internal,
@@ -46,6 +48,8 @@ export default source => {
       return getAPI('wy')
     case 'bd':
       return getAPI('bd')
+    case 'mg':
+      return getAPI('mg')
     default:
       return getAPI('kw')
   }

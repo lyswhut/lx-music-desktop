@@ -288,6 +288,7 @@ export default {
 .songListContent {
   display: flex;
   flex-flow: column nowrap;
+  height: 100%;
   // position: relative;
 }
 

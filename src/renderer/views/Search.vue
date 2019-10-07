@@ -33,7 +33,7 @@
                   :play-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')"
                   :download-btn="item.source == 'kw' || (!isAPITemp && item.source != 'wy')"
                   @btn-click="handleListBtnClick")
-              td(style="width: 10%;") {{item.interval}}
+              td(style="width: 10%;") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
