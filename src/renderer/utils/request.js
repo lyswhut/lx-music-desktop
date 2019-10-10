@@ -3,6 +3,7 @@ import request from 'request'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
 import { bHh } from './music/options'
+import { deflateRawSync } from 'zlib'
 // import fs from 'fs'
 
 const defaultHeaders = {
@@ -222,6 +223,8 @@ const getProxyInfo = () => window.globalObj.proxy.enable
   ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
   : undefined
 
+const regx = /(?:\d\w)+/g
+
 const fetchData = (url, method, {
   headers = {},
   format = 'json',
@@ -230,11 +233,13 @@ const fetchData = (url, method, {
 }, callback) => {
   // console.log(url, options)
   console.log('---start---', url)
+  headers = Object.assign({}, headers)
   if (headers[bHh]) {
     let s = Buffer.from(bHh, 'hex').toString()
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
-    headers[s] = !s || parseInt(process.versions.app.split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join(''))
+    let v = process.versions.app.split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join('')
+    headers[s] = !s || `${deflateRawSync(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString()).toString('hex')}&${parseInt(v)}`
     delete headers[bHh]
   }
   return request(url, {
