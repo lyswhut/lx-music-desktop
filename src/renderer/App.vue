@@ -164,8 +164,7 @@ export default {
     initPlayList() {
       let defaultList = this.electronStore.get('list.defaultList')
       let loveList = this.electronStore.get('list.loveList')
-      // console.log(defaultList)
-      if (defaultList) this.initList({ defaultList, loveList })
+      this.initList({ defaultList, loveList })
     },
     initDownloadList() {
       let downloadList = this.electronStore.get('download.list')
