@@ -1,3 +1,4 @@
+// https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/lyric.js
 import { httpFetch } from '../../request'
 import { linuxapi } from './utils/crypto'
 

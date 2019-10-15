@@ -262,7 +262,7 @@ export default {
         // },
         {
           id: 'test',
-          label: '测试接口（软件的大部分功能可用，该接口访问速度略慢）',
+          label: '测试接口（几乎软件的所有功能都可用，该接口访问速度略慢）',
           disabled: false,
         },
         {
