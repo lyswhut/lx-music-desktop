@@ -200,6 +200,7 @@ export default {
     handleAddDownloadMultiple(type) {
       switch (this.source) {
         // case 'kg':
+        case 'tx':
         case 'wy':
           type = '128k'
       }

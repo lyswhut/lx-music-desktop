@@ -1,5 +1,7 @@
 import leaderboard from './leaderboard'
 import api_source from '../api-source'
+import getLyric from './lyric'
+import getMusicInfo from './musicInfo'
 
 const wy = {
   leaderboard,
@@ -7,10 +9,10 @@ const wy = {
     return api_source('wy').getMusicUrl(songInfo, type)
   },
   getLyric(songInfo) {
-    return api_source('wy').getLyric(songInfo)
+    return getLyric(songInfo.songmid)
   },
   getPic(songInfo) {
-    return api_source('wy').getPic(songInfo)
+    return getMusicInfo(songInfo.songmid).then(info => info.al.picUrl)
   },
 }
 

@@ -15,8 +15,8 @@ const api_test = {
     })
     return requestObj
   },
-  getPic(songInfo) {
-    const requestObj = httpFetch(`http://ts.tempmusic.tk/pic/wy/${songInfo.songmid}`, {
+/*   getPic(songInfo) {
+    const requestObj = httpFetch(`http://localhost:3100/pic/wy/${songInfo.songmid}`, {
       method: 'get',
       timeout,
       headers,
@@ -28,7 +28,7 @@ const api_test = {
     return requestObj
   },
   getLyric(songInfo) {
-    const requestObj = httpFetch(`http://ts.tempmusic.tk/lrc/wy/${songInfo.songmid}`, {
+    const requestObj = httpFetch(`http://localhost:3100/lrc/wy/${songInfo.songmid}`, {
       method: 'get',
       timeout,
       headers,
@@ -38,7 +38,7 @@ const api_test = {
       return body.code === 0 ? Promise.resolve(body.data) : Promise.reject(new Error(requestMsg.fail))
     })
     return requestObj
-  },
+  }, */
 }
 
 export default api_test
