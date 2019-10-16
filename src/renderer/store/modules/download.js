@@ -75,6 +75,7 @@ const addTask = (list, type, store) => {
 
 const getUrl = (downloadInfo, isRefresh) => {
   const url = downloadInfo.musicInfo.typeUrl[downloadInfo.type]
+  if (!downloadInfo.musicInfo._types[downloadInfo.type]) return Promise.reject(new Error('该歌曲没有可下载的音频'))
   return url && !isRefresh ? Promise.resolve({ url }) : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
 }
 

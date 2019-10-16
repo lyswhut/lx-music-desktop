@@ -23,6 +23,7 @@ const getters = {
 // actions
 const actions = {
   getUrl({ commit, state }, { musicInfo, type, isRefresh }) {
+    if (!musicInfo._types[type]) return Promise.reject(new Error('该歌曲没有可播放的音频'))
     if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
     if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve()
     urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
