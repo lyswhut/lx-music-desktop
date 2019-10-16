@@ -42,16 +42,20 @@ export default {
             size,
           }
         case 320000:
-          size = sizeFormate(item.h.size)
-          types.push({ type: '320k', size })
-          _types['320k'] = {
-            size,
+          if (item.h) {
+            size = sizeFormate(item.h.size)
+            types.push({ type: '320k', size })
+            _types['320k'] = {
+              size,
+            }
           }
         case 128000:
-          size = sizeFormate(item.l.size)
-          types.push({ type: '128k', size })
-          _types['128k'] = {
-            size,
+          if (item.l) {
+            size = sizeFormate(item.l.size)
+            types.push({ type: '128k', size })
+            _types['128k'] = {
+              size,
+            }
           }
       }
 

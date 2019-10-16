@@ -78,7 +78,8 @@ export default {
       let privilege = privileges[index]
       if (privilege.id !== item.id) privilege = privileges.find(p => p.id === item.id)
       if (!privilege) return
-      switch (privileges[index].maxbr) {
+
+      switch (privilege.maxbr) {
         case 999000:
           size = null
           types.push({ type: 'flac', size })
@@ -86,16 +87,20 @@ export default {
             size,
           }
         case 320000:
-          size = sizeFormate(item.h.size)
-          types.push({ type: '320k', size })
-          _types['320k'] = {
-            size,
+          if (item.h) {
+            size = sizeFormate(item.h.size)
+            types.push({ type: '320k', size })
+            _types['320k'] = {
+              size,
+            }
           }
         case 128000:
-          size = sizeFormate(item.l.size)
-          types.push({ type: '128k', size })
-          _types['128k'] = {
-            size,
+          if (item.l) {
+            size = sizeFormate(item.l.size)
+            types.push({ type: '128k', size })
+            _types['128k'] = {
+              size,
+            }
           }
       }
 

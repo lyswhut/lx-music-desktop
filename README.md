@@ -49,11 +49,6 @@
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzous.com/b906260/` 密码：`glqw`<br>
 使用常见问题请转至：[常见问题](https://github.com/lyswhut/lx-music-desktop#常见问题)
 
-#### TODO
-
-- [ ] 新增拉取各大平台歌单
-- [ ] 新增聚合搜索
-
 ### 源码使用方法
 
 环境要求：Node.js 12.x
