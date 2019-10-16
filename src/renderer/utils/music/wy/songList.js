@@ -1,0 +1,226 @@
+// https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/playlist_catlist.js
+// https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/playlist_hot.js
+// https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/top_playlist.js
+// https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/playlist_detail.js
+
+import { weapi, linuxapi } from './utils/crypto'
+import { httpFetch } from '../../request'
+import { formatPlayTime, sizeFormate } from '../../index'
+
+export default {
+  _requestObj_tags: null,
+  _requestObj_hotTags: null,
+  _requestObj_list: null,
+  _requestObj_listDetail: null,
+  limit_list: 30,
+  limit_song: 100000,
+  successCode: 200,
+  sortList: [
+    {
+      name: '最热',
+      id: 'hot',
+    },
+    {
+      name: '最新',
+      id: 'new',
+    },
+  ],
+  /**
+   * 格式化播放数量
+   * @param {*} num
+   */
+  formatPlayCount(num) {
+    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
+    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
+    return num
+  },
+  getSinger(singers) {
+    let arr = []
+    singers.forEach(singer => {
+      arr.push(singer.name)
+    })
+    return arr.join('、')
+  },
+
+  getListDetail(id, page) { // 获取歌曲列表内的音乐
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
+      method: 'post',
+      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+      form: linuxapi({
+        method: 'POST',
+        url: 'https://music.163.com/api/v3/playlist/detail',
+        params: {
+          id,
+          n: this.limit_song,
+          s: 8,
+        },
+      }),
+    })
+    return this._requestObj_listDetail.promise.then(({ body }) => {
+      if (body.code !== this.successCode) return this.getListDetail(id, page)
+      return {
+        list: this.filterListDetail(body),
+        page,
+        limit: this.limit_song,
+        total: body.playlist.tracks.length,
+        source: 'wy',
+      }
+    })
+  },
+  filterListDetail({ playlist: { tracks }, privileges }) {
+    // console.log(tracks, privileges)
+    const list = []
+    tracks.forEach((item, index) => {
+      const types = []
+      const _types = {}
+      let size
+      let privilege = privileges[index]
+      if (privilege.id !== item.id) privilege = privileges.find(p => p.id === item.id)
+      if (!privilege) return
+      switch (privileges[index].maxbr) {
+        case 999000:
+          size = null
+          types.push({ type: 'flac', size })
+          _types.flac = {
+            size,
+          }
+        case 320000:
+          size = sizeFormate(item.h.size)
+          types.push({ type: '320k', size })
+          _types['320k'] = {
+            size,
+          }
+        case 128000:
+          size = sizeFormate(item.l.size)
+          types.push({ type: '128k', size })
+          _types['128k'] = {
+            size,
+          }
+      }
+
+      types.reverse()
+
+      list.push({
+        singer: this.getSinger(item.ar),
+        name: item.name,
+        albumName: item.al.name,
+        albumId: item.al.id,
+        source: 'wy',
+        interval: formatPlayTime(item.dt / 1000),
+        songmid: item.id,
+        img: item.al.picUrl,
+        lrc: null,
+        types,
+        _types,
+        typeUrl: {},
+      })
+    })
+    return list
+  },
+
+  // 获取列表数据
+  getList(sortId, tagId, page) {
+    if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    this._requestObj_list = httpFetch('https://music.163.com/weapi/playlist/list', {
+      method: 'post',
+      form: weapi({
+        cat: tagId || '全部', // 全部,华语,欧美,日语,韩语,粤语,小语种,流行,摇滚,民谣,电子,舞曲,说唱,轻音乐,爵士,乡村,R&B/Soul,古典,民族,英伦,金属,朋克,蓝调,雷鬼,世界音乐,拉丁,另类/独立,New Age,古风,后摇,Bossa Nova,清晨,夜晚,学习,工作,午休,下午茶,地铁,驾车,运动,旅行,散步,酒吧,怀旧,清新,浪漫,性感,伤感,治愈,放松,孤独,感动,兴奋,快乐,安静,思念,影视原声,ACG,儿童,校园,游戏,70后,80后,90后,网络歌曲,KTV,经典,翻唱,吉他,钢琴,器乐,榜单,00后
+        order: sortId, // hot,new
+        limit: this.limit_list,
+        offset: this.limit_list * (page - 1),
+        total: true,
+      }),
+    })
+    return this._requestObj_list.promise.then(({ body }) => {
+      // console.log(JSON.stringify(body))
+      if (body.code !== this.successCode) return this.getList(sortId, tagId, page)
+      return {
+        list: this.filterList(body.playlists),
+        total: parseInt(body.total),
+        page,
+        limit: this.limit_list,
+        source: 'wy',
+      }
+    })
+  },
+  filterList(rawData) {
+    return rawData.map(item => ({
+      play_count: this.formatPlayCount(item.playCount),
+      id: item.id,
+      author: item.creator.nickname,
+      name: item.name,
+      time: item.createTime,
+      img: item.coverImgUrl,
+      grade: item.grade,
+      desc: item.description,
+      source: 'wy',
+    }))
+  },
+
+  // 获取标签
+  getTag() {
+    if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    this._requestObj_tags = httpFetch('https://music.163.com/weapi/playlist/catalogue', {
+      method: 'post',
+      form: weapi({}),
+    })
+    return this._requestObj_tags.promise.then(({ body }) => {
+      // console.log(JSON.stringify(body))
+      if (body.code !== this.successCode) return this.getTag()
+      return this.filterTagInfo(body)
+    })
+  },
+  filterTagInfo({ sub, categories }) {
+    const subList = {}
+    for (const item of sub) {
+      if (!subList[item.category]) subList[item.category] = []
+      subList[item.category].push({
+        parent_id: categories[item.category],
+        parent_name: categories[item.category],
+        id: item.name,
+        name: item.name,
+        source: 'wy',
+      })
+    }
+
+    const list = []
+    for (const key of Object.keys(categories)) {
+      list.push({
+        name: categories[key],
+        list: subList[key],
+        source: 'wy',
+      })
+    }
+    return list
+  },
+
+  // 获取热门标签
+  getHotTag() {
+    if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
+    this._requestObj_hotTags = httpFetch('https://music.163.com/weapi/playlist/hottags', {
+      method: 'post',
+      form: weapi({}),
+    })
+    return this._requestObj_hotTags.promise.then(({ body }) => {
+      // console.log(JSON.stringify(body))
+      if (body.code !== this.successCode) return this.getTag()
+      return this.filterHotTagInfo(body.tags)
+    })
+  },
+  filterHotTagInfo(rawList) {
+    return rawList.map(item => ({
+      id: item.playlistTag.name,
+      name: item.playlistTag.name,
+      source: 'wy',
+    }))
+  },
+
+  getTags() {
+    return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'wy' }))
+  },
+}
+
+// getList
+// getTags
+// getListDetail

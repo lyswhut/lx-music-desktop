@@ -3,10 +3,12 @@ import api_source from '../api-source'
 import getLyric from './lyric'
 import getMusicInfo from './musicInfo'
 import musicSearch from './musicSearch'
+import songList from './songList'
 
 const wy = {
   leaderboard,
   musicSearch,
+  songList,
   getMusicUrl(songInfo, type) {
     return api_source('wy').getMusicUrl(songInfo, type)
   },
