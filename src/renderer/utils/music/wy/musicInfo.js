@@ -12,7 +12,7 @@ export default songmid => {
     },
     form: weapi({
       c: `[{"id":${songmid}}]`,
-      ids: '[songmid]',
+      ids: `[${songmid}]`,
     }),
   })
   requestObj.promise = requestObj.promise.then(({ body }) => {
