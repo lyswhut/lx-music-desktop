@@ -2,7 +2,9 @@
   div(:class="$style.toolbar")
     //- img(v-if="icon")
     //- h1 {{title}}
-    material-search-input(:class="$style.input")
+    material-search-input(:class="$style.input"
+      @event="handleEvent" :list="tipList" :visibleList="visibleList"
+      v-model="searchText")
     div(:class="$style.control")
       button(type="button" :class="$style.min" title="最小化" @click="min")
       //- button(type="button" :class="$style.max" @click="max")
@@ -11,22 +13,93 @@
 
 <script>
 import { rendererSend } from 'common/icp'
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
+import music from '../../utils/music'
+import { debounce } from '../../utils'
 export default {
-  // props: {
-  //   color: {
-  //     type: String,
-  //     default: color,
-  //   },
-  //   icon: {
-  //     type: Boolean,
-  //     default: false,
-  //   },
-  // },
+  data() {
+    return {
+      searchText: '',
+      visibleList: false,
+      tipList: [],
+      tipSearch: null,
+    }
+  },
   computed: {
-    // ...mapGetters(['theme']),
+    ...mapGetters(['route', 'setting']),
+    ...mapGetters('search', {
+      storeSearchText: 'searchText',
+    }),
+    source() {
+      return this.setting.search.tempSearchSource
+    },
+    isAutoClearInput() {
+      return this.setting.odc.isAutoClearSearchInput
+    },
+  },
+  watch: {
+    route(n) {
+      if (this.isAutoClearInput && n.name != 'search' && this.searchText) this.searchText = ''
+    },
+    'storeSearchText'(n) {
+      if (n !== this.searchText) this.searchText = n
+    },
+    searchText(n) {
+      this.handleTipSearch()
+    },
+  },
+  mounted() {
+    this.tipSearch = debounce(() => {
+      if (this.searchText === '') {
+        this.tipList.splice(0, this.tipList.length)
+        music[this.source].tempSearch.cancelTempSearch()
+        return
+      }
+      music[this.source].tempSearch.search(this.searchText).then(list => {
+        this.tipList = list
+      }).catch(() => {})
+    }, 50)
   },
   methods: {
+    handleEvent({ action, data }) {
+      switch (action) {
+        case 'focus':
+          if (!this.visibleList) this.visibleList = true
+          if (this.searchText) this.handleTipSearch()
+          break
+        case 'blur':
+          setTimeout(() => {
+            if (this.visibleList) this.visibleList = false
+          }, 50)
+          break
+        case 'submit':
+          this.handleSearch()
+          break
+        case 'listClick':
+          this.searchText = this.tipList[data]
+          this.$nextTick(() => {
+            this.handleSearch()
+          })
+      }
+    },
+
+    handleTipSearch() {
+      if (!this.visibleList) this.visibleList = true
+      this.tipSearch()
+    },
+
+    handleSearch() {
+      if (this.visibleList) this.visibleList = false
+      setTimeout(() => {
+        this.$router.push({
+          path: 'search',
+          query: {
+            text: this.searchText,
+          },
+        }).catch(_ => _)
+      }, 200)
+    },
+
     min() {
       rendererSend('min')
     },

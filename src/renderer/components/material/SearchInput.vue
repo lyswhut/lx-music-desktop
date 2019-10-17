@@ -1,31 +1,46 @@
 <template lang="pug">
 div(:class="[$style.search, focus ? $style.active : '']")
   div(:class="$style.form")
-    input(placeholder="Search for something..." v-model.trim="text"
-          @focus="handleFocus" @blur="handleBlur" @input="handleInput"
+    input(:placeholder="placeholder" v-model.trim="text"
+          @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
+          @change="sendEvent('change')"
           @keyup.enter="handleSearch")
     button(type="button" @click="handleSearch")
-      svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
-        use(xlink:href='#icon-search')
+      slot
+        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
+          use(xlink:href='#icon-search')
   //- transition(name="custom-classes-transition"
   //-             enter-active-class="animated flipInX"
   //-             leave-active-class="animated flipOutX")
-  div(:class="$style.list" :style="listStyle")
+  div(v-if="list" :class="$style.list" :style="listStyle")
     ul(ref="dom_list")
       li(v-for="(item, index) in list" :key="item" @click="handleTemplistClick(index)")
         span {{item}}
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import music from '../../utils/music'
-
 export default {
+  props: {
+    placeholder: {
+      type: String,
+      default: 'Search for something...',
+    },
+    list: {
+      type: Array,
+    },
+    visibleList: {
+      type: Boolean,
+      default: false,
+    },
+    value: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       isShow: false,
       text: '',
-      list: [],
       index: null,
       focus: false,
       listStyle: {
@@ -33,64 +48,35 @@ export default {
       },
     }
   },
-  computed: {
-    ...mapGetters(['route', 'setting']),
-    ...mapGetters('search', ['searchText']),
-    isAutoClearInput() {
-      return this.setting.odc.isAutoClearSearchInput
-    },
-    source() {
-      return this.setting.search.tempSearchSource
-    },
-  },
   watch: {
     list(n) {
+      if (!this.visibleList) return
       this.$nextTick(() => {
         this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
       })
     },
-    'searchText'(n) {
-      if (n !== this.text) this.text = n
+    value(n) {
+      this.text = n
     },
-    route(n) {
-      if (this.isAutoClearInput && n.name != 'search' && this.text) this.text = ''
+    visibleList(n) {
+      n ? this.showList() : this.hideList()
     },
   },
   methods: {
     handleTemplistClick(index) {
-      this.text = this.list[index]
-      this.handleSearch()
+      this.sendEvent('listClick', index)
     },
     handleFocus() {
       this.focus = true
-      if (this.text) this.handleInput()
-      this.showList()
+      this.sendEvent('focus')
     },
     handleBlur() {
-      setTimeout(() => {
-        this.focus = false
-        this.hideList()
-      }, 200)
+      this.focus = false
+      this.sendEvent('blur')
     },
     handleSearch() {
       this.hideList()
-      this.$router.push({
-        path: 'search',
-        query: {
-          text: this.text,
-        },
-      }).catch(_ => _)
-    },
-    handleInput() {
-      if (this.text === '') {
-        this.list.splice(0, this.list.length)
-        music[this.source].tempSearch.cancelTempSearch()
-        return
-      }
-      if (!this.isShow) this.showList()
-      music[this.source].tempSearch.search(this.text).then(list => {
-        this.list = list
-      }).catch(() => {})
+      this.sendEvent('submit')
     },
     showList() {
       this.isShow = true
@@ -99,6 +85,12 @@ export default {
     hideList() {
       this.isShow = false
       this.listStyle.height = 0
+    },
+    sendEvent(action, data) {
+      this.$emit('event', {
+        action,
+        data,
+      })
     },
   },
 }

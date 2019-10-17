@@ -305,6 +305,24 @@ export const throttle = (fn, delay = 100) => {
   }
 }
 
+/**
+ * 生成防抖函数
+ * @param {*} fn
+ * @param {*} delay
+ */
+export const debounce = (fn, delay = 100) => {
+  let timer = null
+  let _args = null
+  return function(...args) {
+    _args = args
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      timer = null
+      fn.apply(this, _args)
+    }, delay)
+  }
+}
+
 const async_removeItem = (arr, num, callback) => window.requestAnimationFrame(() => {
   let len = arr.length
   if (len > num) {
