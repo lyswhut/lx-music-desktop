@@ -129,6 +129,9 @@ export default {
 }
 .input {
   -webkit-app-region: no-drag;
+  position: absolute;
+  left: 15px;
+  top: 13px;
 }
 
 // img {

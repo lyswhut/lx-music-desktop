@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
+import jshtmlencode from 'js-htmlencode'
 
 export default {
   _requestObj_tags: null,
@@ -153,7 +154,7 @@ export default {
         // time: basic.publish_time,
         img: basic.cover.medium_url || basic.cover.default_url,
         // grade: basic.favorcnt / 10,
-        desc: basic.desc.replace(/<br>/g, '\n'),
+        desc: jshtmlencode.htmlDecode(basic.desc).replace(/<br>/g, '\n'),
         source: 'tx',
       })),
       total: content.total_cnt,
@@ -182,8 +183,14 @@ export default {
         page: 1,
         limit: cdlist.songlist.length + 1,
         total: cdlist.songlist.length,
-        desc: cdlist.desc.replace(/<br>/g, '\n'),
         source: 'tx',
+        info: {
+          name: cdlist.dissname,
+          img: cdlist.logo,
+          desc: jshtmlencode.htmlDecode(cdlist.desc).replace(/<br>/g, '\n'),
+          author: cdlist.nickname,
+          play_count: this.formatPlayCount(cdlist.visitnum),
+        },
       }
     })
   },

@@ -65,6 +65,13 @@ export default {
         limit: this.limit_song,
         total: body.playlist.tracks.length,
         source: 'wy',
+        info: {
+          play_count: this.formatPlayCount(body.playlist.playCount),
+          name: body.playlist.name,
+          img: body.playlist.coverImgUrl,
+          desc: body.playlist.description,
+          author: body.playlist.creator.nickname,
+        },
       }
     })
   },

@@ -1,5 +1,5 @@
 <template lang="pug">
-div(:class="[$style.search, focus ? $style.active : '']")
+div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', small ? $style.small : '']")
   div(:class="$style.form")
     input(:placeholder="placeholder" v-model.trim="text"
           @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
@@ -35,6 +35,14 @@ export default {
     value: {
       type: String,
       default: '',
+    },
+    big: {
+      type: Boolean,
+      default: false,
+    },
+    small: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -101,9 +109,6 @@ export default {
 @import '../../assets/styles/layout.less';
 
 .search {
-  position: absolute;
-  left: 15px;
-  top: 13px;
   border-radius: 3px;
   transition: box-shadow .4s ease, background-color @transition-theme;
   display: flex;
@@ -189,6 +194,19 @@ export default {
         border-bottom-left-radius: 3px;
         border-bottom-right-radius: 3px;
       }
+    }
+  }
+}
+
+.big {
+  width: 500px;
+  // input {
+  //   line-height: 30px;
+  // }
+  .form {
+    height: 30px;
+    button {
+      padding: 6px 10px;
     }
   }
 }

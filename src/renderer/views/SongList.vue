@@ -1,34 +1,41 @@
 <template lang="pug">
   div(:class="$style.container")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-      div(:class="$style.songListDetailContent" v-show="isVisibleListDetail")
+      div(:class="$style.songListDetailContent" v-if="isVisibleListDetail")
         div(:class="$style.songListHeader")
           div(:class="$style.songListHeaderLeft")
-            img(:src="selectListInfo.img")
-            span(:class="$style.playNum" v-if="selectListInfo.play_count") {{selectListInfo.play_count}}
+            img(:src="listDetail.info.img || selectListInfo.img")
+            span(:class="$style.playNum" v-if="listDetail.info.play_count || selectListInfo.play_count") {{listDetail.info.play_count || selectListInfo.play_count}}
           div(:class="$style.songListHeaderMiddle")
-            h3(:title="selectListInfo.name") {{selectListInfo.name}}
-            p(:title="selectListInfo.desc") {{listDetail.desc || selectListInfo.desc}}
+            h3(:title="listDetail.info.name || selectListInfo.name") {{listDetail.info.name || selectListInfo.name}}
+            p(:title="listDetail.info.desc || selectListInfo.desc") {{listDetail.info.desc || selectListInfo.desc}}
           div(:class="$style.songListHeaderRight")
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
         material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-      div(:class="$style.songListContent" v-show="!isVisibleListDetail")
+      div(:class="$style.songListContainer" v-if="!isVisibleListDetail")
         div(:class="$style.header")
           material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
           material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
           material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-        div.scroll(:class="$style.songList" ref="dom_scrollContent")
-          ul
-            li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
-              div(:class="$style.left")
-                img(:src="item.img")
-              div(:class="$style.right" :src="item.img")
-                h4(:title="item.name") {{item.name}}
-                p(:title="item.desc") {{item.desc}}
-            li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
-          div(:class="$style.pagination")
-            material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
+        div(:class="$style.songListContent")
+          transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+            div.scroll(:class="$style.songList" v-if="sortId !== 'importSongList'" ref="dom_scrollContent")
+              ul
+                li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
+                  div(:class="$style.left")
+                    img(:src="item.img")
+                  div(:class="$style.right" :src="item.img")
+                    h4(:title="item.name") {{item.name}}
+                    p(:title="item.desc") {{item.desc}}
+                li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
+              div(:class="$style.pagination")
+                material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
+          transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+            div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
+              material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big placeholder="输入歌单链接或歌单ID")
+                svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
+                  use(xlink:href='#icon-right')
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
@@ -56,6 +63,7 @@ export default {
       isToggleSource: false,
       isShowListAdd: false,
       isShowListAddMultiple: false,
+      importSongListText: '',
     }
   },
   computed: {
@@ -63,7 +71,17 @@ export default {
     ...mapGetters('songList', ['sourceInfo', 'tags', 'listData', 'isVisibleListDetail', 'selectListInfo', 'listDetail']),
     ...mapGetters('list', ['defaultList']),
     sorts() {
-      return this.source ? this.sourceInfo.sortList[this.source] : []
+      let list
+      list = this.source ? [...this.sourceInfo.sortList[this.source]] : []
+      switch (this.source) {
+        case 'wy':
+        case 'tx':
+          list.push({
+            name: `打开${this.sourceInfo.sources.find(s => s.id == this.source).name}歌单`,
+            id: 'importSongList',
+          })
+      }
+      return list
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
@@ -76,6 +94,7 @@ export default {
     sortId(n, o) {
       this.setSongList({ sortId: n })
       if (o === undefined && this.listData.page !== 1) return
+      if (n == 'importSongList') return
       this.$nextTick(() => {
         this.getList(1).then(() => {
           this.$nextTick(() => {
@@ -88,6 +107,7 @@ export default {
     tagInfo(n, o) {
       this.setSongList({ tagInfo: n })
       if (!o && this.listData.page !== 1) return
+      if (this.sortId == 'importSongList') this.sortId = this.sorts[0] && this.sorts[0].id
       if (this.isToggleSource) {
         this.isToggleSource = false
         return
@@ -104,6 +124,7 @@ export default {
     source(n, o) {
       this.setSongList({ source: n })
       if (!this.tags[n]) this.getTags()
+      this.importSongListText = ''
       if (o) {
         this.isToggleSource = true
         this.tagInfo = {
@@ -253,6 +274,49 @@ export default {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
+    handleImportSongListEvent({ action }) {
+      switch (action) {
+        case 'submit':
+          this.handleGetSongListDetail()
+          break
+        case 'blur':
+          this.handleParseImportSongListInputText()
+          break
+      }
+    },
+    handleGetSongListDetail() {
+      this.handleParseImportSongListInputText()
+      this.setSelectListInfo({
+        play_count: null,
+        id: this.importSongListText,
+        author: '',
+        name: '',
+        img: null,
+        desc: '',
+        source: this.source,
+      })
+      this.clearListDetail()
+      this.$nextTick(() => {
+        this.setVisibleListDetail(true)
+        this.getListDetail({ id: this.importSongListText, page: 1 })
+      })
+    },
+    handleParseImportSongListInputText() {
+      if (!/[?&:/]/.test(this.importSongListText)) return
+      let id
+      switch (this.source) {
+        case 'wy':
+          id = this.importSongListText.replace(/^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/, '$1')
+          break
+        case 'tx':
+          // https://y.qq.com/n/yqq/playsquare/4385581243.html#stat=y_new.index.playlist.pic
+          id = this.importSongListText.replace(/^.+\/(\d+)\.html(?:&.*$|#.*$|$)/, '$1')
+          break
+        default:
+          return
+      }
+      this.importSongListText = id
+    },
   },
 }
 </script>
@@ -281,16 +345,26 @@ export default {
   width: 80px;
 }
 
-.songListContent, .song-list-detail-content {
+.songListContainer, .song-list-detail-content, .songListContent, .importSongListContent {
   // flex: auto;
   overflow: hidden;
 }
 
-.songListContent {
+.songListContainer, .songListContent, .importSongListContent {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   height: 100%;
   // position: relative;
+}
+
+.importSongListContent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  align-items: center;
+  padding-top: 20%;
 }
 
 .song-list-header {

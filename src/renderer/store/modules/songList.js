@@ -25,6 +25,7 @@ const state = {
     page: 1,
     limit: 30,
     key: null,
+    info: {},
   },
   selectListInfo: {},
   isVisibleListDetail: false,
@@ -84,15 +85,16 @@ const mutations = {
     state.list.page = page
     state.list.key = key
   },
-  setListDetail(state, { result, key, page, desc }) {
+  setListDetail(state, { result, key, page }) {
     state.listDetail.list = result.list
     state.listDetail.total = result.total
     state.listDetail.limit = result.limit
     state.listDetail.page = page
     state.listDetail.key = key
-    state.listDetail.desc = result.desc
+    state.listDetail.info = result.info || {}
   },
   setVisibleListDetail(state, bool) {
+    if (!bool) state.listDetail.list = []
     state.isVisibleListDetail = bool
   },
   setSelectListInfo(state, info) {
