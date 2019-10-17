@@ -60,12 +60,20 @@ export default {
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page)
+      // console.log(JSON.stringify(body))
       return {
         list: this.filterListDetail(body.list),
         page,
         limit: this.limit_song,
         total: body.totalCount,
         source: 'mg',
+        info: {
+          // name: body.result.info.list_title,
+          // img: body.result.info.list_pic,
+          // desc: body.result.info.list_desc,
+          // author: body.result.info.userinfo.username,
+          // play_count: this.formatPlayCount(body.result.listen_num),
+        },
       }
     })
   },

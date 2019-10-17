@@ -35,6 +35,7 @@ export default {
   ],
   regExps: {
     listData: /global\.data = (\[.+\]);/,
+    listInfo: /global = {[\s\S]+?name: "(.+)"[\s\S]+?pic: "(.+)"[\s\S]+?};/,
   },
   getInfoUrl(tagId) {
     return tagId
@@ -143,13 +144,27 @@ export default {
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
-      if (listData) listData = this.filterData(JSON.parse(RegExp.$1))
+      let listInfo = body.match(this.regExps.listInfo)
+      if (listData) listData = this.filterData(JSON.parse(listData[1]))
+      let name
+      let pic
+      if (listInfo) {
+        name = listInfo[1]
+        pic = listInfo[2]
+      }
       return {
         list: listData,
         page: 1,
         limit: 10000,
         total: listData.length,
         source: 'kg',
+        info: {
+          name,
+          img: pic,
+          // desc: body.result.info.list_desc,
+          // author: body.result.info.userinfo.username,
+          // play_count: this.formatPlayCount(body.result.listen_num),
+        },
       }
     })
   },

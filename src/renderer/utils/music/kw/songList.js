@@ -166,6 +166,13 @@ export default {
         limit: body.rn,
         total: body.total,
         source: 'kw',
+        info: {
+          name: body.title,
+          img: body.pic,
+          desc: body.info,
+          author: body.uname,
+          play_count: this.formatPlayCount(body.playnum),
+        },
       }
     })
   },

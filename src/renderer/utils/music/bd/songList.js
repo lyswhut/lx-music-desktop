@@ -197,6 +197,13 @@ export default {
         limit: this.limit_song,
         total: body.result.song_num,
         source: 'bd',
+        info: {
+          name: body.result.info.list_title,
+          img: body.result.info.list_pic,
+          desc: body.result.info.list_desc,
+          author: body.result.info.userinfo.username,
+          play_count: this.formatPlayCount(body.result.listen_num),
+        },
       }
     })
   },

@@ -75,7 +75,11 @@ export default {
       list = this.source ? [...this.sourceInfo.sortList[this.source]] : []
       switch (this.source) {
         case 'wy':
+        case 'kw':
+        case 'bd':
         case 'tx':
+        case 'mg':
+        case 'kg':
           list.push({
             name: `打开${this.sourceInfo.sources.find(s => s.id == this.source).name}歌单`,
             id: 'importSongList',
@@ -303,19 +307,34 @@ export default {
     },
     handleParseImportSongListInputText() {
       if (!/[?&:/]/.test(this.importSongListText)) return
-      let id
+      let regx
       switch (this.source) {
         case 'wy':
-          id = this.importSongListText.replace(/^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/, '$1')
+          regx = /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/
           break
         case 'tx':
-          // https://y.qq.com/n/yqq/playsquare/4385581243.html#stat=y_new.index.playlist.pic
-          id = this.importSongListText.replace(/^.+\/(\d+)\.html(?:&.*$|#.*$|$)/, '$1')
+          regx = /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
+          break
+        case 'kw':
+          // http://www.kuwo.cn/playlist_detail/2886046289
+          regx = /^.+\/playlist_detail\/(\d+)(?:\?.*|&.*$|#.*$|$)/
+          break
+        case 'bd':
+          // http://music.taihe.com/songlist/566347741
+          regx = /^.+\/songlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/
+          break
+        case 'mg':
+          // http://music.migu.cn/v3/music/playlist/161044573?page=1
+          regx = /^.+\/playlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/
+          break
+        case 'kg':
+          // https://www.kugou.com/yy/special/single/1067062.html
+          regx = /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
           break
         default:
           return
       }
-      this.importSongListText = id
+      this.importSongListText = this.importSongListText.replace(regx, '$1')
     },
   },
 }
