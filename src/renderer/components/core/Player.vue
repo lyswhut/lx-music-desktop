@@ -565,6 +565,11 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 15px;
+  opacity: .5;
+  transition: opacity @transition-theme;
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .volume {
@@ -595,7 +600,6 @@ export default {
   transition-duration: 0.2s;
   background-color: @color-theme;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
-  opacity: .5;
 }
 
 .volume-mask {
