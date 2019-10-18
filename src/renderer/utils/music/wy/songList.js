@@ -42,8 +42,9 @@ export default {
     return arr.join('、')
   },
 
-  getListDetail(id, page) { // 获取歌曲列表内的音乐
+  getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
       method: 'post',
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
@@ -58,7 +59,7 @@ export default {
       }),
     })
     return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getListDetail(id, page)
+      if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       return {
         list: this.filterListDetail(body),
         page,
@@ -132,7 +133,8 @@ export default {
   },
 
   // 获取列表数据
-  getList(sortId, tagId, page) {
+  getList(sortId, tagId, page, tryNum = 0) {
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
     this._requestObj_list = httpFetch('https://music.163.com/weapi/playlist/list', {
       method: 'post',
@@ -146,7 +148,7 @@ export default {
     })
     return this._requestObj_list.promise.then(({ body }) => {
       // console.log(JSON.stringify(body))
-      if (body.code !== this.successCode) return this.getList(sortId, tagId, page)
+      if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.playlists),
         total: parseInt(body.total),
@@ -171,15 +173,16 @@ export default {
   },
 
   // 获取标签
-  getTag() {
+  getTag(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch('https://music.163.com/weapi/playlist/catalogue', {
       method: 'post',
       form: weapi({}),
     })
     return this._requestObj_tags.promise.then(({ body }) => {
       // console.log(JSON.stringify(body))
-      if (body.code !== this.successCode) return this.getTag()
+      if (body.code !== this.successCode) return this.getTag(++tryNum)
       return this.filterTagInfo(body)
     })
   },
@@ -208,15 +211,16 @@ export default {
   },
 
   // 获取热门标签
-  getHotTag() {
+  getHotTag(tryNum = 0) {
     if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_hotTags = httpFetch('https://music.163.com/weapi/playlist/hottags', {
       method: 'post',
       form: weapi({}),
     })
     return this._requestObj_hotTags.promise.then(({ body }) => {
       // console.log(JSON.stringify(body))
-      if (body.code !== this.successCode) return this.getTag()
+      if (body.code !== this.successCode) return this.getTag(++tryNum)
       return this.filterHotTagInfo(body.tags)
     })
   },

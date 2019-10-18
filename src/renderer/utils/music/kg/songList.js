@@ -88,18 +88,20 @@ export default {
     return result
   },
 
-  getSongList(sortId, tagId, page) {
+  getSongList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(
       this.getSongListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getSongList(sortId, tagId, page)
+      if (body.status !== 1) return this.getSongList(sortId, tagId, page, ++tryNum)
       return this.filterList(body.special_db)
     })
   },
-  getSongListRecommend() {
+  getSongListRecommend(tryNum = 0) {
     if (this._requestObj_listRecommend) this._requestObj_listRecommend.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listRecommend = httpFetch(
       'http://everydayrec.service.kugou.com/guess_special_recommend',
       {
@@ -121,7 +123,7 @@ export default {
       }
     )
     return this._requestObj_listRecommend.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getSongListRecommend()
+      if (body.status !== 1) return this.getSongListRecommend(++tryNum)
       return this.filterList(body.data.special_list)
     })
   },
@@ -139,13 +141,15 @@ export default {
     }))
   },
 
-  getListDetail(id, page) { // 获取歌曲列表内的音乐
+  getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
       let listInfo = body.match(this.regExps.listInfo)
-      if (listData) listData = this.filterData(JSON.parse(listData[1]))
+      if (!listData) return this.getListDetail(id, page, ++tryNum)
+      listData = this.filterData(JSON.parse(listData[1]))
       let name
       let pic
       if (listInfo) {
@@ -224,11 +228,12 @@ export default {
   },
 
   // 获取列表信息
-  getListInfo(tagId) {
+  getListInfo(tagId, tryNum = 0) {
     if (this._requestObj_listInfo) this._requestObj_listInfo.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listInfo = httpFetch(this.getInfoUrl(tagId))
     return this._requestObj_listInfo.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getListInfo(tagId)
+      if (body.status !== 1) return this.getListInfo(tagId, ++tryNum)
       return {
         limit: body.data.params.pagesize,
         page: body.data.params.p,
@@ -261,11 +266,12 @@ export default {
   },
 
   // 获取标签
-  getTags() {
+  getTags(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch(this.getInfoUrl())
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getTags()
+      if (body.status !== 1) return this.getTags(++tryNum)
       return {
         hotTag: this.filterInfoHotTag(body.data.hotTag),
         tags: this.filterTagInfo(body.data.tagids),

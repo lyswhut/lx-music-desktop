@@ -55,11 +55,12 @@ export default {
     return num
   },
 
-  getListDetail(id, page) { // 获取歌曲列表内的音乐
+  getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
     return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getListDetail(id, page)
+      if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       // console.log(JSON.stringify(body))
       return {
         list: this.filterListDetail(body.list),
@@ -135,8 +136,9 @@ export default {
   },
 
   // 获取列表数据
-  getList(sortId, tagId, page) {
+  getList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(this.getSongListUrl(sortId, tagId, page))
     // return this._requestObj_list.promise.then(({ statusCode, body }) => {
     //   if (statusCode !== 200) return this.getList(sortId, tagId, page)
@@ -158,7 +160,7 @@ export default {
     //   })
     // })
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.retCode !== '100000' || body.retMsg.code !== this.successCode) return this.getList(sortId, tagId, page)
+      if (body.retCode !== '100000' || body.retMsg.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.retMsg.playlist),
         total: parseInt(body.retMsg.countSize),
@@ -183,11 +185,12 @@ export default {
   },
 
   // 获取标签
-  getTag() {
+  getTag(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch(this.tagsUrl, { headers: this.defaultHeaders })
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getTag()
+      if (body.code !== this.successCode) return this.getTag(++tryNum)
       return this.filterTagInfo(body.columnInfo.contents)
     })
   },

@@ -284,12 +284,12 @@ export default {
           this.handleGetSongListDetail()
           break
         case 'blur':
-          this.handleParseImportSongListInputText()
+          this.parseImportSongListInputText()
           break
       }
     },
     handleGetSongListDetail() {
-      this.handleParseImportSongListInputText()
+      this.parseImportSongListInputText()
       this.setSelectListInfo({
         play_count: null,
         id: this.importSongListText,
@@ -305,15 +305,18 @@ export default {
         this.getListDetail({ id: this.importSongListText, page: 1 })
       })
     },
-    handleParseImportSongListInputText() {
+    parseImportSongListInputText() {
       if (!/[?&:/]/.test(this.importSongListText)) return
+      const text = this.importSongListText
       let regx
       switch (this.source) {
         case 'wy':
           regx = /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/
           break
         case 'tx':
-          regx = /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
+          // https://y.qq.com/n/yqq/playlist/7217720898.html
+          // https://i.y.qq.com/n2/m/share/details/taoge.html?platform=11&appshare=android_qq&appversion=9050006&id=7217720898&ADTAG=qfshare
+          regx = /\/\/i\.y\.qq\.com/.test(text) ? /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/ : /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
           break
         case 'kw':
           // http://www.kuwo.cn/playlist_detail/2886046289
@@ -334,7 +337,7 @@ export default {
         default:
           return
       }
-      this.importSongListText = this.importSongListText.replace(regx, '$1')
+      this.importSongListText = text.replace(regx, '$1')
     },
   },
 }

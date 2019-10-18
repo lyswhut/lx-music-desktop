@@ -38,20 +38,22 @@ export default {
 
   // http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=2849349915&pn=0&rn=100&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1
   // 获取标签
-  getTag() {
+  getTag(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch(this.tagsUrl)
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getTag()
+      if (body.code !== this.successCode) return this.getTag(++tryNum)
       return this.filterTagInfo(body.data)
     })
   },
   // 获取标签
-  getHotTag() {
+  getHotTag(tryNum = 0) {
     if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_hotTags = httpFetch(this.hotTagUrl)
     return this._requestObj_hotTags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getHotTag()
+      if (body.code !== this.successCode) return this.getHotTag(++tryNum)
       return this.filterInfoHotTag(body.data[0].data)
     })
   },
@@ -76,8 +78,9 @@ export default {
   },
 
   // 获取列表数据
-  getList(sortId, tagId, page) {
+  getList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     let id
     let type
     if (tagId) {
@@ -90,7 +93,7 @@ export default {
     this._requestObj_list = httpFetch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
       if (!id || type == '10000') {
-        if (body.code !== this.successCode) return this.getListUrl({ sortId, id, type, page })
+        if (body.code !== this.successCode) return this.getList(sortId, id, type, page, ++tryNum)
         return {
           list: this.filterList(body.data.data),
           total: body.data.total,
@@ -99,7 +102,7 @@ export default {
           source: 'kw',
         }
       } else if (!body.length) {
-        return this.getListUrl({ sortId, id, type, page })
+        return this.getList(sortId, id, type, page, ++tryNum)
       }
       return {
         list: this.filterList2(body),
@@ -153,13 +156,14 @@ export default {
   },
 
   // 获取歌曲列表内的音乐
-  getListDetail(id, page) {
+  getListDetail(id, page, tryNum = 0) {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.result !== 'ok') return this.getListDetail(id, page)
+      if (body.result !== 'ok') return this.getListDetail(id, page, ++tryNum)
       return {
         list: this.filterListDetail(body.musiclist),
         page,

@@ -56,20 +56,22 @@ export default {
 
   // http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=2849349915&pn=0&rn=100&encode=utf8&keyset=pl2012&identity=kuwo&pcmp4=1&vipver=MUSIC_9.0.5.0_W1&newver=1
   // 获取标签
-  getTag() {
+  getTag(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch(this.tagsUrl)
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getTag()
+      if (body.code !== this.successCode) return this.getTag(++tryNum)
       return this.filterTagInfo(body.tags.data.v_group)
     })
   },
   // 获取标签
-  getHotTag() {
+  getHotTag(tryNum = 0) {
     if (this._requestObj_hotTags) this._requestObj_hotTags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_hotTags = httpFetch(this.hotTagUrl)
     return this._requestObj_hotTags.promise.then(({ statusCode, body }) => {
-      if (statusCode !== 200) return this.getHotTag()
+      if (statusCode !== 200) return this.getHotTag(++tryNum)
       return this.filterInfoHotTag(body)
     })
   },
@@ -103,13 +105,14 @@ export default {
   },
 
   // 获取列表数据
-  getList(sortId, tagId, page) {
+  getList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(
       this.getListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getList(sortId, tagId, page)
+      if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return tagId ? this.filterList2(body.playlist.data, page) : this.filterList(body.playlist.data, page)
     })
   },
@@ -165,10 +168,11 @@ export default {
   },
 
   // 获取歌曲列表内的音乐
-  getListDetail(id) {
+  getListDetail(id, tryNum = 0) {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id), {
       headers: {
         Origin: 'https://y.qq.com',
@@ -176,7 +180,7 @@ export default {
       },
     })
     return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getListDetail(id)
+      if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
       const cdlist = body.cdlist[0]
       return {
         list: this.filterListDetail(cdlist.songlist),

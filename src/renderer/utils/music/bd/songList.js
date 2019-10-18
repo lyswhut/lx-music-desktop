@@ -108,11 +108,12 @@ export default {
   },
 
   // 获取标签
-  getTags() {
+  getTags(tryNum = 0) {
     if (this._requestObj_tags) this._requestObj_tags.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_tags = httpFetch(this.getTagsUrl())
     return this._requestObj_tags.promise.then(({ body }) => {
-      if (body.error_code !== this.successCode) return this.getTags()
+      if (body.error_code !== this.successCode) return this.getTags(++tryNum)
       return {
         hotTag: this.filterInfoHotTag(body.result.hot),
         tags: this.filterTagInfo(body.result.tags),
@@ -141,13 +142,14 @@ export default {
   },
 
   // 获取列表数据
-  getList(sortId, tagId, page) {
+  getList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(
       this.getListUrl(sortId, tagId, page)
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      // if (body.error_code !== this.successCode) return this.getList(sortId, tagId, page)
+      if (body.error_code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.diyInfo),
         total: body.nums,
@@ -183,13 +185,14 @@ export default {
   },
 
   // 获取歌曲列表内的音乐
-  getListDetail(id, page) {
+  getListDetail(id, page, tryNum = 0) {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.error_code !== this.successCode) return this.getListDetail(id, page)
+      if (body.error_code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       let listData = this.filterData(body.result.songlist)
       return {
         list: listData,
