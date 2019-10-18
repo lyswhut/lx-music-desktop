@@ -9,8 +9,9 @@ div(:class="$style.player")
       div(:class="$style.container")
         div(:class="$style.title" @click="handleCopy(title)" :title="title + '（点击复制）'") {{title}}
         div(:class="$style.volumeContent")
-          div(:class="$style.volume" @click.stop='handleChangeVolume' :title="`当前音量：${parseInt(volume * 100)}%`")
+          div(:class="$style.volume")
             div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
+          div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`当前音量：${parseInt(volume * 100)}%`")
 
         //- div(:class="$style.playBtn" @click='handleNext' title="音量")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
@@ -48,9 +49,10 @@ div(:class="$style.player")
 <script>
 import Lyric from 'lrc-file-parser'
 import { rendererSend } from '../../../common/icp'
-import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText } from '../../utils'
+import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
+import { isMac } from '../../../common/utils'
 
 export default {
   data() {
@@ -80,6 +82,14 @@ export default {
       delayNextTimeout: null,
       audioErrorTime: 0,
       retryNum: 0,
+      isMac,
+      volumeEvent: {
+        isMsDown: false,
+        msDownX: 0,
+        msDownVolume: 0,
+      },
+      handleVolumeMsMoveFn: null,
+      handleVolumeMsUpFn: null,
     }
   },
   computed: {
@@ -111,6 +121,16 @@ export default {
     this.$nextTick(() => {
       this.setProgessWidth()
     })
+    this.handleSaveVolume = debounce(volume => {
+      this.setVolume(volume)
+    }, 300)
+
+    document.addEventListener('mousemove', this.handleVolumeMsMoveFn = this.handleVolumeMsMove.bind(this))
+    document.addEventListener('mouseup', this.handleVolumeMsUpFn = this.handleVolumeMsUp.bind(this))
+  },
+  beforeDestroy() {
+    document.removeEventListener('mousemove', this.handleVolumeMsMoveFn)
+    document.removeEventListener('mouseup', this.handleVolumeMsUpFn)
   },
   watch: {
     changePlay(n) {
@@ -442,16 +462,29 @@ export default {
     clearAppTitle() {
       setTitle()
     },
-    handleChangeVolume(e) {
+    handleVolumeMsDown(e) {
+      this.volumeEvent.isMsDown = true
+      this.volumeEvent.isMsMoved = false
+      this.volumeEvent.msDownX = e.clientX
+
       let val = e.offsetX / 70
       if (val < 0) val = 0
       if (val > 1) val = 1
-      if (val > 0.97) val = 1
+
       this.volume = val
+      this.volumeEvent.msDownVolume = val
+      // console.log(val)
       if (this.audio) this.audio.volume = this.volume
     },
-    handleSaveVolume(volume) {
-      this.setVolume(volume)
+    handleVolumeMsUp(e) {
+      this.volumeEvent.isMsDown = false
+    },
+    handleVolumeMsMove(e) {
+      if (!this.volumeEvent.isMsDown) return
+      let val = this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 70
+      this.volume = val < 0 ? 0 : val > 1 ? 1 : val
+      if (this.audio) this.audio.volume = this.volume
+      // console.log(val)
     },
     handleCopy(text) {
       clipboardWriteText(text)
@@ -527,6 +560,7 @@ export default {
 }
 
 .volume-content {
+  position: relative;
   width: 100px;
   display: flex;
   align-items: center;
@@ -534,7 +568,7 @@ export default {
 }
 
 .volume {
-  cursor: pointer;
+  // cursor: pointer;
   width: 100%;
   height: 0.25em;
   border-radius: 10px;
@@ -564,6 +598,16 @@ export default {
   opacity: .5;
 }
 
+.volume-mask {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 0;
+  width: 70%;
+  height: 100%;
+  cursor: pointer;
+}
+
 .play-btn {
   + .play-btn {
     margin-left: 10px;
@@ -576,7 +620,7 @@ export default {
   transition: @transition-theme;
   transition-property: color;
   color: @color-theme;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.1s ease;
   opacity: 1;
   cursor: pointer;
 
