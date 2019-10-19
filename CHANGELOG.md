@@ -6,6 +6,29 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.8.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.7.0...v0.8.0) - 2019-10-19
+
+#### 新增
+
+- 新增网易云源歌曲搜索
+- 新增网易云源歌单
+- 新增各平台通过输入歌单链接或歌单ID打开歌单详情列表，目前只适配了**网页版歌单链接**，其他方式的歌单链接可能无法解析，但你可想办法获取歌单ID后输入打开。注：各平台歌单ID均为纯数字，若遇到链接里存在歌单ID但无法解析的歌单链接，可以到GitHub提交issue或发送邮件或加群830125506反馈！
+- 新增音量调整滑动功能，现在支持鼠标左右拖动调整音量了
+
+#### 优化
+
+- 优化搜索框搜索体验
+- 优化音量条交互视觉效果
+- 缓存歌单详情列表数据
+
+#### 修复
+
+- 修复QQ源歌单无法翻页Bug
+- 修复默认列表没有创建时无法显示收藏列表的Bug
+- 修复网易云128k直接试听
+- 修复歌曲音质不存在时仍然播放或下载的Bug
+- 修复调整音量时，调整的位置与鼠标点击的位置不一致的问题
+
 ## [0.7.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.6.2...v0.7.0) - 2019-10-07
 
 #### 新增
