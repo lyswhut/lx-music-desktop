@@ -391,7 +391,7 @@ export default {
         // case 'kg':
           return '128k'
       }
-      let type = songInfo._types['192k'] ? '192k' : '128k'
+      let type = '128k'
       if (highQuality && songInfo._types['320k']) type = '320k'
       return type
     },
