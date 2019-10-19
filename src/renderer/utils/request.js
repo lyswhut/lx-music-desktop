@@ -239,7 +239,7 @@ const fetchData = (url, method, {
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
     let v = process.versions.app.split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join('')
-    headers[s] = !s || `${deflateRawSync(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString()).toString('hex')}&${parseInt(v)}`
+    headers[s] = !s || `${deflateRawSync(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString('base64')).toString('hex')}&${parseInt(v)}`
     delete headers[bHh]
   }
   return request(url, {
