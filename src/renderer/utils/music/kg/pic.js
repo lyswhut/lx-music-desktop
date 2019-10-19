@@ -37,7 +37,7 @@ export default {
     requestObj.promise = requestObj.promise.then(({ body }) => {
       if (body.error_code !== 0) return Promise.reject('图片获取失败')
       let info = body.data[0].info
-      return info.image.replace('{size}', info.imgsize[0])
+      return info.imgsize ? info.image.replace('{size}', info.imgsize[0]) : info.image
     })
     return requestObj
   },
