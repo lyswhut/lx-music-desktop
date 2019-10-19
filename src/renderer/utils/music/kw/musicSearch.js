@@ -80,7 +80,7 @@ export default {
                     size: info[3].toLocaleUpperCase(),
                   }
                   break
-                // case '192':
+                case '192':
                 //   types.push({ type: '192k', size: info[3] })
                 //   _types['192k'] = {
                 //     size: info[3].toLocaleUpperCase(),
