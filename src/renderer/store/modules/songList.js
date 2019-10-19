@@ -1,6 +1,7 @@
 import music from '../../utils/music'
 const sortList = {}
 const sources = []
+const cache = new Map()
 for (const source of music.sources) {
   const songList = music[source.id].songList
   if (!songList) continue
@@ -61,16 +62,45 @@ const actions = {
     let tabId = rootState.setting.songList.tagInfo.id
     let sortId = rootState.setting.songList.sortId
     // console.log(sortId)
-    let key = `${source}${sortId}${tabId}${page}`
-    if (state.list.list.length && state.list.key == key) return true
-    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
+    let key = `slist__${source}__${sortId}__${tabId}__${page}`
+    if (state.list.list.length && state.list.key == key) return
+    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getList(sortId, tabId, page)).then(result => commit('setList', { result, key, page }))
   },
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
-    let key = `${source}${id}${page}`
+    let key = `sdetail__${source}__${id}__${page}`
     if (state.listDetail.list.length && state.listDetail.key == key) return true
-    return music[source].songList.getListDetail(id, page).then(result => commit('setListDetail', { result, key, page }))
+    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getListDetail(id, page)).then(result => commit('setListDetail', { result, key, page }))
   },
+/*   getListDetailAll({ state, rootState }, id) {
+    let source = rootState.setting.songList.source
+    let key = `sdetail__${source}__${id}__all`
+    if (cache.has(key)) return Promise.resolve(cache.get(key))
+    music[source].songList.getListDetail(id, 1).then(result => {
+      let data = { list: result.list, id }
+      if (result.total <= result.limit) {
+        data = { list: result.list, id }
+        cache.set(key, data)
+        return data
+      }
+
+      let maxPage = Math.ceil(result.total / result.limit)
+      const loadDetail = (loadPage = 1) => {
+        let task = []
+        let loadNum = 0
+        while (loadPage <= maxPage && loadNum < 3) {
+          task.push(music[source].songList.getListDetail(id, ++loadPage))
+          loadNum++
+        }
+        return loadPage == maxPage
+          ? Promise.all(task)
+          : Promise.all(task).then(result => loadDetail(loadPage).then(result2 => [...result, ...result2]))
+      }
+      return loadDetail().then(result2 => {
+        console.log(result2)
+      })
+    })
+  }, */
 }
 
 // mitations
@@ -84,6 +114,7 @@ const mutations = {
     state.list.limit = result.limit
     state.list.page = page
     state.list.key = key
+    cache.set(key, result)
   },
   setListDetail(state, { result, key, page }) {
     state.listDetail.list = result.list
@@ -92,6 +123,7 @@ const mutations = {
     state.listDetail.page = page
     state.listDetail.key = key
     state.listDetail.info = result.info || {}
+    cache.set(key, result)
   },
   setVisibleListDetail(state, bool) {
     if (!bool) state.listDetail.list = []

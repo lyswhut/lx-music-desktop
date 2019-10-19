@@ -10,6 +10,10 @@
             h3(:title="listDetail.info.name || selectListInfo.name") {{listDetail.info.name || selectListInfo.name}}
             p(:title="listDetail.info.desc || selectListInfo.desc") {{listDetail.info.desc || selectListInfo.desc}}
           div(:class="$style.songListHeaderRight")
+            //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="addSongListDetail") 添加
+            //- | &nbsp;
+            //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="playSongListDetail") 播放
+            //- | &nbsp;
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
         material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
@@ -64,6 +68,7 @@ export default {
       isShowListAdd: false,
       isShowListAddMultiple: false,
       importSongListText: '',
+      // detailLoading: true,
     }
   },
   computed: {
@@ -234,6 +239,7 @@ export default {
       this.isShowDownloadMultiple = false
     },
     handleItemClick(index) {
+      // this.detailLoading = true
       this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
       this.clearListDetail()
@@ -339,6 +345,15 @@ export default {
       }
       this.importSongListText = text.replace(regx, '$1')
     },
+    /*     addSongListDetail() {
+      // this.detailLoading = true
+      // this.getListDetailAll(this.selectListInfo.id).then(() => {
+      //   this.detailLoading = false
+      // })
+    },
+    playSongListDetail() {
+
+    }, */
   },
 }
 </script>
