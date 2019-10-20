@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.8.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.8.0...v0.8.1) - 2019-10-20
+
+#### 修复
+
+- 修复酷我源搜索歌曲结果未添加128k音质导致播放128k音质时显示“该歌曲没有可播放的音频”的问题
+
 ## [0.8.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.7.0...v0.8.0) - 2019-10-19
 
 #### 新增
