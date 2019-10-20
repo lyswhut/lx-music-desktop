@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.8.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.8.1...v0.8.2) - 2019-10-20
+
+#### 修复
+
+- 兼容旧版酷我源搜索列表过滤128k音质的bug（注：0.8.1版本仅修复了酷我源的歌曲过滤问题，该修复仅对以后添加的歌曲有效，如果是之前添加的歌曲仍会出现这个问题，现修复对之前旧列表数据的兼容处理）
+
 ## [0.8.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.8.0...v0.8.1) - 2019-10-20
 
 #### 修复
