@@ -18,6 +18,7 @@ app.on('second-instance', (event, argv, cwd) => {
 require('./events')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
+const { getWindowSizeInfo } = require('./utils')
 
 const isDev = process.env.NODE_ENV !== 'production'
 
@@ -39,13 +40,14 @@ if (isDev) {
 }
 
 function createWindow() {
+  let windowSizeInfo = getWindowSizeInfo()
   /**
    * Initial window options
    */
   mainWindow = global.mainWindow = new BrowserWindow({
-    height: 590,
+    height: windowSizeInfo.height,
     useContentSize: true,
-    width: 920,
+    width: windowSizeInfo.width,
     frame: false,
     transparent: !isLinux,
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),

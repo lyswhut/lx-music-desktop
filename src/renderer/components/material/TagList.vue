@@ -5,7 +5,7 @@
       div(:class="$style.icon")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
-    div.scroll(:class="$style.list" @click.stop ref="dom_list")
+    div.scroll(:class="$style.list" :style="{ width: listStyle }" @click.stop ref="dom_list")
       div(:class="$style.tag" @click="handleClick(null)") 默认
       dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
@@ -14,6 +14,7 @@
 
 <script>
 import { isChildren } from '../../utils'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     list: {
@@ -24,6 +25,13 @@ export default {
     },
     value: {
       type: Object,
+    },
+  },
+  computed: {
+    ...mapGetters(['setting', 'windowSizeList']),
+    listStyle() {
+      let info = this.windowSizeList.find(i => i.id === this.setting.windowSizeId) || this.windowSizeList[0]
+      return info.tabList
     },
   },
   data() {

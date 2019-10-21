@@ -68,8 +68,8 @@ export default {
 }
 .logo {
   box-sizing: border-box;
-  padding: 20px;
-  height: 100px;
+  padding: 12% 13%;
+  // height: 120px;
   color: @color-theme-font;
   flex: none;
 }

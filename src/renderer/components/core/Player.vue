@@ -88,8 +88,6 @@ export default {
         msDownX: 0,
         msDownVolume: 0,
       },
-      handleVolumeMsMoveFn: null,
-      handleVolumeMsUpFn: null,
     }
   },
   computed: {
@@ -125,12 +123,14 @@ export default {
       this.setVolume(volume)
     }, 300)
 
-    document.addEventListener('mousemove', this.handleVolumeMsMoveFn = this.handleVolumeMsMove.bind(this))
-    document.addEventListener('mouseup', this.handleVolumeMsUpFn = this.handleVolumeMsUp.bind(this))
+    document.addEventListener('mousemove', this.handleVolumeMsMove)
+    document.addEventListener('mouseup', this.handleVolumeMsUp)
+    window.addEventListener('resize', this.handleResize)
   },
   beforeDestroy() {
-    document.removeEventListener('mousemove', this.handleVolumeMsMoveFn)
-    document.removeEventListener('mouseup', this.handleVolumeMsUpFn)
+    document.removeEventListener('mousemove', this.handleVolumeMsMove)
+    document.removeEventListener('mouseup', this.handleVolumeMsUp)
+    window.removeEventListener('resize', this.handleResize)
   },
   watch: {
     changePlay(n) {
@@ -488,6 +488,9 @@ export default {
     },
     handleCopy(text) {
       clipboardWriteText(text)
+    },
+    handleResize() {
+      this.setProgessWidth()
     },
   },
 }

@@ -164,7 +164,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.12'
+  const defaultVersion = '1.0.13'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -216,6 +216,7 @@ export const updateSetting = setting => {
         password: '',
       },
     },
+    windowSizeId: 1,
     themeId: 0,
     sourceId: 'kw',
     apiSource: 'test',
@@ -369,3 +370,10 @@ export const getCacheSize = () => remote.getCurrentWindow().webContents.session.
  * @param {*} win
  */
 export const clearCache = () => remote.getCurrentWindow().webContents.session.clearCache()
+
+/**
+ * 设置窗口大小
+ * @param {*} width
+ * @param {*} height
+ */
+export const setWindowSize = (width, height) => remote.getCurrentWindow().setBounds({ width, height })

@@ -34,4 +34,7 @@ export default {
   route(state) {
     return state.route
   },
+  windowSizeList(state) {
+    return state.windowSizeList
+  },
 }

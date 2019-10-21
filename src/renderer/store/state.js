@@ -2,6 +2,7 @@
 // const isDev = process.env.NODE_ENV === 'development'
 import Store from 'electron-store'
 import { updateSetting } from '../utils'
+import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
 let electronStore = new Store()
 const setting = updateSetting(electronStore.get('setting'))
@@ -65,4 +66,5 @@ export default {
   userInfo: null,
   setting,
   electronStore,
+  windowSizeList,
 }

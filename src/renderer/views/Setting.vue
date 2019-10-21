@@ -18,8 +18,14 @@ div.scroll(:class="$style.setting")
     dd(title='选择音乐来源')
       h3 音乐来源
       div
-        material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
+        material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
           need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label" :key="item.id")
+
+    dd(title='设置软件窗口尺寸')
+      h3 窗口尺寸
+      div
+        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange(index)" :class="$style.gapLeft"
+          need v-model="current_setting.windowSizeId" :value="item.id" :label="item.name" :key="item.id")
 
     dt 播放设置
     dd(title="都不选时播放完当前歌曲就停止播放")
@@ -176,18 +182,21 @@ import {
   getCacheSize,
   clearCache,
   sizeFormate,
+  setWindowSize,
 } from '../utils'
 import { rendererSend } from '../../common/icp'
 import fs from 'fs'
 
-
 export default {
   name: 'Setting',
   computed: {
-    ...mapGetters(['setting', 'themes', 'version']),
+    ...mapGetters(['setting', 'themes', 'version', 'windowSizeList']),
     ...mapGetters('list', ['defaultList', 'loveList']),
     isLatestVer() {
       return this.version.newVersion && this.version.version === this.version.newVersion.version
+    },
+    isShowRebootBtn() {
+      return this.current_setting.windowSizeId != window.currentWindowSizeId
     },
   },
   data() {
@@ -225,6 +234,7 @@ export default {
         odc: {
           isAutoClearSearchInput: false,
         },
+        windowSizeId: 1,
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
@@ -314,6 +324,7 @@ export default {
     ...mapMutations('list', ['setList']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
+      if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       this.getCacheSize()
     },
     handleChangeSavePath() {
@@ -502,6 +513,10 @@ export default {
         this.getCacheSize()
       })
     },
+    handleWindowSizeChange(index) {
+      let info = this.windowSizeList[index]
+      setWindowSize(info.width, info.height)
+    },
   },
 }
 </script>
@@ -547,6 +562,19 @@ export default {
     }
   }
 
+}
+
+.btn-content {
+  display: inline-block;
+  transition: @transition-theme;
+  transition-property: opacity, transform;
+  opacity: 1;
+  transform: scale(1);
+
+  &.hide {
+    opacity: 0;
+    transform: scale(0);
+  }
 }
 
 .gap-left {
