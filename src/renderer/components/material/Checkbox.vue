@@ -67,8 +67,6 @@ export default {
         } else {
           checked.splice(index, 1)
         }
-      } else if (typeof this.checked == 'string') {
-        checked = this.bool ? this.value : ''
       } else if (typeof this.checked == 'boolean') {
         let bool = this.bool
         if (this.indeterminate) {
@@ -78,6 +76,8 @@ export default {
           // })
         }
         checked = bool
+      } else {
+        checked = this.bool ? this.value : ''
       }
       this.$emit('input', checked)
       this.$emit('change', checked)
@@ -88,14 +88,14 @@ export default {
         bool = value.includes(this.value)
       } else {
         switch (typeof value) {
-          case 'string':
-            bool = value === this.value
-            break
           case 'boolean':
             bool = value
             break
+          // case 'string':
+          // case 'number':
           default:
-            return
+            bool = value === this.value
+            break
         }
       }
 
