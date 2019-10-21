@@ -195,7 +195,7 @@ const actions = {
         // console.log(err.code, err.message)
         commit('onError', downloadInfo)
         // console.log(tryNum[downloadInfo.key])
-        if (++tryNum[downloadInfo.key] > 5) {
+        if (++tryNum[downloadInfo.key] > 2) {
           _this.dispatch('download/startTask')
           return
         }

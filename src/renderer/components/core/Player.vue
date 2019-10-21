@@ -211,7 +211,7 @@ export default {
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
-        if (this.listId != 'download' && this.audio.error.code !== 1 && this.retryNum < 3) { // 若音频URL无效则尝试刷新3次URL
+        if (this.listId != 'download' && this.audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
           // console.log(this.retryNum)
           this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
