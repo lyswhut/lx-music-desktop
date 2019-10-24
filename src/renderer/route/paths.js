@@ -26,6 +26,7 @@ export default [
     path: '/list',
     name: 'list',
     view: 'List',
+    // props: true,
   },
   {
     path: '/download',

@@ -46,8 +46,8 @@ div.scroll(:class="$style.setting")
       h3 是否显示歌曲源（仅对我的音乐分类有效）
       div
         material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" label="是否显示")
-    dd(title='是否恢复播放列表滚动条位置')
-      h3 恢复列表滚动位置（仅对我的音乐分类有效）
+    dd(title='是否记住播放列表滚动条位置')
+      h3 记住列表滚动位置（仅对我的音乐分类有效）
       div
         material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.scroll.enable" label="是否启用")
     //- dd(title='播放列表是否显示专辑栏')

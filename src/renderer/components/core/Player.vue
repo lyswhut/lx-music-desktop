@@ -1,6 +1,6 @@
 <template lang="pug">
 div(:class="$style.player")
-  div(:class="$style.left")
+  div(:class="$style.left" @click="handleToMusicLocation")
     img(v-if="musicInfo.img" :src="musicInfo.img" @error="imgError")
     svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' height='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
@@ -492,6 +492,17 @@ export default {
     handleResize() {
       this.setProgessWidth()
     },
+    handleToMusicLocation() {
+      if (this.listId == 'download') return
+      if (this.playIndex == -1) return
+      this.$router.push({
+        path: 'list',
+        query: {
+          id: this.listId,
+          scrollIndex: this.playIndex,
+        },
+      })
+    },
   },
 }
 </script>
@@ -520,6 +531,14 @@ export default {
   transition-property: color;
   flex: none;
   padding: 2px;
+  opacity: 1;
+  transition: @transition-theme;
+  transition-property: opacity;
+  cursor: pointer;
+
+  &:hover {
+    opacity: .8;
+  }
 
   svg {
     fill: currentColor;

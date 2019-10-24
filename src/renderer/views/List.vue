@@ -17,7 +17,7 @@
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
           tbody
-            tr(v-for='(item, index) in list' :key='item.songmid'
+            tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
               @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
@@ -49,7 +49,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, asyncSetArray } from '../utils'
+import { throttle, asyncSetArray, scrollTo } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -69,6 +69,7 @@ export default {
       isShowListAdd: false,
       isShowListAddMultiple: false,
       delayTimeout: null,
+      isToggleList: true,
     }
   },
   computed: {
@@ -125,9 +126,18 @@ export default {
     list() {
       this.resetSelect()
     },
+    '$route.query.scrollIndex'(n) {
+      if (n == null || this.isToggleList) return
+      this.restoreScroll(true)
+      this.isToggleList = true
+    },
   },
   beforeRouteUpdate(to, from, next) {
-    if (to.query.id === undefined) return
+    if (to.query.id == null) return
+    else if (to.query.id == this.listId) {
+      if (to.query.scrollIndex != null) this.isToggleList = false
+      return next()
+    }
     this.delayShow = false
     this.$nextTick(() => {
       this.listId = to.query.id
@@ -195,14 +205,29 @@ export default {
         this.delayTimeout = null
       }
     },
-    restoreScroll() {
+    restoreScroll(isAnimation) {
       if (!this.list.length) return
-      let location = this.setting.list.scroll.locations[this.listId]
-      if (this.setting.list.scroll.enable && location) {
-        this.$nextTick(() => {
-          this.$refs.dom_scrollContent.scrollTo(0, location)
-        })
+      if (this.$route.query.scrollIndex == null) {
+        let location = this.setting.list.scroll.locations[this.listId]
+        if (this.setting.list.scroll.enable && location) {
+          this.$nextTick(() => {
+            this.$refs.dom_scrollContent.scrollTo(0, location)
+          })
+        }
+        return
       }
+
+      this.$nextTick(() => {
+        let location = this.getMusicLocation(this.$route.query.scrollIndex) - 200
+        if (location < 0) location = 0
+        isAnimation ? scrollTo(this.$refs.dom_scrollContent, location) : this.$refs.dom_scrollContent.scrollTo(0, location)
+        this.$router.replace({
+          path: 'list',
+          query: {
+            id: this.listId,
+          },
+        })
+      })
     },
     handleDoubleClick(index) {
       if (
@@ -291,6 +316,10 @@ export default {
         default:
           break
       }
+    },
+    getMusicLocation(index) {
+      let dom = document.getElementById('mid_' + this.list[index].songmid)
+      return dom ? dom.offsetTop : 0
     },
     // handleScroll(e) {
     //   console.log(e.target.scrollTop)
