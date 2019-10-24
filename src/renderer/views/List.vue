@@ -218,7 +218,7 @@ export default {
       }
 
       this.$nextTick(() => {
-        let location = this.getMusicLocation(this.$route.query.scrollIndex) - 200
+        let location = this.getMusicLocation(this.$route.query.scrollIndex) - 150
         if (location < 0) location = 0
         isAnimation ? scrollTo(this.$refs.dom_scrollContent, location) : this.$refs.dom_scrollContent.scrollTo(0, location)
         this.$router.replace({
