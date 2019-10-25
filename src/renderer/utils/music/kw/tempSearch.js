@@ -1,25 +1,21 @@
-import { httpGet, cancelHttp } from '../../request'
+import { httpFetch } from '../../request'
 import { decodeName } from '../../index'
 
 export default {
   regExps: {
     relWord: /RELWORD=(.+)/,
   },
-  _musicTempSearchRequestObj: null,
-  _musicTempSearchPromiseCancelFn: null,
+  requestObj: null,
   tempSearch(str) {
     this.cancelTempSearch()
-    return new Promise((resolve, reject) => {
-      this._musicTempSearchPromiseCancelFn = reject
-      this._musicTempSearchRequestObj = httpGet(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, (err, resp, body) => {
-        this._musicTempSearchRequestObj = null
-        this._musicTempSearchPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        resolve(body)
-      })
+    this.requestObj = httpFetch(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, {
+      headers: {
+        Referer: 'http://www.kuwo.cn/',
+      },
+    })
+    return this.requestObj.promise.then(({ statusCode, body }) => {
+      if (statusCode != 200 || body.code !== 200) return Promise.reject(new Error('请求失败'))
+      return body
     })
   },
   handleResult(rawData) {
@@ -29,10 +25,7 @@ export default {
     })
   },
   cancelTempSearch() {
-    if (this._musicTempSearchRequestObj != null) {
-      cancelHttp(this._musicTempSearchRequestObj)
-      this._musicTempSearchPromiseCancelFn(new Error('取消http请求'))
-    }
+    if (this.requestObj && this.requestObj.cancelHttp) this.requestObj.cancelHttp()
   },
   search(str) {
     return this.tempSearch(str).then(result => this.handleResult(result.data))
