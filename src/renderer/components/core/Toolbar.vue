@@ -23,6 +23,7 @@ export default {
       visibleList: false,
       tipList: [],
       tipSearch: null,
+      isFocused: false,
     }
   },
   computed: {
@@ -64,10 +65,12 @@ export default {
     handleEvent({ action, data }) {
       switch (action) {
         case 'focus':
+          this.isFocused = true
           if (!this.visibleList) this.visibleList = true
           if (this.searchText) this.handleTipSearch()
           break
         case 'blur':
+          this.isFocused = false
           setTimeout(() => {
             if (this.visibleList) this.visibleList = false
           }, 50)
@@ -84,7 +87,7 @@ export default {
     },
 
     handleTipSearch() {
-      if (!this.visibleList) this.visibleList = true
+      if (!this.visibleList && this.isFocused) this.visibleList = true
       this.tipSearch()
     },
 
