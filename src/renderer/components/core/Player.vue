@@ -27,7 +27,7 @@ div(:class="$style.player")
     div(:class="$style.column2")
       div(:class="$style.progress")
         //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
-        div(:class="[$style.progressBar, $style.progressBar2]" :style="{ transform: `scaleX(${progress || 0})` }")
+        div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
       div(:class="$style.progressMask" @click='setProgess' ref="dom_progress")
     div(:class="$style.column3")
       span {{nowPlayTimeStr}}
@@ -88,6 +88,7 @@ export default {
         msDownX: 0,
         msDownVolume: 0,
       },
+      isActiveTransition: false,
     }
   },
   computed: {
@@ -367,13 +368,14 @@ export default {
     },
     setProgess(e) {
       if (!this.audio.src) return
+      this.isActiveTransition = true
       this.audio.currentTime =
         (e.offsetX / this.pregessWidth) * this.maxPlayTime
       if (!this.isPlay) this.audio.play()
     },
     setProgessWidth() {
       this.pregessWidth = parseInt(
-        window.getComputedStyle(this.$refs.dom_progress, null).width
+        window.getComputedStyle(this.$refs.dom_progress, null).width,
       )
     },
     togglePlay() {
@@ -502,6 +504,10 @@ export default {
           scrollIndex: this.playIndex,
         },
       })
+    },
+    handleTransitionEnd(e) {
+      // console.log(e)
+      this.isActiveTransition = false
     },
   },
 }
@@ -693,19 +699,21 @@ export default {
   width: 100%;
   height: 100%;
   transform-origin: 0;
-  transition-property: transform;
-  transition-timing-function: ease-out;
   border-radius: @radius-progress-border;
 }
 .progress-bar1 {
-  transition-duration: 0.6s;
   background-color: @color-player-progress-bar1;
 }
 
 .progress-bar2 {
-  transition-duration: 0.2s;
   background-color: @color-player-progress-bar2;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.bar-transition {
+  transition-property: transform;
+  transition-timing-function: ease-out;
+  transition-duration: 0.2s;
 }
 
 .column3 {
