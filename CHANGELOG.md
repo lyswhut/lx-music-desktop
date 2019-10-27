@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.9.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.8.2...v0.9.0) - 2019-10-27
+
+#### 新增
+
+- 新增窗口大小设置，若觉得软件窗口小可以到设置页调大点
+- 新增定位当前播放歌曲，点击播放栏左侧的**歌曲图片**可在播放列表定位当前播放的歌曲（该功能对播放下载列表的歌曲无效）
+
+#### 修复
+
+- 修复搜索提示失效的问题
+- 修复从歌单或列表点击搜索按钮搜索目标歌曲时，搜索框未聚焦仍然弹出候选搜索列表的问题
+
 ## [0.8.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.8.1...v0.8.2) - 2019-10-20
 
 #### 修复
