@@ -10,9 +10,7 @@ function route(path, view, name, meta, props) {
     path,
     meta,
     props,
-    component: (resovle) => import(
-      `../views/${view}.vue`
-    ).then(resovle),
+    component: (resovle) => import(`../views/${view}.vue`).then(resovle),
   }
 }
 

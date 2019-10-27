@@ -35,7 +35,7 @@
 
 所用技术栈：
 
-- Electron 6.x
+- Electron 7.x
 - Vue 2.x
 
 已支持的平台：

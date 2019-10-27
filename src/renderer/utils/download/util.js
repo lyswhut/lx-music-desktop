@@ -14,11 +14,11 @@ export const pauseResumeTimer = (_dl, wait) => {
         setTimeout(() => {
           if (!_dl.isResumable()) {
             console.warn(
-              "This URL doesn't support resume, it will start from the beginning"
+              "This URL doesn't support resume, it will start from the beginning",
             )
           }
           return _dl.resume()
-        }, wait)
+        }, wait),
       )
   }, wait)
 }

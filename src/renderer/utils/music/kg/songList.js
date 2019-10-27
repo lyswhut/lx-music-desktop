@@ -92,7 +92,7 @@ export default {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(
-      this.getSongListUrl(sortId, tagId, page)
+      this.getSongListUrl(sortId, tagId, page),
     )
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.status !== 1) return this.getSongList(sortId, tagId, page, ++tryNum)
@@ -120,7 +120,7 @@ export default {
           return_min: 6,
           return_max: 15,
         },
-      }
+      },
     )
     return this._requestObj_listRecommend.promise.then(({ body }) => {
       if (body.status !== 1) return this.getSongListRecommend(++tryNum)
@@ -253,7 +253,7 @@ export default {
           this.currentTagInfo.id = tagId
           this.currentTagInfo.info = Object.assign({}, info)
           return info
-        })
+        }),
     )
     if (!tagId && page === 1 && sortId === this.sortList[0].id) tasks.push(this.getSongListRecommend()) // 如果是所有类别，则顺便获取推荐列表
     return Promise.all(tasks).then(([list, info, recommendList]) => {

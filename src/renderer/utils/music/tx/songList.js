@@ -109,7 +109,7 @@ export default {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(
-      this.getListUrl(sortId, tagId, page)
+      this.getListUrl(sortId, tagId, page),
     )
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)

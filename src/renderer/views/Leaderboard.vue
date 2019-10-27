@@ -95,7 +95,7 @@ export default {
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
-        s => s.songmid === targetSong.songmid
+        s => s.songmid === targetSong.songmid,
       )
       if (targetIndex > -1) {
         this.setList({
