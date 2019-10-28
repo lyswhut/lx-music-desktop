@@ -1,7 +1,6 @@
 import { httpGet, cancelHttp } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
-import { formatSinger } from './util'
-
+import { formatSinger, getToken, matchToken } from './util'
 
 export default {
   list: [
@@ -67,6 +66,8 @@ export default {
 
   },
   limit: 30,
+  token: null,
+  isGetingToken: false,
   _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
   _cancelRequestObj2: null,
@@ -89,20 +90,34 @@ export default {
       })
     })
   },
-  getData2(url) {
+  async getData2(url) {
     if (this._cancelRequestObj2 != null) {
       cancelHttp(this._cancelRequestObj2)
       this._cancelPromiseCancelFn2(new Error('取消http请求'))
     }
+    if (this.isGetingToken) return Promise.reject(new Error('正在获取token'))
+    let token = this.token
+    if (!token) {
+      this.isGetingToken = true
+      token = await getToken()
+      this.isGetingToken = false
+    }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn2 = reject
-      this._cancelRequestObj2 = httpGet(url, (err, resp, body) => {
+      this._cancelRequestObj2 = httpGet(url, {
+        headers: {
+          Referer: 'http://www.kuwo.cn/',
+          csrf: token,
+          cookie: 'kw_token=' + token,
+        },
+      }, (err, resp, body) => {
         this._cancelRequestObj2 = null
         this._cancelPromiseCancelFn2 = null
         if (err) {
           console.log(err)
           reject(err)
         }
+        this.token = matchToken(resp.headers)
         resolve(body)
       })
     })
