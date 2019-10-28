@@ -95,7 +95,7 @@ export default {
       cancelHttp(this._cancelRequestObj2)
       this._cancelPromiseCancelFn2(new Error('取消http请求'))
     }
-    if (this.isGetingToken) return Promise.reject(new Error('正在获取token'))
+    if (this.isGetingToken) throw new Error('正在获取token')
     let token = this.token
     if (!token) {
       this.isGetingToken = true

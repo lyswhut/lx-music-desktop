@@ -36,7 +36,7 @@ export default {
   },
   async search(str) {
     let token = this.token
-    if (this.isGetingToken) return Promise.reject(new Error('正在获取token'))
+    if (this.isGetingToken) throw new Error('正在获取token')
     if (!this.token) {
       this.isGetingToken = true
       token = await getToken()
