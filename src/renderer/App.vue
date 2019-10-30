@@ -22,6 +22,7 @@ import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn } from '../common/icp'
 import { isLinux } from '../common/utils'
+import music from './utils/music'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 dnscache({
   enable: true,
@@ -145,6 +146,9 @@ export default {
       this.globalObj.apiSource = this.setting.apiSource
       this.globalObj.proxy = Object.assign({}, this.setting.network.proxy)
       window.globalObj = this.globalObj
+
+      // 初始化音乐sdk
+      music.init()
     },
     enableIgnoreMouseEvents() {
       if (isLinux) return

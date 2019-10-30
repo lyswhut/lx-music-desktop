@@ -4,7 +4,7 @@ import tx from './tx'
 import wy from './wy'
 import mg from './mg'
 import bd from './bd'
-export default {
+const sources = {
   sources: [
     {
       name: '酷我音乐',
@@ -37,4 +37,13 @@ export default {
   wy,
   mg,
   bd,
+}
+export default {
+  ...sources,
+  init() {
+    for (let source of sources.sources) {
+      let sm = sources[source.id]
+      sm && sm.init && sm.init()
+    }
+  },
 }

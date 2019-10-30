@@ -1,7 +1,7 @@
 import { httpGet, cancelHttp } from '../../request'
 import tempSearch from './tempSearch'
 import musicSearch from './musicSearch'
-import { formatSinger } from './util'
+import { formatSinger, getToken } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
 import pic from './pic'
@@ -95,6 +95,10 @@ const kw = {
 
   getPic(songInfo) {
     return pic.getPic(songInfo)
+  },
+
+  init() {
+    getToken()
   },
 }
 
