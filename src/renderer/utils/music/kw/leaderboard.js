@@ -66,8 +66,6 @@ export default {
 
   },
   limit: 30,
-  token: null,
-  isGetingToken: false,
   _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
   _cancelRequestObj2: null,
@@ -95,13 +93,8 @@ export default {
       cancelHttp(this._cancelRequestObj2)
       this._cancelPromiseCancelFn2(new Error('取消http请求'))
     }
-    if (this.isGetingToken) throw new Error('正在获取token')
-    let token = this.token
-    if (!token) {
-      this.isGetingToken = true
-      token = await getToken()
-      this.isGetingToken = false
-    }
+    let token = window.kw_token.token
+    if (!token) token = await getToken()
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn2 = reject
       this._cancelRequestObj2 = httpGet(url, {
@@ -115,9 +108,9 @@ export default {
         this._cancelPromiseCancelFn2 = null
         if (err) {
           console.log(err)
-          reject(err)
+          return reject(err)
         }
-        this.token = matchToken(resp.headers)
+        window.kw_token.token = matchToken(resp.headers)
         resolve(body)
       })
     })

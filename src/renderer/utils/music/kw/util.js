@@ -17,8 +17,12 @@ export const matchToken = headers => {
   }
 }
 
+const wait = time => new Promise(resolve => setTimeout(() => resolve(), time))
+
+
 export const getToken = () => new Promise((resolve, reject) => {
-  if (window.kw_token.isGetingToken) reject(new Error('正在获取token'))
+  if (window.kw_token.isGetingToken) return wait(1000).then(() => getToken().then(token => resolve(token)))
+  if (window.kw_token.token) return resolve(window.kw_token.token)
   window.kw_token.isGetingToken = true
   httpGet('http://www.kuwo.cn', (err, resp) => {
     window.kw_token.isGetingToken = false
