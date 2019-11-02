@@ -6,6 +6,17 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.10.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.9.1...v0.10.0) - 2019-11-02
+
+#### 优化
+
+- 大幅减少程序**播放时**对CPU与GPU的使用，经测试CPU使用减少60%以上，GPU使用减少90%以上，这应该能解决MAC系统上的温度上涨的问题
+
+#### 修复
+
+- 修复酷我源**搜索提示**、**排行榜**无法获取的问题
+- 修复咪咕源无法播放的问题
+
 ## [0.9.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.9.0...v0.9.1) - 2019-10-27
 
 #### 修复
