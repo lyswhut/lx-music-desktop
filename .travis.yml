@@ -3,14 +3,16 @@ matrix:
     - os: osx
       osx_image: xcode10.2
       language: node_js
-      node_js: "12"
+      node_js:
+        - 12
       env:
         - ELECTRON_CACHE=$HOME/.cache/electron
         - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
     - os: linux
       language: node_js
-      node_js: "12"
+      node_js:
+        - 12
       dist: trusty
       services: docker
       language: generic
