@@ -221,7 +221,6 @@ export const updateSetting = setting => {
     sourceId: 'kw',
     apiSource: 'test',
     randomAnimate: true,
-    ignoreVersion: null,
   }
   const overwriteSetting = {
     version: defaultVersion,

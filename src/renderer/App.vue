@@ -108,33 +108,39 @@ export default {
       }
       ipcRenderer.on('update-available', (e, info) => {
         // this.showUpdateModal(true)
-        console.log(info)
-        this.setNewVersion({
+        // console.log(info)
+        this.getVersionInfo().catch(() => ({
           version: info.version,
+          desc: info.releaseNotes,
+        })).then(body => {
+          // console.log(body)
+          this.setNewVersion(body)
+          this.$nextTick(() => {
+            this.setVersionModalVisible({ isShow: true })
+          })
         })
       })
-      ipcRenderer.on('update-error', err => {
-        console.log(err)
-        if (!this.updateTimeout) return
-        this.setVersionModalVisible({ isError: true })
+      ipcRenderer.on('update-error', (event, err) => {
+        // console.log(err)
         this.clearUpdateTimeout()
+        this.setVersionModalVisible({ isError: true })
         this.$nextTick(() => {
           this.showUpdateModal()
         })
       })
-      ipcRenderer.on('update-progress', progress => {
-        console.log(progress)
+      ipcRenderer.on('update-progress', (event, progress) => {
+        // console.log(progress)
         this.setDownloadProgress(progress)
       })
       ipcRenderer.on('update-downloaded', info => {
-        console.log(info)
+        // console.log(info)
         this.clearUpdateTimeout()
-        this.setVersionModalVisible({ isError: false })
-        this.showUpdateModal()
+        this.setVersionModalVisible({ isDownloaded: true })
+        this.$nextTick(() => {
+          this.showUpdateModal()
+        })
       })
       ipcRenderer.on('update-not-available', () => {
-        if (!this.updateTimeout) return
-        if (this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
         this.clearUpdateTimeout()
         this.setNewVersion({
           version: this.version.version,
@@ -143,11 +149,11 @@ export default {
       // 更新超时定时器
       this.updateTimeout = setTimeout(() => {
         this.updateTimeout = null
-        this.setVersionModalVisible({ isError: true })
+        this.setVersionModalVisible({ isTimeOut: true })
         this.$nextTick(() => {
           this.showUpdateModal()
         })
-      }, 180000)
+      }, 60 * 30 * 1000)
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
@@ -192,12 +198,18 @@ export default {
     showUpdateModal() {
       (this.version.newVersion && this.version.newVersion.history ? Promise.resolve(this.version.newVersion) : this.getVersionInfo().then(body => {
         this.setNewVersion(body)
-        if (body.version !== this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
         return body
-      })).then(body => {
-        if (body.version === this.version.version) return
-        if (this.version.isError && body.version === this.setting.ignoreVersion) return
-
+      })).catch(() => {
+        this.setVersionModalVisible({ isUnknow: true })
+        let result = {
+          version: '0.0.0',
+          desc: null,
+        }
+        this.setNewVersion(result)
+        return result
+      }).then(result => {
+        if (result.version === this.version.version) return
+        console.log(this.version)
         this.$nextTick(() => {
           this.setVersionModalVisible({ isShow: true })
         })
