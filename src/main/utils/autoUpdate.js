@@ -1,6 +1,6 @@
 const { log } = require('../../common/utils')
 const { autoUpdater } = require('electron-updater')
-const { mainOn } = require('../../common/icp')
+const { mainOn } = require('../../common/ipc')
 
 autoUpdater.logger = log
 // autoUpdater.autoDownload = false
@@ -21,7 +21,7 @@ log.info('App starting...')
 
 function sendStatusToWindow(text) {
   log.info(text)
-  // global.mainWindow.webContents.send('message', text)
+  // ipcMain.send('message', text)
 }
 
 
@@ -90,16 +90,20 @@ module.exports = isFirstCheckedUpdate => {
     sendStatusToWindow('Update not available.')
     handleSendEvent({ type: 'update-not-available' })
   })
-  autoUpdater.on('error', () => {
+  autoUpdater.on('error', err => {
     sendStatusToWindow('Error in auto-updater.')
-    handleSendEvent({ type: 'update-error' })
+    handleSendEvent({ type: 'update-error', info: err })
   })
   autoUpdater.on('download-progress', progressObj => {
-    sendStatusToWindow('Download progress...')
+    let log_message = 'Download speed: ' + progressObj.bytesPerSecond
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
+    log_message = log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
+    sendStatusToWindow(log_message)
+    handleSendEvent({ type: 'download-progress', info: progressObj })
   })
   autoUpdater.on('update-downloaded', info => {
     sendStatusToWindow('Update downloaded.')
-    handleSendEvent({ type: 'update-downloaded' })
+    handleSendEvent({ type: 'update-downloaded', info })
   })
   mainOn('quit-update', () => {
     setTimeout(() => {

@@ -20,7 +20,7 @@
 <script>
 import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { rendererOn } from '../common/icp'
+import { ipcRenderer } from 'electron'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     ...mapActions(['getVersionInfo']),
-    ...mapMutations(['setNewVersion', 'setVersionModalVisible']),
+    ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress']),
     ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
@@ -106,13 +106,15 @@ export default {
         body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
-      rendererOn('update-available', (e, info) => {
+      ipcRenderer.on('update-available', (e, info) => {
         // this.showUpdateModal(true)
+        console.log(info)
         this.setNewVersion({
           version: info.version,
         })
       })
-      rendererOn('update-error', () => {
+      ipcRenderer.on('update-error', err => {
+        console.log(err)
         if (!this.updateTimeout) return
         this.setVersionModalVisible({ isError: true })
         this.clearUpdateTimeout()
@@ -120,12 +122,17 @@ export default {
           this.showUpdateModal()
         })
       })
-      rendererOn('update-downloaded', () => {
+      ipcRenderer.on('update-progress', progress => {
+        console.log(progress)
+        this.setDownloadProgress(progress)
+      })
+      ipcRenderer.on('update-downloaded', info => {
+        console.log(info)
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isError: false })
         this.showUpdateModal()
       })
-      rendererOn('update-not-available', () => {
+      ipcRenderer.on('update-not-available', () => {
         if (!this.updateTimeout) return
         if (this.setting.ignoreVersion) this.setSetting(Object.assign({}, this.setting, { ignoreVersion: null }))
         this.clearUpdateTimeout()

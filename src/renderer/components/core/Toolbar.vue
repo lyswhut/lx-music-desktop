@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { rendererSend } from 'common/icp'
+import { rendererSend } from 'common/ipc'
 import { mapGetters } from 'vuex'
 import music from '../../utils/music'
 import { debounce } from '../../utils'

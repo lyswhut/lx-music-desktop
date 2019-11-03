@@ -48,7 +48,7 @@ div(:class="$style.player")
 
 <script>
 import Lyric from 'lrc-file-parser'
-import { rendererSend } from '../../../common/icp'
+import { rendererSend } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'

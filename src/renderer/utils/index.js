@@ -1,9 +1,9 @@
 import fs from 'fs'
-import { shell, remote, clipboard } from 'electron'
+import { shell, clipboard } from 'electron'
 import path from 'path'
 import os from 'os'
 import crypto from 'crypto'
-import { rendererSend } from '../../common/icp'
+import { rendererSend, rendererInvoke } from '../../common/ipc'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -86,13 +86,13 @@ export const checkPath = path => fs.existsSync(path)
  * 在资源管理器中打开目录
  * @param {*} 选项
  */
-export const openSelectDir = options => remote.dialog.showOpenDialog(remote.getCurrentWindow(), options)
+export const selectDir = options => rendererInvoke('selectDir', options)
 
 /**
  * 在资源管理器中打开目录
  * @param {*} 选项
  */
-export const openSaveDir = options => remote.dialog.showSaveDialog(remote.getCurrentWindow(), options)
+export const openSaveDir = options => rendererInvoke('showSaveDialog', options)
 
 /**
  * 在资源管理器中打开目录
@@ -361,19 +361,17 @@ export const asyncSetArray = (from, to, num = 100) => new Promise(resolve => {
 
 /**
  * 获取缓存大小
- * @param {*} win
  */
-export const getCacheSize = () => remote.getCurrentWindow().webContents.session.getCacheSize()
+export const getCacheSize = () => rendererInvoke('getCacheSize')
 
 /**
  * 清除缓存
- * @param {*} win
  */
-export const clearCache = () => remote.getCurrentWindow().webContents.session.clearCache()
+export const clearCache = () => rendererInvoke('clearCache')
 
 /**
  * 设置窗口大小
  * @param {*} width
  * @param {*} height
  */
-export const setWindowSize = (width, height) => remote.getCurrentWindow().setBounds({ width, height })
+export const setWindowSize = (width, height) => rendererSend('setWindowSize', { width, height })

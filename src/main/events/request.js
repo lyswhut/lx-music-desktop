@@ -1,6 +1,6 @@
 const request = require('request')
 
-const { mainOn } = require('../../common/icp')
+const { mainOn } = require('../../common/ipc')
 
 const tasks = []
 

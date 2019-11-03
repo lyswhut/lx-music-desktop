@@ -62,6 +62,7 @@ export default {
     newVersion: null,
     showModal: false,
     isError: false,
+    downloadProgress: null,
   },
   userInfo: null,
   setting,

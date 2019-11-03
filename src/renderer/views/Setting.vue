@@ -174,7 +174,7 @@ div.scroll(:class="$style.setting")
 import { mapGetters, mapMutations } from 'vuex'
 import {
   openDirInExplorer,
-  openSelectDir,
+  selectDir,
   openSaveDir,
   updateSetting,
   openUrl,
@@ -184,7 +184,7 @@ import {
   sizeFormate,
   setWindowSize,
 } from '../utils'
-import { rendererSend } from '../../common/icp'
+import { rendererSend } from '../../common/ipc'
 import fs from 'fs'
 
 export default {
@@ -328,7 +328,7 @@ export default {
       this.getCacheSize()
     },
     handleChangeSavePath() {
-      openSelectDir({
+      selectDir({
         title: '选择歌曲保存路径',
         defaultPath: this.current_setting.download.savePath,
         properties: ['openDirectory'],
@@ -421,7 +421,7 @@ export default {
       })
     },
     handleImportAllData() {
-      openSelectDir({
+      selectDir({
         title: '选择备份文件',
         properties: ['openFile'],
         filters: [
@@ -443,7 +443,7 @@ export default {
       })
     },
     handleImportSetting() {
-      openSelectDir({
+      selectDir({
         title: '选择配置文件',
         properties: ['openFile'],
         filters: [
@@ -465,7 +465,7 @@ export default {
       })
     },
     handleImportPlayList() {
-      openSelectDir({
+      selectDir({
         title: '选择列表文件',
         properties: ['openFile'],
         filters: [

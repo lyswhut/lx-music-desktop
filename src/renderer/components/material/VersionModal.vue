@@ -45,7 +45,7 @@ material-modal(:show="version.showModal" @close="handleClose")
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { rendererSend } from '../../../common/icp'
+import { rendererSend } from '../../../common/ipc'
 import { checkVersion, openUrl, clipboardWriteText } from '../../utils'
 
 export default {

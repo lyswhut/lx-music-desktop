@@ -22,11 +22,10 @@ export default {
     state.setting.list.scroll.locations[id] = location
   },
   setNewVersion(state, val) {
-    // val.history.forEach(ver => {
-    //   ver.desc = ver.desc.replace(/\n/g, '<br>')
-    // })
-    // val.desc = val.desc.replace(/\n/g, '<br>')
     state.version.newVersion = val
+  },
+  setDownloadProgress(state, info) {
+    state.version.downloadProgress = info
   },
   setVersionModalVisible(state, { isShow, isError }) {
     if (isShow !== undefined) state.version.showModal = isShow

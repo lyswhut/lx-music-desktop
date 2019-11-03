@@ -1,4 +1,4 @@
-const { mainOn } = require('../../common/icp')
+const { mainOn } = require('../../common/ipc')
 
 
 mainOn('restartWindow', (event, name) => {
