@@ -9,7 +9,6 @@ export const mainOnce = (event, callback) => {
 }
 
 export const mainHandle = (name, callback) => {
-  console.log(name, callback)
   ipcMain.handle(name, callback)
 }
 export const mainHandleOnce = (name, callback) => {
