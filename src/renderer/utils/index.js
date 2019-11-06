@@ -219,7 +219,7 @@ export const updateSetting = setting => {
     windowSizeId: 1,
     themeId: 0,
     sourceId: 'kw',
-    apiSource: 'test',
+    apiSource: 'temp',
     randomAnimate: true,
   }
   const overwriteSetting = {
