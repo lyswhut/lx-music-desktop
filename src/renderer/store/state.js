@@ -65,6 +65,7 @@ export default {
     isTimeOut: false,
     isUnknow: false,
     isDownloaded: false,
+    isDownloading: false,
     downloadProgress: null,
   },
   userInfo: null,

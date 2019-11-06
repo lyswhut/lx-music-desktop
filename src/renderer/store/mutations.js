@@ -27,10 +27,11 @@ export default {
   setDownloadProgress(state, info) {
     state.version.downloadProgress = info
   },
-  setVersionModalVisible(state, { isShow, isError, isDownloaded, isTimeOut, isUnknow }) {
+  setVersionModalVisible(state, { isShow, isError, isDownloaded, isTimeOut, isDownloading, isUnknow }) {
     if (isShow !== undefined) state.version.showModal = isShow
     if (isError !== undefined) state.version.isError = isError
     if (isTimeOut !== undefined) state.version.isTimeOut = isTimeOut
+    if (isDownloading !== undefined) state.version.isDownloading = isDownloading
     if (isDownloaded !== undefined) state.version.isDownloaded = isDownloaded
     if (isUnknow !== undefined) state.version.isUnknow = isUnknow
   },

@@ -109,6 +109,7 @@ export default {
       ipcRenderer.on('update-available', (e, info) => {
         // this.showUpdateModal(true)
         // console.log(info)
+        this.setVersionModalVisible({ isDownloading: true })
         this.getVersionInfo().catch(() => ({
           version: info.version,
           desc: info.releaseNotes,

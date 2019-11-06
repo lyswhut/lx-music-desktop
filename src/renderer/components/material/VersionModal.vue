@@ -54,7 +54,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
           | 国内Windows/MAC用户推荐到
           strong 网盘
           | 下载。
-  main(:class="$style.main" v-else-if="version.isTimeOut")
+  main(:class="$style.main" v-else-if="version.isDownloading && version.isTimeOut && !version.isUnknow")
     h2 ❗️ 新版本下载超时 ❗️
     div(:class="$style.desc")
       p 你当前所在网络访问GitHub较慢，导致新版本下载超时（已经下了半个钟了😳），建议手动更新版本！
