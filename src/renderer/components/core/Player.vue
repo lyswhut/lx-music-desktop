@@ -89,6 +89,10 @@ export default {
         msDownVolume: 0,
       },
       isActiveTransition: false,
+      mediaBuffer: {
+        timeout: null,
+        playTime: 0,
+      },
     }
   },
   computed: {
@@ -214,7 +218,7 @@ export default {
         this.stopPlay()
         if (this.listId != 'download' && this.audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
           // console.log(this.retryNum)
-          this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
+          if (!this.audioErrorTime) this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
           this.status = 'URL过期，正在刷新URL...'
@@ -239,6 +243,14 @@ export default {
       })
       this.audio.addEventListener('canplay', () => {
         console.log('加载完成开始播放')
+        if (this.mediaBuffer.playTime) {
+          let playTime = this.mediaBuffer.playTime
+          this.mediaBuffer.playTime = 0
+          this.audio.currentTime = playTime
+        }
+        if (this.mediaBuffer.timeout) {
+          this.clearBufferTimeout()
+        }
         // if (this.musicInfo.lrc) this.lyric.lrc.play(this.audio.currentTime * 1000)
         this.status = '音乐加载中...'
       })
@@ -247,10 +259,13 @@ export default {
       //   // if (this.musicInfo.lyric.orgLrc) this.musicInfo.lyric.lrc.play(this.audio.currentTime * 1000)
       //   this.status = '播放中...'
       // })
-      // this.audio.addEventListener('emptied', () => {
-      //   console.log('媒介资源元素突然为空，网络错误 or 切换歌曲？')
-      //   this.status = '媒介资源元素突然为空，网络错误？'
-      // })
+      this.audio.addEventListener('emptied', () => {
+        this.mediaBuffer.playTime = 0
+        this.clearBufferTimeout()
+
+        // console.log('媒介资源元素突然为空，网络错误 or 切换歌曲？')
+        // this.status = '媒介资源元素突然为空，网络错误？'
+      })
 
       this.audio.addEventListener('timeupdate', () => {
         this.nowPlayTime = this.audio.currentTime
@@ -258,7 +273,9 @@ export default {
 
       this.audio.addEventListener('waiting', () => {
         // this.musicInfo.lyric.lrc.pause()
+        // console.log('缓冲中...')
         this.stopPlay()
+        this.startBuffering()
         this.status = '缓冲中...'
       })
 
@@ -369,9 +386,18 @@ export default {
     setProgess(e) {
       if (!this.audio.src) return
       this.isActiveTransition = true
-      this.audio.currentTime =
-        (e.offsetX / this.pregessWidth) * this.maxPlayTime
-      if (!this.isPlay) this.audio.play()
+      this.$nextTick(() => {
+        const time = (e.offsetX / this.pregessWidth) * this.maxPlayTime
+        if (this.audioErrorTime) this.audioErrorTime = time
+        if (this.mediaBuffer.playTime) {
+          this.clearBufferTimeout()
+          this.mediaBuffer.playTime = time
+          this.startBuffering()
+        }
+        this.audio.currentTime = time
+
+        if (!this.isPlay) this.audio.play()
+      })
     },
     setProgessWidth() {
       this.pregessWidth = parseInt(
@@ -380,7 +406,12 @@ export default {
     },
     togglePlay() {
       if (!this.audio.src) return
-      this.isPlay ? this.audio.pause() : this.audio.play()
+      if (this.isPlay) {
+        this.audio.pause()
+        this.clearBufferTimeout()
+      } else {
+        this.audio.play()
+      }
     },
     imgError(e) {
       // e.target.src = 'https://y.gtimg.cn/music/photo_new/T002R500x500M000002BMEC42fM8S3.jpg'
@@ -508,6 +539,32 @@ export default {
     handleTransitionEnd(e) {
       // console.log(e)
       this.isActiveTransition = false
+    },
+    startBuffering() {
+      console.log('start t')
+      if (this.mediaBuffer.timeout) return
+      this.mediaBuffer.timeout = setTimeout(() => {
+        this.mediaBuffer.timeout = null
+        if (!this.mediaBuffer.playTime) this.mediaBuffer.playTime = this.audio.currentTime
+        let skipTime = this.audio.currentTime + getRandom(3, 6)
+        if (skipTime > this.maxPlayTime) skipTime = (this.maxPlayTime - this.audio.currentTime) / 2
+        if (skipTime - this.mediaBuffer.playTime < 1 || this.maxPlayTime - skipTime < 1) {
+          this.mediaBuffer.playTime = 0
+          this.handleNext()
+          return
+        }
+        this.startBuffering()
+        this.audio.currentTime = skipTime
+        console.log(this.mediaBuffer.playTime)
+        console.log(this.audio.currentTime)
+      }, 3000)
+    },
+    clearBufferTimeout() {
+      console.log('clear t')
+      if (!this.mediaBuffer.timeout) return
+      clearTimeout(this.mediaBuffer.timeout)
+      this.mediaBuffer.timeout = null
+      this.mediaBuffer.playTime = 0
     },
   },
 }
