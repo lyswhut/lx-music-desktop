@@ -210,7 +210,7 @@ export default {
         return result
       }).then(result => {
         if (result.version === this.version.version) return
-        console.log(this.version)
+        // console.log(this.version)
         this.$nextTick(() => {
           this.setVersionModalVisible({ isShow: true })
         })

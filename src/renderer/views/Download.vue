@@ -1,6 +1,8 @@
 <template lang="pug">
 div(:class="$style.download")
   //- transition
+  div(:class="$style.header")
+    material-tab(:class="$style.tab" :list="tabs" align="left" item-key="id" item-name="name" v-model="tabId")
   div(:class="$style.content" v-if="list.length")
     div(:class="$style.thead")
       table
@@ -17,7 +19,7 @@ div(:class="$style.download")
     div.scroll(v-if="list.length" :class="$style.tbody")
       table
         tbody
-          tr(v-for='(item, index) in list' :key='item.key' @click="handleDoubleClick(index)" :class="isPlayList && playIndex === index ? $style.active : ''")
+          tr(v-for='(item, index) in showList' :key='item.key' @click="handleDoubleClick(index)" :class="playListIndex === index ? $style.active : ''")
             td.nobreak.center(style="width: 37px;" @click.stop)
               material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
             td.break(style="width: 28%;") {{item.musicInfo.name}} - {{item.musicInfo.singer}}
@@ -46,6 +48,29 @@ export default {
       isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
+      tabs: [
+        {
+          name: '全部任务',
+          id: 'all',
+        },
+        {
+          name: '正在下载',
+          id: 'runing',
+        },
+        {
+          name: '已暂停',
+          id: 'paused',
+        },
+        {
+          name: '出错',
+          id: 'error',
+        },
+        {
+          name: '下载完成',
+          id: 'finished',
+        },
+      ],
+      tabId: 'all',
     }
   },
   computed: {
@@ -53,6 +78,25 @@ export default {
     ...mapGetters('player', ['listId', 'playIndex']),
     isPlayList() {
       return this.listId == 'download'
+    },
+    playListIndex() {
+      if (this.listId != 'download') return
+      let path = this.list[this.playIndex].filePath
+      return this.showList.findIndex(i => i.filePath == path)
+    },
+    showList() {
+      switch (this.tabId) {
+        case 'runing':
+          return this.list.filter(i => i.status == this.downloadStatus.RUN || i.status == this.downloadStatus.WAITING)
+        case 'paused':
+          return this.list.filter(i => i.status == this.downloadStatus.PAUSE)
+        case 'error':
+          return this.list.filter(i => i.status == this.downloadStatus.ERROR)
+        case 'finished':
+          return this.list.filter(i => i.status == this.downloadStatus.COMPLETED)
+        default:
+          return this.list
+      }
     },
   },
   watch: {
@@ -76,14 +120,14 @@ export default {
     ...mapMutations('player', ['setList']),
     ...mapMutations('download', ['pauseTask']),
     handlePauseTask(index) {
-      let info = this.list[index]
+      let info = this.showList[index]
       let dl = this.dls[info.key]
       dl ? dl.pause() : this.pauseTask(info)
       console.log('pause')
     },
     handleStartTask(index) {
       console.log('start')
-      let info = this.list[index]
+      let info = this.showList[index]
       let dl = this.dls[info.key]
       dl ? dl.resume() : this.startTask(info)
     },
@@ -101,7 +145,7 @@ export default {
       this.clickIndex = -1
     },
     handleClick(index) {
-      let info = this.list[index]
+      let info = this.showList[index]
       if (info.isComplate) {
         this.handlePlay(index)
       } else if (info.status === this.downloadStatus.RUN) {
@@ -111,8 +155,9 @@ export default {
       }
     },
     handlePlay(index) {
-      if (!checkPath(this.list[index].filePath)) return
-      this.setList({ list: this.list, listId: 'download', index })
+      if (!checkPath(this.showList[index].filePath)) return
+      let path = this.showList[index].filePath
+      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.filePath === path) })
     },
     handleListBtnClick(info) {
       switch (info.action) {
@@ -134,7 +179,7 @@ export default {
       }
     },
     handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.list] : []
+      this.selectdData = isSelect ? [...this.showList] : []
     },
     resetSelect() {
       this.isSelectAll = false
@@ -145,7 +190,7 @@ export default {
         case 'start':
           this.selectdData.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.RUN) return
-            let index = this.list.indexOf(item)
+            let index = this.showList.indexOf(item)
             if (index < 0) return
             this.handleStartTask(index)
           })
@@ -155,13 +200,13 @@ export default {
           this.selectdData.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
             if (item.status == this.downloadStatus.RUN) return runs.push(item)
-            let index = this.list.indexOf(item)
+            let index = this.showList.indexOf(item)
             if (index < 0) return
             this.handlePauseTask(index)
           })
           runs.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            let index = this.list.indexOf(item)
+            let index = this.showList.indexOf(item)
             if (index < 0) return
             this.handlePauseTask(index)
           })
@@ -174,7 +219,7 @@ export default {
       this.resetSelect()
     },
     handleOpenFolder(index) {
-      let path = this.list[index].filePath
+      let path = this.showList[index].filePath
       if (!checkPath(path)) return
       openDirInExplorer(path)
     },
@@ -188,9 +233,14 @@ export default {
 .download {
   overflow: hidden;
   height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
   // .noItem {
 
     // }
+}
+.header {
+  flex: none;
 }
 
 .content {
@@ -198,6 +248,8 @@ export default {
   font-size: 14px;
   display: flex;
   flex-flow: column nowrap;
+  flex: auto;
+  overflow: hidden;
   // table {
   //   position: relative;
   //   thead {
