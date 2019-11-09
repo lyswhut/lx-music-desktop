@@ -20,7 +20,7 @@
 <script>
 import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { ipcRenderer } from 'electron'
+import { rendererOn, rendererSend } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -29,12 +29,6 @@ dnscache({
   ttl: 21600,
   cachesize: 1000,
 })
-let win
-let body
-if (!isLinux) {
-  win = require('electron').remote.getCurrentWindow()
-  body = document.body
-}
 
 export default {
   data() {
@@ -103,10 +97,10 @@ export default {
     ...mapMutations(['setSetting']),
     init() {
       if (this.isProd && !isLinux) {
-        body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
-        body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
+        document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
+        document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
-      ipcRenderer.on('update-available', (e, info) => {
+      rendererOn('update-available', (e, info) => {
         // this.showUpdateModal(true)
         // console.log(info)
         this.setVersionModalVisible({ isDownloading: true })
@@ -121,7 +115,7 @@ export default {
           })
         })
       })
-      ipcRenderer.on('update-error', (event, err) => {
+      rendererOn('update-error', (event, err) => {
         // console.log(err)
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isError: true })
@@ -129,11 +123,11 @@ export default {
           this.showUpdateModal()
         })
       })
-      ipcRenderer.on('update-progress', (event, progress) => {
+      rendererOn('update-progress', (event, progress) => {
         // console.log(progress)
         this.setDownloadProgress(progress)
       })
-      ipcRenderer.on('update-downloaded', info => {
+      rendererOn('update-downloaded', info => {
         // console.log(info)
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isDownloaded: true })
@@ -141,7 +135,7 @@ export default {
           this.showUpdateModal()
         })
       })
-      ipcRenderer.on('update-not-available', () => {
+      rendererOn('update-not-available', () => {
         this.clearUpdateTimeout()
         this.setNewVersion({
           version: this.version.version,
@@ -166,13 +160,13 @@ export default {
     },
     enableIgnoreMouseEvents() {
       if (isLinux) return
-      win.setIgnoreMouseEvents(false)
+      rendererSend('setIgnoreMouseEvents', false)
       // console.log('content enable')
     },
     dieableIgnoreMouseEvents() {
       if (isLinux) return
       // console.log('content disable')
-      win.setIgnoreMouseEvents(true, { forward: true })
+      rendererSend('setIgnoreMouseEvents', true)
     },
 
     initData() { // 初始化数据
@@ -225,8 +219,8 @@ export default {
   beforeDestroy() {
     this.clearUpdateTimeout()
     if (this.isProd) {
-      body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
-      body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
+      document.body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
+      document.body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
   },
 }

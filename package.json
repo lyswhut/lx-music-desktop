@@ -144,7 +144,7 @@
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
     "cfonts": "^2.4.5",
-    "chalk": "^2.4.2",
+    "chalk": "^3.0.0",
     "changelog-parser": "^2.8.0",
     "copy-webpack-plugin": "^5.0.5",
     "core-js": "^3.4.0",
