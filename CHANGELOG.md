@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.11.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.10.0...v0.11.0) - 2019-11-10
+
+### 新增
+
+- 新增歌曲缓冲定时器，尝试用于解决网络正常但是歌曲缓冲过久的问题
+- 新增下载管理的任务状态分类
+- 添加**杀毒软件提示有病毒或恶意行为**的说明，可到**常见问题**拉到最后查看（常见问题可在开源地址找到）
+
+### 优化
+
+- 优化更新弹窗机制及其内容描述，对于可以自动更新的版本，现在可以看到软件的下载进度了
+
 ## [0.10.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.9.1...v0.10.0) - 2019-11-02
 
 #### 优化

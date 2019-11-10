@@ -1,7 +1,11 @@
 {
-  "version": "0.10.0",
-  "desc": "<h4>优化</h4>\n<ul>\n<li>大幅减少程序<strong>播放时</strong>对CPU与GPU的使用，经测试CPU使用减少60%以上，GPU使用减少90%以上，这应该能解决MAC系统上的温度上涨的问题</li>\n</ul>\n<h4>修复</h4>\n<ul>\n<li>修复酷我源<strong>搜索提示</strong>、<strong>排行榜</strong>无法获取的问题</li>\n<li>修复咪咕源无法播放的问题</li>\n</ul>\n",
+  "version": "0.11.0",
+  "desc": "<h3>新增</h3>\n<ul>\n<li>新增歌曲缓冲定时器，尝试用于解决网络正常但是歌曲缓冲过久的问题</li>\n<li>新增下载管理的任务状态分类</li>\n<li>添加<strong>杀毒软件提示有病毒或恶意行为</strong>的说明，可到<strong>常见问题</strong>拉到最后查看（常见问题可在开源地址找到）</li>\n</ul>\n<h3>优化</h3>\n<ul>\n<li>优化更新弹窗机制及其内容描述，对于可以自动更新的版本，现在可以看到软件的下载进度了</li>\n</ul>\n",
   "history": [
+    {
+      "version": "0.10.0",
+      "desc": "<h4>优化</h4>\n<ul>\n<li>大幅减少程序<strong>播放时</strong>对CPU与GPU的使用，经测试CPU使用减少60%以上，GPU使用减少90%以上，这应该能解决MAC系统上的温度上涨的问题</li>\n</ul>\n<h4>修复</h4>\n<ul>\n<li>修复酷我源<strong>搜索提示</strong>、<strong>排行榜</strong>无法获取的问题</li>\n<li>修复咪咕源无法播放的问题</li>\n</ul>\n"
+    },
     {
       "version": "0.9.1",
       "desc": "<h4>修复</h4>\n<ul>\n<li>修复没有配置文件时程序启动出错的问题</li>\n</ul>\n"
