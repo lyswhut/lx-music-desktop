@@ -140,7 +140,7 @@ div.scroll(:class="$style.setting")
         span.hover(title="点击复制" @click="clipboardWriteText('glqw')") glqw
       p.small
         | 软件的常见问题可转至：
-        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#常见问题')") 常见问题
+        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       //- p.small
           | 怀念曾经的
           strong @messoer
