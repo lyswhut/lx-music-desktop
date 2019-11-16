@@ -7,11 +7,30 @@ const extReg = /^(\.(?:jpe?g|png)).*$/
 module.exports = (filePath, meta) => {
   if (!meta.APIC) return NodeID3.write(meta, filePath)
   let picPath = filePath.replace(/\.mp3$/, '') + path.extname(meta.APIC).replace(extReg, '$1')
-  request(meta.APIC).pipe(fs.createWriteStream(picPath)).on('finish', () => {
-    meta.APIC = picPath
-    NodeID3.write(meta, filePath)
-    fs.unlink(picPath, err => {
-      if (err) console.log(err.message)
+  request(meta.APIC)
+    .on('response', respones => {
+      if (respones.statusCode !== 200 && respones.statusCode != 206) {
+        delete meta.APIC
+        NodeID3.write(meta, filePath)
+        return
+      }
+      respones
+        .pipe(fs.createWriteStream(picPath))
+        .on('finish', () => {
+          meta.APIC = picPath
+          NodeID3.write(meta, filePath)
+          fs.unlink(picPath, err => {
+            if (err) console.log(err.message)
+          })
+        }).on('error', err => {
+          if (err) console.log(err.message)
+          delete meta.APIC
+          NodeID3.write(meta, filePath)
+        })
     })
-  })
+    .on('error', err => {
+      if (err) console.log(err.message)
+      delete meta.APIC
+      NodeID3.write(meta, filePath)
+    })
 }
