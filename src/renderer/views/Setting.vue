@@ -78,7 +78,7 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
     dt 网络设置
     dd
-      h3 代理设置（歌曲下载暂不支持代理）
+      h3 代理设置
       div
         p
           material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" label="是否启用")
@@ -108,7 +108,7 @@ div.scroll(:class="$style.setting")
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
     dt 其他
     dd
-      h3 缓存大小（清理缓存后图片等资源将需要重新下载）
+      h3 缓存大小（清理缓存后图片等资源将需要重新下载，不建议清除，软件会自动将大小维持在200M左右）
       div
         p
           | 软件已使用缓存大小：

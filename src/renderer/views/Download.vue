@@ -80,9 +80,11 @@ export default {
       return this.listId == 'download'
     },
     playListIndex() {
-      if (this.listId != 'download') return
-      let path = this.list[this.playIndex].filePath
-      return this.showList.findIndex(i => i.filePath == path)
+      if (this.listId != 'download' || !this.list.length) return
+      let info = this.list[this.playIndex]
+      if (!info) return -1
+      let key = info.key
+      return this.showList.findIndex(i => i.key == key)
     },
     showList() {
       switch (this.tabId) {
@@ -120,16 +122,16 @@ export default {
     ...mapMutations('player', ['setList']),
     ...mapMutations('download', ['pauseTask']),
     handlePauseTask(index) {
-      let info = this.showList[index]
+      let info = this.list[index]
       let dl = this.dls[info.key]
-      dl ? dl.pause() : this.pauseTask(info)
+      dl ? dl.stop() : this.pauseTask(info)
       console.log('pause')
     },
     handleStartTask(index) {
       console.log('start')
-      let info = this.showList[index]
+      let info = this.list[index]
       let dl = this.dls[info.key]
-      dl ? dl.resume() : this.startTask(info)
+      dl ? dl.start() : this.startTask(info)
     },
     handleDoubleClick(index) {
       if (
@@ -145,7 +147,9 @@ export default {
       this.clickIndex = -1
     },
     handleClick(index) {
-      let info = this.showList[index]
+      const key = this.showList[index].key
+      index = this.list.findIndex(i => i.key === key)
+      let info = this.list[index]
       if (info.isComplate) {
         this.handlePlay(index)
       } else if (info.status === this.downloadStatus.RUN) {
@@ -155,26 +159,28 @@ export default {
       }
     },
     handlePlay(index) {
-      if (!checkPath(this.showList[index].filePath)) return
-      let path = this.showList[index].filePath
+      if (!checkPath(this.list[index].filePath)) return
+      let path = this.list[index].filePath
       this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.filePath === path) })
     },
     handleListBtnClick(info) {
+      const key = this.showList[info.index].key
+      let index = this.list.findIndex(i => i.key === key)
       switch (info.action) {
         case 'play':
-          this.handlePlay(info.index)
+          this.handlePlay(index)
           break
         case 'start':
-          this.handleStartTask(info.index)
+          this.handleStartTask(index)
           break
         case 'pause':
-          this.handlePauseTask(info.index)
+          this.handlePauseTask(index)
           break
         case 'remove':
-          this.removeTask(info.index)
+          this.removeTask(index)
           break
         case 'file':
-          this.handleOpenFolder(info.index)
+          this.handleOpenFolder(index)
           break
       }
     },
@@ -190,7 +196,7 @@ export default {
         case 'start':
           this.selectdData.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.RUN) return
-            let index = this.showList.indexOf(item)
+            let index = this.list.indexOf(item)
             if (index < 0) return
             this.handleStartTask(index)
           })
@@ -200,13 +206,13 @@ export default {
           this.selectdData.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
             if (item.status == this.downloadStatus.RUN) return runs.push(item)
-            let index = this.showList.indexOf(item)
+            let index = this.list.indexOf(item)
             if (index < 0) return
             this.handlePauseTask(index)
           })
           runs.forEach(item => {
             if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            let index = this.showList.indexOf(item)
+            let index = this.list.indexOf(item)
             if (index < 0) return
             this.handlePauseTask(index)
           })
@@ -219,7 +225,7 @@ export default {
       this.resetSelect()
     },
     handleOpenFolder(index) {
-      let path = this.showList[index].filePath
+      let path = this.list[index].filePath
       if (!checkPath(path)) return
       openDirInExplorer(path)
     },

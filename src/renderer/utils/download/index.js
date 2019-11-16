@@ -1,6 +1,6 @@
-import { DownloaderHelper } from 'node-downloader-helper'
+import Downloader from './Downloader'
 // import { pauseResumeTimer } from './util'
-import { sizeFormate } from '../index'
+import { sizeFormate, getProxyInfo } from '../index'
 import { debugDownload } from '../env'
 
 // these are the default options
@@ -21,38 +21,34 @@ export default ({
   fileName,
   method = 'get',
   headers,
-  override,
   forceResume,
   // resumeTime = 5000,
-  onEnd = () => {},
+  onCompleted = () => {},
   onError = () => {},
-  onStateChanged = () => {},
-  onDownload = () => {},
-  onPause = () => {},
-  onResume = () => {},
+  onFail = () => {},
+  onStart = () => {},
+  onStop = () => {},
   onProgress = () => {},
-  resumeInfo,
 } = {}) => {
-  const dl = new DownloaderHelper(url, path, {
-    fileName,
-    method,
-    headers,
-    override,
+  const dl = new Downloader(url, path, fileName, {
+    requestOptions: {
+      method,
+      headers,
+      proxy: getProxyInfo(),
+    },
+
     forceResume,
   })
 
-  dl.on('end', () => {
-    onEnd()
+  dl.on('completed', () => {
+    onCompleted()
     debugDownload && console.log('Download Completed')
   }).on('error', err => {
     if (err.message === 'socket hang up') return
     onError(err)
     debugDownload && console.error('Something happend', err)
-  }).on('stateChanged', state => {
-    onStateChanged(state)
-    debugDownload && console.log('State: ', state)
-  }).on('download', () => {
-    onDownload()
+  }).on('start', () => {
+    onStart()
     // pauseResumeTimer(dl, resumeTime)
   }).on('progress', stats => {
     const progress = stats.progress.toFixed(2)
@@ -68,24 +64,17 @@ export default ({
       const total = sizeFormate(stats.total)
       console.log(`${speed}/s - ${progress}% [${downloaded}/${total}]`)
     }
-  }).on('pause', () => {
-    onPause()
+  }).on('stop', () => {
+    onStop()
     debugDownload && console.log('paused')
-  }).on('resume', () => {
-    onResume()
-    debugDownload && console.log('resume')
+  }).on('fail', resp => {
+    onFail(resp)
+    debugDownload && console.log('fail')
   })
 
   debugDownload && console.log('Downloading: ', url)
 
-  if (resumeInfo) {
-    dl.__total = resumeInfo.totalFileSize // <--- Workaround
-    // dl.__filePath = resumeInfo.filePath // <--- Workaround
-    dl.__isResumable = true // <--- Workaround
-    dl.resume()
-  } else {
-    dl.start()
-  }
+  dl.start()
 
   return dl
 }

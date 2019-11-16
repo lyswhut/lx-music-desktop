@@ -374,3 +374,8 @@ export const clearCache = () => rendererInvoke('clearCache')
  * @param {*} height
  */
 export const setWindowSize = (width, height) => rendererSend('setWindowSize', { width, height })
+
+
+export const getProxyInfo = () => window.globalObj.proxy.enable
+  ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
+  : undefined

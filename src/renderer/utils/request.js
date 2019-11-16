@@ -4,6 +4,7 @@ import { debugRequest } from './env'
 import { requestMsg } from './message'
 import { bHh } from './music/options'
 import { deflateRawSync } from 'zlib'
+import { getProxyInfo } from './index'
 // import fs from 'fs'
 
 const defaultHeaders = {
@@ -218,10 +219,6 @@ export const http_jsonp = (url, options, callback) => {
     callback(err, resp, body)
   })
 }
-
-const getProxyInfo = () => window.globalObj.proxy.enable
-  ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
-  : undefined
 
 const regx = /(?:\d\w)+/g
 

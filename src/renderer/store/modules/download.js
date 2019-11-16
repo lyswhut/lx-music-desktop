@@ -53,7 +53,7 @@ const getExt = type => {
   }
 }
 
-const checkList = (list, musicInfo, type) => list.some(s => s.musicInfo.songmid === musicInfo.songmid && s.type === type)
+const checkList = (list, musicInfo, type, ext) => list.some(s => s.musicInfo.songmid === musicInfo.songmid && (s.type === type || s.ext === ext))
 
 const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   let downloadCount = 0
@@ -121,11 +121,24 @@ const downloadLyric = (downloadInfo, filePath) => {
   })
 }
 
+const refreshUrl = function(commit, downloadInfo) {
+  commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
+  getUrl(downloadInfo, true).then(result => {
+    commit('updateUrl', { downloadInfo, url: result.url })
+    commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
+    dls[downloadInfo.key].refreshUrl(result.url)
+    dls[downloadInfo.key].start()
+  }).catch(err => {
+    console.log(err)
+    this.dispatch('download/startTask')
+  })
+}
+
 // actions
 const actions = {
   createDownload({ state, rootState, commit }, { musicInfo, type }) {
-    if (checkList(state.list, musicInfo, type)) return
     let ext = getExt(type)
+    if (checkList(state.list, musicInfo, type, ext)) return
     const downloadInfo = {
       isComplate: false,
       status: state.downloadStatus.WAITING,
@@ -146,6 +159,11 @@ const actions = {
     }
     downloadInfo.filePath = path.join(rootState.setting.download.savePath, downloadInfo.fileName)
     commit('addTask', downloadInfo)
+    try { // 删除同路径下的同名文件
+      fs.unlinkSync(downloadInfo.filePath)
+    } catch (err) {
+      if (err.code !== 'ENOENT') return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
+    }
     if (dls[downloadInfo.key]) {
       dls[downloadInfo.key].stop().finally(() => {
         delete dls[downloadInfo.key]
@@ -167,7 +185,7 @@ const actions = {
     if (!downloadInfo) downloadInfo = result
 
     // 开始任务
-    commit('onDownload', downloadInfo)
+    commit('onStart', downloadInfo)
     commit('setStatusText', { downloadInfo, text: '任务初始化中' })
     let msg = checkPath(rootState.setting.download.savePath)
     if (msg) return commit('setStatusText', '检查下载目录出错: ' + msg)
@@ -178,12 +196,12 @@ const actions = {
       fileName: downloadInfo.fileName,
       method: 'get',
       override: true,
-      onEnd() {
-        if (downloadInfo.progress.progress != '100.00') {
-          delete dls[downloadInfo.key]
-          return this.dispatch('download/startTask', downloadInfo)
-        }
-        commit('onEnd', downloadInfo)
+      onCompleted() {
+        // if (downloadInfo.progress.progress != '100.00') {
+        //   delete dls[downloadInfo.key]
+        //   return this.dispatch('download/startTask', downloadInfo)
+        // }
+        commit('onCompleted', downloadInfo)
         _this.dispatch('download/startTask')
         const filePath = path.join(options.path, options.fileName)
 
@@ -199,53 +217,39 @@ const actions = {
           _this.dispatch('download/startTask')
           return
         }
-        let code
-        if (err.message.includes('Response status was')) {
-          code = err.message.replace(/Response status was (\d+)$/, '$1')
-        } else if (err.code === 'ETIMEDOUT' || err.code == 'ENOTFOUND') {
-          code = err.code
+        if (err.code == 'ENOTFOUND') {
+          refreshUrl.call(_this, commit, downloadInfo)
         } else {
           console.log('Download failed, Attempting Retry')
-          dls[downloadInfo.key].resume()
+          dls[downloadInfo.key].start()
           commit('setStatusText', { downloadInfo, text: '正在重试' })
-          return
-        }
-        switch (code) {
-          case '401':
-          case '403':
-          case '410':
-          case 'ETIMEDOUT':
-          case 'ENOTFOUND':
-            commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
-            getUrl(downloadInfo, true).then(result => {
-              commit('updateUrl', { downloadInfo, url: result.url })
-              commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
-              dls[downloadInfo.key].url = dls[downloadInfo.key].requestURL = result.url
-              dls[downloadInfo.key].__initProtocol(result.url)
-              dls[downloadInfo.key].resume()
-            }).catch(err => {
-              console.log(err)
-              _this.dispatch('download/startTask')
-            })
         }
       },
-      // onStateChanged(state) {
-      //   console.log(state)
-      // },
-      onDownload() {
-        commit('onDownload', downloadInfo)
-        console.log('on download')
+      onFail(response) {
+        commit('onError', downloadInfo)
+
+        if (++tryNum[downloadInfo.key] > 2) {
+          _this.dispatch('download/startTask')
+          return
+        }
+        switch (response.statusCode) {
+          case 401:
+          case 403:
+          case 410:
+            refreshUrl.call(_this, commit, downloadInfo)
+        }
+      },
+      onStart() {
+        commit('onStart', downloadInfo)
+        console.log('on start')
       },
       onProgress(status) {
         commit('onProgress', { downloadInfo, status })
         console.log(status)
       },
-      onPause() {
+      onStop() {
         commit('pauseTask', downloadInfo)
         _this.dispatch('download/startTask')
-      },
-      onResume() {
-        commit('resumeTask', downloadInfo)
       },
     }
     commit('setStatusText', { downloadInfo, text: '获取URL中...' })
@@ -315,9 +319,6 @@ const mutations = {
     downloadInfo.status = state.downloadStatus.PAUSE
     downloadInfo.statusText = '暂停下载'
   },
-  resumeTask(state, downloadInfo) {
-    downloadInfo.statusText = '开始下载'
-  },
   setStatusText(state, { downloadInfo, index, text }) { // 设置状态文本
     if (downloadInfo) {
       downloadInfo.statusText = text
@@ -352,7 +353,7 @@ const mutations = {
       state.list[index].status = status
     }
   },
-  onEnd(state, downloadInfo) {
+  onCompleted(state, downloadInfo) {
     downloadInfo.isComplate = true
     downloadInfo.status = state.downloadStatus.COMPLETED
     downloadInfo.statusText = '下载完成'
@@ -361,7 +362,7 @@ const mutations = {
     downloadInfo.status = state.downloadStatus.ERROR
     downloadInfo.statusText = '任务出错'
   },
-  onDownload(state, downloadInfo) {
+  onStart(state, downloadInfo) {
     downloadInfo.status = state.downloadStatus.RUN
     downloadInfo.statusText = '正在下载'
   },
