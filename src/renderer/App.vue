@@ -23,6 +23,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
+import { throttle } from './utils'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 dnscache({
   enable: true,
@@ -50,6 +51,20 @@ export default {
       downloadStatus: 'downloadStatus',
     }),
   },
+  created() {
+    this.saveSetting = throttle(n => {
+      this.electronStore.set('setting', n)
+    })
+    this.saveDefaultList = throttle(n => {
+      this.electronStore.set('list.defaultList', n)
+    }, 500)
+    this.saveLoveList = throttle(n => {
+      this.electronStore.set('list.loveList', n)
+    }, 500)
+    this.saveDownloadList = throttle(n => {
+      this.electronStore.set('download.list', n)
+    }, 1000)
+  },
   mounted() {
     document.body.classList.add(this.isLinux ? 'noTransparent' : 'transparent')
     this.init()
@@ -57,27 +72,25 @@ export default {
   watch: {
     setting: {
       handler(n) {
-        this.electronStore.set('setting', n)
+        this.saveSetting(n)
       },
       deep: true,
     },
     defaultList: {
       handler(n) {
-        // console.log(n)
-        this.electronStore.set('list.defaultList', n)
+        this.saveDefaultList(n)
       },
       deep: true,
     },
     loveList: {
       handler(n) {
-        // console.log(n)
-        this.electronStore.set('list.loveList', n)
+        this.saveLoveList(n)
       },
       deep: true,
     },
     downloadList: {
       handler(n) {
-        this.electronStore.set('download.list', n)
+        this.saveDownloadList(n)
       },
       deep: true,
     },
