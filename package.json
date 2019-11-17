@@ -71,12 +71,13 @@
       "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
     "mac": {
-      "icon": "./resources/icons/512x512.png",
+      "icon": "./resources/icons/512x512.icns",
       "category": "public.app-category.music"
     },
     "linux": {
       "maintainer": "lyswhut <lyswuhut@qq.com>",
-      "artifactName": "${productName} v${version} ${env.ARCH}.${ext}"
+      "artifactName": "${productName} v${version} ${env.ARCH}.${ext}",
+      "icon": "./resources/icons"
     },
     "nsis": {
       "oneClick": false,
