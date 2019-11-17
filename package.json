@@ -77,7 +77,11 @@
     "linux": {
       "maintainer": "lyswhut <lyswuhut@qq.com>",
       "artifactName": "${productName} v${version} ${env.ARCH}.${ext}",
-      "icon": "./resources/icons"
+      "icon": "./resources/icons",
+      "category": "Utility;AudioVideo;Audio;Player;Music;",
+      "desktop": {
+        "Name[zh_CN]": "洛雪音乐助手"
+      }
     },
     "nsis": {
       "oneClick": false,
