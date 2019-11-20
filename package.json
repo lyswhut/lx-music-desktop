@@ -110,7 +110,7 @@
     },
     "appImage": {
       "license": "./licenses/license_zh.txt",
-      "category": "Audio"
+      "category": "Utility;AudioVideo;Audio;Player;Music;"
     },
     "publish": [
       {
