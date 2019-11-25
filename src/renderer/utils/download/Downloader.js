@@ -126,7 +126,13 @@ class Task extends EventEmitter {
         response
           .on('data', this.__handleWriteData.bind(this))
           .on('error', err => this.__handleError(err))
-          .on('end', () => this.__handleComplete())
+          .on('end', () => {
+            if (response.complete) {
+              this.__handleComplete()
+            } else {
+              this.__handleError(new Error('The connection was terminated while the message was still being sent'))
+            }
+          })
       })
       .on('error', err => this.__handleError(err))
       .on('close', () => this.__closeWriteStream())
