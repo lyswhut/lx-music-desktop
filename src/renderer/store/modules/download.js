@@ -88,7 +88,7 @@ const getUrl = (downloadInfo, isRefresh) => {
  * 设置歌曲meta信息
  * @param {*} downloadInfo
  * @param {*} filePath
- * @param {*} isEmbedPic
+ * @param {*} isEmbedPic // 是否嵌入图片
  */
 const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
   if (downloadInfo.type === 'ape' || downloadInfo.type === 'flac') return

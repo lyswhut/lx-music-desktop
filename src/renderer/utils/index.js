@@ -42,22 +42,35 @@ export const b64DecodeUnicode = str => {
 
 export const decodeName = str => str.replace(/&apos;/g, '\'')
 
-export const scrollTo = (element, to, duration = 300, fn = function() {}) => {
+const easeInOutQuad = (t, b, c, d) => {
+  t /= d / 2
+  if (t < 1) return (c / 2) * t * t + b
+  t--
+  return (-c / 2) * (t * (t - 2) - 1) + b
+}
+/**
+ * 设置滚动条位置
+ * @param {*} element 要设置滚动的容器 dom
+ * @param {*} to 滚动的目标位置
+ * @param {*} duration 滚动完成时间 ms
+ * @param {*} fn 滚动完成后的回调
+ */
+export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
   if (!element) return
   const start = element.scrollTop || element.scrollY || 0
+  if (to > start) {
+    let maxScrollTop = element.scrollHeight - element.clientHeight
+    if (to > maxScrollTop) to = maxScrollTop
+  } else if (to < start) {
+    if (to < 0) to = 0
+  } else return fn()
   const change = to - start
   const increment = 10
-  if (!change) {
-    fn()
-    return
-  }
-  let currentTime = 0; let val
-  const easeInOutQuad = (t, b, c, d) => {
-    t /= d / 2
-    if (t < 1) return (c / 2) * t * t + b
-    t--
-    return (-c / 2) * (t * (t - 2) - 1) + b
-  }
+  if (!change) return fn()
+
+  let currentTime = 0
+  let val
+
   const animateScroll = () => {
     currentTime += increment
     val = parseInt(easeInOutQuad(currentTime, start, change, duration))
@@ -83,13 +96,13 @@ export const checkPath = path => fs.existsSync(path)
 
 
 /**
- * 在资源管理器中打开目录
+ * 选择路径
  * @param {*} 选项
  */
 export const selectDir = options => rendererInvoke('selectDir', options)
 
 /**
- * 在资源管理器中打开目录
+ * 打开保存对话框
  * @param {*} 选项
  */
 export const openSaveDir = options => rendererInvoke('showSaveDialog', options)
@@ -250,8 +263,8 @@ export const openUrl = url => {
  * 设置标题
  */
 let dom_title = document.getElementsByTagName('title')[0]
-export const setTitle = title => {
-  dom_title.innerText = title || '洛雪音乐助手'
+export const setTitle = (title = '洛雪音乐助手') => {
+  dom_title.innerText = title
 }
 
 
