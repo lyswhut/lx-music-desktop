@@ -365,7 +365,7 @@ export default {
         type: 'setting',
         data: this.setting,
       }
-      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
         console.log(err)
       })
     },
@@ -395,7 +395,7 @@ export default {
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
         console.log(err)
       })
     },
@@ -424,7 +424,7 @@ export default {
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(allData), 'utf8', err => {
         console.log(err)
       })
     },
