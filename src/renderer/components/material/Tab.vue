@@ -110,13 +110,13 @@ export default {
         display: inline-block;
         border: none;
         cursor: pointer;
-        padding: 5px 10px 7px;
+        padding: 0 10px;
         font-size: 12px;
         // color: @color-btn;
         outline: none;
         transition: background-color @transition-theme;
         background-color: @color-tab-btn-background;
-
+        line-height: 28px;
       }
       &:hover {
         // border-left-color: @color-theme_2-hover;
