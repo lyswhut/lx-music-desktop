@@ -186,19 +186,19 @@ export default {
       let formats = item.formats.split('|')
       let types = []
       let _types = {}
-      if (formats.indexOf('MP3128')) {
+      if (formats.includes('MP3128')) {
         types.push({ type: '128k', size: null })
         _types['128k'] = {
           size: null,
         }
       }
-      if (formats.indexOf('MP3H')) {
+      if (formats.includes('MP3H')) {
         types.push({ type: '320k', size: null })
         _types['320k'] = {
           size: null,
         }
       }
-      if (formats.indexOf('ALFLAC')) {
+      if (formats.includes('ALFLAC')) {
         types.push({ type: 'flac', size: null })
         _types.flac = {
           size: null,

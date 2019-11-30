@@ -116,36 +116,37 @@ export default {
     })
   },
   filterData(rawList, rawList2) {
+    // console.log(rawList)
     // console.log(rawList.length, rawList2.length)
     return rawList.map((item, inedx) => {
       let formats = item.formats.split('|')
       let types = []
       let _types = {}
-      if (formats.indexOf('MP3128')) {
+      if (formats.includes('MP3128')) {
         types.push({ type: '128k', size: null })
         _types['128k'] = {
           size: null,
         }
       }
-      // if (formats.indexOf('MP3192')) {
+      // if (formats.includes('MP3192')) {
       //   types.push({ type: '192k', size: null })
       //   _types['192k'] = {
       //     size: null,
       //   }
       // }
-      if (formats.indexOf('MP3H')) {
+      if (formats.includes('MP3H')) {
         types.push({ type: '320k', size: null })
         _types['320k'] = {
           size: null,
         }
       }
-      // if (formats.indexOf('AL')) {
+      // if (formats.includes('AL')) {
       //   types.push({ type: 'ape', size: null })
       //   _types.ape = {
       //     size: null,
       //   }
       // }
-      if (formats.indexOf('ALFLAC')) {
+      if (formats.includes('ALFLAC')) {
         types.push({ type: 'flac', size: null })
         _types.flac = {
           size: null,
