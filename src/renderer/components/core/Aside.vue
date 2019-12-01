@@ -115,6 +115,9 @@ export default {
       &:hover:not(.active) {
         background-color: @color-theme-hover;
       }
+      &:hover:not(.active) {
+        background-color: @color-theme-active;
+      }
     }
   }
 }
@@ -140,6 +143,9 @@ each(@themes, {
           }
           &:hover:not(.active) {
             background-color: ~'@{color-@{value}-theme-hover}';
+          }
+          &:active:not(.active) {
+            background-color: ~'@{color-@{value}-theme-active}';
           }
         }
       }

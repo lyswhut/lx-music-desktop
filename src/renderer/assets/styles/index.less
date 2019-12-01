@@ -57,6 +57,10 @@ table {
   }
 }
 
+a {
+  color: #000;
+}
+
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;
@@ -112,7 +116,7 @@ svg {
   transition-property: fill;
 }
 
-.hover {
+.hover, a {
   cursor: pointer;
   transition: color .2s ease;
   &:hover {
@@ -150,7 +154,7 @@ svg {
 
 each(@themes, {
   #container.@{value} {
-    .hover {
+    .hover, a {
       &:hover {
         color: ~'@{color-@{value}-theme}';
       }
