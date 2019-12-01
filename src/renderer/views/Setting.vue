@@ -267,25 +267,14 @@ export default {
         },
       ],
       apiSources: [
-        // {
-        //   id: 'messoer',
-        //   // label: '由 messoer 提供的接口（推荐，软件的所有功能都可用）',
-        //   label: '由 messoer 提供的接口（该接口已关闭）',
-        //   disabled: true,
-        // },
-        // {
-        //   id: 'internal',
-        //   label: '内置接口（只能试听或下载128k音质，该接口支持软件的所有功能）',
-        //   disabled: false,
-        // },
         {
           id: 'test',
-          label: '测试接口（几乎软件的所有功能都可用，该接口访问速度略慢）',
+          label: '测试接口（几乎软件的所有功能都可用）',
           disabled: false,
         },
         {
           id: 'temp',
-          label: '临时接口（软件的某些功能不可用，该接口比测试接口快一些，建议测试接口不可用再使用本接口）',
+          label: '临时接口（软件的某些功能不可用，建议测试接口不可用再使用本接口）',
           disabled: false,
         },
       ],
