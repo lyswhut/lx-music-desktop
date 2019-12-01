@@ -23,7 +23,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
-import { throttle } from './utils'
+import { throttle, openUrl } from './utils'
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 dnscache({
   enable: true,
@@ -109,6 +109,7 @@ export default {
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
     init() {
+      document.body.addEventListener('click', this.handleBodyClick, true)
       if (this.isProd && !isLinux) {
         document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
@@ -228,6 +229,12 @@ export default {
       clearTimeout(this.updateTimeout)
       this.updateTimeout = null
     },
+    handleBodyClick(event) {
+      if (event.target.tagName != 'A') return
+      if (event.target.host == window.location.host) return
+      event.preventDefault()
+      if (/^https?:\/\//.test(event.target.href)) openUrl(event.target.href)
+    },
   },
   beforeDestroy() {
     this.clearUpdateTimeout()
@@ -235,6 +242,7 @@ export default {
       document.body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
       document.body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
+    document.body.removeEventListener('click', this.handleBodyClick)
   },
 }
 </script>
