@@ -6,6 +6,23 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.12.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.12.0...v0.12.1) - 2019-12-01
+
+### 优化
+
+- 优化定位歌曲时的列表滚动机制
+- 优化链接点击效果
+
+### 修复
+
+- 修复使用酷我源下载歌曲时，当歌曲无封面时下载报错的问题
+- 修复酷我源排行榜、歌单详情列表里的歌曲音质匹配问题（原来无论歌曲有无高品、无损都会显示有）
+- 禁止外部链接在软件内打开，将所有外部链接从默认浏览器打开
+
+### 其他
+
+- 更新electron到7.1.2
+
 ## [0.12.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.11.0...v0.12.0) - 2019-11-17
 
 由于新下载库仍然没有完成，但下载功能已经可用，so 移除之前使用的第三方下载库，暂时把新下载库的下载模块直接加入本程序，若出现下载问题欢迎反馈！
