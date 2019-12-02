@@ -4,7 +4,9 @@ div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', s
     input(:placeholder="placeholder" v-model.trim="text"
           @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
           @change="sendEvent('change')"
-          @keyup.enter="handleSearch")
+          @keyup.enter="handleSearch"
+          @keyup.40.prevent="handleKeyDown"
+          @keyup.38.prevent="handleKeyUp")
     button(type="button" @click="handleSearch")
       slot
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
@@ -14,7 +16,7 @@ div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', s
   //-             leave-active-class="animated flipOutX")
   div(v-if="list" :class="$style.list" :style="listStyle")
     ul(ref="dom_list")
-      li(v-for="(item, index) in list" :key="item" @click="handleTemplistClick(index)")
+      li(v-for="(item, index) in list" :key="item" :class="selectIndex === index ? $style.select : null" @mouseenter="selectIndex = index" @click="handleTemplistClick(index)")
         span {{item}}
 </template>
 
@@ -49,7 +51,7 @@ export default {
     return {
       isShow: false,
       text: '',
-      index: null,
+      selectIndex: -1,
       focus: false,
       listStyle: {
         height: 0,
@@ -59,6 +61,7 @@ export default {
   watch: {
     list(n) {
       if (!this.visibleList) return
+      if (this.selectIndex > -1) this.selectIndex = -1
       this.$nextTick(() => {
         this.listStyle.height = this.$refs.dom_list.scrollHeight + 'px'
       })
@@ -84,7 +87,8 @@ export default {
     },
     handleSearch() {
       this.hideList()
-      this.sendEvent('submit')
+      if (this.selectIndex < 0) return this.sendEvent('submit')
+      this.sendEvent('listClick', this.selectIndex)
     },
     showList() {
       this.isShow = true
@@ -93,12 +97,21 @@ export default {
     hideList() {
       this.isShow = false
       this.listStyle.height = 0
+      this.$nextTick(() => {
+        this.selectIndex = -1
+      })
     },
     sendEvent(action, data) {
       this.$emit('event', {
         action,
         data,
       })
+    },
+    handleKeyDown() {
+      this.selectIndex = this.selectIndex + 1 < this.list.length ? this.selectIndex + 1 : 0
+    },
+    handleKeyUp() {
+      this.selectIndex = this.selectIndex - 1 < -1 ? this.list.length - 1 : this.selectIndex - 1
     },
   },
 }
@@ -187,7 +200,7 @@ export default {
         .mixin-ellipsis-2;
       }
 
-      &:hover {
+      &.select {
         background-color: @color-search-list-hover;
       }
       &:last-child {
@@ -239,7 +252,7 @@ each(@themes, {
       }
       .list {
         li {
-          &:hover {
+          &.select {
             background-color: ~'@{color-@{value}-search-list-hover}';
           }
         }
