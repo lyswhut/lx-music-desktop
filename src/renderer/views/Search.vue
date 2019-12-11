@@ -26,6 +26,7 @@
                 | {{item.name}}
                 span.badge.badge-info(v-if="item._types['320k']") 高品质
                 span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
+                span(:class="$style.labelSource" v-if="searchSourceId == 'all'") {{item.source}}
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 25%;") {{item.albumName}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
@@ -290,6 +291,13 @@ export default {
 }
 .listBtn {
   min-height: 24px;
+}
+.labelSource {
+  color: @color-theme;
+  padding: 5px;
+  font-size: .8em;
+  line-height: 1;
+  opacity: .75;
 }
 .pagination {
   text-align: center;
