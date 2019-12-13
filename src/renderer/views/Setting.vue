@@ -108,7 +108,7 @@ div.scroll(:class="$style.setting")
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
     dt 其他
     dd
-      h3 缓存大小（清理缓存后图片等资源将需要重新下载，不建议清除，软件会自动将大小维持在200M左右）
+      h3 缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）
       div
         p
           | 软件已使用缓存大小：
