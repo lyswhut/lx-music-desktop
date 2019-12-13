@@ -13,7 +13,7 @@
 
 <script>
 import { rendererSend } from 'common/ipc'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import music from '../../utils/music'
 import { debounce } from '../../utils'
 export default {
@@ -34,15 +34,21 @@ export default {
     source() {
       return this.setting.search.tempSearchSource
     },
-    isAutoClearInput() {
+    isAutoClearSearchInput() {
       return this.setting.odc.isAutoClearSearchInput
+    },
+    isAutoClearSearchList() {
+      return this.setting.odc.isAutoClearSearchList
     },
   },
   watch: {
     route(n) {
-      if (this.isAutoClearInput && n.name != 'search' && this.searchText) this.searchText = ''
+      if (n.name != 'search') {
+        if (this.isAutoClearSearchInput && this.searchText) this.searchText = ''
+        if (this.isAutoClearSearchList) this.clearSearchList()
+      }
     },
-    'storeSearchText'(n) {
+    storeSearchText(n) {
       if (n !== this.searchText) this.searchText = n
     },
     searchText(n) {
@@ -62,6 +68,9 @@ export default {
     }, 50)
   },
   methods: {
+    ...mapMutations('search', {
+      clearSearchList: 'clearList',
+    }),
     handleEvent({ action, data }) {
       switch (action) {
         case 'focus':

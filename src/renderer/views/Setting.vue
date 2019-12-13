@@ -93,6 +93,10 @@ div.scroll(:class="$style.setting")
       h3 离开搜索界面时清空搜索框
       div
         material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" label="是否启用")
+    dd
+      h3 离开搜索界面时清空搜索列表
+      div
+        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" label="是否启用")
     dt 备份与恢复
     dd
       h3 部分数据
@@ -241,6 +245,7 @@ export default {
         },
         odc: {
           isAutoClearSearchInput: false,
+          isAutoClearSearchList: false,
         },
         windowSizeId: 1,
         themeId: 0,

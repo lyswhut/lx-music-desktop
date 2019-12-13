@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = setting => {
-  const defaultVersion = '1.0.13'
+  const defaultVersion = '1.0.14'
   const defaultSetting = {
     version: defaultVersion,
     player: {
@@ -215,6 +215,7 @@ export const updateSetting = setting => {
     },
     odc: {
       isAutoClearSearchInput: false,
+      isAutoClearSearchList: false,
     },
     search: {
       searchSource: 'kw',
