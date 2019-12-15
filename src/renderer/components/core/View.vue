@@ -13,6 +13,7 @@ div(:class="$style.view")
 
 .view {
   position: relative;
+  z-index: 1;
   > * {
     position: absolute;
     width: 100%;
