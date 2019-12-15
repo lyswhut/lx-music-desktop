@@ -136,7 +136,7 @@ export default {
   align-items: center;
   padding-left: 15px;
   -webkit-app-region: drag;
-  z-index: 1;
+  z-index: 100;
   position: relative;
 }
 .input {
