@@ -71,9 +71,9 @@ export default {
         let bool = this.bool
         if (this.indeterminate) {
           bool = true
-          // this.$nextTick(() => {
-          this.bool = true
-          // })
+          this.$nextTick(() => {
+            this.bool = bool
+          })
         }
         checked = bool
       } else {
