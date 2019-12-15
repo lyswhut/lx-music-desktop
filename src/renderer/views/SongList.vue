@@ -183,10 +183,11 @@ export default {
       let targetSong
       if (index == null) {
         targetSong = this.selectdData[0]
-        this.listAddMultiple({ id: 'default', list: this.selectdData })
+        this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
         this.resetSelect()
       } else {
         targetSong = this.listDetail.list[index]
+        if (targetSong.source == 'tx' || (this.isAPITemp && targetSong.source != 'kw')) return
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -234,7 +235,7 @@ export default {
         case 'wy':
           type = '128k'
       }
-      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
     },
@@ -344,6 +345,9 @@ export default {
           return
       }
       this.importSongListText = text.replace(regx, '$1')
+    },
+    filterList(list) {
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx')
     },
     /*     addSongListDetail() {
       // this.detailLoading = true

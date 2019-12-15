@@ -29,9 +29,9 @@ div(:class="$style.songList")
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :search-btn="true"
                   :remove-btn="false" @btn-click="handleListBtnClick"
-                  :listAdd-btn="item.source == 'kw' || (!isAPITemp)"
-                  :play-btn="item.source == 'kw' || (!isAPITemp)"
-                  :download-btn="item.source == 'kw' || (!isAPITemp)")
+                  :listAdd-btn="item.source == 'kw' || !isAPITemp"
+                  :play-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
+                  :download-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
@@ -40,7 +40,7 @@ div(:class="$style.songList")
           material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
       p(v-html="noItem")
-  material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+  material-flow-btn(:show="isShowEditBtn && source != 'tx' && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
@@ -140,7 +140,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.emitEvent((this.source == 'kw' || !this.isAPITemp) ? 'testPlay' : 'search', index)
+      this.emitEvent((this.source != 'tx' && (this.source == 'kw' || !this.isAPITemp)) ? 'testPlay' : 'search', index)
       this.clickTime = 0
       this.clickIndex = -1
     },
