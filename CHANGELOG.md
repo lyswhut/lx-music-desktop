@@ -6,6 +6,32 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.13.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.12.1...v0.13.0) - 2019-12-15
+
+### 新增
+
+- 新增搜索框搜索建议键盘上下方向键选择功能
+- 聚合搜索新增音源显示
+- 新增“离开搜索界面时清空搜索列表”设置选项，默认关闭，可到设置-强迫症设置开启
+
+### 优化
+
+- 优化“信口雌黄”皮肤配色
+
+### 修复
+
+- 修复存在弹出层时，搜索建议列表被弹出层覆盖的问题
+- 修复搜索、排行榜、歌单列表多选框从不定状态到选中的Bug
+
+### 移除
+
+- 因Q音接口失效，移除Q音源的试听与下载
+
+### 其他
+
+- 更新electron到7.1.5
+- 更新vue到2.6.11
+
 ## [0.12.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.12.0...v0.12.1) - 2019-12-01
 
 ### 优化
