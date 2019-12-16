@@ -209,6 +209,7 @@ export default {
         this.setNewVersion(body)
         return body
       })).catch(() => {
+        if (this.version.newVersion) return this.version.newVersion
         this.setVersionModalVisible({ isUnknow: true })
         let result = {
           version: '0.0.0',

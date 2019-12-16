@@ -256,7 +256,7 @@ export default {
     padding-top: 10px;
     font-size: 12px;
     color: @color-theme;
-    line-height: 1.2;
+    line-height: 1.25;
 
     p {
       font-size: 12px;
