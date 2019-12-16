@@ -6,6 +6,16 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.13.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.13.0...v0.13.1) - 2019-12-16
+
+### 修复
+
+- 修复全局更新弹窗无法遮盖搜索框的问题
+
+### 其他
+
+- 由于electron 7.1.3 - 7.1.5 的自动更新功能存在Bug，现降级到7.1.2
+
 ## [0.13.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.12.1...v0.13.0) - 2019-12-15
 
 ### 新增
