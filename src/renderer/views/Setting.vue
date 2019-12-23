@@ -78,7 +78,7 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
     dt 网络设置
     dd
-      h3 代理设置
+      h3 代理设置（乱设置软件将无法联网）
       div
         p
           material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" label="是否启用")
