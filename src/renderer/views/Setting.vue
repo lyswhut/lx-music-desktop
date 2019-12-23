@@ -197,7 +197,7 @@ import fs from 'fs'
 export default {
   name: 'Setting',
   computed: {
-    ...mapGetters(['setting', 'themes', 'version', 'windowSizeList']),
+    ...mapGetters(['setting', 'settingVersion', 'themes', 'version', 'windowSizeList']),
     ...mapGetters('list', ['defaultList', 'loveList']),
     isLatestVer() {
       return this.version.newVersion && this.version.version === this.version.newVersion.version
@@ -214,7 +214,6 @@ export default {
   data() {
     return {
       current_setting: {
-        version: null,
         player: {
           togglePlayMethod: 'random',
           highQuality: false,
@@ -303,7 +302,7 @@ export default {
   watch: {
     current_setting: {
       handler(n, o) {
-        if (!o.version) return
+        if (!this.settingVersion) return
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
@@ -322,7 +321,7 @@ export default {
     this.init()
   },
   methods: {
-    ...mapMutations(['setSetting', 'setVersionModalVisible']),
+    ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
     ...mapMutations('list', ['setList']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
@@ -343,23 +342,23 @@ export default {
       openDirInExplorer(dir)
     },
     importSetting(path) {
-      let setting
+      let settingData
       try {
-        setting = JSON.parse(fs.readFileSync(path, 'utf8'))
+        settingData = JSON.parse(fs.readFileSync(path, 'utf8'))
       } catch (error) {
         return
       }
-      if (setting.type !== 'setting') return
-      this.setSetting(updateSetting(setting.data))
-      this.init()
+      if (settingData.type !== 'setting') return
+      const { version: settingVersion, setting } = updateSetting(settingData.data)
+      this.refreshSetting(setting, settingVersion)
     },
     exportSetting(path) {
       console.log(path)
       const data = {
         type: 'setting',
-        data: this.setting,
+        data: Object.assign({ version: this.settingVersion }, this.setting),
       }
-      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
@@ -389,7 +388,7 @@ export default {
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
@@ -401,9 +400,8 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      this.setSetting(updateSetting(allData.setting))
-      this.init()
-      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list })
+      const { version: settingVersion, setting } = updateSetting(allData.setting)
+      this.refreshSetting(setting, settingVersion)
 
       for (const list of allData.playList) {
         this.setList({ id: list.id, list: list.list })
@@ -412,13 +410,13 @@ export default {
     exportAllData(path) {
       let allData = {
         type: 'allData',
-        setting: this.setting,
+        setting: Object.assign({ version: this.settingVersion }, this.setting),
         playList: [
           this.defaultList,
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(allData), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
@@ -515,9 +513,18 @@ export default {
         this.getCacheSize()
       })
     },
-    handleWindowSizeChange(index) {
-      let info = this.windowSizeList[index]
+    handleWindowSizeChange(index, id) {
+      let info = id == null ? this.windowSizeList[index] : this.windowSizeList.find(s => s.id == id)
       setWindowSize(info.width, info.height)
+    },
+    refreshSetting(setting, version) {
+      this.setSetting(setting)
+      this.setSettingVersion(version)
+      if (setting.windowSizeId != null) this.handleWindowSizeChange(null, setting.windowSizeId)
+      for (let key of Object.keys(setting.network.proxy)) {
+        window.globalObj.proxy[key] = setting.network.proxy[key]
+      }
+      this.init()
     },
   },
 }

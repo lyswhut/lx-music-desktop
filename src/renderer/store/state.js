@@ -4,9 +4,24 @@ import Store from 'electron-store'
 import { updateSetting } from '../utils'
 import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
-let electronStore = new Store()
-const setting = updateSetting(electronStore.get('setting'))
-electronStore.set('setting', setting)
+const electronStore_list = window.electronStore_list = new Store({
+  name: 'playList',
+})
+const electronStore_config = window.electronStore_config = new Store({
+  name: 'config',
+})
+if (!electronStore_config.get('version') && electronStore_config.get('setting')) { // 迁移配置
+  electronStore_list.set('defaultList', electronStore_config.get('list.defaultList'))
+  electronStore_list.set('loveList', electronStore_config.get('list.loveList'))
+  electronStore_list.set('downloadList', electronStore_config.get('download.list'))
+  electronStore_config.set('version', electronStore_config.get('setting.version'))
+  electronStore_config.delete('setting.version')
+  electronStore_config.delete('list')
+  electronStore_config.delete('download')
+}
+const { version: settingVersion, setting } = updateSetting(electronStore_config.get('setting'), electronStore_config.get('version'))
+electronStore_config.set('version', settingVersion)
+electronStore_config.set('setting', setting)
 process.versions.app = version
 
 export default {
@@ -70,6 +85,7 @@ export default {
   },
   userInfo: null,
   setting,
-  electronStore,
+  settingVersion,
+
   windowSizeList,
 }

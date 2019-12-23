@@ -9,6 +9,9 @@ export default {
   setSetting(state, val) {
     state.setting = val
   },
+  setSettingVersion(state, val) {
+    state.settingVersion = val
+  },
   setLeaderboard(state, { tabId, source }) {
     if (tabId != null) state.setting.leaderboard.tabId = tabId
     if (source != null) state.setting.leaderboard.source = source

@@ -25,8 +25,8 @@ export default {
   setting(state) {
     return state.setting
   },
-  electronStore(state) {
-    return state.electronStore
+  settingVersion(state) {
+    return state.settingVersion
   },
   version(state) {
     return state.version

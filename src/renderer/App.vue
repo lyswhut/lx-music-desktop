@@ -44,7 +44,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['electronStore', 'setting', 'theme', 'version']),
+    ...mapGetters(['setting', 'theme', 'version']),
     ...mapGetters('list', ['defaultList', 'loveList']),
     ...mapGetters('download', {
       downloadList: 'list',
@@ -53,16 +53,16 @@ export default {
   },
   created() {
     this.saveSetting = throttle(n => {
-      this.electronStore.set('setting', n)
+      window.electronStore_config.set('setting', n)
     })
     this.saveDefaultList = throttle(n => {
-      this.electronStore.set('list.defaultList', n)
+      window.electronStore_list.set('defaultList', n)
     }, 500)
     this.saveLoveList = throttle(n => {
-      this.electronStore.set('list.loveList', n)
+      window.electronStore_list.set('loveList', n)
     }, 500)
     this.saveDownloadList = throttle(n => {
-      this.electronStore.set('download.list', n)
+      window.electronStore_list.set('downloadList', n)
     }, 1000)
   },
   mounted() {
@@ -188,12 +188,12 @@ export default {
       this.initDownloadList() // 初始化下载列表
     },
     initPlayList() {
-      let defaultList = this.electronStore.get('list.defaultList')
-      let loveList = this.electronStore.get('list.loveList')
+      let defaultList = window.electronStore_list.get('defaultList')
+      let loveList = window.electronStore_list.get('loveList')
       this.initList({ defaultList, loveList })
     },
     initDownloadList() {
-      let downloadList = this.electronStore.get('download.list')
+      let downloadList = window.electronStore_list.get('download.list')
       if (downloadList) {
         downloadList.forEach(item => {
           if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
@@ -218,7 +218,7 @@ export default {
         this.setNewVersion(result)
         return result
       }).then(result => {
-        if (result.version === this.version.version) return
+        if (result.version === this.version.version || result.version === this.setting.ignoreVersion) return
         // console.log(this.version)
         this.$nextTick(() => {
           this.setVersionModalVisible({ isShow: true })
