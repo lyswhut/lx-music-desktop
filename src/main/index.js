@@ -15,6 +15,7 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
+require('../common/error')
 require('./events')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')

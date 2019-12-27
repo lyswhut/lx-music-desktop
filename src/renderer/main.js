@@ -11,6 +11,8 @@ import App from './App'
 import router from './route'
 import store from './store'
 
+import '../common/error'
+
 sync(store, router)
 
 if (!process.env.IS_WEB) {
