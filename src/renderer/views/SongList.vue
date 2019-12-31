@@ -96,7 +96,8 @@ export default {
       return this.setting.apiSource == 'temp'
     },
     tagList() {
-      return this.tags[this.source] ? this.tags[this.source].tags : []
+      let tagInfo = this.tags[this.source]
+      return tagInfo ? [{ name: '热门标签', list: [...tagInfo.hotTag] }, ...tagInfo.tags] : []
     },
   },
   watch: {

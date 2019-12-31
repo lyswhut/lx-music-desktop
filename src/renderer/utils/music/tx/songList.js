@@ -261,7 +261,7 @@ export default {
     })
   },
   getTags() {
-    return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag }))
+    return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'tx' }))
   },
 }
 
