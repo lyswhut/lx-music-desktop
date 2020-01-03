@@ -145,33 +145,39 @@ div.scroll(:class="$style.setting")
       p.small
         | 软件的常见问题可转至：
         span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
-      //- p.small
-          | 怀念曾经的
-          strong @messoer
-          | ，非常感谢曾经为本软件提供数据源！
       p.small
         | 阅读常见问题后仍有问题可 mail to：
         span.hover(title="点击复制" @click="clipboardWriteText('lyswhut@qq.com')") lyswhut@qq.com
         | &nbsp;或到 GitHub 提交&nbsp;
         span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+
+      br
       p.small
-        | 若觉得好用的话可以去 GitHub 点个
-        strong star
-        | 支持作者哦~~🍻
-      p
-        span 如果你资金充裕，还可以
+        span 如果你资金充裕，或许可以
         material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 捐赠下作者
-        span ，以帮我分担点服务器费用~❤️
+        span ~❤️，捐赠完全是一种
+        strong 用户自愿
+        | 的行为，
+      p.small 捐赠不会获得任何特权，并且你可能还要做好前一秒捐赠，下一秒软件将不可用的心理准备！
+      p.small 由于软件开发的初衷从未想过与利益挂钩，因此软件将会一直保持纯净。
+
+      br
       p.small
-        |  本软件仅用于学习交流使用，禁止将本软件用于
+        | 使用本软件可能产生的
+        strong 任何涉及版权相关的数据
+        | 请于
+        strong 24小时内删除
+        | ，
+      p.small
+        |  本软件仅用于学习与交流使用，禁止将本软件用于
         strong 非法用途
         | 或
         strong 商业用途
         | 。
       p.small
-          | 使用本软件造成的一切后果由
-          strong 使用者
-          | 承担！
+        | 使用本软件造成的一切后果由
+        strong 使用者
+        | 承担！
       p
         small By：
         | 落雪无痕
