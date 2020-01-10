@@ -159,7 +159,10 @@ div.scroll(:class="$style.setting")
         strong 用户自愿
         | 的行为，
       p.small 捐赠不会获得任何特权，并且你可能还要做好前一秒捐赠，下一秒软件将不可用的心理准备！
-      p.small 由于软件开发的初衷从未想过与利益挂钩，因此软件将会一直保持纯净。
+      p.small
+        | 由于软件开发的初衷仅是为了
+        span(:class="$style.delLine") 自用
+        | 学习研究，因此软件直至停止维护都将会一直保持纯净。
 
       br
       p.small
@@ -659,6 +662,36 @@ export default {
 
 .save-path {
   font-size: 12px;
+}
+
+.del-line {
+  position: relative;
+}
+.del-line:after {
+  display: block;
+  height: 1px;
+  position: absolute;
+  width: 110%;
+  content: ' ';
+  left: 0;
+  background-color: #000;
+  transform: rotate(23deg);
+  transform-origin: 0px;
+  top: 2px;
+  z-index: 1;
+}
+.del-line:before {
+  display: block;
+  height: 1px;
+  position: absolute;
+  width: 110%;
+  content: ' ';
+  left: 0;
+  background-color: #000;
+  transform: rotate(-24deg);
+  transform-origin: 0;
+  top: 83%;
+  z-index: 1;
 }
 
 each(@themes, {
