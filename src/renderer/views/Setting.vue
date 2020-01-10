@@ -666,32 +666,32 @@ export default {
 
 .del-line {
   position: relative;
-}
-.del-line:after {
-  display: block;
-  height: 1px;
-  position: absolute;
-  width: 110%;
-  content: ' ';
-  left: 0;
-  background-color: #000;
-  transform: rotate(23deg);
-  transform-origin: 0px;
-  top: 2px;
-  z-index: 1;
-}
-.del-line:before {
-  display: block;
-  height: 1px;
-  position: absolute;
-  width: 110%;
-  content: ' ';
-  left: 0;
-  background-color: #000;
-  transform: rotate(-24deg);
-  transform-origin: 0;
-  top: 83%;
-  z-index: 1;
+  &:before {
+    display: block;
+    height: 1px;
+    position: absolute;
+    width: 110%;
+    content: ' ';
+    left: 0;
+    background-color: #000;
+    transform: rotate(-24deg);
+    transform-origin: 0;
+    top: 83%;
+    z-index: 1;
+  }
+  &:after {
+    display: block;
+    height: 1px;
+    position: absolute;
+    width: 110%;
+    content: ' ';
+    left: 0;
+    background-color: #000;
+    transform: rotate(23deg);
+    transform-origin: 0px;
+    top: 2px;
+    z-index: 1;
+  }
 }
 
 each(@themes, {
