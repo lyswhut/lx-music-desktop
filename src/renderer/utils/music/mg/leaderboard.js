@@ -67,9 +67,12 @@ export default {
   },
   filterData(rawList) {
     // console.log(rawList)
+    let ids = new Set()
     const list = []
     rawList.forEach(({ songData }) => {
       if (!songData) return
+      if (ids.has(songData.copyrightId)) return
+      ids.add(songData.copyrightId)
 
       const types = []
       const _types = {}
@@ -100,7 +103,7 @@ export default {
         // albumId: songData.album_id,
         source: 'mg',
         interval: null,
-        songmid: songData.songId,
+        songmid: songData.copyrightId,
         copyrightId: songData.copyrightId,
         img: songData.picL || songData.M || songData.picS,
         lrc: null,
