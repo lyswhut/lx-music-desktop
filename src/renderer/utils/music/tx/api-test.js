@@ -4,7 +4,7 @@ import { headers, timeout } from '../options'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`http://ts.tempmusic.tk/url/tx/${songInfo.strMediaMid}/${type}`, {
+    const requestObj = httpFetch(`http://ts.tempmusic.tk/url/tx/${songInfo.songmid}/${type}`, {
       method: 'get',
       timeout,
       headers,

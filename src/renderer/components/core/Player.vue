@@ -339,7 +339,7 @@ export default {
       } else if (this.isAPITemp) {
         list = this.list.filter(s => s.source == 'kw')
       } else {
-        list = this.list.filter(s => s.source != 'tx')
+        list = [...this.list]
       }
       if (!list.length) return this.setPlayIndex(-1)
       let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])

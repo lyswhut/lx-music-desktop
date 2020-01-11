@@ -188,7 +188,7 @@ export default {
         this.resetSelect()
       } else {
         targetSong = this.listDetail.list[index]
-        if (targetSong.source == 'tx' || (this.isAPITemp && targetSong.source != 'kw')) return
+        if (this.isAPITemp && targetSong.source != 'kw') return
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -348,7 +348,7 @@ export default {
       this.importSongListText = text.replace(regx, '$1')
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx')
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
     /*     addSongListDetail() {
       // this.detailLoading = true

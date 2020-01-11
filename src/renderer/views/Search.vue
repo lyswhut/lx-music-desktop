@@ -31,8 +31,8 @@
               td.break(style="width: 25%;") {{item.albumName}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
-                  :play-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
-                  :download-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
+                  :play-btn="item.source == 'kw' || !isAPITemp"
+                  :download-btn="item.source == 'kw' || !isAPITemp"
                   @btn-click="handleListBtnClick")
               td(style="width: 10%;") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
@@ -41,7 +41,7 @@
       p 搜我所想~~😉
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && searchSourceId != 'tx' && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
 </template>
@@ -190,7 +190,7 @@ export default {
         targetSong = this.selectdData[0]
         this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
       } else {
-        if (this.listInfo.list[index].source == 'tx' || (this.isAPITemp && this.listInfo.list[index].source != 'kw')) return
+        if (this.isAPITemp && this.listInfo.list[index].source != 'kw') return
         targetSong = this.listInfo.list[index]
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
@@ -239,7 +239,7 @@ export default {
       }
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx')
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
