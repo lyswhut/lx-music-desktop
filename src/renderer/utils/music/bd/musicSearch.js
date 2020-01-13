@@ -64,14 +64,15 @@ export default {
     })
     return list
   },
-  search(str, page = 1, { limit } = {}) {
+  search(str, page = 1, { limit } = {}, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit != null) this.limit = limit
 
     return this.musicSearch(str, page).then(result => {
-      if (!result || result.error_code !== 22000) return this.search(str, page, { limit })
+      if (!result || result.error_code !== 22000) return this.search(str, page, { limit }, retryNum)
       let list = this.handleResult(result.result.song_info.song_list)
 
-      if (list == null) return this.search(str, page, { limit })
+      if (list == null) return this.search(str, page, { limit }, retryNum)
 
       this.total = result.result.song_info.total
       this.page = page

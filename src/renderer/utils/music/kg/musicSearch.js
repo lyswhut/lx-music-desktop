@@ -68,14 +68,15 @@ export default {
     })
     return list
   },
-  search(str, page = 1, { limit } = {}) {
+  search(str, page = 1, { limit } = {}, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit != null) this.limit = limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page).then(result => {
-      if (!result || result.errcode !== 0) return this.search(str, page, { limit })
+      if (!result || result.errcode !== 0) return this.search(str, page, { limit }, retryNum)
       let list = this.handleResult(result.data.info)
 
-      if (list == null) return this.search(str, page, { limit })
+      if (list == null) return this.search(str, page, { limit }, retryNum)
 
       this.total = result.data.total
       this.page = page

@@ -169,17 +169,18 @@ export default {
       }
     })
   },
-  loadData(p1, p2, page, bangid) {
+  loadData(p1, p2, page, bangid, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     return Promise.all([p1, p2]).then(([data1, data2]) => {
       // console.log(data1, data2)
       if (!data1.musiclist.length) {
         return this.loadData(this.getData(this.getUrl(page, this.limit, bangid)),
           data2.data.musicList.length
             ? Promise.resolve(data2)
-            : this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid)
+            : this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid, retryNum)
       }
       if (!data2.data.musicList.length) {
-        return this.loadData(Promise.resolve(data1), this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid)
+        return this.loadData(Promise.resolve(data1), this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid, retryNum)
       }
       return Promise.resolve([data1, data2])
     })

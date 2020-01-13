@@ -93,7 +93,7 @@ export default {
     this._requestObj_list = httpFetch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
       if (!id || type == '10000') {
-        if (body.code !== this.successCode) return this.getList(sortId, id, type, page, ++tryNum)
+        if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
         return {
           list: this.filterList(body.data.data),
           total: body.data.total,
