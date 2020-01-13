@@ -126,8 +126,8 @@ export default {
     if (limit != null) this.limit = limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page).then(result => {
+      // console.log(result)
       if (!result || (result.TOTAL !== '0' && result.SHOW === '0')) return this.search(str, page, { limit }, ++retryNum)
-      console.log(result)
       let list = this.handleResult(result.abslist)
 
       if (list == null) return this.search(str, page, { limit })
