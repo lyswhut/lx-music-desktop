@@ -49,7 +49,7 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
   },
   "browserslist": [
-    "Electron >= 7.1.8"
+    "Electron 7.1.8"
   ],
   "engines": {
     "node": ">= 12"
