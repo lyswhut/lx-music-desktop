@@ -102,11 +102,12 @@ export default {
     return this.musicSearch(str, page).then(result => {
       // console.log(result)
       if (!result || result.code !== '000000') return Promise.reject(new Error(result ? result.info : '搜索失败'))
-      let list = this.handleResult(result.songResultData.resultList.flat())
+      const songResultData = result.songResultData || { resultList: [], totalCount: 0 }
 
+      let list = this.handleResult(songResultData.resultList.flat())
       if (list == null) return this.search(str, page, { limit }, retryNum)
 
-      this.total = parseInt(result.songResultData.totalCount)
+      this.total = parseInt(songResultData.totalCount)
       this.page = page
       this.allPage = Math.ceil(this.total / this.limit)
 
