@@ -22,8 +22,8 @@ div(:class="$style.songList")
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
               td.break(style="width: 25%;")
                 | {{item.name}}
-                span.badge.badge-info(v-if="!(item._types.ape || item._types.flac) && item._types['320k']") 高品质
-                span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
+                span.badge.badge-theme-info(v-if="!(item._types.ape || item._types.flac) && item._types['320k']") 高品质
+                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") 无损
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 20%;") {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")

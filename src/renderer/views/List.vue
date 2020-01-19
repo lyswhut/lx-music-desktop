@@ -27,8 +27,8 @@
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
                 //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
-                //- span.badge.badge-info(v-if="item._types.ape") APE
-                //- span.badge.badge-success(v-if="item._types.flac") FLAC
+                //- span.badge.badge-theme-info(v-if="item._types.ape") APE
+                //- span.badge.badge-theme-success(v-if="item._types.flac") FLAC
               td.break(style="width: 20%;") {{item.singer}}
               td.break(style="width: 20%;") {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")

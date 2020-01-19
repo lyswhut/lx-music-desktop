@@ -95,6 +95,14 @@ a {
     color: #fff;
     background-color: #32bc63;
   }
+  &.badge-theme-success {
+    color: @color-badge-success-font;
+    background-color: @color-badge-success;
+  }
+  &.badge-theme-info {
+    color: @color-badge-info-font;
+    background-color: @color-badge-info;
+  }
 }
 
 small {
@@ -184,6 +192,16 @@ each(@themes, {
             background-color: ~'@{color-@{value}-theme_2-hover}';
           }
         }
+      }
+    }
+    .badge {
+      &.badge-theme-success {
+        color: ~'@{color-@{value}-badge-success-font}';
+        background-color: ~'@{color-@{value}-badge-success}';
+      }
+      &.badge-theme-info {
+        color: ~'@{color-@{value}-badge-info-font}';
+        background-color: ~'@{color-@{value}-badge-info}';
       }
     }
   }
