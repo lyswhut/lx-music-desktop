@@ -173,7 +173,7 @@ export default {
 .type {
   padding-top: 10px;
   padding-bottom: 3px;
-  color: #999;
+  color: @color-theme_2-font-label;
 }
 
 .tag {
@@ -232,6 +232,10 @@ each(@themes, {
       &:active {
         background-color: ~'@{color-@{value}-theme_2-active}';
       }
+    }
+
+    .type {
+      color: ~'@{color-@{value}-theme_2-font-label}';
     }
   }
 })
