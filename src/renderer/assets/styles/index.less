@@ -124,6 +124,12 @@ svg {
   transition-property: fill;
 }
 
+input, textarea {
+  &::placeholder {
+    color: @color-theme_2-font-label;
+  }
+}
+
 .hover, a {
   cursor: pointer;
   transition: color .2s ease;
@@ -194,6 +200,13 @@ each(@themes, {
         }
       }
     }
+
+    input, textarea {
+      &::placeholder {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+    
     .badge {
       &.badge-theme-success {
         color: ~'@{color-@{value}-badge-success-font}';
