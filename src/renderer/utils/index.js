@@ -242,6 +242,10 @@ export const updateSetting = (setting, version) => {
     randomAnimate: true,
     ignoreVersion: null,
   }
+
+  // 使用新年皮肤
+  if (new Date().getMonth() < 2) defaultSetting.themeId = 9
+
   const overwriteSetting = {
 
   }

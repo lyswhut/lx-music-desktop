@@ -519,7 +519,7 @@ export default {
     line-height: 1.2;
     // text-indent: 24px;
 
-    color: #888;
+    color: @color-theme_2-font-label;
   }
 }
 .pagination {
@@ -528,4 +528,19 @@ export default {
   // left: 50%;
   // transform: translateX(-50%);
 }
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .song-list-header-middle {
+      p {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+    .right {
+      p {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+  }
+})
 </style>

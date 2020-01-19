@@ -1,6 +1,6 @@
 @import './colors.less';
 
-@themes: green, yellow, blue, red, purple, orange, grey, midAutumn, dhHyrz;
+@themes: green, yellow, blue, red, purple, orange, grey, midAutumn, dhHyrz, happyNewYear;
 
 
 // Colors
@@ -20,7 +20,7 @@
 @color-theme_2-hover: fadeout(lighten(@color-theme, 10%), 70%);
 @color-theme_2-active: fadeout(darken(@color-theme, 5%), 70%);
 @color-theme_2-font: darken(@color-theme_2, 70%);
-@color-theme_2-font-label: fadeout(@color-theme_2-font, 50%);
+@color-theme_2-font-label: fadeout(@color-theme_2-font, 40%);
 @color-theme_2-line: lighten(@color-theme, 35%);
 @color-theme-sidebar: @color-theme;
 @color-btn: fadeout(darken(@color-theme, 5%), 15%);
@@ -51,10 +51,12 @@
 @color-tab-btn-background-hover: @color-theme_2-hover;
 @color-tab-border-top: fadeout(lighten(@color-theme, 5%), 50%);
 @color-tab-border-bottom: lighten(@color-theme, 5%);
-
 @color-minBtn: #85c43b;
 @color-maxBtn: #e7aa36;
 @color-closeBtn: #ea6e4d;
+@color-minBtn-hover: fadeout(@color-minBtn, 10%);
+@color-maxBtn-hover: fadeout(@color-maxBtn, 10%);
+@color-closeBtn-hover: fadeout(@color-closeBtn, 10%);
 
 
 @color-green-theme: #4daf7c;
@@ -71,7 +73,7 @@
 @color-green-theme_2-hover: fadeout(lighten(@color-green-theme, 10%), 70%);
 @color-green-theme_2-active: fadeout(darken(@color-green-theme, 5%), 70%);
 @color-green-theme_2-font: darken(@color-green-theme_2, 70%);
-@color-green-theme_2-font-label: fadeout(@color-green-theme_2-font, 50%);
+@color-green-theme_2-font-label: fadeout(@color-green-theme_2-font, 40%);
 @color-green-theme_2-line: lighten(@color-green-theme, 45%);
 @color-green-theme-sidebar: @color-green-theme;
 @color-green-btn: fadeout(darken(@color-green-theme, 5%), 15%);
@@ -95,6 +97,12 @@
 @color-green-tab-btn-background-hover: @color-green-theme_2-hover;
 @color-green-tab-border-top: fadeout(lighten(@color-green-theme, 5%), 50%);
 @color-green-tab-border-bottom: lighten(@color-green-theme, 5%);
+@color-green-minBtn: #85c43b;
+@color-green-maxBtn: #e7aa36;
+@color-green-closeBtn: #ea6e4d;
+@color-green-minBtn-hover: fadeout(@color-green-minBtn, 10%);
+@color-green-maxBtn-hover: fadeout(@color-green-maxBtn, 10%);
+@color-green-closeBtn-hover: fadeout(@color-green-closeBtn, 10%);
 
 
 @color-yellow-theme: #e9d460;
@@ -135,6 +143,12 @@
 @color-yellow-tab-btn-background-hover: @color-yellow-theme_2-hover;
 @color-yellow-tab-border-top: fadeout(lighten(@color-yellow-theme, 5%), 40%);
 @color-yellow-tab-border-bottom: @color-yellow-theme;
+@color-yellow-minBtn: #85c43b;
+@color-yellow-maxBtn: #e7aa36;
+@color-yellow-closeBtn: #ea6e4d;
+@color-yellow-minBtn-hover: fadeout(@color-yellow-minBtn, 10%);
+@color-yellow-maxBtn-hover: fadeout(@color-yellow-maxBtn, 10%);
+@color-yellow-closeBtn-hover: fadeout(@color-yellow-closeBtn, 10%);
 
 @color-orange-theme: #f5ab35;
 @color-orange-theme-bgimg: none;
@@ -150,7 +164,7 @@
 @color-orange-theme_2-hover: fadeout(lighten(@color-orange-theme, 10%), 70%);
 @color-orange-theme_2-active: fadeout(darken(@color-orange-theme, 5%), 70%);
 @color-orange-theme_2-font: darken(@color-orange-theme_2, 70%);
-@color-orange-theme_2-font-label: fadeout(@color-orange-theme_2-font, 50%);
+@color-orange-theme_2-font-label: fadeout(@color-orange-theme_2-font, 40%);
 @color-orange-theme_2-line: lighten(@color-orange-theme, 36%);
 @color-orange-theme-sidebar: @color-orange-theme;
 @color-orange-btn: fadeout(darken(@color-orange-theme, 5%), 15%);
@@ -174,6 +188,12 @@
 @color-orange-tab-btn-background-hover: @color-orange-theme_2-hover;
 @color-orange-tab-border-top: fadeout(lighten(@color-orange-theme, 5%), 50%);
 @color-orange-tab-border-bottom: lighten(@color-orange-theme, 5%);
+@color-orange-minBtn: #85c43b;
+@color-orange-maxBtn: #e7aa36;
+@color-orange-closeBtn: #ea6e4d;
+@color-orange-minBtn-hover: fadeout(@color-orange-minBtn, 10%);
+@color-orange-maxBtn-hover: fadeout(@color-orange-maxBtn, 10%);
+@color-orange-closeBtn-hover: fadeout(@color-orange-closeBtn, 10%);
 
 @color-blue-theme: #3498db;
 @color-blue-theme-bgimg: none;
@@ -189,7 +209,7 @@
 @color-blue-theme_2-hover: fadeout(lighten(@color-blue-theme, 10%), 70%);
 @color-blue-theme_2-active: fadeout(darken(@color-blue-theme, 5%), 70%);
 @color-blue-theme_2-font: darken(@color-blue-theme_2, 70%);
-@color-blue-theme_2-font-label: fadeout(@color-blue-theme_2-font, 50%);
+@color-blue-theme_2-font-label: fadeout(@color-blue-theme_2-font, 40%);
 @color-blue-theme_2-line: lighten(@color-blue-theme, 42%);
 @color-blue-theme-sidebar: @color-blue-theme;
 @color-blue-btn: fadeout(darken(@color-blue-theme, 5%), 15%);
@@ -213,6 +233,12 @@
 @color-blue-tab-btn-background-hover: @color-blue-theme_2-hover;
 @color-blue-tab-border-top: fadeout(lighten(@color-blue-theme, 5%), 50%);
 @color-blue-tab-border-bottom: lighten(@color-blue-theme, 5%);
+@color-blue-minBtn: #85c43b;
+@color-blue-maxBtn: #e7aa36;
+@color-blue-closeBtn: #ea6e4d;
+@color-blue-minBtn-hover: fadeout(@color-blue-minBtn, 10%);
+@color-blue-maxBtn-hover: fadeout(@color-blue-maxBtn, 10%);
+@color-blue-closeBtn-hover: fadeout(@color-blue-closeBtn, 10%);
 
 @color-red-theme: #d64541;
 @color-red-theme-bgimg: none;
@@ -228,7 +254,7 @@
 @color-red-theme_2-background_1: #fff;
 @color-red-theme_2-background_2: fadeout(@color-red-theme_2-background_1, 2%);
 @color-red-theme_2-font: darken(@color-red-theme_2, 70%);
-@color-red-theme_2-font-label: fadeout(@color-red-theme_2-font, 50%);
+@color-red-theme_2-font-label: fadeout(@color-red-theme_2-font, 40%);
 @color-red-theme_2-line: lighten(@color-red-theme, 42%);
 @color-red-theme-sidebar: @color-red-theme;
 @color-red-btn: fadeout(darken(@color-red-theme, 5%), 15%);
@@ -254,6 +280,12 @@
 @color-red-tab-btn-background-hover: @color-red-theme_2-hover;
 @color-red-tab-border-top: fadeout(lighten(@color-red-theme, 5%), 50%);
 @color-red-tab-border-bottom: lighten(@color-red-theme, 5%);
+@color-red-minBtn: #85c43b;
+@color-red-maxBtn: #e7aa36;
+@color-red-closeBtn: #ea6e4d;
+@color-red-minBtn-hover: fadeout(@color-red-minBtn, 10%);
+@color-red-maxBtn-hover: fadeout(@color-red-maxBtn, 10%);
+@color-red-closeBtn-hover: fadeout(@color-red-closeBtn, 10%);
 
 @color-purple-theme: #9b59b6;
 @color-purple-theme-bgimg: none;
@@ -269,7 +301,7 @@
 @color-purple-theme_2-hover: fadeout(lighten(@color-purple-theme, 10%), 70%);
 @color-purple-theme_2-active: fadeout(darken(@color-purple-theme, 5%), 70%);
 @color-purple-theme_2-font: darken(@color-purple-theme_2, 70%);
-@color-purple-theme_2-font-label: fadeout(@color-purple-theme_2-font, 50%);
+@color-purple-theme_2-font-label: fadeout(@color-purple-theme_2-font, 40%);
 @color-purple-theme_2-line: lighten(@color-purple-theme, 43%);
 @color-purple-theme-sidebar: @color-purple-theme;
 @color-purple-btn: fadeout(darken(@color-purple-theme, 5%), 15%);
@@ -293,6 +325,12 @@
 @color-purple-tab-btn-background-hover: @color-purple-theme_2-hover;
 @color-purple-tab-border-top: fadeout(lighten(@color-purple-theme, 5%), 50%);
 @color-purple-tab-border-bottom: lighten(@color-purple-theme, 5%);
+@color-purple-minBtn: #85c43b;
+@color-purple-maxBtn: #e7aa36;
+@color-purple-closeBtn: #ea6e4d;
+@color-purple-minBtn-hover: fadeout(@color-purple-minBtn, 10%);
+@color-purple-maxBtn-hover: fadeout(@color-purple-maxBtn, 10%);
+@color-purple-closeBtn-hover: fadeout(@color-purple-closeBtn, 10%);
 
 @color-grey-theme: #6c7a89;
 @color-grey-theme-bgimg: none;
@@ -308,7 +346,7 @@
 @color-grey-theme_2-hover: fadeout(lighten(@color-grey-theme, 10%), 70%);
 @color-grey-theme_2-active: fadeout(darken(@color-grey-theme, 5%), 70%);
 @color-grey-theme_2-font: darken(@color-grey-theme_2, 70%);
-@color-grey-theme_2-font-label: fadeout(@color-grey-theme_2-font, 50%);
+@color-grey-theme_2-font-label: fadeout(@color-grey-theme_2-font, 40%);
 @color-grey-theme_2-line: lighten(@color-grey-theme, 47%);
 @color-grey-theme-sidebar: @color-grey-theme;
 @color-grey-btn: fadeout(darken(@color-grey-theme, 5%), 15%);
@@ -332,6 +370,12 @@
 @color-grey-tab-btn-background-hover: @color-grey-theme_2-hover;
 @color-grey-tab-border-top: fadeout(lighten(@color-grey-theme, 5%), 50%);
 @color-grey-tab-border-bottom: lighten(@color-grey-theme, 5%);
+@color-grey-minBtn: #85c43b;
+@color-grey-maxBtn: #e7aa36;
+@color-grey-closeBtn: #ea6e4d;
+@color-grey-minBtn-hover: fadeout(@color-grey-minBtn, 10%);
+@color-grey-maxBtn-hover: fadeout(@color-grey-maxBtn, 10%);
+@color-grey-closeBtn-hover: fadeout(@color-grey-closeBtn, 10%);
 
 @color-midAutumn-theme: rgba(74, 55, 82, 1);
 @color-midAutumn-theme-bgimg: url(../images/jqbg.jpg);
@@ -347,7 +391,7 @@
 @color-midAutumn-theme_2-hover: fadeout(lighten(@color-midAutumn-theme, 10%), 65%);
 @color-midAutumn-theme_2-active: fadeout(darken(@color-midAutumn-theme, 5%), 70%);
 @color-midAutumn-theme_2-font: darken(@color-midAutumn-theme_2, 70%);
-@color-midAutumn-theme_2-font-label: lighten(@color-midAutumn-theme, 40%);
+@color-midAutumn-theme_2-font-label: desaturate(lighten(@color-midAutumn-theme, 30%), 45%);
 @color-midAutumn-theme_2-line: lighten(@color-midAutumn-theme, 63%);
 @color-midAutumn-theme-sidebar: rgba(255, 255, 255, 0);
 @color-midAutumn-btn: fadeout(darken(@color-midAutumn-theme, 5%), 27%);
@@ -371,6 +415,12 @@
 @color-midAutumn-tab-btn-background-hover: @color-midAutumn-theme_2-hover;
 @color-midAutumn-tab-border-top: fadeout(lighten(@color-midAutumn-theme, 5%), 50%);
 @color-midAutumn-tab-border-bottom: lighten(@color-midAutumn-theme, 5%);
+@color-midAutumn-minBtn: #85c43b;
+@color-midAutumn-maxBtn: #e7aa36;
+@color-midAutumn-closeBtn: #ea6e4d;
+@color-midAutumn-minBtn-hover: fadeout(@color-midAutumn-minBtn, 10%);
+@color-midAutumn-maxBtn-hover: fadeout(@color-midAutumn-maxBtn, 10%);
+@color-midAutumn-closeBtn-hover: fadeout(@color-midAutumn-closeBtn, 10%);
 
 @color-dhHyrz-theme: rgb(87, 144, 167);
 @color-dhHyrz-theme-bgimg: url(../images/hzwbg.jpeg);
@@ -386,7 +436,7 @@
 @color-dhHyrz-theme_2-hover: fadeout(lighten(@color-dhHyrz-theme, 10%), 65%);
 @color-dhHyrz-theme_2-active: fadeout(darken(@color-dhHyrz-theme, 5%), 70%);
 @color-dhHyrz-theme_2-font: darken(@color-dhHyrz-theme_2, 80%);
-@color-dhHyrz-theme_2-font-label: lighten(@color-dhHyrz-theme, 10%);
+@color-dhHyrz-theme_2-font-label: desaturate(lighten(@color-dhHyrz-theme, 10%), 45%);
 @color-dhHyrz-theme_2-line: fadeout(lighten(@color-dhHyrz-theme, 36%), 70%);
 @color-dhHyrz-theme-sidebar: rgba(255, 255, 255, .3);
 @color-dhHyrz-btn: fadeout(darken(@color-dhHyrz-theme, 5%), 15%);
@@ -410,6 +460,58 @@
 @color-dhHyrz-tab-btn-background-hover: @color-dhHyrz-theme_2-hover;
 @color-dhHyrz-tab-border-top: fadeout(lighten(@color-dhHyrz-theme, 5%), 50%);
 @color-dhHyrz-tab-border-bottom: lighten(@color-dhHyrz-theme, 5%);
+@color-dhHyrz-minBtn: #85c43b;
+@color-dhHyrz-maxBtn: #e7aa36;
+@color-dhHyrz-closeBtn: #ea6e4d;
+@color-dhHyrz-minBtn-hover: fadeout(@color-dhHyrz-minBtn, 10%);
+@color-dhHyrz-maxBtn-hover: fadeout(@color-dhHyrz-maxBtn, 10%);
+@color-dhHyrz-closeBtn-hover: fadeout(@color-dhHyrz-closeBtn, 10%);
+
+@color-happyNewYear-theme: rgb(252, 57, 57);
+@color-happyNewYear-theme-bgimg: url(../images/xnkl.jpg);
+@color-happyNewYear-theme-bgposition: center;
+@color-happyNewYear-theme-bgsize: auto 100%;
+@color-happyNewYear-theme-hover: fadeout(lighten(@color-happyNewYear-theme, 10%), 45%);
+@color-happyNewYear-theme-active: fadeout(lighten(@color-happyNewYear-theme, 15%), 60%);
+@color-happyNewYear-theme-font: rgba(255, 255, 255, 0.9);
+@color-happyNewYear-theme-font-label: fadeout(lighten(@color-happyNewYear-theme, 20%), 20%);
+@color-happyNewYear-theme_2: rgba(255, 199, 199, 0.8);
+@color-happyNewYear-theme_2-background_1: #f2a4a4;
+@color-happyNewYear-theme_2-background_2: fadeout(@color-happyNewYear-theme_2-background_1, 2%);
+@color-happyNewYear-theme_2-hover: fadeout(lighten(@color-happyNewYear-theme, 10%), 65%);
+@color-happyNewYear-theme_2-active: fadeout(darken(@color-happyNewYear-theme, 5%), 70%);
+@color-happyNewYear-theme_2-font: darken(@color-happyNewYear-theme_2, 90%);
+@color-happyNewYear-theme_2-font-label: desaturate(darken(@color-happyNewYear-theme, 5%), 50%);
+@color-happyNewYear-theme_2-line: fadeout(lighten(@color-happyNewYear-theme, 16%), 70%);
+@color-happyNewYear-theme-sidebar: rgba(119, 37, 18, 0.1);
+@color-happyNewYear-btn: fadeout(darken(@color-happyNewYear-theme, 5%), 15%);
+@color-happyNewYear-btn-background: fadeout(lighten(@color-happyNewYear-theme, 15%), 60%);
+@color-happyNewYear-pagination-background: fadeout(lighten(@color-happyNewYear-theme, 15%), 40%);
+@color-happyNewYear-pagination-hover: fadeout(lighten(@color-happyNewYear-theme, 10%), 70%);
+@color-happyNewYear-pagination-active: fadeout(darken(@color-happyNewYear-theme, 10%), 70%);
+@color-happyNewYear-pagination-select: fadeout(lighten(@color-happyNewYear-theme, 10%), 55%);
+@color-happyNewYear-search-form-background: fadeout(lighten(@color-happyNewYear-theme, 15%), 20%);
+@color-happyNewYear-search-list-hover: fadeout(darken(@color-happyNewYear-theme, 10%), 50%);
+@color-happyNewYear-scrollbar-track: fadeout(@color-happyNewYear-theme, 80%);
+@color-happyNewYear-scrollbar-thumb: fadeout(@color-happyNewYear-theme, 60%);
+@color-happyNewYear-scrollbar-thumb-hover: fadeout(@color-happyNewYear-theme, 40%);
+@color-happyNewYear-player-pic-c1: fadeout(@color-happyNewYear-theme_2, 50%);
+@color-happyNewYear-player-pic-c2: darken(@color-happyNewYear-theme_2, 30%);
+@color-happyNewYear-player-progress: darken(@color-happyNewYear-theme_2, 6%);
+@color-happyNewYear-player-progress-bar1: darken(@color-happyNewYear-theme_2, 12%);
+@color-happyNewYear-player-progress-bar2: lighten(@color-happyNewYear-theme, 12%);
+@color-happyNewYear-player-status-text: lighten(@color-happyNewYear-theme_2-font, 10%);
+@color-happyNewYear-tab-btn-background: fadeout(lighten(@color-happyNewYear-theme, 10%), 80%);
+@color-happyNewYear-tab-btn-background-hover: @color-happyNewYear-theme_2-hover;
+@color-happyNewYear-tab-border-top: fadeout(lighten(@color-happyNewYear-theme, 5%), 50%);
+@color-happyNewYear-tab-border-bottom: lighten(@color-happyNewYear-theme, 5%);
+@color-happyNewYear-minBtn: #c4943b;
+@color-happyNewYear-maxBtn: #e7aa36;
+@color-happyNewYear-closeBtn: #ea6e4d;
+@color-happyNewYear-minBtn-hover: fadeout(@color-happyNewYear-minBtn, 10%);
+@color-happyNewYear-maxBtn-hover: fadeout(@color-happyNewYear-maxBtn, 10%);
+@color-happyNewYear-closeBtn-hover: fadeout(@color-happyNewYear-closeBtn, 10%);
+
 
 
 // Width

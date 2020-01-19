@@ -208,14 +208,14 @@ export default {
     }
 
     &.min:hover:after {
-      background-color: lighten(@color-minBtn, 10%);
+      background-color: @color-minBtn-hover;
       opacity: 1;
     }
     &.max:hover:after {
-      background-color: lighten(@color-maxBtn, 10%);
+      background-color: @color-maxBtn-hover;
     }
     &.close:hover:after {
-      background-color: lighten(@color-closeBtn, 10%);
+      background-color: @color-closeBtn-hover;
     }
   }
 }
@@ -240,4 +240,31 @@ export default {
     color: #fff;
   }
 }
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .control {
+      button {
+        &.min:after {
+          background-color: ~'@{color-@{value}-minBtn}';
+        }
+        &.max:after {
+          background-color: ~'@{color-@{value}-maxBtn}';
+        }
+        &.close:after {
+          background-color: ~'@{color-@{value}-closeBtn}';
+        }
+        &.min:hover:after {
+          background-color: ~'@{color-@{value}-minBtn-hover}';
+        }
+        &.max:hover:after {
+          background-color: ~'@{color-@{value}-maxBtn-hover}';
+        }
+        &.close:hover:after {
+          background-color: ~'@{color-@{value}-closeBtn-hover}';
+        }
+      }
+    }
+  }
+})
 </style>

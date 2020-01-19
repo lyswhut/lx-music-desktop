@@ -71,6 +71,11 @@ export default {
       name: '木叶之村',
       class: 'dhHyrz',
     },
+    {
+      id: 9,
+      name: '新年快乐',
+      class: 'happyNewYear',
+    },
   ],
   version: {
     version,
