@@ -6,6 +6,14 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.14.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.14.0...v0.14.1) - 2020-01-22
+
+洛雪提前祝大家新年快乐、身体健康、阖家幸福！
+
+### 修复
+
+- 修复由于旧版配置文件迁移出错导致的软件界面无法显示的问题
+
 ## [0.14.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.13.1...v0.14.0) - 2020-01-22
 
 洛雪提前祝大家新年快乐、身体健康、阖家幸福！
