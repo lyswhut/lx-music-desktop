@@ -11,13 +11,15 @@ const electronStore_config = window.electronStore_config = new Store({
   name: 'config',
 })
 if (!electronStore_config.get('version') && electronStore_config.get('setting')) { // 迁移配置
-  electronStore_list.set('defaultList', electronStore_config.get('list.defaultList'))
-  electronStore_list.set('loveList', electronStore_config.get('list.loveList'))
-  electronStore_list.set('downloadList', electronStore_config.get('download.list'))
   electronStore_config.set('version', electronStore_config.get('setting.version'))
   electronStore_config.delete('setting.version')
-  electronStore_config.delete('list')
-  electronStore_config.delete('download')
+  const list = electronStore_config.get('list')
+  if (list) {
+    if (list.defaultList) electronStore_list.set('defaultList', list.defaultList)
+    if (list.loveList) electronStore_list.set('loveList', list.loveList)
+    electronStore_config.delete('list')
+  }
+  if (electronStore_config.get('download')) electronStore_config.delete('download')
 }
 const { version: settingVersion, setting } = updateSetting(electronStore_config.get('setting'), electronStore_config.get('version'))
 electronStore_config.set('version', settingVersion)
