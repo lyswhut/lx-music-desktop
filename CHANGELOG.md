@@ -6,6 +6,17 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.15.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.14.1...v0.15.0) - 2020-01-23
+
+洛雪提前祝大家新年快乐、身体健康、阖家幸福！
+
+### 修复
+
+- 修复歌曲下载列表无法加载的问题
+- 修复歌曲下载任务数大于最大下载任务数的问题
+- 修复某些情况下歌曲下载错误的问题
+- 修复下载列表数据没有被迁移直接被丢弃的问题
+
 ## [0.14.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.14.0...v0.14.1) - 2020-01-22
 
 洛雪提前祝大家新年快乐、身体健康、阖家幸福！
