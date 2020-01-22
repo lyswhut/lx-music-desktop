@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -148,7 +148,7 @@
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
-    "browserslist": "^4.8.3",
+    "browserslist": "^4.8.5",
     "cfonts": "^2.4.8",
     "chalk": "^3.0.0",
     "changelog-parser": "^2.8.0",
@@ -200,7 +200,6 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "axios": "^0.19.1",
     "crypto-js": "^3.1.9-1",
     "dnscache": "^1.0.2",
     "electron-log": "^4.0.3",
