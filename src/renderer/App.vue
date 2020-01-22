@@ -204,7 +204,7 @@ export default {
       this.initList({ defaultList, loveList })
     },
     initDownloadList() {
-      let downloadList = window.electronStore_list.get('download.list')
+      let downloadList = window.electronStore_list.get('downloadList')
       if (downloadList) {
         downloadList.forEach(item => {
           if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
