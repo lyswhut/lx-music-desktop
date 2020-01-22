@@ -210,10 +210,9 @@ const actions = {
         console.log('on complate')
       },
       onError(err) {
-        // console.log(err.code, err.message)
-        commit('onError', downloadInfo)
         // console.log(tryNum[downloadInfo.key])
         if (++tryNum[downloadInfo.key] > 2) {
+          commit('onError', downloadInfo)
           _this.dispatch('download/startTask')
           return
         }
@@ -226,9 +225,8 @@ const actions = {
         }
       },
       onFail(response) {
-        commit('onError', downloadInfo)
-
         if (++tryNum[downloadInfo.key] > 2) {
+          commit('onError', downloadInfo)
           _this.dispatch('download/startTask')
           return
         }

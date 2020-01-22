@@ -19,7 +19,11 @@ if (!electronStore_config.get('version') && electronStore_config.get('setting'))
     if (list.loveList) electronStore_list.set('loveList', list.loveList)
     electronStore_config.delete('list')
   }
-  if (electronStore_config.get('download')) electronStore_config.delete('download')
+  const downloadList = electronStore_config.get('download')
+  if (downloadList) {
+    if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
+    electronStore_config.delete('download')
+  }
 }
 const { version: settingVersion, setting } = updateSetting(electronStore_config.get('setting'), electronStore_config.get('version'))
 electronStore_config.set('version', settingVersion)
