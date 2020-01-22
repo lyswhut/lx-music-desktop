@@ -9,7 +9,21 @@ export default {
         timeout: 20000,
       }, (err, resp, body) => {
         if (err) {
-          return ++retryNum > 3 ? reject() : this.dispatch('getVersionInfo', retryNum).then(ver => resolve(ver)).catch(err => reject(err))
+          return ++retryNum > 3
+            ? this.dispatch('getVersionInfo2').then(ver => resolve(ver)).catch(err => reject(err))
+            : this.dispatch('getVersionInfo', retryNum).then(ver => resolve(ver)).catch(err => reject(err))
+        }
+        resolve(body)
+      })
+    })
+  },
+  getVersionInfo2(state, retryNum = 0) {
+    return new Promise((resolve, reject) => {
+      httpGet('https://cdn.stsky.cn/lx-music/desktop/version.json', {
+        timeout: 20000,
+      }, (err, resp, body) => {
+        if (err) {
+          return ++retryNum > 3 ? reject() : this.dispatch('getVersionInfo2', retryNum).then(ver => resolve(ver)).catch(err => reject(err))
         }
         resolve(body)
       })
