@@ -184,12 +184,12 @@ export default {
       music.init()
     },
     enableIgnoreMouseEvents() {
-      if (!this.isNt) return
+      if (this.isNt) return
       rendererSend('setIgnoreMouseEvents', false)
       // console.log('content enable')
     },
     dieableIgnoreMouseEvents() {
-      if (!this.isNt) return
+      if (this.isNt) return
       // console.log('content disable')
       rendererSend('setIgnoreMouseEvents', true)
     },
