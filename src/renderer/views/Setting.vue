@@ -18,8 +18,9 @@ div.scroll(:class="$style.setting")
     dd(title='选择音乐来源')
       h3 音乐来源
       div
-        material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
-          need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label" :key="item.id")
+        div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
+          material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
+            need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
     dd(title='设置软件窗口尺寸')
       h3 窗口尺寸
