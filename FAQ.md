@@ -59,8 +59,10 @@
 ## 软件启动后，界面无法显示
 
 软件启动后，可以在任务栏看到软件，但软件界面在桌面上无任何显示。<br>
-解决办法：下载`.NET Framework 4.7.1`或更高版本安装即可。<br>
-原始问题看：<https://github.com/electron/electron/issues/19569#issuecomment-522231083>
+原始问题看：<https://github.com/electron/electron/issues/19569#issuecomment-522231083><br>
+解决办法：下载`.NET Framework 4.7.1`或**更高**版本安装即可。<br>
+微软官方下载地址：<https://dotnet.microsoft.com/download/dotnet-framework><br>
+下载`Runtime(运行时)`版即可，安装完成后可能需要重启才生效。
 
 若还是不行可尝试更新显卡驱动。
 
