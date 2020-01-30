@@ -27,7 +27,7 @@ const buildHttpPromose = (url, options) => {
     requestObj = fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
       debugRequest && console.log(`\n---response------${url}------------`)
-      debugRequest && console.log(JSON.stringify(body))
+      debugRequest && console.log(body)
       requestObj = null
       cancelFn = null
       if (err) {
@@ -112,7 +112,7 @@ export const http = (url, options, cb) => {
   return fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -141,7 +141,7 @@ export const httpGet = (url, options, callback) => {
   return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -172,7 +172,7 @@ export const httpPost = (url, data, options, callback) => {
   return fetchData(url, 'post', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -209,7 +209,7 @@ export const http_jsonp = (url, options, callback) => {
   return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     } else {

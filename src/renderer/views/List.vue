@@ -18,19 +18,21 @@
         table
           tbody
             tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
-              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
+              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
-                | {{item.name}}
+                span.select {{item.name}}
                 span(:class="$style.labelSource" v-if="isShowSource") {{item.source}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
                 //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
                 //- span.badge.badge-theme-info(v-if="item._types.ape") APE
                 //- span.badge.badge-theme-success(v-if="item._types.flac") FLAC
-              td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 20%;") {{item.albumName}}
+              td.break(style="width: 20%;")
+                span.select {{item.singer}}
+              td.break(style="width: 20%;")
+                span.select {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
@@ -229,7 +231,8 @@ export default {
         })
       })
     },
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index

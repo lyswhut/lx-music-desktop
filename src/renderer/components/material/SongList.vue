@@ -17,15 +17,17 @@ div(:class="$style.songList")
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody
-            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
+            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick($event, index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
               td.break(style="width: 25%;")
-                | {{item.name}}
+                span.select {{item.name}}
                 span.badge.badge-theme-info(v-if="!(item._types.ape || item._types.flac) && item._types['320k']") 高品质
                 span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") 无损
-              td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 20%;") {{item.albumName}}
+              td.break(style="width: 20%;")
+                span.select {{item.singer}}
+              td.break(style="width: 20%;")
+                span.select {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :search-btn="true"
                   :remove-btn="false" @btn-click="handleListBtnClick"
@@ -131,7 +133,9 @@ export default {
     }
   },
   methods: {
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
+
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -197,13 +201,7 @@ export default {
   td {
     font-size: 12px;
     :global(.badge) {
-      margin-right: 3px;
-      &:first-child {
-        margin-left: 3px;
-      }
-      &:last-child {
-        margin-right: 0;
-      }
+      margin-left: 3px;
     }
   }
   :global(.badge) {

@@ -19,10 +19,11 @@ div(:class="$style.download")
     div.scroll(v-if="list.length" :class="$style.tbody")
       table
         tbody
-          tr(v-for='(item, index) in showList' :key='item.key' @click="handleDoubleClick(index)" :class="playListIndex === index ? $style.active : ''")
+          tr(v-for='(item, index) in showList' :key='item.key' @click="handleDoubleClick($event, index)" :class="playListIndex === index ? $style.active : ''")
             td.nobreak.center(style="width: 37px;" @click.stop)
               material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
-            td.break(style="width: 28%;") {{item.musicInfo.name}} - {{item.musicInfo.singer}}
+            td.break(style="width: 28%;")
+              span.select {{item.musicInfo.name}} - {{item.musicInfo.singer}}
             td.break(style="width: 22%;") {{item.progress.progress}}%
             td.break(style="width: 15%;") {{item.statusText}}
             td.break(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
@@ -133,7 +134,9 @@ export default {
       let dl = this.dls[info.key]
       dl ? dl.start() : this.startTask(info)
     },
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
+
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index

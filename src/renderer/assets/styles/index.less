@@ -20,6 +20,13 @@
   word-break: break-all;
 }
 
+.select {
+  user-select: text;
+}
+.no-select {
+  user-select: none;
+}
+
 table {
   width: 100%;
   border-spacing: 0;
@@ -50,7 +57,7 @@ table {
         position: relative;
         transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-size: 13px;
-        line-height: 1.3;
+        line-height: 1.4;
         vertical-align: middle;
       }
     }
@@ -129,6 +136,10 @@ input, textarea {
     color: @color-theme_2-font-label;
   }
 }
+::selection {
+  color: @color-theme_2;
+  background: @color-btn;
+}
 
 .hover, a {
   cursor: pointer;
@@ -206,7 +217,11 @@ each(@themes, {
         color: ~'@{color-@{value}-theme_2-font-label}';
       }
     }
-    
+    ::selection {
+      color: ~'@{color-@{value}-theme_2}';
+      background: ~'@{color-@{value}-btn}';
+    }
+
     .badge {
       &.badge-theme-success {
         color: ~'@{color-@{value}-badge-success-font}';
