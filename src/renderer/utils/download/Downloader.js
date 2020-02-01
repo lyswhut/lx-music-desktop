@@ -140,7 +140,8 @@ class Task extends EventEmitter {
             if (response.complete) {
               this.__handleComplete()
             } else {
-              this.__handleError(new Error('The connection was terminated while the message was still being sent'))
+              // this.__handleError(new Error('The connection was terminated while the message was still being sent'))
+              this.stop()
             }
           })
       })
