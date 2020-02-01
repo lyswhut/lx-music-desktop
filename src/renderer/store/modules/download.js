@@ -134,6 +134,21 @@ const refreshUrl = function(commit, downloadInfo) {
   })
 }
 
+/**
+ * 删除文件
+ * @param {*} path
+ */
+const deleteFile = path => new Promise((resolve, reject) => {
+  fs.access(path, fs.constants.F_OK, err => {
+    if (err) return reject(err)
+    fs.unlink(path, err => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+})
+
+
 // actions
 const actions = {
   createDownload({ state, rootState, commit }, { musicInfo, type }) {
@@ -280,7 +295,9 @@ const actions = {
     }
     commit('removeTask', index)
     if (dls[info.key]) delete dls[info.key]
-    this.dispatch('download/startTask')
+    ;(info.status != state.downloadStatus.COMPLETED ? deleteFile(info.filePath) : Promise.resolve()).finally(() => {
+      this.dispatch('download/startTask')
+    })
   },
   removeTaskMultiple({ commit, rootState, state }, list) {
     list.forEach(item => {

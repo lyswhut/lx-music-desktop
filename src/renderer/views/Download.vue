@@ -28,9 +28,10 @@ div(:class="$style.download")
             td.break(style="width: 15%;") {{item.statusText}}
             td.break(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
             td(style="width: 20%; padding-left: 0; padding-right: 0;")
-              material-list-buttons(:index="index" :download-btn="false" :file-btn="true" :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
+              material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR"
+                :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
                 :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)" :list-add-btn="false"
-                :play-btn="item.status == downloadStatus.COMPLETED" @btn-click="handleListBtnClick")
+                :play-btn="item.status == downloadStatus.COMPLETED" :search-btn="item.status == downloadStatus.ERROR" @btn-click="handleListBtnClick")
     material-flow-btn(:show="isShowEditBtn" :play-btn="false" :download-btn="false" :add-btn="false" :start-btn="true" :pause-btn="true" @btn-click="handleFlowBtnClick")
   div(:class="$style.noItem" v-else)
 </template>
@@ -185,6 +186,9 @@ export default {
         case 'file':
           this.handleOpenFolder(index)
           break
+        case 'search':
+          this.handleSearch(index)
+          break
       }
     },
     handleSelectAllData(isSelect) {
@@ -231,6 +235,15 @@ export default {
       let path = this.list[index].filePath
       if (!checkPath(path)) return
       openDirInExplorer(path)
+    },
+    handleSearch(index) {
+      const info = this.list[index].musicInfo
+      this.$router.push({
+        path: 'search',
+        query: {
+          text: `${info.name} ${info.singer}`,
+        },
+      })
     },
   },
 }
