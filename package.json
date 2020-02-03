@@ -75,7 +75,7 @@
       "category": "public.app-category.music"
     },
     "linux": {
-      "maintainer": "lyswhut <lyswuhut@qq.com>",
+      "maintainer": "lyswhut <lyswhut@qq.com>",
       "artifactName": "${productName} v${version} ${env.ARCH}.${ext}",
       "icon": "./resources/icons",
       "category": "Utility;AudioVideo;Audio;Player;Music;",
@@ -131,7 +131,7 @@
   ],
   "author": {
     "name": "lyswhut",
-    "email": "lyswuhut@qq.com"
+    "email": "lyswhut@qq.com"
   },
   "license": "Apache-2.0",
   "bugs": {
