@@ -292,6 +292,12 @@ export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
 export const clipboardWriteText = str => clipboard.writeText(str)
 
 /**
+ * 从剪贴板读取文本
+ * @param {*} str
+ */
+export const clipboardReadText = str => clipboard.readText()
+
+/**
  * 设置音频 meta 信息
  * @param {*} filePath
  * @param {*} meta
