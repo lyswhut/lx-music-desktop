@@ -119,6 +119,7 @@ export default {
       let str = clipboardReadText()
       str = str.trim()
       str = str.replace(/\t|\r\n|\n|\r/g, ' ')
+      str = str.replace(/\s+/g, ' ')
       let dom_input = this.$refs.dom_input
       this.text = `${this.text.substring(0, dom_input.selectionStart)}${str}${this.text.substring(dom_input.selectionEnd, this.text.length)}`
       this.$emit('input', this.text)

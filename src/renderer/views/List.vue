@@ -337,7 +337,6 @@ export default {
         classList.remove(this.$style.copying)
         str = str.trim()
         if (!str.length) return
-        console.log(str)
         clipboardWriteText(str)
       })
     },

@@ -15,8 +15,10 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 // https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = true
+app.allowRendererProcessReuse = !isDev
 
 const { getWindowSizeInfo, parseEnv } = require('./utils')
 
@@ -26,8 +28,6 @@ require('../common/error')
 require('./events')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
-
-const isDev = process.env.NODE_ENV !== 'production'
 
 
 let mainWindow
