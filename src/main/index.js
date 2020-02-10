@@ -15,6 +15,9 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
+// https://github.com/electron/electron/issues/18397
+app.allowRendererProcessReuse = true
+
 const { getWindowSizeInfo, parseEnv } = require('./utils')
 
 global.envParams = parseEnv()
@@ -26,10 +29,6 @@ const { isLinux, isMac } = require('../common/utils')
 
 const isDev = process.env.NODE_ENV !== 'production'
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
 
 let mainWindow
 let winURL
