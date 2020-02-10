@@ -18,7 +18,7 @@
               th.nobreak(style="width: 10%;") 时长
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody
+          tbody(@contextmenu="handleContextMenu")
             tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick($event, index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
@@ -36,7 +36,8 @@
                   :play-btn="item.source == 'kw' || !isAPITemp"
                   :download-btn="item.source == 'kw' || !isAPITemp"
                   @btn-click="handleListBtnClick")
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
@@ -50,7 +51,7 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo } from '../utils'
+import { scrollTo, clipboardWriteText } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'Search',
@@ -248,6 +249,18 @@ export default {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        clipboardWriteText(str)
+      })
+    },
   },
 }
 </script>
@@ -287,6 +300,12 @@ export default {
   }
   :global(.badge) {
     opacity: .85;
+  }
+
+  &.copying {
+    .labelSource, .time {
+      display: none;
+    }
   }
 }
 .listBtn {

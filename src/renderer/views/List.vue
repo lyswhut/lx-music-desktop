@@ -16,7 +16,7 @@
               th.nobreak(style="width: 10%;") 时长
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
-          tbody
+          tbody(@contextmenu="handleContextMenu")
             tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
               @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
@@ -39,7 +39,8 @@
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
       p(v-text="list.length ? '加载中...' : '列表竟然是空的...'")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -51,7 +52,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, asyncSetArray, scrollTo } from '../utils'
+import { throttle, asyncSetArray, scrollTo, clipboardWriteText } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -327,6 +328,19 @@ export default {
     // handleScroll(e) {
     //   console.log(e.target.scrollTop)
     // },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        console.log(str)
+        clipboardWriteText(str)
+      })
+    },
   },
 }
 </script>
@@ -369,6 +383,12 @@ export default {
   tr {
     &.active {
       color: @color-theme;
+    }
+  }
+
+  &.copying {
+    .labelSource, .time {
+      display: none;
     }
   }
 }

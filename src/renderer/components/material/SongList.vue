@@ -16,7 +16,7 @@ div(:class="$style.songList")
               th.nobreak(style="width: 10%;") 时长
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody
+          tbody(@contextmenu="handleContextMenu")
             tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick($event, index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
@@ -37,7 +37,8 @@ div(:class="$style.songList")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
@@ -47,7 +48,7 @@ div(:class="$style.songList")
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo } from '../../utils'
+import { scrollTo, clipboardWriteText } from '../../utils'
 export default {
   name: 'MaterialSongList',
   model: {
@@ -171,6 +172,18 @@ export default {
     handleChangeSelect() {
       this.$emit('input', [...this.selectdList])
     },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        clipboardWriteText(str)
+      })
+    },
   },
 }
 </script>
@@ -206,6 +219,12 @@ export default {
   }
   :global(.badge) {
     opacity: .85;
+  }
+
+  &.copying {
+    .labelSource, .time {
+      display: none;
+    }
   }
 }
 .pagination {
