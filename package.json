@@ -7,10 +7,9 @@
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win",
     "pack:win": "npm run pack:win:setup:x86_64 && npm run pack:win:7z",
-    "pack:win:setup": "cross-env TARGET=win_安装版 ARCH=x86_64 electron-builder -w=nsis --x64 --ia32",
     "pack:win:setup:x86_64": "cross-env TARGET=win_安装版 ARCH=x86_64 electron-builder -w=nsis --x64 --ia32",
-    "pack:win:setup:x64": "cross-env TARGET=win_安装版 ARCH=x86_64 electron-builder -w=nsis --x64",
-    "pack:win:setup:x32": "cross-env TARGET=win_安装版 ARCH=x86_64 electron-builder -w=nsis --ia32",
+    "pack:win:setup:x64": "cross-env TARGET=win_安装版 ARCH=x64 electron-builder -w=nsis --x64",
+    "pack:win:setup:x86": "cross-env TARGET=win_安装版 ARCH=x86 electron-builder -w=nsis --ia32",
     "pack:win:portable": "npm run pack:win:portable:x86_64 && npm run pack:win:portable:x64 && npm run pack:win:portable:x86",
     "pack:win:portable:x86_64": "cross-env TARGET=便携版 ARCH=x86_64 electron-builder -w=portable --x64 --ia32",
     "pack:win:portable:x64": "cross-env TARGET=便携版 ARCH=x64 electron-builder -w=portable --x64",
