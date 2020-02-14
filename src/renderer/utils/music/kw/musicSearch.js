@@ -42,6 +42,7 @@ export default {
   // },
   handleResult(rawData) {
     const result = []
+    if (!rawData) return result
     for (let i = 0; i < rawData.length; i++) {
       const info = rawData[i]
       let songId = info.MUSICRID.replace('MUSIC_', '')
