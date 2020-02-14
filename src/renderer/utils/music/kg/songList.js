@@ -65,7 +65,7 @@ export default {
     for (const key of Object.keys(rawData.data)) {
       let tag = rawData.data[key]
       result.push({
-        id: tag.id,
+        id: tag.special_id,
         name: tag.special_name,
         source: 'kg',
       })
