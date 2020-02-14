@@ -24,8 +24,8 @@
                 material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span.badge.badge-theme-info(v-if="!(item._types.ape || item._types.flac) && item._types['320k']") 高品质
                 span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") 无损
+                span.badge.badge-theme-info(v-else-if="item._types['320k']") 高品质
                 span(:class="$style.labelSource" v-if="searchSourceId == 'all'") {{item.source}}
               td.break(style="width: 20%;")
                 span.select {{item.singer}}
