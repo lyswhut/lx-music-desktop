@@ -319,7 +319,7 @@ export default {
       })
     },
     parseImportSongListInputText() {
-      if (!/[?&:/]/.test(this.importSongListText)) return
+      if (!(/[?&:/]/.test(this.importSongListText))) return
       const text = this.importSongListText
       let regx
       switch (this.source) {

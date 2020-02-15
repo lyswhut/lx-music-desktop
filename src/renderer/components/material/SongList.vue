@@ -1,7 +1,7 @@
 <template lang="pug">
 div(:class="$style.songList")
-  transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
-    div(v-if="list.length" :class="$style.list")
+  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+    div(v-show="list.length" :class="$style.list")
       div(:class="$style.thead")
         table
           thead
@@ -41,7 +41,8 @@ div(:class="$style.songList")
                 span(:class="$style.time") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
-    div(v-else :class="$style.noitem")
+  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+    div(v-show="!list.length" :class="$style.noitem")
       p(v-html="noItem")
   material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
@@ -234,8 +235,11 @@ export default {
   // transform: translateX(-50%);
 }
 .noitem {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

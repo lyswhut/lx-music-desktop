@@ -39,6 +39,7 @@ const actions = {
     let tabId = rootState.setting.leaderboard.tabId
     let key = `${source}${tabId}${page}}`
     if (state.list.length && state.key == key) return true
+    commit('clearList')
     return music[source].leaderboard.getList(tabId, page).then(result => commit('setList', { result, key }))
   },
 }
@@ -51,6 +52,10 @@ const mutations = {
     state.limit = result.limit
     state.page = result.page
     state.key = key
+  },
+  clearList(state) {
+    state.list = []
+    state.total = 0
   },
 }
 
