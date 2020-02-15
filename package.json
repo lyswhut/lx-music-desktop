@@ -51,7 +51,7 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
   },
   "browserslist": [
-    "Electron 7.1.11"
+    "Electron 8.0.1"
   ],
   "engines": {
     "node": ">= 12"
@@ -150,7 +150,7 @@
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
-    "browserslist": "^4.8.6",
+    "browserslist": "^4.8.7",
     "cfonts": "^2.6.1",
     "chalk": "^3.0.0",
     "changelog-parser": "^2.8.0",
@@ -160,7 +160,7 @@
     "cross-env": "^7.0.0",
     "css-loader": "^3.4.2",
     "del": "^5.1.0",
-    "electron": "^8.0.0",
+    "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^2.2.4",
@@ -176,7 +176,7 @@
     "file-loader": "^5.0.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",
-    "less": "^3.11.0",
+    "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "markdown-it": "^10.0.0",
     "mini-css-extract-plugin": "^0.9.0",
@@ -190,19 +190,19 @@
     "rimraf": "^3.0.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
-    "terser-webpack-plugin": "^2.3.4",
+    "terser-webpack-plugin": "^2.3.5",
     "url-loader": "^3.0.0",
-    "vue-loader": "^15.8.3",
+    "vue-loader": "^15.9.0",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.11",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
     "webpack-hot-middleware": "^2.25.0",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
+    "crypto-js": "^4.0.0",
     "dnscache": "^1.0.2",
     "electron-log": "^4.0.6",
     "electron-store": "^5.1.0",
@@ -210,8 +210,9 @@
     "flac-metadata": "^0.1.1",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.0",
+    "needle": "^2.3.2",
     "node-id3": "^0.1.13",
-    "request": "^2.88.0",
+    "request": "^2.88.2",
     "vue": "^2.6.11",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.1.5",
