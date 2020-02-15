@@ -1,4 +1,4 @@
-import request from 'request'
+import needle from 'needle'
 // import progress from 'request-progress'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
@@ -6,6 +6,33 @@ import { bHh } from './music/options'
 import { deflateRawSync } from 'zlib'
 import { getProxyInfo } from './index'
 // import fs from 'fs'
+
+const request = (url, options, callback) => {
+  let data
+  if (options.method == 'get') options.headers['Content-Length'] = 0
+  if (options.body) {
+    data = options.body
+  } else if (options.form) {
+    data = options.form
+    // data.content_type = 'application/x-www-form-urlencoded'
+    options.json = false
+  } else if (options.formData) {
+    data = options.formData
+    // data.content_type = 'multipart/form-data'
+    options.json = false
+  }
+  return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
+    if (!err) {
+      body = resp.body = resp.raw.toString()
+      try {
+        resp.body = JSON.parse(resp.body)
+      } catch (_) {}
+      body = resp.body
+    }
+    callback(err, resp, body)
+  }).request
+}
+
 
 const defaultHeaders = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
