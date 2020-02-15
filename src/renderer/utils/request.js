@@ -21,6 +21,7 @@ const request = (url, options, callback) => {
     // data.content_type = 'multipart/form-data'
     options.json = false
   }
+  options.response_timeout = options.timeout
   return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
     if (!err) {
       body = resp.body = resp.raw.toString()
