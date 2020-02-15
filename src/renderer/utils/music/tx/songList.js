@@ -84,7 +84,7 @@ export default {
       let result = tagHtml.match(this.regexps.hotTag)
       if (!result) return
       hotTags.push({
-        id: result[1],
+        id: parseInt(result[1]),
         name: result[2],
         source: 'tx',
       })
