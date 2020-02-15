@@ -64,7 +64,9 @@ const actions = {
     // console.log(sortId)
     let key = `slist__${source}__${sortId}__${tabId}__${page}`
     if (state.list.list.length && state.list.key == key) return
-    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getList(sortId, tabId, page)).then(result => commit('setList', { result, key, page }))
+    if (cache.has(key)) return Promise.resolve(cache.get(key)).then(result => commit('setList', { result, key, page }))
+    commit('clearList')
+    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
@@ -107,6 +109,10 @@ const actions = {
 const mutations = {
   setTags(state, { tags, source }) {
     state.tags[source] = tags
+  },
+  clearList(state) {
+    state.list.list = []
+    state.list.total = 0
   },
   setList(state, { result, key, page }) {
     state.list.list = result.list

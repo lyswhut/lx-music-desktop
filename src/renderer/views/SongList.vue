@@ -24,22 +24,27 @@
           material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
         div(:class="$style.songListContent")
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div.scroll(:class="$style.songList" v-if="sortId !== 'importSongList'" ref="dom_scrollContent")
-              ul
-                li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
-                  div(:class="$style.left")
-                    img(:src="item.img")
-                  div(:class="$style.right" :src="item.img")
-                    h4(:title="item.name") {{item.name}}
-                    p(:title="item.desc") {{item.desc}}
-                li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
-              div(:class="$style.pagination")
-                material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
+            div(:class="$style.songListContent" v-show="listData.list.length")
+              transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+                div.scroll(:class="$style.songList" v-if="sortId !== 'importSongList'" ref="dom_scrollContent")
+                  ul
+                    li(:class="$style.item" v-for="(item, index) in listData.list" @click="handleItemClick(index)")
+                      div(:class="$style.left")
+                        img(:src="item.img")
+                      div(:class="$style.right" :src="item.img")
+                        h4(:title="item.name") {{item.name}}
+                        p(:title="item.desc") {{item.desc}}
+                    li(:class="$style.item" style="cursor: default;" v-if="listData.list && listData.list.length && listData.list.length % 3 == 2")
+                  div(:class="$style.pagination")
+                    material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
+              transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+                div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
+                  material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big placeholder="输入歌单链接或歌单ID")
+                    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
+                      use(xlink:href='#icon-right')
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
-              material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big placeholder="输入歌单链接或歌单ID")
-                svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-                  use(xlink:href='#icon-right')
+            div(v-show="!listData.list.length" :class="$style.noitem")
+              p 列表加载中...
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
@@ -529,6 +534,23 @@ export default {
   // transform: translateX(-50%);
 }
 
+.noitem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-size: 24px;
+    color: @color-theme_2-font-label;
+  }
+}
+
 each(@themes, {
   :global(#container.@{value}) {
     .song-list-header-middle {
@@ -537,6 +559,11 @@ each(@themes, {
       }
     }
     .right {
+      p {
+        color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+    .noitem {
       p {
         color: ~'@{color-@{value}-theme_2-font-label}';
       }
