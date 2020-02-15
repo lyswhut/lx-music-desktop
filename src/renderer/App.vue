@@ -229,7 +229,14 @@ export default {
         this.setNewVersion(result)
         return result
       }).then(result => {
-        if (result.version === this.version.version || result.version === this.setting.ignoreVersion) return
+        let newVer = result.version.replace(/\./g, '')
+        let currentVer = this.version.version.replace(/\./g, '')
+        let len = Math.max(newVer.length, currentVer.length)
+        newVer.padStart(len, '0')
+        currentVer.padStart(len, '0')
+        if (parseInt(newVer) <= parseInt(currentVer)) return this.setVersionModalVisible({ isLatestVer: true })
+
+        if (result.version === this.setting.ignoreVersion) return
         // console.log(this.version)
         this.$nextTick(() => {
           this.setVersionModalVisible({ isShow: true })

@@ -130,7 +130,7 @@ div.scroll(:class="$style.setting")
         br
         | 下载进度：{{downloadProgress}}
       p(v-if="version.newVersion")
-        span(v-if="isLatestVer") 软件已是最新，尽情地体验吧~🥂
+        span(v-if="version.isLatestVer") 软件已是最新，尽情地体验吧~🥂
         material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口 🚀
       p.small(v-else) 检查更新中...
     dt 关于洛雪音乐
@@ -209,9 +209,6 @@ export default {
   computed: {
     ...mapGetters(['setting', 'settingVersion', 'themes', 'version', 'windowSizeList']),
     ...mapGetters('list', ['defaultList', 'loveList']),
-    isLatestVer() {
-      return this.version.newVersion && this.version.version === this.version.newVersion.version
-    },
     isShowRebootBtn() {
       return this.current_setting.windowSizeId != window.currentWindowSizeId
     },

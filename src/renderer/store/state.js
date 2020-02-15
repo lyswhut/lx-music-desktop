@@ -92,6 +92,7 @@ export default {
     isUnknow: false,
     isDownloaded: false,
     isDownloading: false,
+    isLatestVer: false,
     downloadProgress: null,
   },
   userInfo: null,
