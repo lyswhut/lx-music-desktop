@@ -160,11 +160,13 @@ export default {
           this.showUpdateModal()
         })
       })
-      rendererOn('update-not-available', () => {
+      rendererOn('update-not-available', (e, info) => {
         this.clearUpdateTimeout()
         this.setNewVersion({
-          version: this.version.version,
+          version: info.version,
+          desc: info.releaseNotes,
         })
+        this.setVersionModalVisible({ isLatestVer: true })
       })
       // 更新超时定时器
       this.updateTimeout = setTimeout(() => {
