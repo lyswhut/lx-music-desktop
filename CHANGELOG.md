@@ -6,6 +6,34 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.16.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.15.0...v0.16.0) - 2020-02-16
+
+### 新增
+
+- 允许选中列表内歌曲名、歌手名、专辑名内的文字，选中后可使用键盘快捷键进行复制
+- 新增在列表可选内容区域**鼠标右击**时自动复制列表已选文字的功能
+- 新增在搜索框**鼠标右击**时自动粘贴剪贴板的文本到搜索框中
+- 任务下载失败时将显示搜索按钮，方便在其他源搜索该歌曲
+
+### 优化
+
+- 优化木叶之村主题翻页器背景颜色
+- 优化各个主题音质标签颜色
+- 优化其他一些界面细节及用户交互效果
+
+### 修复
+
+- 修复启用透明窗口鼠标不穿透的bug
+- 修复大窗口时设置的音乐来源选项不换行的问题
+- 修复某些情况下暂停任务会自动开始任务的问题
+- 修复移除暂停、错误的任务时不删除未下载完成的文件的问题
+- 修复酷狗源歌单热门标签歌单列表无法加载问题
+- 修复QQ源歌单热门标签歌单列表无法加载问题
+
+### 其他
+
+- 更新electron到 8.0.1
+
 ## [0.15.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.14.1...v0.15.0) - 2020-01-23
 
 洛雪提前祝大家新年快乐、身体健康、阖家幸福！
