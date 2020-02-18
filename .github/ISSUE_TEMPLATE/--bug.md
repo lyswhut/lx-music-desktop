@@ -8,9 +8,9 @@ assignees: ''
 ---
 
 **解决方案检查**
-<!-- 请确保你已从以下渠道寻找过解决方案，然后将 [] 替换成 [x] -->
-[] 我已阅读常见问题(<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>)
-[] 我已搜索issue列表(<https://github.com/lyswhut/lx-music-desktop/issues?utf8=✓&q=>)
+<!-- 请确保你已从以下渠道寻找过解决方案，然后将 [ ] 替换成 [x] -->
+- [ ] 我已阅读常见问题(<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>)
+- [ ] 我已搜索issue列表(<https://github.com/lyswhut/lx-music-desktop/issues?utf8=✓&q=>)
 
 **描述错误**
 清楚简洁地说明错误是什么。
