@@ -10,6 +10,7 @@ import './plugins'
 import App from './App'
 import router from './route'
 import store from './store'
+import i18n from './plugins/i18n'
 
 import '../common/error'
 
@@ -24,6 +25,7 @@ Vue.config.productionTip = false
 new Vue({
   router,
   store,
+  i18n,
   el: '#root',
   render: h => h(App),
 })

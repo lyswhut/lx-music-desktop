@@ -5,7 +5,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       | {{ info.name }}
       br
       | {{ info.singer }}
-    material-btn(:class="$style.btn" :title="!checkSource(type.type) && '腾讯、网易音源仅支持下载128k音质'" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
+    material-btn(:class="$style.btn" :title="!checkSource(type.type) && $t('material.download_modal.btn_tip')" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
 
 </template>
 
@@ -41,12 +41,12 @@ export default {
       switch (type) {
         case 'flac':
         case 'ape':
-          return '无损音质'
+          return this.$t('material.download_modal.lossless')
         case '320k':
-          return '高品音质'
+          return this.$t('material.download_modal.high_quality')
         case '192k':
         case '128k':
-          return '普通音质'
+          return this.$t('material.download_modal.normal')
       }
     },
     checkSource(type) {

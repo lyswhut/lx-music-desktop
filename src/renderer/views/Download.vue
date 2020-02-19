@@ -10,12 +10,12 @@ div(:class="$style.download")
           tr
             th.nobreak.center(style="width: 37px;")
               material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-            th.nobreak(style="width: 28%;") 歌曲名
-            th.nobreak(style="width: 22%;") 进度
-            th.nobreak(style="width: 15%;") 状态
-            th.nobreak(style="width: 10%;") 品质
-            th.nobreak(style="width: 20%;") 操作
+                :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.download.unselect_all') : $t('view.download.select_all')")
+            th.nobreak(style="width: 28%;") {{$t('view.download.name')}}
+            th.nobreak(style="width: 22%;") {{$t('view.download.progress')}}
+            th.nobreak(style="width: 15%;") {{$t('view.download.status')}}
+            th.nobreak(style="width: 10%;") {{$t('view.download.quality')}}
+            th.nobreak(style="width: 20%;") {{$t('view.download.action')}}
     div.scroll(v-if="list.length" :class="$style.tbody")
       table
         tbody
@@ -52,23 +52,23 @@ export default {
       isShowDownloadMultiple: false,
       tabs: [
         {
-          name: '全部任务',
+          name: this.$t('view.download.all'),
           id: 'all',
         },
         {
-          name: '正在下载',
+          name: this.$t('view.download.runing'),
           id: 'runing',
         },
         {
-          name: '已暂停',
+          name: this.$t('view.download.paused'),
           id: 'paused',
         },
         {
-          name: '出错',
+          name: this.$t('view.download.error'),
           id: 'error',
         },
         {
-          name: '下载完成',
+          name: this.$t('view.download.finished'),
           id: 'finished',
         },
       ],

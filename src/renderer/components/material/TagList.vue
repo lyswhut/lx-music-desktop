@@ -6,7 +6,7 @@
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
     div.scroll(:class="$style.list" :style="{ width: listStyle }" @click.stop ref="dom_list")
-      div(:class="$style.tag" @click="handleClick(null)") 默认
+      div(:class="$style.tag" @click="handleClick(null)") {{$t('material.tag_list.default')}}
       dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
         dd(:class="$style.tag" v-for="tag in type.list" @click="handleClick(tag)") {{tag.name}}
@@ -56,7 +56,7 @@ export default {
     handleClick(item) {
       if (!item) {
         item = {
-          name: '默认',
+          name: this.$t('material.tab_list.default'),
           id: null,
         }
       }

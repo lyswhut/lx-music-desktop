@@ -8,12 +8,12 @@ div(:class="$style.songList")
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 20%;") 专辑
-              th.nobreak(style="width: 20%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('material.song_list.unselect_all') : $t('material.song_list.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('material.song_list.name')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.singer')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.album')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.action')}}
+              th.nobreak(style="width: 10%;") {{$t('material.song_list.time')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu")
@@ -22,8 +22,8 @@ div(:class="$style.songList")
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") 无损
-                span.badge.badge-theme-info(v-else-if="item._types['320k']") 高品质
+                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
               td.break(style="width: 20%;")
                 span.select {{item.singer}}
               td.break(style="width: 20%;")

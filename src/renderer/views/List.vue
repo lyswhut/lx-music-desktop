@@ -8,12 +8,12 @@
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 20%;") 专辑
-              th.nobreak(style="width: 20%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.list.unselect_all') : $t('view.list.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('view.list.name')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.singer')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.album')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.action')}}
+              th.nobreak(style="width: 10%;") {{$t('view.list.time')}}
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu")
@@ -42,7 +42,7 @@
               td(style="width: 10%;")
                 span(:class="$style.time") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
-      p(v-text="list.length ? '加载中...' : '列表竟然是空的...'")
+      p(v-text="list.length ? $t('view.list.loding_list') : $t('view.list.no_item')")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn" :play-btn="false" @btn-click="handleFlowBtnClick")
@@ -312,14 +312,6 @@ export default {
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
-    },
-    getSource(source) {
-      switch (source) {
-        case 'kw':
-          return '酷我'
-        default:
-          break
-      }
     },
     getMusicLocation(index) {
       let dom = document.getElementById('mid_' + this.list[index].songmid)

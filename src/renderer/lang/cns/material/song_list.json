@@ -1,0 +1,12 @@
+{
+  "select_all": "全选",
+  "unselect_all": "全不选",
+  "name": "歌曲名",
+  "singer": "歌手",
+  "album": "专辑",
+  "action": "操作",
+  "time": "时长",
+  "lossless": "无损",
+  "high_quality": "高品质",
+  "loding_list": "列表加载中..."
+}

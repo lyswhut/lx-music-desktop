@@ -6,25 +6,25 @@ div(:class="$style.aside")
 
   div(:class="$style.menu")
     dl
-      dt 在线音乐
+      dt {{$t('core.aside.online_music')}}
       dd
-        router-link(:active-class="$style.active" to="search") 搜索
+        router-link(:active-class="$style.active" to="search") {{$t('core.aside.search')}}
       dd
-        router-link(:active-class="$style.active" to="songList") 歌单
+        router-link(:active-class="$style.active" to="songList") {{$t('core.aside.song_list')}}
       dd
-        router-link(:active-class="$style.active" to="leaderboard") 排行榜
+        router-link(:active-class="$style.active" to="leaderboard") {{$t('core.aside.leaderboard')}}
     dl
-      dt 我的音乐
+      dt {{$t('core.aside.my_music')}}
       dd
-        router-link(:active-class="($route.query.id === defaultList.id || $route.query.id == '') ? $style.active : ''" :to="`list?id=${defaultList.id || ''}`") {{defaultList.name}}
-        router-link(:active-class="$route.query.id === loveList.id ? $style.active : ''" :to="`list?id=${loveList.id}`") {{loveList.name}}
+        router-link(:active-class="($route.query.id === defaultList.id || $route.query.id == '') ? $style.active : ''" :to="`list?id=${defaultList.id || ''}`") {{$t('core.aside.default_list')}}
+        router-link(:active-class="$route.query.id === loveList.id ? $style.active : ''" :to="`list?id=${loveList.id}`") {{$t('core.aside.love_list')}}
         router-link(:active-class="$route.query.id === item.id ? $style.active : ''" v-for="item in userList" :to="`list?id=${item._id}`" :key="item._id") {{item.name}}
     dl
-      dt 其他
+      dt {{$t('core.aside.other')}}
       dd
-        router-link(:active-class="$style.active" to="download") 下载管理
+        router-link(:active-class="$style.active" to="download") {{$t('core.aside.download')}}
       dd
-        router-link(:active-class="$style.active" to="setting") 设置
+        router-link(:active-class="$style.active" to="setting") {{$t('core.aside.setting')}}
 </template>
 
 <script>

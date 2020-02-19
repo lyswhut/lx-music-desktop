@@ -33,7 +33,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    label: {},
+    label: {
+      type: String,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -149,6 +151,7 @@ export default {
   cursor: pointer;
   display: flex;
   color: @color-theme;
+  margin-top: .25em;
   // border: 1px solid #ccc;
   &:after {
     position: absolute;
@@ -173,6 +176,7 @@ export default {
   flex: auto;
   line-height: 1;
   margin-left: 5px;
+  line-height: 1.5;
   cursor: pointer;
 }
 

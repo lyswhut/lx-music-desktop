@@ -6,9 +6,9 @@
       @event="handleEvent" :list="tipList" :visibleList="visibleList"
       v-model="searchText")
     div(:class="$style.control")
-      button(type="button" :class="$style.min" title="最小化" @click="min")
+      button(type="button" :class="$style.min" :title="$t('core.toolbar.min')" @click="min")
       //- button(type="button" :class="$style.max" @click="max")
-      button(type="button" :class="$style.close" title="关闭" @click="close")
+      button(type="button" :class="$style.close" :title="$t('core.toolbar.close')" @click="close")
 </template>
 
 <script>

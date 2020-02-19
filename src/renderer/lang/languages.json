@@ -1,0 +1,19 @@
+[
+  {
+    "name": "简体中文",
+    "locale": "cns",
+    "alternate": "zh-Hans",
+    "country": "cn",
+    "fallback": true
+  },
+  {
+    "name": "繁体中文",
+    "locale": "cnt",
+    "country": "cn"
+  },
+  {
+    "name": "English",
+    "locale": "en",
+    "country": "us"
+  }
+]

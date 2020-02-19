@@ -1,0 +1,16 @@
+{
+  "copy_title": "（點擊複製）",
+  "volume": "當前音量：",
+  "pause": "暫停",
+  "play": "播放",
+  "next": "下一首",
+  "playing": "播放中...",
+  "stop": "暫停播放",
+  "end": "播放完畢",
+  "refresh_url": "URL過期，正在刷新URL...",
+  "error": "音頻加載出錯，5 秒後切換下一首",
+  "loading": "音樂加載中...",
+  "buffering": "緩衝中...",
+  "geting_url": "歌曲鏈接獲取中...",
+  "lyric_error": "歌詞獲取失敗"
+}

@@ -10,12 +10,12 @@
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 25%;") 专辑
-              th.nobreak(style="width: 15%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.search.unselect_all') : $t('view.search.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('view.search.name')}}
+              th.nobreak(style="width: 20%;") {{$t('view.search.singer')}}
+              th.nobreak(style="width: 25%;") {{$t('view.search.album')}}
+              th.nobreak(style="width: 15%;") {{$t('view.search.action')}}
+              th.nobreak(style="width: 10%;") {{$t('view.search.time')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu")
@@ -24,8 +24,8 @@
                 material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") 无损
-                span.badge.badge-theme-info(v-else-if="item._types['320k']") 高品质
+                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
                 span(:class="$style.labelSource" v-if="searchSourceId == 'all'") {{item.source}}
               td.break(style="width: 20%;")
                 span.select {{item.singer}}
@@ -41,7 +41,7 @@
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
-      p 搜我所想~~😉
+      p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")

@@ -7,19 +7,19 @@ div(:class="$style.player")
   div(:class="$style.right")
     div(:class="$style.column1")
       div(:class="$style.container")
-        div(:class="$style.title" @click="handleCopy(title)" :title="title + '（点击复制）'") {{title}}
+        div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
         div(:class="$style.volumeContent")
           div(:class="$style.volume")
             div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
-          div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`当前音量：${parseInt(volume * 100)}%`")
+          div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
 
         //- div(:class="$style.playBtn" @click='handleNext' title="音量")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
             use(xlink:href='#icon-sound')
-        div(:class="$style.playBtn" @click='handleNext' title="下一首")
+        div(:class="$style.playBtn" @click='handleNext' :title="$t('core.player.next')")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
             use(xlink:href='#icon-nextMusic')
-        div(:class="$style.playBtn" :title="isPlay ? '暂停' : '播放'" @click='togglePlay')
+        div(:class="$style.playBtn" :title="isPlay ? $t('core.player.pause') : $t('core.player.play')" @click='togglePlay')
           svg(v-if="isPlay" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
             use(xlink:href='#icon-pause')
           svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
@@ -196,19 +196,19 @@ export default {
 
       this.audio.addEventListener('playing', () => {
         console.log('开始播放')
-        this.status = '播放中...'
+        this.status = this.$t('core.player.playing')
         this.startPlay()
       })
       this.audio.addEventListener('pause', () => {
         console.log('暂停播放')
         this.lyric.lrc.pause()
         this.stopPlay()
-        this.status = '暂停播放'
+        this.status = this.$t('core.player.stop')
       })
       this.audio.addEventListener('ended', () => {
         console.log('播放完毕')
         this.stopPlay()
-        this.status = '播放完毕'
+        this.status = this.$t('core.player.end')
         this.handleNext()
       })
       this.audio.addEventListener('error', () => {
@@ -221,12 +221,12 @@ export default {
           if (!this.audioErrorTime) this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
-          this.status = 'URL过期，正在刷新URL...'
+          this.status = this.$t('core.player.refresh_url')
           return
         }
 
         this.sendProgressEvent(this.progress, 'error')
-        this.status = '音频加载出错，5 秒后切换下一首'
+        this.status = this.$t('core.player.error')
         this.addDelayNextTimeout()
       })
       this.audio.addEventListener('loadeddata', () => {
@@ -236,10 +236,10 @@ export default {
           this.audioErrorTime = 0
         }
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: 'default', index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
-        this.status = '音乐加载中...'
+        this.status = this.$t('core.player.loading')
       })
       this.audio.addEventListener('loadstart', () => {
-        this.status = '音乐加载中...'
+        this.status = this.$t('core.player.loading')
       })
       this.audio.addEventListener('canplay', () => {
         console.log('加载完成开始播放')
@@ -252,7 +252,7 @@ export default {
           this.clearBufferTimeout()
         }
         // if (this.musicInfo.lrc) this.lyric.lrc.play(this.audio.currentTime * 1000)
-        this.status = '音乐加载中...'
+        this.status = this.$t('core.player.loading')
       })
       // this.audio.addEventListener('canplaythrough', () => {
       //   console.log('音乐加载完毕')
@@ -276,7 +276,7 @@ export default {
         // console.log('缓冲中...')
         this.stopPlay()
         this.startBuffering()
-        this.status = '缓冲中...'
+        this.status = this.$t('core.player.buffering')
       })
 
       this.lyric.lrc = new Lyric({
@@ -431,7 +431,7 @@ export default {
     setUrl(targetSong, isRefresh) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       this.musicInfo.url = targetSong.typeUrl[type]
-      this.status = '歌曲链接获取中...'
+      this.status = this.$t('core.player.geting_url')
 
       return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
         this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
@@ -466,7 +466,7 @@ export default {
           if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) this.lyric.lrc.play(this.audio.currentTime * 1000)
         })
         .catch(() => {
-          this.status = '歌词获取失败'
+          this.status = this.$t('core.player.lyric_error')
         })
     },
     handleRemoveMusic() {

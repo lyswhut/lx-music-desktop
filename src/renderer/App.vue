@@ -55,6 +55,7 @@ export default {
     }),
   },
   created() {
+    this.$i18n.locale = this.setting.langId
     this.saveSetting = throttle(n => {
       window.electronStore_config.set('setting', n)
     })

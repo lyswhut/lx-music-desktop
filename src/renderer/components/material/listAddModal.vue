@@ -2,10 +2,10 @@
 material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
   main(:class="$style.main")
     h2
-      | 添加&nbsp;
+      | {{$t('material.list_add_modal.title_first')}}&nbsp;
       span(:class="$style.name") {{this.musicInfo && `${musicInfo.name}`}}
-      | &nbsp;到...
-    material-btn(:class="$style.btn" :title="`把该歌曲添加到 ${item.name}`" :key="item.id" @click="handleClick(index)" v-for="(item, index) in lists") {{item.name}}
+      | &nbsp;{{$t('material.list_add_modal.title_last')}}
+    material-btn(:class="$style.btn" :title="$t('material.list_add_modal.btn_title', { name: item.name })" :key="item.id" @click="handleClick(index)" v-for="(item, index) in lists") {{item.name}}
 </template>
 
 <script>

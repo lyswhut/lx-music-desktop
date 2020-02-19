@@ -15,7 +15,7 @@
             //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="playSongListDetail") 播放
             //- | &nbsp;
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") 返回
-        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :list="listDetail.list")
+        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :noItem="$t('material.song_list.loding_list')" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(:class="$style.songListContainer" v-if="!isVisibleListDetail")
         div(:class="$style.header")
@@ -44,7 +44,7 @@
                       use(xlink:href='#icon-right')
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
             div(v-show="!listData.list.length" :class="$style.noitem")
-              p 列表加载中...
+              p {{$t('material.song_list.loding_list')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")

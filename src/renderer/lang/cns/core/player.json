@@ -1,0 +1,16 @@
+{
+  "copy_title": "（点击复制）",
+  "volume": "当前音量：",
+  "pause": "暂停",
+  "play": "播放",
+  "next": "下一首",
+  "playing": "播放中...",
+  "stop": "暂停播放",
+  "end": "播放完毕",
+  "refresh_url": "URL过期，正在刷新URL...",
+  "error": "音频加载出错，5 秒后切换下一首",
+  "loading": "音乐加载中...",
+  "buffering": "缓冲中...",
+  "geting_url": "歌曲链接获取中...",
+  "lyric_error": "歌词获取失败"
+}
