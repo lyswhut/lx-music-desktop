@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       tagInfo: {
-        name: '默认',
+        name: this.$t('material.tag_list.default'),
         id: null,
       },
       sortId: undefined,

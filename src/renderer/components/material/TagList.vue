@@ -56,7 +56,7 @@ export default {
     handleClick(item) {
       if (!item) {
         item = {
-          name: this.$t('material.tab_list.default'),
+          name: this.$t('material.tag_list.default'),
           id: null,
         }
       }
