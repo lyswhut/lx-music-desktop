@@ -8,5 +8,12 @@
   "time": "Interval",
   "lossless": "SQ",
   "high_quality": "HQ",
-  "no_item": "Search what i think~~😉"
+  "no_item": "Search what i think~~😉",
+  "source_kw": "Kuwo",
+  "source_kg": "Kugou",
+  "source_tx": "Tencent",
+  "source_wy": "Netease",
+  "source_mg": "Migu",
+  "source_bd": "Baidu",
+  "source_all": "Aggregated"
 }

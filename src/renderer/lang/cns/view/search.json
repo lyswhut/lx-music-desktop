@@ -8,5 +8,12 @@
   "time": "时长",
   "lossless": "无损",
   "high_quality": "高品质",
-  "no_item": "搜我所想~~😉"
+  "no_item": "搜我所想~~😉",
+  "source_kw": "酷我音乐",
+  "source_kg": "酷狗音乐",
+  "source_tx": "QQ音乐",
+  "source_wy": "网易音乐",
+  "source_mg": "咪咕音乐",
+  "source_bd": "百度音乐",
+  "source_all": "聚合搜索"
 }
