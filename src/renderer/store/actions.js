@@ -10,8 +10,8 @@ export default {
       }, (err, resp, body) => {
         if (err) {
           return ++retryNum > 3
-            ? this.dispatch('getVersionInfo2').then(ver => resolve(ver)).catch(err => reject(err))
-            : this.dispatch('getVersionInfo', retryNum).then(ver => resolve(ver)).catch(err => reject(err))
+            ? this.dispatch('getVersionInfo2').then(resolve).catch(reject)
+            : this.dispatch('getVersionInfo', retryNum).then(resolve).catch(reject)
         }
         resolve(body)
       })
@@ -23,7 +23,9 @@ export default {
         timeout: 20000,
       }, (err, resp, body) => {
         if (err) {
-          return ++retryNum > 3 ? reject() : this.dispatch('getVersionInfo2', retryNum).then(ver => resolve(ver)).catch(err => reject(err))
+          return ++retryNum > 3
+            ? reject(err)
+            : this.dispatch('getVersionInfo2', retryNum).then(resolve).catch(reject)
         }
         resolve(body)
       })

@@ -219,10 +219,13 @@ export default {
       }
     },
     showUpdateModal() {
-      (this.version.newVersion && this.version.newVersion.history ? Promise.resolve(this.version.newVersion) : this.getVersionInfo().then(body => {
-        this.setNewVersion(body)
-        return body
-      })).catch(() => {
+      (this.version.newVersion && this.version.newVersion.history
+        ? Promise.resolve(this.version.newVersion)
+        : this.getVersionInfo().then(body => {
+          this.setNewVersion(body)
+          return body
+        })
+      ).catch(() => {
         if (this.version.newVersion) return this.version.newVersion
         this.setVersionModalVisible({ isUnknow: true })
         let result = {
