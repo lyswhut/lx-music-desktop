@@ -6,9 +6,9 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.basic_theme')}}
       div
         ul(:class="$style.theme")
-          li(v-for="theme in themes.list" :key="theme.id" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
+          li(v-for="theme in themes.list" :key="theme.id" :title="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
             span
-            | {{theme.name}}
+            label {{$t('store.state.theme_' + theme.class)}}
 
     dd(:title="$t('view.setting.basic_animation_title')")
       h3 {{$t('view.setting.basic_animation')}}
@@ -637,7 +637,8 @@ export default {
     // color: @color-theme;
     margin-right: 30px;
     transition: color .3s ease;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    width: 56px;
 
     &:last-child {
       margin-right: 0;
@@ -662,6 +663,13 @@ export default {
         background-size: auto 100%;
         background-repeat: no-repeat;
       }
+    }
+
+    label {
+      width: 100%;
+      text-align: center;
+      height: 1.2em;
+      .mixin-ellipsis-1;
     }
 
     each(@themes, {
