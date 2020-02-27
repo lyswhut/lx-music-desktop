@@ -6,11 +6,11 @@ import './components'
 
 // Plugins
 import './plugins'
+import i18n from './plugins/i18n'
 
 import App from './App'
 import router from './route'
 import store from './store'
-import i18n from './plugins/i18n'
 
 import '../common/error'
 
