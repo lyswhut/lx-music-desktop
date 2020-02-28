@@ -150,6 +150,9 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       this.audio.loop = n === 'singleLoop'
     },
+    'setting.player.mediaDeviceName'(n) {
+      this.setMediaDevice()
+    },
     list(n, o) {
       if (n === o) {
         let index = this.listId == 'download'
@@ -186,8 +189,10 @@ export default {
     ]),
     ...mapMutations(['setVolume']),
     ...mapMutations('list', ['updateMusicInfo']),
+    ...mapMutations(['setMediaDeviceId']),
     init() {
       this.audio = document.createElement('audio')
+      this.setMediaDevice()
       this.volume = this.audio.volume = this.setting.player.volume
       this.audio.controls = false
       this.audio.autoplay = true
@@ -565,6 +570,18 @@ export default {
       clearTimeout(this.mediaBuffer.timeout)
       this.mediaBuffer.timeout = null
       this.mediaBuffer.playTime = 0
+    },
+    async setMediaDevice() {
+      let mediaDeviceName = this.setting.player.mediaDeviceName
+      if (!mediaDeviceName) return
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      let device = devices.find(device => device.label === mediaDeviceName)
+      if (!device) return this.setMediaDeviceId(null)
+      console.log(device)
+      this.audio.setSinkId(device.deviceId).catch((err) => {
+        console.log(err)
+        this.setMediaDeviceId(null)
+      })
     },
   },
 }

@@ -26,6 +26,8 @@
   "play_quality": "Prioritize high-quality music",
   "play_task_bar_title": "Show current song playback progress on taskbar",
   "play_task_bar": "Taskbar playback progress bar",
+  "play_mediaDevice_title": "Select the media device for sound output",
+  "play_mediaDevice": "Audio output",
 
   "list": "List settings",
   "list_source_title": "Whether to show song sources",

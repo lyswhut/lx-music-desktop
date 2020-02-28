@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.16'
+  const defaultVersion = '1.0.17'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -190,6 +190,7 @@ export const updateSetting = (setting, version) => {
       highQuality: false,
       isShowTaskProgess: true,
       volume: 1,
+      mediaDeviceId: null,
     },
     list: {
       isShowAlbumName: true,

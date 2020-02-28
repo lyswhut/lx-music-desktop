@@ -42,4 +42,7 @@ export default {
   setVolume(state, val) {
     state.setting.player.volume = val
   },
+  setMediaDeviceId(state, val) {
+    state.setting.player.mediaDeviceId = val
+  },
 }

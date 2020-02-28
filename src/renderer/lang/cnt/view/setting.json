@@ -25,6 +25,8 @@
   "play_quality": "優先播放高品質音樂",
   "play_task_bar_title": "在任務欄上顯示當前歌曲播放進度",
   "play_task_bar": "任務欄播放進度條",
+  "play_mediaDevice_title": "選擇聲音輸出的媒體設備",
+  "play_mediaDevice": "音頻輸出",
   "list": "列表設置",
   "list_source_title": "是否顯示歌曲源",
   "list_source": "是否顯示歌曲源（僅對我的音樂分類有效）",
