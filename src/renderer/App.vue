@@ -112,18 +112,8 @@ export default {
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
     init() {
-      rendererInvoke('getEnvParams').then(envParams => {
-        this.envParams = envParams
-        this.isNt = isLinux || this.envParams.nt
-        if (this.isNt) {
-          document.body.classList.remove('transparent')
-          document.body.classList.add('noTransparent')
-        }
-        if (this.isProd && !this.isNt) {
-          document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
-          document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
-        }
-      })
+      rendererInvoke('getEnvParams').then(this.handleEnvParamsInit)
+
       document.body.addEventListener('click', this.handleBodyClick, true)
       rendererOn('update-available', (e, info) => {
         // this.showUpdateModal(true)
@@ -258,6 +248,27 @@ export default {
       if (event.target.host == window.location.host) return
       event.preventDefault()
       if (/^https?:\/\//.test(event.target.href)) openUrl(event.target.href)
+    },
+    handleEnvParamsInit(envParams) {
+      this.envParams = envParams
+      this.isNt = isLinux || this.envParams.nt
+      if (this.isNt) {
+        document.body.classList.remove('transparent')
+        document.body.classList.add('noTransparent')
+      }
+      if (this.isProd && !this.isNt) {
+        document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
+        document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
+      }
+
+      if (this.envParams.search != null) {
+        this.$router.push({
+          path: 'search',
+          query: {
+            text: this.envParams.search,
+          },
+        })
+      }
     },
   },
   beforeDestroy() {
