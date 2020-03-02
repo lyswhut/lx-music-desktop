@@ -48,7 +48,7 @@ div(:class="$style.player")
 
 <script>
 import Lyric from 'lrc-file-parser'
-import { rendererSend } from '../../../common/ipc'
+import { rendererSend, rendererOn } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
@@ -128,6 +128,9 @@ export default {
       this.setVolume(volume)
     }, 300)
 
+    rendererOn('restore', () => {
+      this.handleSetTransition()
+    })
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
     window.addEventListener('resize', this.handleResize)
@@ -175,6 +178,9 @@ export default {
     },
     volume(n) {
       this.handleSaveVolume(n)
+    },
+    nowPlayTime(n, o) {
+      if (Math.abs(n - o) > 1) this.handleSetTransition()
     },
   },
   methods: {
@@ -385,7 +391,7 @@ export default {
     },
     setProgess(e) {
       if (!this.audio.src) return
-      this.isActiveTransition = true
+      // this.isActiveTransition = true
       this.$nextTick(() => {
         const time = (e.offsetX / this.pregessWidth) * this.maxPlayTime
         if (this.audioErrorTime) this.audioErrorTime = time
@@ -565,6 +571,10 @@ export default {
       clearTimeout(this.mediaBuffer.timeout)
       this.mediaBuffer.timeout = null
       this.mediaBuffer.playTime = 0
+    },
+    handleSetTransition() {
+      this.isActiveTransition = true
+      // console.log('active transition')
     },
   },
 }
