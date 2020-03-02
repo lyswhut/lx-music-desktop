@@ -70,6 +70,13 @@ npm run pack
 
 <p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
 
+### 启动参数
+
+目前软件已支持的启动参数如下：
+
+- `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
+- `-nt`  以非透明模式启动，对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示
+
 ### 常见问题
 
 常见问题已移至：<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>
