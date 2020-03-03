@@ -26,6 +26,7 @@ global.envParams = parseEnv()
 
 require('../common/error')
 require('./events')
+const winEvent = require('./events/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
 
@@ -67,13 +68,7 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
-  mainWindow.on('close', () => {
-    mainWindow.setProgressBar(-1)
-  })
-  mainWindow.on('closed', () => {
-    mainWindow = global.mainWindow = null
-  })
-
+  winEvent(mainWindow)
   // mainWindow.webContents.openDevTools()
 
   if (!isDev) {
