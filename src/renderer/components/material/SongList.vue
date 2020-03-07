@@ -197,6 +197,7 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
 }
 
 .list {
