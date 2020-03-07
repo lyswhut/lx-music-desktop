@@ -24,7 +24,7 @@ export default {
 .btn {
   display: inline-block;
   border: none;
-  border-radius: 3px;
+  border-radius: @form-radius;
   cursor: pointer;
   padding: 8px 15px;
   color: @color-btn;

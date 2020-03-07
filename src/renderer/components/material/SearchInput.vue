@@ -133,7 +133,7 @@ export default {
 @import '../../assets/styles/layout.less';
 
 .search {
-  border-radius: 3px;
+  border-radius: @form-radius;
   transition: box-shadow .4s ease, background-color @transition-theme;
   display: flex;
   flex-flow: column nowrap;

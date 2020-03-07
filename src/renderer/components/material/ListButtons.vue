@@ -91,7 +91,7 @@ export default {
   button {
     background-color: transparent;
     border: none;
-    border-radius: 3px;
+    border-radius: @form-radius;
     margin-right: 5px;
     cursor: pointer;
     padding: 4px 7px;
