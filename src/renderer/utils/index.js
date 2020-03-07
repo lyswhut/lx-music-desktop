@@ -190,7 +190,7 @@ export const updateSetting = (setting, version) => {
       highQuality: false,
       isShowTaskProgess: true,
       volume: 1,
-      mediaDeviceId: null,
+      mediaDeviceId: 'default',
     },
     list: {
       isShowAlbumName: true,

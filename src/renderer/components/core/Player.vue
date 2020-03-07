@@ -582,11 +582,11 @@ export default {
       if (!mediaDeviceName) return
       const devices = await navigator.mediaDevices.enumerateDevices()
       let device = devices.find(device => device.label === mediaDeviceName)
-      if (!device) return this.setMediaDeviceId(null)
+      if (!device) return this.setMediaDeviceId('default')
       console.log(device)
       this.audio.setSinkId(device.deviceId).catch((err) => {
         console.log(err)
-        this.setMediaDeviceId(null)
+        this.setMediaDeviceId('default')
       })
     },
     handleSetTransition() {

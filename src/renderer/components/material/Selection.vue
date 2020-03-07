@@ -40,8 +40,8 @@ export default {
     label() {
       if (!this.value) return ''
       if (!this.itemName) return this.value
-      const item = this.list.find(l => l.id == this.value)
-      if (!item) return this.value
+      const item = this.list.find(l => l[this.itemKey] == this.value)
+      if (!item) return ''
       return item[this.itemName]
     },
   },

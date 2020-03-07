@@ -52,7 +52,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
-        material-selection(:list="mediaDevices" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceName" item-key="label" item-name="label")
+        material-selection(:list="mediaDevices" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
 
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
@@ -289,7 +289,7 @@ export default {
           highQuality: false,
           isShowTaskProgess: true,
           volume: 1,
-          mediaDeviceName: null,
+          mediaDeviceId: 'default',
         },
         list: {
           isShowAlbumName: true,
