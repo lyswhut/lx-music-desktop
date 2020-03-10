@@ -26,6 +26,8 @@
   "play_quality": "优先播放高品质音乐",
   "play_task_bar_title": "在任务栏上显示当前歌曲播放进度",
   "play_task_bar": "任务栏播放进度条",
+  "play_mediaDevice_title": "选择声音输出的媒体设备",
+  "play_mediaDevice": "音频输出",
 
   "list": "列表设置",
   "list_source_title": "是否显示歌曲源",

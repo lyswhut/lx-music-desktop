@@ -49,7 +49,7 @@ export default {
 .input {
   display: inline-block;
   border: none;
-  border-radius: 3px;
+  border-radius: @form-radius;
   padding: 7px 8px;
   color: @color-btn;
   outline: none;

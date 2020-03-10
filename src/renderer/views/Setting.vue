@@ -49,6 +49,11 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.play_task_bar')}}
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
+    dd(:title="$t('view.setting.play_mediaDevice_title')")
+      h3 {{$t('view.setting.play_mediaDevice')}}
+      div
+        material-selection(:list="mediaDevices" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
       h3 {{$t('view.setting.list_source')}}
@@ -283,6 +288,8 @@ export default {
           togglePlayMethod: 'random',
           highQuality: false,
           isShowTaskProgess: true,
+          volume: 1,
+          mediaDeviceId: 'default',
         },
         list: {
           isShowAlbumName: true,
@@ -320,6 +327,7 @@ export default {
       },
       languageList,
       cacheSize: '0 B',
+      mediaDevices: [],
     }
   },
   watch: {
@@ -346,10 +354,12 @@ export default {
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
     ...mapMutations('list', ['setList']),
+    ...mapMutations(['setMediaDeviceId']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       this.getCacheSize()
+      this.getMediaDevice()
     },
     handleChangeSavePath() {
       selectDir({
@@ -551,6 +561,15 @@ export default {
     },
     handleLangChange(id) {
       this.$i18n.locale = id
+    },
+    async getMediaDevice() {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const audioDevices = devices.filter(device => device.kind === 'audiooutput')
+      this.mediaDevices = audioDevices
+      console.log(this.mediaDevices)
+    },
+    handleMediaDeviceChange(audioDevice) {
+      this.setMediaDeviceId(audioDevice.deviceId)
     },
   },
 }
