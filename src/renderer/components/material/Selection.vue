@@ -1,7 +1,7 @@
 <template lang="pug">
   div(:class="[$style.select, show ? $style.active : '']")
     div(:class="$style.label" ref="dom_btn" @click="handleShow") {{label}}
-    ul(:class="$style.list")
+    ul.scroll(:class="$style.list")
       li(v-for="item in list" :class="(itemKey ? item[itemKey] : item) == value ? $style.active : null" @click="handleClick(item)" :title="itemName ? item[itemName] : item") {{itemName ? item[itemName] : item}}
 </template>
 
@@ -121,8 +121,9 @@ export default {
   transition-property: transform, opacity;
   z-index: 10;
   border-radius: @form-radius;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+  box-shadow: 0 0 4px rgba(0, 0, 0, .15);
+  overflow: auto;
+  max-height: 200px;
 
   li {
     cursor: pointer;

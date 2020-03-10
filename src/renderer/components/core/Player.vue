@@ -153,7 +153,7 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       this.audio.loop = n === 'singleLoop'
     },
-    'setting.player.mediaDeviceName'(n) {
+    'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
     },
     list(n, o) {
@@ -578,10 +578,10 @@ export default {
       this.mediaBuffer.playTime = 0
     },
     async setMediaDevice() {
-      let mediaDeviceName = this.setting.player.mediaDeviceName
-      if (!mediaDeviceName) return
+      let mediaDeviceId = this.setting.player.mediaDeviceId
+      if (!mediaDeviceId) return
       const devices = await navigator.mediaDevices.enumerateDevices()
-      let device = devices.find(device => device.label === mediaDeviceName)
+      let device = devices.find(device => device.deviceId === mediaDeviceId)
       if (!device) return this.setMediaDeviceId('default')
       console.log(device)
       this.audio.setSinkId(device.deviceId).catch((err) => {

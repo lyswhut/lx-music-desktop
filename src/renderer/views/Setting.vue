@@ -566,7 +566,7 @@ export default {
       const devices = await navigator.mediaDevices.enumerateDevices()
       const audioDevices = devices.filter(device => device.kind === 'audiooutput')
       this.mediaDevices = audioDevices
-      console.log(this.mediaDevices)
+      // console.log(this.mediaDevices)
     },
     handleMediaDeviceChange(audioDevice) {
       this.setMediaDeviceId(audioDevice.deviceId)
