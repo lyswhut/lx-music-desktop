@@ -51,7 +51,7 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
   },
   "browserslist": [
-    "Electron 8.1.1"
+    "Electron 8.0.1"
   ],
   "engines": {
     "node": ">= 12"

@@ -28,6 +28,8 @@
   "play_task_bar": "Taskbar playback progress bar",
   "play_mediaDevice_title": "Select the media device for sound output",
   "play_mediaDevice": "Audio output",
+  "play_mediaDevice_refresh_btn_title": "Refresh audio device list",
+  "play_mediaDevice_refresh_btn": "refresh",
 
   "list": "List settings",
   "list_source_title": "Whether to show song sources",
@@ -40,7 +42,7 @@
   "download_path": "Save path",
   "download_path_label": "current save path: ",
   "download_path_open_label": "click to open the current path",
-  "download_path_change_btn": "Change",
+  "download_path_change_btn": "change",
   "download_name_title": "Naming when downloading songs",
   "download_name": "File naming",
   "download_embed_pic_title": "Whether to embed the cover in the audio file",

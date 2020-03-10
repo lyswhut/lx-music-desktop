@@ -1,5 +1,5 @@
 <template lang="pug">
-  button(:class="[$style.btn, min ? $style.min : '']" :disabled="disabled" @click="$emit('click', $event)")
+  button(:class="[$style.btn, min ? $style.min : null]" :disabled="disabled" @click="$emit('click', $event)")
     slot
 </template>
 

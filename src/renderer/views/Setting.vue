@@ -52,7 +52,11 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
-        material-selection(:list="mediaDevices" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+        material-selection(:list="mediaDevices" :class="$style.gapLeft" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+        material-btn(min :title="$t('view.setting.play_mediaDevice_refresh_btn_title')" :class="[$style.btnMediaDeviceRefresh, $style.gapLeft]" @click="getMediaDevice")
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+            use(xlink:href='#icon-refresh')
+          span {{$t('view.setting.play_mediaDevice_refresh_btn')}}
 
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
@@ -701,6 +705,17 @@ export default {
         }
       }
     })
+  }
+}
+.btn-media-device-refresh {
+  height: 28px;
+  line-height: 28px;
+  padding: 0px 15px;
+  vertical-align: top;
+  svg {
+    width: 1em;
+    vertical-align: middle;
+    margin-right: 5px;
   }
 }
 

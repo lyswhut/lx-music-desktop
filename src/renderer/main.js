@@ -16,9 +16,9 @@ import '../common/error'
 
 sync(store, router)
 
-if (!process.env.IS_WEB) {
+// if (!process.env.IS_WEB) {
 
-}
+// }
 
 Vue.config.productionTip = false
 

@@ -1,7 +1,11 @@
 <template lang="pug">
   div(:class="[$style.select, show ? $style.active : '']")
-    div(:class="$style.label" ref="dom_btn" @click="handleShow") {{label}}
-    ul.scroll(:class="$style.list")
+    div(:class="$style.label" ref="dom_btn" @click="handleShow")
+      span {{label}}
+      div(:class="$style.icon")
+        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
+          use(xlink:href='#icon-down')
+    ul.scroll(:class="$style.list" :style="listStyles" ref="dom_list")
       li(v-for="item in list" :class="(itemKey ? item[itemKey] : item) == value ? $style.active : null" @click="handleClick(item)" :title="itemName ? item[itemName] : item") {{itemName ? item[itemName] : item}}
 </template>
 
@@ -28,6 +32,9 @@ export default {
   data() {
     return {
       show: false,
+      listStyles: {
+        transform: 'scaleY(0) translateY(0)',
+      },
     }
   },
   mounted() {
@@ -48,19 +55,31 @@ export default {
   methods: {
     handleHide(e) {
       // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
-      if (e && e.target == this.$refs.dom_btn) return
+      if (e && (e.target == this.$refs.dom_btn || this.$refs.dom_btn.contains(e.target))) return
+      this.listStyles.transform = 'scaleY(0) translateY(0)'
       setTimeout(() => {
         this.show = false
       }, 50)
     },
     handleClick(item) {
-      console.log(this.value)
+      // console.log(this.value)
       if (item === this.value) return
       this.$emit('input', this.itemKey ? item[this.itemKey] : item)
       this.$emit('change', item)
     },
     handleShow() {
-      this.show = !this.show
+      this.show = true
+      this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset()}px)`
+    },
+    handleGetOffset() {
+      const listHeight = this.$refs.dom_list.clientHeight
+      const dom_select = this.$refs.dom_list.offsetParent
+      const dom_container = dom_select.offsetParent
+      const containerHeight = dom_container.clientHeight
+      if (containerHeight < listHeight) return 0
+      const offsetHeight = (dom_container.scrollTop + containerHeight) - (dom_select.offsetTop + listHeight)
+      if (offsetHeight > 0) return 0
+      return offsetHeight - 5
     },
   },
 }
@@ -73,6 +92,7 @@ export default {
 @selection-height: 28px;
 
 .select {
+  display: inline-block;
   font-size: 12px;
   position: relative;
   width: 300px;
@@ -82,8 +102,12 @@ export default {
       background-color: @color-btn-background;
     }
     .list {
-      transform: scaleY(1);
       opacity: 1;
+    }
+    .icon {
+      svg{
+        transform: rotate(180deg);
+      }
     }
   }
 }
@@ -98,7 +122,22 @@ export default {
   color: @color-btn;
   border-radius: @form-radius;
   cursor: pointer;
-  .mixin-ellipsis-1;
+  display: flex;
+
+  span {
+    flex: auto;
+    .mixin-ellipsis-1;
+  }
+  .icon {
+    flex: none;
+    margin-left: 7px;
+    line-height: 0;
+    svg {
+      width: 1em;
+      transition: transform .2s ease;
+      transform: rotate(0);
+    }
+  }
 
   &:hover {
     background-color: @color-theme_2-hover;
@@ -115,7 +154,7 @@ export default {
   width: 100%;
   background-color: @color-theme_2-background_2;
   opacity: 0;
-  transform: scaleY(0);
+  transform: scaleY(0) translateY(0);
   transform-origin: 0 @selection-height / 2 0;
   transition: .25s ease;
   transition-property: transform, opacity;

@@ -27,6 +27,8 @@
   "play_task_bar": "任務欄播放進度條",
   "play_mediaDevice_title": "選擇聲音輸出的媒體設備",
   "play_mediaDevice": "音頻輸出",
+  "play_mediaDevice_refresh_btn_title": "刷新音頻設備列表",
+  "play_mediaDevice_refresh_btn": "刷新",
   "list": "列表設置",
   "list_source_title": "是否顯示歌曲源",
   "list_source": "是否顯示歌曲源（僅對我的音樂分類有效）",
