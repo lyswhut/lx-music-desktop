@@ -2,7 +2,7 @@
   div(:class="$style.search")
     //- transition
     div(:class="$style.header")
-      material-tab(:class="$style.tab" :list="newSources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
+      material-tab(:class="$style.tab" :list="sources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
     div(v-if="listInfo.list.length" :class="$style.list")
       div(:class="$style.thead")
         table
@@ -136,9 +136,6 @@ export default {
     },
     isAPITemp() {
       return this.setting.apiSource == 'temp'
-    },
-    newSources() {
-      return this.sources.map(item => ({ id: item.id, name: this.$t('view.search.source_' + item.id) }))
     },
   },
   methods: {

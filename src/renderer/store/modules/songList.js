@@ -39,7 +39,9 @@ sources.forEach(source => {
 
 // getters
 const getters = {
-  sourceInfo: () => ({ sources, sortList }),
+  sourceInfo(state, getters, rootState, { sourceNames }) {
+    return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList }
+  },
   tags: state => state.tags,
   isVisibleListDetail: state => state.isVisibleListDetail,
   selectListInfo: state => state.selectListInfo,

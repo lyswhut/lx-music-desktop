@@ -35,7 +35,9 @@ const state = {
 
 // getters
 const getters = {
-  sources: () => sources,
+  sources(state, getters, rootState, { sourceNames }) {
+    return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
+  },
   sourceList: state => state.sourceList || [],
   searchText: state => state.text,
   allList: state => ({ list: state.list, allPage: state.allPage, page: state.page, total: state.total, limit: state.limit, sourceMaxPage: state.sourceMaxPage }),

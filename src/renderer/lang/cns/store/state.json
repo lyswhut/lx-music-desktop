@@ -8,5 +8,14 @@
   "theme_grey": "灰常美丽",
   "theme_mid_autumn": "月里嫦娥",
   "theme_naruto": "木叶之村",
-  "theme_happy_new_year": "新年快乐"
+  "theme_happy_new_year": "新年快乐",
+
+  "source_kw": "酷我音乐",
+  "source_kg": "酷狗音乐",
+  "source_tx": "企鹅音乐",
+  "source_wy": "网易音乐",
+  "source_mg": "咪咕音乐",
+  "source_bd": "百度音乐",
+
+  "source_all": "聚合搜索"
 }

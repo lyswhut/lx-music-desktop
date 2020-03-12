@@ -11,13 +11,22 @@ export default {
     }
   },
   source(state) {
-    return music.sources.find(s => s.id === state.setting.sourceId) || music.sources[0]
+    const source = music.sources.find(s => s.id === state.setting.sourceId) || music.sources[0]
+    return { id: source.id, name: window.i18n.t('store.state.source_' + source.id) }
   },
   sources(state) {
     return {
       active: state.setting.sourceId,
-      list: music.sources,
+      list: music.sources.map(item => ({ id: item.id, name: window.i18n.t('store.state.source_' + item.id) })),
     }
+  },
+  sourceNames() {
+    const sources = {}
+    for (const source of music.sources) {
+      sources[source.id] = window.i18n.t('store.state.source_' + source.id)
+    }
+    sources.all = window.i18n.t('store.state.source_all')
+    return sources
   },
   userInfo(state) {
     return state.userInfo

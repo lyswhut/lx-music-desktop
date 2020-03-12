@@ -8,5 +8,13 @@
   "theme_grey": "Grey",
   "theme_mid_autumn": "Mid-Autumn",
   "theme_naruto": "Naruto",
-  "theme_happy_new_year": "New Year"
+  "theme_happy_new_year": "New Year",
+
+  "source_kw": "Kuwo",
+  "source_kg": "Kugou",
+  "source_tx": "Tencent",
+  "source_wy": "Netease",
+  "source_mg": "Migu",
+  "source_bd": "Baidu",
+  "source_all": "Aggregated"
 }
