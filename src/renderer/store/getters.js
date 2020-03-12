@@ -46,4 +46,7 @@ export default {
   windowSizeList(state) {
     return state.windowSizeList
   },
+  windowSizeActive(state) {
+    return state.windowSizeList.find(i => i.id === state.setting.windowSizeId) || state.windowSizeList[0]
+  },
 }

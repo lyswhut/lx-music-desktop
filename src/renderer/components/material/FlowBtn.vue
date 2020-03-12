@@ -79,9 +79,9 @@ export default {
     background-color: transparent;
     border: none;
     border-radius: @form-radius;
-    margin-right: 5px;
+    margin-right: 2px;
     cursor: pointer;
-    padding: 4px 7px;
+    padding: 6px 10px;
     color: @color-btn;
     outline: none;
     transition: background-color 0.2s ease;
@@ -91,7 +91,7 @@ export default {
     }
 
     svg {
-      height: 1.2em;
+      width: 18px;
     }
 
     &:hover {

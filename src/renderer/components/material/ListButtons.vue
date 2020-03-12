@@ -88,6 +88,8 @@ export default {
 @import '../../assets/styles/layout.less';
 
 .btns {
+  line-height: 1;
+
   button {
     background-color: transparent;
     border: none;
@@ -104,7 +106,7 @@ export default {
     }
 
     svg {
-      height: 1.2em;
+      height: 16px;
     }
 
     &:hover {

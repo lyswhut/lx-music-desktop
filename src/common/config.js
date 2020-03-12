@@ -6,6 +6,7 @@ module.exports = {
       width: 920,
       height: 590,
       tabList: '645px',
+      fontSize: '16px',
     },
     {
       id: 2,
@@ -13,13 +14,15 @@ module.exports = {
       width: 1012,
       height: 650,
       tabList: '719px',
+      fontSize: '16px',
     },
     {
       id: 3,
       name: 'big',
       width: 1104,
       height: 708,
-      tabList: '792px',
+      tabList: '781px',
+      fontSize: '18px',
     },
   ],
 }

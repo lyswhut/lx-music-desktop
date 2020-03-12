@@ -5,7 +5,7 @@ export default {
   list: [
     {
       id: 'kgtop500',
-      name: 'TOP500',
+      name: '酷狗TOP500',
       bangid: '8888',
     },
     {
@@ -53,11 +53,11 @@ export default {
       name: 'DJ热歌榜',
       bangid: '24971',
     },
-    {
-      id: 'kghyxgb',
-      name: '华语新歌榜',
-      bangid: '31308',
-    },
+    // {
+    //   id: 'kghyxgb',
+    //   name: '华语新歌榜',
+    //   bangid: '31308',
+    // },
   ],
   getUrl(p, id) {
     return `http://www2.kugou.kugou.com/yueku/v9/rank/home/${p}-${id}.html`

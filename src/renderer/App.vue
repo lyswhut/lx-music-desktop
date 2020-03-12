@@ -47,7 +47,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['setting', 'theme', 'version']),
+    ...mapGetters(['setting', 'theme', 'version', 'windowSizeActive']),
     ...mapGetters('list', ['defaultList', 'loveList']),
     ...mapGetters('download', {
       downloadList: 'list',
@@ -104,6 +104,9 @@ export default {
         }))
       }
     },
+    'windowSizeActive.fontSize'(n) {
+      document.documentElement.style.fontSize = n
+    },
   },
   methods: {
     ...mapActions(['getVersionInfo']),
@@ -112,6 +115,8 @@ export default {
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations(['setSetting']),
     init() {
+      document.documentElement.style.fontSize = this.windowSizeActive.fontSize
+
       rendererInvoke('getEnvParams').then(this.handleEnvParamsInit)
 
       document.body.addEventListener('click', this.handleBodyClick, true)
@@ -165,7 +170,7 @@ export default {
         this.$nextTick(() => {
           this.showUpdateModal()
         })
-      }, 60 * 30 * 1000)
+      }, 3 * 1000)
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource

@@ -83,6 +83,7 @@ export default {
   border-top-left-radius: 4px;
   color: @color-btn;
   cursor: pointer;
+  .mixin-ellipsis-1;
 
   &:hover {
     background-color: @color-theme_2-hover;
@@ -116,6 +117,7 @@ export default {
     transition: background-color @transition-theme;
     background-color: @color-btn-background;
     box-sizing: border-box;
+    .mixin-ellipsis-1;
 
     &:hover {
       background-color: @color-theme_2-hover;

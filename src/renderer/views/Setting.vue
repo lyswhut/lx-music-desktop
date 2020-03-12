@@ -711,7 +711,6 @@ export default {
   height: 28px;
   line-height: 28px;
   padding: 0px 15px;
-  vertical-align: top;
   svg {
     width: 1em;
     vertical-align: middle;

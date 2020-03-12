@@ -184,6 +184,7 @@
     "multispinner": "^0.2.1",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
+    "postcss-pxtorem": "^5.1.1",
     "pug": "^2.0.4",
     "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",
