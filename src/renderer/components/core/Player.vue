@@ -48,7 +48,7 @@ div(:class="$style.player")
 
 <script>
 import Lyric from 'lrc-file-parser'
-import { rendererSend, rendererOn } from '../../../common/ipc'
+import { rendererSend } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
@@ -128,9 +128,6 @@ export default {
       this.setVolume(volume)
     }, 300)
 
-    rendererOn('restore', () => {
-      this.handleSetTransition()
-    })
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
     window.addEventListener('resize', this.handleResize)
@@ -183,7 +180,7 @@ export default {
       this.handleSaveVolume(n)
     },
     nowPlayTime(n, o) {
-      if (Math.abs(n - o) > 1) this.handleSetTransition()
+      if (Math.abs(n - o) > 2) this.isActiveTransition = true
     },
   },
   methods: {
@@ -588,10 +585,6 @@ export default {
         console.log(err)
         this.setMediaDeviceId('default')
       })
-    },
-    handleSetTransition() {
-      this.isActiveTransition = true
-      // console.log('active transition')
     },
   },
 }

@@ -7,7 +7,7 @@ module.exports = mainWindow => {
     mainWindow = global.mainWindow = null
   })
 
-  mainWindow.on('restore', () => {
-    mainWindow.webContents.send('restore')
-  })
+  // mainWindow.on('restore', () => {
+  //   mainWindow.webContents.send('restore')
+  // })
 }
