@@ -22,8 +22,8 @@ div(:class="$style.songList")
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span.badge.badge-theme-success(v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
-                span.badge.badge-theme-info(v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
+                span.badge.badge-theme-success(:class="$style.labelQuality" v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(:class="$style.labelQuality" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
               td.break(style="width: 20%;")
                 span.select {{item.singer}}
               td.break(style="width: 20%;")
@@ -224,7 +224,7 @@ export default {
   }
 
   &.copying {
-    .labelSource, .time {
+    .labelQuality, .time {
       display: none;
     }
   }
