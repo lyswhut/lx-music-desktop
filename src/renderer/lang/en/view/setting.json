@@ -9,9 +9,11 @@
   "basic_source": "Music source",
   "basic_window_size_title": "Set software window size",
   "basic_window_size": "Window size",
+  "basic_window_size_smaller": "smaller",
   "basic_window_size_small": "small",
   "basic_window_size_medium": "medium",
   "basic_window_size_big": "big",
+  "basic_window_size_larger": "Larger",
   "basic_lang_title": "Software display language",
   "basic_lang": "Language",
 

@@ -5,7 +5,7 @@
       div(:class="$style.icon")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
-    div.scroll(:class="$style.list" :style="{ width: windowSizeActive.tabList }" @click.stop ref="dom_list")
+    div.scroll(:class="$style.list" :style="{ width: listWidth + 'PX' }" @click.stop ref="dom_list")
       div(:class="$style.tag" @click="handleClick(null)") {{$t('material.tag_list.default')}}
       dl(v-for="type in list")
         dt(:class="$style.type") {{type.name}}
@@ -23,12 +23,16 @@ export default {
         return []
       },
     },
+    listWidth: {
+      type: Number,
+      default: 645,
+    },
     value: {
       type: Object,
     },
   },
   computed: {
-    ...mapGetters(['setting', 'windowSizeActive']),
+    ...mapGetters(['setting']),
   },
   data() {
     return {
@@ -130,7 +134,7 @@ export default {
 .list {
   position: absolute;
   top: 100%;
-  width: 646px;
+  width: 645px;
   left: 0;
   border-bottom: 2px solid @color-tab-border-bottom;
   border-right: 2px solid @color-tab-border-bottom;

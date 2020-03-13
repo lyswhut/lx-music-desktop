@@ -9,9 +9,11 @@
   "basic_source": "音乐来源",
   "basic_window_size_title": "设置软件窗口尺寸",
   "basic_window_size": "窗口尺寸",
+  "basic_window_size_smaller": "较小",
   "basic_window_size_small": "小",
   "basic_window_size_medium": "中",
   "basic_window_size_big": "大",
+  "basic_window_size_larger": "较大",
   "basic_lang_title": "软件显示的语言",
   "basic_lang": "语言",
 

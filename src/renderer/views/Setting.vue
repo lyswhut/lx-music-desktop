@@ -25,7 +25,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
       div
-        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange(index)" :class="$style.gapLeft"
+        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
     dd(:title="$t('view.setting.basic_lang_title')")
@@ -550,8 +550,8 @@ export default {
         this.getCacheSize()
       })
     },
-    handleWindowSizeChange(index, id) {
-      let info = id == null ? this.windowSizeList[index] : this.windowSizeList.find(s => s.id == id)
+    handleWindowSizeChange(index) {
+      let info = this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
     refreshSetting(setting, version) {

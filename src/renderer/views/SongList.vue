@@ -19,8 +19,8 @@
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(:class="$style.songListContainer" v-if="!isVisibleListDetail")
         div(:class="$style.header")
-          material-tag-list(:class="$style.tagList" :list="tagList" v-model="tagInfo")
-          material-tab(:class="$style.tab" :list="sorts" item-key="id" item-name="name" v-model="sortId")
+          material-tag-list(:class="$style.tagList" :list-width="listWidth" ref="tagList" :list="tagList" v-model="tagInfo")
+          material-tab(:class="$style.tab" :list="sorts" item-key="id" ref="tab" item-name="name" v-model="sortId")
           material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
         div(:class="$style.songListContent")
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
@@ -73,6 +73,7 @@ export default {
       isShowListAdd: false,
       isShowListAddMultiple: false,
       importSongListText: '',
+      listWidth: 645,
       // detailLoading: true,
     }
   },
@@ -149,12 +150,16 @@ export default {
         this.sortId = this.sorts[0] && this.sorts[0].id
       }
     },
+    'setting.themeId'() {
+      this.setTagListWidth()
+    },
   },
   mounted() {
     this.source = this.setting.songList.source
     this.isToggleSource = true
     this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
+    this.setTagListWidth()
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -354,6 +359,9 @@ export default {
     },
     filterList(list) {
       return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
+    },
+    setTagListWidth() {
+      this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     /*     addSongListDetail() {
       // this.detailLoading = true

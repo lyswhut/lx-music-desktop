@@ -1,11 +1,17 @@
 module.exports = {
   windowSizeList: [
     {
+      id: 0,
+      name: 'smaller',
+      width: 828,
+      height: 530,
+      fontSize: '14px',
+    },
+    {
       id: 1,
       name: 'small',
       width: 920,
       height: 590,
-      tabList: '645px',
       fontSize: '16px',
     },
     {
@@ -13,7 +19,6 @@ module.exports = {
       name: 'medium',
       width: 1012,
       height: 650,
-      tabList: '719px',
       fontSize: '16px',
     },
     {
@@ -21,7 +26,13 @@ module.exports = {
       name: 'big',
       width: 1104,
       height: 708,
-      tabList: '781px',
+      fontSize: '17px',
+    },
+    {
+      id: 4,
+      name: 'larger',
+      width: 1198,
+      height: 766,
       fontSize: '18px',
     },
   ],
