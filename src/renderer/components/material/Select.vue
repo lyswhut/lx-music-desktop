@@ -95,6 +95,7 @@ export default {
 
 .list {
   position: absolute;
+  width: 100%;
   top: 100%;
   left: 0;
   border-bottom: 2px solid @color-tab-border-bottom;

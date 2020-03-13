@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.17'
+  const defaultVersion = '1.0.18'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -241,6 +241,7 @@ export const updateSetting = (setting, version) => {
     langId: 'cns',
     sourceId: 'kw',
     apiSource: 'temp',
+    sourceNameType: 'alias',
     randomAnimate: true,
     ignoreVersion: null,
   }

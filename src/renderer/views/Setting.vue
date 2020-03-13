@@ -35,6 +35,12 @@ div.scroll(:class="$style.setting")
           @change="handleLangChange(item.locale)" :class="$style.gapLeft"
           need v-model="current_setting.langId" :value="item.locale" :label="item.name")
 
+    dd(:title="$t('view.setting.basic_sourcename_title')")
+      h3 {{$t('view.setting.basic_sourcename')}}
+      div
+        material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
+          name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
+
     dt {{$t('view.setting.play')}}
     dd(:title="$t('view.setting.play_toggle_title')")
       h3 {{$t('view.setting.play_toggle')}}
@@ -265,6 +271,18 @@ export default {
           id: 'temp',
           label: this.$t('view.setting.basic_source_temp'),
           disabled: false,
+        },
+      ]
+    },
+    sourceNameTypes() {
+      return [
+        {
+          id: 'real',
+          label: this.$t('view.setting.basic_sourcename_real'),
+        },
+        {
+          id: 'alias',
+          label: this.$t('view.setting.basic_sourcename_alias'),
         },
       ]
     },

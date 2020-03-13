@@ -17,5 +17,14 @@
   "source_mg": "咪咕音乐",
   "source_bd": "百度音乐",
 
-  "source_all": "聚合搜索"
+  "source_all": "聚合搜索",
+
+  "source_alias_kw": "小蜗音乐",
+  "source_alias_kg": "小枸音乐",
+  "source_alias_tx": "小秋音乐",
+  "source_alias_wy": "小芸音乐",
+  "source_alias_mg": "小蜜音乐",
+  "source_alias_bd": "小杜音乐",
+
+  "source_alias_all": "聚合大会"
 }

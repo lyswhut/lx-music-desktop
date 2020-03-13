@@ -16,5 +16,14 @@
   "source_wy": "Netease",
   "source_mg": "Migu",
   "source_bd": "Baidu",
-  "source_all": "Aggregated"
+  "source_all": "Aggregated",
+
+  "source_alias_kw": "KW Music",
+  "source_alias_kg": "KG Music",
+  "source_alias_tx": "TX Music",
+  "source_alias_wy": "WY Music",
+  "source_alias_mg": "MG Music",
+  "source_alias_bd": "BD Music",
+
+  "source_alias_all": "Aggregated"
 }

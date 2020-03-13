@@ -12,20 +12,22 @@ export default {
   },
   source(state) {
     const source = music.sources.find(s => s.id === state.setting.sourceId) || music.sources[0]
-    return { id: source.id, name: window.i18n.t('store.state.source_' + source.id) }
+    return source
   },
   sources(state) {
     return {
       active: state.setting.sourceId,
-      list: music.sources.map(item => ({ id: item.id, name: window.i18n.t('store.state.source_' + item.id) })),
+      list: music.sources,
     }
   },
-  sourceNames() {
+  sourceNames(state) {
+    let prefix = 'store.state.source_'
+    if (state.setting.sourceNameType == 'alias') prefix += 'alias_'
     const sources = {}
     for (const source of music.sources) {
-      sources[source.id] = window.i18n.t('store.state.source_' + source.id)
+      sources[source.id] = window.i18n.t(prefix + source.id)
     }
-    sources.all = window.i18n.t('store.state.source_all')
+    sources.all = window.i18n.t(prefix + 'all')
     return sources
   },
   userInfo(state) {
