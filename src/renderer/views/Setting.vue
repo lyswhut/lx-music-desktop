@@ -458,6 +458,9 @@ export default {
       const { version: settingVersion, setting } = updateSetting(allData.setting)
       this.refreshSetting(setting, settingVersion)
 
+      // 兼容0.6.2及以前版本的列表数据
+      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list })
+
       for (const list of allData.playList) {
         this.setList({ id: list.id, list: list.list })
       }
@@ -569,7 +572,7 @@ export default {
       })
     },
     handleWindowSizeChange(index) {
-      let info = this.windowSizeList[index]
+      let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
     refreshSetting(setting, version) {
