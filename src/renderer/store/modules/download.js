@@ -126,8 +126,10 @@ const refreshUrl = function(commit, downloadInfo) {
   getUrl(downloadInfo, true).then(result => {
     commit('updateUrl', { downloadInfo, url: result.url })
     commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
-    dls[downloadInfo.key].refreshUrl(result.url)
-    dls[downloadInfo.key].start()
+    const dl = dls[downloadInfo.key]
+    if (!dl) return
+    dl.refreshUrl(result.url)
+    dl.start()
   }).catch(err => {
     console.log(err)
     this.dispatch('download/startTask')
@@ -325,7 +327,7 @@ const actions = {
 // mitations
 const mutations = {
   addTask(state, downloadInfo) {
-    state.list.push(downloadInfo)
+    state.list.unshift(downloadInfo)
   },
   removeTask(state, index) {
     state.list.splice(index, 1)
