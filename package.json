@@ -206,7 +206,7 @@
   "dependencies": {
     "crypto-js": "^4.0.0",
     "dnscache": "^1.0.2",
-    "electron-log": "^4.0.7",
+    "electron-log": "^4.1.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^4.2.5",
     "flac-metadata": "^0.1.1",

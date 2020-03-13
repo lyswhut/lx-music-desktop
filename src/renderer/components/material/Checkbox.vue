@@ -114,7 +114,6 @@ export default {
 .checkbox {
   display: inline-block;
   // font-size: 56px;
-
 }
 .input {
   display: none;
@@ -162,13 +161,14 @@ export default {
     right: 0;
     border: 1px solid @color-theme_2-font-label;
     transition: border-color 0.2s ease;
-    border-radius: 15%;
+    border-radius: 2px;
   }
 }
 .icon {
   transition: 0.3s ease;
   transition-property: transform;
   transform: scale(0);
+  border-radius: 2px;
   // opacity: 0;
 }
 
