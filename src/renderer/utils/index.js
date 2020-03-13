@@ -236,7 +236,7 @@ export const updateSetting = (setting, version) => {
         password: '',
       },
     },
-    windowSizeId: 1,
+    windowSizeId: 2,
     themeId: 0,
     langId: 'cns',
     sourceId: 'kw',
