@@ -22,7 +22,8 @@ export default {
   ],
   regExps: {
     // http://www.kuwo.cn/playlist_detail/2886046289
-    listDetailLink: /^.+\/playlist_detail\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
+    // https://m.kuwo.cn/h5app/playlist/2736267853?t=qqfriend
+    listDetailLink: /^.+\/playlist(?:_detail)?\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
   },
   tagsUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getTagList?cmd=rcm_keyword_playlist&user=0&prod=kwplayer_pc_9.0.5.0&vipver=9.0.5.0&source=kwplayer_pc_9.0.5.0&loginUid=0&loginSid=0&appUid=76039576',
   hotTagUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmTagList?loginUid=0&loginSid=0&appUid=76039576',
