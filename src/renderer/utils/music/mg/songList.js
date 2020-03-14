@@ -21,6 +21,9 @@ export default {
   regExps: {
     list: /<li><div class="thumb">.+?<\/li>/g,
     listInfo: /.+data-original="(.+?)".*data-id="(\d+)".*<div class="song-list-name"><a\s.*?>(.+?)<\/a>.+<i class="iconfont cf-bofangliang"><\/i>(.+?)<\/div>/,
+
+    // http://music.migu.cn/v3/music/playlist/161044573?page=1
+    listDetailLink: /^.+\/playlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
   },
   tagsUrl: 'https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/indexTagPage.do?needAll=0',
   getSongListUrl(sortId, tagId, page) {
@@ -58,6 +61,9 @@ export default {
   getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)

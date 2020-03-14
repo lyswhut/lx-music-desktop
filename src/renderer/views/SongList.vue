@@ -15,7 +15,8 @@
             //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="playSongListDetail") 播放
             //- | &nbsp;
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") {{$t('view.song_list.back')}}
-        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total" :noItem="$t('material.song_list.loding_list')" :list="listDetail.list")
+        material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit"
+         :total="listDetail.total" :noItem="isGetDetailFailed ? $t('view.song_list.loding_list_fail') : $t('view.song_list.loding_list')" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(:class="$style.songListContainer" v-if="!isVisibleListDetail")
         div(:class="$style.header")
@@ -74,6 +75,7 @@ export default {
       isShowListAddMultiple: false,
       importSongListText: '',
       listWidth: 645,
+      isGetDetailFailed: false,
       // detailLoading: true,
     }
   },
@@ -164,7 +166,7 @@ export default {
   methods: {
     ...mapMutations(['setSongList']),
     ...mapActions('songList', ['getTags', 'getList', 'getListDetail']),
-    ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo', 'clearListDetail']),
+    ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
@@ -229,7 +231,7 @@ export default {
       })
     },
     handleToggleListDetailPage(page) {
-      this.getListDetail({ id: this.selectListInfo.id, page }).then(() => {
+      this.handleGetListDetail(this.selectListInfo.id, page).then(() => {
         this.$nextTick(() => {
           scrollTo(this.$refs.dom_scrollContent, 0)
         })
@@ -254,9 +256,8 @@ export default {
       // this.detailLoading = true
       this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
-      this.clearListDetail()
       this.$nextTick(() => {
-        this.getListDetail({ id: this.selectListInfo.id, page: 1 })
+        this.handleGetListDetail(this.selectListInfo.id, 1)
       })
     },
     handleFlowBtnClick(action) {
@@ -301,13 +302,11 @@ export default {
         case 'submit':
           this.handleGetSongListDetail()
           break
-        case 'blur':
-          this.parseImportSongListInputText()
-          break
+        // case 'blur':
+        //   break
       }
     },
     handleGetSongListDetail() {
-      this.parseImportSongListInputText()
       this.setSelectListInfo({
         play_count: null,
         id: this.importSongListText,
@@ -317,51 +316,21 @@ export default {
         desc: '',
         source: this.source,
       })
-      this.clearListDetail()
-      this.$nextTick(() => {
-        this.setVisibleListDetail(true)
-        this.getListDetail({ id: this.importSongListText, page: 1 })
-      })
-    },
-    parseImportSongListInputText() {
-      if (!(/[?&:/]/.test(this.importSongListText))) return
-      const text = this.importSongListText
-      let regx
-      switch (this.source) {
-        case 'wy':
-          regx = /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/
-          break
-        case 'tx':
-          // https://y.qq.com/n/yqq/playlist/7217720898.html
-          // https://i.y.qq.com/n2/m/share/details/taoge.html?platform=11&appshare=android_qq&appversion=9050006&id=7217720898&ADTAG=qfshare
-          regx = /\/\/i\.y\.qq\.com/.test(text) ? /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/ : /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
-          break
-        case 'kw':
-          // http://www.kuwo.cn/playlist_detail/2886046289
-          regx = /^.+\/playlist_detail\/(\d+)(?:\?.*|&.*$|#.*$|$)/
-          break
-        case 'bd':
-          // http://music.taihe.com/songlist/566347741
-          regx = /^.+\/songlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/
-          break
-        case 'mg':
-          // http://music.migu.cn/v3/music/playlist/161044573?page=1
-          regx = /^.+\/playlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/
-          break
-        case 'kg':
-          // https://www.kugou.com/yy/special/single/1067062.html
-          regx = /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/
-          break
-        default:
-          return
-      }
-      this.importSongListText = text.replace(regx, '$1')
+      this.setVisibleListDetail(true)
+      this.handleGetListDetail(this.importSongListText, 1)
     },
     filterList(list) {
       return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
     setTagListWidth() {
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
+    },
+    handleGetListDetail(id, page) {
+      this.isGetDetailFailed = false
+      this.getListDetail({ id, page }).catch(err => {
+        this.isGetDetailFailed = true
+        return Promise.reject(err)
+      })
     },
     /*     addSongListDetail() {
       // this.detailLoading = true

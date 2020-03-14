@@ -25,6 +25,9 @@ export default {
       id: 'new',
     },
   ],
+  regExps: {
+    listDetailLink: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
+  },
   /**
    * 格式化播放数量
    * @param {*} num
@@ -45,6 +48,9 @@ export default {
   getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
     this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
       method: 'post',
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',

@@ -73,8 +73,13 @@ const actions = {
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
     let key = `sdetail__${source}__${id}__${page}`
-    if (state.listDetail.list.length && state.listDetail.key == key) return true
-    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getListDetail(id, page)).then(result => commit('setListDetail', { result, key, page }))
+    if (state.listDetail.list.length && state.listDetail.key == key) return Promise.resolve()
+    commit('clearListDetail')
+    return (
+      cache.has(key)
+        ? Promise.resolve(cache.get(key))
+        : music[source].songList.getListDetail(id, page)
+    ).then(result => commit('setListDetail', { result, key, page }))
   },
 /*   getListDetailAll({ state, rootState }, id) {
     let source = rootState.setting.songList.source
@@ -141,7 +146,15 @@ const mutations = {
     state.selectListInfo = info
   },
   clearListDetail(state) {
-    state.listDetail.list = []
+    state.listDetail = {
+      list: [],
+      desc: null,
+      total: 0,
+      page: 1,
+      limit: 30,
+      key: null,
+      info: {},
+    }
   },
 }
 

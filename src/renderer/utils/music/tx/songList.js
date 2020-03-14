@@ -7,6 +7,7 @@ export default {
   _requestObj_hotTags: null,
   _requestObj_list: null,
   _requestObj_listDetail: null,
+  _requestObj_listDetailLink: null,
   limit_list: 36,
   limit_song: 10000000,
   successCode: 0,
@@ -20,9 +21,14 @@ export default {
       id: 2,
     },
   ],
-  regexps: {
+  regExps: {
     hotTagHtml: /class="c_bg_link js_tag_item" data-id="\w+">.+?<\/a>/g,
     hotTag: /data-id="(\w+)">(.+?)<\/a>/,
+
+    // https://y.qq.com/n/yqq/playlist/7217720898.html
+    // https://i.y.qq.com/n2/m/share/details/taoge.html?platform=11&appshare=android_qq&appversion=9050006&id=7217720898&ADTAG=qfshare
+    listDetailLink1: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
+    listDetailLink2: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
   tagsUrl: 'https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=%7B%22tags%22%3A%7B%22method%22%3A%22get_all_categories%22%2C%22param%22%3A%7B%22qq%22%3A%22%22%7D%2C%22module%22%3A%22playlist.PlaylistAllCategoriesServer%22%7D%7D',
   hotTagUrl: 'https://c.y.qq.com/node/pc/wk_v15/category_playlist.html',
@@ -76,12 +82,12 @@ export default {
     })
   },
   filterInfoHotTag(html) {
-    let hotTag = html.match(this.regexps.hotTagHtml)
+    let hotTag = html.match(this.regExps.hotTagHtml)
     const hotTags = []
     if (!hotTag) return hotTags
 
     hotTag.forEach(tagHtml => {
-      let result = tagHtml.match(this.regexps.hotTag)
+      let result = tagHtml.match(this.regExps.hotTag)
       if (!result) return
       hotTags.push({
         id: parseInt(result[1]),
@@ -167,36 +173,57 @@ export default {
     }
   },
 
+  async handleParseId(link, retryNum = 0) {
+    if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
+    if (retryNum > 2) return Promise.reject(new Error('link try max num'))
+
+    this._requestObj_listDetailLink = httpFetch(link)
+    const { headers: { location }, statusCode } = await this._requestObj_listDetailLink.promise
+    // console.log(headers)
+    if (statusCode > 400) return this.handleParseId(link, ++retryNum)
+    return location == null ? link : location
+  },
+
   // 获取歌曲列表内的音乐
-  getListDetail(id, tryNum = 0) {
-    if (this._requestObj_listDetail) {
-      this._requestObj_listDetail.cancelHttp()
-    }
+  async getListDetail(id, tryNum = 0) {
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) {
+      let regx = /\/\/i\.y\.qq\.com/.test(id) ? this.regExps.listDetailLink1 : this.regExps.listDetailLink2
+      if (!regx.test(id)) {
+        id = await this.handleParseId(id)
+        regx = this.regExps.listDetailLink1
+        console.log(id)
+      }
+      id = id.replace(regx, '$1')
+      // console.log(id)
+    }
+
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id), {
       headers: {
         Origin: 'https://y.qq.com',
         Referer: `https://y.qq.com/n/yqq/playsquare/${id}.html`,
       },
     })
-    return this._requestObj_listDetail.promise.then(({ body }) => {
-      if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
-      const cdlist = body.cdlist[0]
-      return {
-        list: this.filterListDetail(cdlist.songlist),
-        page: 1,
-        limit: cdlist.songlist.length + 1,
-        total: cdlist.songlist.length,
-        source: 'tx',
-        info: {
-          name: cdlist.dissname,
-          img: cdlist.logo,
-          desc: jshtmlencode.htmlDecode(cdlist.desc).replace(/<br>/g, '\n'),
-          author: cdlist.nickname,
-          play_count: this.formatPlayCount(cdlist.visitnum),
-        },
-      }
-    })
+    const { body } = await this._requestObj_listDetail.promise
+
+    if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
+    const cdlist = body.cdlist[0]
+    return {
+      list: this.filterListDetail(cdlist.songlist),
+      page: 1,
+      limit: cdlist.songlist.length + 1,
+      total: cdlist.songlist.length,
+      source: 'tx',
+      info: {
+        name: cdlist.dissname,
+        img: cdlist.logo,
+        desc: jshtmlencode.htmlDecode(cdlist.desc).replace(/<br>/g, '\n'),
+        author: cdlist.nickname,
+        play_count: this.formatPlayCount(cdlist.visitnum),
+      },
+    }
   },
   getSinger(singers) {
     let arr = []
