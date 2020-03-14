@@ -2,7 +2,7 @@
 div(:class="$style.download")
   //- transition
   div(:class="$style.header")
-    material-tab(:class="$style.tab" :list="tabs" align="left" item-key="id" item-name="name" v-model="tabId")
+    material-tab(:class="$style.tab" :list="tabs" align="left" item-key="id" item-name="name" @change="handleTabChange" v-model="tabId")
   div(:class="$style.content" v-if="list.length")
     div(:class="$style.thead")
       table
@@ -108,7 +108,7 @@ export default {
       const len = n.length
       if (len) {
         this.isSelectAll = true
-        this.isIndeterminate = len !== this.list.length
+        this.isIndeterminate = len !== this.showList.length
         this.isShowEditBtn = true
       } else {
         this.isSelectAll = false
@@ -244,6 +244,9 @@ export default {
           text: `${info.name} ${info.singer}`,
         },
       })
+    },
+    handleTabChange() {
+      this.selectdData = []
     },
   },
 }
