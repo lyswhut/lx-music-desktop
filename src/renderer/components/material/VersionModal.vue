@@ -54,6 +54,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
           | 国内Windows/MAC用户推荐到
           strong 网盘
           | 下载。
+      material-btn(:class="$style.btn" @click.onec="handleIgnoreClick") {{ isIgnored ? '恢复当前版本的更新失败提醒' : '忽略当前版本的更新失败提醒'}}
   main(:class="$style.main" v-else-if="version.isDownloading && version.isTimeOut && !version.isUnknow")
     h2 ❗️ 新版本下载超时 ❗️
     div(:class="$style.desc")
@@ -147,9 +148,12 @@ export default {
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
         : '初始化中...'
     },
+    isIgnored() {
+      return this.setting.ignoreVersion == this.version.newVersion.version
+    },
   },
   methods: {
-    ...mapMutations(['setVersionModalVisible', 'setSetting']),
+    ...mapMutations(['setVersionModalVisible', 'setIgnoreVersion']),
     handleClose() {
       this.setVersionModalVisible({
         isShow: false,
@@ -165,6 +169,10 @@ export default {
     },
     handleCopy(text) {
       clipboardWriteText(text)
+    },
+    handleIgnoreClick() {
+      this.setIgnoreVersion(this.isIgnored ? null : this.version.newVersion.version)
+      this.handleClose()
     },
   },
 }

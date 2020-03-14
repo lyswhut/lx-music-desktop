@@ -39,6 +39,9 @@ export default {
     if (isUnknow !== undefined) state.version.isUnknow = isUnknow
     if (isLatestVer !== undefined) state.version.isLatestVer = isLatestVer
   },
+  setIgnoreVersion(state, version) {
+    state.setting.ignoreVersion = version
+  },
   setVolume(state, val) {
     state.setting.player.volume = val
   },
