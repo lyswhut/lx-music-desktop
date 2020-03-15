@@ -179,9 +179,9 @@ div.scroll(:class="$style.setting")
         | 软件的常见问题可转至：
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        | 阅读常见问题后仍有问题可 mail to：
-        span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('lyswhut@qq.com')") lyswhut@qq.com
-        | &nbsp;或到 GitHub 提交&nbsp;
+        | 阅读常见问题后仍有问题可加企鹅群&nbsp;
+        span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
+        | &nbsp;反馈，或到 GitHub 提交&nbsp;
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
       br
