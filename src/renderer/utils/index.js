@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.18'
+  const defaultVersion = '1.0.19'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -226,6 +226,8 @@ export const updateSetting = (setting, version) => {
     search: {
       searchSource: 'kw',
       tempSearchSource: 'kw',
+      isShowHotSearch: false,
+      isShowHistorySearch: false,
     },
     network: {
       proxy: {

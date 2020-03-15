@@ -4,11 +4,13 @@ import musicInfo from './musicInfo'
 import songList from './songList'
 import { httpFetch } from '../../request'
 import musicSearch from './musicSearch'
+import hotSearch from './hotSearch'
 
 const bd = {
   leaderboard,
   songList,
   musicSearch,
+  hotSearch,
   getMusicUrl(songInfo, type) {
     return api_source('bd').getMusicUrl(songInfo, type)
   },

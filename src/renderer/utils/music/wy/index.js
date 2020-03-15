@@ -4,11 +4,13 @@ import getLyric from './lyric'
 import getMusicInfo from './musicInfo'
 import musicSearch from './musicSearch'
 import songList from './songList'
+import hotSearch from './hotSearch'
 
 const wy = {
   leaderboard,
   musicSearch,
   songList,
+  hotSearch,
   getMusicUrl(songInfo, type) {
     return api_source('wy').getMusicUrl(songInfo, type)
   },

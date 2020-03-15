@@ -64,6 +64,16 @@ div.scroll(:class="$style.setting")
             use(xlink:href='#icon-refresh')
           span {{$t('view.setting.play_mediaDevice_refresh_btn')}}
 
+    dt {{$t('view.setting.search')}}
+    dd(:title="$t('view.setting.search_hot_title')")
+      h3 {{$t('view.setting.search_hot')}}
+      div
+        material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
+    dd(:title="$t('view.setting.search_history_title')")
+      h3 {{$t('view.setting.search_history')}}
+      div
+        material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
+
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
       h3 {{$t('view.setting.list_source')}}
@@ -320,6 +330,12 @@ export default {
             enable: true,
             locations: {},
           },
+        },
+        search: {
+          searchSource: 'kw',
+          tempSearchSource: 'kw',
+          isShowHotSearch: false,
+          isShowHistorySearch: false,
         },
         download: {
           savePath: '',

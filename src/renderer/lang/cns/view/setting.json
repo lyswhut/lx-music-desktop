@@ -37,6 +37,12 @@
   "play_mediaDevice_refresh_btn_title": "刷新音频设备列表",
   "play_mediaDevice_refresh_btn": "刷新",
 
+  "search": "搜索设置",
+  "search_hot_title": "是否显示热门搜索",
+  "search_hot": "热门搜索",
+  "search_history_title": "是否显示历史搜索记录",
+  "search_history": "搜索历史",
+
   "list": "列表设置",
   "list_source_title": "是否显示歌曲源",
   "list_source": "是否显示歌曲源（仅对我的音乐分类有效）",

@@ -8,5 +8,9 @@
   "time": "Interval",
   "lossless": "SQ",
   "high_quality": "HQ",
-  "no_item": "Search what i think~~😉"
+  "no_item": "Search what i think~~😉",
+  "hot_search": "Hot Search",
+  "history_search": "History Search",
+  "history_clear": "Clear Search History",
+  "history_remove": "Right click to remove this history"
 }

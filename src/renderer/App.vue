@@ -53,6 +53,9 @@ export default {
       downloadList: 'list',
       downloadStatus: 'downloadStatus',
     }),
+    ...mapGetters('search', {
+      searchHistoryList: 'historyList',
+    }),
   },
   created() {
     this.saveSetting = throttle(n => {
@@ -66,6 +69,9 @@ export default {
     }, 500)
     this.saveDownloadList = throttle(n => {
       window.electronStore_list.set('downloadList', n)
+    }, 1000)
+    this.saveSearchHistoryList = throttle(n => {
+      window.electronStore_data.set('searchHistoryList', n)
     }, 1000)
   },
   mounted() {
@@ -96,6 +102,9 @@ export default {
         this.saveDownloadList(n)
       },
       deep: true,
+    },
+    searchHistoryList(n) {
+      this.saveSearchHistoryList(n)
     },
     'globalObj.apiSource'(n) {
       if (n != this.setting.apiSource) {

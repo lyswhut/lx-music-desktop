@@ -37,6 +37,12 @@
   "play_mediaDevice_refresh_btn_title": "Refresh audio device list",
   "play_mediaDevice_refresh_btn": "refresh",
 
+  "search": "Search Settings",
+  "search_hot_title": "Show hot searches",
+  "search_hot": "Hot Search",
+  "search_history_title": "Show search history",
+  "search_history": "Search History",
+
   "list": "List settings",
   "list_source_title": "Whether to show song sources",
   "list_source": "Whether to show song sources (only valid for my music category)",

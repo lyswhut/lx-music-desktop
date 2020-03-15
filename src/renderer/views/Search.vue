@@ -41,7 +41,19 @@
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
-      p {{$t('view.search.no_item')}}
+      div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || setting.search.isShowHistorySearch")
+        dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
+          dt(:class="$style.noitemListTitle") {{$t('view.search.hot_search')}}
+          dd(:class="$style.noitemListItem" @click="handleNoitemSearch(item)" v-for="item in hotSearchList") {{item}}
+        dl(:class="$style.noitemList" v-if="setting.search.isShowHistorySearch && historyList.length")
+          dt(:class="$style.noitemListTitle")
+            span {{$t('view.search.history_search')}}
+            span(:class="$style.historyClearBtn" @click="clearHistory" :title="$t('view.search.history_clear')")
+              svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-eraser')
+          dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :title="$t('view.search.history_remove')") {{item}}
+      div(v-else :class="$style.noitem_list")
+        p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
@@ -100,6 +112,7 @@ export default {
       this.page = 1
       this.handleSearch(this.text, this.page)
     }
+    this.handleGetHotSearch()
   },
   watch: {
     selectdData(n) {
@@ -121,6 +134,7 @@ export default {
       this.$nextTick(() => {
         this.page = 1
         this.handleSearch(this.text, this.page)
+        this.handleGetHotSearch()
       })
       this.setSearchSource({
         searchSource: n,
@@ -129,7 +143,7 @@ export default {
   },
   computed: {
     ...mapGetters(['userInfo', 'setting']),
-    ...mapGetters('search', ['sourceList', 'allList', 'sources']),
+    ...mapGetters('search', ['sourceList', 'allList', 'sources', 'historyList']),
     ...mapGetters('list', ['defaultList']),
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
@@ -137,14 +151,20 @@ export default {
     isAPITemp() {
       return this.setting.apiSource == 'temp'
     },
+    hotSearchList() {
+      return this.$store.getters['hotSearch/list'][this.setting.search.searchSource] || []
+    },
   },
   methods: {
     ...mapMutations(['setSearchSource']),
     ...mapActions('search', ['search']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('search', ['clearList', 'setPage']),
+    ...mapMutations('search', ['clearList', 'setPage', 'removeHistory', 'clearHistory']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
+    ...mapActions('hotSearch', {
+      getHotSearch: 'getList',
+    }),
     handleSearch(text, page) {
       if (text === '') return this.clearList()
 
@@ -261,6 +281,18 @@ export default {
         clipboardWriteText(str)
       })
     },
+    handleGetHotSearch() {
+      if (this.hotSearchList.length || !this.setting.search.isShowHotSearch) return
+      this.getHotSearch(this.setting.search.searchSource)
+    },
+    handleNoitemSearch(text) {
+      this.$router.push({
+        path: 'search',
+        query: {
+          text,
+        },
+      })
+    },
   },
 }
 </script>
@@ -331,11 +363,66 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: center;
 
   p {
     font-size: 24px;
     color: @color-theme_2-font-label;
+    text-align: center;
+  }
+}
+.noitem-list-container {
+  padding: 0 15px;
+  margin-top: -20px;
+  min-height: 300px;
+  max-height: 94.7%;
+}
+.noitem-list {
+  +.noitem-list {
+    margin-top: 15px;
+  }
+}
+.noitem-hot-search-list {
+  min-height: 106px;
+}
+.noitem-list-title {
+  color: @color-theme_2-font-label;
+  padding: 5px;
+  font-size: 14px;
+}
+.noitem-list-item {
+  display: inline-block;
+  margin: 3px 5px;
+  background-color: @color-btn-background;
+  padding: 7px 10px;
+  border-radius: @radius-progress-border;
+  transition: background-color @transition-theme;
+  cursor: pointer;
+  font-size: 13px;
+  color: @color-btn;
+  .mixin-ellipsis-1;
+  max-width: 150px;
+  &:hover {
+    background-color: @color-theme_2-hover;
+  }
+  &:active {
+    background-color: @color-theme_2-active;
+  }
+}
+.history-clear-btn {
+  padding: 0 5px;
+  margin-left: 5px;
+  color: @color-theme_2-font-label;
+  cursor: pointer;
+  transition: color @transition-theme;
+  &:hover {
+    color: @color-theme-hover;
+  }
+  &:active {
+    color: @color-theme-active;
+  }
+  svg {
+    vertical-align: middle;
+    width: 15px;
   }
 }
 
@@ -344,6 +431,28 @@ each(@themes, {
     .noitem {
       p {
         color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+    .noitem-list-title {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+    }
+    .noitem-list-item {
+      color: ~'@{color-@{value}-btn}';
+      background-color: ~'@{color-@{value}-btn-background}';
+      &:hover {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+      &:active {
+        background-color: ~'@{color-@{value}-theme_2-active}';
+      }
+    }
+    .history-clear-btn {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+      &:hover {
+        color: ~'@{color-@{value}-theme-hover}';
+      }
+      &:active {
+        color: ~'@{color-@{value}-theme-active}';
       }
     }
   }

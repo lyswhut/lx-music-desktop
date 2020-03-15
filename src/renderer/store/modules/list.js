@@ -85,7 +85,7 @@ const mutations = {
   listClear(state, id) {
     let targetList = getList(state, id)
     if (!targetList) return
-    targetList.list.length = 0
+    targetList.list.length = []
   },
   updateMusicInfo(state, { id, index, data }) {
     let targetList = getList(state, id)
