@@ -686,7 +686,7 @@ export default {
   // overflow: hidden;
   transition: @transition-theme;
   transition-property: background-color;
-  background-color: @color-player-progress;
+  background-color: @color-player-progress-bar1;
   // background-color: #f5f5f5;
   position: relative;
   border-radius: @radius-progress-border;
@@ -851,7 +851,7 @@ each(@themes, {
       }
     }
     .volume {
-      background-color: ~'@{color-@{value}-player-progress}';
+      background-color: ~'@{color-@{value}-player-progress-bar1}';
     }
 
     .volume-bar {
