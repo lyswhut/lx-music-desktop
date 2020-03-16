@@ -1,0 +1,11 @@
+{
+  "select_all": "Select all",
+  "unselect_all": "Unselect all",
+  "name": "Name",
+  "singer": "Singer",
+  "album": "Album",
+  "action": "Actions",
+  "time": "Interval",
+  "loding_list": "Loading...",
+  "no_item": "The list turned out to be empty..."
+}

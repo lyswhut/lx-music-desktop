@@ -20,6 +20,11 @@ export default {
       id: 'hot',
     },
   ],
+  regExps: {
+    // http://www.kuwo.cn/playlist_detail/2886046289
+    // https://m.kuwo.cn/h5app/playlist/2736267853?t=qqfriend
+    listDetailLink: /^.+\/playlist(?:_detail)?\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
+  },
   tagsUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getTagList?cmd=rcm_keyword_playlist&user=0&prod=kwplayer_pc_9.0.5.0&vipver=9.0.5.0&source=kwplayer_pc_9.0.5.0&loginUid=0&loginSid=0&appUid=76039576',
   hotTagUrl: 'http://wapi.kuwo.cn/api/pc/classify/playlist/getRcmTagList?loginUid=0&loginSid=0&appUid=76039576',
   getListUrl({ sortId, id, type, page }) {
@@ -93,7 +98,7 @@ export default {
     this._requestObj_list = httpFetch(this.getListUrl({ sortId, id, type, page }))
     return this._requestObj_list.promise.then(({ body }) => {
       if (!id || type == '10000') {
-        if (body.code !== this.successCode) return this.getList(sortId, id, type, page, ++tryNum)
+        if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
         return {
           list: this.filterList(body.data.data),
           total: body.data.total,
@@ -161,6 +166,9 @@ export default {
       this._requestObj_listDetail.cancelHttp()
     }
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.result !== 'ok') return this.getListDetail(id, page, ++tryNum)

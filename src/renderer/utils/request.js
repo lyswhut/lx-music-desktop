@@ -1,4 +1,4 @@
-import request from 'request'
+import needle from 'needle'
 // import progress from 'request-progress'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
@@ -6,6 +6,34 @@ import { bHh } from './music/options'
 import { deflateRawSync } from 'zlib'
 import { getProxyInfo } from './index'
 // import fs from 'fs'
+
+const request = (url, options, callback) => {
+  let data
+  if (options.method == 'get') options.headers['Content-Length'] = 0
+  if (options.body) {
+    data = options.body
+  } else if (options.form) {
+    data = options.form
+    // data.content_type = 'application/x-www-form-urlencoded'
+    options.json = false
+  } else if (options.formData) {
+    data = options.formData
+    // data.content_type = 'multipart/form-data'
+    options.json = false
+  }
+  options.response_timeout = options.timeout
+  return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
+    if (!err) {
+      body = resp.body = resp.raw.toString()
+      try {
+        resp.body = JSON.parse(resp.body)
+      } catch (_) {}
+      body = resp.body
+    }
+    callback(err, resp, body)
+  }).request
+}
+
 
 const defaultHeaders = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
@@ -27,7 +55,7 @@ const buildHttpPromose = (url, options) => {
     requestObj = fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
       debugRequest && console.log(`\n---response------${url}------------`)
-      debugRequest && console.log(JSON.stringify(body))
+      debugRequest && console.log(body)
       requestObj = null
       cancelFn = null
       if (err) {
@@ -112,7 +140,7 @@ export const http = (url, options, cb) => {
   return fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -141,7 +169,7 @@ export const httpGet = (url, options, callback) => {
   return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -172,7 +200,7 @@ export const httpPost = (url, data, options, callback) => {
   return fetchData(url, 'post', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     }
@@ -209,7 +237,7 @@ export const http_jsonp = (url, options, callback) => {
   return fetchData(url, 'get', options, function(err, resp, body) {
     // options.isShowProgress && window.api.hideProgress()
     debugRequest && console.log(`\n---response------${url}------------`)
-    debugRequest && console.log(JSON.stringify(body))
+    debugRequest && console.log(body)
     if (err) {
       debugRequest && console.log(JSON.stringify(err))
     } else {

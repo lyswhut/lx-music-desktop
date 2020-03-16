@@ -1,51 +1,55 @@
 <template lang="pug">
 div(:class="$style.songList")
-  transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
-    div(v-if="list.length" :class="$style.list")
+  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+    div(v-show="list.length" :class="$style.list")
       div(:class="$style.thead")
         table
           thead
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 20%;") 专辑
-              th.nobreak(style="width: 20%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('material.song_list.unselect_all') : $t('material.song_list.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('material.song_list.name')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.singer')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.album')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.action')}}
+              th.nobreak(style="width: 10%;") {{$t('material.song_list.time')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody
-            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick(index)")
+          tbody(@contextmenu="handleContextMenu")
+            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick($event, index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdList" @change="handleChangeSelect" :value="item")
               td.break(style="width: 25%;")
-                | {{item.name}}
-                span.badge.badge-info(v-if="item._types['320k']") 高品质
-                span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
-              td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 20%;") {{item.albumName}}
+                span.select {{item.name}}
+                span.badge.badge-theme-success(:class="$style.labelQuality" v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(:class="$style.labelQuality" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
+              td.break(style="width: 20%;")
+                span.select {{item.singer}}
+              td.break(style="width: 20%;")
+                span.select {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :search-btn="true"
                   :remove-btn="false" @btn-click="handleListBtnClick"
                   :listAdd-btn="item.source == 'kw' || !isAPITemp"
-                  :play-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
-                  :download-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)")
+                  :play-btn="item.source == 'kw' || !isAPITemp"
+                  :download-btn="item.source == 'kw' || !isAPITemp")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
-    div(v-else :class="$style.noitem")
+  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+    div(v-show="!list.length" :class="$style.noitem")
       p(v-html="noItem")
-  material-flow-btn(:show="isShowEditBtn && source != 'tx' && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+  material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo } from '../../utils'
+import { scrollTo, clipboardWriteText } from '../../utils'
 export default {
   name: 'MaterialSongList',
   model: {
@@ -131,7 +135,9 @@ export default {
     }
   },
   methods: {
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
+
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -140,7 +146,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.emitEvent((this.source != 'tx' && (this.source == 'kw' || !this.isAPITemp)) ? 'testPlay' : 'search', index)
+      this.emitEvent((this.source == 'kw' || !this.isAPITemp) ? 'testPlay' : 'search', index)
       this.clickTime = 0
       this.clickIndex = -1
     },
@@ -167,6 +173,18 @@ export default {
     handleChangeSelect() {
       this.$emit('input', [...this.selectdList])
     },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        clipboardWriteText(str)
+      })
+    },
   },
 }
 </script>
@@ -179,6 +197,7 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
 }
 
 .list {
@@ -197,13 +216,16 @@ export default {
   td {
     font-size: 12px;
     :global(.badge) {
-      margin-right: 3px;
-      &:first-child {
-        margin-left: 3px;
-      }
-      &:last-child {
-        margin-right: 0;
-      }
+      margin-left: 3px;
+    }
+  }
+  :global(.badge) {
+    opacity: .85;
+  }
+
+  &.copying {
+    .labelQuality, .time {
+      display: none;
     }
   }
 }
@@ -214,8 +236,11 @@ export default {
   // transform: translateX(-50%);
 }
 .noitem {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

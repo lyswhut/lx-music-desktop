@@ -1,22 +1,22 @@
 <template lang="pug">
 transition(enter-active-class="animated-fast zoomIn" leave-active-class="animated zoomOut")
   div(:class="$style.btns" v-show="show")
-    button(type="button" v-if="playBtn" title="播放" @click.stop="handleClick('play')")
+    button(type="button" v-if="playBtn" :title="$t('material.flow_btn.play')" @click.stop="handleClick('play')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 287.386 287.386' space='preserve')
         use(xlink:href='#icon-testPlay')
-    button(type="button" v-if="addBtn" title="添加" @click.stop="handleClick('add')")
+    button(type="button" v-if="addBtn" :title="$t('material.flow_btn.play')" @click.stop="handleClick('add')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
         use(xlink:href='#icon-addTo')
-    button(type="button" v-if="downloadBtn" title="下载" @click.stop="handleClick('download')")
+    button(type="button" v-if="downloadBtn" :title="$t('material.flow_btn.download')" @click.stop="handleClick('download')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 475.078 475.077' space='preserve')
         use(xlink:href='#icon-download')
-    button(type="button" v-if="startBtn" title="开始" @click.stop="handleClick('start')")
+    button(type="button" v-if="startBtn" :title="$t('material.flow_btn.start')" @click.stop="handleClick('start')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
         use(xlink:href='#icon-play')
-    button(type="button" v-if="pauseBtn" title="暂停" @click.stop="handleClick('pause')")
+    button(type="button" v-if="pauseBtn" :title="$t('material.flow_btn.pause')" @click.stop="handleClick('pause')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
         use(xlink:href='#icon-pause')
-    button(type="button" v-if="removeBtn" title="移除" @click.stop="handleClick('remove')")
+    button(type="button" v-if="removeBtn" :title="$t('material.flow_btn.remove')" @click.stop="handleClick('remove')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
         use(xlink:href='#icon-delete')
 
@@ -78,10 +78,10 @@ export default {
   button {
     background-color: transparent;
     border: none;
-    border-radius: 3px;
-    margin-right: 5px;
+    border-radius: @form-radius;
+    margin-right: 2px;
     cursor: pointer;
-    padding: 4px 7px;
+    padding: 6px 10px;
     color: @color-btn;
     outline: none;
     transition: background-color 0.2s ease;
@@ -91,7 +91,7 @@ export default {
     }
 
     svg {
-      height: 1.2em;
+      width: 18px;
     }
 
     &:hover {

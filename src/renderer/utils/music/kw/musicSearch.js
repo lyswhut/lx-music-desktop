@@ -42,6 +42,7 @@ export default {
   // },
   handleResult(rawData) {
     const result = []
+    if (!rawData) return result
     for (let i = 0; i < rawData.length; i++) {
       const info = rawData[i]
       let songId = info.MUSICRID.replace('MUSIC_', '')
@@ -121,11 +122,13 @@ export default {
     }
     return result
   },
-  search(str, page = 1, { limit } = {}) {
+  search(str, page = 1, { limit } = {}, retryNum = 0) {
+    if (retryNum > 2) return Promise.reject(new Error('try max num'))
     if (limit != null) this.limit = limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page).then(result => {
-      if (!result || (result.TOTAL !== '0' && result.SHOW === '0')) return this.search(str, page, { limit })
+      // console.log(result)
+      if (!result || (result.TOTAL !== '0' && result.SHOW === '0')) return this.search(str, page, { limit }, ++retryNum)
       let list = this.handleResult(result.abslist)
 
       if (list == null) return this.search(str, page, { limit })

@@ -20,6 +20,10 @@ export default {
       id: '0',
     },
   ],
+  regExps: {
+    // http://music.taihe.com/songlist/566347741
+    listDetailLink: /^.+\/songlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
+  },
   aesPassEncod(jsonData) {
     let timestamp = Math.floor(Date.now() / 1000)
     let privateKey = toMD5('baidu_taihe_music_secret_key' + timestamp).substr(8, 16)
@@ -184,10 +188,11 @@ export default {
 
   // 获取歌曲列表内的音乐
   getListDetail(id, page, tryNum = 0) {
-    if (this._requestObj_listDetail) {
-      this._requestObj_listDetail.cancelHttp()
-    }
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.error_code !== this.successCode) return this.getListDetail(id, page, ++tryNum)

@@ -10,45 +10,60 @@
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 25%;") 专辑
-              th.nobreak(style="width: 15%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.search.unselect_all') : $t('view.search.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('view.search.name')}}
+              th.nobreak(style="width: 20%;") {{$t('view.search.singer')}}
+              th.nobreak(style="width: 25%;") {{$t('view.search.album')}}
+              th.nobreak(style="width: 15%;") {{$t('view.search.action')}}
+              th.nobreak(style="width: 10%;") {{$t('view.search.time')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody
-            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick(index)")
+          tbody(@contextmenu="handleContextMenu")
+            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick($event, index)")
               td.nobreak.center(style="width: 37px;" @click.stop)
                 material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
-                | {{item.name}}
-                span.badge.badge-info(v-if="item._types['320k']") 高品质
-                span.badge.badge-success(v-if="item._types.ape || item._types.flac") 无损
+                span.select {{item.name}}
+                span.badge.badge-theme-success(:class="$style.labelQuality" v-if="item._types.ape || item._types.flac") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(:class="$style.labelQuality" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
                 span(:class="$style.labelSource" v-if="searchSourceId == 'all'") {{item.source}}
-              td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 25%;") {{item.albumName}}
+              td.break(style="width: 20%;")
+                span.select {{item.singer}}
+              td.break(style="width: 25%;")
+                span.select {{item.albumName}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
-                  :play-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
-                  :download-btn="item.source != 'tx' && (item.source == 'kw' || !isAPITemp)"
+                  :play-btn="item.source == 'kw' || !isAPITemp"
+                  :download-btn="item.source == 'kw' || !isAPITemp"
                   @btn-click="handleListBtnClick")
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
-      p 搜我所想~~😉
+      div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || setting.search.isShowHistorySearch")
+        dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
+          dt(:class="$style.noitemListTitle") {{$t('view.search.hot_search')}}
+          dd(:class="$style.noitemListItem" @click="handleNoitemSearch(item)" v-for="item in hotSearchList") {{item}}
+        dl(:class="$style.noitemList" v-if="setting.search.isShowHistorySearch && historyList.length")
+          dt(:class="$style.noitemListTitle")
+            span {{$t('view.search.history_search')}}
+            span(:class="$style.historyClearBtn" @click="clearHistory" :title="$t('view.search.history_clear')")
+              svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-eraser')
+          dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :title="$t('view.search.history_remove')") {{item}}
+      div(v-else :class="$style.noitem_list")
+        p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && searchSourceId != 'tx' && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo } from '../utils'
+import { scrollTo, clipboardWriteText } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'Search',
@@ -97,6 +112,7 @@ export default {
       this.page = 1
       this.handleSearch(this.text, this.page)
     }
+    this.handleGetHotSearch()
   },
   watch: {
     selectdData(n) {
@@ -118,6 +134,7 @@ export default {
       this.$nextTick(() => {
         this.page = 1
         this.handleSearch(this.text, this.page)
+        this.handleGetHotSearch()
       })
       this.setSearchSource({
         searchSource: n,
@@ -126,7 +143,7 @@ export default {
   },
   computed: {
     ...mapGetters(['userInfo', 'setting']),
-    ...mapGetters('search', ['sourceList', 'allList', 'sources']),
+    ...mapGetters('search', ['sourceList', 'allList', 'sources', 'historyList']),
     ...mapGetters('list', ['defaultList']),
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
@@ -134,14 +151,20 @@ export default {
     isAPITemp() {
       return this.setting.apiSource == 'temp'
     },
+    hotSearchList() {
+      return this.$store.getters['hotSearch/list'][this.setting.search.searchSource] || []
+    },
   },
   methods: {
     ...mapMutations(['setSearchSource']),
     ...mapActions('search', ['search']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('search', ['clearList', 'setPage']),
+    ...mapMutations('search', ['clearList', 'setPage', 'removeHistory', 'clearHistory']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
+    ...mapActions('hotSearch', {
+      getHotSearch: 'getList',
+    }),
     handleSearch(text, page) {
       if (text === '') return this.clearList()
 
@@ -152,7 +175,8 @@ export default {
         })
       })
     },
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -190,7 +214,7 @@ export default {
         targetSong = this.selectdData[0]
         this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
       } else {
-        if (this.listInfo.list[index].source == 'tx' || (this.isAPITemp && this.listInfo.list[index].source != 'kw')) return
+        if (this.isAPITemp && this.listInfo.list[index].source != 'kw') return
         targetSong = this.listInfo.list[index]
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
@@ -239,11 +263,35 @@ export default {
       }
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : list.filter(s => s.source != 'tx')
+      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
+    },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        clipboardWriteText(str)
+      })
+    },
+    handleGetHotSearch() {
+      if (this.hotSearchList.length || !this.setting.search.isShowHotSearch) return
+      this.getHotSearch(this.setting.search.searchSource)
+    },
+    handleNoitemSearch(text) {
+      this.$router.push({
+        path: 'search',
+        query: {
+          text,
+        },
+      })
     },
   },
 }
@@ -279,13 +327,16 @@ export default {
   td {
     font-size: 12px;
     :global(.badge) {
-      margin-right: 3px;
-      &:first-child {
-        margin-left: 3px;
-      }
-      &:last-child {
-        margin-right: 0;
-      }
+      margin-left: 3px;
+    }
+  }
+  :global(.badge) {
+    opacity: .85;
+  }
+
+  &.copying {
+    .labelQuality, .labelSource, .time {
+      display: none;
     }
   }
 }
@@ -312,11 +363,66 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: center;
 
   p {
     font-size: 24px;
     color: @color-theme_2-font-label;
+    text-align: center;
+  }
+}
+.noitem-list-container {
+  padding: 0 15px;
+  margin-top: -20px;
+  min-height: 300px;
+  max-height: 94.7%;
+}
+.noitem-list {
+  +.noitem-list {
+    margin-top: 15px;
+  }
+}
+.noitem-hot-search-list {
+  min-height: 106px;
+}
+.noitem-list-title {
+  color: @color-theme_2-font-label;
+  padding: 5px;
+  font-size: 14px;
+}
+.noitem-list-item {
+  display: inline-block;
+  margin: 3px 5px;
+  background-color: @color-btn-background;
+  padding: 7px 10px;
+  border-radius: @radius-progress-border;
+  transition: background-color @transition-theme;
+  cursor: pointer;
+  font-size: 13px;
+  color: @color-btn;
+  .mixin-ellipsis-1;
+  max-width: 150px;
+  &:hover {
+    background-color: @color-theme_2-hover;
+  }
+  &:active {
+    background-color: @color-theme_2-active;
+  }
+}
+.history-clear-btn {
+  padding: 0 5px;
+  margin-left: 5px;
+  color: @color-theme_2-font-label;
+  cursor: pointer;
+  transition: color @transition-theme;
+  &:hover {
+    color: @color-theme-hover;
+  }
+  &:active {
+    color: @color-theme-active;
+  }
+  svg {
+    vertical-align: middle;
+    width: 15px;
   }
 }
 
@@ -325,6 +431,28 @@ each(@themes, {
     .noitem {
       p {
         color: ~'@{color-@{value}-theme_2-font-label}';
+      }
+    }
+    .noitem-list-title {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+    }
+    .noitem-list-item {
+      color: ~'@{color-@{value}-btn}';
+      background-color: ~'@{color-@{value}-btn-background}';
+      &:hover {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+      &:active {
+        background-color: ~'@{color-@{value}-theme_2-active}';
+      }
+    }
+    .history-clear-btn {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+      &:hover {
+        color: ~'@{color-@{value}-theme-hover}';
+      }
+      &:active {
+        color: ~'@{color-@{value}-theme-active}';
       }
     }
   }

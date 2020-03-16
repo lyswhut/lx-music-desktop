@@ -4,10 +4,33 @@ import Store from 'electron-store'
 import { updateSetting } from '../utils'
 import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
-let electronStore = new Store()
-const setting = updateSetting(electronStore.get('setting'))
-electronStore.set('setting', setting)
+const electronStore_list = window.electronStore_list = new Store({
+  name: 'playList',
+})
+const electronStore_config = window.electronStore_config = new Store({
+  name: 'config',
+})
+if (!electronStore_config.get('version') && electronStore_config.get('setting')) { // 迁移配置
+  electronStore_config.set('version', electronStore_config.get('setting.version'))
+  electronStore_config.delete('setting.version')
+  const list = electronStore_config.get('list')
+  if (list) {
+    if (list.defaultList) electronStore_list.set('defaultList', list.defaultList)
+    if (list.loveList) electronStore_list.set('loveList', list.loveList)
+    electronStore_config.delete('list')
+  }
+  const downloadList = electronStore_config.get('download')
+  if (downloadList) {
+    if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
+    electronStore_config.delete('download')
+  }
+}
+const { version: settingVersion, setting } = updateSetting(electronStore_config.get('setting'), electronStore_config.get('version'))
+electronStore_config.set('version', settingVersion)
+electronStore_config.set('setting', setting)
 process.versions.app = version
+
+window.i18n.locale = setting.langId
 
 export default {
   themes: [
@@ -49,12 +72,17 @@ export default {
     {
       id: 7,
       name: '月里嫦娥',
-      class: 'midAutumn',
+      class: 'mid_autumn',
     },
     {
       id: 8,
       name: '木叶之村',
-      class: 'dhHyrz',
+      class: 'naruto',
+    },
+    {
+      id: 9,
+      name: '新年快乐',
+      class: 'happy_new_year',
     },
   ],
   version: {
@@ -66,10 +94,12 @@ export default {
     isUnknow: false,
     isDownloaded: false,
     isDownloading: false,
+    isLatestVer: false,
     downloadProgress: null,
   },
   userInfo: null,
   setting,
-  electronStore,
+  settingVersion,
+
   windowSizeList,
 }

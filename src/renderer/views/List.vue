@@ -8,38 +8,41 @@
             tr
               th.nobreak.center(style="width: 37px;")
                 material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? '全不选' : '全选'")
-              th.nobreak(style="width: 25%;") 歌曲名
-              th.nobreak(style="width: 20%;") 歌手
-              th.nobreak(style="width: 20%;") 专辑
-              th.nobreak(style="width: 20%;") 操作
-              th.nobreak(style="width: 10%;") 时长
+                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.list.unselect_all') : $t('view.list.select_all')")
+              th.nobreak(style="width: 25%;") {{$t('view.list.name')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.singer')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.album')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.action')}}
+              th.nobreak(style="width: 10%;") {{$t('view.list.time')}}
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
-          tbody
+          tbody(@contextmenu="handleContextMenu")
             tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
-              @click="handleDoubleClick(index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') || item.source == 'tx' ? $style.disabled : '']")
+              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
               td.nobreak.center(style="width: 37px;" @click.stop)
                   material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
               td.break(style="width: 25%;")
-                | {{item.name}}
+                span.select {{item.name}}
                 span(:class="$style.labelSource" v-if="isShowSource") {{item.source}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
                 //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
-                //- span.badge.badge-info(v-if="item._types.ape") APE
-                //- span.badge.badge-success(v-if="item._types.flac") FLAC
-              td.break(style="width: 20%;") {{item.singer}}
-              td.break(style="width: 20%;") {{item.albumName}}
+                //- span.badge.badge-theme-info(v-if="item._types.ape") APE
+                //- span.badge.badge-theme-success(v-if="item._types.flac") FLAC
+              td.break(style="width: 20%;")
+                span.select {{item.singer}}
+              td.break(style="width: 20%;")
+                span.select {{item.albumName}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;") {{item.interval || '--/--'}}
+              td(style="width: 10%;")
+                span(:class="$style.time") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
-      p(v-text="list.length ? '加载中...' : '列表竟然是空的...'")
+      p(v-text="list.length ? $t('view.list.loding_list') : $t('view.list.no_item')")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-flow-btn(:show="isShowEditBtn" :play-btn="false" @btn-click="handleFlowBtnClick")
@@ -49,7 +52,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, asyncSetArray, scrollTo } from '../utils'
+import { throttle, asyncSetArray, scrollTo, clipboardWriteText } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -229,7 +232,8 @@ export default {
         })
       })
     },
-    handleDoubleClick(index) {
+    handleDoubleClick(event, index) {
+      if (event.target.classList.contains('select')) return
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -243,7 +247,7 @@ export default {
       this.clickIndex = -1
     },
     testPlay(index) {
-      if (this.list[index].source == 'tx' || (this.isAPITemp && this.list[index].source != 'kw')) return
+      if (this.isAPITemp && this.list[index].source != 'kw') return
       this.setPlayList({ list: this.list, listId: this.listId, index })
     },
     handleRemove(index) {
@@ -253,7 +257,7 @@ export default {
       switch (info.action) {
         case 'download': {
           const minfo = this.list[info.index]
-          if ((this.isAPITemp && minfo.source != 'kw') || minfo.source == 'tx') return
+          if (this.isAPITemp && minfo.source != 'kw') return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
@@ -286,7 +290,7 @@ export default {
       this.selectdData = []
     },
     handleAddDownloadMultiple(type) {
-      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : this.selectdData.filter(s => s.source != 'tx')
+      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : [...this.selectdData]
       this.createDownloadMultiple({ list, type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
@@ -309,14 +313,6 @@ export default {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
-    getSource(source) {
-      switch (source) {
-        case 'kw':
-          return '酷我'
-        default:
-          break
-      }
-    },
     getMusicLocation(index) {
       let dom = document.getElementById('mid_' + this.list[index].songmid)
       return dom ? dom.offsetTop : 0
@@ -324,6 +320,18 @@ export default {
     // handleScroll(e) {
     //   console.log(e.target.scrollTop)
     // },
+    handleContextMenu(event) {
+      if (!event.target.classList.contains('select')) return
+      let classList = this.$refs.dom_scrollContent.classList
+      classList.add(this.$style.copying)
+      window.requestAnimationFrame(() => {
+        let str = window.getSelection().toString()
+        classList.remove(this.$style.copying)
+        str = str.trim()
+        if (!str.length) return
+        clipboardWriteText(str)
+      })
+    },
   },
 }
 </script>
@@ -366,6 +374,12 @@ export default {
   tr {
     &.active {
       color: @color-theme;
+    }
+  }
+
+  &.copying {
+    .labelSource, .time {
+      display: none;
     }
   }
 }

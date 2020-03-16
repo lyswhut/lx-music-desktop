@@ -1,0 +1,12 @@
+{
+  "select_all": "Select all",
+  "unselect_all": "Unselect all",
+  "name": "Name",
+  "singer": "Singer",
+  "album": "Album",
+  "action": "Actions",
+  "time": "Interval",
+  "lossless": "SQ",
+  "high_quality": "HQ",
+  "loding_list": "List loading..."
+}

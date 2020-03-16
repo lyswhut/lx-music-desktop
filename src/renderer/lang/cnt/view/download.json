@@ -1,0 +1,14 @@
+{
+  "select_all": "全選",
+  "unselect_all": "全不選",
+  "name": "歌曲名",
+  "progress": "進度",
+  "status": "狀態",
+  "quality": "品質",
+  "action": "操作",
+  "all": "全部任務",
+  "runing": "正在下載",
+  "paused": "已暫停",
+  "error": "出錯",
+  "finished": "下載完成"
+}

@@ -126,13 +126,30 @@ const refreshUrl = function(commit, downloadInfo) {
   getUrl(downloadInfo, true).then(result => {
     commit('updateUrl', { downloadInfo, url: result.url })
     commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
-    dls[downloadInfo.key].refreshUrl(result.url)
-    dls[downloadInfo.key].start()
+    const dl = dls[downloadInfo.key]
+    if (!dl) return
+    dl.refreshUrl(result.url)
+    dl.start()
   }).catch(err => {
     console.log(err)
     this.dispatch('download/startTask')
   })
 }
+
+/**
+ * 删除文件
+ * @param {*} path
+ */
+const deleteFile = path => new Promise((resolve, reject) => {
+  fs.access(path, fs.constants.F_OK, err => {
+    if (err) return reject(err)
+    fs.unlink(path, err => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+})
+
 
 // actions
 const actions = {
@@ -210,10 +227,9 @@ const actions = {
         console.log('on complate')
       },
       onError(err) {
-        // console.log(err.code, err.message)
-        commit('onError', downloadInfo)
         // console.log(tryNum[downloadInfo.key])
         if (++tryNum[downloadInfo.key] > 2) {
+          commit('onError', downloadInfo)
           _this.dispatch('download/startTask')
           return
         }
@@ -226,9 +242,8 @@ const actions = {
         }
       },
       onFail(response) {
-        commit('onError', downloadInfo)
-
         if (++tryNum[downloadInfo.key] > 2) {
+          commit('onError', downloadInfo)
           _this.dispatch('download/startTask')
           return
         }
@@ -282,7 +297,9 @@ const actions = {
     }
     commit('removeTask', index)
     if (dls[info.key]) delete dls[info.key]
-    this.dispatch('download/startTask')
+    ;(info.status != state.downloadStatus.COMPLETED ? deleteFile(info.filePath) : Promise.resolve()).finally(() => {
+      this.dispatch('download/startTask')
+    })
   },
   removeTaskMultiple({ commit, rootState, state }, list) {
     list.forEach(item => {
@@ -310,7 +327,7 @@ const actions = {
 // mitations
 const mutations = {
   addTask(state, downloadInfo) {
-    state.list.push(downloadInfo)
+    state.list.unshift(downloadInfo)
   },
   removeTask(state, index) {
     state.list.splice(index, 1)

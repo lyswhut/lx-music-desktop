@@ -88,7 +88,7 @@ module.exports = isFirstCheckedUpdate => {
   })
   autoUpdater.on('update-not-available', info => {
     sendStatusToWindow('Update not available.')
-    handleSendEvent({ type: 'update-not-available' })
+    handleSendEvent({ type: 'update-not-available', info })
   })
   autoUpdater.on('error', err => {
     sendStatusToWindow('Error in auto-updater.')

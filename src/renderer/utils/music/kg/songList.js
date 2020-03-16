@@ -36,6 +36,8 @@ export default {
   regExps: {
     listData: /global\.data = (\[.+\]);/,
     listInfo: /global = {[\s\S]+?name: "(.+)"[\s\S]+?pic: "(.+)"[\s\S]+?};/,
+    // https://www.kugou.com/yy/special/single/1067062.html
+    listDetailLink: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
   getInfoUrl(tagId) {
     return tagId
@@ -65,8 +67,9 @@ export default {
     for (const key of Object.keys(rawData.data)) {
       let tag = rawData.data[key]
       result.push({
-        id: tag.id,
+        id: tag.special_id,
         name: tag.special_name,
+        source: 'kg',
       })
     }
     return result
@@ -95,7 +98,7 @@ export default {
       this.getSongListUrl(sortId, tagId, page),
     )
     return this._requestObj_list.promise.then(({ body }) => {
-      if (body.status !== 1) return this.getSongList(sortId, tagId, page, ++tryNum)
+      if (!body || body.status !== 1) return this.getSongList(sortId, tagId, page, ++tryNum)
       return this.filterList(body.special_db)
     })
   },
@@ -144,6 +147,9 @@ export default {
   getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
     return this._requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)

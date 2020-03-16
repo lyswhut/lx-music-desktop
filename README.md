@@ -36,7 +36,7 @@
 
 所用技术栈：
 
-- Electron 7
+- Electron 8
 - Vue 2
 
 已支持的平台：
@@ -70,6 +70,13 @@ npm run pack
 
 <p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
 
+### 启动参数
+
+目前软件已支持的启动参数如下：
+
+- `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
+- `-nt`  以非透明模式启动，对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示
+
 ### 常见问题
 
 常见问题已移至：<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>
@@ -81,7 +88,7 @@ npm run pack
 ### 免责声明
 
 本项目**不开发或者破解直接获取音频数据**的功能，所有音频数据均来自**第三方接口**！<br>
-本软件仅用于**测试 `electron 7` 在各种系统上的兼容性**及用于**对比各大音乐平台歌单、排行榜等数据列表的差异性**，使用本软件产生的**任何涉及版权相关的数据**请于**24小时内删除**。<br>
+本软件仅用于**测试 `electron 8` 在各种系统上的兼容性**及用于**对比各大音乐平台歌单、排行榜等数据列表的差异性**，使用本软件产生的**任何涉及版权相关的数据**请于**24小时内删除**。<br>
 本软件仅用于学习交流使用，禁止用于商业用途，使用本软件所造成的的后果由使用者承担！<br>
 若对此有疑问请 mail to: lyswhut@qq.com
 

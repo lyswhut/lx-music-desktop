@@ -1,12 +1,13 @@
 <template lang="pug">
 div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', small ? $style.small : '']")
   div(:class="$style.form")
-    input(:placeholder="placeholder" v-model.trim="text"
+    input(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
           @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
           @change="sendEvent('change')"
           @keyup.enter="handleSearch"
           @keyup.40.prevent="handleKeyDown"
-          @keyup.38.prevent="handleKeyUp")
+          @keyup.38.prevent="handleKeyUp"
+          @contextmenu="handleContextMenu")
     button(type="button" @click="handleSearch")
       slot
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
@@ -21,6 +22,7 @@ div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', s
 </template>
 
 <script>
+import { clipboardReadText } from '../../utils'
 export default {
   props: {
     placeholder: {
@@ -113,6 +115,15 @@ export default {
     handleKeyUp() {
       this.selectIndex = this.selectIndex - 1 < -1 ? this.list.length - 1 : this.selectIndex - 1
     },
+    handleContextMenu() {
+      let str = clipboardReadText()
+      str = str.trim()
+      str = str.replace(/\t|\r\n|\n|\r/g, ' ')
+      str = str.replace(/\s+/g, ' ')
+      let dom_input = this.$refs.dom_input
+      this.text = `${this.text.substring(0, dom_input.selectionStart)}${str}${this.text.substring(dom_input.selectionEnd, this.text.length)}`
+      this.$emit('input', this.text)
+    },
   },
 }
 </script>
@@ -122,7 +133,7 @@ export default {
 @import '../../assets/styles/layout.less';
 
 .search {
-  border-radius: 3px;
+  border-radius: @form-radius;
   transition: box-shadow .4s ease, background-color @transition-theme;
   display: flex;
   flex-flow: column nowrap;

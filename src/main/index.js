@@ -15,17 +15,21 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
-require('./events')
-const autoUpdate = require('./utils/autoUpdate')
-const { isLinux, isMac } = require('../common/utils')
-const { getWindowSizeInfo } = require('./utils')
-
 const isDev = process.env.NODE_ENV !== 'production'
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
+// https://github.com/electron/electron/issues/18397
+app.allowRendererProcessReuse = !isDev
+
+const { getWindowSizeInfo, parseEnv } = require('./utils')
+
+global.envParams = parseEnv()
+
+require('../common/error')
+require('./events')
+const winEvent = require('./events/winEvent')
+const autoUpdate = require('./utils/autoUpdate')
+const { isLinux, isMac } = require('../common/utils')
+
 
 let mainWindow
 let winURL
@@ -49,7 +53,7 @@ function createWindow() {
     useContentSize: true,
     width: windowSizeInfo.width,
     frame: false,
-    transparent: !isLinux,
+    transparent: !isLinux && !global.envParams.nt,
     enableRemoteModule: false,
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
@@ -64,13 +68,7 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
-  mainWindow.on('close', () => {
-    mainWindow.setProgressBar(-1)
-  })
-  mainWindow.on('closed', () => {
-    mainWindow = global.mainWindow = null
-  })
-
+  winEvent(mainWindow)
   // mainWindow.webContents.openDevTools()
 
   if (!isDev) {

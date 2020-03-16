@@ -39,7 +39,9 @@ sources.forEach(source => {
 
 // getters
 const getters = {
-  sourceInfo: () => ({ sources, sortList }),
+  sourceInfo(state, getters, rootState, { sourceNames }) {
+    return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sortList }
+  },
   tags: state => state.tags,
   isVisibleListDetail: state => state.isVisibleListDetail,
   selectListInfo: state => state.selectListInfo,
@@ -64,13 +66,20 @@ const actions = {
     // console.log(sortId)
     let key = `slist__${source}__${sortId}__${tabId}__${page}`
     if (state.list.list.length && state.list.key == key) return
-    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getList(sortId, tabId, page)).then(result => commit('setList', { result, key, page }))
+    if (cache.has(key)) return Promise.resolve(cache.get(key)).then(result => commit('setList', { result, key, page }))
+    commit('clearList')
+    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
   getListDetail({ state, rootState, commit }, { id, page }) {
     let source = rootState.setting.songList.source
     let key = `sdetail__${source}__${id}__${page}`
-    if (state.listDetail.list.length && state.listDetail.key == key) return true
-    return (cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getListDetail(id, page)).then(result => commit('setListDetail', { result, key, page }))
+    if (state.listDetail.list.length && state.listDetail.key == key) return Promise.resolve()
+    commit('clearListDetail')
+    return (
+      cache.has(key)
+        ? Promise.resolve(cache.get(key))
+        : music[source].songList.getListDetail(id, page)
+    ).then(result => commit('setListDetail', { result, key, page }))
   },
 /*   getListDetailAll({ state, rootState }, id) {
     let source = rootState.setting.songList.source
@@ -108,6 +117,10 @@ const mutations = {
   setTags(state, { tags, source }) {
     state.tags[source] = tags
   },
+  clearList(state) {
+    state.list.list = []
+    state.list.total = 0
+  },
   setList(state, { result, key, page }) {
     state.list.list = result.list
     state.list.total = result.total
@@ -133,7 +146,15 @@ const mutations = {
     state.selectListInfo = info
   },
   clearListDetail(state) {
-    state.listDetail.list = []
+    state.listDetail = {
+      list: [],
+      desc: null,
+      total: 0,
+      page: 1,
+      limit: 30,
+      key: null,
+      info: {},
+    }
   },
 }
 

@@ -33,7 +33,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    label: {},
+    label: {
+      type: String,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -77,7 +79,7 @@ export default {
         }
         checked = bool
       } else {
-        checked = this.bool ? this.value : ''
+        checked = this.bool == null ? '' : this.value
       }
       this.$emit('input', checked)
       this.$emit('change', checked)
@@ -112,7 +114,6 @@ export default {
 .checkbox {
   display: inline-block;
   // font-size: 56px;
-
 }
 .input {
   display: none;
@@ -149,6 +150,7 @@ export default {
   cursor: pointer;
   display: flex;
   color: @color-theme;
+  margin-top: .25em;
   // border: 1px solid #ccc;
   &:after {
     position: absolute;
@@ -159,13 +161,14 @@ export default {
     right: 0;
     border: 1px solid @color-theme_2-font-label;
     transition: border-color 0.2s ease;
-    border-radius: 15%;
+    border-radius: 2px;
   }
 }
 .icon {
   transition: 0.3s ease;
   transition-property: transform;
   transform: scale(0);
+  border-radius: 2px;
   // opacity: 0;
 }
 
@@ -173,6 +176,7 @@ export default {
   flex: auto;
   line-height: 1;
   margin-left: 5px;
+  line-height: 1.5;
   cursor: pointer;
 }
 

@@ -59,7 +59,7 @@ class Task extends EventEmitter {
   __init() {
     this.status = STATUS.init
     const { path, startByte, endByte } = this.chunkInfo
-    if (startByte) this.requestOptions.headers.range = `bytes=${startByte}-${endByte}`
+    if (startByte != null) this.requestOptions.headers.range = `bytes=${startByte}-${endByte}`
     return new Promise((resolve, reject) => {
       if (!path) return resolve()
       fs.stat(path, (errStat, stats) => {
@@ -110,6 +110,16 @@ class Task extends EventEmitter {
     this.request = request(url, options)
       .on('response', response => {
         if (response.statusCode !== 200 && response.statusCode !== 206) {
+          if (response.statusCode == 416) {
+            fs.unlink(this.chunkInfo.path, async err => {
+              await this.__handleError(new Error(response.statusMessage))
+              this.chunkInfo.startByte = 0
+              this.resumeLastChunk = null
+              this.progress.downloaded = 0
+              if (err) this.__handleError(err)
+            })
+            return
+          }
           this.status = STATUS.failed
           this.emit('fail', response)
           this.__closeRequest()
@@ -130,7 +140,8 @@ class Task extends EventEmitter {
             if (response.complete) {
               this.__handleComplete()
             } else {
-              this.__handleError(new Error('The connection was terminated while the message was still being sent'))
+              // this.__handleError(new Error('The connection was terminated while the message was still being sent'))
+              this.stop()
             }
           })
       })
@@ -154,9 +165,14 @@ class Task extends EventEmitter {
     this.ws = fs.createWriteStream(this.chunkInfo.path, options)
 
     this.ws.on('finish', () => this.__closeWriteStream())
-    this.ws.on('error', async err => {
-      await this.__handleError(err)
-      fs.unlink(this.chunkInfo.path, () => this.__handleError(err))
+    this.ws.on('error', err => {
+      fs.unlink(this.chunkInfo.path, async unlinkErr => {
+        await this.__handleError(err)
+        this.chunkInfo.startByte = 0
+        this.resumeLastChunk = null
+        this.progress.downloaded = 0
+        if (unlinkErr) this.__handleError(unlinkErr)
+      })
     })
   }
 

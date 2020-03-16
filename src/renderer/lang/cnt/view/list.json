@@ -1,0 +1,11 @@
+{
+  "select_all": "全選",
+  "unselect_all": "全不選",
+  "name": "歌曲名",
+  "singer": "歌手",
+  "album": "專輯",
+  "action": "操作",
+  "time": "時長",
+  "loding_list": "加載中...",
+  "no_item": "列表竟然是空的..."
+}

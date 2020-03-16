@@ -1,0 +1,16 @@
+{
+  "copy_title": " (Click copy)",
+  "volume": "Volume: ",
+  "pause": "Pause",
+  "play": "Play",
+  "next": "Next",
+  "playing": "Playing...",
+  "stop": "Stopped",
+  "end": "End",
+  "refresh_url": "URL expired, refreshing URL...",
+  "error": "Music loading error, switch to next song after 5 seconds",
+  "loading": "Loding...",
+  "buffering": "Buffering...",
+  "geting_url": "Getting link...",
+  "lyric_error": "Get lyric failed"
+}

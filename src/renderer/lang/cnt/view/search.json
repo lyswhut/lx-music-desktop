@@ -1,0 +1,16 @@
+{
+  "select_all": "全選",
+  "unselect_all": "全不選",
+  "name": "歌曲名",
+  "singer": "歌手",
+  "album": "專輯",
+  "action": "操作",
+  "time": "時長",
+  "lossless": "無損",
+  "high_quality": "高品質",
+  "no_item": "搜我所想~~😉",
+  "hot_search": "熱門搜索",
+  "history_search": "歷史搜索",
+  "history_clear": "清空搜索歷史",
+  "history_remove": "右擊移除該歷史"
+}

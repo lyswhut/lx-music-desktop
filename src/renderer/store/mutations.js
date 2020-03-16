@@ -9,6 +9,9 @@ export default {
   setSetting(state, val) {
     state.setting = val
   },
+  setSettingVersion(state, val) {
+    state.settingVersion = val
+  },
   setLeaderboard(state, { tabId, source }) {
     if (tabId != null) state.setting.leaderboard.tabId = tabId
     if (source != null) state.setting.leaderboard.source = source
@@ -27,15 +30,22 @@ export default {
   setDownloadProgress(state, info) {
     state.version.downloadProgress = info
   },
-  setVersionModalVisible(state, { isShow, isError, isDownloaded, isTimeOut, isDownloading, isUnknow }) {
+  setVersionModalVisible(state, { isShow, isError, isDownloaded, isTimeOut, isDownloading, isUnknow, isLatestVer }) {
     if (isShow !== undefined) state.version.showModal = isShow
     if (isError !== undefined) state.version.isError = isError
     if (isTimeOut !== undefined) state.version.isTimeOut = isTimeOut
     if (isDownloading !== undefined) state.version.isDownloading = isDownloading
     if (isDownloaded !== undefined) state.version.isDownloaded = isDownloaded
     if (isUnknow !== undefined) state.version.isUnknow = isUnknow
+    if (isLatestVer !== undefined) state.version.isLatestVer = isLatestVer
+  },
+  setIgnoreVersion(state, version) {
+    state.setting.ignoreVersion = version
   },
   setVolume(state, val) {
     state.setting.player.volume = val
+  },
+  setMediaDeviceId(state, val) {
+    state.setting.player.mediaDeviceId = val
   },
 }

@@ -1,177 +1,219 @@
 <template lang="pug">
 div.scroll(:class="$style.setting")
   dl
-    dt 基本设置
+    dt {{$t('view.setting.basic')}}
     dd
-      h3 主题颜色
+      h3 {{$t('view.setting.basic_theme')}}
       div
         ul(:class="$style.theme")
-          li(v-for="theme in themes.list" :key="theme.id" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
+          li(v-for="theme in themes.list" :key="theme.id" :title="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
             span
-            | {{theme.name}}
+            label {{$t('store.state.theme_' + theme.class)}}
 
-    dd(title='弹出层的动画效果')
-      h3 弹出层随机动画
+    dd(:title="$t('view.setting.basic_animation_title')")
+      h3 {{$t('view.setting.basic_animation')}}
       div
-        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" label="是否启用")
+        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.is_enable')")
 
-    dd(title='选择音乐来源')
-      h3 音乐来源
+    dd(:title="$t('view.setting.basic_source_title')")
+      h3 {{$t('view.setting.basic_source')}}
       div
-        material-checkbox(v-for="item in apiSources" :id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)" :class="$style.gapTop"
-          need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label" :key="item.id")
+        div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
+          material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
+            need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
-    dd(title='设置软件窗口尺寸')
-      h3 窗口尺寸
+    dd(:title="$t('view.setting.basic_window_size_title')")
+      h3 {{$t('view.setting.basic_window_size')}}
       div
-        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange(index)" :class="$style.gapLeft"
-          need v-model="current_setting.windowSizeId" :value="item.id" :label="item.name" :key="item.id")
+        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
+          need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
-    dt 播放设置
-    dd(title="都不选时播放完当前歌曲就停止播放")
-      h3 歌曲切换方式
+    dd(:title="$t('view.setting.basic_lang_title')")
+      h3 {{$t('view.setting.basic_lang')}}
+      div
+        material-checkbox(v-for="item in languageList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
+          @change="handleLangChange(item.locale)" :class="$style.gapLeft"
+          need v-model="current_setting.langId" :value="item.locale" :label="item.name")
+
+    dd(:title="$t('view.setting.basic_sourcename_title')")
+      h3 {{$t('view.setting.basic_sourcename')}}
+      div
+        material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
+          name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
+
+    dt {{$t('view.setting.play')}}
+    dd(:title="$t('view.setting.play_toggle_title')")
+      h3 {{$t('view.setting.play_toggle')}}
       div
         material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
             v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
-    dd(title='启用时将优先播放320K品质的歌曲')
-      h3 优先播放高品质音乐
+    dd(:title="$t('view.setting.play_quality_title')")
+      h3 {{$t('view.setting.play_quality')}}
       div
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" label="是否启用")
-    dd(title='在任务栏上显示当前歌曲播放进度')
-      h3 任务栏播放进度条
+        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.is_enable')")
+    dd(:title="$t('view.setting.play_task_bar_title')")
+      h3 {{$t('view.setting.play_task_bar')}}
       div
-        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" label="是否启用")
-    dt 列表设置
-    dd(title='是否显示歌曲源')
-      h3 是否显示歌曲源（仅对我的音乐分类有效）
+        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
+    dd(:title="$t('view.setting.play_mediaDevice_title')")
+      h3 {{$t('view.setting.play_mediaDevice')}}
       div
-        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" label="是否显示")
-    dd(title='是否记住播放列表滚动条位置')
-      h3 记住列表滚动位置（仅对我的音乐分类有效）
+        material-selection(:list="mediaDevices" :class="$style.gapLeft" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+        material-btn(min :title="$t('view.setting.play_mediaDevice_refresh_btn_title')" :class="[$style.btnMediaDeviceRefresh, $style.gapLeft]" @click="getMediaDevice")
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+            use(xlink:href='#icon-refresh')
+          span {{$t('view.setting.play_mediaDevice_refresh_btn')}}
+
+    dt {{$t('view.setting.search')}}
+    dd(:title="$t('view.setting.search_hot_title')")
+      h3 {{$t('view.setting.search_hot')}}
       div
-        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.scroll.enable" label="是否启用")
-    //- dd(title='播放列表是否显示专辑栏')
+        material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
+    dd(:title="$t('view.setting.search_history_title')")
+      h3 {{$t('view.setting.search_history')}}
+      div
+        material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
+
+    dt {{$t('view.setting.list')}}
+    dd(:title="$t('view.setting.list_source_title')")
+      h3 {{$t('view.setting.list_source')}}
+      div
+        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.is_show')")
+    dd(:title="$t('view.setting.list_scroll_title')")
+      h3 {{$t('view.setting.list_scroll')}}
+      div
+        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.scroll.enable" :label="$t('view.setting.is_enable')")
+    //- dd(:title="播放列表是否显示专辑栏")
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
-    dt 下载设置
-    dd(title='下载歌曲保存的路径')
-      h3 下载路径
+    dt {{$t('view.setting.download')}}
+    dd(:title="$t('view.setting.download_path_title')")
+      h3 {{$t('view.setting.download_path')}}
       div
         p
-          | 当前下载路径：
-          span.auto-hidden.hover(title="点击打开当前路径" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
+          | {{$t('view.setting.download_path_label')}}
+          span.auto-hidden.hover(:title="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
         p
-          material-btn(:class="$style.btn" min @click="handleChangeSavePath") 更改
-    dd(title='下载歌曲时的命名方式')
-      h3 文件命名方式
+          material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
+    dd(:title="$t('view.setting.download_name_title')")
+      h3 {{$t('view.setting.download_name')}}
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
-    dd(title='是否将封面嵌入音频文件中')
-      h3 封面嵌入（只支持MP3格式）
+    dd(:title="$t('view.setting.download_embed_pic_title')")
+      h3 {{$t('view.setting.download_embed_pic')}}
       div
-        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" label="是否启用")
-    dd(title='是否同时下载歌词文件')
-      h3 歌词下载
+        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.is_enable')")
+    dd(:title="$t('view.setting.download_lyric_title')")
+      h3 {{$t('view.setting.download_lyric')}}
       div
-        material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" label="是否启用")
-    dt 网络设置
+        material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
+    dt {{$t('view.setting.network')}}
     dd
-      h3 代理设置
+      h3 {{$t('view.setting.network_proxy_title')}}
       div
         p
-          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" label="是否启用")
+          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
         p
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" placeholder="主机")
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" placeholder="端口")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
         p
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" placeholder="用户名")
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" placeholder="密码")
-    dt 强迫症设置
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
+          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
+    dt {{$t('view.setting.odc')}}
     dd
-      h3 离开搜索界面时清空搜索框
+      h3 {{$t('view.setting.odc_clear_search_input')}}
       div
-        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" label="是否启用")
+        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.is_enable')")
     dd
-      h3 离开搜索界面时清空搜索列表
+      h3 {{$t('view.setting.odc_clear_search_list')}}
       div
-        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" label="是否启用")
-    dt 备份与恢复
+        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.is_enable')")
+    dt {{$t('view.setting.backup')}}
     dd
-      h3 部分数据
+      h3 {{$t('view.setting.backup_part')}}
       div
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") 导入列表
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") 导出列表
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") 导入设置
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") 导出设置
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") {{$t('view.setting.backup_part_import_list')}}
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") {{$t('view.setting.backup_part_export_list')}}
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") {{$t('view.setting.backup_part_import_setting')}}
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") {{$t('view.setting.backup_part_export_setting')}}
     dd
-      h3 所有数据（设置与试听列表）
+      h3 {{$t('view.setting.backup_all')}}
       div
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") 导入
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") 导出
-    dt 其他
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") {{$t('view.setting.backup_all_import')}}
+        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") {{$t('view.setting.backup_all_export')}}
+    dt {{$t('view.setting.other')}}
     dd
-      h3 缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）
+      h3 {{$t('view.setting.other_cache')}}
       div
         p
-          | 软件已使用缓存大小：
-          span.auto-hidden(title="当前已用缓存") {{cacheSize}}
+          | {{$t('view.setting.other_cache_label')}}
+          span.auto-hidden(:title="$t('view.setting.other_cache_label_title')") {{cacheSize}}
         p
-          material-btn(:class="$style.btn" min @click="clearCache") 清理缓存
-    dt 软件更新
+          material-btn(:class="$style.btn" min @click="clearCache") {{$t('view.setting.other_cache_clear_btn')}}
+    dt {{$t('view.setting.update')}}
     dd
       p.small
-        | 最新版本：{{version.newVersion ? version.newVersion.version : '未知'}}
-      p.small 当前版本：{{version.version}}
+        | {{$t('view.setting.update_latest_label')}}{{version.newVersion ? version.newVersion.version : $t('view.setting.update_unknown')}}
+      p.small {{$t('view.setting.update_current_label')}}{{version.version}}
       p.small(v-if="this.version.downloadProgress" style="line-height: 1.5;")
-        | 发现新版本并在努力下载中，请稍后...⏳
+        | {{$t('view.setting.update_downloading')}}
         br
-        | 下载进度：{{downloadProgress}}
+        | {{$t('view.setting.update_progress')}}{{downloadProgress}}
       p(v-if="version.newVersion")
-        span(v-if="isLatestVer") 软件已是最新，尽情地体验吧~🥂
-        material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") 打开更新窗口 🚀
-      p.small(v-else) 检查更新中...
-    dt 关于洛雪音乐
+        span(v-if="version.isLatestVer") {{$t('view.setting.update_latest')}}
+        material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") {{$t('view.setting.update_open_version_modal_btn')}}
+      p.small(v-else) {{$t('view.setting.update_checking')}}
+    dt {{$t('view.setting.about')}}
     dd
       p.small
         | 本软件完全免费，代码已开源，开源地址：
-        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
         | &nbsp;&nbsp;密码：
-        span.hover(title="点击复制" @click="clipboardWriteText('glqw')") glqw
+        span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
       p.small
         | 软件的常见问题可转至：
-        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
-      //- p.small
-          | 怀念曾经的
-          strong @messoer
-          | ，非常感谢曾经为本软件提供数据源！
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        | 阅读常见问题后仍有问题可 mail to：
-        span.hover(title="点击复制" @click="clipboardWriteText('lyswhut@qq.com')") lyswhut@qq.com
-        | &nbsp;或到 GitHub 提交&nbsp;
-        span.hover.underline(title="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+        | 阅读常见问题后仍有问题可加企鹅群&nbsp;
+        span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
+        | &nbsp;反馈，或到 GitHub 提交&nbsp;
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+
+      br
       p.small
-        | 若觉得好用的话可以去 GitHub 点个
-        strong star
-        | 支持作者哦~~🍻
-      p
-        span 如果你资金充裕，还可以
+        span 如果你资金充裕，或许可以
         material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 捐赠下作者
-        span ，以帮我分担点服务器费用~❤️
+        span ~❤️，捐赠完全是一种
+        strong 用户自愿
+        | 的行为，
+      p.small 捐赠不会获得任何特权，并且你可能还要做好前一秒捐赠，下一秒软件将不可用的心理准备！
       p.small
-        |  本软件仅用于学习交流使用，禁止将本软件用于
+        | 由于软件开发的初衷仅是为了
+        span(:class="$style.delLine") 自用
+        | 学习研究，因此软件直至停止维护都将会一直保持纯净。
+
+      br
+      p.small
+        | 使用本软件可能产生的
+        strong 任何涉及版权相关的数据
+        | 请于
+        strong 24小时内删除
+        | ，
+      p.small
+        |  本软件仅用于学习与交流使用，禁止将本软件用于
         strong 非法用途
         | 或
         strong 商业用途
         | 。
       p.small
-          | 使用本软件造成的一切后果由
-          strong 使用者
-          | 承担！
+        | 使用本软件造成的一切后果由
+        strong 使用者
+        | 承担！
       p
         small By：
         | 落雪无痕
@@ -193,32 +235,93 @@ import {
 } from '../utils'
 import { rendererSend } from '../../common/ipc'
 import fs from 'fs'
+import languageList from '@/lang/languages.json'
 
 export default {
   name: 'Setting',
   computed: {
-    ...mapGetters(['setting', 'themes', 'version', 'windowSizeList']),
+    ...mapGetters(['setting', 'settingVersion', 'themes', 'version', 'windowSizeList']),
     ...mapGetters('list', ['defaultList', 'loveList']),
-    isLatestVer() {
-      return this.version.newVersion && this.version.version === this.version.newVersion.version
-    },
     isShowRebootBtn() {
       return this.current_setting.windowSizeId != window.currentWindowSizeId
     },
     downloadProgress() {
       return this.version.downloadProgress
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
-        : '更新初始化中...'
+        : this.$t('view.setting.update_init')
+    },
+    togglePlayMethods() {
+      return [
+        {
+          name: this.$t('view.setting.play_toggle_list_loop'),
+          value: 'listLoop',
+        },
+        {
+          name: this.$t('view.setting.play_toggle_random'),
+          value: 'random',
+        },
+        {
+          name: this.$t('view.setting.play_toggle_list'),
+          value: 'list',
+        },
+        {
+          name: this.$t('view.setting.play_toggle_single_loop'),
+          value: 'singleLoop',
+        },
+      ]
+    },
+    apiSources() {
+      return [
+        {
+          id: 'test',
+          label: this.$t('view.setting.basic_source_test'),
+          disabled: false,
+        },
+        {
+          id: 'temp',
+          label: this.$t('view.setting.basic_source_temp'),
+          disabled: false,
+        },
+      ]
+    },
+    sourceNameTypes() {
+      return [
+        {
+          id: 'real',
+          label: this.$t('view.setting.basic_sourcename_real'),
+        },
+        {
+          id: 'alias',
+          label: this.$t('view.setting.basic_sourcename_alias'),
+        },
+      ]
+    },
+    musicNames() {
+      return [
+        {
+          name: this.$t('view.setting.download_name1'),
+          value: '歌名 - 歌手',
+        },
+        {
+          name: this.$t('view.setting.download_name2'),
+          value: '歌手 - 歌名',
+        },
+        {
+          name: this.$t('view.setting.download_name3'),
+          value: '歌名',
+        },
+      ]
     },
   },
   data() {
     return {
       current_setting: {
-        version: null,
         player: {
           togglePlayMethod: 'random',
           highQuality: false,
           isShowTaskProgess: true,
+          volume: 1,
+          mediaDeviceId: 'default',
         },
         list: {
           isShowAlbumName: true,
@@ -227,6 +330,12 @@ export default {
             enable: true,
             locations: {},
           },
+        },
+        search: {
+          searchSource: 'kw',
+          tempSearchSource: 'kw',
+          isShowHotSearch: false,
+          isShowHistorySearch: false,
         },
         download: {
           savePath: '',
@@ -248,62 +357,21 @@ export default {
           isAutoClearSearchList: false,
         },
         windowSizeId: 1,
+        langId: 'cns',
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
         apiSource: 'messoer',
       },
-      togglePlayMethods: [
-        {
-          name: '列表循环',
-          value: 'listLoop',
-        },
-        {
-          name: '列表随机',
-          value: 'random',
-        },
-        {
-          name: '顺序播放',
-          value: 'list',
-        },
-        {
-          name: '单曲循环',
-          value: 'singleLoop',
-        },
-      ],
-      apiSources: [
-        {
-          id: 'test',
-          label: '测试接口（几乎软件的所有功能都可用）',
-          disabled: false,
-        },
-        {
-          id: 'temp',
-          label: '临时接口（软件的某些功能不可用，建议测试接口不可用再使用本接口）',
-          disabled: false,
-        },
-      ],
-      musicNames: [
-        {
-          name: '歌名 - 歌手',
-          value: '歌名 - 歌手',
-        },
-        {
-          name: '歌手 - 歌名',
-          value: '歌手 - 歌名',
-        },
-        {
-          name: '歌名',
-          value: '歌名',
-        },
-      ],
+      languageList,
       cacheSize: '0 B',
+      mediaDevices: [],
     }
   },
   watch: {
     current_setting: {
       handler(n, o) {
-        if (!o.version) return
+        if (!this.settingVersion) return
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
@@ -322,16 +390,18 @@ export default {
     this.init()
   },
   methods: {
-    ...mapMutations(['setSetting', 'setVersionModalVisible']),
+    ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
     ...mapMutations('list', ['setList']),
+    ...mapMutations(['setMediaDeviceId']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       this.getCacheSize()
+      this.getMediaDevice()
     },
     handleChangeSavePath() {
       selectDir({
-        title: '选择歌曲保存路径',
+        title: this.$t('view.setting.download_select_save_path'),
         defaultPath: this.current_setting.download.savePath,
         properties: ['openDirectory'],
       }).then(result => {
@@ -343,23 +413,23 @@ export default {
       openDirInExplorer(dir)
     },
     importSetting(path) {
-      let setting
+      let settingData
       try {
-        setting = JSON.parse(fs.readFileSync(path, 'utf8'))
+        settingData = JSON.parse(fs.readFileSync(path, 'utf8'))
       } catch (error) {
         return
       }
-      if (setting.type !== 'setting') return
-      this.setSetting(updateSetting(setting.data))
-      this.init()
+      if (settingData.type !== 'setting') return
+      const { version: settingVersion, setting } = updateSetting(settingData.data)
+      this.refreshSetting(setting, settingVersion)
     },
     exportSetting(path) {
       console.log(path)
       const data = {
         type: 'setting',
-        data: this.setting,
+        data: Object.assign({ version: this.settingVersion }, this.setting),
       }
-      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
@@ -389,7 +459,7 @@ export default {
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(data), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
@@ -401,8 +471,10 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      this.setSetting(updateSetting(allData.setting))
-      this.init()
+      const { version: settingVersion, setting } = updateSetting(allData.setting)
+      this.refreshSetting(setting, settingVersion)
+
+      // 兼容0.6.2及以前版本的列表数据
       if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list })
 
       for (const list of allData.playList) {
@@ -412,19 +484,19 @@ export default {
     exportAllData(path) {
       let allData = {
         type: 'allData',
-        setting: this.setting,
+        setting: Object.assign({ version: this.settingVersion }, this.setting),
         playList: [
           this.defaultList,
           this.loveList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(allData), 'utf8', err => {
+      fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
         console.log(err)
       })
     },
     handleImportAllData() {
       selectDir({
-        title: '选择备份文件',
+        title: this.$t('view.setting.backup_all_import_desc'),
         properties: ['openFile'],
         filters: [
           { name: 'Setting', extensions: ['json'] },
@@ -437,7 +509,7 @@ export default {
     },
     handleExportAllData() {
       openSaveDir({
-        title: '选择备份保存位置',
+        title: this.$t('view.setting.backup_all_export_desc'),
         defaultPath: 'lx_datas.json',
       }).then(result => {
         if (result.canceled) return
@@ -446,7 +518,7 @@ export default {
     },
     handleImportSetting() {
       selectDir({
-        title: '选择配置文件',
+        title: this.$t('view.setting.backup_part_import_setting_desc'),
         properties: ['openFile'],
         filters: [
           { name: 'Setting', extensions: ['json'] },
@@ -459,7 +531,7 @@ export default {
     },
     handleExportSetting() {
       openSaveDir({
-        title: '选择设置保存位置',
+        title: this.$t('view.setting.backup_part_export_setting_desc'),
         defaultPath: 'lx_setting.json',
       }).then(result => {
         if (result.canceled) return
@@ -468,7 +540,7 @@ export default {
     },
     handleImportPlayList() {
       selectDir({
-        title: '选择列表文件',
+        title: this.$t('view.setting.backup_part_import_list_desc'),
         properties: ['openFile'],
         filters: [
           { name: 'Play List', extensions: ['json'] },
@@ -481,7 +553,7 @@ export default {
     },
     handleExportPlayList() {
       openSaveDir({
-        title: '选择设置保存位置',
+        title: this.$t('view.setting.backup_part_export_list_desc'),
         defaultPath: 'lx_list.json',
       }).then(result => {
         if (result.canceled) return
@@ -516,8 +588,29 @@ export default {
       })
     },
     handleWindowSizeChange(index) {
-      let info = this.windowSizeList[index]
+      let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
+    },
+    refreshSetting(setting, version) {
+      this.setSetting(setting)
+      this.setSettingVersion(version)
+      if (setting.windowSizeId != null) this.handleWindowSizeChange(null, setting.windowSizeId)
+      for (let key of Object.keys(setting.network.proxy)) {
+        window.globalObj.proxy[key] = setting.network.proxy[key]
+      }
+      this.init()
+    },
+    handleLangChange(id) {
+      this.$i18n.locale = id
+    },
+    async getMediaDevice() {
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const audioDevices = devices.filter(device => device.kind === 'audiooutput')
+      this.mediaDevices = audioDevices
+      // console.log(this.mediaDevices)
+    },
+    handleMediaDeviceChange(audioDevice) {
+      this.setMediaDeviceId(audioDevice.deviceId)
     },
   },
 }
@@ -604,7 +697,8 @@ export default {
     // color: @color-theme;
     margin-right: 30px;
     transition: color .3s ease;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    width: 56px;
 
     &:last-child {
       margin-right: 0;
@@ -631,6 +725,13 @@ export default {
       }
     }
 
+    label {
+      width: 100%;
+      text-align: center;
+      height: 1.2em;
+      .mixin-ellipsis-1;
+    }
+
     each(@themes, {
       &:global(.@{value}) {
         span {
@@ -643,9 +744,49 @@ export default {
     })
   }
 }
+.btn-media-device-refresh {
+  height: 28px;
+  line-height: 28px;
+  padding: 0px 15px;
+  svg {
+    width: 1em;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+}
 
 .save-path {
   font-size: 12px;
+}
+
+.del-line {
+  position: relative;
+  &:before {
+    display: block;
+    height: 1px;
+    position: absolute;
+    width: 110%;
+    content: ' ';
+    left: 0;
+    background-color: #000;
+    transform: rotate(-24deg);
+    transform-origin: 0;
+    top: 83%;
+    z-index: 1;
+  }
+  &:after {
+    display: block;
+    height: 1px;
+    position: absolute;
+    width: 110%;
+    content: ' ';
+    left: 0;
+    background-color: #000;
+    transform: rotate(23deg);
+    transform-origin: 0px;
+    top: 2px;
+    z-index: 1;
+  }
 }
 
 each(@themes, {

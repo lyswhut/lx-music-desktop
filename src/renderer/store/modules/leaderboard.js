@@ -19,7 +19,9 @@ const state = {
 
 // getters
 const getters = {
-  sourceInfo: () => ({ sources, sourceList }),
+  sourceInfo(state, getters, rootState, { sourceNames }) {
+    return { sources: sources.map(item => ({ id: item.id, name: sourceNames[item.id] })), sourceList }
+  },
   list(state) {
     return state.list
   },
@@ -37,8 +39,9 @@ const actions = {
   getList({ state, rootState, commit }, page) {
     let source = rootState.setting.leaderboard.source
     let tabId = rootState.setting.leaderboard.tabId
-    let key = `${source}${tabId}${page}}`
+    let key = `${source}${tabId}${page}`
     if (state.list.length && state.key == key) return true
+    commit('clearList')
     return music[source].leaderboard.getList(tabId, page).then(result => commit('setList', { result, key }))
   },
 }
@@ -51,6 +54,10 @@ const mutations = {
     state.limit = result.limit
     state.page = result.page
     state.key = key
+  },
+  clearList(state) {
+    state.list = []
+    state.total = 0
   },
 }
 
