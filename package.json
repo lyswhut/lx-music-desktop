@@ -211,7 +211,7 @@
     "electron-updater": "^4.2.5",
     "flac-metadata": "^0.1.1",
     "js-htmlencode": "^0.3.0",
-    "lrc-file-parser": "^1.0.0",
+    "lrc-file-parser": "^1.0.1",
     "needle": "^2.3.3",
     "node-id3": "^0.1.14",
     "request": "^2.88.2",
