@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import { isChildren } from '../../utils'
 import { mapGetters } from 'vuex'
 export default {
   props: {
@@ -48,7 +47,7 @@ export default {
   methods: {
     handleHide(e) {
       // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
-      if (e && (e.target == this.$refs.dom_btn || isChildren(this.$refs.dom_btn, e.target))) return
+      if (e && (e.target == this.$refs.dom_btn || this.$refs.dom_btn.contains(e.target))) return
       setTimeout(() => {
         this.show = false
       }, 50)

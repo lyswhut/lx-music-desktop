@@ -10,7 +10,7 @@
 </template>
 
 <script>
-// import { isChildren } from '../../utils'
+
 export default {
   props: {
     list: {

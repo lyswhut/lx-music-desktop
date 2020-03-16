@@ -164,15 +164,6 @@ export const objectDeepMerge = (target, source) => {
 }
 
 /**
- * 判断是否父子元素
- * @param {*} parent
- * @param {*} children
- */
-export const isChildren = (parent, children) => {
-  return children.parentNode ? children.parentNode === parent ? true : isChildren(parent, children.parentNode) : false
-}
-
-/**
  * 升级设置
  * @param {*} setting
  */
