@@ -46,7 +46,7 @@
 注意：**绿色版**的软件自动更新功能**不可用**，建议使用安装版！！<br>
 注意：**Mac版**、**Linux deb**版不支持自动更新！
 
-## Windows 7 下界面异常
+## Windows 7 下界面异常（界面显示不完整）
 
 由于软件默认使用了透明窗口，根据Electron官方文档的[说明](https://electronjs.org/docs/api/frameless-window#%E5%B1%80%E9%99%90%E6%80%A7)：
 > 在 windows 操作系统上, 当 DWM 被禁用时, 透明窗口将无法工作。
