@@ -9,7 +9,6 @@ import { getProxyInfo } from './index'
 
 const request = (url, options, callback) => {
   let data
-  if (options.method == 'get') options.headers['Content-Length'] = 0
   if (options.body) {
     data = options.body
   } else if (options.form) {

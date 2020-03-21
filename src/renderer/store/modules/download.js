@@ -91,7 +91,7 @@ const getUrl = (downloadInfo, isRefresh) => {
  * @param {*} isEmbedPic // 是否嵌入图片
  */
 const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
-  if (downloadInfo.type === 'ape' || downloadInfo.type === 'flac') return
+  if (downloadInfo.type === 'ape') return
   const promise = isEmbedPic
     ? downloadInfo.musicInfo.img
       ? Promise.resolve(downloadInfo.musicInfo.img)
@@ -103,6 +103,12 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
       artist: downloadInfo.musicInfo.singer,
       album: downloadInfo.musicInfo.albumName,
       APIC: url,
+    })
+  }).catch(() => {
+    setMeta(filePath, {
+      title: downloadInfo.musicInfo.name,
+      artist: downloadInfo.musicInfo.singer,
+      album: downloadInfo.musicInfo.albumName,
     })
   })
 }
