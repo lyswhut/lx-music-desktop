@@ -137,7 +137,9 @@ const refreshUrl = function(commit, downloadInfo) {
     dl.refreshUrl(result.url)
     dl.start()
   }).catch(err => {
-    console.log(err)
+    // console.log(err)
+    commit('onError', downloadInfo)
+    commit('setStatusText', { downloadInfo, text: err.message })
     this.dispatch('download/startTask')
   })
 }
