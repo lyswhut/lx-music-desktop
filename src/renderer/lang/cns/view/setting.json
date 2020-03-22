@@ -58,7 +58,7 @@
   "download_name_title": "下载歌曲时的命名方式",
   "download_name": "文件命名方式",
   "download_embed_pic_title": "是否将封面嵌入音频文件中",
-  "download_embed_pic": "封面嵌入（只支持MP3格式）",
+  "download_embed_pic": "封面嵌入",
   "download_lyric_title": "是否同时下载歌词文件",
   "download_lyric": "歌词下载",
   "download_name1": "歌名 - 歌手",

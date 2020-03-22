@@ -58,7 +58,7 @@
   "download_name_title": "Naming when downloading songs",
   "download_name": "File naming",
   "download_embed_pic_title": "Whether to embed the cover in the audio file",
-  "download_embed_pic": "Cover embedding (only supports MP3 format)",
+  "download_embed_pic": "Cover embedding",
   "download_lyric_title": "Whether to download lyrics files at the same time",
   "download_lyric": "Lyrics download",
   "download_name1": "name - singer",

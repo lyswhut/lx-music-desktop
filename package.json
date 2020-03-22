@@ -209,6 +209,7 @@
     "electron-log": "^4.1.0",
     "electron-store": "^5.1.1",
     "electron-updater": "^4.2.5",
+    "image-size": "^0.8.3",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.1",
     "needle": "^2.3.3",
