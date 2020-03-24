@@ -10,7 +10,7 @@ const vendor = 'reference libFLAC 1.2.1 20070917'
 
 
 const writeMeta = (filePath, meta, picPath) => {
-  const comments = Object.keys(meta).map(key => `${key.toUpperCase()}=${meta[key]}`)
+  const comments = Object.keys(meta).map(key => `${key.toUpperCase()}=${meta[key] || ''}`)
   const data = {
     vorbis: {
       vendor,
