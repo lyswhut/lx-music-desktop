@@ -1,5 +1,6 @@
 {
   "back": "Back",
   "loding_list": "List loading...",
-  "loding_list_fail": "List loading failed"
+  "loding_list_fail": "List loading failed",
+  "open_list": "open {name} playlist"
 }

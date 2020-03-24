@@ -94,7 +94,7 @@ export default {
         case 'mg':
         case 'kg':
           list.push({
-            name: `打开${this.sourceInfo.sources.find(s => s.id == this.source).name}歌单`,
+            name: this.$t('view.song_list.open_list', { name: this.sourceInfo.sources.find(s => s.id == this.source).name }),
             id: 'importSongList',
           })
       }

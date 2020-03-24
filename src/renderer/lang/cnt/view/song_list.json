@@ -1,5 +1,6 @@
 {
   "back": "返回",
   "loding_list": "列表加载中...",
-  "loding_list_fail": "列表加載失敗"
+  "loding_list_fail": "列表加載失敗",
+  "open_list": "打開{name}歌單"
 }
