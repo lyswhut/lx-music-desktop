@@ -73,6 +73,10 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.search_history')}}
       div
         material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
+    dd(:title="$t('view.setting.search_focus_search_box_title')")
+      h3 {{$t('view.setting.search_focus_search_box')}}
+      div
+        material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
 
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
@@ -336,6 +340,7 @@ export default {
           tempSearchSource: 'kw',
           isShowHotSearch: false,
           isShowHistorySearch: false,
+          isFocusSearchBox: false,
         },
         download: {
           savePath: '',

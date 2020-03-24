@@ -42,6 +42,8 @@
   "search_hot": "Hot Search",
   "search_history_title": "Show search history",
   "search_history": "Search History",
+  "search_focus_search_box_title": "Whether the search box is automatically focused on startup",
+  "search_focus_search_box": "Focus Search Box",
 
   "list": "List settings",
   "list_source_title": "Whether to show song sources",

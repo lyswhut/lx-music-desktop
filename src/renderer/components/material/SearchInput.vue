@@ -75,6 +75,9 @@ export default {
       n ? this.showList() : this.hideList()
     },
   },
+  mounted() {
+    if (this.$store.getters.setting.search.isFocusSearchBox) this.$refs.dom_input.focus()
+  },
   methods: {
     handleTemplistClick(index) {
       this.sendEvent('listClick', index)

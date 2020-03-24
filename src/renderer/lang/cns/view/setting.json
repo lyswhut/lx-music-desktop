@@ -42,6 +42,8 @@
   "search_hot": "热门搜索",
   "search_history_title": "是否显示历史搜索记录",
   "search_history": "搜索历史",
+  "search_focus_search_box_title": "启动时是否自动聚焦搜索框",
+  "search_focus_search_box": "聚焦搜索框",
 
   "list": "列表设置",
   "list_source_title": "是否显示歌曲源",

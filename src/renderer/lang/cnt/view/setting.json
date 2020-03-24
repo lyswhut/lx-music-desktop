@@ -40,6 +40,8 @@
   "search_hot": "熱門搜索",
   "search_history_title": "是否顯示歷史搜索記錄",
   "search_history": "搜索歷史",
+  "search_focus_search_box_title": "啟動時是否自動聚焦搜索框",
+  "search_focus_search_box": "聚焦搜索框",
   "list": "列表設置",
   "list_source_title": "是否顯示歌曲源",
   "list_source": "是否顯示歌曲源（僅對我的音樂分類有效）",

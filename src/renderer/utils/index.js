@@ -168,7 +168,7 @@ export const objectDeepMerge = (target, source) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.19'
+  const defaultVersion = '1.0.20'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -219,6 +219,7 @@ export const updateSetting = (setting, version) => {
       tempSearchSource: 'kw',
       isShowHotSearch: false,
       isShowHistorySearch: false,
+      isFocusSearchBox: false,
     },
     network: {
       proxy: {
