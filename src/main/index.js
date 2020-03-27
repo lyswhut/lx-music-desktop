@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, Menu, Tray } = require('electron')
 const path = require('path')
 
 // 单例应用程序
@@ -30,10 +30,10 @@ const winEvent = require('./events/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
 const { isLinux, isMac } = require('../common/utils')
 
-
 let mainWindow
 let winURL
 let isFirstCheckedUpdate = true
+let tray
 
 if (isDev) {
   global.__static = path.join(__dirname, '../static')
@@ -64,6 +64,32 @@ function createWindow() {
       webSecurity: !isDev,
       nodeIntegration: true,
     },
+  })
+
+  // 托盘
+  tray = new Tray('./resources/icons/256x256.ico')
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '退出',
+      click: () => {
+        mainWindow.destroy()
+      },
+    },
+  ])
+  tray.setToolTip('洛雪音乐助手')
+  tray.setContextMenu(contextMenu)
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+    mainWindow.isVisible()
+      ? mainWindow.setSkipTaskbar(false)
+      : mainWindow.setSkipTaskbar(true)
+  })
+
+  // 关闭事件处理
+  mainWindow.on('close', e => {
+    e.preventDefault()
+    mainWindow.hide()
+    mainWindow.setSkipTaskbar(true)
   })
 
   mainWindow.loadURL(winURL)
