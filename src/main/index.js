@@ -59,6 +59,7 @@ function createWindow() {
     resizable: false,
     maximizable: false,
     fullscreenable: false,
+    show: false,
     webPreferences: {
       // contextIsolation: true,
       webSecurity: !isDev,

@@ -10,4 +10,8 @@ module.exports = mainWindow => {
   // mainWindow.on('restore', () => {
   //   mainWindow.webContents.send('restore')
   // })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 }
