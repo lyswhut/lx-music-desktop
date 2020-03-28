@@ -40,7 +40,14 @@ export const b64DecodeUnicode = str => {
   }).join(''))
 }
 
-export const decodeName = str => str.replace(/&apos;/g, '\'')
+const encodeNames = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&apos;': "'",
+}
+export const decodeName = str => str.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;)/g, s => encodeNames[s])
 
 const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
