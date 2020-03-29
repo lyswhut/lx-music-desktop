@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, Menu, shell } = require('electron')
 const path = require('path')
 
 // 单例应用程序
@@ -13,6 +13,18 @@ app.on('second-instance', (event, argv, cwd) => {
   } else {
     app.quit()
   }
+})
+
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-navigate', (event, navigationUrl) => {
+    event.preventDefault()
+  })
+  contents.on('new-window', async(event, navigationUrl) => {
+    event.preventDefault()
+    if (/^devtools/.test(navigationUrl)) return
+    console.log(navigationUrl)
+    await shell.openExternal(navigationUrl)
+  })
 })
 
 const isDev = process.env.NODE_ENV !== 'production'
