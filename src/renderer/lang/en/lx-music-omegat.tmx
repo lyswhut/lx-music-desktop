@@ -1,0 +1,1609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tmx SYSTEM "tmx11.dtd">
+<tmx version="1.1">
+  <header creationtool="OmegaT" o-tmf="OmegaT TMX" adminlang="EN-US" datatype="plaintext" creationtoolversion="OmegaT-4.1.5" segtype="sentence" srclang="ZH"/>
+  <body>
+<!-- Default translations -->
+    <tu>
+      <tuv lang="ZH">
+        <seg>URL过期，正在刷新URL...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154320Z" creationid="Andrew" creationdate="20200328T154320Z">
+        <seg>Music URL expired, refreshing...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>上一页</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T163940Z" creationid="Andrew" creationdate="20200328T163940Z">
+        <seg>Previous page</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下一页</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164048Z" creationid="Andrew" creationdate="20200328T163949Z">
+        <seg>Next page</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下一首</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T153543Z" creationid="Andrew" creationdate="20200328T153543Z">
+        <seg>Next</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T161925Z" creationid="Andrew" creationdate="20200328T161925Z">
+        <seg>Download</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载完成</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171344Z" creationid="Andrew" creationdate="20200328T171344Z">
+        <seg>Completed</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载歌曲保存的路径</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085706Z" creationid="Andrew" creationdate="20200329T085706Z">
+        <seg>Define the path to downloading</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载歌曲时的命名方式</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090453Z" creationid="Andrew" creationdate="20200329T090453Z">
+        <seg>Select the music naming method for downloading</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载管理</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151108Z" creationid="Andrew" creationdate="20200328T151108Z">
+        <seg>Downloads</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085608Z" creationid="Andrew" creationdate="20200329T085608Z">
+        <seg>Download</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载路径</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085712Z" creationid="Andrew" creationdate="20200329T085712Z">
+        <seg>Download path</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>下载进度：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095100Z" creationid="Andrew" creationdate="20200329T095100Z">
+        <seg>Download progress:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>专辑</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164152Z" creationid="Andrew" creationdate="20200328T164152Z">
+        <seg>Album</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>中</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182006Z" creationid="Andrew" creationdate="20200328T182006Z">
+        <seg>Medium</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>临时接口（软件的某些功能不可用，建议测试接口不可用再使用本接口）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181508Z" creationid="Andrew" creationdate="20200328T181508Z">
+        <seg>Temporary API (some features not available; workaround if Test API unavailable)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>主机</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092734Z" creationid="Andrew" creationdate="20200329T092734Z">
+        <seg>Host</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>主题颜色</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180425Z" creationid="Andrew" creationdate="20200328T180425Z">
+        <seg>Theme</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>代理设置（乱设置软件将无法联网）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092719Z" creationid="Andrew" creationdate="20200329T092719Z">
+        <seg>Proxy (False setting would block Internet connections)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>任务栏播放进度条</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T184046Z" creationid="Andrew" creationdate="20200328T184046Z">
+        <seg>Taskbar play progress bar</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>企鹅音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170537Z" creationid="Andrew" creationdate="20200328T170537Z">
+        <seg>QQ music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>优先播放高品质音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183745Z" creationid="Andrew" creationdate="20200328T183745Z">
+        <seg>Prefer High Quality 320k</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>信口雌黄</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165905Z" creationid="Andrew" creationdate="20200328T165510Z">
+        <seg>Confetti Yellow</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>全不选</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164136Z" creationid="Andrew" creationdate="20200328T164136Z">
+        <seg>Select none</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>全选</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164125Z" creationid="Andrew" creationdate="20200328T164125Z">
+        <seg>Select all</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>全部任务</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171315Z" creationid="Andrew" creationdate="20200328T171315Z">
+        <seg>All</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>关于洛雪音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095256Z" creationid="Andrew" creationdate="20200329T095256Z">
+        <seg>About lx-music-desktop</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>关闭</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154923Z" creationid="Andrew" creationdate="20200328T154923Z">
+        <seg>Close</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>其他</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095436Z" creationid="Andrew" creationdate="20200328T151059Z">
+        <seg>Extras</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>出错</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171329Z" creationid="Andrew" creationdate="20200328T171329Z">
+        <seg>Error</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表加载中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164738Z" creationid="Andrew" creationdate="20200328T164738Z">
+        <seg>Loading the list...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表加载失败</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095417Z" creationid="Andrew" creationdate="20200329T095417Z">
+        <seg>List loading failed</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表循环</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183433Z" creationid="Andrew" creationdate="20200328T183433Z">
+        <seg>Playlist repeat</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表竟然是空的...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171444Z" creationid="Andrew" creationdate="20200328T171444Z">
+        <seg>Nothing's here...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060640Z" creationid="Andrew" creationdate="20200329T060640Z">
+        <seg>List</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>列表随机</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183453Z" creationid="Andrew" creationdate="20200328T183453Z">
+        <seg>Playlist shuffle</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>别名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181820Z" creationid="Andrew" creationdate="20200328T181820Z">
+        <seg>Aliases</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>到...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162238Z" creationid="Andrew" creationdate="20200328T162238Z">
+        <seg>to...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>刷新</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060335Z" creationid="Andrew" creationdate="20200329T060335Z">
+        <seg>Refresh</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>刷新音频设备列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060332Z" creationid="Andrew" creationdate="20200329T060332Z">
+        <seg>Refresh audio device list</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>加载中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171415Z" creationid="Andrew" creationdate="20200328T171415Z">
+        <seg>Loading...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>单曲循环</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183554Z" creationid="Andrew" creationdate="20200328T183554Z">
+        <seg>Single repeat</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>历史搜索</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171833Z" creationid="Andrew" creationdate="20200328T171612Z">
+        <seg>History Searches</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>原名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181736Z" creationid="Andrew" creationdate="20200328T181736Z">
+        <seg>Original</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>发现新版本并在努力下载中，请稍后...⏳</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095051Z" creationid="Andrew" creationdate="20200329T095051Z">
+        <seg>Update is found and being downloaded...⏳</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>右击移除该历史</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180347Z" creationid="Andrew" creationdate="20200328T180347Z">
+        <seg>Right click to remove this entry</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>启用时将优先播放320K品质的歌曲</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183650Z" creationid="Andrew" creationdate="20200328T183650Z">
+        <seg>The 320k quality is preferred for playing</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>咪咕音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T102143Z" creationid="Andrew" creationdate="20200328T170604Z">
+        <seg>Migu Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>品质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171253Z" creationid="Andrew" creationdate="20200328T171253Z">
+        <seg>Quality</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>在任务栏上显示当前歌曲播放进度</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T184030Z" creationid="Andrew" creationdate="20200328T184030Z">
+        <seg>Show playing progress on the taskbar</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>在线音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T145006Z" creationid="Andrew" creationdate="20200328T145006Z">
+        <seg>Online music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>基本设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180412Z" creationid="Andrew" creationdate="20200328T180412Z">
+        <seg>General</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>备份与恢复</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093111Z" creationid="Andrew" creationdate="20200329T093111Z">
+        <seg>Backup and restore</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>大</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182009Z" creationid="Andrew" creationdate="20200328T182009Z">
+        <seg>Large</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>定位文件</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T163607Z" creationid="Andrew" creationdate="20200328T163607Z">
+        <seg>Locate the file</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>密码</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092745Z" creationid="Andrew" creationdate="20200329T092745Z">
+        <seg>Password</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导入</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093529Z" creationid="Andrew" creationdate="20200329T093529Z">
+        <seg>Import</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导入列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093303Z" creationid="Andrew" creationdate="20200329T093303Z">
+        <seg>Import lists</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导入设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093308Z" creationid="Andrew" creationdate="20200329T093308Z">
+        <seg>Import settings</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导出</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093531Z" creationid="Andrew" creationdate="20200329T093531Z">
+        <seg>Export</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导出列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093306Z" creationid="Andrew" creationdate="20200329T093306Z">
+        <seg>Export lists</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>导出设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093311Z" creationid="Andrew" creationdate="20200329T093311Z">
+        <seg>Export settings</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>封面嵌入（只支持MP3格式）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090703Z" creationid="Andrew" creationdate="20200329T090703Z">
+        <seg>Embedding cover (supports MP3 format only)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181954Z" creationid="Andrew" creationdate="20200328T181954Z">
+        <seg>Small</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小杜音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171026Z" creationid="Andrew" creationdate="20200328T171026Z">
+        <seg>BD Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小枸音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170742Z" creationid="Andrew" creationdate="20200328T170742Z">
+        <seg>KG Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小秋音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170940Z" creationid="Andrew" creationdate="20200328T170748Z">
+        <seg>Kyu×2 Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小芸音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170801Z" creationid="Andrew" creationdate="20200328T170801Z">
+        <seg>NY Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小蜗音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170734Z" creationid="Andrew" creationdate="20200328T170734Z">
+        <seg>KW Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>小蜜音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171011Z" creationid="Andrew" creationdate="20200328T171011Z">
+        <seg>MG Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>已暂停</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171324Z" creationid="Andrew" creationdate="20200328T171324Z">
+        <seg>Paused</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>已选择 {len} 首歌曲</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T160342Z" creationid="Andrew" creationdate="20200328T160210Z">
+        <seg>{len} song selected</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>开始</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T161931Z" creationid="Andrew" creationdate="20200328T161931Z">
+        <seg>Start</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>弹出层的动画效果</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180506Z" creationid="Andrew" creationdate="20200328T180506Z">
+        <seg>Animation effect of the pop-up layer</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>弹出层随机动画</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180659Z" creationid="Andrew" creationdate="20200328T180659Z">
+        <seg>Random pop-up animation</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>强迫症设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094253Z" creationid="Andrew" creationdate="20200329T092840Z">
+        <seg>Auto clear</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>当前下载路径：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085732Z" creationid="Andrew" creationdate="20200329T085732Z">
+        <seg>Current:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>当前已用缓存</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094735Z" creationid="Andrew" creationdate="20200329T094735Z">
+        <seg>Currently used cache size</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>当前版本：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094925Z" creationid="Andrew" creationdate="20200329T094925Z">
+        <seg>Current version:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>当前音量：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151445Z" creationid="Andrew" creationdate="20200328T151445Z">
+        <seg>Volume:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>参考 spotify</note>
+      <tuv lang="ZH">
+        <seg>我的音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093419Z" creationid="Andrew" creationdate="20200328T150045Z">
+        <seg>Your Library</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>所有数据（设置与试听列表）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093527Z" creationid="Andrew" creationdate="20200329T093411Z">
+        <seg>All (Settings and Recently Played)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>打开更新窗口 🚀</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095202Z" creationid="Andrew" creationdate="20200329T095202Z">
+        <seg>Open the update window🚀</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>套路，，套路。看了UI才知道不只是单数</note>
+      <tuv lang="ZH">
+        <seg>把该歌曲添加到 {name}</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162835Z" creationid="Andrew" creationdate="20200328T162444Z">
+        <seg>Add the song(s) to {name}</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>排行榜</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T150011Z" creationid="Andrew" creationdate="20200328T150011Z">
+        <seg>Charts</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>搜我所想~~😉</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171536Z" creationid="Andrew" creationdate="20200328T171536Z">
+        <seg>Search what I want to 😉</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>搜索</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T145013Z" creationid="Andrew" creationdate="20200328T145013Z">
+        <seg>Search</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>搜索历史</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060614Z" creationid="Andrew" creationdate="20200329T060614Z">
+        <seg>Search history</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>搜索设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060359Z" creationid="Andrew" creationdate="20200329T060359Z">
+        <seg>Search</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>播放</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162251Z" creationid="Andrew" creationdate="20200328T151514Z">
+        <seg>Play</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>播放中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T153725Z" creationid="Andrew" creationdate="20200328T153725Z">
+        <seg>Now playing...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>播放完毕</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154221Z" creationid="Andrew" creationdate="20200328T154221Z">
+        <seg>Stopped</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>播放设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060407Z" creationid="Andrew" creationdate="20200328T182119Z">
+        <seg>Play</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>操作</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164655Z" creationid="Andrew" creationdate="20200328T164655Z">
+        <seg>Manage</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>收藏列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151137Z" creationid="Andrew" creationdate="20200328T151137Z">
+        <seg>Favorites</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>文件命名方式</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090523Z" creationid="Andrew" creationdate="20200329T090523Z">
+        <seg>Music file naming</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>新年快乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170330Z" creationid="Andrew" creationdate="20200328T170330Z">
+        <seg>Happy Chinese New Year</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>无损</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164716Z" creationid="Andrew" creationdate="20200328T164716Z">
+        <seg>Lossless</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>无损音质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T155529Z" creationid="Andrew" creationdate="20200328T155529Z">
+        <seg>Lossless</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>时长</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164706Z" creationid="Andrew" creationdate="20200328T164706Z">
+        <seg>Length</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否同时下载歌词文件</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090737Z" creationid="Andrew" creationdate="20200329T090737Z">
+        <seg>Select whether to download the lyrics file</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否启用</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095312Z" creationid="Andrew" creationdate="20200329T095312Z">
+        <seg>Enabled</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否将封面嵌入音频文件中</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090623Z" creationid="Andrew" creationdate="20200329T090623Z">
+        <seg>Select whether to embed the cover into the music file</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否显示</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095330Z" creationid="Andrew" creationdate="20200329T095330Z">
+        <seg>Showed</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否显示历史搜索记录</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T083657Z" creationid="Andrew" creationdate="20200329T060607Z">
+        <seg>Select whether to show search history</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否显示歌曲源</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T083732Z" creationid="Andrew" creationdate="20200329T083732Z">
+        <seg>Select whether to show music source</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否显示歌曲源（仅对我的音乐分类有效）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093510Z" creationid="Andrew" creationdate="20200329T084042Z">
+        <seg>Select whether to show music source (for Your Library only)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否显示热门搜索</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T083709Z" creationid="Andrew" creationdate="20200329T060541Z">
+        <seg>Select whether to show popular searches</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>是否记住播放列表滚动条位置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T102248Z" creationid="Andrew" creationdate="20200329T085321Z">
+        <seg>Select whether to remember the playlist scrollbar position</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>谁能想到，normal 就算普通
+low normal high</note>
+      <tuv lang="ZH">
+        <seg>普通音质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T160059Z" creationid="Andrew" creationdate="20200328T155849Z">
+        <seg>Normal</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>暂停</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151512Z" creationid="Andrew" creationdate="20200328T151512Z">
+        <seg>Pause</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>暂停播放</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T153909Z" creationid="Andrew" creationdate="20200328T153909Z">
+        <seg>Paused</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>更改</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085835Z" creationid="Andrew" creationdate="20200329T085835Z">
+        <seg>Change</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>更新初始化中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095242Z" creationid="Andrew" creationdate="20200329T095218Z">
+        <seg>Initializing update...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>最小化</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154824Z" creationid="Andrew" creationdate="20200328T154824Z">
+        <seg>Minimize</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>最新版本：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094837Z" creationid="Andrew" creationdate="20200329T094837Z">
+        <seg>Latest version:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>月里嫦娥</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170009Z" creationid="Andrew" creationdate="20200328T170009Z">
+        <seg>Chinese Goddess to the Moon</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>木叶之村</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170304Z" creationid="Andrew" creationdate="20200328T170304Z">
+        <seg>Naruto with Friends</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>未知</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094923Z" creationid="Andrew" creationdate="20200329T094923Z">
+        <seg>Unknown</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>检查更新中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095210Z" creationid="Andrew" creationdate="20200329T095210Z">
+        <seg>Checking for updates...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>橙黄橘绿</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165900Z" creationid="Andrew" creationdate="20200328T165548Z">
+        <seg>Saffron Orange</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌单</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T145602Z" creationid="Andrew" creationdate="20200328T145602Z">
+        <seg>Playlists</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090852Z" creationid="Andrew" creationdate="20200329T090852Z">
+        <seg>Title only</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌名 - 歌手</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090821Z" creationid="Andrew" creationdate="20200329T090821Z">
+        <seg>Title - Artist</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌手</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164147Z" creationid="Andrew" creationdate="20200328T164147Z">
+        <seg>Artist</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌手 - 歌名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090831Z" creationid="Andrew" creationdate="20200329T090831Z">
+        <seg>Artist - Title</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>区分了一下播放设置和回放设置（歌曲切换方式）逻辑</note>
+      <tuv lang="ZH">
+        <seg>歌曲切换方式</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182840Z" creationid="Andrew" creationdate="20200328T182840Z">
+        <seg>Playback mode</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌曲名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164140Z" creationid="Andrew" creationdate="20200328T164140Z">
+        <seg>Name</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌曲链接获取中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154635Z" creationid="Andrew" creationdate="20200328T154635Z">
+        <seg>Getting music link...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌词下载</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T090750Z" creationid="Andrew" creationdate="20200329T090750Z">
+        <seg>Lyrics download</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>歌词获取失败</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154752Z" creationid="Andrew" creationdate="20200328T154752Z">
+        <seg>Failed to get lyrics</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>正在下载</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171319Z" creationid="Andrew" creationdate="20200328T171319Z">
+        <seg>Downloading</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>测试接口（几乎软件的所有功能都可用）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180940Z" creationid="Andrew" creationdate="20200328T180940Z">
+        <seg>Test API (Available for most software features)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>添加</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T161923Z" creationid="Andrew" creationdate="20200328T161923Z">
+        <seg>Add</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>添加到...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162852Z" creationid="Andrew" creationdate="20200328T162852Z">
+        <seg>Add to...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>添加已选的 {num} 首歌曲到...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162640Z" creationid="Andrew" creationdate="20200328T162640Z">
+        <seg>Add the selected {num} song(s) to ...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>清理缓存</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094743Z" creationid="Andrew" creationdate="20200329T094743Z">
+        <seg>Clear cache</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>清空搜索历史</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180311Z" creationid="Andrew" creationdate="20200328T180311Z">
+        <seg>Clear History</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>灰常美丽</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165753Z" creationid="Andrew" creationdate="20200328T165753Z">
+        <seg>Slate Gray</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>点击复制</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095347Z" creationid="Andrew" creationdate="20200329T095347Z">
+        <seg>Click to copy</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>点击打开</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095340Z" creationid="Andrew" creationdate="20200329T095340Z">
+        <seg>Click to open</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>点击打开当前路径</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085821Z" creationid="Andrew" creationdate="20200329T085821Z">
+        <seg>Click to open this path</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>热情似火</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165908Z" creationid="Andrew" creationdate="20200328T165643Z">
+        <seg>Valencia Red</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>热门搜索</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060546Z" creationid="Andrew" creationdate="20200328T171554Z">
+        <seg>Top Searches</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>状态</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171241Z" creationid="Andrew" creationdate="20200328T171241Z">
+        <seg>State</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>用户名</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092741Z" creationid="Andrew" creationdate="20200329T092741Z">
+        <seg>Username</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>百度音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170607Z" creationid="Andrew" creationdate="20200328T170607Z">
+        <seg>Baidu Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>离开搜索界面时清空搜索列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093049Z" creationid="Andrew" creationdate="20200329T092946Z">
+        <seg>Clear the search list when you are not searching</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>离开搜索界面时清空搜索框</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092935Z" creationid="Andrew" creationdate="20200329T092935Z">
+        <seg>Clear the search box when you are not searching</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>移除</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T162203Z" creationid="Andrew" creationdate="20200328T162203Z">
+        <seg>Remove</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>窗口尺寸</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181935Z" creationid="Andrew" creationdate="20200328T181935Z">
+        <seg>Window size</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>端口</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092737Z" creationid="Andrew" creationdate="20200329T092737Z">
+        <seg>Port</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>第 {num} 页</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164109Z" creationid="Andrew" creationdate="20200328T164109Z">
+        <seg>Page {num}</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>绿意盎然</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165413Z" creationid="Andrew" creationdate="20200328T164813Z">
+        <seg>Ocean Green</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>缓冲中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154618Z" creationid="Andrew" creationdate="20200328T154618Z">
+        <seg>Buffering...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094539Z" creationid="Andrew" creationdate="20200329T094539Z">
+        <seg>Cache size (Not recommended since resources such as pictures after the cache is cleaned need re-downloading. The software will dynamically manage the cache size based on disk space)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>网易音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170541Z" creationid="Andrew" creationdate="20200328T170541Z">
+        <seg>NetEase Music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>网络设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092259Z" creationid="Andrew" creationdate="20200329T092259Z">
+        <seg>Network</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>聚合大会</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171059Z" creationid="Andrew" creationdate="20200328T171059Z">
+        <seg>Meta</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>聚合搜索</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170721Z" creationid="Andrew" creationdate="20200328T170721Z">
+        <seg>Meta Search</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>腾讯、网易音源仅支持下载128k音质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T155853Z" creationid="Andrew" creationdate="20200328T155435Z">
+        <seg>Tencent and NetEase sources only support 128k sound quality</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>蓝田生玉</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165440Z" creationid="Andrew" creationdate="20200328T165440Z">
+        <seg>Curious Blue</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>记住列表滚动位置（仅对我的音乐分类有效）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T085557Z" creationid="Andrew" creationdate="20200329T085327Z">
+        <seg>Remember playlist scrolling position (for Your library only)</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>设置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151123Z" creationid="Andrew" creationdate="20200328T151123Z">
+        <seg>Settings</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>设置软件窗口尺寸</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181859Z" creationid="Andrew" creationdate="20200328T181859Z">
+        <seg>Set the window size</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>试听列表</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093502Z" creationid="Andrew" creationdate="20200328T150129Z">
+        <seg>Recently Played</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>语言</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182101Z" creationid="Andrew" creationdate="20200328T182101Z">
+        <seg>Language</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>请选择要优先下载的音质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T161811Z" creationid="Andrew" creationdate="20200328T160648Z">
+        <seg>Select preferred download quality</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>记着把重心放在前面不容易啊……</note>
+      <tuv lang="ZH">
+        <seg>软件已使用缓存大小：</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094621Z" creationid="Andrew" creationdate="20200329T094621Z">
+        <seg>Cache size used:</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>软件已是最新，尽情地体验吧~🥂</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095137Z" creationid="Andrew" creationdate="20200329T095137Z">
+        <seg>The software is up-to-date, enjoy yourself!🥂</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>软件显示的语言</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182058Z" creationid="Andrew" creationdate="20200328T182058Z">
+        <seg>The language displayed in the software</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>软件更新</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094823Z" creationid="Andrew" creationdate="20200329T094823Z">
+        <seg>Update</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>较大</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182021Z" creationid="Andrew" creationdate="20200328T182021Z">
+        <seg>Larger</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>较小</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182026Z" creationid="Andrew" creationdate="20200328T181951Z">
+        <seg>Smaller</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>返回</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T095401Z" creationid="Andrew" creationdate="20200329T095401Z">
+        <seg>Back</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>我不知道怎么翻……</note>
+      <tuv lang="ZH">
+        <seg>进度</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T171246Z" creationid="Andrew" creationdate="20200328T171236Z">
+        <seg>Downloaded</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择列表文件</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094126Z" creationid="Andrew" creationdate="20200329T094126Z">
+        <seg>Select a list backup</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择声音输出的媒体设备</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060240Z" creationid="Andrew" creationdate="20200329T060240Z">
+        <seg>Select a media device for audio output</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择备份保存位置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094055Z" creationid="Andrew" creationdate="20200329T093853Z">
+        <seg>Select the backup to...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择备份文件</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093926Z" creationid="Andrew" creationdate="20200329T093926Z">
+        <seg>Select a backup file</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择歌曲保存路径</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T092251Z" creationid="Andrew" creationdate="20200329T092251Z">
+        <seg>Select the save path</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <note>哦豁，中文错了，被我干到了</note>
+      <tuv lang="ZH">
+        <seg>选择设置保存位置</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094224Z" creationid="Andrew" creationdate="20200329T094013Z">
+        <seg>Save the list to...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择配置文件</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T094002Z" creationid="Andrew" creationdate="20200329T094002Z">
+        <seg>Select the Settings file</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择音乐来源</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T180733Z" creationid="Andrew" creationdate="20200328T180733Z">
+        <seg>Choose a music source</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>选择音源名字类型</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181727Z" creationid="Andrew" creationdate="20200328T181621Z">
+        <seg>Select the name of music source</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>部分数据</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T093253Z" creationid="Andrew" creationdate="20200329T093253Z">
+        <seg>Partially</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>都不选时播放完当前歌曲就停止播放</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T182424Z" creationid="Andrew" creationdate="20200328T182424Z">
+        <seg>If none selected, it stopped when the music playing is done.</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>酷我音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170512Z" creationid="Andrew" creationdate="20200328T170459Z">
+        <seg>Kuwo music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>酷狗音乐</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T170516Z" creationid="Andrew" creationdate="20200328T170507Z">
+        <seg>Kugou music</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>重斤球紫</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T165912Z" creationid="Andrew" creationdate="20200328T165728Z">
+        <seg>Wisteria Purple</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>音乐加载中...</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154607Z" creationid="Andrew" creationdate="20200328T154607Z">
+        <seg>Music loading...</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>音乐来源</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181548Z" creationid="Andrew" creationdate="20200328T181548Z">
+        <seg>Music source</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>音源名字</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T181836Z" creationid="Andrew" creationdate="20200328T181836Z">
+        <seg>Source name</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>音频加载出错，5 秒后切换下一首</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T154544Z" creationid="Andrew" creationdate="20200328T154544Z">
+        <seg>Error loading music. Switch to next song after 5 seconds</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>音频输出</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200329T060246Z" creationid="Andrew" creationdate="20200329T060246Z">
+        <seg>Audio output</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>顺序播放</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T183525Z" creationid="Andrew" creationdate="20200328T183525Z">
+        <seg>Play in order</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>高品质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164720Z" creationid="Andrew" creationdate="20200328T164720Z">
+        <seg>High Quality</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>高品音质</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T155538Z" creationid="Andrew" creationdate="20200328T155538Z">
+        <seg>High Quality</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>默认</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T164746Z" creationid="Andrew" creationdate="20200328T164746Z">
+        <seg>Default</seg>
+      </tuv>
+    </tu>
+    <tu>
+      <tuv lang="ZH">
+        <seg>（点击复制）</seg>
+      </tuv>
+      <tuv lang="EN" changeid="Andrew" changedate="20200328T151420Z" creationid="Andrew" creationdate="20200328T151420Z">
+        <seg>(Click to copy)</seg>
+      </tuv>
+    </tu>
+<!-- Alternative translations -->
+  </body>
+</tmx>
