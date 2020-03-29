@@ -1,16 +1,16 @@
 {
-  "copy_title": " (Click copy)",
+  "copy_title": " (Click to copy)",
   "volume": "Volume: ",
   "pause": "Pause",
   "play": "Play",
   "next": "Next",
-  "playing": "Playing...",
-  "stop": "Stopped",
-  "end": "End",
-  "refresh_url": "URL expired, refreshing URL...",
-  "error": "Music loading error, switch to next song after 5 seconds",
-  "loading": "Loding...",
+  "playing": "Now playing...",
+  "stop": "Paused",
+  "end": "Stopped",
+  "refresh_url": "Music URL expired, refreshing...",
+  "error": "Error loading music. Switch to next song after 5 seconds",
+  "loading": "Music loading...",
   "buffering": "Buffering...",
-  "geting_url": "Getting link...",
-  "lyric_error": "Get lyric failed"
+  "geting_url": "Getting music link...",
+  "lyric_error": "Failed to get lyrics"
 }

@@ -2,10 +2,10 @@
   "select_all": "Select all",
   "unselect_all": "Unselect all",
   "name": "Name",
-  "singer": "Singer",
+  "singer": "Artist",
   "album": "Album",
-  "action": "Actions",
-  "time": "Interval",
+  "action": "Manage",
+  "time": "Length",
   "loding_list": "Loading...",
-  "no_item": "The list turned out to be empty..."
+  "no_item": "Nothing's here..."
 }

@@ -2,10 +2,10 @@
   "play": "Play",
   "add_to": "Add to...",
   "download": "Download",
-  "add": "add",
+  "add": "Add",
   "start": "Start",
   "pause": "Pause",
-  "file": "Locate file",
+  "file": "Locate the file",
   "search": "Search",
   "remove": "Remove"
 }

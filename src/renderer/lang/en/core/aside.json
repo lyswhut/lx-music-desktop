@@ -1,12 +1,12 @@
 {
   "online_music": "Online music",
   "search": "Search",
-  "song_list": "Song list",
-  "leaderboard": "Leaderboard",
-  "my_music": "My music",
-  "default_list": "Preview list",
-  "love_list": "Favorites list",
-  "other": "Other",
-  "download": "Download manage",
-  "setting": "Setting"
+  "song_list": "Playlists",
+  "leaderboard": "Charts",
+  "my_music": "Your Library",
+  "default_list": "Recently Played",
+  "love_list": "Favorites",
+  "other": "Extras",
+  "download": "Downloads",
+  "setting": "Settings"
 }
