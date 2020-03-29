@@ -1,16 +1,16 @@
 {
   "select_all": "Select all",
-  "unselect_all": "Unselect all",
+  "unselect_all": "Select none",
   "name": "Name",
-  "singer": "Singer",
+  "singer": "Artist",
   "album": "Album",
-  "action": "Actions",
-  "time": "Interval",
-  "lossless": "SQ",
-  "high_quality": "HQ",
-  "no_item": "Search what i think~~😉",
-  "hot_search": "Hot Search",
-  "history_search": "History Search",
-  "history_clear": "Clear Search History",
-  "history_remove": "Right click to remove this history"
+  "action": "Manage",
+  "time": "Length",
+  "lossless": "Lossless",
+  "high_quality": "High Quality",
+  "no_item": "Search what I want to 😉",
+  "hot_search": "Top Searches",
+  "history_search": "History Searches",
+  "history_clear": "Clear History",
+  "history_remove": "Right click to remove this entry"
 }

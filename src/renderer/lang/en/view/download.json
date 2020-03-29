@@ -1,14 +1,14 @@
 {
   "select_all": "Select all",
-  "unselect_all": "Unselect all",
+  "unselect_all": "Select none",
   "name": "Name",
-  "progress": "Progress",
-  "status": "Status",
+  "progress": "Downloaded",
+  "status": "State",
   "quality": "Quality",
-  "action": "Actions",
-  "all": "All task",
+  "action": "Manage",
+  "all": "All",
   "runing": "Downloading",
   "paused": "Paused",
   "error": "Error",
-  "finished": "Finished"
+  "finished": "Completed"
 }
