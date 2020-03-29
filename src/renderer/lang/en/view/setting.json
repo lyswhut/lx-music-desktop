@@ -54,7 +54,7 @@
   "download": "Download",
   "download_path_title": "Define the path to downloading",
   "download_path": "Download path",
-  "download_path_label": "Current:",
+  "download_path_label": "Current: ",
   "download_path_open_label": "Click to open this path",
   "download_path_change_btn": "Change",
   "download_name_title": "Select the music naming method for downloading",
@@ -97,7 +97,7 @@
 
   "other": "Extras",
   "other_cache": "Cache size (Not recommended since resources such as pictures after the cache is cleaned need re-downloading. The software will dynamically manage the cache size based on disk space)",
-  "other_cache_label": "Cache size used:",
+  "other_cache_label": "Cache size used: ",
   "other_cache_label_title": "Currently used cache size",
   "other_cache_clear_btn": "Clear cache",
 
