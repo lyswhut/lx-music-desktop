@@ -15,8 +15,11 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 app.on('web-contents-created', (event, contents) => {
   contents.on('will-navigate', (event, navigationUrl) => {
+    if (isDev) return console.log('navigation to url:', navigationUrl)
     event.preventDefault()
   })
   contents.on('new-window', async(event, navigationUrl) => {
@@ -27,7 +30,6 @@ app.on('web-contents-created', (event, contents) => {
   })
 })
 
-const isDev = process.env.NODE_ENV !== 'production'
 
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = !isDev
