@@ -240,6 +240,7 @@ export const updateSetting = (setting, version) => {
     },
     windowSizeId: 2,
     themeId: 0,
+    minClose: false,
     langId: 'cns',
     sourceId: 'kw',
     apiSource: 'temp',
@@ -264,6 +265,10 @@ export const updateSetting = (setting, version) => {
     setting = defaultSetting
   }
   if (setting.apiSource != 'temp') setting.apiSource = 'test' // 强制设置回 test 接口源
+  // 存储中没有这个设置项时，设置为 false
+  if (typeof setting.minClose === 'undefined') {
+    setting.minClose = false
+  }
   return { setting, version: defaultVersion }
 }
 

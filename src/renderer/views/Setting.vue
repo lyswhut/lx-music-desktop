@@ -28,6 +28,11 @@ div.scroll(:class="$style.setting")
         material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
+    dd(:title="$t('view.setting.basic_min_title')")
+      h3 {{$t('view.setting.basic_min')}}
+      div
+        material-checkbox(id="setting_min" v-model="current_setting.minClose" :label="$t('view.setting.is_enable')")
+
     dd(:title="$t('view.setting.basic_lang_title')")
       h3 {{$t('view.setting.basic_lang')}}
       div
@@ -361,6 +366,7 @@ export default {
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
+        minClose: true,
         apiSource: 'messoer',
       },
       languageList,

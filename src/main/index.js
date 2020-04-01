@@ -85,13 +85,6 @@ function createWindow() {
       : mainWindow.setSkipTaskbar(true)
   })
 
-  // 关闭事件处理
-  mainWindow.on('close', e => {
-    e.preventDefault()
-    mainWindow.hide()
-    mainWindow.setSkipTaskbar(true)
-  })
-
   mainWindow.loadURL(winURL)
 
   winEvent(mainWindow)

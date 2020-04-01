@@ -119,7 +119,9 @@ export default {
       rendererSend('max')
     },
     close() {
-      rendererSend('close')
+      rendererSend('close', {
+        min: this.setting.minClose,
+      })
     },
   },
 }
