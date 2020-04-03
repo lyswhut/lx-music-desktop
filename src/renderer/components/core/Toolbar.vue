@@ -119,9 +119,7 @@ export default {
       rendererSend('max')
     },
     close() {
-      rendererSend('close', {
-        isToTray: this.setting.tray.isToTray,
-      })
+      rendererSend('close')
     },
   },
 }

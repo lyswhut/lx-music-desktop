@@ -1,5 +1,10 @@
 module.exports = mainWindow => {
-  mainWindow.on('close', () => {
+  mainWindow.on('close', event => {
+    if (global.appSetting.tray.isToTray) {
+      event.preventDefault()
+      mainWindow.hide()
+      return
+    }
     mainWindow.setProgressBar(-1)
   })
 

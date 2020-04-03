@@ -11,7 +11,7 @@ global.lx_event.tray.on(TRAY_EVENT_NAME.destroy, () => {
 
 let tray
 function createTray() {
-  if (tray && !tray.isDestroyed() && global.appSetting.tray && global.appSetting.tray.isShow) return
+  if ((tray && !tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
   const iconPath = path.join(global.__static, 'images/tray', isWin ? '256x256.ico' : isMac ? '512x512.icns' : '512x512.png')
 

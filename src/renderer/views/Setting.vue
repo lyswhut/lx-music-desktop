@@ -628,7 +628,7 @@ export default {
     },
     handleToTrayChange(isToTray) {
       this.current_setting.tray.isShow = isToTray
-      rendererSend('changeTray', { action: isToTray ? 'create' : 'destroy' })
+      rendererSend('changeTray', this.current_setting.tray)
     },
   },
 }
