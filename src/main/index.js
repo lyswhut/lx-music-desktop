@@ -67,7 +67,11 @@ function createWindow() {
   })
 
   // 托盘
-  tray = new Tray(isDev ? 'src/static/512x512.png' : path.join(global.__static, '512x512.png'))
+  tray = new Tray(
+    isDev
+      ? 'src/static/512x512.png'
+      : path.join(global.__static, '512x512.png'),
+  )
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '退出',
@@ -79,10 +83,8 @@ function createWindow() {
   tray.setToolTip('洛雪音乐助手')
   tray.setContextMenu(contextMenu)
   tray.on('click', () => {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
-    mainWindow.isVisible()
-      ? mainWindow.setSkipTaskbar(false)
-      : mainWindow.setSkipTaskbar(true)
+    mainWindow.show()
+    mainWindow.setSkipTaskbar(false)
   })
 
   mainWindow.loadURL(winURL)
