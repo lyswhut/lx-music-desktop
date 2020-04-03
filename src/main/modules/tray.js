@@ -1,4 +1,4 @@
-const { Tray, Menu } = require('electron')
+const { app, Tray, Menu } = require('electron')
 const { isMac, isWin } = require('../../common/utils')
 const { tray: TRAY_EVENT_NAME } = require('../events/_name')
 const path = require('path')
@@ -21,7 +21,10 @@ function createTray() {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '退出',
-      role: 'quit',
+      click() {
+        global.isQuitting = true
+        app.quit()
+      },
     },
   ])
   tray.setToolTip('洛雪音乐助手')

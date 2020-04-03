@@ -1,6 +1,8 @@
+global.isQuitting = false
+
 module.exports = mainWindow => {
   mainWindow.on('close', event => {
-    if (global.appSetting.tray.isToTray) {
+    if (!global.isQuitting && global.appSetting.tray.isToTray) {
       event.preventDefault()
       mainWindow.hide()
       return

@@ -12,7 +12,14 @@ if (isMac) {
         { label: '显示其他', role: 'hideothers' },
         { label: '显示全部', role: 'unhide' },
         { type: 'separator' },
-        { label: '退出', accelerator: 'Command+Q', click: () => app.quit() },
+        {
+          label: '退出',
+          accelerator: 'Command+Q',
+          click() {
+            global.isQuitting = true
+            app.quit()
+          },
+        },
       ],
     },
     {
