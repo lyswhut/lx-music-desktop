@@ -67,7 +67,7 @@ function createWindow() {
   })
 
   // 托盘
-  tray = new Tray('./resources/icons/256x256.ico')
+  tray = new Tray(isDev ? 'src/static/512x512.png' : path.join(global.__static, '512x512.png'))
   const contextMenu = Menu.buildFromTemplate([
     {
       label: '退出',
