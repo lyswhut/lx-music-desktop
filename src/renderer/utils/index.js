@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.19'
+  const defaultVersion = '1.0.22'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -237,6 +237,10 @@ export const updateSetting = (setting, version) => {
         username: '',
         password: '',
       },
+    },
+    tray: {
+      isShow: false,
+      isToTray: false,
     },
     windowSizeId: 2,
     themeId: 0,

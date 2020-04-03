@@ -11,14 +11,10 @@ mainOn('max', event => {
     global.mainWindow.maximize()
   }
 })
-mainOn('close', (event, arg) => {
+mainOn('close', (event, params) => {
   if (global.mainWindow) {
-    console.log('close', arg)
-    if (arg && arg.min) {
-      global.mainWindow.hide()
-      global.mainWindow.setSkipTaskbar(true)
-      return
-    }
+    // console.log('close', params)
+    if (params && params.isToTray) return global.mainWindow.hide()
     // global.mainWindowdow.destroy()
     // app.quit()
     global.mainWindow.close()

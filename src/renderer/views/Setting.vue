@@ -28,10 +28,10 @@ div.scroll(:class="$style.setting")
         material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
-    dd(:title="$t('view.setting.basic_min_title')")
-      h3 {{$t('view.setting.basic_min')}}
+    dd(:title="$t('view.setting.basic_to_tray_title')")
+      h3 {{$t('view.setting.basic_to_tray')}}
       div
-        material-checkbox(id="setting_min" v-model="current_setting.minClose" :label="$t('view.setting.is_enable')")
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" @change="handleToTrayChange" :label="$t('view.setting.is_enable')")
 
     dd(:title="$t('view.setting.basic_lang_title')")
       h3 {{$t('view.setting.basic_lang')}}
@@ -366,8 +366,11 @@ export default {
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
-        minClose: true,
-        apiSource: 'messoer',
+        tray: {
+          isShow: false,
+          isToTray: false,
+        },
+        apiSource: 'temp',
       },
       languageList,
       cacheSize: '0 B',
@@ -617,6 +620,10 @@ export default {
     },
     handleMediaDeviceChange(audioDevice) {
       this.setMediaDeviceId(audioDevice.deviceId)
+    },
+    handleToTrayChange(isToTray) {
+      this.current_setting.tray.isShow = isToTray
+      rendererSend('changeTray', { action: isToTray ? 'create' : 'destroy' })
     },
   },
 }

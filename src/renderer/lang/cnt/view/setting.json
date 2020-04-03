@@ -18,6 +18,8 @@
   "basic_window_size_medium": "中",
   "basic_window_size_big": "大",
   "basic_window_size_larger": "較大",
+  "basic_to_tray_title": "關閉時不退出軟件將其最小化到系統托盤",
+  "basic_to_tray": "關閉時最小化到系統托盤",
   "basic_lang_title": "軟件顯示的語言",
   "basic_lang": "語言",
   "play": "播放設置",

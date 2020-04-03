@@ -120,7 +120,7 @@ export default {
     },
     close() {
       rendererSend('close', {
-        min: this.setting.minClose,
+        isToTray: this.setting.tray.isToTray,
       })
     },
   },
