@@ -177,7 +177,7 @@ export const isChildren = (parent, children) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.19'
+  const defaultVersion = '1.0.22'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -238,6 +238,10 @@ export const updateSetting = (setting, version) => {
         password: '',
       },
     },
+    tray: {
+      isShow: false,
+      isToTray: false,
+    },
     windowSizeId: 2,
     themeId: 0,
     langId: 'cns',
@@ -264,6 +268,7 @@ export const updateSetting = (setting, version) => {
     setting = defaultSetting
   }
   if (setting.apiSource != 'temp') setting.apiSource = 'test' // 强制设置回 test 接口源
+
   return { setting, version: defaultVersion }
 }
 
