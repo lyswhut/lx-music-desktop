@@ -20,7 +20,6 @@ sync(store, router)
 
 // }
 
-Vue.config.devTools = process.env.NODE_ENV !== 'production'
 Vue.config.productionTip = false
 
 new Vue({
