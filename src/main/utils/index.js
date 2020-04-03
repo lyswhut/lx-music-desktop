@@ -9,7 +9,10 @@ exports.getAppSetting = () => {
   let electronStore = new Store()
   const defaultSetting = {
     windowSizeId: 1,
-    isShowTray: false,
+    tray: {
+      isShow: false,
+      isToTray: false,
+    },
   }
   return Object.assign(defaultSetting, electronStore.get('setting') || {})
 }
