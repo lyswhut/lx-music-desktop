@@ -30,6 +30,8 @@ app.on('web-contents-created', (event, contents) => {
   })
 })
 
+// https://github.com/electron/electron/issues/22691
+app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = !isDev
