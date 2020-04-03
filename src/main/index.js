@@ -8,8 +8,13 @@ if (!app.requestSingleInstanceLock()) {
 }
 app.on('second-instance', (event, argv, cwd) => {
   if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.focus()
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore()
+    } else if (mainWindow.isVisible()) {
+      mainWindow.focus()
+    } else {
+      mainWindow.show()
+    }
   } else {
     app.quit()
   }
