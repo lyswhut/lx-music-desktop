@@ -1,7 +1,6 @@
 // const { app } = require('electron')
 const { mainOn } = require('../../common/ipc')
 
-
 mainOn('min', event => {
   if (global.mainWindow) {
     global.mainWindow.minimize()
@@ -12,10 +11,11 @@ mainOn('max', event => {
     global.mainWindow.maximize()
   }
 })
-mainOn('close', event => {
+mainOn('close', (event, params) => {
   if (global.mainWindow) {
+    // console.log('close', params)
+    if (params && params.isToTray) return global.mainWindow.hide()
     // global.mainWindowdow.destroy()
-    // console.log('close')
     // app.quit()
     global.mainWindow.close()
   }

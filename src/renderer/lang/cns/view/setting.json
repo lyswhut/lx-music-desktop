@@ -18,6 +18,8 @@
   "basic_window_size_medium": "中",
   "basic_window_size_big": "大",
   "basic_window_size_larger": "较大",
+  "basic_to_tray_title": "关闭时不退出软件将其最小化到系统托盘",
+  "basic_to_tray": "关闭时最小化到系统托盘",
   "basic_lang_title": "软件显示的语言",
   "basic_lang": "语言",
 

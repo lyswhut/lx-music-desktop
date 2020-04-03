@@ -18,6 +18,8 @@
   "basic_window_size_medium": "Medium",
   "basic_window_size_big": "Large",
   "basic_window_size_larger": "Larger",
+  "basic_to_tray_title": "Minimize it to the system tray without closing the software when closing",
+  "basic_to_tray": "Minimize to system tray when closing",
   "basic_lang_title": "The language displayed in the software",
   "basic_lang": "Language",
 

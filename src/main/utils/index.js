@@ -1,10 +1,20 @@
 const Store = require('electron-store')
 const { windowSizeList } = require('../../common/config')
 
-exports.getWindowSizeInfo = () => {
-  let electronStore = new Store()
-  const { windowSizeId = 1 } = electronStore.get('setting') || {}
+exports.getWindowSizeInfo = ({ windowSizeId = 1 } = {}) => {
   return windowSizeList.find(i => i.id === windowSizeId) || windowSizeList[0]
+}
+
+exports.getAppSetting = () => {
+  let electronStore = new Store()
+  const defaultSetting = {
+    windowSizeId: 1,
+    tray: {
+      isShow: false,
+      isToTray: false,
+    },
+  }
+  return Object.assign(defaultSetting, electronStore.get('setting') || {})
 }
 
 exports.parseEnv = () => {
