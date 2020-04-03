@@ -93,7 +93,7 @@
   "backup_part_import_setting_desc": "选择配置文件",
   "backup_part_export_setting_desc": "选择设置保存位置",
   "backup_part_import_list_desc": "选择列表文件",
-  "backup_part_export_list_desc": "选择设置保存位置",
+  "backup_part_export_list_desc": "选择歌单保存位置",
 
   "other": "其他",
   "other_cache": "缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）",

@@ -86,7 +86,7 @@
   "backup_part_import_setting_desc": "選擇配置文件",
   "backup_part_export_setting_desc": "選擇設置保存位置",
   "backup_part_import_list_desc": "選擇列表文件",
-  "backup_part_export_list_desc": "選擇設置保存位置",
+  "backup_part_export_list_desc": "選擇列表保存位置",
   "other": "其他",
   "other_cache": "緩存大小（清理緩存後圖片等資源將需要重新下載，不建議清理，軟件會根據磁盤空間動態管理緩存大小）",
   "other_cache_label": "軟件已使用緩存大小：",
