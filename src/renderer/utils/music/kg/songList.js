@@ -237,11 +237,10 @@ export default {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
-    // if ((/[?&]/.test(id))) {
-    //   id = id.replace(this.regExps.listDetailLink, '$1')
-    // } else
-    if (/http(?:s):/.test(id)) {
-      return this.getUserListDetail(id, page)
+    if ((/\/(?:\d+)\.html/.test(id))) {
+      id = id.replace(this.regExps.listDetailLink, '$1')
+    } else if (/http(?:s):/.test(id)) {
+      return this.getUserListDetail(id.replace(/^.*http/, 'http'), page)
     }
 
     // if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
