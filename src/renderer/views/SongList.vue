@@ -327,7 +327,7 @@ export default {
     },
     handleGetListDetail(id, page) {
       this.isGetDetailFailed = false
-      this.getListDetail({ id, page }).catch(err => {
+      return this.getListDetail({ id, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
       })
