@@ -187,6 +187,7 @@ export default {
   },
 
   async getUserListDetail(link, page, retryNum = 0) {
+    if (retryNum > 2) return Promise.reject(new Error('link try max num'))
     if (link.includes('#')) link = link.replace(/#.*$/, '')
     if (link.includes('zlist.html')) {
       link = link.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
@@ -195,10 +196,8 @@ export default {
       } else {
         link += `&pagesize=${this.listDetailLimit}&page=${page}`
       }
-      return this.getUserListDetail(link, page, ++retryNum)
     }
     if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
-    if (retryNum > 2) return Promise.reject(new Error('link try max num'))
 
     this._requestObj_listDetailLink = httpFetch(link, {
       headers: {
