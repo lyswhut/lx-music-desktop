@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
+import { toMD5 } from '../utils'
 
 export default {
   _requestObj_tags: null,
@@ -145,23 +146,17 @@ export default {
     }))
   },
 
-  async createHttp(data, retryNum = 0) {
-    if (retryNum > 2) new Error('try max num')
+  async createHttp(url, options, retryNum = 0) {
+    if (retryNum > 2) throw new Error('try max num')
     let result
     try {
-      result = await httpFetch('http://kmr.service.kugou.com/v2/album_audio/audio', {
-        method: 'POST',
-        body: data,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-        },
-      }).promise
+      result = await httpFetch(url, options).promise
     } catch (err) {
       console.log(err)
-      return this.createHttp(data, ++retryNum)
+      return this.createHttp(url, options, ++retryNum)
     }
-    if (result.statusCode !== 200 || result.body.error_code !== 0) return this.createHttp(data, ++retryNum)
-    return result.body.data.map(s => s[0])
+    if (result.statusCode !== 200 || ((result.body.error_code === undefined ? result.body.errcode : result.body.error_code) !== 0)) return this.createHttp(url, options, ++retryNum)
+    return result.body.data
   },
 
   createTask(hashs) {
@@ -183,12 +178,59 @@ export default {
       if (list.length < 20) break
       list = list.slice(20)
     }
-    return tasks.map(task => this.createHttp(task))
+    let url = 'http://kmr.service.kugou.com/v2/album_audio/audio'
+    return tasks.map(task => this.createHttp(url, {
+      method: 'POST',
+      body: task,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+      },
+    }).then(data => data.map(s => s[0])))
+  },
+
+  async getUserListDetail2(global_collection_id) {
+    let id = global_collection_id
+    if (id.length > 1000) throw new Error('get list error')
+    let info = await this.createHttp('https://mobiles.kugou.com/api/v5/special/info_v2?appid=1058&specialid=0&global_specialid=' + id + '&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-&signature=' + toMD5('NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163242519clientver=20000dfid=-format=jsonpglobal_specialid=' + id + 'mid=1586163242519specialid=0srcappid=2919uuid=1586163242519NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'), {
+      headers: {
+        mid: '1586163242519',
+        Referer: 'https://m3ws.kugou.com/share/index.php',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+        dfid: '-',
+        clienttime: '1586163242519',
+      },
+    })
+    let songInfo = await this.createHttp('https://mobiles.kugou.com/api/v5/special/song_v2?appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&pagesize=' + info.songcount + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-&signature=' + toMD5('NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163263991clientver=20000dfid=-global_specialid=' + id + 'mid=1586163263991pagesize=' + info.songcount + 'plat=0specialid=0srcappid=2919uuid=1586163263991version=8000NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'), {
+      headers: {
+        mid: '1586163263991',
+        Referer: 'https://m3ws.kugou.com/share/index.php',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+        dfid: '-',
+        clienttime: '1586163263991',
+      },
+    })
+    let result = await Promise.all(this.createTask(songInfo.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    // console.log(info, songInfo)
+    return {
+      list: this.filterData2(result) || [],
+      page: 1,
+      limit: songInfo.total,
+      total: songInfo.total,
+      source: 'kg',
+      info: {
+        name: info.specialname,
+        img: info.imgurl && info.imgurl.replace('{size}', 240),
+        // desc: body.result.info.list_desc,
+        author: info.nickname,
+        // play_count: this.formatPlayCount(info.count),
+      },
+    }
   },
 
   async getUserListDetail(link, page, retryNum = 0) {
     if (retryNum > 2) return Promise.reject(new Error('link try max num'))
     if (link.includes('#')) link = link.replace(/#.*$/, '')
+    if (link.includes('global_collection_id')) return this.getUserListDetail2(link.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
     if (link.includes('zlist.html')) {
       link = link.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
       if (link.includes('pagesize')) {
@@ -206,9 +248,10 @@ export default {
       },
     })
     const { headers: { location }, statusCode, body } = await this._requestObj_listDetailLink.promise
-    // console.log(body)
+    // console.log(body, location)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
-    if (!body && location) {
+    if (location) {
+      if (location.includes('global_collection_id')) return this.getUserListDetail2(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
       // console.log('location', location)
       let link = location.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
       if (link.includes('pagesize')) {
@@ -218,6 +261,7 @@ export default {
       }
       return this.getUserListDetail(link, page, ++retryNum)
     }
+    if (typeof body == 'string') return this.getUserListDetail2(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'))
     if (body.errcode !== 0) return this.getUserListDetail(link, page, ++retryNum)
     let listInfo = body.info['0']
     let result = body.list.info.map(item => ({ hash: item.hash }))
@@ -242,7 +286,7 @@ export default {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
-    if ((/\/(?:\d+)\.html/.test(id))) {
+    if (id.includes('special/single/')) {
       id = id.replace(this.regExps.listDetailLink, '$1')
     } else if (/http(?:s):/.test(id)) {
       return this.getUserListDetail(id.replace(/^.*http/, 'http'), page)
