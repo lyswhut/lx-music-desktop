@@ -149,7 +149,13 @@ export default {
     if (retryNum > 2) new Error('try max num')
     let result
     try {
-      result = await httpFetch('http://kmr.service.kugou.com/v2/album_audio/audio', { method: 'POST', body: data }).promise
+      result = await httpFetch('http://kmr.service.kugou.com/v2/album_audio/audio', {
+        method: 'POST',
+        body: data,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+        },
+      }).promise
     } catch (err) {
       console.log(err)
       return this.createHttp(data, ++retryNum)
@@ -158,7 +164,7 @@ export default {
     return result.body.data.map(s => s[0])
   },
 
-  createTaks(hashs) {
+  createTask(hashs) {
     let data = {
       appid: 1001,
       clienttime: 639437935,
@@ -216,7 +222,7 @@ export default {
     if (body.errcode !== 0) return this.getUserListDetail(link, page, ++retryNum)
     let listInfo = body.info['0']
     let result = body.list.info.map(item => ({ hash: item.hash }))
-    result = await Promise.all(this.createTaks(result)).then(([...datas]) => datas.flat())
+    result = await Promise.all(this.createTask(result)).then(([...datas]) => datas.flat())
     return {
       list: this.filterData2(result) || [],
       page,
