@@ -380,9 +380,12 @@ export default {
   // hash list filter
   filterData2(rawList) {
     // console.log(rawList)
+    let ids = new Set()
     let list = []
     rawList.forEach(item => {
       if (!item) return
+      if (ids.has(item.audio_info.audio_id)) return
+      ids.add(item.audio_info.audio_id)
       const types = []
       const _types = {}
       if (item.audio_info.filesize !== '0') {
