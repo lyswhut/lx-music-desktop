@@ -155,8 +155,9 @@ export default {
       console.log(err)
       return this.createHttp(url, options, ++retryNum)
     }
+    // console.log(result.statusCode, result.body)
     if (result.statusCode !== 200 || ((result.body.error_code === undefined ? result.body.errcode : result.body.error_code) !== 0)) return this.createHttp(url, options, ++retryNum)
-    return result.body.data
+    return result.body.data || result.body.info
   },
 
   createTask(hashs) {
@@ -186,6 +187,31 @@ export default {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
       },
     }).then(data => data.map(s => s[0])))
+  },
+
+  async getUserListDetail3(chain, page) {
+    const songInfo = await this.createHttp(`http://m.kugou.com/schain/transfer?pagesize=${this.listDetailLimit}&chain=${chain}&su=1&page=${page}&n=0.7928855356604456`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+      },
+    })
+    if (!songInfo.list) return this.getUserListDetail2(songInfo.global_collection_id)
+    let result = await Promise.all(this.createTask(songInfo.list.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    // console.log(info, songInfo)
+    return {
+      list: this.filterData2(result) || [],
+      page: 1,
+      limit: this.listDetailLimit,
+      total: songInfo.count,
+      source: 'kg',
+      info: {
+        name: songInfo.info.name,
+        img: songInfo.info.img,
+        // desc: body.result.info.list_desc,
+        author: songInfo.info.username,
+        // play_count: this.formatPlayCount(info.count),
+      },
+    }
   },
 
   async getUserListDetail2(global_collection_id) {
@@ -228,16 +254,19 @@ export default {
   },
 
   async getUserListDetail(link, page, retryNum = 0) {
-    if (retryNum > 2) return Promise.reject(new Error('link try max num'))
+    if (retryNum > 3) return Promise.reject(new Error('link try max num'))
     if (link.includes('#')) link = link.replace(/#.*$/, '')
     if (link.includes('global_collection_id')) return this.getUserListDetail2(link.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
-    if (link.includes('zlist.html')) {
-      link = link.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
-      if (link.includes('pagesize')) {
-        link = link.replace('pagesize=30', 'pagesize=' + this.listDetailLimit).replace('page=1', 'page=' + page)
-      } else {
-        link += `&pagesize=${this.listDetailLimit}&page=${page}`
-      }
+    if (link.includes('chain=')) return this.getUserListDetail3(link.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
+    if (link.includes('.html')) {
+      if (link.includes('zlist.html')) {
+        link = link.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
+        if (link.includes('pagesize')) {
+          link = link.replace('pagesize=30', 'pagesize=' + this.listDetailLimit).replace('page=1', 'page=' + page)
+        } else {
+          link += `&pagesize=${this.listDetailLimit}&page=${page}`
+        }
+      } else if (!link.includes('song.html')) return this.getUserListDetail3(link.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
     }
     if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
 
@@ -252,12 +281,19 @@ export default {
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
     if (location) {
       if (location.includes('global_collection_id')) return this.getUserListDetail2(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
+      if (location.includes('chain=')) return this.getUserListDetail3(location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
+
       // console.log('location', location)
-      let link = location.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
-      if (link.includes('pagesize')) {
-        link = link.replace('pagesize=30', 'pagesize=' + this.listDetailLimit).replace('page=1', 'page=' + page)
-      } else {
-        link += `&pagesize=${this.listDetailLimit}&page=${page}`
+      if (location.includes('.html')) {
+        if (location.includes('zlist.html')) {
+          let link = location.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
+          if (link.includes('pagesize')) {
+            link = link.replace('pagesize=30', 'pagesize=' + this.listDetailLimit).replace('page=1', 'page=' + page)
+          } else {
+            link += `&pagesize=${this.listDetailLimit}&page=${page}`
+          }
+          return this.getUserListDetail(link, page, ++retryNum)
+        } else return this.getUserListDetail3(location.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
       }
       return this.getUserListDetail(link, page, ++retryNum)
     }
