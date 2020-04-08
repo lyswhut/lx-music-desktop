@@ -286,6 +286,7 @@ export default {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
+    id = id.toString()
     if (id.includes('special/single/')) {
       id = id.replace(this.regExps.listDetailLink, '$1')
     } else if (/http(?:s):/.test(id)) {
