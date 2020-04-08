@@ -263,7 +263,6 @@ class Processor extends Transform {
     if (this.waitWritePicture == null) return
     let isLast = this.mdbLast && this.tasks === 1
     this.tasks--
-    this.mdb =
     this.push(
       MetaDataBlockPicture.create(
         isLast, this.waitWritePicture.pictureType,
