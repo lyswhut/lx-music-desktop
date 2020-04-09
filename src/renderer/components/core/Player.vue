@@ -211,7 +211,7 @@ export default {
         console.log('暂停播放')
         this.lyric.lrc.pause()
         this.stopPlay()
-        this.status = this.$t('core.player.stop')
+        // this.status = this.$t('core.player.stop')
       })
       this.audio.addEventListener('ended', () => {
         console.log('播放完毕')
