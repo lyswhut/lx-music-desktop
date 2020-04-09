@@ -52,7 +52,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, asyncSetArray, scrollTo, clipboardWriteText } from '../utils'
+import { throttle, scrollTo, clipboardWriteText } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -283,7 +283,8 @@ export default {
       this.isShowDownload = false
     },
     handleSelectAllData(isSelect) {
-      asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
+      this.selectdData = isSelect ? [...this.list] : []
+      // asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
     },
     resetSelect() {
       this.isSelectAll = false

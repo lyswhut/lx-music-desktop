@@ -79,7 +79,7 @@ export default {
         }
         checked = bool
       } else {
-        checked = this.bool == null ? '' : this.value
+        checked = this.bool ? this.value : ''
       }
       this.$emit('input', checked)
       this.$emit('change', checked)
