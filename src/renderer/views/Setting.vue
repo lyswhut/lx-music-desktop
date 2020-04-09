@@ -190,7 +190,9 @@ div.scroll(:class="$style.setting")
       p.small
         | 阅读常见问题后仍有问题可加企鹅群&nbsp;
         span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
-        | &nbsp;反馈，或到 GitHub 提交&nbsp;
+        | &nbsp;反馈
+        strong (无事勿加，入群先看群公告)
+        | ，或到 GitHub 提交&nbsp;
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
       br
