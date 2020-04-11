@@ -72,7 +72,7 @@ export default {
     }, 1000)
     this.saveSearchHistoryList = throttle(n => {
       window.electronStore_data.set('searchHistoryList', n)
-    }, 1000)
+    }, 500)
   },
   mounted() {
     document.body.classList.add(this.isNt ? 'noTransparent' : 'transparent')
@@ -119,10 +119,9 @@ export default {
   },
   methods: {
     ...mapActions(['getVersionInfo']),
-    ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress']),
+    ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting']),
     ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
-    ...mapMutations(['setSetting']),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
 
