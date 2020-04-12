@@ -208,6 +208,10 @@ const actions = {
     let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
     if (!result) return
     if (!downloadInfo) downloadInfo = result
+    commit('updateFilePath', {
+      downloadInfo,
+      filePath: path.join(rootState.setting.download.savePath, downloadInfo.fileName),
+    })
 
     // 开始任务
     commit('onStart', downloadInfo)
@@ -228,10 +232,9 @@ const actions = {
         // }
         commit('onCompleted', downloadInfo)
         _this.dispatch('download/startTask')
-        const filePath = path.join(options.path, options.fileName)
 
-        saveMeta(downloadInfo, filePath, rootState.setting.download.isEmbedPic)
-        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, filePath)
+        saveMeta(downloadInfo, downloadInfo.filePath, rootState.setting.download.isEmbedPic)
+        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, downloadInfo.filePath)
         console.log('on complate')
       },
       onError(err) {
@@ -404,6 +407,10 @@ const mutations = {
   },
   updateUrl(state, { downloadInfo, url }) {
     downloadInfo.url = url
+  },
+  updateFilePath(state, { downloadInfo, filePath }) {
+    if (downloadInfo.filePath === filePath) return
+    downloadInfo.filePath = filePath
   },
 }
 

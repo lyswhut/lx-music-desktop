@@ -39,6 +39,8 @@ div(:class="$style.download")
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { checkPath, openDirInExplorer } from '../utils'
+import path from 'path'
+
 export default {
   name: 'Download',
   data() {
@@ -76,6 +78,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['setting']),
     ...mapGetters('download', ['list', 'dls', 'downloadStatus']),
     ...mapGetters('player', ['listId', 'playIndex']),
     isPlayList() {
@@ -122,7 +125,7 @@ export default {
   methods: {
     ...mapActions('download', ['removeTask', 'removeTaskMultiple', 'startTask']),
     ...mapMutations('player', ['setList']),
-    ...mapMutations('download', ['pauseTask']),
+    ...mapMutations('download', ['pauseTask', 'updateFilePath']),
     handlePauseTask(index) {
       let info = this.list[index]
       let dl = this.dls[info.key]
@@ -133,7 +136,16 @@ export default {
       console.log('start')
       let info = this.list[index]
       let dl = this.dls[info.key]
-      dl ? dl.start() : this.startTask(info)
+      if (dl) {
+        this.updateFilePath({
+          downloadInfo: info,
+          filePath: path.join(this.setting.download.savePath, info.fileName),
+        })
+        dl.updateSaveInfo(this.setting.download.savePath, info.fileName)
+        dl.start()
+      } else {
+        this.startTask(info)
+      }
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
@@ -163,9 +175,9 @@ export default {
       }
     },
     handlePlay(index) {
-      if (!checkPath(this.list[index].filePath)) return
-      let path = this.list[index].filePath
-      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.filePath === path) })
+      const targetSong = this.list[index]
+      if (!checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
+      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.key === targetSong.key) })
     },
     handleListBtnClick(info) {
       const key = this.showList[info.index].key

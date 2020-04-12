@@ -53,6 +53,7 @@ import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, de
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
+import path from 'path'
 
 export default {
   data() {
@@ -305,15 +306,16 @@ export default {
       this.audioErrorTime = 0
 
       if (this.listId == 'download') {
-        console.log(targetSong.filePath)
-        if (!checkPath(targetSong.filePath) || !targetSong.isComplate || /\.ape$/.test(targetSong.filePath)) {
+        const filePath = path.join(this.setting.download.savePath, targetSong.fileName)
+        // console.log(filePath)
+        if (!checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
           return this.list.length == 1 ? null : this.handleNext()
         }
         this.musicInfo.songmid = targetSong.musicInfo.songmid
         this.musicInfo.singer = targetSong.musicInfo.singer
         this.musicInfo.name = targetSong.musicInfo.name
-        this.audio.src = targetSong.filePath
-        // console.log(targetSong.filePath)
+        this.audio.src = filePath
+        // console.log(filePath)
         this.setImg(targetSong.musicInfo)
         this.setLrc(targetSong.musicInfo)
       } else {
@@ -343,7 +345,10 @@ export default {
       // if (this.list.listName === null) return
       let list
       if (this.listId == 'download') {
-        list = this.list.filter(s => !(!checkPath(s.filePath) || !s.isComplate || /\.ape$/.test(s.filePath)))
+        list = this.list.filter(s => {
+          const filePath = path.join(this.setting.download.savePath, s.fileName)
+          return !(!checkPath(filePath) || !s.isComplate || /\.ape$/.test(filePath))
+        })
       } else if (this.isAPITemp) {
         list = this.list.filter(s => s.source == 'kw')
       } else {

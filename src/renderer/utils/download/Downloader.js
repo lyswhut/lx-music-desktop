@@ -59,6 +59,7 @@ class Task extends EventEmitter {
   __init() {
     this.status = STATUS.init
     const { path, startByte, endByte } = this.chunkInfo
+    this.progress.downloaded = 0
     if (startByte != null) this.requestOptions.headers.range = `bytes=${startByte}-${endByte}`
     return new Promise((resolve, reject) => {
       if (!path) return resolve()
@@ -322,6 +323,10 @@ class Task extends EventEmitter {
 
   refreshUrl(url) {
     this.downloadUrl = url
+  }
+
+  updateSaveInfo(filePath, fileName) {
+    this.chunkInfo.path = path.join(filePath, fileName)
   }
 }
 
