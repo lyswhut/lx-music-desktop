@@ -76,6 +76,7 @@ export default {
       importSongListText: '',
       listWidth: 645,
       isGetDetailFailed: false,
+      isInitedTagListWidth: false,
       // detailLoading: true,
     }
   },
@@ -161,7 +162,7 @@ export default {
     this.isToggleSource = true
     this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
-    this.setTagListWidth()
+    if (!this.isVisibleListDetail) this.setTagListWidth()
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -291,7 +292,11 @@ export default {
       this.selectdData = []
     },
     hideListDetail() {
-      setTimeout(() => this.setVisibleListDetail(false), 50)
+      setTimeout(async() => {
+        this.setVisibleListDetail(false)
+        await this.$nextTick()
+        this.setTagListWidth()
+      }, 50)
     },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
@@ -323,6 +328,7 @@ export default {
       return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
     setTagListWidth() {
+      this.isInitedTagListWidth = true
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     handleGetListDetail(id, page) {
