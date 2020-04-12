@@ -61,16 +61,19 @@ const mutations = {
     state.list[source] = data ? data.list.slice(0, 20) : []
   },
   setLists(state, lists) {
-    let list = []
+    let list = new Map()
     for (const source of lists) {
       if (!state.list[source.source].length) state.list[source.source] = source.list.slice(0, 20)
       const sourceList = source.list.slice(0, 10)
-      for (const item of sourceList) {
-        list.push(item.trim())
+      for (let item of sourceList) {
+        item = item.trim()
+        list.set(item, (list.has(item) ? list.get(item) : 0) + 1)
       }
     }
-    list = Array.from(new Set(list))
-    list.sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0))
+    list = Array.from(list)
+    list.sort((a, b) => a[0].charCodeAt(0) - b[0].charCodeAt(0))
+    list.sort((a, b) => b[1] - a[1])
+    list = list.map(item => item[0])
     state.list.all = list
   },
   clearList(state, source) {
