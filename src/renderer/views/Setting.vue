@@ -181,17 +181,19 @@ div.scroll(:class="$style.setting")
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://t-s.lanzous.com/b0bf2cfa')") 网盘地址
         | &nbsp;&nbsp;密码：
         span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
       p.small
         | 软件的常见问题可转至：
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        | 阅读常见问题后仍有问题可加企鹅群&nbsp;
+        strong 阅读常见问题后，
+
+        | 仍有问题可加企鹅群&nbsp;
         span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
         | &nbsp;反馈
-        strong (无事勿加，入群先看群公告)
+        strong (为免满人，无事勿加，入群先看群公告)
         | ，或到 GitHub 提交&nbsp;
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
@@ -218,7 +220,7 @@ div.scroll(:class="$style.setting")
       p.small
         |  本软件仅用于学习与交流使用，禁止将本软件用于
         strong 非法用途
-        | 或
+        | 或将版权内容用于
         strong 商业用途
         | 。
       p.small
@@ -669,7 +671,8 @@ export default {
     margin: 25px 0 15px;
   }
   p {
-    padding: 5px 0;
+    padding: 3px 0;
+    line-height: 1.3;
     .btn {
       + .btn {
         margin-left: 10px;
