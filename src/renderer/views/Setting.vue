@@ -22,16 +22,16 @@ div.scroll(:class="$style.setting")
           material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
             need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
+    dd(:title="$t('view.setting.basic_to_tray_title')")
+      h3 {{$t('view.setting.basic_to_tray')}}
+      div
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" @change="handleToTrayChange" :label="$t('view.setting.is_enable')")
+
     dd(:title="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
       div
         material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
-
-    dd(:title="$t('view.setting.basic_to_tray_title')")
-      h3 {{$t('view.setting.basic_to_tray')}}
-      div
-        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" @change="handleToTrayChange" :label="$t('view.setting.is_enable')")
 
     dd(:title="$t('view.setting.basic_lang_title')")
       h3 {{$t('view.setting.basic_lang')}}
