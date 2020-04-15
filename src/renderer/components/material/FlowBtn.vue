@@ -4,7 +4,7 @@ transition(enter-active-class="animated-fast zoomIn" leave-active-class="animate
     button(type="button" v-if="playBtn" :title="$t('material.flow_btn.play')" @click.stop="handleClick('play')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 287.386 287.386' space='preserve')
         use(xlink:href='#icon-testPlay')
-    button(type="button" v-if="addBtn" :title="$t('material.flow_btn.play')" @click.stop="handleClick('add')")
+    button(type="button" v-if="addBtn" :title="$t('material.flow_btn.add')" @click.stop="handleClick('add')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
         use(xlink:href='#icon-addTo')
     button(type="button" v-if="downloadBtn" :title="$t('material.flow_btn.download')" @click.stop="handleClick('download')")
