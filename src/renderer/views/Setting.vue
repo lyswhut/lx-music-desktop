@@ -188,8 +188,9 @@ div.scroll(:class="$style.setting")
         | 软件的常见问题可转至：
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        strong 阅读常见问题后，
-
+        strong 仔细 仔细 仔细
+        | 地阅读常见问题后，
+      p.small
         | 仍有问题可加企鹅群&nbsp;
         span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
         | &nbsp;反馈
@@ -198,17 +199,8 @@ div.scroll(:class="$style.setting")
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
       br
-      p.small
-        span 如果你资金充裕，或许可以
-        material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 捐赠下作者
-        span ~❤️，捐赠完全是一种
-        strong 用户自愿
-        | 的行为，
-      p.small 捐赠不会获得任何特权，并且你可能还要做好前一秒捐赠，下一秒软件将不可用的心理准备！
-      p.small
-        | 由于软件开发的初衷仅是为了
-        span(:class="$style.delLine") 自用
-        | 学习研究，因此软件直至停止维护都将会一直保持纯净。
+      p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
+      p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
       br
       p.small
