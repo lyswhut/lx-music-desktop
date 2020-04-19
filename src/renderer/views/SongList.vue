@@ -568,6 +568,9 @@ each(@themes, {
         color: ~'@{color-@{value}-theme_2-font-label}';
       }
     }
+    .tips {
+      color: ~'@{color-@{value}-theme_2-font}';
+    }
   }
 })
 </style>
