@@ -135,7 +135,7 @@ export default {
   filterList(rawData) {
     return rawData.map(item => ({
       play_count: item.total_play_count || this.formatPlayCount(item.play_count),
-      id: item.specialid,
+      id: 'id_' + item.specialid,
       author: item.nickname,
       name: item.specialname,
       time: item.publish_time || item.publishtime,
@@ -382,6 +382,8 @@ export default {
       return this.getUserListDetail(id.replace(/^.*http/, 'http'), page)
     } else if (/^\d+$/.test(id)) {
       return this.getUserListDetailByCode(id)
+    } else if (id.startsWith('id_')) {
+      id = id.replace('id_', '')
     }
 
     // if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
