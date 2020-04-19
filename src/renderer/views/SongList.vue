@@ -40,9 +40,15 @@
                     material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
               transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
                 div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
-                  material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big placeholder="输入歌单链接或歌单ID")
-                    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-                      use(xlink:href='#icon-right')
+                  div(:style="{ width: '500px' }")
+                    material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big :placeholder="$t('view.song_list.input_text')")
+                      svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
+                        use(xlink:href='#icon-right')
+                    div(:class="$style.tips")
+                      ul
+                        li {{$t('view.song_list.tip_1')}}
+                        li {{$t('view.song_list.tip_2')}}
+                        li {{$t('view.song_list.tip_3')}}
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
             div(v-show="!listData.list.length" :class="$style.noitem")
               p {{$t('view.song_list.loding_list')}}
@@ -531,6 +537,17 @@ export default {
   p {
     font-size: 24px;
     color: @color-theme_2-font-label;
+  }
+}
+
+.tips {
+  padding: 15px 0;
+  font-size: 12px;
+  color: @color-theme_2-font;
+  line-height: 1.5;
+  ul {
+    list-style: decimal;
+    padding-left: 15px;
   }
 }
 
