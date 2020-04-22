@@ -14,7 +14,6 @@ mainOn('max', event => {
 mainOn('close', (event, params) => {
   if (global.mainWindow) {
     // console.log('close', params)
-    if (params && params.isToTray) return global.mainWindow.hide()
     // global.mainWindowdow.destroy()
     // app.quit()
     global.mainWindow.close()
