@@ -15,6 +15,7 @@
   "source_tx": "Tencent",
   "source_wy": "Netease",
   "source_mg": "Migu",
+  "source_xm": "Xiami",
   "source_bd": "Baidu",
   "source_all": "Aggregated",
 
@@ -23,6 +24,7 @@
   "source_alias_tx": "TX Music",
   "source_alias_wy": "WY Music",
   "source_alias_mg": "MG Music",
+  "source_alias_xm": "XM Music",
   "source_alias_bd": "BD Music",
 
   "source_alias_all": "Aggregated"

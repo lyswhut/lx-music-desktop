@@ -14,6 +14,7 @@
   "source_tx": "企鵝音樂",
   "source_wy": "網易音樂",
   "source_mg": "咪咕音樂",
+  "source_xm": "蝦米音樂",
   "source_bd": "百度音樂",
   "source_all": "聚合搜索",
   "source_alias_kw": "小蝸音樂",
@@ -22,5 +23,6 @@
   "source_alias_wy": "小芸音樂",
   "source_alias_mg": "小蜜音樂",
   "source_alias_bd": "小杜音樂",
+  "source_alias_xm": "小霞音樂",
   "source_alias_all": "聚合大會"
 }

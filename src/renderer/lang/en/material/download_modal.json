@@ -1,5 +1,5 @@
 {
-  "btn_tip": "Tencent and NetEase sources only support 128k audio quality",
+  "btn_tip": "Tencent and NetEase only support 128k audio quality\nXiami sources does not support 128k audio quality",
   "lossless": "Lossless",
   "high_quality": "High Quality",
   "normal": "Normal"

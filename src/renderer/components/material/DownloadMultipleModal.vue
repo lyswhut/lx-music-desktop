@@ -8,7 +8,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
     material-btn(:class="$style.btn" @click="handleClick('128k')") {{$t('material.download_multiple_modal.normal')}} - 128K
     material-btn(:class="$style.btn" @click="handleClick('320k')") {{$t('material.download_multiple_modal.high_quality')}} - 320K
     //- material-btn(:class="$style.btn" @click="handleClick('ape')") 无损音质 - APE
-    material-btn(:class="$style.btn" @click="handleClick('flac')") {{$t('material.download_multiple_modal.lossless')}} - FLAC
+    material-btn(:class="$style.btn" @click="handleClick('flac')") {{$t('material.download_multiple_modal.lossless')}} - FLAC/WAV
 </template>
 
 <script>

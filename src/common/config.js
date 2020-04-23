@@ -36,4 +36,7 @@ module.exports = {
       fontSize: '18px',
     },
   ],
+  navigationUrlWhiteList: [
+    /^https:\/\/www\.xiami\.com/,
+  ],
 }

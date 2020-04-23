@@ -129,6 +129,8 @@ export default {
         case 'tx':
         case 'wy':
           type = '128k'
+        case 'xm':
+          if (type == 'flac') type = 'wav'
       }
       this.createDownloadMultiple({ list: [...this.selectdData], type })
       this.isShowDownloadMultiple = false

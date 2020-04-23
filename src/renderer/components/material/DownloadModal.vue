@@ -41,6 +41,7 @@ export default {
       switch (type) {
         case 'flac':
         case 'ape':
+        case 'wav':
           return this.$t('material.download_modal.lossless')
         case '320k':
           return this.$t('material.download_modal.high_quality')
@@ -54,6 +55,8 @@ export default {
         case 'wy':
         case 'tx':
           return type == '128k'
+        case 'xm':
+          return type == '128k' || type == '320k'
 
         default:
           return true

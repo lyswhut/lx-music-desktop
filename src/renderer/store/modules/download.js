@@ -123,7 +123,7 @@ const downloadLyric = (downloadInfo, filePath) => {
     ? Promise.resolve(downloadInfo.musicInfo.lrc)
     : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
   promise.then(lrc => {
-    if (lrc) saveLrc(filePath.replace(/(mp3|flac|ape)$/, 'lrc'), lrc)
+    if (lrc) saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrc)
   })
 }
 

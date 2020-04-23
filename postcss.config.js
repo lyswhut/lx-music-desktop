@@ -17,7 +17,7 @@ module.exports = {
         'top', 'left', 'bottom', 'right',
         'border-radius',
       ],
-      selectorBlackList: ['html'],
+      selectorBlackList: ['html', 'ignore-to-rem'],
       replace: true,
       mediaQuery: false,
       minPixelValue: 0,

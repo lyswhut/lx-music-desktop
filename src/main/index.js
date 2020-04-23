@@ -21,17 +21,32 @@ app.on('second-instance', (event, argv, cwd) => {
 })
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
+const { navigationUrlWhiteList } = require('../common/config')
 
 app.on('web-contents-created', (event, contents) => {
   contents.on('will-navigate', (event, navigationUrl) => {
     if (isDev) return console.log('navigation to url:', navigationUrl)
-    event.preventDefault()
+    if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) return event.preventDefault()
+    console.log('navigation to url:', navigationUrl)
   })
   contents.on('new-window', async(event, navigationUrl) => {
     event.preventDefault()
     if (/^devtools/.test(navigationUrl)) return
     console.log(navigationUrl)
     await shell.openExternal(navigationUrl)
+  })
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false
+
+    // Verify URL being loaded
+    if (!navigationUrlWhiteList.some(url => url.test(params.src))) {
+      event.preventDefault()
+    }
   })
 })
 

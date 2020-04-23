@@ -8,6 +8,7 @@
   core-icons
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
   material-version-modal(v-show="version.showModal")
+  material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
 #container(v-else :class="theme")
   core-aside#left
   #right
@@ -17,6 +18,7 @@
   core-icons
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
   material-version-modal(v-show="version.showModal")
+  material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
 </template>
 
 <script>
@@ -42,6 +44,9 @@ export default {
         apiSource: 'test',
         proxy: {},
         isShowPact: false,
+        xm: {
+          isShowVerify: false,
+        },
       },
       updateTimeout: null,
       envParams: {
@@ -63,6 +68,7 @@ export default {
   created() {
     this.saveSetting = throttle(n => {
       window.electronStore_config.set('setting', n)
+      rendererSend('updateAppSetting', n)
     })
     this.saveDefaultList = throttle(n => {
       window.electronStore_list.set('defaultList', n)
@@ -285,6 +291,9 @@ export default {
           },
         })
       }
+    },
+    handleXMVerifyModalClose() {
+      music.xm.closeVerifyModal()
     },
   },
   beforeDestroy() {

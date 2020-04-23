@@ -134,7 +134,7 @@ export default {
   border-radius: 5px;
   box-shadow: 0 0 3px rgba(0, 0, 0, .3);
   overflow: hidden;
-  max-height: 70%;
+  max-height: 80%;
   max-width: 70%;
   position: relative;
   display: flex;

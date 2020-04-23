@@ -434,14 +434,14 @@ export default {
       switch (songInfo.source) {
         case 'wy':
         case 'tx':
-        // case 'kg':
           return '128k'
+        // case 'kg':
       }
       let type = '128k'
       if (highQuality && songInfo._types['320k']) type = '320k'
       return type
     },
-    setUrl(targetSong, isRefresh) {
+    setUrl(targetSong, isRefresh, isRetryed = false) {
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = this.$t('core.player.geting_url')
@@ -450,6 +450,7 @@ export default {
         this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
         if (err.message == requestMsg.cancelRequest) return
+        if (!isRetryed) return this.setUrl(targetSong, isRefresh, true)
         this.status = err.message
         this.addDelayNextTimeout()
         return Promise.reject(err)

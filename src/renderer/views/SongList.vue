@@ -100,6 +100,7 @@ export default {
         case 'tx':
         case 'mg':
         case 'kg':
+        case 'xm':
           list.push({
             name: this.$t('view.song_list.open_list', { name: this.sourceInfo.sources.find(s => s.id == this.source).name }),
             id: 'importSongList',
@@ -254,6 +255,8 @@ export default {
         case 'tx':
         case 'wy':
           type = '128k'
+        case 'xm':
+          if (type == 'flac') type = 'wav'
       }
       this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
       this.resetSelect()

@@ -6,13 +6,15 @@ import crypto from 'crypto'
  * @param {*} type
  */
 
-const types = ['flac', 'ape', '320k', '192k', '128k']
+const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
   switch (info.source) {
     // case 'kg':
     case 'wy':
     case 'tx':
       return '128k'
+    case 'xm':
+      if (type == 'wav') type = '320k'
   }
   const rangeType = types.slice(types.indexOf(type))
   for (const type of rangeType) {

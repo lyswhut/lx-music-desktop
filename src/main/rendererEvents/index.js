@@ -12,3 +12,6 @@ require('./getCacheSize')
 require('./setIgnoreMouseEvent')
 require('./getEnvParams')
 require('./tray')
+require('./updateSetting')
+
+require('./xm_verify')
