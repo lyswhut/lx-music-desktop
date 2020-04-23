@@ -46,7 +46,7 @@ material-modal(:show="!setting.isAgreePact || globalObj.isShowPact" @close="hand
         | &nbsp;音乐平台不易，建议到对应音乐平台支持正版资源。
 
       br
-      p
+      p(v-if="!setting.isAgreePact")
         strong 若你（使用者）接受以上协议，请点击下面的“接受”按钮签署本协议，若不接受，请点击“不接受”后退出软件并清除本软件的所有数据。
 
 
