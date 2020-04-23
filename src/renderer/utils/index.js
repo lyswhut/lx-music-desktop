@@ -175,7 +175,7 @@ export const objectDeepMerge = (target, source) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.22'
+  const defaultVersion = '1.0.23'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -249,6 +249,7 @@ export const updateSetting = (setting, version) => {
     sourceNameType: 'alias',
     randomAnimate: true,
     ignoreVersion: null,
+    isAgreePact: false,
   }
 
   // 使用新年皮肤

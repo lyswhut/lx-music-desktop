@@ -1,4 +1,4 @@
-// const { app } = require('electron')
+const { app } = require('electron')
 const { mainOn } = require('../../common/ipc')
 
 mainOn('min', event => {
@@ -11,11 +11,8 @@ mainOn('max', event => {
     global.mainWindow.maximize()
   }
 })
-mainOn('close', (event, params) => {
-  if (global.mainWindow) {
-    // console.log('close', params)
-    // global.mainWindowdow.destroy()
-    // app.quit()
-    global.mainWindow.close()
-  }
+mainOn('close', (event, isForce) => {
+  if (isForce) return app.exit(0)
+
+  if (global.mainWindow) global.mainWindow.close()
 })

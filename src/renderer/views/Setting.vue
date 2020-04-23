@@ -202,23 +202,14 @@ div.scroll(:class="$style.setting")
       p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
       p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
+      p.small
+        | 你已签署本软件的&nbsp;
+        material-btn(min @click="handleShowPact") 许可协议
+        | ，协议的在线版本在&nbsp;
+        strong.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
+        | &nbsp;。
       br
-      p.small
-        | 使用本软件可能产生的
-        strong 任何涉及版权相关的数据
-        | 请于
-        strong 24小时内删除
-        | ，
-      p.small
-        |  本软件仅用于学习与交流使用，禁止将本软件用于
-        strong 非法用途
-        | 或将版权内容用于
-        strong 商业用途
-        | 。
-      p.small
-        | 使用本软件造成的一切后果由
-        strong 使用者
-        | 承担！
+
       p
         small By：
         | 落雪无痕
@@ -431,6 +422,7 @@ export default {
       }
       if (settingData.type !== 'setting') return
       const { version: settingVersion, setting } = updateSetting(settingData.data)
+      setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
     },
     exportSetting(path) {
@@ -482,6 +474,7 @@ export default {
       }
       if (allData.type !== 'allData') return
       const { version: settingVersion, setting } = updateSetting(allData.setting)
+      setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
@@ -625,6 +618,9 @@ export default {
     handleToTrayChange(isToTray) {
       this.current_setting.tray.isShow = isToTray
       rendererSend('changeTray', this.current_setting.tray)
+    },
+    handleShowPact() {
+      window.globalObj.isShowPact = true
     },
   },
 }

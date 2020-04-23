@@ -6,6 +6,7 @@
     core-view#view
     core-player#player
   core-icons
+  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
   material-version-modal(v-show="version.showModal")
 #container(v-else :class="theme")
   core-aside#left
@@ -14,6 +15,7 @@
     core-view#view
     core-player#player
   core-icons
+  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
   material-version-modal(v-show="version.showModal")
 </template>
 
@@ -39,6 +41,7 @@ export default {
       globalObj: {
         apiSource: 'test',
         proxy: {},
+        isShowPact: false,
       },
       updateTimeout: null,
       envParams: {
