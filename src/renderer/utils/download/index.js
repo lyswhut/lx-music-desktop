@@ -74,7 +74,9 @@ export default ({
 
   debugDownload && console.log('Downloading: ', url)
 
-  dl.start()
+  dl.start().catch(err => {
+    onError(err)
+  })
 
   return dl
 }

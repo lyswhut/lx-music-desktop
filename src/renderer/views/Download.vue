@@ -262,9 +262,9 @@ export default {
         this.handleStartTask(index)
       }
     },
-    handlePlay(index) {
+    async handlePlay(index) {
       const targetSong = this.list[index]
-      if (!checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
+      if (!await checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
       this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.key === targetSong.key) })
     },
     handleListBtnClick(info) {
@@ -333,9 +333,9 @@ export default {
       }
       this.removeAllSelect()
     },
-    handleOpenFolder(index) {
+    async handleOpenFolder(index) {
       let path = this.list[index].filePath
-      if (!checkPath(path)) return
+      if (!await checkPath(path)) return
       openDirInExplorer(path)
     },
     handleSearch(index) {

@@ -97,10 +97,14 @@ export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
 
 /**
  * 检查路径是否存在
- * @param {*} path
+ * @param {*} path 路径
  */
-export const checkPath = path => fs.existsSync(path)
-
+export const checkPath = (path) => new Promise(resolve => {
+  fs.access(path, fs.constants.F_OK, err => {
+    if (err) return resolve(false)
+    resolve(true)
+  })
+})
 
 /**
  * 选择路径

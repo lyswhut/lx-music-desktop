@@ -413,10 +413,10 @@ export default {
     handleOpenDir(dir) {
       openDirInExplorer(dir)
     },
-    importSetting(path) {
+    async importSetting(path) {
       let settingData
       try {
-        settingData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        settingData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }
@@ -435,10 +435,10 @@ export default {
         console.log(err)
       })
     },
-    importPlayList(path) {
+    async importPlayList(path) {
       let listData
       try {
-        listData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        listData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }
@@ -465,10 +465,10 @@ export default {
         console.log(err)
       })
     },
-    importAllData(path) {
+    async importAllData(path) {
       let allData
       try {
-        allData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        allData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }

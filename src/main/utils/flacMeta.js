@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fsPromises = fs.promises
 const path = require('path')
 const getImgSize = require('image-size')
 const request = require('request')
@@ -8,8 +9,7 @@ const FlacProcessor = require('./flac-metadata')
 const extReg = /^(\.(?:jpe?g|png)).*$/
 const vendor = 'reference libFLAC 1.2.1 20070917'
 
-
-const writeMeta = (filePath, meta, picPath) => {
+const writeMeta = async(filePath, meta, picPath) => {
   const comments = Object.keys(meta).map(key => `${key.toUpperCase()}=${meta[key] || ''}`)
   const data = {
     vorbis: {
@@ -18,7 +18,8 @@ const writeMeta = (filePath, meta, picPath) => {
     },
   }
   if (picPath) {
-    const apicData = Buffer.from(fs.readFileSync(picPath, 'binary'), 'binary')
+    const apicData = await fsPromises.readFile(picPath)
+    console.log(apicData)
     let imgSize = getImgSize(apicData)
     let mime_type
     let bitsPerPixel

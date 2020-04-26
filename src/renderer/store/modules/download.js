@@ -31,14 +31,21 @@ const getters = {
   downloadStatus: state => state.downloadStatus,
 }
 
-const checkPath = path => {
-  try {
-    if (!fs.existsSync(path)) fs.mkdirSync(path, { recursive: true })
-  } catch (error) {
-    return error.message
-  }
-  return false
-}
+const checkPath = path => new Promise((resolve, reject) => {
+  fs.access(path, fs.constants.F_OK | fs.constants.W_OK, err => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        fs.mkdir(path, { recursive: true }, err => {
+          if (err) return reject(err)
+          resolve()
+        })
+        return
+      }
+      return reject(err)
+    }
+    resolve()
+  })
+})
 
 const getExt = type => {
   switch (type) {
@@ -161,7 +168,7 @@ const deleteFile = path => new Promise((resolve, reject) => {
 
 // actions
 const actions = {
-  createDownload({ state, rootState, commit }, { musicInfo, type }) {
+  async createDownload({ state, rootState, commit }, { musicInfo, type }) {
     let ext = getExt(type)
     if (checkList(state.list, musicInfo, type, ext)) return
     const downloadInfo = {
@@ -185,7 +192,7 @@ const actions = {
     downloadInfo.filePath = path.join(rootState.setting.download.savePath, downloadInfo.fileName)
     commit('addTask', downloadInfo)
     try { // 删除同路径下的同名文件
-      fs.unlinkSync(downloadInfo.filePath)
+      await deleteFile(downloadInfo.filePath)
     } catch (err) {
       if (err.code !== 'ENOENT') return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
     }
@@ -202,7 +209,7 @@ const actions = {
   createDownloadMultiple({ state, rootState }, { list, type }) {
     addTask([...list], type, this)
   },
-  startTask({ commit, state, rootState }, downloadInfo) {
+  async startTask({ commit, state, rootState }, downloadInfo) {
     // 检查是否可以开始任务
     if (downloadInfo && downloadInfo != state.downloadStatus.WAITING) commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
     let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
@@ -216,8 +223,11 @@ const actions = {
     // 开始任务
     commit('onStart', downloadInfo)
     commit('setStatusText', { downloadInfo, text: '任务初始化中' })
-    let msg = checkPath(rootState.setting.download.savePath)
-    if (msg) return commit('setStatusText', '检查下载目录出错: ' + msg)
+    try {
+      await checkPath(rootState.setting.download.savePath)
+    } catch (error) {
+      if (error) return commit('setStatusText', '检查下载目录出错: ' + error.message)
+    }
     const _this = this
     const options = {
       url: downloadInfo.url,
@@ -312,7 +322,7 @@ const actions = {
       this.dispatch('download/startTask')
     })
   },
-  removeTaskMultiple({ commit, rootState, state }, list) {
+  async removeTaskMultiple({ commit, rootState, state }, list) {
     list.forEach(item => {
       let index = state.list.indexOf(item)
       if (index < 0) return

@@ -298,7 +298,7 @@ export default {
         offset: 150,
       })
     },
-    play() {
+    async play() {
       console.log('play', this.playIndex)
       this.checkDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
@@ -308,7 +308,7 @@ export default {
       if (this.listId == 'download') {
         const filePath = path.join(this.setting.download.savePath, targetSong.fileName)
         // console.log(filePath)
-        if (!checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
+        if (!await checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
           return this.list.length == 1 ? null : this.handleNext()
         }
         this.musicInfo.songmid = targetSong.musicInfo.songmid
@@ -341,14 +341,15 @@ export default {
         this.handleNext()
       }, 5000)
     },
-    handleNext() {
+    async handleNext() {
       // if (this.list.listName === null) return
       let list
       if (this.listId == 'download') {
-        list = this.list.filter(s => {
-          const filePath = path.join(this.setting.download.savePath, s.fileName)
-          return !(!checkPath(filePath) || !s.isComplate || /\.ape$/.test(filePath))
-        })
+        list = []
+        for (const item of this.list) {
+          const filePath = path.join(this.setting.download.savePath, item.fileName)
+          if ((!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath))) list.push(item)
+        }
       } else if (this.isAPITemp) {
         list = this.list.filter(s => s.source == 'kw')
       } else {
