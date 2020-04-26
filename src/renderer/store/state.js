@@ -60,6 +60,11 @@ export default {
       class: 'red',
     },
     {
+      id: 10,
+      name: '粉装玉琢',
+      class: 'pink',
+    },
+    {
       id: 5,
       name: '重斤球紫',
       class: 'purple',
@@ -68,6 +73,11 @@ export default {
       id: 6,
       name: '灰常美丽',
       class: 'grey',
+    },
+    {
+      id: 11,
+      name: '青出于黑',
+      class: 'ming',
     },
     {
       id: 7,
