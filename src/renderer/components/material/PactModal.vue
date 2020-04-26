@@ -60,15 +60,9 @@ import { mapGetters, mapMutations } from 'vuex'
 import { rendererSend } from '../../../common/ipc'
 import { openUrl } from '../../utils'
 export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
-      time: 20,
+      time: 2,
       globalObj: {
         isShowPact: false,
       },
@@ -83,12 +77,19 @@ export default {
       return this.btnEnable ? '' : `(${this.time})`
     },
   },
-  mounted() {
-    if (!this.setting.isAgreePact) {
+  watch: {
+    'setting.isAgreePact'(n) {
+      if (n) return
+      this.time = 10
       this.startTimeout()
-    }
+    },
+  },
+  mounted() {
     this.$nextTick(() => {
       this.globalObj = window.globalObj
+      if (!this.setting.isAgreePact) {
+        this.startTimeout()
+      }
     })
   },
   methods: {

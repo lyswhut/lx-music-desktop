@@ -91,6 +91,9 @@ export default {
   mounted() {
     if (this.setting.randomAnimate) this.createWatch()
   },
+  beforeDestroy() {
+    this.removeWatch()
+  },
   methods: {
     createWatch() {
       this.removeWatch()
