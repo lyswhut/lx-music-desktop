@@ -85,6 +85,7 @@ export default {
   },
   mounted() {
     document.body.classList.add(this.isNt ? 'noTransparent' : 'transparent')
+    window.eventHub.$emit('bindKey')
     this.init()
   },
   watch: {
@@ -303,6 +304,7 @@ export default {
       document.body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
     document.body.removeEventListener('click', this.handleBodyClick)
+    window.eventHub.$emit('unbindKey')
   },
 }
 </script>

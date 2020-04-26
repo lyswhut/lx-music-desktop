@@ -8,9 +8,7 @@
         table
           thead
             tr
-              th.nobreak.center(style="width: 37px;")
-                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.search.unselect_all') : $t('view.search.select_all')")
+              th.nobreak.center(style="width: 10px;") #
               th.nobreak(style="width: 25%;") {{$t('view.search.name')}}
               th.nobreak(style="width: 20%;") {{$t('view.search.singer')}}
               th.nobreak(style="width: 25%;") {{$t('view.search.album')}}
@@ -18,15 +16,14 @@
               th.nobreak(style="width: 10%;") {{$t('view.search.time')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody(@contextmenu="handleContextMenu")
+          tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
             tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick($event, index)")
-              td.nobreak.center(style="width: 37px;" @click.stop)
-                material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
+              td.nobreak.center(style="width: 37px;" :class="$style.noSelect" @click.stop) {{index + 1}}
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span.badge.badge-theme-success(:class="$style.labelQuality" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
-                span.badge.badge-theme-info(:class="$style.labelQuality" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
-                span(:class="$style.labelSource" v-if="searchSourceId == 'all'") {{item.source}}
+                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
+                span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
+                span(:class="[$style.labelSource, $style.noSelect]" v-if="searchSourceId == 'all'") {{item.source}}
               td.break(style="width: 20%;")
                 span.select {{item.singer}}
               td.break(style="width: 25%;")
@@ -37,7 +34,7 @@
                   :download-btn="item.source == 'kw' || !isAPITemp"
                   @btn-click="handleListBtnClick")
               td(style="width: 10%;")
-                span(:class="$style.time") {{item.interval || '--/--'}}
+                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
@@ -76,13 +73,16 @@ export default {
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
-      isSelectAll: false,
-      isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
       searchSourceId: null,
       isShowListAdd: false,
       isShowListAddMultiple: false,
+      keyEvent: {
+        isShiftDown: false,
+        isAltDown: false,
+        isADown: false,
+      },
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -91,6 +91,12 @@ export default {
     this.page = 1
     this.handleSearch(this.text, this.page)
     next()
+  },
+  created() {
+    this.listenEvent()
+  },
+  beforeDestroy() {
+    this.unlistenEvent()
   },
   mounted() {
     // console.log('mounted')
@@ -118,16 +124,13 @@ export default {
     selectdData(n) {
       const len = n.length
       if (len) {
-        this.isSelectAll = true
-        this.isIndeterminate = len !== this.listInfo.list.length
         this.isShowEditBtn = true
       } else {
-        this.isSelectAll = false
         this.isShowEditBtn = false
       }
     },
     'listInfo.list'() {
-      this.resetSelect()
+      this.removeAllSelect()
     },
     searchSourceId(n) {
       if (n === this.setting.search.searchSource) return
@@ -165,6 +168,43 @@ export default {
     ...mapActions('hotSearch', {
       getHotSearch: 'getList',
     }),
+    listenEvent() {
+      window.eventHub.$on('shift_down', this.handle_shift_down)
+      window.eventHub.$on('shift_up', this.handle_shift_up)
+      window.eventHub.$on('alt_down', this.handle_alt_down)
+      window.eventHub.$on('alt_up', this.handle_alt_up)
+      window.eventHub.$on('mod+a_down', this.handle_mod_a_down)
+      window.eventHub.$on('mod+a_up', this.handle_mod_a_up)
+    },
+    unlistenEvent() {
+      window.eventHub.$off('shift_down', this.handle_shift_down)
+      window.eventHub.$off('shift_up', this.handle_shift_up)
+      window.eventHub.$off('alt_down', this.handle_alt_down)
+      window.eventHub.$off('alt_up', this.handle_alt_up)
+      window.eventHub.$off('mod+a_down', this.handle_mod_a_down)
+      window.eventHub.$off('mod+a_up', this.handle_mod_a_up)
+    },
+    handle_shift_down() {
+      if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
+    },
+    handle_shift_up() {
+      if (this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = false
+    },
+    handle_alt_down() {
+      if (!this.keyEvent.isAltDown) this.keyEvent.isAltDown = true
+    },
+    handle_alt_up() {
+      if (this.keyEvent.isAltDown) this.keyEvent.isAltDown = false
+    },
+    handle_mod_a_down() {
+      if (!this.keyEvent.isADown) {
+        this.keyEvent.isADown = true
+        this.handleSelectAllData()
+      }
+    },
+    handle_mod_a_up() {
+      if (this.keyEvent.isADown) this.keyEvent.isADown = false
+    },
     handleSearch(text, page) {
       if (text === '') return this.clearList()
 
@@ -177,6 +217,9 @@ export default {
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
+
+      this.handleSelectData(event, index)
+
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -206,6 +249,52 @@ export default {
             this.isShowListAdd = true
           })
           break
+      }
+    },
+    handleSelectData(event, clickIndex) {
+      if (this.keyEvent.isShiftDown) {
+        if (this.selectdData.length) {
+          let lastSelectIndex = this.listInfo.list.indexOf(this.selectdData[this.selectdData.length - 1])
+          this.removeAllSelect()
+          if (lastSelectIndex != clickIndex) {
+            let isNeedReverse = false
+            if (clickIndex < lastSelectIndex) {
+              let temp = lastSelectIndex
+              lastSelectIndex = clickIndex
+              clickIndex = temp
+              isNeedReverse = true
+            }
+            this.selectdData = this.listInfo.list.slice(lastSelectIndex, clickIndex + 1)
+            if (isNeedReverse) this.selectdData.reverse()
+            let nodes = this.$refs.dom_tbody.childNodes
+            do {
+              nodes[lastSelectIndex].classList.add('active')
+              lastSelectIndex++
+            } while (lastSelectIndex <= clickIndex)
+          }
+        } else {
+          event.currentTarget.classList.add('active')
+          this.selectdData.push(this.listInfo.list[clickIndex])
+        }
+      } else if (this.keyEvent.isAltDown) {
+        let item = this.listInfo.list[clickIndex]
+        let index = this.selectdData.indexOf(item)
+        if (index < 0) {
+          this.selectdData.push(item)
+          event.currentTarget.classList.add('active')
+        } else {
+          this.selectdData.splice(index, 1)
+          event.currentTarget.classList.remove('active')
+        }
+      } else if (this.selectdData.length) this.removeAllSelect()
+    },
+    removeAllSelect() {
+      this.selectdData = []
+      let dom_tbody = this.$refs.dom_tbody
+      if (!dom_tbody) return
+      let nodes = dom_tbody.querySelectorAll('.active')
+      for (const node of nodes) {
+        if (node.parentNode == dom_tbody) node.classList.remove('active')
       }
     },
     testPlay(index) {
@@ -238,15 +327,16 @@ export default {
     },
     handleAddDownloadMultiple(type) {
       this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
-      this.resetSelect()
+      this.removeAllSelect()
       this.isShowDownloadMultiple = false
     },
-    handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.listInfo.list] : []
-    },
-    resetSelect() {
-      this.isSelectAll = false
-      this.selectdData = []
+    handleSelectAllData() {
+      this.removeAllSelect()
+      this.selectdData = [...this.listInfo.list]
+      let nodes = this.$refs.dom_tbody.childNodes
+      for (const node of nodes) {
+        node.classList.add('active')
+      }
     },
     handleFlowBtnClick(action) {
       switch (action) {
@@ -255,7 +345,7 @@ export default {
           break
         case 'play':
           this.testPlay()
-          this.resetSelect()
+          this.removeAllSelect()
           break
         case 'add':
           this.isShowListAddMultiple = true
@@ -265,8 +355,8 @@ export default {
     filterList(list) {
       return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
     },
-    handleListAddModalClose(isSelect) {
-      if (isSelect) this.resetSelect()
+    handleListAddModalClose(isClearSelect) {
+      if (isClearSelect) this.removeAllSelect()
       this.isShowListAddMultiple = false
     },
     handleContextMenu(event) {
@@ -320,6 +410,10 @@ export default {
 }
 .thead {
   flex: none;
+  tr > th:first-child {
+    color: @color-theme_2-font-label;
+    // padding-left: 10px;
+  }
 }
 .tbody {
   flex: auto;
@@ -329,13 +423,18 @@ export default {
     :global(.badge) {
       margin-left: 3px;
     }
+    &:first-child {
+      // padding-left: 10px;
+      font-size: 11px;
+      color: @color-theme_2-font-label;
+    }
   }
   :global(.badge) {
     opacity: .85;
   }
 
   &.copying {
-    .labelQuality, .labelSource, .time {
+    .no-select {
       display: none;
     }
   }
@@ -444,6 +543,13 @@ each(@themes, {
       }
       &:active {
         background-color: ~'@{color-@{value}-theme_2-active}';
+      }
+    }
+    .tbody {
+      td {
+        &:first-child {
+          color: ~'@{color-@{value}-theme_2-font-label}';
+        }
       }
     }
     .history-clear-btn {

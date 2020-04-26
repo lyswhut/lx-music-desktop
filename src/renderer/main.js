@@ -14,11 +14,13 @@ import store from './store'
 
 import '../common/error'
 
+import bindkey from './config/bindkey'
+
 sync(store, router)
 
-// if (!process.env.IS_WEB) {
+window.eventHub = new Vue()
 
-// }
+bindkey()
 
 Vue.config.productionTip = false
 
