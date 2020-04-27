@@ -1,4 +1,6 @@
-// https://github.com/claus/flac-metadata
+// Fork from https://github.com/claus/flac-metadata
+// 在 flac-metadata 的基础上修复与改进标签与封面写入逻辑
+
 
 const Transform = require('stream').Transform
 
