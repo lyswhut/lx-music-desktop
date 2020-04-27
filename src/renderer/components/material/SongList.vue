@@ -123,7 +123,7 @@ export default {
       selectdList: [],
       keyEvent: {
         isShiftDown: false,
-        isAltDown: false,
+        isModDown: false,
         isADown: false,
       },
     }
@@ -138,16 +138,16 @@ export default {
     listenEvent() {
       window.eventHub.$on('shift_down', this.handle_shift_down)
       window.eventHub.$on('shift_up', this.handle_shift_up)
-      window.eventHub.$on('alt_down', this.handle_alt_down)
-      window.eventHub.$on('alt_up', this.handle_alt_up)
+      window.eventHub.$on('mod_down', this.handle_mod_down)
+      window.eventHub.$on('mod_up', this.handle_mod_up)
       window.eventHub.$on('mod+a_down', this.handle_mod_a_down)
       window.eventHub.$on('mod+a_up', this.handle_mod_a_up)
     },
     unlistenEvent() {
       window.eventHub.$off('shift_down', this.handle_shift_down)
       window.eventHub.$off('shift_up', this.handle_shift_up)
-      window.eventHub.$off('alt_down', this.handle_alt_down)
-      window.eventHub.$off('alt_up', this.handle_alt_up)
+      window.eventHub.$off('mod_down', this.handle_mod_down)
+      window.eventHub.$off('mod_up', this.handle_mod_up)
       window.eventHub.$off('mod+a_down', this.handle_mod_a_down)
       window.eventHub.$off('mod+a_up', this.handle_mod_a_up)
     },
@@ -157,11 +157,11 @@ export default {
     handle_shift_up() {
       if (this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = false
     },
-    handle_alt_down() {
-      if (!this.keyEvent.isAltDown) this.keyEvent.isAltDown = true
+    handle_mod_down() {
+      if (!this.keyEvent.isModDown) this.keyEvent.isModDown = true
     },
-    handle_alt_up() {
-      if (this.keyEvent.isAltDown) this.keyEvent.isAltDown = false
+    handle_mod_up() {
+      if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
     handle_mod_a_down() {
       if (!this.keyEvent.isADown) {
@@ -214,7 +214,7 @@ export default {
           event.currentTarget.classList.add('active')
           this.selectdList.push(this.list[clickIndex])
         }
-      } else if (this.keyEvent.isAltDown) {
+      } else if (this.keyEvent.isModDown) {
         let item = this.list[clickIndex]
         let index = this.selectdList.indexOf(item)
         if (index < 0) {

@@ -11,12 +11,12 @@ const bindKey = () => {
     eventHub.$emit('shift_up', { event, combo })
     return false
   }, 'keyup')
-  mousetrap.bind('alt', (event, combo) => {
-    eventHub.$emit('alt_down', { event, combo })
+  mousetrap.bind('mod', (event, combo) => {
+    eventHub.$emit('mod_down', { event, combo })
     return false
   }, 'keydown')
-  mousetrap.bind('alt', (event, combo) => {
-    eventHub.$emit('alt_up', { event, combo })
+  mousetrap.bind('mod', (event, combo) => {
+    eventHub.$emit('mod_up', { event, combo })
     return false
   }, 'keyup')
   mousetrap.bind('mod+a', (event, combo) => {
@@ -32,8 +32,8 @@ const bindKey = () => {
 const unbindKey = () => {
   mousetrap.unbind('shift', 'keydown')
   mousetrap.unbind('shift', 'keyup')
-  mousetrap.unbind('alt', 'keydown')
-  mousetrap.unbind('alt', 'keyup')
+  mousetrap.unbind('mod', 'keydown')
+  mousetrap.unbind('mod', 'keyup')
   mousetrap.unbind('mod+a', 'keydown')
   mousetrap.unbind('mod+a', 'keyup')
 }
