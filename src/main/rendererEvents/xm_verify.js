@@ -15,7 +15,10 @@ const closeView = async() => {
 
 mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   if (!global.mainWindow) return reject(new Error('mainwindow is undefined'))
-  if (view) view.destroy()
+  if (view) {
+    global.mainWindow.removeBrowserView(view)
+    view.destroy()
+  }
 
   view = new BrowserView()
   view.webContents.on('did-finish-load', () => {
