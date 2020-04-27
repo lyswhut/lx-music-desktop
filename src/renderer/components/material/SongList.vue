@@ -224,7 +224,9 @@ export default {
           this.selectdList.splice(index, 1)
           event.currentTarget.classList.remove('active')
         }
-      } else if (this.selectdList.length) this.removeAllSelect()
+      } else if (this.selectdList.length) {
+        this.removeAllSelect()
+      } else return
       this.$emit('input', [...this.selectdList])
     },
     removeAllSelect() {
