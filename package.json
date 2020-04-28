@@ -207,7 +207,7 @@
     "dnscache": "^1.0.2",
     "electron-log": "^4.1.1",
     "electron-store": "^5.1.1",
-    "electron-updater": "^4.2.5",
+    "electron-updater": "^4.3.1",
     "image-size": "^0.8.3",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.3",
@@ -216,7 +216,7 @@
     "node-id3": "^0.1.16",
     "request": "^2.88.2",
     "vue": "^2.6.11",
-    "vue-i18n": "^8.17.3",
+    "vue-i18n": "^8.17.4",
     "vue-router": "^3.1.6",
     "vuex": "^3.3.0",
     "vuex-router-sync": "^5.0.0"
