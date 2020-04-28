@@ -52,6 +52,7 @@ export default {
         'slideInLeft',
         'slideInRight',
         'slideInUp',
+        'jackInTheBox',
       ],
       animateOut: [
         'flipOutX',
