@@ -3,6 +3,7 @@
   "volume": "Volume: ",
   "pause": "Pause",
   "play": "Play",
+  "prev": "Prev",
   "next": "Next",
   "playing": "Now playing...",
   "stop": "Paused",
@@ -12,5 +13,9 @@
   "loading": "Music loading...",
   "buffering": "Buffering...",
   "geting_url": "Getting music link...",
-  "lyric_error": "Failed to get lyrics"
+  "lyric_error": "Failed to get lyrics",
+  "hide_detail": "Hide detail page",
+  "name": "Name: ",
+  "singer": "Artist: ",
+  "album": "Album: "
 }

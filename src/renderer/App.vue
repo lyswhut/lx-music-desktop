@@ -1,24 +1,24 @@
 <template lang="pug">
-#container(v-if="isProd && !isNt" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
+#container(v-if="isProd && !isNt" :class="[theme, nd ? 'nd' : '']" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
   core-aside#left
   #right
     core-toolbar#toolbar
     core-view#view
     core-player#player
   core-icons
-  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
-  material-version-modal(v-show="version.showModal")
   material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
-#container(v-else :class="theme")
+  material-version-modal(v-show="version.showModal")
+  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
+#container(v-else :class="[theme, nd ? 'nd' : '']")
   core-aside#left
   #right
     core-toolbar#toolbar
     core-view#view
     core-player#player
   core-icons
-  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
-  material-version-modal(v-show="version.showModal")
   material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
+  material-version-modal(v-show="version.showModal")
+  material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
 </template>
 
 <script>
@@ -55,6 +55,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('player', ['isShowPlayerDetail']),
     ...mapGetters(['setting', 'theme', 'version', 'windowSizeActive']),
     ...mapGetters('list', ['defaultList', 'loveList']),
     ...mapGetters('download', {
@@ -64,6 +65,9 @@ export default {
     ...mapGetters('search', {
       searchHistoryList: 'historyList',
     }),
+    nd() {
+      return this.isShowPlayerDetail
+    },
   },
   created() {
     this.saveSetting = throttle(n => {

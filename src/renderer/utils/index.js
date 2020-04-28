@@ -65,6 +65,7 @@ const easeInOutQuad = (t, b, c, d) => {
 export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
   if (!element) return
   const start = element.scrollTop || element.scrollY || 0
+  let cancel = false
   if (to > start) {
     let maxScrollTop = element.scrollHeight - element.clientHeight
     if (to > maxScrollTop) to = maxScrollTop
@@ -87,12 +88,16 @@ export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
       element.scrollTop = val
     }
     if (currentTime < duration) {
+      if (cancel) return fn()
       setTimeout(animateScroll, increment)
     } else {
       fn()
     }
   }
   animateScroll()
+  return () => {
+    cancel = true
+  }
 }
 
 /**

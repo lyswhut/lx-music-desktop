@@ -19,7 +19,6 @@ const writeMeta = async(filePath, meta, picPath) => {
   }
   if (picPath) {
     const apicData = await fsPromises.readFile(picPath)
-    console.log(apicData)
     let imgSize = getImgSize(apicData)
     let mime_type
     let bitsPerPixel

@@ -66,6 +66,11 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 }
+:global(.nd) {
+  .aside {
+    -webkit-app-region: no-drag;
+  }
+}
 .logo {
   box-sizing: border-box;
   padding: 12% 13%;

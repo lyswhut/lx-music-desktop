@@ -3,6 +3,7 @@
   "volume": "当前音量：",
   "pause": "暂停",
   "play": "播放",
+  "prev": "上一首",
   "next": "下一首",
   "playing": "播放中...",
   "stop": "暂停播放",
@@ -12,5 +13,9 @@
   "loading": "音乐加载中...",
   "buffering": "缓冲中...",
   "geting_url": "歌曲链接获取中...",
-  "lyric_error": "歌词获取失败"
+  "lyric_error": "歌词获取失败",
+  "hide_detail": "隐藏详情页",
+  "name": "歌曲名：",
+  "singer": "艺术家：",
+  "album": "专辑名："
 }

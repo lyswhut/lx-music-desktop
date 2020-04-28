@@ -6,6 +6,7 @@ const state = {
   listId: null,
   playIndex: -1,
   changePlay: false,
+  isShowPlayerDetail: false,
 }
 
 let urlRequest
@@ -18,6 +19,7 @@ const getters = {
   listId: state => state.listId,
   changePlay: satte => satte.changePlay,
   playIndex: state => state.playIndex,
+  isShowPlayerDetail: state => state.isShowPlayerDetail,
 }
 
 // actions
@@ -86,6 +88,9 @@ const mutations = {
   },
   resetChangePlay(state) {
     state.changePlay = false
+  },
+  visiblePlayerDetail(state, visible) {
+    state.isShowPlayerDetail = visible
   },
 }
 
