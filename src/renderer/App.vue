@@ -44,6 +44,7 @@ export default {
         apiSource: 'test',
         proxy: {},
         isShowPact: false,
+        qualityList: {},
         xm: {
           isShowVerify: false,
         },
@@ -121,6 +122,7 @@ export default {
       this.saveSearchHistoryList(n)
     },
     'globalObj.apiSource'(n) {
+      this.globalObj.qualityList = music.supportQuality[n]
       if (n != this.setting.apiSource) {
         this.setSetting(Object.assign({}, this.setting, {
           apiSource: n,
@@ -196,6 +198,7 @@ export default {
 
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
+      this.globalObj.qualityList = music.supportQuality[this.setting.apiSource]
       this.globalObj.proxy = Object.assign({}, this.setting.network.proxy)
       window.globalObj = this.globalObj
 

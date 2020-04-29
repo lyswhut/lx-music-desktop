@@ -51,7 +51,7 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
   },
   "browserslist": [
-    "Electron 8.2.3"
+    "Electron 8.2.4"
   ],
   "engines": {
     "node": ">= 12"
@@ -160,7 +160,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
     "del": "^5.1.0",
-    "electron": "^8.2.3",
+    "electron": "^8.2.4",
     "electron-builder": "^22.5.1",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^3.0.0",
@@ -175,7 +175,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "file-loader": "^6.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
-    "html-webpack-plugin": "^4.2.0",
+    "html-webpack-plugin": "^4.2.1",
     "less": "^3.11.1",
     "less-loader": "^6.0.0",
     "markdown-it": "^10.0.0",

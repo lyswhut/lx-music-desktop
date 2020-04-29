@@ -1,4 +1,4 @@
-import api_source from '../api-source'
+import { apis } from '../api-source'
 import leaderboard from './leaderboard'
 import songList from './songList'
 import musicSearch from './musicSearch'
@@ -12,7 +12,7 @@ const mg = {
   leaderboard,
   hotSearch,
   getMusicUrl(songInfo, type) {
-    return api_source('mg').getMusicUrl(songInfo, type)
+    return apis('mg').getMusicUrl(songInfo, type)
   },
   getLyric(songInfo) {
     return lyric.getLyric(songInfo)

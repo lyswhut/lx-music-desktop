@@ -29,6 +29,9 @@ export default {
     info() {
       return this.musicInfo || {}
     },
+    qualityList() {
+      return window.globalObj.qualityList[this.musicInfo.source]
+    },
   },
   methods: {
     handleClick(type) {
@@ -51,16 +54,7 @@ export default {
       }
     },
     checkSource(type) {
-      switch (this.musicInfo.source) {
-        case 'wy':
-        case 'tx':
-          return type == '128k'
-        case 'xm':
-          return type == '128k' || type == '320k'
-
-        default:
-          return true
-      }
+      return this.qualityList.includes(type)
     },
   },
 }

@@ -8,14 +8,9 @@ import crypto from 'crypto'
 
 const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
-  switch (info.source) {
-    // case 'kg':
-    case 'wy':
-    case 'tx':
-      return '128k'
-    case 'xm':
-      if (type == 'wav') type = '320k'
-  }
+  let list = window.globalObj.qualityList[info.source]
+  if (!list) return '128k'
+  if (!list.includes(type)) type = list[list.length - 1]
   const rangeType = types.slice(types.indexOf(type))
   for (const type of rangeType) {
     if (info._types[type]) return type

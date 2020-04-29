@@ -12,7 +12,7 @@ import xm_api_test from './xm/api-test'
 // import wy_api_internal from './wy/api-internal'
 // import bd_api_internal from './bd/api-internal'
 
-const apis = {
+const apiList = {
   kw_api_test,
   tx_api_test,
   kg_api_test,
@@ -32,15 +32,15 @@ const apis = {
 const getAPI = source => {
   switch (window.globalObj.apiSource) {
     // case 'messoer':
-    //   return apis[`${source}_api_messoer`]
+    //   return apiList[`${source}_api_messoer`]
     case 'test':
-      return apis[`${source}_api_test`]
+      return apiList[`${source}_api_test`]
     case 'temp':
-      return apis[`${source}_api_temp`]
+      return apiList[`${source}_api_temp`]
   }
 }
 
-export default source => {
+export const apis = source => {
   switch (source) {
     case 'tx':
       return getAPI('tx')
@@ -57,4 +57,19 @@ export default source => {
     default:
       return getAPI('kw')
   }
+}
+
+export const supportQuality = {
+  temp: {
+    kw: ['128k'],
+  },
+  test: {
+    kw: ['128k'],
+    kg: ['128k'],
+    tx: ['128k'],
+    wy: ['128k'],
+    mg: ['128k'],
+    xm: ['128k'],
+    bd: ['128k'],
+  },
 }

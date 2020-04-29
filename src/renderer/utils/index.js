@@ -428,3 +428,6 @@ export const setWindowSize = (width, height) => rendererSend('setWindowSize', { 
 export const getProxyInfo = () => window.globalObj.proxy.enable
   ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
   : undefined
+
+
+export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined

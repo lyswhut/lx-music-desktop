@@ -60,7 +60,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { scrollTo } from '../utils'
+import { scrollTo, assertApiSupport } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'SongList',
@@ -107,9 +107,6 @@ export default {
           })
       }
       return list
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
     tagList() {
       let tagInfo = this.tags[this.source]
@@ -208,7 +205,7 @@ export default {
         this.resetSelect()
       } else {
         targetSong = this.listDetail.list[index]
-        if (this.isAPITemp && targetSong.source != 'kw') return
+        if (!this.assertApiSupport(targetSong.source)) return
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -250,14 +247,7 @@ export default {
       this.isShowDownload = false
     },
     handleAddDownloadMultiple(type) {
-      switch (this.source) {
-        // case 'kg':
-        case 'tx':
-        case 'wy':
-          type = '128k'
-        case 'xm':
-          if (type == 'flac') type = 'wav'
-      }
+      if (this.source == 'xm' && type == 'flac') type = 'wav'
       this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
@@ -334,7 +324,7 @@ export default {
       this.handleGetListDetail(this.importSongListText, 1)
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
+      return list.filter(s => this.assertApiSupport(s.source))
     },
     setTagListWidth() {
       this.isInitedTagListWidth = true
@@ -346,6 +336,9 @@ export default {
         this.isGetDetailFailed = true
         return Promise.reject(err)
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
     /*     addSongListDetail() {
       // this.detailLoading = true

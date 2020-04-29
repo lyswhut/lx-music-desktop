@@ -5,6 +5,9 @@ import wy from './wy'
 import mg from './mg'
 import bd from './bd'
 import xm from './xm'
+import { supportQuality } from './api-source'
+
+
 const sources = {
   sources: [
     {
@@ -52,4 +55,5 @@ export default {
       sm && sm.init && sm.init()
     }
   },
+  supportQuality,
 }

@@ -56,7 +56,7 @@ div(:class="$style.player")
 <script>
 import Lyric from 'lrc-file-parser'
 import { rendererSend } from '../../../common/ipc'
-import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce } from '../../utils'
+import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, assertApiSupport } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
@@ -124,9 +124,6 @@ export default {
     },
     progress() {
       return this.nowPlayTime / this.maxPlayTime || 0
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
   },
   mounted() {
@@ -368,10 +365,8 @@ export default {
           const filePath = path.join(this.setting.download.savePath, item.fileName)
           if ((!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath))) list.push(item)
         }
-      } else if (this.isAPITemp) {
-        list = this.list.filter(s => s.source == 'kw')
       } else {
-        list = this.list
+        list = this.list.filter(s => this.assertApiSupport(s.source))
       }
       return list
     },
@@ -379,7 +374,7 @@ export default {
       // console.log(playIndex)
       let list = await this.filterList()
       if (!list.length) return this.setPlayIndex(-1)
-      let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])
+      let playIndex = list.indexOf(this.list[this.playIndex])
       let index
       switch (this.setting.player.togglePlayMethod) {
         case 'random':
@@ -393,14 +388,14 @@ export default {
           return
       }
       if (index < 0) return
-      if (this.list !== list) index = this.list.indexOf(list[index])
+      index = this.list.indexOf(list[index])
       this.setPlayIndex(index)
     },
     async handleNext() {
       // if (this.list.listName === null) return
       let list = await this.filterList()
       if (!list.length) return this.setPlayIndex(-1)
-      let playIndex = this.list === list ? this.playIndex : list.indexOf(this.list[this.playIndex])
+      let playIndex = list.indexOf(this.list[this.playIndex])
       // console.log(playIndex)
       let index
       switch (this.setting.player.togglePlayMethod) {
@@ -417,7 +412,7 @@ export default {
           return
       }
       if (index < 0) return
-      if (this.list !== list) index = this.list.indexOf(list[index])
+      index = this.list.indexOf(list[index])
       this.setPlayIndex(index)
     },
     hanldeListRandom(list, index) {
@@ -470,14 +465,9 @@ export default {
       this.musicInfo.img = null
     },
     getPlayType(highQuality, songInfo) {
-      switch (songInfo.source) {
-        case 'wy':
-        case 'tx':
-          return '128k'
-        // case 'kg':
-      }
       let type = '128k'
-      if (highQuality && songInfo._types['320k']) type = '320k'
+      let list = window.globalObj.qualityList[songInfo.source]
+      if (highQuality && songInfo._types['320k'] && list && list.includes('320k')) type = '320k'
       return type
     },
     setUrl(targetSong, isRefresh, isRetryed = false) {
@@ -653,6 +643,9 @@ export default {
         case 'volume':
           break
       }
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
   },
 }

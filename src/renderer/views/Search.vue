@@ -30,8 +30,8 @@
                 span.select {{item.albumName}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
-                  :play-btn="item.source == 'kw' || !isAPITemp"
-                  :download-btn="item.source == 'kw' || !isAPITemp"
+                  :play-btn="assertApiSupport(item.source)"
+                  :download-btn="assertApiSupport(item.source)"
                   @btn-click="handleListBtnClick")
               td(style="width: 10%;")
                 span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
@@ -53,14 +53,14 @@
         p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'kw' || searchSourceId == 'all' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo, clipboardWriteText } from '../utils'
+import { scrollTo, clipboardWriteText, assertApiSupport } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'Search',
@@ -150,9 +150,6 @@ export default {
     ...mapGetters('list', ['defaultList']),
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
     hotSearchList() {
       return this.$store.getters['hotSearch/list'][this.setting.search.searchSource] || []
@@ -303,7 +300,7 @@ export default {
         targetSong = this.selectdData[0]
         this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
       } else {
-        if (this.isAPITemp && this.listInfo.list[index].source != 'kw') return
+        if (!this.assertApiSupport(this.listInfo.list[index].source)) return
         targetSong = this.listInfo.list[index]
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
@@ -353,7 +350,10 @@ export default {
       }
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
+      return this.searchSourceId == 'all'
+        ? list.filter(s => this.assertApiSupport(s.source))
+        : this.assertApiSupport(this.searchSourceId)
+          ? [...list] : []
     },
     handleListAddModalClose(isClearSelect) {
       if (isClearSelect) this.removeAllSelect()
@@ -382,6 +382,9 @@ export default {
           text,
         },
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
   },
 }

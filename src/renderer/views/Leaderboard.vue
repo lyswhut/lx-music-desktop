@@ -34,9 +34,6 @@ export default {
     types() {
       return this.source ? this.sourceInfo.sourceList[this.source] : []
     },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
-    },
   },
   watch: {
     tabId(n, o) {
@@ -124,14 +121,7 @@ export default {
       this.isShowDownload = false
     },
     handleAddDownloadMultiple(type) {
-      switch (this.source) {
-        // case 'kg':
-        case 'tx':
-        case 'wy':
-          type = '128k'
-        case 'xm':
-          if (type == 'flac') type = 'wav'
-      }
+      if (this.source == 'xm' && type == 'flac') type = 'wav'
       this.createDownloadMultiple({ list: [...this.selectdData], type })
       this.isShowDownloadMultiple = false
       this.resetSelect()

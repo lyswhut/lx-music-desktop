@@ -1,4 +1,4 @@
-import api_source from '../api-source'
+import { apis } from '../api-source'
 import leaderboard from './leaderboard'
 import songList from './songList'
 import musicSearch from './musicSearch'
@@ -14,7 +14,7 @@ const xm = {
   hotSearch,
   closeVerifyModal,
   getMusicUrl(songInfo, type) {
-    return api_source('xm').getMusicUrl(songInfo, type)
+    return apis('xm').getMusicUrl(songInfo, type)
   },
   getLyric(songInfo) {
     return lyric.getLyric(songInfo)

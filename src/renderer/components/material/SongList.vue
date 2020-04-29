@@ -28,9 +28,9 @@ div(:class="$style.songList")
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :search-btn="true"
                   :remove-btn="false" @btn-click="handleListBtnClick"
-                  :listAdd-btn="item.source == 'kw' || !isAPITemp"
-                  :play-btn="item.source == 'kw' || !isAPITemp"
-                  :download-btn="item.source == 'kw' || !isAPITemp")
+                  :listAdd-btn="assertApiSupport(item.source)"
+                  :play-btn="assertApiSupport(item.source)"
+                  :download-btn="assertApiSupport(item.source)")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
@@ -41,12 +41,12 @@ div(:class="$style.songList")
   transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
     div(v-show="!list.length" :class="$style.noitem")
       p(v-html="noItem")
-  material-flow-btn(:show="isShowEditBtn && (source == 'kw' || !isAPITemp)" :remove-btn="false" @btn-click="handleFlowBtnClick")
+  material-flow-btn(:show="isShowEditBtn && assertApiSupport(source)" :remove-btn="false" @btn-click="handleFlowBtnClick")
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo, clipboardWriteText } from '../../utils'
+import { scrollTo, clipboardWriteText, assertApiSupport } from '../../utils'
 export default {
   name: 'MaterialSongList',
   model: {
@@ -86,9 +86,6 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
-    },
   },
   watch: {
     selectdList(n) {
@@ -185,7 +182,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.emitEvent((this.source == 'kw' || !this.isAPITemp) ? 'testPlay' : 'search', index)
+      this.emitEvent(this.assertApiSupport(this.source) ? 'testPlay' : 'search', index)
       this.clickTime = 0
       this.clickIndex = -1
     },
@@ -273,6 +270,9 @@ export default {
         if (!str.length) return
         clipboardWriteText(str)
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
   },
 }

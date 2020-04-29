@@ -207,6 +207,7 @@ const actions = {
     }
   },
   createDownloadMultiple({ state, rootState }, { list, type }) {
+    if (!list.length) return
     addTask([...list], type, this)
   },
   async startTask({ commit, state, rootState }, downloadInfo) {

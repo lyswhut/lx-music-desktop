@@ -16,7 +16,7 @@
         table
           tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
             tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
-              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
+              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', assertApiSupport(item.source) ? null : $style.disabled]")
               td.nobreak.center(style="width: 37px;" :class="$style.noSelect" @click.stop) {{index + 1}}
               td.break(style="width: 25%;")
                 span.select {{item.name}}
@@ -49,7 +49,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, scrollTo, clipboardWriteText } from '../utils'
+import { throttle, scrollTo, clipboardWriteText, assertApiSupport } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -87,9 +87,6 @@ export default {
     },
     list() {
       return this.listData.list
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
     listData() {
       if (!this.listId) return this.defaultList
@@ -333,7 +330,7 @@ export default {
       }
     },
     testPlay(index) {
-      if (this.isAPITemp && this.list[index].source != 'kw') return
+      if (!this.assertApiSupport(this.list[index].source)) return
       this.setPlayList({ list: this.list, listId: this.listId, index })
     },
     handleRemove(index) {
@@ -343,7 +340,7 @@ export default {
       switch (info.action) {
         case 'download': {
           const minfo = this.list[info.index]
-          if (this.isAPITemp && minfo.source != 'kw') return
+          if (!this.assertApiSupport(minfo.source)) return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
@@ -378,7 +375,7 @@ export default {
       // asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
     },
     handleAddDownloadMultiple(type) {
-      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : [...this.selectdData]
+      const list = this.selectdData.filter(s => this.assertApiSupport(s.source))
       this.createDownloadMultiple({ list, type })
       this.removeAllSelect()
       this.isShowDownloadMultiple = false
@@ -419,6 +416,9 @@ export default {
         if (!str.length) return
         clipboardWriteText(str)
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
   },
 }
