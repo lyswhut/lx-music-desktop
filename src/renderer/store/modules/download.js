@@ -291,7 +291,10 @@ const actions = {
     try {
       await checkPath(rootState.setting.download.savePath)
     } catch (error) {
-      if (error) return commit('setStatusText', '检查下载目录出错: ' + error.message)
+      commit('onError', downloadInfo)
+      commit('setStatusText', '检查下载目录出错: ' + error.message)
+      await dispatch('startTask')
+      return
     }
     const _this = this
     const options = {
@@ -422,7 +425,11 @@ const actions = {
       dl.updateSaveInfo(rootState.setting.download.savePath, downloadInfo.fileName)
       try {
         await dl.start()
-      } catch (_) {}
+      } catch (error) {
+        commit('onError', downloadInfo)
+        commit('setStatusText', error.message)
+        await dispatch('startTask')
+      }
     } else {
       await dispatch('handleStartTask', downloadInfo)
     }
