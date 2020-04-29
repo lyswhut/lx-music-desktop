@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('download', ['list', 'dls', 'downloadStatus']),
+    ...mapGetters('download', ['list', 'downloadStatus']),
     ...mapGetters('player', ['listId', 'playIndex']),
     isPlayList() {
       return this.listId == 'download'
@@ -126,9 +126,8 @@ export default {
     this.unlistenEvent()
   },
   methods: {
-    ...mapActions('download', ['removeTask', 'removeTaskMultiple', 'startTask']),
+    ...mapActions('download', ['removeTask', 'removeTasks', 'startTask', 'startTasks', 'pauseTask', 'pauseTasks']),
     ...mapMutations('player', ['setList']),
-    ...mapMutations('download', ['pauseTask', 'updateFilePath']),
     listenEvent() {
       window.eventHub.$on('shift_down', this.handle_shift_down)
       window.eventHub.$on('shift_up', this.handle_shift_up)
@@ -165,27 +164,6 @@ export default {
     },
     handle_mod_a_up() {
       if (this.keyEvent.isADown) this.keyEvent.isADown = false
-    },
-    handlePauseTask(index) {
-      let info = this.list[index]
-      let dl = this.dls[info.key]
-      dl ? dl.stop() : this.pauseTask(info)
-      console.log('pause')
-    },
-    handleStartTask(index) {
-      console.log('start')
-      let info = this.list[index]
-      let dl = this.dls[info.key]
-      if (dl) {
-        this.updateFilePath({
-          downloadInfo: info,
-          filePath: path.join(this.setting.download.savePath, info.fileName),
-        })
-        dl.updateSaveInfo(this.setting.download.savePath, info.fileName)
-        dl.start()
-      } else {
-        this.startTask(info)
-      }
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
@@ -268,17 +246,18 @@ export default {
       this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.key === targetSong.key) })
     },
     handleListBtnClick(info) {
-      const key = this.showList[info.index].key
+      let item = this.showList[info.index]
+      const key = item.key
       let index = this.list.findIndex(i => i.key === key)
       switch (info.action) {
         case 'play':
           this.handlePlay(index)
           break
         case 'start':
-          this.handleStartTask(index)
+          this.startTask(item)
           break
         case 'pause':
-          this.handlePauseTask(index)
+          this.pauseTask(index)
           break
         case 'remove':
           this.removeTask(index)
@@ -300,38 +279,22 @@ export default {
         node.classList.add('active')
       }
     },
-    handleFlowBtnClick(action) {
+    async handleFlowBtnClick(action) {
+      let selectdData = [...this.selectdData]
+      this.removeAllSelect()
+      await this.$nextTick()
+
       switch (action) {
         case 'start':
-          this.selectdData.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.RUN) return
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handleStartTask(index)
-          })
+          this.startTasks(selectdData)
           break
-        case 'pause': {
-          let runs = []
-          this.selectdData.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            if (item.status == this.downloadStatus.RUN) return runs.push(item)
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handlePauseTask(index)
-          })
-          runs.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handlePauseTask(index)
-          })
+        case 'pause':
+          this.pauseTasks(selectdData)
           break
-        }
         case 'remove':
-          this.removeTaskMultiple(this.selectdData)
+          this.removeTasks(selectdData)
           break
       }
-      this.removeAllSelect()
     },
     async handleOpenFolder(index) {
       let path = this.list[index].filePath
