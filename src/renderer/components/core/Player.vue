@@ -363,7 +363,8 @@ export default {
         list = []
         for (const item of this.list) {
           const filePath = path.join(this.setting.download.savePath, item.fileName)
-          if ((!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath))) list.push(item)
+          if (!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath)) continue
+          list.push(item)
         }
       } else {
         list = this.list.filter(s => this.assertApiSupport(s.source))
