@@ -38,6 +38,7 @@
     "publish:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p onTagOrDraft",
     "publish:linux:deb:x86": "cross-env ARCH=x86 electron-builder -l=deb --ia32 -p onTagOrDraft",
     "pack:linux": "node build-config/pack.js && electron-builder -l",
+    "pack:mac": "node build-config/pack.js && electron-builder -m=dmg",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "dev": "node build-config/runner-dev.js",
     "clean:electron": "rimraf dist/electron",
