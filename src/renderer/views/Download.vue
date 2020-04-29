@@ -257,10 +257,10 @@ export default {
           this.startTask(item)
           break
         case 'pause':
-          this.pauseTask(index)
+          this.pauseTask(item)
           break
         case 'remove':
-          this.removeTask(index)
+          this.removeTask(item)
           break
         case 'file':
           this.handleOpenFolder(index)
