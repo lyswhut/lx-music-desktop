@@ -120,6 +120,12 @@
         "provider": "github",
         "owner": "lyswhut",
         "repo": "lx-music-desktop"
+      },
+      {
+        "package": "lx-music-desktop",
+        "repo": "lx-music-desktop",
+        "user": "lyswhut",
+        "provider": "bintray"
       }
     ]
   },
