@@ -460,7 +460,6 @@ export default {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  -webkit-app-region: drag;
 
   img {
     max-width: 100%;
@@ -665,7 +664,7 @@ each(@themes, {
         &.close:after {
           background-color: ~'@{color-@{value}-closeBtn}';
         }
-        
+
         &.hide:hover:after {
           background-color: ~'@{color-@{value}-hideBtn-hover}';
         }
