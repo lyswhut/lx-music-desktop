@@ -13,6 +13,6 @@ mainOn('max', event => {
 })
 mainOn('close', (event, isForce) => {
   if (isForce) return app.exit(0)
-
+  global.isTrafficLightClose = true
   if (global.mainWindow) global.mainWindow.close()
 })

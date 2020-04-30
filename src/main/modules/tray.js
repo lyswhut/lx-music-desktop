@@ -36,6 +36,13 @@ function createTray() {
       ? mainWindow.focus()
       : mainWindow.show()
   })
+  tray.on('double-click', () => {
+    const mainWindow = global.mainWindow
+    if (!mainWindow) return
+    mainWindow.isVisible()
+      ? mainWindow.focus()
+      : mainWindow.show()
+  })
 }
 
 function destroyTray() {
