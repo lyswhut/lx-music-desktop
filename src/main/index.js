@@ -7,13 +7,13 @@ if (!app.requestSingleInstanceLock()) {
   return
 }
 app.on('second-instance', (event, argv, cwd) => {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore()
-    } else if (mainWindow.isVisible()) {
-      mainWindow.focus()
+  if (global.mainWindow) {
+    if (global.mainWindow.isMinimized()) {
+      global.mainWindow.restore()
+    } else if (global.mainWindow.isVisible()) {
+      global.mainWindow.focus()
     } else {
-      mainWindow.show()
+      global.mainWindow.show()
     }
   } else {
     app.quit()
@@ -67,7 +67,7 @@ const winEvent = require('./rendererEvents/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
 const { isMac, isLinux } = require('../common/utils')
 
-let mainWindow
+
 let winURL
 
 if (isDev) {
@@ -84,7 +84,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  mainWindow = global.mainWindow = new BrowserWindow({
+  global.mainWindow = new BrowserWindow({
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -103,9 +103,9 @@ function createWindow() {
     },
   })
 
-  mainWindow.loadURL(winURL)
+  global.mainWindow.loadURL(winURL)
 
-  winEvent(mainWindow)
+  winEvent(global.mainWindow)
   // mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()
@@ -120,7 +120,17 @@ function init() {
 app.on('ready', init)
 
 app.on('activate', () => {
-  if (mainWindow === null) return init()
+  if (global.mainWindow) {
+    if (global.mainWindow.isMinimized()) {
+      global.mainWindow.restore()
+    } else if (global.mainWindow.isVisible()) {
+      global.mainWindow.focus()
+    } else {
+      global.mainWindow.show()
+    }
+  } else if (global.mainWindow === null) {
+    init()
+  }
 })
 
 app.on('window-all-closed', () => {

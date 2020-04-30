@@ -1,5 +1,5 @@
 const { app, Tray, Menu } = require('electron')
-const { isMac, isWin } = require('../../common/utils')
+const { isWin } = require('../../common/utils')
 const { tray: TRAY_EVENT_NAME } = require('../events/_name')
 const path = require('path')
 global.lx_event.tray.on(TRAY_EVENT_NAME.create, () => {
@@ -13,7 +13,7 @@ let tray
 function createTray() {
   if ((tray && !tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? '256x256.ico' : isMac ? '512x512.icns' : '512x512.png')
+  const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate.ico' : 'trayTemplate.png')
 
   // 托盘
   tray = new Tray(iconPath)
