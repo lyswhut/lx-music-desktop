@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { b64DecodeUnicode } from '../../index'
+import { b64DecodeUnicode, decodeName } from '../../index'
 
 export default {
   regexps: {
@@ -12,7 +12,7 @@ export default {
       },
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return b64DecodeUnicode(body.replace(this.regexps.matchLrc, '$1'))
+      return decodeName(b64DecodeUnicode(body.replace(this.regexps.matchLrc, '$1')))
     })
     return requestObj
   },

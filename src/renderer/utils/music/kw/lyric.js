@@ -1,4 +1,5 @@
 import { httpFetch } from '../../request'
+import { decodeName } from '../../index'
 
 export default {
   formatTime(time) {
@@ -12,7 +13,7 @@ export default {
   getLyric(songId) {
     const requestObj = httpFetch(`http://m.kuwo.cn/newh5/singles/songinfoandlrc?musicId=${songId}`)
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return this.transformLrc(body.data)
+      return decodeName(this.transformLrc(body.data))
     })
     return requestObj
   },
