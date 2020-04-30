@@ -95,18 +95,23 @@
       "shortcutName": "lx-music"
     },
     "dmg": {
+      "window": {
+        "size": {
+          "width": 600,
+          "height": 400
+        }
+      },
       "contents": [
         {
-          "x": 110,
-          "y": 150,
+          "x": 106,
+          "y": 252,
           "name": "lx-music"
         },
         {
-          "x": 240,
-          "y": 150,
+          "x": 490,
+          "y": 252,
           "type": "link",
-          "path": "/Applications",
-          "name": "lx-music"
+          "path": "/Applications"
         }
       ],
       "title": "洛雪音乐助手 v${version}"

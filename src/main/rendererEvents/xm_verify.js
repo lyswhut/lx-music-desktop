@@ -20,7 +20,13 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
     view.destroy()
   }
 
-  view = new BrowserView()
+  view = new BrowserView({
+    webPreferences: {
+      enableRemoteModule: false,
+      disableHtmlFullscreenWindowResize: true,
+    },
+    movable: false,
+  })
   view.webContents.on('did-finish-load', () => {
     if (/punish\?/.test(view.webContents.getURL())) return
     let ses = view.webContents.session
@@ -37,7 +43,11 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   global.mainWindow.setBrowserView(view)
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   view.setBounds({ x: (windowSizeInfo.width - 360) / 2, y: ((windowSizeInfo.height - 320 + 52) / 2), width: 360, height: 320 })
-  view.webContents.loadURL(url)
+  view.webContents.loadURL(url, {
+    httpReferrer: 'https://www.xiami.com/',
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.165 Electron/8.2.4 Safari/537.36',
+  })
+  view.webContents.openDevTools()
 }))
 
 mainHandle('xm_verify_close', async() => {
