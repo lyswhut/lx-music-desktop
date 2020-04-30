@@ -96,10 +96,8 @@
     },
     "dmg": {
       "window": {
-        "size": {
-          "width": 600,
-          "height": 400
-        }
+        "width": 600,
+        "height": 400
       },
       "contents": [
         {
