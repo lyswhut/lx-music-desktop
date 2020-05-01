@@ -98,9 +98,12 @@ export const xmRequest = (path, params = '') => {
         return wait(300).then(() => {
           return rendererInvoke('xm_verify_open', 'https:' + resp.body.url).then(x5sec => {
             handleSaveToken({ cookies: { x5sec } })
-            // console.log(x5sec)
+            console.log(x5sec)
             window.globalObj.xm.isShowVerify = false
-            return Promise.reject(new Error('获取失败'))
+            return Promise.reject(new Error('获取成功'))
+          }).catch(err => {
+            window.globalObj.xm.isShowVerify = false
+            return Promise.reject(err)
           })
         })
       }
@@ -114,6 +117,7 @@ export const xmRequest = (path, params = '') => {
 
 export const closeVerifyModal = async() => {
   if (!window.globalObj.xm.isShowVerify) return
+  console.log('object')
   await rendererInvoke('xm_verify_close')
   window.globalObj.xm.isShowVerify = false
 }

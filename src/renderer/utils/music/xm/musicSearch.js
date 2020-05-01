@@ -90,7 +90,6 @@ export default {
     if (limit != null) this.limit = limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page).then(result => {
-      // console.log(result)
       if (!result) return this.search(str, page, { limit }, retryNum)
       if (result.code !== 'SUCCESS') return this.search(str, page, { limit }, retryNum)
       // const songResultData = result.data || { songs: [], total: 0 }
@@ -109,6 +108,6 @@ export default {
         total: this.total,
         source: 'xm',
       })
-    }).catch(() => this.search(str, page, { limit }, retryNum))
+    }).catch(err => err.message.includes('canceled verify') ? Promise.reject(err) : this.search(str, page, { limit }, retryNum))
   },
 }
