@@ -1,6 +1,7 @@
 const { BrowserView } = require('electron')
 const { mainHandle } = require('../../common/ipc')
 const { getWindowSizeInfo } = require('../utils')
+const { isMac } = require('../../common/utils')
 
 let view
 
@@ -20,6 +21,8 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
     view.destroy()
   }
 
+  let firstLoad = true
+
   view = new BrowserView({
     webPreferences: {
       enableRemoteModule: false,
@@ -28,7 +31,13 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
     movable: false,
   })
   view.webContents.on('did-finish-load', () => {
-    if (/punish\?/.test(view.webContents.getURL())) return
+    if (/punish\?/.test(view.webContents.getURL())) {
+      if (isMac) { // 解决 MAC 首次加载页面无法拖动滑块的问题
+        if (firstLoad) view.webContents.reload()
+        firstLoad = false
+      }
+      return
+    }
     let ses = view.webContents.session
     ses.cookies.get({ name: 'x5sec' })
       .then(async([x5sec]) => {
@@ -45,9 +54,8 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   view.setBounds({ x: (windowSizeInfo.width - 360) / 2, y: ((windowSizeInfo.height - 320 + 52) / 2), width: 360, height: 320 })
   view.webContents.loadURL(url, {
     httpReferrer: 'https://www.xiami.com/',
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.165 Electron/8.2.4 Safari/537.36',
   })
-  view.webContents.openDevTools()
+  // view.webContents.openDevTools()
 }))
 
 mainHandle('xm_verify_close', async() => {
