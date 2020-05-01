@@ -55,7 +55,7 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   view.webContents.loadURL(url, {
     httpReferrer: 'https://www.xiami.com/',
   })
-  // view.webContents.openDevTools()
+  view.webContents.openDevTools({ mode: 'undocked' })
 }))
 
 mainHandle('xm_verify_close', async() => {
