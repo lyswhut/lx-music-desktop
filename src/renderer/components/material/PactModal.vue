@@ -62,7 +62,7 @@ import { openUrl } from '../../utils'
 export default {
   data() {
     return {
-      time: 2,
+      time: 20,
       globalObj: {
         isShowPact: false,
       },
