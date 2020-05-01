@@ -9,19 +9,18 @@ global.lx_event.tray.on(TRAY_EVENT_NAME.destroy, () => {
   destroyTray()
 })
 
-let tray
 const createTray = () => {
-  if ((tray && !tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
+  if ((global.tray && !global.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
   const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate.ico' : 'trayTemplate.png')
 
   // 托盘
-  tray = new Tray(iconPath)
+  global.tray = new Tray(iconPath)
 
-  tray.setToolTip('洛雪音乐助手')
-  if (isWin) createMenu(tray)
-  tray.setIgnoreDoubleClickEvents(true)
-  tray.on('click', () => {
+  global.tray.setToolTip('洛雪音乐助手')
+  if (isWin) createMenu(global.tray)
+  global.tray.setIgnoreDoubleClickEvents(true)
+  global.tray.on('click', () => {
     const mainWindow = global.mainWindow
     if (!mainWindow) return
     mainWindow.isVisible()
@@ -31,9 +30,9 @@ const createTray = () => {
 }
 
 const destroyTray = () => {
-  if (!tray) return
-  tray.destroy()
-  tray = null
+  if (!global.tray) return
+  global.tray.destroy()
+  global.tray = null
 }
 
 const createMenu = tray => {
