@@ -74,6 +74,7 @@ export default {
         isShiftDown: false,
         isModDown: false,
         isADown: false,
+        aDownTimeout: null,
       },
     }
   },
@@ -129,41 +130,53 @@ export default {
     ...mapActions('download', ['removeTask', 'removeTasks', 'startTask', 'startTasks', 'pauseTask', 'pauseTasks']),
     ...mapMutations('player', ['setList']),
     listenEvent() {
-      window.eventHub.$on('shift_down', this.handle_shift_down)
-      window.eventHub.$on('shift_up', this.handle_shift_up)
-      window.eventHub.$on('mod_down', this.handle_mod_down)
-      window.eventHub.$on('mod_up', this.handle_mod_up)
-      window.eventHub.$on('mod+a_down', this.handle_mod_a_down)
-      window.eventHub.$on('mod+a_up', this.handle_mod_a_up)
+      window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$on('key_mod+a_down', this.handle_mod_a_down)
+      window.eventHub.$on('key_mod+a_up', this.handle_mod_a_up)
     },
     unlistenEvent() {
-      window.eventHub.$off('shift_down', this.handle_shift_down)
-      window.eventHub.$off('shift_up', this.handle_shift_up)
-      window.eventHub.$off('mod_down', this.handle_mod_down)
-      window.eventHub.$off('mod_up', this.handle_mod_up)
-      window.eventHub.$off('mod+a_down', this.handle_mod_a_down)
-      window.eventHub.$off('mod+a_up', this.handle_mod_a_up)
+      window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$off('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$off('key_mod+a_down', this.handle_mod_a_down)
+      window.eventHub.$off('key_mod+a_up', this.handle_mod_a_up)
     },
-    handle_shift_down() {
+    handle_key_shift_down() {
       if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
     },
-    handle_shift_up() {
+    handle_key_shift_up() {
       if (this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = false
     },
-    handle_mod_down() {
+    handle_key_mod_down() {
       if (!this.keyEvent.isModDown) this.keyEvent.isModDown = true
     },
-    handle_mod_up() {
+    handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
-    handle_mod_a_down() {
+    handle_key_mod_a_down() {
       if (!this.keyEvent.isADown) {
+        this.keyEvent.isModDown = false
         this.keyEvent.isADown = true
         this.handleSelectAllData()
+        if (this.keyEvent.aDownTimeout) clearTimeout(this.keyEvent.aDownTimeout)
+        this.keyEvent.aDownTimeout = setTimeout(() => {
+          this.keyEvent.aDownTimeout = null
+          this.keyEvent.isADown = false
+        }, 500)
       }
     },
-    handle_mod_a_up() {
-      if (this.keyEvent.isADown) this.keyEvent.isADown = false
+    handle_key_mod_a_up() {
+      if (this.keyEvent.isADown) {
+        if (this.keyEvent.aDownTimeout) {
+          clearTimeout(this.keyEvent.aDownTimeout)
+          this.keyEvent.aDownTimeout = null
+        }
+        this.keyEvent.isADown = false
+      }
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
