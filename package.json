@@ -170,6 +170,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
     "del": "^5.1.0",
+    "electron": "^8.2.5",
     "electron-builder": "^22.6.0",
     "electron-debug": "^3.0.1",
     "electron-devtools-installer": "^3.0.0",
@@ -214,7 +215,6 @@
   "dependencies": {
     "crypto-js": "^4.0.0",
     "dnscache": "^1.0.2",
-    "electron": "^8.2.5",
     "electron-log": "^4.1.1",
     "electron-store": "^5.1.1",
     "electron-updater": "^4.3.1",
