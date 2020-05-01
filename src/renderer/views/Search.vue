@@ -171,16 +171,16 @@ export default {
       window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
       window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
-      window.eventHub.$on('key_mod+a_down', this.handle_mod_a_down)
-      window.eventHub.$on('key_mod+a_up', this.handle_mod_a_up)
+      window.eventHub.$on('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$on('key_mod+a_up', this.handle_key_mod_a_up)
     },
     unlistenEvent() {
       window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
       window.eventHub.$off('key_shift_up', this.handle_key_shift_up)
       window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
-      window.eventHub.$off('key_mod+a_down', this.handle_mod_a_down)
-      window.eventHub.$off('key_mod+a_up', this.handle_mod_a_up)
+      window.eventHub.$off('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$off('key_mod+a_up', this.handle_key_mod_a_up)
     },
     handle_key_shift_down() {
       if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
