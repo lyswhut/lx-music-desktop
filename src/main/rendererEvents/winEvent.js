@@ -21,6 +21,9 @@ module.exports = mainWindow => {
   // mainWindow.on('restore', () => {
   //   mainWindow.webContents.send('restore')
   // })
+  mainWindow.on('focus', () => {
+    mainWindow.webContents.send('focus')
+  })
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

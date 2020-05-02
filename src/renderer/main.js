@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import { sync } from 'vuex-router-sync'
 
+import './config/event'
+
 // Components
 import './components'
 
@@ -14,13 +16,7 @@ import store from './store'
 
 import '../common/error'
 
-import bindkey from './config/bindkey'
-
 sync(store, router)
-
-window.eventHub = new Vue()
-
-bindkey()
 
 Vue.config.productionTip = false
 
