@@ -15,7 +15,9 @@ matrix:
       addons:
         apt:
           packages:
+            - libopenjp2-tools
             - rpm
+            - bsdtar
 
 cache:
   directories:
