@@ -55,6 +55,7 @@ export default {
   outline: none;
   transition: background-color 0.2s ease;
   background-color: @color-btn-background;
+  font-size: 13.3px;
   &[disabled] {
     opacity: .4;
   }

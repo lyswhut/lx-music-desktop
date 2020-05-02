@@ -140,7 +140,7 @@ export default {
   transition: box-shadow .4s ease, background-color @transition-theme;
   display: flex;
   flex-flow: column nowrap;
-  width: 240px;
+  width: 35%;
   background-color: @color-search-form-background;
 
   &.active {
@@ -148,6 +148,7 @@ export default {
     .form {
       input {
         border-bottom-left-radius: 0;
+
       }
       button {
         border-bottom-right-radius: 0;
@@ -156,7 +157,7 @@ export default {
   }
   .form {
     display: flex;
-    height: @height-toolbar / 2;
+    height: @height-toolbar * 0.52;
     position: relative;
     input {
       flex: auto;
@@ -172,6 +173,8 @@ export default {
       // height: @height-toolbar * .7;
       padding: 0 5px;
       overflow: hidden;
+      font-size: 13.5px;
+      line-height: @height-toolbar * 0.52 + 5px;
       &::placeholder {
         color: @color-btn;
       }
@@ -226,7 +229,8 @@ export default {
 }
 
 .big {
-  width: 500px;
+  min-width: 500px;
+  width: 100%;
   // input {
   //   line-height: 30px;
   // }
