@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [0.18.2](https://github.com/lyswhut/lx-music-desktop/compare/v0.18.1...v0.18.2) - 2020-05-02
+
+### 修复
+
+- 修复开启托盘时，可能导致无法自动更新的问题
+
 ## [0.18.1](https://github.com/lyswhut/lx-music-desktop/compare/v0.18.0...v0.18.1) - 2020-05-02
 
 ### 优化
