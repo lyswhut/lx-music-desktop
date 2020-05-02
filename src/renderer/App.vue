@@ -1,22 +1,20 @@
 <template lang="pug">
 #container(v-if="isProd && !isNt" :class="[theme, nd ? 'nd' : '']" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
-  #main
-    core-aside#left
-    #right
-      core-toolbar#toolbar
-      core-view#view
-  core-player#player
+  core-aside#left
+  #right
+    core-toolbar#toolbar
+    core-view#view
+    core-player#player
   core-icons
   material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
 #container(v-else :class="[theme, nd ? 'nd' : '']")
-  #main
-    core-aside#left
-    #right
-      core-toolbar#toolbar
-      core-view#view
-  core-player#player
+  core-aside#left
+  #right
+    core-toolbar#toolbar
+    core-view#view
+    core-player#player
   core-icons
   material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
   material-version-modal(v-show="version.showModal")
@@ -343,18 +341,12 @@ body {
 #container {
   position: relative;
   display: flex;
-  flex-flow: column nowrap;
   height: 100%;
   overflow: hidden;
   background: @color-theme-bgimg @color-theme-bgposition no-repeat;
   background-size: @color-theme-bgsize;
   transition: background-color @transition-theme;
   background-color: @color-theme;
-}
-
-#main {
-  flex: auto;
-  display: flex;
 }
 
 #left {

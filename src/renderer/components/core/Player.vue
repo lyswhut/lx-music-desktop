@@ -676,7 +676,7 @@ export default {
   transition: @transition-theme;
   transition-property: color;
   flex: none;
-  padding: 3px 3px 3px 5px;
+  padding: 2px;
   opacity: 1;
   transition: @transition-theme;
   transition-property: opacity;
@@ -698,7 +698,7 @@ export default {
     transition: @transition-theme;
     transition-property: border-color;
     // border-radius: 50%;
-    border-radius: @radius-progress-border;
+    // border-radius: @radius-progress-border;
     // border: 2px solid @color-theme_2-background_1;
   }
 }

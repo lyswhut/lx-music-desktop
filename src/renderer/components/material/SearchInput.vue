@@ -189,7 +189,7 @@ export default {
       border-bottom-right-radius: 3px;
       cursor: pointer;
       height: 100%;
-      padding: 5px 7px;
+      padding: 6px 7px;
       color: @color-btn;
       transition: background-color .2s ease;
 
