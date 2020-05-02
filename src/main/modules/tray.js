@@ -12,7 +12,7 @@ global.lx_event.tray.on(TRAY_EVENT_NAME.destroy, () => {
 const createTray = () => {
   if ((global.tray && !global.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate.ico' : 'trayTemplate.png')
+  const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate@2x.ico' : 'trayTemplate.png')
 
   // 托盘
   global.tray = new Tray(iconPath)
