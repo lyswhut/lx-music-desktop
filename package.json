@@ -38,7 +38,7 @@
     "publish:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p onTagOrDraft",
     "publish:linux:deb:x86": "cross-env ARCH=x86 electron-builder -l=deb --ia32 -p onTagOrDraft",
     "publish:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm -p onTagOrDraft",
-    "publish:linux:pacman": "cross-env ARCH=x86 electron-builder -l=pacman -p onTagOrDraft",
+    "publish:linux:pacman": "cross-env ARCH=x64 electron-builder -l=pacman -p onTagOrDraft",
     "pack:linux": "node build-config/pack.js && electron-builder -l",
     "pack:mac": "node build-config/pack.js && electron-builder -m=dmg",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
