@@ -117,7 +117,9 @@
     "appImage": {
       "license": "./licenses/license_zh.txt",
       "category": "Utility;AudioVideo;Audio;Player;Music;",
-      "icon": "./resources/icons"
+      "desktop": {
+        "icon": "./resources/icons/512x512.png"
+      }
     },
     "publish": [
       {
