@@ -111,6 +111,8 @@ module.exports = () => {
     handleSendEvent({ type: 'update-downloaded', info })
   })
   mainOn('quit-update', () => {
+    global.isQuitting = true
+
     setTimeout(() => {
       autoUpdater.quitAndInstall(true, true)
     }, 1000)
