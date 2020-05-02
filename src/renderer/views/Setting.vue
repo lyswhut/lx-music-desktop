@@ -63,7 +63,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
-        material-selection(:list="mediaDevices" :class="$style.gapLeft" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+        material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
         material-btn(min :title="$t('view.setting.play_mediaDevice_refresh_btn_title')" :class="[$style.btnMediaDeviceRefresh, $style.gapLeft]" @click="getMediaDevice")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
             use(xlink:href='#icon-refresh')
@@ -353,15 +353,16 @@ export default {
           isAutoClearSearchInput: false,
           isAutoClearSearchList: false,
         },
+        tray: {
+          isShow: false,
+          isToTray: false,
+        },
         windowSizeId: 1,
         langId: 'cns',
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
-        tray: {
-          isShow: false,
-          isToTray: false,
-        },
+        isAgreePact: false,
         apiSource: 'temp',
       },
       languageList,
@@ -376,6 +377,9 @@ export default {
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
+    },
+    'setting.isAgreePact'(n) {
+      this.current_setting.isAgreePact = n
     },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
@@ -602,6 +606,8 @@ export default {
         window.globalObj.proxy[key] = setting.network.proxy[key]
       }
       this.init()
+      this.handleLangChange(this.current_setting.langId)
+      this.handleToTrayChange()
     },
     handleLangChange(id) {
       this.$i18n.locale = id
@@ -612,11 +618,8 @@ export default {
       this.mediaDevices = audioDevices
       // console.log(this.mediaDevices)
     },
-    handleMediaDeviceChange(audioDevice) {
-      this.setMediaDeviceId(audioDevice.deviceId)
-    },
     handleToTrayChange(isToTray) {
-      this.current_setting.tray.isShow = isToTray
+      if (isToTray != null) this.current_setting.tray.isShow = isToTray
       rendererSend('changeTray', this.current_setting.tray)
     },
     handleShowPact() {
