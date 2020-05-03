@@ -68,7 +68,7 @@ const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   let downloadCount = 0
   const waitList = list.filter(item => item.status == downloadStatus.WAITING ? true : (item.status === downloadStatus.RUN && ++downloadCount && false))
   // console.log(downloadCount, waitList)
-  return downloadCount < maxDownloadNum && waitList.length > 0 && waitList.shift()
+  return downloadCount < maxDownloadNum ? waitList.shift() || null : false
 }
 
 const awaitRequestAnimationFrame = () => new Promise(resolve => window.requestAnimationFrame(() => resolve()))
@@ -409,11 +409,14 @@ const actions = {
   async startTask({ state, rootState, commit, dispatch }, downloadInfo) {
     // 检查是否可以开始任务
     let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
-    if (result) {
-      if (!downloadInfo || downloadInfo.isComplate || downloadInfo.status == state.downloadStatus.RUN) downloadInfo = result
+    if (downloadInfo && !downloadInfo.isComplate && downloadInfo.status != state.downloadStatus.RUN) {
+      if (result === false) {
+        commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
+        return
+      }
     } else {
-      if (downloadInfo) commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
-      return
+      if (!result) return
+      downloadInfo = result
     }
 
     let dl = dls[downloadInfo.key]
