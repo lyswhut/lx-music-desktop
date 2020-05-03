@@ -10,19 +10,19 @@ div(:class="$style.aside")
       dd
         router-link(:active-class="$style.active" to="search")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 30.239 30.239' space='preserve')
-              use(xlink:href='#icon-search')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.06 803.05' space='preserve')
+              use(xlink:href='#icon-search-2')
           span {{$t('core.aside.search')}}
       dd
         router-link(:active-class="$style.active" to="songList")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 511.334 511.334' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 805.65 805.58' space='preserve')
               use(xlink:href='#icon-album')
           span {{$t('core.aside.song_list')}}
       dd
         router-link(:active-class="$style.active" to="leaderboard")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512.001 512.001' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 819.1 819.38' space='preserve')
               use(xlink:href='#icon-leaderboard')
           span {{$t('core.aside.leaderboard')}}
     dl
@@ -31,7 +31,7 @@ div(:class="$style.aside")
         //- router-link(:active-class="($route.query.id === defaultList.id || $route.query.id == '') ? $style.active : ''" :to="`list?id=${defaultList.id || ''}`") {{$t('core.aside.default_list')}}
         router-link(:active-class="$route.query.id === loveList.id ? $style.active : ''" :to="`list?id=${loveList.id}`")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 830.33 740.22' space='preserve')
               use(xlink:href='#icon-love')
           span {{$t('core.aside.love_list')}}
         router-link(:active-class="$route.query.id === item.id ? $style.active : ''" v-for="item in userList" :to="`list?id=${item._id}`" :key="item._id") {{item.name}}
@@ -40,13 +40,13 @@ div(:class="$style.aside")
       dd
         router-link(:active-class="$style.active" to="download")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.9 803.82' space='preserve')
               use(xlink:href='#icon-download-2')
           span {{$t('core.aside.download')}}
       dd
         router-link(:active-class="$style.active" to="setting")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 812.85 812.85' space='preserve')
               use(xlink:href='#icon-setting')
           span {{$t('core.aside.setting')}}
 </template>
