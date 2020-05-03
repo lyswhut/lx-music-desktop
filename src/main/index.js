@@ -22,6 +22,18 @@ app.on('second-instance', (event, argv, cwd) => {
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 const { navigationUrlWhiteList } = require('../common/config')
+const { getAppSetting, parseEnv, getWindowSizeInfo } = require('./utils')
+const { isMac, isLinux } = require('../common/utils')
+
+global.envParams = parseEnv()
+
+
+// https://github.com/electron/electron/issues/22691
+app.commandLine.appendSwitch('wm-window-animations-disabled')
+
+// https://github.com/electron/electron/issues/18397
+app.allowRendererProcessReuse = true
+
 
 app.on('web-contents-created', (event, contents) => {
   contents.on('will-navigate', (event, navigationUrl) => {
@@ -50,22 +62,12 @@ app.on('web-contents-created', (event, contents) => {
   })
 })
 
-// https://github.com/electron/electron/issues/22691
-app.commandLine.appendSwitch('wm-window-animations-disabled')
-
-// https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = !isDev
-
-const { getAppSetting, parseEnv, getWindowSizeInfo } = require('./utils')
-
-global.envParams = parseEnv()
 
 require('../common/error')
 require('./events')
 require('./rendererEvents')
 const winEvent = require('./rendererEvents/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
-const { isMac, isLinux } = require('../common/utils')
 
 
 let winURL
