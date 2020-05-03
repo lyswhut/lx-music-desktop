@@ -10,8 +10,8 @@ div(:class="$style.songList")
               th.nobreak(style="width: 25%;") {{$t('material.song_list.name')}}
               th.nobreak(style="width: 20%;") {{$t('material.song_list.singer')}}
               th.nobreak(style="width: 20%;") {{$t('material.song_list.album')}}
-              th.nobreak(style="width: 20%;") {{$t('material.song_list.action')}}
               th.nobreak(style="width: 10%;") {{$t('material.song_list.time')}}
+              th.nobreak(style="width: 20%;") {{$t('material.song_list.action')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
@@ -25,8 +25,10 @@ div(:class="$style.songList")
                 span.select {{item.singer}}
               td.break(style="width: 20%;")
                 span.select {{item.albumName}}
+              td(style="width: 10%;")
+                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
-                material-list-buttons(:index="index" :search-btn="true"
+                material-list-buttons(:index="index" :search-btn="true" :class="$style.btns"
                   :remove-btn="false" @btn-click="handleListBtnClick"
                   :listAdd-btn="assertApiSupport(item.source)"
                   :play-btn="assertApiSupport(item.source)"
@@ -34,8 +36,6 @@ div(:class="$style.songList")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;")
-                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
   transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")

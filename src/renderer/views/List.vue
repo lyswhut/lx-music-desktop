@@ -10,8 +10,8 @@
               th.nobreak(style="width: 25%;") {{$t('view.list.name')}}
               th.nobreak(style="width: 20%;") {{$t('view.list.singer')}}
               th.nobreak(style="width: 20%;") {{$t('view.list.album')}}
-              th.nobreak(style="width: 20%;") {{$t('view.list.action')}}
               th.nobreak(style="width: 10%;") {{$t('view.list.time')}}
+              th.nobreak(style="width: 20%;") {{$t('view.list.action')}}
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
@@ -30,14 +30,14 @@
                 span.select {{item.singer}}
               td.break(style="width: 20%;")
                 span.select {{item.albumName}}
+              td(style="width: 10%;")
+                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
               td(style="width: 20%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" @btn-click="handleListBtnClick")
                 //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                 //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-              td(style="width: 10%;")
-                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
       p(v-text="list.length ? $t('view.list.loding_list') : $t('view.list.no_item')")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
