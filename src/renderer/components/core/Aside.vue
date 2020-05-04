@@ -10,7 +10,7 @@ div(:class="$style.aside")
       dd
         router-link(:active-class="$style.active" to="search")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.06 803.05' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 801.99 811.98' space='preserve')
               use(xlink:href='#icon-search-2')
           span {{$t('core.aside.search')}}
       dd
@@ -40,7 +40,7 @@ div(:class="$style.aside")
       dd
         router-link(:active-class="$style.active" to="download")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.9 803.82' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.9 719.04' space='preserve')
               use(xlink:href='#icon-download-2')
           span {{$t('core.aside.download')}}
       dd
