@@ -359,6 +359,10 @@ body {
   flex-flow: column nowrap;
   transition: background-color @transition-theme;
   background-color: @color-theme_2;
+
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  overflow: hidden;
 }
 #toolbar, #player {
   flex: none;

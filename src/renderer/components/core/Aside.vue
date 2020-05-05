@@ -12,19 +12,19 @@ div(:class="$style.aside")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 801.99 811.98' space='preserve')
               use(xlink:href='#icon-search-2')
-          span {{$t('core.aside.search')}}
+          //- span {{$t('core.aside.search')}}
       dd
         router-link(:active-class="$style.active" to="songList")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 805.65 805.58' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 739.96 763.59' space='preserve')
               use(xlink:href='#icon-album')
-          span {{$t('core.aside.song_list')}}
+          //- span {{$t('core.aside.song_list')}}
       dd
         router-link(:active-class="$style.active" to="leaderboard")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 819.1 819.38' space='preserve')
               use(xlink:href='#icon-leaderboard')
-          span {{$t('core.aside.leaderboard')}}
+          //- span {{$t('core.aside.leaderboard')}}
     dl
       //- dt {{$t('core.aside.my_music')}}
       dd
@@ -33,22 +33,22 @@ div(:class="$style.aside")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 830.33 740.22' space='preserve')
               use(xlink:href='#icon-love')
-          span {{$t('core.aside.love_list')}}
+          //- span {{$t('core.aside.love_list')}}
         router-link(:active-class="$route.query.id === item.id ? $style.active : ''" v-for="item in userList" :to="`list?id=${item._id}`" :key="item._id") {{item.name}}
     dl
       //- dt {{$t('core.aside.other')}}
       dd
         router-link(:active-class="$style.active" to="download")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 803.9 719.04' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 798.85 718.96' space='preserve')
               use(xlink:href='#icon-download-2')
-          span {{$t('core.aside.download')}}
+          //- span {{$t('core.aside.download')}}
       dd
         router-link(:active-class="$style.active" to="setting")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 812.85 812.85' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 854.85 775.41' space='preserve')
               use(xlink:href='#icon-setting')
-          span {{$t('core.aside.setting')}}
+          //- span {{$t('core.aside.setting')}}
 </template>
 
 <script>
@@ -129,6 +129,10 @@ export default {
 
 .menu {
   flex: auto;
+  // display: flex;
+  // flex-flow: column nowrap;
+  // justify-content: center;
+  // padding-bottom: 40px;
   // padding: 5px;
   dl {
     -webkit-app-region: no-drag;
@@ -150,7 +154,7 @@ export default {
       text-decoration: none;
 
       position: relative;
-      padding: 10px 3px;
+      padding: 18px 3px;
       // margin: 5px 0;
       // border-left: 5px solid transparent;
       transition: @transition-theme;
@@ -180,9 +184,9 @@ export default {
 }
 
 .icon {
-  margin-bottom: 5px;
+  // margin-bottom: 5px;
   &> svg {
-    width: 27%;
+    width: 32%;
   }
 }
 
