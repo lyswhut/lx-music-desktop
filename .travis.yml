@@ -11,6 +11,12 @@ matrix:
 
     - os: linux
       dist: trusty
+      sudo: required
+      addons:
+        apt:
+          packages:
+            - rpm
+            - bsdtar
 
 cache:
   directories:

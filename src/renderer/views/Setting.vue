@@ -614,7 +614,9 @@ export default {
     },
     async getMediaDevice() {
       const devices = await navigator.mediaDevices.enumerateDevices()
-      const audioDevices = devices.filter(device => device.kind === 'audiooutput')
+      let audioDevices = devices.filter(device => device.kind === 'audiooutput')
+      let currentId = this.current_setting.player.mediaDeviceId
+      if (!audioDevices.some(device => device.deviceId === currentId)) this.current_setting.player.mediaDeviceId = 'default'
       this.mediaDevices = audioDevices
       // console.log(this.mediaDevices)
     },

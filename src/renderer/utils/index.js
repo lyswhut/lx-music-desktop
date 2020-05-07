@@ -201,7 +201,7 @@ export const updateSetting = (setting, version) => {
     },
     list: {
       isShowAlbumName: true,
-      isShowSource: false,
+      isShowSource: true,
       scroll: {
         enable: true,
         locations: {},
