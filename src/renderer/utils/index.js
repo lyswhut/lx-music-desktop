@@ -184,7 +184,7 @@ export const objectDeepMerge = (target, source) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.23'
+  const defaultVersion = '1.0.24'
   if (!version) {
     if (setting) {
       version = setting.version
@@ -198,6 +198,7 @@ export const updateSetting = (setting, version) => {
       isShowTaskProgess: true,
       volume: 1,
       mediaDeviceId: 'default',
+      isMediaDeviceRemovedStopPlay: false,
     },
     list: {
       isShowAlbumName: true,

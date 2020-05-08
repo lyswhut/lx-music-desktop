@@ -135,11 +135,13 @@ export default {
       this.setVolume(volume)
     }, 300)
 
+    navigator.mediaDevices.addEventListener('devicechange', this.handleMediaListChange)
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
     window.addEventListener('resize', this.handleResize)
   },
   beforeDestroy() {
+    navigator.mediaDevices.removeEventListener('devicechange', this.handleMediaListChange)
     document.removeEventListener('mousemove', this.handleVolumeMsMove)
     document.removeEventListener('mouseup', this.handleVolumeMsUp)
     window.removeEventListener('resize', this.handleResize)
@@ -479,6 +481,7 @@ export default {
       return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
         this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
+        // console.log('err', err.message)
         if (err.message == requestMsg.cancelRequest) return
         if (!isRetryed) return this.setUrl(targetSong, isRefresh, true)
         this.status = this.statusText = err.message
@@ -617,15 +620,27 @@ export default {
     },
     async setMediaDevice() {
       let mediaDeviceId = this.setting.player.mediaDeviceId
-      const devices = await navigator.mediaDevices.enumerateDevices()
-      let device = devices.find(device => device.deviceId === mediaDeviceId)
-      const deviceId = device ? device.deviceId : 'default'
+      if (mediaDeviceId != 'default') {
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        let device = devices.find(device => device.deviceId === mediaDeviceId)
+        mediaDeviceId = device ? device.deviceId : 'default'
+      }
 
       // console.log(device)
-      this.audio.setSinkId(deviceId).catch(err => {
+      this.audio.setSinkId(mediaDeviceId).catch(err => {
         console.log(err)
         this.setMediaDeviceId('default')
       })
+    },
+    async handleMediaListChange() {
+      let mediaDeviceId = this.setting.player.mediaDeviceId
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      let device = devices.find(device => device.deviceId === mediaDeviceId)
+      if (device) return
+      // console.log(device)
+      this.setMediaDeviceId('default')
+      console.log(this.setting.player.isMediaDeviceRemovedStopPlay, this.isPlay)
+      if (this.setting.player.isMediaDeviceRemovedStopPlay && this.isPlay) this.togglePlay()
     },
     handlePlayDetailAction({ type, data }) {
       switch (type) {

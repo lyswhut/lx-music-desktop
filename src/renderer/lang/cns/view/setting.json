@@ -38,8 +38,8 @@
   "play_task_bar": "任务栏播放进度条",
   "play_mediaDevice_title": "选择声音输出的媒体设备",
   "play_mediaDevice": "音频输出",
-  "play_mediaDevice_refresh_btn_title": "刷新音频设备列表",
-  "play_mediaDevice_refresh_btn": "刷新",
+  "play_mediaDevice_remove_stop_play": "所选音频输出设备被移除时是否暂停播放",
+  "play_mediaDevice_remove_stop_play_title": "所选的声音输出设备被移除时是否暂停播放歌曲",
 
   "search": "搜索设置",
   "search_hot_title": "是否显示热门搜索",
