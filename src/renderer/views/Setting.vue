@@ -60,14 +60,14 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.play_task_bar')}}
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
+    dd(:title="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
+      h3 {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
+      div
+        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.is_enable')")
     dd(:title="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
         material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-        material-btn(min :title="$t('view.setting.play_mediaDevice_refresh_btn_title')" :class="[$style.btnMediaDeviceRefresh, $style.gapLeft]" @click="getMediaDevice")
-          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
-            use(xlink:href='#icon-refresh')
-          span {{$t('view.setting.play_mediaDevice_refresh_btn')}}
 
     dt {{$t('view.setting.search')}}
     dd(:title="$t('view.setting.search_hot_title')")
@@ -318,6 +318,7 @@ export default {
           isShowTaskProgess: true,
           volume: 1,
           mediaDeviceId: 'default',
+          isMediaDeviceRemovedStopPlay: false,
         },
         list: {
           isShowAlbumName: true,
@@ -381,6 +382,9 @@ export default {
     'setting.isAgreePact'(n) {
       this.current_setting.isAgreePact = n
     },
+    'setting.player.mediaDeviceId'(n) {
+      this.current_setting.player.mediaDeviceId = n
+    },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {
@@ -392,7 +396,11 @@ export default {
     },
   },
   mounted() {
+    navigator.mediaDevices.addEventListener('devicechange', this.getMediaDevice)
     this.init()
+  },
+  beforeDestroy() {
+    navigator.mediaDevices.removeEventListener('devicechange', this.getMediaDevice)
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
@@ -615,8 +623,6 @@ export default {
     async getMediaDevice() {
       const devices = await navigator.mediaDevices.enumerateDevices()
       let audioDevices = devices.filter(device => device.kind === 'audiooutput')
-      let currentId = this.current_setting.player.mediaDeviceId
-      if (!audioDevices.some(device => device.deviceId === currentId)) this.current_setting.player.mediaDeviceId = 'default'
       this.mediaDevices = audioDevices
       // console.log(this.mediaDevices)
     },
@@ -758,16 +764,6 @@ export default {
         }
       }
     })
-  }
-}
-.btn-media-device-refresh {
-  height: 28px;
-  line-height: 28px;
-  padding: 0px 15px;
-  svg {
-    width: 1em;
-    vertical-align: middle;
-    margin-right: 5px;
   }
 }
 

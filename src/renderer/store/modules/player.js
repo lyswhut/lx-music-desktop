@@ -36,26 +36,32 @@ const actions = {
     urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
     return urlRequest.promise.then(result => {
       commit('setUrl', { musicInfo, url: result.url, type })
-    }).finally(() => {
       urlRequest = null
+    }).catch(err => {
+      urlRequest = null
+      return Promise.reject(err)
     })
   },
   getPic({ commit, state }, musicInfo) {
     if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
     picRequest = music[musicInfo.source].getPic(musicInfo)
     return picRequest.promise.then(url => {
-      commit('getPic', { musicInfo, url })
-    }).finally(() => {
       picRequest = null
+      commit('getPic', { musicInfo, url })
+    }).catch(err => {
+      picRequest = null
+      return Promise.reject(err)
     })
   },
   getLrc({ commit, state }, musicInfo) {
     if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     lrcRequest = music[musicInfo.source].getLyric(musicInfo)
     return lrcRequest.promise.then(lrc => {
-      commit('setLrc', { musicInfo, lrc })
-    }).finally(() => {
       lrcRequest = null
+      commit('setLrc', { musicInfo, lrc })
+    }).catch(err => {
+      lrcRequest = null
+      return Promise.reject(err)
     })
   },
 }

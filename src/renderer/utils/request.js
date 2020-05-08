@@ -46,44 +46,34 @@ const defaultHeaders = {
  * @param {*} options
  */
 const buildHttpPromose = (url, options) => {
-  let requestObj
-  let cancelFn
-  let isCancelled = false
-  let p = new Promise((resolve, reject) => {
-    cancelFn = reject
+  let obj = {
+    isCancelled: false,
+  }
+  obj.promise = new Promise((resolve, reject) => {
+    obj.cancelFn = reject
     debugRequest && console.log(`\n---send request------${url}------------`)
     fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
       debugRequest && console.log(`\n---response------${url}------------`)
       debugRequest && console.log(body)
-      requestObj = null
-      cancelFn = null
-      if (err) {
-        // console.log('出错', err.code)
-        if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
-          const { promise, cancelHttp } = httpFetch(url, options)
-          obj.cancelHttp = cancelHttp
-          promise.then(resp => resolve(resp)).catch(err => reject(err))
-          return
-        }
-        return reject(err)
-      }
+      obj.requestObj = null
+      obj.cancelFn = null
+      if (err) return reject(err)
       resolve(resp)
     }).then(ro => {
-      requestObj = ro
-      if (isCancelled) obj.cancelHttp()
+      obj.requestObj = ro
+      if (obj.isCancelled) obj.cancelHttp()
+      console.log(obj.requestObj, obj.isCancelled)
     })
   })
-  const obj = {
-    promise: p,
-    cancelHttp() {
-      if (!requestObj) return isCancelled = true
-      cancelFn(new Error(requestMsg.cancelRequest))
-      cancelHttp(requestObj)
-      requestObj = null
-      cancelFn = null
-      p = null
-    },
+  obj.cancelHttp = () => {
+    console.log('cancel: ', obj)
+    if (!obj.requestObj) return obj.isCancelled = true
+    obj.cancelFn(new Error(requestMsg.cancelRequest))
+    cancelHttp(obj.requestObj)
+    obj.requestObj = null
+    obj.cancelFn = null
+    obj.promise = obj.cancelHttp = null
   }
   return obj
 }
@@ -96,19 +86,22 @@ const buildHttpPromose = (url, options) => {
 export const httpFetch = (url, options = { method: 'get' }) => {
   const requestObj = buildHttpPromose(url, options)
   requestObj.promise = requestObj.promise.catch(err => {
-    if (err.code === 'ETIMEDOUT' || err.code == 'ESOCKETTIMEDOUT') {
-      const { promise, cancelHttp } = httpFetch(url, options)
-      requestObj.cancelHttp()
-      requestObj.cancelHttp = cancelHttp
-      return promise
-    }
+    console.log('出错', err)
     if (err.message === 'socket hang up') {
       // window.globalObj.apiSource = 'temp'
       return Promise.reject(new Error(requestMsg.unachievable))
     }
-    if (err.code === 'ENOTFOUND') return Promise.reject(new Error(requestMsg.notConnectNetwork))
-    return Promise.reject(err)
+    switch (err.code) {
+      case 'ETIMEDOUT':
+      case 'ESOCKETTIMEDOUT':
+        return Promise.reject(new Error(requestMsg.timeout))
+      case 'ENOTFOUND':
+        return Promise.reject(new Error(requestMsg.notConnectNetwork))
+      default:
+        return Promise.reject(err)
+    }
   })
+  console.log(requestObj)
   return requestObj
 }
 
@@ -117,6 +110,7 @@ export const httpFetch = (url, options = { method: 'get' }) => {
  * @param {*} index
  */
 export const cancelHttp = requestObj => {
+  console.log(requestObj)
   if (!requestObj) return
   console.log('cancel:', requestObj.href)
   requestObj.abort()
