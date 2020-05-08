@@ -63,11 +63,9 @@ const buildHttpPromose = (url, options) => {
     }).then(ro => {
       obj.requestObj = ro
       if (obj.isCancelled) obj.cancelHttp()
-      console.log(obj.requestObj, obj.isCancelled)
     })
   })
   obj.cancelHttp = () => {
-    console.log('cancel: ', obj)
     if (!obj.requestObj) return obj.isCancelled = true
     obj.cancelFn(new Error(requestMsg.cancelRequest))
     cancelHttp(obj.requestObj)
@@ -86,7 +84,7 @@ const buildHttpPromose = (url, options) => {
 export const httpFetch = (url, options = { method: 'get' }) => {
   const requestObj = buildHttpPromose(url, options)
   requestObj.promise = requestObj.promise.catch(err => {
-    console.log('出错', err)
+    // console.log('出错', err)
     if (err.message === 'socket hang up') {
       // window.globalObj.apiSource = 'temp'
       return Promise.reject(new Error(requestMsg.unachievable))
@@ -101,7 +99,6 @@ export const httpFetch = (url, options = { method: 'get' }) => {
         return Promise.reject(err)
     }
   })
-  console.log(requestObj)
   return requestObj
 }
 

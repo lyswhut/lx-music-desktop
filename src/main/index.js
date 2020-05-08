@@ -32,7 +32,9 @@ global.envParams = parseEnv()
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 // https://github.com/electron/electron/issues/18397
-app.allowRendererProcessReuse = true
+// 开发模式下为true时 多次引入native模块会导致渲染进程卡死
+// https://github.com/electron/electron/issues/22791
+app.allowRendererProcessReuse = !isDev
 
 
 app.on('web-contents-created', (event, contents) => {
