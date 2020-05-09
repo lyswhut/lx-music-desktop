@@ -38,8 +38,8 @@
   "play_task_bar": "Taskbar play progress bar",
   "play_mediaDevice_title": "Select a media device for audio output",
   "play_mediaDevice": "Audio output",
-  "play_mediaDevice_remove_stop_play": "Whether to pause playback when the selected audio output device is removed",
-  "play_mediaDevice_remove_stop_play_title": "Whether to pause the song when the selected sound output device is removed",
+  "play_mediaDevice_remove_stop_play": "Whether to pause playback when the audio output device is changed",
+  "play_mediaDevice_remove_stop_play_title": "Whether to pause the song when the current sound output device is changed",
 
   "search": "Search",
   "search_hot_title": "Select whether to show popular searches",
