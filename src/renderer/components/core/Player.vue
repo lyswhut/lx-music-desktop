@@ -620,27 +620,44 @@ export default {
     },
     async setMediaDevice() {
       let mediaDeviceId = this.setting.player.mediaDeviceId
-      if (mediaDeviceId != 'default') {
-        const devices = await navigator.mediaDevices.enumerateDevices()
-        let device = devices.find(device => device.deviceId === mediaDeviceId)
-        mediaDeviceId = device ? device.deviceId : 'default'
+      let label = this.prevDeviceLabel
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      let device = devices.find(device => device.deviceId === mediaDeviceId)
+      if (device) {
+        mediaDeviceId = device.deviceId
+        label = device.label
+      } else {
+        mediaDeviceId = 'default'
+        device = devices.find(device => device.deviceId === mediaDeviceId)
+        if (device) label = device.label
       }
 
+      this.prevDeviceLabel = label
       // console.log(device)
       this.audio.setSinkId(mediaDeviceId).catch(err => {
         console.log(err)
         this.setMediaDeviceId('default')
       })
     },
+    handleDeviceChangeStopPlay(devices, device, mediaDeviceId) {
+      if (!device) device = devices.find(device => device.deviceId === 'default')
+      if (!device) device = { label: null }
+      // console.log(device)
+      // console.log(this.setting.player.isMediaDeviceRemovedStopPlay, this.isPlay, device.label, this.prevDeviceLabel)
+      if (
+        this.setting.player.isMediaDeviceRemovedStopPlay &&
+        this.isPlay &&
+        device.label != this.prevDeviceLabel
+      ) this.togglePlay()
+    },
     async handleMediaListChange() {
       let mediaDeviceId = this.setting.player.mediaDeviceId
       const devices = await navigator.mediaDevices.enumerateDevices()
       let device = devices.find(device => device.deviceId === mediaDeviceId)
+      this.handleDeviceChangeStopPlay(devices, device, mediaDeviceId)
       if (device) return
-      // console.log(device)
+
       this.setMediaDeviceId('default')
-      console.log(this.setting.player.isMediaDeviceRemovedStopPlay, this.isPlay)
-      if (this.setting.player.isMediaDeviceRemovedStopPlay && this.isPlay) this.togglePlay()
     },
     handlePlayDetailAction({ type, data }) {
       switch (type) {
