@@ -107,7 +107,7 @@ export const httpFetch = (url, options = { method: 'get' }) => {
  * @param {*} index
  */
 export const cancelHttp = requestObj => {
-  console.log(requestObj)
+  // console.log(requestObj)
   if (!requestObj) return
   console.log('cancel:', requestObj.href)
   requestObj.abort()
