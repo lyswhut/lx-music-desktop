@@ -639,9 +639,7 @@ export default {
         this.setMediaDeviceId('default')
       })
     },
-    handleDeviceChangeStopPlay(devices, device, mediaDeviceId) {
-      if (!device) device = devices.find(device => device.deviceId === 'default')
-      if (!device) device = { label: null }
+    handleDeviceChangeStopPlay(device, mediaDeviceId) {
       // console.log(device)
       // console.log(this.setting.player.isMediaDeviceRemovedStopPlay, this.isPlay, device.label, this.prevDeviceLabel)
       if (
@@ -654,10 +652,12 @@ export default {
       let mediaDeviceId = this.setting.player.mediaDeviceId
       const devices = await navigator.mediaDevices.enumerateDevices()
       let device = devices.find(device => device.deviceId === mediaDeviceId)
-      this.handleDeviceChangeStopPlay(devices, device, mediaDeviceId)
-      if (device) return
+      if (!device) device = devices.find(device => device.deviceId === 'default')
+      if (!device) device = { label: null, deviceId: null }
 
-      this.setMediaDeviceId('default')
+      this.handleDeviceChangeStopPlay(device, mediaDeviceId)
+
+      this.setMediaDeviceId(device.deviceId)
     },
     handlePlayDetailAction({ type, data }) {
       switch (type) {
