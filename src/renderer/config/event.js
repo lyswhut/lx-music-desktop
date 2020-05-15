@@ -1,11 +1,18 @@
 import Vue from 'vue'
-import bindkey from './bindkey'
+import keyBind from '../utils/keyBind'
 import { rendererOn } from '../../common/ipc'
 
-window.eventHub = new Vue()
+const eventHub = window.eventHub = new Vue()
 
-bindkey()
+eventHub.$on('bindKey', () => {
+  keyBind.bindKey((key, type, event, keys) => {
+    // console.log(`key_${key}_${type}`)
+    eventHub.$emit(`key_${key}_${type}`, { event, keys, key })
+  })
+})
+eventHub.$on('unbindKey', keyBind.unbindKey)
 
 rendererOn('focus', () => {
-  window.eventHub.$emit('focus')
+  keyBind.clearDownKeys()
+  eventHub.$emit('focus')
 })
