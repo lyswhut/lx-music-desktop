@@ -1,3 +1,5 @@
+// Support qualitys: 128k 320k flac wav
+
 export default [
   {
     id: 'test',

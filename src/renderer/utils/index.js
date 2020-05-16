@@ -2,7 +2,7 @@ import fs from 'fs'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke } from '../../common/ipc'
-import { defaultSetting, overwriteSetting } from '../config'
+import { defaultSetting, overwriteSetting } from '../config/defaultSetting'
 import apiSource from '../config/api-source'
 
 /**
