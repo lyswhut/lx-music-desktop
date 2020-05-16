@@ -91,7 +91,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.list_scroll_title')")
       h3 {{$t('view.setting.list_scroll')}}
       div
-        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.scroll.enable" :label="$t('view.setting.is_enable')")
+        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.is_enable')")
     //- dd(:title="播放列表是否显示专辑栏")
       h3 专辑栏
       div
@@ -238,7 +238,7 @@ export default {
   name: 'Setting',
   computed: {
     ...mapGetters(['setting', 'settingVersion', 'themes', 'version', 'windowSizeList']),
-    ...mapGetters('list', ['defaultList', 'loveList']),
+    ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
     isShowRebootBtn() {
       return this.current_setting.windowSizeId != window.currentWindowSizeId
     },
@@ -317,10 +317,7 @@ export default {
         list: {
           isShowAlbumName: true,
           isShowSource: true,
-          scroll: {
-            enable: true,
-            locations: {},
-          },
+          isSaveScrollLocation: true,
         },
         search: {
           searchSource: 'kw',
@@ -451,12 +448,13 @@ export default {
       console.log(listData.type)
 
       // 兼容0.6.2及以前版本的列表数据
-      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list })
+      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list, name: '试听列表', location: 0 })
 
       if (listData.type !== 'playList') return
 
       for (const list of listData.data) {
-        this.setList({ id: list.id, list: list.list })
+        if (list.location == null) list.location = 0
+        this.setList(list)
       }
     },
     exportPlayList(path) {
@@ -465,6 +463,7 @@ export default {
         data: [
           this.defaultList,
           this.loveList,
+          ...this.userList,
         ],
       }
       fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
@@ -484,10 +483,11 @@ export default {
       this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
-      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list })
+      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
 
       for (const list of allData.playList) {
-        this.setList({ id: list.id, list: list.list })
+        if (list.location == null) list.location = 0
+        this.setList(list)
       }
     },
     exportAllData(path) {
@@ -497,6 +497,7 @@ export default {
         playList: [
           this.defaultList,
           this.loveList,
+          ...this.userList,
         ],
       }
       fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
@@ -734,7 +735,7 @@ export default {
         content: ' ';
         width: 100%;
         height: 100%;
-        border-radius: 4px;
+        border-radius: @radius-border;
         background-position: center;
         background-size: auto 100%;
         background-repeat: no-repeat;

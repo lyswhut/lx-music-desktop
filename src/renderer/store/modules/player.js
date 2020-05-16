@@ -2,8 +2,10 @@ import music from '../../utils/music'
 
 // state
 const state = {
-  list: [],
-  listId: null,
+  listInfo: {
+    list: [],
+    id: null,
+  },
   playIndex: -1,
   changePlay: false,
   isShowPlayerDetail: false,
@@ -15,8 +17,8 @@ let lrcRequest
 
 // getters
 const getters = {
-  list: state => state.list || [],
-  listId: state => state.listId,
+  list: state => state.listInfo.list,
+  listId: state => state.listInfo.id,
   changePlay: satte => satte.changePlay,
   playIndex: state => state.playIndex,
   isShowPlayerDetail: state => state.isShowPlayerDetail,
@@ -78,9 +80,8 @@ const mutations = {
   setLrc(state, datas) {
     datas.musicInfo.lrc = datas.lrc
   },
-  setList(state, { list, listId, index }) {
-    state.list = list
-    state.listId = listId
+  setList(state, { list, index }) {
+    state.listInfo = list
     state.playIndex = index
     state.changePlay = true
   },

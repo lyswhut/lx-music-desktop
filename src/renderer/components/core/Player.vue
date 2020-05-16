@@ -2,7 +2,7 @@
 div(:class="$style.player")
   div(:class="$style.left" @contextmenu="handleToMusicLocation" @click="showPlayerDetail")
     img(v-if="musicInfo.img" :src="musicInfo.img" @error="imgError")
-    svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' height='100%' viewBox='0 0 60 60' space='preserve')
+    svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='102%' width='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
   div(:class="$style.right" v-if="!isShowPlayerDetail")
     div(:class="$style.column1")
@@ -529,7 +529,7 @@ export default {
       this.nowPlayTime = 0
       this.maxPlayTime = 0
       this.lyric.lines = []
-      this.lyric.line = 0
+      this.lyric.line = -1
       this.lyric.text = 0
     },
     sendProgressEvent(status, mode) {
@@ -690,7 +690,7 @@ export default {
 
 .player {
   height: @height-player;
-  // background-color: rgb(245, 245, 245);
+  background-color: @color-theme_2;
   transition: @transition-theme;
   transition-property: border-color;
   border-top: 2px solid @color-theme;
@@ -712,6 +712,9 @@ export default {
   opacity: 1;
   transition: @transition-theme;
   transition-property: opacity;
+  display: flex;
+  justify-content: center;
+  // align-items: center;
   cursor: pointer;
 
   &:hover {
@@ -726,6 +729,8 @@ export default {
     max-height: 100%;
     transition: @transition-theme;
     transition-property: border-color;
+    // border-radius: 50%;
+    border-radius: @radius-border;
     // border: 2px solid @color-theme_2-background_1;
   }
 }
@@ -931,6 +936,7 @@ export default {
 each(@themes, {
   :global(#container.@{value}) {
     .player {
+      background-color: ~'@{color-@{value}-theme_2}';
       border-top-color: ~'@{color-@{value}-theme}';
     }
     .left {

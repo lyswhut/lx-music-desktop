@@ -24,9 +24,6 @@ export default {
     if (sortId != null) state.setting.songList.sortId = sortId
     if (source != null) state.setting.songList.source = source
   },
-  setListScroll(state, { id, location }) {
-    state.setting.list.scroll.locations[id] = location
-  },
   setNewVersion(state, val) {
     state.version.newVersion = val
   },
@@ -50,5 +47,8 @@ export default {
   },
   setMediaDeviceId(state, val) {
     state.setting.player.mediaDeviceId = val
+  },
+  setPrevSelectListId(state, val) {
+    state.setting.list.prevSelectListId = val
   },
 }

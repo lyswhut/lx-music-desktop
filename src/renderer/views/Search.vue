@@ -12,8 +12,8 @@
               th.nobreak(style="width: 25%;") {{$t('view.search.name')}}
               th.nobreak(style="width: 20%;") {{$t('view.search.singer')}}
               th.nobreak(style="width: 25%;") {{$t('view.search.album')}}
-              th.nobreak(style="width: 15%;") {{$t('view.search.action')}}
               th.nobreak(style="width: 10%;") {{$t('view.search.time')}}
+              th.nobreak(style="width: 15%;") {{$t('view.search.action')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
           tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
@@ -28,13 +28,13 @@
                 span.select {{item.singer}}
               td.break(style="width: 25%;")
                 span.select {{item.albumName}}
+              td(style="width: 10%;")
+                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
               td(style="width: 15%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
                   :play-btn="assertApiSupport(item.source)"
                   :download-btn="assertApiSupport(item.source)"
                   @btn-click="handleListBtnClick")
-              td(style="width: 10%;")
-                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
         div(:class="$style.pagination")
           material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
@@ -191,6 +191,8 @@ export default {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
     handle_key_mod_a_down({ event }) {
+      if (event.target.tagName == 'INPUT') return
+      event.preventDefault()
       if (event.repeat) return
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
@@ -302,8 +304,7 @@ export default {
       )
       if (targetIndex > -1) {
         this.setList({
-          list: this.defaultList.list,
-          listId: this.defaultList.id,
+          list: this.defaultList,
           index: targetIndex,
         })
       }

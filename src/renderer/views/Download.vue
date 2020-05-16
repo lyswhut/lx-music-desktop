@@ -154,6 +154,8 @@ export default {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
     handle_key_mod_a_down({ event }) {
+      if (event.target.tagName == 'INPUT') return
+      event.preventDefault()
       if (event.repeat) return
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
@@ -236,7 +238,7 @@ export default {
     async handlePlay(index) {
       const targetSong = this.list[index]
       if (!await checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
-      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.key === targetSong.key) })
+      this.setList({ list: { list: this.list, id: 'download' }, index: this.list.findIndex(i => i.key === targetSong.key) })
     },
     handleListBtnClick(info) {
       let item = this.showList[info.index]
@@ -364,7 +366,7 @@ export default {
   }
   tr {
     &.active {
-      color: @color-theme;
+      color: @color-btn;
     }
   }
 }
@@ -374,7 +376,7 @@ each(@themes, {
     .tbody {
       tr {
         &.active {
-          color: ~'@{color-@{value}-theme}';
+          color: ~'@{color-@{value}-btn}';
         }
       }
       td {

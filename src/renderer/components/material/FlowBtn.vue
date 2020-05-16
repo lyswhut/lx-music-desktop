@@ -71,10 +71,11 @@ export default {
   position: fixed;
   bottom: 80px;
   right: 30px;
-  background-color: @color-search-form-background;
+  // transform: translateX(-25%);
+  background-color: @color-theme_2-background_2;
   border-radius: 5px;
   // padding: 3px 5px;
-  box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
+  box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
   button {
     background-color: transparent;
     border: none;
@@ -106,7 +107,7 @@ export default {
 each(@themes, {
   :global(#container.@{value}) {
     .btns {
-      background-color: ~'@{color-@{value}-search-form-background}';
+      background-color: ~'@{color-@{value}-theme_2-background_2}';
       button {
         color: ~'@{color-@{value}-btn}';
         &:hover {

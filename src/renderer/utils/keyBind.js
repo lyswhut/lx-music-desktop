@@ -52,7 +52,7 @@ const assertStopCallback = element => {
 
 const handleKeyDown = event => {
   if (assertStopCallback(event.target)) return
-  event.preventDefault()
+  // event.preventDefault()
   let keys = eventModifiers(event)
   switch (event.key) {
     case 'Control':
@@ -61,7 +61,7 @@ const handleKeyDown = event => {
     case 'Shift':
       break
     default:
-      keys.push(event.key)
+      keys.push(event.key.toLowerCase())
       break
   }
   handleEvent('down', event, keys)

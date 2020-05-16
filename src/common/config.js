@@ -33,7 +33,7 @@ module.exports = {
       name: 'larger',
       width: 1198,
       height: 766,
-      fontSize: '18px',
+      fontSize: '17px',
     },
     {
       id: 5,

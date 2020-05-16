@@ -55,15 +55,8 @@ const easeInOutQuad = (t, b, c, d) => {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
-/**
- * 设置滚动条位置
- * @param {*} element 要设置滚动的容器 dom
- * @param {*} to 滚动的目标位置
- * @param {*} duration 滚动完成时间 ms
- * @param {*} fn 滚动完成后的回调
- */
-export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
-  if (!element) return
+const handleScroll = (element, to, duration = 300, fn = () => {}) => {
+  if (!element) return fn()
   const start = element.scrollTop || element.scrollY || 0
   let cancel = false
   if (to > start) {
@@ -98,6 +91,31 @@ export const scrollTo = (element, to, duration = 300, fn = () => {}) => {
   return () => {
     cancel = true
   }
+}
+/**
+ * 设置滚动条位置
+ * @param {*} element 要设置滚动的容器 dom
+ * @param {*} to 滚动的目标位置
+ * @param {*} duration 滚动完成时间 ms
+ * @param {*} fn 滚动完成后的回调
+ * @param {*} delay 延迟执行时间
+ */
+export const scrollTo = (element, to, duration = 300, fn = () => {}, delay) => {
+  let cancelFn
+  let timeout
+  if (delay) {
+    let scrollCancelFn
+    cancelFn = () => {
+      timeout == null ? scrollCancelFn && scrollCancelFn() : clearTimeout(timeout)
+    }
+    timeout = setTimeout(() => {
+      timeout = null
+      scrollCancelFn = handleScroll(element, to, duration, fn, delay)
+    }, delay)
+  } else {
+    cancelFn = handleScroll(element, to, duration, fn, delay)
+  }
+  return cancelFn
 }
 
 /**

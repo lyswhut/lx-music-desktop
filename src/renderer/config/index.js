@@ -2,7 +2,7 @@ import path from 'path'
 import os from 'os'
 
 const defaultSetting = {
-  version: '1.0.24',
+  version: '1.0.26',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -14,10 +14,8 @@ const defaultSetting = {
   list: {
     isShowAlbumName: true,
     isShowSource: true,
-    scroll: {
-      enable: true,
-      locations: {},
-    },
+    prevSelectListId: 'default',
+    isSaveScrollLocation: true,
   },
   download: {
     savePath: path.join(os.homedir(), 'Desktop'),

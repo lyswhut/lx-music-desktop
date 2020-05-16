@@ -30,7 +30,7 @@ export default {
       return this.musicInfo || {}
     },
     qualityList() {
-      return window.globalObj.qualityList[this.musicInfo.source]
+      return window.globalObj.qualityList[this.musicInfo.source] || []
     },
   },
   methods: {
