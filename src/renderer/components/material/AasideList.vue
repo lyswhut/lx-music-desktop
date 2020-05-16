@@ -1,43 +1,9 @@
 <template lang="pug">
-div(:class="$style.songList")
-  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-    div(v-show="list.length" :class="$style.list")
-      div(:class="$style.thead")
-        table
-          thead
-            tr
-              th.nobreak.center(style="width: 10px;") #
-              th.nobreak(style="width: 25%;") {{$t('material.song_list.name')}}
-              th.nobreak(style="width: 20%;") {{$t('material.song_list.singer')}}
-              th.nobreak(style="width: 20%;") {{$t('material.song_list.album')}}
-              th.nobreak(style="width: 10%;") {{$t('material.song_list.time')}}
-              th.nobreak(style="width: 20%;") {{$t('material.song_list.action')}}
-      div.scroll(:class="$style.tbody" ref="dom_scrollContent")
-        table
-          tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
-            tr(v-for='(item, index) in list' :key='item.songmid' @click="handleDoubleClick($event, index)")
-              td.nobreak.center(style="width: 37px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-              td.break(style="width: 25%;")
-                span.select {{item.name}}
-                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
-                span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
-              td.break(style="width: 20%;")
-                span.select {{item.singer}}
-              td.break(style="width: 20%;")
-                span.select {{item.albumName}}
-              td(style="width: 10%;")
-                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
-              td(style="width: 20%; padding-left: 0; padding-right: 0;")
-                material-list-buttons(:index="index" :search-btn="true" :class="$style.btns"
-                  :remove-btn="false" @btn-click="handleListBtnClick"
-                  :listAdd-btn="assertApiSupport(item.source)"
-                  :play-btn="assertApiSupport(item.source)"
-                  :download-btn="assertApiSupport(item.source)")
-                //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
-                //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
-                //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
-        div(:class="$style.pagination")
-          material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
+div(:class="$style.lists")
+  h2(:class="$style.listsTitle") {{$t('core.aside.my_list')}}
+  ul.scroll(:class="$style.listsContent")
+    li(:class="$style.listsItem" v-for="item in lists" :key="item.id") {{item.name}}
+
   transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
     div(v-show="!list.length" :class="$style.noitem")
       p(v-html="noItem")
@@ -121,6 +87,8 @@ export default {
       keyEvent: {
         isShiftDown: false,
         isModDown: false,
+        isADown: false,
+        aDownTimeout: null,
       },
     }
   },
@@ -137,6 +105,7 @@ export default {
       window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
       window.eventHub.$on('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$on('key_mod+a_up', this.handle_key_mod_a_up)
     },
     unlistenEvent() {
       window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
@@ -144,6 +113,7 @@ export default {
       window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
       window.eventHub.$off('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$off('key_mod+a_up', this.handle_key_mod_a_up)
     },
     handle_key_shift_down() {
       if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
@@ -157,12 +127,26 @@ export default {
     handle_key_mod_up() {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
-    handle_key_mod_a_down({ event }) {
-      if (event.target.tagName == 'INPUT') return
-      event.preventDefault()
-      if (event.repeat) return
-      this.keyEvent.isModDown = false
-      this.handleSelectAllData()
+    handle_key_mod_a_down() {
+      if (!this.keyEvent.isADown) {
+        this.keyEvent.isModDown = false
+        this.keyEvent.isADown = true
+        this.handleSelectAllData()
+        if (this.keyEvent.aDownTimeout) clearTimeout(this.keyEvent.aDownTimeout)
+        this.keyEvent.aDownTimeout = setTimeout(() => {
+          this.keyEvent.aDownTimeout = null
+          this.keyEvent.isADown = false
+        }, 500)
+      }
+    },
+    handle_key_mod_a_up() {
+      if (this.keyEvent.isADown) {
+        if (this.keyEvent.aDownTimeout) {
+          clearTimeout(this.keyEvent.aDownTimeout)
+          this.keyEvent.aDownTimeout = null
+        }
+        this.keyEvent.isADown = false
+      }
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
@@ -276,57 +260,25 @@ export default {
 
 <style lang="less" module>
 @import '../../assets/styles/layout.less';
-.song-list {
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-flow: column nowrap;
-  position: relative;
-}
-
-.list {
-  position: relative;
-  font-size: 14px;
-  overflow: hidden;
-  display: flex;
-  flex-flow: column nowrap;
-}
-.thead {
+.lists {
   flex: none;
-  tr > th:first-child {
-    color: @color-theme_2-font-label;
-    // padding-left: 10px;
-  }
+  width: 15%;
+  display: flex;
+  flex-flow: column nowrap;
 }
-.tbody {
+.title {
+  font-size: 12px;
+  line-height: 28px;
+  padding: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  flex: none;
+}
+.list {
   flex: auto;
-  overflow-y: auto;
-  td {
-    font-size: 12px;
-    :global(.badge) {
-      margin-left: 3px;
-    }
-    &:first-child {
-      // padding-left: 10px;
-      font-size: 11px;
-      color: @color-theme_2-font-label;
-    }
-  }
-  :global(.badge) {
-    opacity: .85;
-  }
-
-  &.copying {
-    .no-select {
-      display: none;
-    }
-  }
+  min-width: 0;
 }
-.pagination {
-  text-align: center;
-  padding: 15px 0;
-  // left: 50%;
-  // transform: translateX(-50%);
+.item {
+
 }
 .noitem {
   position: absolute;

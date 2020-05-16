@@ -1,23 +1,43 @@
+let allList = {}
+window.allList = allList
+
+const allListInit = (defaultList, loveList, userList) => {
+  allList[defaultList.id] = defaultList
+  allList[loveList.id] = loveList
+  for (const list of userList) allList[list.id] = list
+}
+const allListUpdate = list => {
+  allList[list.id] = list
+}
+const allListRemove = list => {
+  delete allList[list.id]
+}
+
 // state
 const state = {
+  isInitedList: false,
   defaultList: {
     id: 'default',
     name: '试听列表',
     list: [],
+    location: 0,
   },
   loveList: {
     id: 'love',
     name: '我的收藏',
     list: [],
+    location: 0,
   },
   userList: [],
 }
 
 // getters
 const getters = {
+  isInitedList: state => state.isInitedList,
   defaultList: state => state.defaultList || {},
   loveList: state => state.loveList || {},
   userList: state => state.userList,
+  allList: () => allList,
 }
 
 // actions
@@ -25,72 +45,117 @@ const actions = {
 
 }
 
-const getList = (state, id) => {
-  let targetList
-  switch (id) {
-    case 'default':
-      targetList = state.defaultList
-      break
-    case 'love':
-      targetList = state.loveList
-      break
-    default:
-      targetList = state.userList.find(l => l.id === id)
-      break
-  }
-  return targetList
-}
-
 // mitations
 const mutations = {
-  initList(state, { defaultList, loveList }) {
-    if (defaultList !== undefined) state.defaultList.list = defaultList.list
-    if (loveList !== undefined) state.loveList.list = loveList.list
+  initList(state, { defaultList, loveList, userList }) {
+    if (defaultList != null) state.defaultList.list = defaultList.list
+    if (loveList != null) state.loveList.list = loveList.list
+    if (userList != null) state.userList = userList
+    allListInit(state.defaultList, state.loveList, state.userList)
+    state.isInitedList = true
   },
-  setList(state, { id, list }) {
-    const targetList = getList(state, id)
-    if (!targetList) return
-    targetList.list = list
+  setList(state, { id, list, name, location }) {
+    const targetList = allList[id]
+    if (targetList) {
+      if (name && targetList.name === name) {
+        targetList.list.splice(0, targetList.list.length, ...list)
+        targetList.location = location
+        return
+      }
+
+      id += '_' + Math.random()
+    }
+    let newList = {
+      name,
+      id,
+      list,
+      location,
+    }
+    state.userList.push(newList)
+    allListUpdate(newList)
   },
   listAdd(state, { id, musicInfo }) {
-    const targetList = getList(state, id)
+    const targetList = allList[id]
     if (!targetList) return
     if (targetList.list.some(s => s.songmid === musicInfo.songmid)) return
     targetList.list.push(musicInfo)
   },
   listAddMultiple(state, { id, list }) {
-    let targetList = getList(state, id)
+    let targetList = allList[id]
     if (!targetList) return
-    targetList = targetList.list
-    list.forEach(musicInfo => {
-      if (targetList.some(s => s.songmid === musicInfo.songmid)) return
-      targetList.push(musicInfo)
-    })
+    let newList = [...targetList.list, ...list]
+    let map = {}
+    let ids = []
+    for (const item of newList) {
+      if (map[item.songmid]) continue
+      ids.push(item.songmid)
+      map[item.songmid] = item
+    }
+    targetList.list.splice(0, targetList.list.length, ...ids.map(id => map[id]))
   },
   listRemove(state, { id, index }) {
-    let targetList = getList(state, id)
+    let targetList = allList[id]
     if (!targetList) return
     targetList.list.splice(index, 1)
   },
   listRemoveMultiple(state, { id, list }) {
-    let targetList = getList(state, id)
+    let targetList = allList[id]
     if (!targetList) return
-    targetList = targetList.list
-    list.forEach(musicInfo => {
-      let index = targetList.indexOf(musicInfo)
-      if (index < 0) return
-      targetList.splice(index, 1)
-    })
+    let map = {}
+    let ids = []
+    for (const item of targetList.list) {
+      ids.push(item.songmid)
+      map[item.songmid] = item
+    }
+    for (const item of list) {
+      if (map[item.songmid]) delete map[item.songmid]
+    }
+    let newList = []
+    for (const id of ids) if (map[id]) newList.push(map[id])
+
+    targetList.list.splice(0, targetList.list.length, ...newList)
   },
   listClear(state, id) {
-    let targetList = getList(state, id)
+    let targetList = allList[id]
     if (!targetList) return
-    targetList.list.length = []
+    targetList.list.splice(0, targetList.list.length)
   },
   updateMusicInfo(state, { id, index, data }) {
-    let targetList = getList(state, id)
+    let targetList = allList[id]
     if (!targetList) return
     Object.assign(targetList.list[index], data)
+  },
+  createUserList(state, name) {
+    let newList = {
+      name,
+      id: `userlist_${Date.now()}`,
+      list: [],
+      location: 0,
+    }
+    state.userList.push(newList)
+    allListUpdate(newList)
+  },
+  removeUserList(state, index) {
+    let list = state.userList.splice(index, 1)[0]
+    allListRemove(list)
+  },
+  setUserListName(state, { index, name }) {
+    let list = state.userList[index]
+    if (!list) return
+    list.name = name
+  },
+  moveupUserList(state, index) {
+    let targetList = state.userList[index]
+    state.userList.splice(index, 1)
+    state.userList.splice(index - 1, 0, targetList)
+  },
+  movedownUserList(state, index) {
+    let targetList = state.userList[index]
+    state.userList.splice(index, 1)
+    state.userList.splice(index + 1, 0, targetList)
+  },
+  setListScroll(state, { id, location }) {
+    if (allList[id]) allList[id].location = location
   },
 }
 

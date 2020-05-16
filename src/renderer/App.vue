@@ -58,7 +58,7 @@ export default {
   computed: {
     ...mapGetters('player', ['isShowPlayerDetail']),
     ...mapGetters(['setting', 'theme', 'version', 'windowSizeActive']),
-    ...mapGetters('list', ['defaultList', 'loveList']),
+    ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
     ...mapGetters('download', {
       downloadList: 'list',
       downloadStatus: 'downloadStatus',
@@ -80,6 +80,9 @@ export default {
     }, 500)
     this.saveLoveList = throttle(n => {
       window.electronStore_list.set('loveList', n)
+    }, 500)
+    this.saveUserList = throttle(n => {
+      window.electronStore_list.set('userList', n)
     }, 500)
     this.saveDownloadList = throttle(n => {
       window.electronStore_list.set('downloadList', n)
@@ -109,6 +112,12 @@ export default {
     loveList: {
       handler(n) {
         this.saveLoveList(n)
+      },
+      deep: true,
+    },
+    userList: {
+      handler(n) {
+        this.saveUserList(n)
       },
       deep: true,
     },
@@ -196,6 +205,7 @@ export default {
         })
       }, 60 * 30 * 1000)
 
+      this.listenEvent()
       this.initData()
       this.globalObj.apiSource = this.setting.apiSource
       this.globalObj.qualityList = music.supportQuality[this.setting.apiSource]
@@ -221,9 +231,10 @@ export default {
       this.initDownloadList() // 初始化下载列表
     },
     initPlayList() {
-      let defaultList = window.electronStore_list.get('defaultList')
-      let loveList = window.electronStore_list.get('loveList')
-      this.initList({ defaultList, loveList })
+      let defaultList = window.electronStore_list.get('defaultList') || this.defaultList
+      let loveList = window.electronStore_list.get('loveList') || this.loveList
+      let userList = window.electronStore_list.get('userList') || this.userList
+      this.initList({ defaultList, loveList, userList })
     },
     initDownloadList() {
       let downloadList = window.electronStore_list.get('downloadList')
@@ -303,9 +314,22 @@ export default {
     handleXMVerifyModalClose() {
       music.xm.closeVerifyModal()
     },
+    listenEvent() {
+      window.eventHub.$on('key_escape_down', this.handle_key_esc_down)
+    },
+    unlistenEvent() {
+      window.eventHub.$off('key_escape_down', this.handle_key_esc_down)
+    },
+    handle_key_esc_down({ event }) {
+      if (event.repeat) return
+      if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) return
+      event.target.value = ''
+      event.target.blur()
+    },
   },
   beforeDestroy() {
     this.clearUpdateTimeout()
+    this.unlistenEvent()
     if (this.isProd) {
       document.body.removeEventListener('mouseenter', this.dieableIgnoreMouseEvents)
       document.body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
@@ -330,7 +354,7 @@ body {
   padding: @shadow-app;
   #container {
     box-shadow: 0 0 @shadow-app rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
+    border-radius: @radius-border;
     background-color: transparent;
   }
 }
@@ -360,8 +384,8 @@ body {
   transition: background-color @transition-theme;
   background-color: @color-theme_2;
 
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+  border-top-left-radius: @radius-border;
+  border-bottom-left-radius: @radius-border;
   overflow: hidden;
 }
 #toolbar, #player {

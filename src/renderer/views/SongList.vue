@@ -54,8 +54,8 @@
               p {{$t('view.song_list.loding_list')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
-    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
+    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false" :list-name="listDetail.info.name")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose" :list-name="listDetail.info.name")
 </template>
 
 <script>
@@ -213,8 +213,7 @@ export default {
       )
       if (targetIndex > -1) {
         this.setList({
-          list: this.defaultList.list,
-          listId: this.defaultList.id,
+          list: this.defaultList,
           index: targetIndex,
         })
       }

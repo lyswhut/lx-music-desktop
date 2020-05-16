@@ -98,15 +98,15 @@ export default {
         margin-left: 0;
         button {
           border-top-left-radius: 3px;
-          // border-bottom-left-radius: 4px;
+          // border-bottom-left-radius: @radius-border;
         }
       }
       &:last-child {
         border-right: 2px solid @color-tab-border-top;
-        border-top-right-radius: 4px;
+        border-top-right-radius: @radius-border;
         button {
           border-top-right-radius: 3px;
-          // border-bottom-right-radius: 4px;
+          // border-bottom-right-radius: @radius-border;
         }
       }
       button {

@@ -24,7 +24,7 @@
       div(:class="$style.right")
         div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" @mousedown="handleLyricMouseDown" ref="dom_lyric")
           div(:class="$style.lyricSpace")
-          p(v-for="(info, index) in lyric.lines" :key="index" :class="lyric.line == index ? $style.lrcActive : null") {{info.text}}
+          p(v-for="(info, index) in lyricLines" :key="index" :class="lyric.line == index ? $style.lrcActive : null") {{info.text}}
           div(:class="$style.lyricSpace")
     div(:class="$style.footer")
       div(:class="$style.left")
@@ -128,16 +128,44 @@ export default {
       immediate: true,
     },
     'lyric.lines': {
-      handler() {
-        this.$nextTick(() => {
-          this.dom_lines = this.$refs.dom_lyric.querySelectorAll('p')
-          this.handleScrollLrc()
-        })
+      handler(n, o) {
+        this.isSetedLines = true
+        if (o) {
+          this._lyricLines = n
+          if (n.length) {
+            this.lyricLines = n
+            this.$nextTick(() => {
+              this.dom_lines = this.$refs.dom_lyric.querySelectorAll('p')
+              this.handleScrollLrc()
+            })
+          } else {
+            if (cancelScrollFn) {
+              cancelScrollFn()
+              cancelScrollFn = null
+            }
+            cancelScrollFn = scrollTo(this.$refs.dom_lyric, 0, 300, () => {
+              if (this.lyricLines === this._lyricLines && this._lyricLines.length) return
+              this.lyricLines = this._lyricLines
+              this.$nextTick(() => {
+                this.dom_lines = this.$refs.dom_lyric.querySelectorAll('p')
+                this.handleScrollLrc()
+              })
+            }, 50)
+          }
+        } else {
+          this.lyricLines = n
+          this.$nextTick(() => {
+            this.dom_lines = this.$refs.dom_lyric.querySelectorAll('p')
+            this.handleScrollLrc()
+          })
+        }
       },
       immediate: true,
     },
     'lyric.line': {
       handler(n) {
+        if (n < 0) return
+        if (n == 0 && this.isSetedLines) return this.isSetedLines = false
         this.handleScrollLrc()
       },
       immediate: true,
@@ -167,6 +195,9 @@ export default {
         isStopScroll: false,
         timeout: null,
       },
+      _lyricLines: [],
+      lyricLines: [],
+      isSetedLines: false,
     }
   },
   mounted() {
@@ -298,7 +329,7 @@ export default {
   z-index: 10;
   // -webkit-app-region: drag;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: @radius-border;
   color: @color-theme_2-font;
   border-left: 12px solid @color-theme;
 }
@@ -465,6 +496,7 @@ export default {
     max-width: 100%;
     max-height: 100%;
     border: 5px solid @color-theme-hover;
+    // border-radius: @radius-border;
     // border: 5px solid #fff;
   }
 }

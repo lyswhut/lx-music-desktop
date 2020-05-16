@@ -191,6 +191,8 @@ export default {
       if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
     },
     handle_key_mod_a_down({ event }) {
+      if (event.target.tagName == 'INPUT') return
+      event.preventDefault()
       if (event.repeat) return
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
@@ -302,8 +304,7 @@ export default {
       )
       if (targetIndex > -1) {
         this.setList({
-          list: this.defaultList.list,
-          listId: this.defaultList.id,
+          list: this.defaultList,
           index: targetIndex,
         })
       }

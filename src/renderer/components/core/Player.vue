@@ -529,7 +529,7 @@ export default {
       this.nowPlayTime = 0
       this.maxPlayTime = 0
       this.lyric.lines = []
-      this.lyric.line = 0
+      this.lyric.line = -1
       this.lyric.text = 0
     },
     sendProgressEvent(status, mode) {
@@ -702,7 +702,7 @@ export default {
   }
 }
 .left {
-  width: @height-player;
+  width: @height-player - 2;
   height: @height-player - 2;
   color: @color-theme;
   transition: @transition-theme;
@@ -730,7 +730,7 @@ export default {
     transition: @transition-theme;
     transition-property: border-color;
     // border-radius: 50%;
-    // border-radius: @radius-progress-border;
+    border-radius: @radius-border;
     // border: 2px solid @color-theme_2-background_1;
   }
 }
