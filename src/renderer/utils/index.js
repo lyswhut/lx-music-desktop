@@ -1,9 +1,9 @@
 import fs from 'fs'
 import { shell, clipboard } from 'electron'
-import path from 'path'
-import os from 'os'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke } from '../../common/ipc'
+import { defaultSetting, overwriteSetting } from '../config'
+import apiSource from '../config/api-source'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -184,91 +184,13 @@ export const objectDeepMerge = (target, source) => {
  * @param {*} setting
  */
 export const updateSetting = (setting, version) => {
-  const defaultVersion = '1.0.24'
+  const defaultVersion = defaultSetting.version
   if (!version) {
     if (setting) {
       version = setting.version
       delete setting.version
     }
   }
-  const defaultSetting = {
-    player: {
-      togglePlayMethod: 'listLoop',
-      highQuality: false,
-      isShowTaskProgess: true,
-      volume: 1,
-      mediaDeviceId: 'default',
-      isMediaDeviceRemovedStopPlay: false,
-    },
-    list: {
-      isShowAlbumName: true,
-      isShowSource: true,
-      scroll: {
-        enable: true,
-        locations: {},
-      },
-    },
-    download: {
-      savePath: path.join(os.homedir(), 'Desktop'),
-      fileName: '歌名 - 歌手',
-      maxDownloadNum: 3,
-      isDownloadLrc: false,
-      isEmbedPic: true,
-    },
-    leaderboard: {
-      source: 'kw',
-      tabId: 'kwbiaosb',
-    },
-    songList: {
-      source: 'kg',
-      sortId: '5',
-      tagInfo: {
-        name: '默认',
-        id: null,
-      },
-    },
-    odc: {
-      isAutoClearSearchInput: false,
-      isAutoClearSearchList: false,
-    },
-    search: {
-      searchSource: 'kw',
-      tempSearchSource: 'kw',
-      isShowHotSearch: false,
-      isShowHistorySearch: false,
-      isFocusSearchBox: false,
-    },
-    network: {
-      proxy: {
-        enable: false,
-        host: '',
-        port: '',
-        username: '',
-        password: '',
-      },
-    },
-    tray: {
-      isShow: false,
-      isToTray: false,
-    },
-    windowSizeId: 2,
-    themeId: 0,
-    langId: 'cns',
-    sourceId: 'kw',
-    apiSource: 'temp',
-    sourceNameType: 'alias',
-    randomAnimate: true,
-    ignoreVersion: null,
-    isAgreePact: false,
-  }
-
-  // 使用新年皮肤
-  if (new Date().getMonth() < 2) defaultSetting.themeId = 9
-
-  const overwriteSetting = {
-
-  }
-
 
   if (!setting) {
     setting = defaultSetting
@@ -277,7 +199,11 @@ export const updateSetting = (setting, version) => {
     objectDeepMerge(defaultSetting, overwriteSetting)
     setting = defaultSetting
   }
-  if (setting.apiSource != 'temp') setting.apiSource = 'test' // 强制设置回 test 接口源
+
+  if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
+    let api = apiSource.find(api => !api.disabled)
+    if (api) setting.apiSource = api.id
+  }
 
   return { setting, version: defaultVersion }
 }

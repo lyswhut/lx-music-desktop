@@ -230,6 +230,7 @@ import {
   setWindowSize,
 } from '../utils'
 import { rendererSend } from '../../common/ipc'
+import apiSource from '../config/api-source'
 import fs from 'fs'
 import languageList from '@/lang/languages.json'
 
@@ -267,18 +268,11 @@ export default {
       ]
     },
     apiSources() {
-      return [
-        {
-          id: 'test',
-          label: this.$t('view.setting.basic_source_test'),
-          disabled: false,
-        },
-        {
-          id: 'temp',
-          label: this.$t('view.setting.basic_source_temp'),
-          disabled: false,
-        },
-      ]
+      return apiSource.map(api => ({
+        id: api.id,
+        label: this.$t('view.setting.basic_source_' + api.id) || api.name,
+        disabled: api.disabled,
+      }))
     },
     sourceNameTypes() {
       return [
