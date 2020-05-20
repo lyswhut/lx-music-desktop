@@ -162,8 +162,8 @@ export default {
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
     },
-    list(n, o) {
-      if (n === o) {
+    async list(n, o) {
+      if (n === o && this.musicInfo.songmid) {
         let index = this.listId == 'download'
           ? n.findIndex(s => s.musicInfo.songmid === this.musicInfo.songmid)
           : n.findIndex(s => s.songmid === this.musicInfo.songmid)

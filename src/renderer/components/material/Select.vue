@@ -86,10 +86,10 @@ export default {
   .mixin-ellipsis-1;
 
   &:hover {
-    background-color: @color-theme_2-hover;
+    background-color: @color-btn-hover;
   }
   &:active {
-    background-color: @color-theme_2-active;
+    background-color: @color-btn-active;
   }
 }
 
@@ -121,10 +121,10 @@ export default {
     .mixin-ellipsis-1;
 
     &:hover {
-      background-color: @color-theme_2-hover;
+      background-color: @color-btn-hover;
     }
     &:active {
-      background-color: @color-theme_2-active;
+      background-color: @color-btn-active;
     }
   }
 }
@@ -137,10 +137,10 @@ each(@themes, {
       border-left-color: ~'@{color-@{value}-tab-border-bottom}';
       color: ~'@{color-@{value}-btn}';
       &:hover {
-        background-color: ~'@{color-@{value}-theme_2-hover}';
+        background-color: ~'@{color-@{value}-btn-hover}';
       }
       &:active {
-        background-color: ~'@{color-@{value}-theme_2-active}';
+        background-color: ~'@{color-@{value}-btn-active}';
       }
     }
 
@@ -152,10 +152,10 @@ each(@themes, {
         // color: ~'@{color-@{value}-btn}';
         background-color: ~'@{color-@{value}-btn-background}';
         &:hover {
-          background-color: ~'@{color-@{value}-theme_2-hover}';
+          background-color: ~'@{color-@{value}-btn-hover}';
         }
         &:active {
-          background-color: ~'@{color-@{value}-theme_2-active}';
+          background-color: ~'@{color-@{value}-btn-active}';
         }
       }
     }

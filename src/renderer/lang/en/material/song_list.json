@@ -1,6 +1,8 @@
 {
-  "select_all": "Select all",
-  "unselect_all": "Select none",
+  "list_play": "Play",
+  "list_add_to": "Add to ...",
+  "list_download": "Download",
+  "list_search": "Search",
   "name": "Name",
   "singer": "Artist",
   "album": "Album",

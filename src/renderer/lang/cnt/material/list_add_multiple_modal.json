@@ -1,4 +1,5 @@
 {
-  "title": "添加已選的 {num} 首歌曲到...",
+  "title_add": "添加已選的 {num} 首歌曲到...",
+  "title_move": "添加移動已選的 {num} 首歌曲到...",
   "btn_title": "把這些歌曲添加到 {name}"
 }

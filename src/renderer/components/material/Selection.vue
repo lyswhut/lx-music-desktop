@@ -1,11 +1,11 @@
 <template lang="pug">
-  div(:class="[$style.select, show ? $style.active : '']")
-    div(:class="$style.label" ref="dom_btn" @click="handleShow")
-      span {{label}}
-      div(:class="$style.icon")
+  div.content(:class="[$style.select, show ? $style.active : '']")
+    div.label-content(:class="$style.label" ref="dom_btn" @click="handleShow")
+      span.label {{label}}
+      div.icon(:class="$style.icon")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
-    ul.scroll(:class="$style.list" :style="listStyles" ref="dom_list")
+    ul.list.scroll(:class="$style.list" :style="listStyles" ref="dom_list")
       li(v-for="item in list" :class="(itemKey ? item[itemKey] : item) == value ? $style.active : null" @click="handleClick(item)" :title="itemName ? item[itemName] : item") {{itemName ? item[itemName] : item}}
 </template>
 
@@ -140,10 +140,10 @@ export default {
   }
 
   &:hover {
-    background-color: @color-theme_2-hover;
+    background-color: @color-btn-hover;
   }
   &:active {
-    background-color: @color-theme_2-active;
+    background-color: @color-btn-active;
   }
 }
 
@@ -176,10 +176,10 @@ export default {
     .mixin-ellipsis-1;
 
     &:hover {
-      background-color: @color-theme_2-hover;
+      background-color: @color-btn-hover;
     }
     &:active {
-      background-color: @color-theme_2-active;
+      background-color: @color-btn-active;
     }
     &.active {
       color: @color-btn;
@@ -194,10 +194,10 @@ each(@themes, {
       color: ~'@{color-@{value}-btn}';
       background-color: ~'@{color-@{value}-btn-background}';
       &:hover {
-        background-color: ~'@{color-@{value}-theme_2-hover}';
+        background-color: ~'@{color-@{value}-btn-hover}';
       }
       &:active {
-        background-color: ~'@{color-@{value}-theme_2-active}';
+        background-color: ~'@{color-@{value}-btn-active}';
       }
     }
 
@@ -207,10 +207,10 @@ each(@themes, {
         // color: ~'@{color-@{value}-btn}';
         background-color: ~'@{color-@{value}-btn-background}';
         &:hover {
-          background-color: ~'@{color-@{value}-theme_2-hover}';
+          background-color: ~'@{color-@{value}-btn-hover}';
         }
         &:active {
-          background-color: ~'@{color-@{value}-theme_2-active}';
+          background-color: ~'@{color-@{value}-btn-active}';
         }
         &.active {
           color: ~'@{color-@{value}-btn}';

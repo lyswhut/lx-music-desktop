@@ -1,6 +1,6 @@
 <template lang="pug">
 ul(:class="$style.list" :style="listStyles" ref="dom_list")
-  li(v-for="item in menus" @click="handleClick(item)" :disabled="item.disabled") {{item[itemName]}}
+  li(v-for="item in menus" @click="handleClick(item)" v-if="!item.hide" :disabled="item.disabled") {{item[itemName]}}
 </template>
 
 <script>
@@ -41,7 +41,7 @@ export default {
         this.listStyles.top = n.y + 'px'
         if (this.show) {
           if (this.listStyles.transitionProperty != this.transition2) this.listStyles.transitionProperty = this.transition2
-          this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset(n.y)}px)`
+          this.listStyles.transform = `scaleY(1) translate(${this.handleGetOffsetXY(n.x, n.y)})`
         }
       },
       deep: true,
@@ -55,7 +55,7 @@ export default {
         top: 0,
         opacity: 0,
         transitionProperty: 'transform, opacity',
-        transform: 'scale(0) translateY(0)',
+        transform: 'scale(0) translate(0,0)',
       },
       transition1: 'transform, opacity',
       transition2: 'transform, opacity, top, left',
@@ -72,21 +72,30 @@ export default {
     handleShow() {
       this.show = true
       this.listStyles.opacity = 1
-      this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset(this.location.y)}px)`
+      this.listStyles.transform = `scaleY(1) translate(${this.handleGetOffsetXY(this.location.x, this.location.y)})`
     },
     handleHide(e) {
       this.listStyles.opacity = 0
-      this.listStyles.transform = 'scale(0) translateY(0)'
+      this.listStyles.transform = 'scale(0) translate(0, 0)'
       this.show = false
     },
-    handleGetOffset(top) {
+    handleGetOffsetXY(left, top) {
+      const listWidth = this.$refs.dom_list.clientWidth
       const listHeight = this.$refs.dom_list.clientHeight
       const dom_container = this.$refs.dom_list.offsetParent
+      const containerWidth = dom_container.clientWidth
       const containerHeight = dom_container.clientHeight
-      if (containerHeight < listHeight) return 0
+      const offsetWidth = containerWidth - left - listWidth
       const offsetHeight = containerHeight - top - listHeight
-      if (offsetHeight > 0) return 0
-      return offsetHeight - 5
+      let x = 0
+      let y = 0
+      if (containerWidth > listWidth && offsetWidth < 0) {
+        x = offsetWidth - 15
+      }
+      if (containerHeight > listHeight && offsetHeight < 0) {
+        y = offsetHeight - 5
+      }
+      return `${x}px, ${y}px`
     },
     handleDocumentClick(event) {
       if (!this.show) return
@@ -121,7 +130,7 @@ export default {
   background-color: @color-theme_2-background_2;
   box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
   z-index: 10;
-
+  overflow: hidden;
   li {
     cursor: pointer;
     min-width: 80px;

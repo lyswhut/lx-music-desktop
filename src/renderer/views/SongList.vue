@@ -197,6 +197,38 @@ export default {
           break
       }
     },
+    handleMenuClick(info) {
+      switch (info.action) {
+        case 'download':
+          if (this.selectdData.length) {
+            this.isShowDownloadMultiple = true
+          } else {
+            this.musicInfo = this.listDetail.list[info.index]
+            this.$nextTick(() => {
+              this.isShowDownload = true
+            })
+          }
+          break
+        case 'play':
+          this.testPlay(info.index)
+          break
+        case 'search':
+          this.handleSearch(info.index)
+          break
+        case 'addTo':
+          if (this.selectdData.length) {
+            this.$nextTick(() => {
+              this.isShowListAddMultiple = true
+            })
+          } else {
+            this.musicInfo = this.listDetail.list[info.index]
+            this.$nextTick(() => {
+              this.isShowListAdd = true
+            })
+          }
+          break
+      }
+    },
     testPlay(index) {
       let targetSong
       if (index == null) {
@@ -259,27 +291,29 @@ export default {
         this.handleGetListDetail(this.selectListInfo.id, 1)
       })
     },
-    handleFlowBtnClick(action) {
-      switch (action) {
-        case 'download':
-          this.isShowDownloadMultiple = true
-          break
-        case 'play':
-          this.testPlay()
-          break
-        case 'add':
-          this.isShowListAddMultiple = true
-          break
-      }
-    },
+    // handleFlowBtnClick(action) {
+    //   switch (action) {
+    //     case 'download':
+    //       this.isShowDownloadMultiple = true
+    //       break
+    //     case 'play':
+    //       this.testPlay()
+    //       break
+    //     case 'add':
+    //       this.isShowListAddMultiple = true
+    //       break
+    //   }
+    // },
     handleSongListAction({ action, data }) {
       switch (action) {
         case 'listBtnClick':
           return this.handleListBtnClick(data)
+        case 'menuClick':
+          return this.handleMenuClick(data)
         case 'togglePage':
           return this.handleToggleListDetailPage(data)
-        case 'flowBtnClick':
-          return this.handleFlowBtnClick(data)
+        // case 'flowBtnClick':
+        //   return this.handleFlowBtnClick(data)
         case 'testPlay':
           return this.testPlay(data)
         case 'search':

@@ -1,6 +1,10 @@
 {
-  "select_all": "Select all",
-  "unselect_all": "Select none",
+  "menu_play": "Play",
+  "menu_start": "Start task",
+  "menu_pause": "Pause Task",
+  "menu_file": "Locate File",
+  "menu_search": "Search",
+  "menu_remove": "Remove",
   "name": "Name",
   "progress": "Progress",
   "status": "State",

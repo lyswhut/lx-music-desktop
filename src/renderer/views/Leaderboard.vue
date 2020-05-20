@@ -1,9 +1,20 @@
 <template lang="pug">
   div(:class="$style.leaderboard")
-    div(:class="$style.header")
+    //- div(:class="$style.header")
       material-tab(:class="$style.tab" :list="types" align="left" item-key="id" item-name="name" v-model="tabId")
       material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
-    material-song-list(v-model="selectdData" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
+    div(:class="$style.lists" ref="dom_lists")
+      div(:class="$style.listsSelect")
+        //- h2(:class="$style.listsTitle") {{$t('core.aside.my_list')}}
+        material-selection(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+        //- button(:class="$style.listsAdd" @click="handleShowNewList" :title="$t('view.list.lists_new_list_btn')")
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
+            use(xlink:href='#icon-list-add')
+      ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
+        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :title="item.name" v-for="item in types" :key="item.id" @click="handleToggleList(item.id)")
+          span(:class="$style.listsLabel") {{item.name}}
+    div(:class="$style.list")
+      material-song-list(v-model="selectdData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
@@ -81,6 +92,38 @@ export default {
           break
       }
     },
+    handleMenuClick(info) {
+      switch (info.action) {
+        case 'download':
+          if (this.selectdData.length) {
+            this.isShowDownloadMultiple = true
+          } else {
+            this.musicInfo = this.list[info.index]
+            this.$nextTick(() => {
+              this.isShowDownload = true
+            })
+          }
+          break
+        case 'play':
+          this.testPlay(info.index)
+          break
+        case 'search':
+          this.handleSearch(info.index)
+          break
+        case 'addTo':
+          if (this.selectdData.length) {
+            this.$nextTick(() => {
+              this.isShowListAddMultiple = true
+            })
+          } else {
+            this.musicInfo = this.list[info.index]
+            this.$nextTick(() => {
+              this.isShowListAdd = true
+            })
+          }
+          break
+      }
+    },
     testPlay(index) {
       let targetSong
       if (index == null) {
@@ -129,32 +172,38 @@ export default {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
     },
-    handleFlowBtnClick(action) {
-      switch (action) {
-        case 'download':
-          this.isShowDownloadMultiple = true
-          break
-        case 'play':
-          this.testPlay()
-          break
-        case 'add':
-          this.isShowListAddMultiple = true
-          break
-      }
-    },
+    // handleFlowBtnClick(action) {
+    //   switch (action) {
+    //     case 'download':
+    //       this.isShowDownloadMultiple = true
+    //       break
+    //     case 'play':
+    //       this.testPlay()
+    //       break
+    //     case 'add':
+    //       this.isShowListAddMultiple = true
+    //       break
+    //   }
+    // },
     handleSongListAction({ action, data }) {
       switch (action) {
         case 'listBtnClick':
           return this.handleListBtnClick(data)
+        case 'menuClick':
+          return this.handleMenuClick(data)
         case 'togglePage':
           return this.handleTogglePage(data)
-        case 'flowBtnClick':
-          return this.handleFlowBtnClick(data)
+        // case 'flowBtnClick':
+        //   return this.handleFlowBtnClick(data)
         case 'testPlay':
           return this.testPlay(data)
         case 'search':
           return this.handleSearch(data)
       }
+    },
+    handleToggleList(id) {
+      if (this.tabId == id) return
+      this.tabId = id
     },
     resetSelect() {
       this.selectdData = []
@@ -169,7 +218,7 @@ export default {
 .leaderboard {
   height: 100%;
   display: flex;
-  flex-flow: column nowrap;
+  position: relative;
 }
 .header {
   flex: none;
@@ -191,5 +240,157 @@ export default {
   overflow: hidden;
   flex-flow: column nowrap;
 }
+
+.lists {
+  flex: none;
+  width: 14.8%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.listsHeader {
+  position: relative;
+}
+.listsSelect {
+  font-size: 12px;
+
+  &:hover {
+    :global(.icon) {
+      opacity: 1;
+    }
+  }
+
+  >:global(.content) {
+    display: block;
+    width: 100%;
+  }
+  :global(.label-content) {
+    background-color: transparent !important;
+    line-height: 38px;
+    height: 38px;
+    border-radius: 0;
+    &:hover {
+      background: none !important;
+    }
+  }
+  :global(.label) {
+    color: rgba(0, 0, 0, 0.95) !important;
+  }
+  :global(.icon) {
+    opacity: .6;
+    transition: opacity .3s ease;
+  }
+
+  :global(.list) {
+    max-height: 500px;
+    box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
+    li {
+      background-color: @color-theme_2-background_2;
+      line-height: 38px;
+      font-size: 13px;
+      &:hover {
+        background-color: @color-btn-hover;
+      }
+      &:active {
+        background-color: @color-btn-active;
+      }
+    }
+  }
+  // line-height: 38px;
+  // padding: 0 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  flex: none;
+}
+.listsContent {
+  flex: auto;
+  min-width: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  // border-right: 1px solid rgba(0, 0, 0, 0.12);
+}
+.listsItem {
+  position: relative;
+  transition: .3s ease;
+  transition-property: color, background-color;
+  background-color: transparent;
+  &:hover:not(.active) {
+    background-color: @color-theme_2-hover;
+    cursor: pointer;
+  }
+  &.active {
+    // background-color:
+    color: @color-theme;
+  }
+  &.selected {
+    background-color: @color-theme_2-active;
+  }
+  &.clicked {
+    background-color: @color-theme_2-hover;
+  }
+  &.editing {
+    padding: 0 10px;
+    background-color: @color-theme_2-hover;
+    .listsLabel {
+      display: none;
+    }
+    .listsInput {
+      display: block;
+    }
+  }
+}
+.listsLabel {
+  display: block;
+  height: 100%;
+  padding: 0 10px;
+  font-size: 13px;
+  line-height: 36px;
+  .mixin-ellipsis-1;
+}
+
+.list {
+  overflow: hidden;
+  height: 100%;
+  flex: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  // .noItem {
+
+  // }
+}
+
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .listsSelect {
+      :global(.list) {
+        li {
+          background-color: ~'@{color-@{value}-theme_2-background_2}';
+          &:hover {
+            background-color: ~'@{color-@{value}-btn-hover}';
+          }
+          &:active {
+            background-color: ~'@{color-@{value}-btn-active}';
+          }
+        }
+      }
+    }
+    .listsItem {
+      &:hover:not(.active) {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+      &.active {
+        color: ~'@{color-@{value}-theme}';
+      }
+      &.select {
+        background-color: ~'@{color-@{value}-theme_2-active}';
+      }
+      &.clicked {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+      &.editing {
+        background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+    }
+  }
+})
 
 </style>

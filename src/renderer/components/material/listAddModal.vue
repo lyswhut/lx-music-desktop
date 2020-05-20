@@ -2,7 +2,7 @@
 material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
   main(:class="$style.main")
     h2
-      | {{$t('material.list_add_modal.title_first')}}&nbsp;
+      | {{$t('material.list_add_modal.' + (isMove ? 'title_first_move' : 'title_first_add'))}}&nbsp;
       span(:class="$style.name") {{this.musicInfo && `${musicInfo.name}`}}
       | &nbsp;{{$t('material.list_add_modal.title_last')}}
     div.scroll(:class="$style.btnContent")
@@ -39,6 +39,14 @@ export default {
       type: String,
       default: '',
     },
+    fromListId: {
+      type: String,
+      default: null,
+    },
+    isMove: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -60,9 +68,11 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('list', ['listAdd', 'createUserList']),
+    ...mapMutations('list', ['listAdd', 'listMove', 'createUserList']),
     handleClick(index) {
-      this.listAdd({ id: this.lists[index].id, musicInfo: this.musicInfo })
+      this.isMove
+        ? this.listMove({ fromId: this.fromListId, toId: this.lists[index].id, musicInfo: this.musicInfo })
+        : this.listAdd({ id: this.lists[index].id, musicInfo: this.musicInfo })
       this.$nextTick(() => {
         this.handleClose()
       })

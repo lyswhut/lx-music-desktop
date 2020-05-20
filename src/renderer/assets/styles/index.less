@@ -57,6 +57,9 @@ table {
       &.active {
         background-color: @color-theme_2-active;
       }
+      &.selected {
+        background-color: @color-theme_2-hover;
+      }
       td {
         padding: 6px;
         position: relative;
@@ -216,6 +219,9 @@ each(@themes, {
           }
           &.active {
             background-color: ~'@{color-@{value}-theme_2-active}';
+          }
+          &.selected {
+            background-color: ~'@{color-@{value}-theme_2-hover}';
           }
         }
       }

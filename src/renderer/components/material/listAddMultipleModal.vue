@@ -1,7 +1,7 @@
 <template lang="pug">
 material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
   main(:class="$style.main")
-    h2 {{$t('material.list_add_multiple_modal.title', { num: musicList.length })}}
+    h2 {{$t('material.list_add_multiple_modal.' + (isMove ? 'title_move' : 'title_add'), { num: musicList.length })}}
     div.scroll(:class="$style.btnContent")
       material-btn(:class="$style.btn" :title="$t('material.list_add_multiple_modal.btn_title', { name: item.name })" :key="item.id" @click="handleClick(index)" v-for="(item, index) in lists") {{item.name}}
       material-btn(:class="[$style.btn, $style.newList, isEditing ? $style.editing : null]" @click="handleEditing($event)" :title="$t('view.list.lists_new_list_btn')")
@@ -39,6 +39,14 @@ export default {
       type: String,
       default: '',
     },
+    fromListId: {
+      type: String,
+      default: null,
+    },
+    isMove: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -61,9 +69,11 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('list', ['listAddMultiple', 'createUserList']),
+    ...mapMutations('list', ['listAddMultiple', 'listMoveMultiple', 'createUserList']),
     handleClick(index) {
-      this.listAddMultiple({ id: this.lists[index].id, list: this.musicList })
+      this.isMove
+        ? this.listMoveMultiple({ fromId: this.fromListId, toId: this.lists[index].id, list: this.musicList })
+        : this.listAddMultiple({ id: this.lists[index].id, list: this.musicList })
       this.$nextTick(() => {
         this.handleClose(true)
       })

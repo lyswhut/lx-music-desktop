@@ -1,6 +1,10 @@
 {
-  "select_all": "全选",
-  "unselect_all": "全不选",
+  "menu_play": "播放",
+  "menu_start": "开始任务",
+  "menu_pause": "暂停任务",
+  "menu_file": "定位文件",
+  "menu_search": "搜索",
+  "menu_remove": "删除",
   "name": "歌曲名",
   "progress": "进度",
   "status": "状态",

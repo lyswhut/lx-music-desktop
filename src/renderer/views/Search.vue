@@ -8,29 +8,29 @@
         table
           thead
             tr
-              th.nobreak.center(style="width: 10px;") #
-              th.nobreak(style="width: 25%;") {{$t('view.search.name')}}
-              th.nobreak(style="width: 20%;") {{$t('view.search.singer')}}
-              th.nobreak(style="width: 25%;") {{$t('view.search.album')}}
-              th.nobreak(style="width: 10%;") {{$t('view.search.time')}}
-              th.nobreak(style="width: 15%;") {{$t('view.search.action')}}
+              th.nobreak.center(style="width: 5%;") #
+              th.nobreak {{$t('view.search.name')}}
+              th.nobreak(style="width: 22%;") {{$t('view.search.singer')}}
+              th.nobreak(style="width: 22%;") {{$t('view.search.album')}}
+              th.nobreak(style="width: 8%;") {{$t('view.search.time')}}
+              th.nobreak(style="width: 13%;") {{$t('view.search.action')}}
       div.scroll(:class="$style.tbody" ref="dom_scrollContent")
         table
-          tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
-            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @click="handleDoubleClick($event, index)")
-              td.nobreak.center(style="width: 37px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-              td.break(style="width: 25%;")
+          tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
+            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @contextmenu="handleListItemRigthClick($event, index)" @click="handleDoubleClick($event, index)")
+              td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
+              td.break
                 span.select {{item.name}}
                 span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
                 span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
                 span(:class="[$style.labelSource, $style.noSelect]" v-if="searchSourceId == 'all'") {{item.source}}
-              td.break(style="width: 20%;")
+              td.break(style="width: 22%;")
                 span.select {{item.singer}}
-              td.break(style="width: 25%;")
+              td.break(style="width: 22%;")
                 span.select {{item.albumName}}
-              td(style="width: 10%;")
+              td(style="width: 8%;")
                 span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
-              td(style="width: 15%; padding-left: 0; padding-right: 0;")
+              td(style="width: 13%; padding-left: 0; padding-right: 0;")
                 material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
                   :play-btn="assertApiSupport(item.source)"
                   :download-btn="assertApiSupport(item.source)"
@@ -53,14 +53,15 @@
         p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
-    material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
-    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
-    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
+    //- material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
+    material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="handleListAddModalClose")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddMultipleModalClose")
+    material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo, clipboardWriteText, assertApiSupport } from '../utils'
+import { scrollTo, clipboardWriteText, assertApiSupport, findParentNode } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'Search',
@@ -73,7 +74,7 @@ export default {
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
-      isShowEditBtn: false,
+      // isShowEditBtn: false,
       isShowDownloadMultiple: false,
       searchSourceId: null,
       isShowListAdd: false,
@@ -81,6 +82,18 @@ export default {
       keyEvent: {
         isShiftDown: false,
         isModDown: false,
+      },
+      listMenu: {
+        isShowItemMenu: false,
+        itemMenuControl: {
+          play: true,
+          addTo: true,
+          download: true,
+        },
+        menuLocation: {
+          x: 0,
+          y: 0,
+        },
       },
     }
   },
@@ -120,14 +133,14 @@ export default {
     this.handleGetHotSearch()
   },
   watch: {
-    selectdData(n) {
-      const len = n.length
-      if (len) {
-        this.isShowEditBtn = true
-      } else {
-        this.isShowEditBtn = false
-      }
-    },
+    // selectdData(n) {
+    //   const len = n.length
+    //   if (len) {
+    //     this.isShowEditBtn = true
+    //   } else {
+    //     this.isShowEditBtn = false
+    //   }
+    // },
     'listInfo.list'() {
       this.removeAllSelect()
     },
@@ -147,6 +160,25 @@ export default {
     ...mapGetters(['userInfo', 'setting']),
     ...mapGetters('search', ['sourceList', 'allList', 'sources', 'historyList']),
     ...mapGetters('list', ['defaultList']),
+    listItemMenu() {
+      return [
+        {
+          name: this.$t('view.search.list_play'),
+          action: 'play',
+          disabled: !this.listMenu.itemMenuControl.play,
+        },
+        {
+          name: this.$t('view.search.list_download'),
+          action: 'download',
+          disabled: !this.listMenu.itemMenuControl.download,
+        },
+        {
+          name: this.$t('view.search.list_add_to'),
+          action: 'addTo',
+          disabled: !this.listMenu.itemMenuControl.addTo,
+        },
+      ]
+    },
     listInfo() {
       return this.setting.search.searchSource == 'all' ? this.allList : this.sourceList[this.setting.search.searchSource]
     },
@@ -329,32 +361,36 @@ export default {
         node.classList.add('active')
       }
     },
-    handleFlowBtnClick(action) {
-      switch (action) {
-        case 'download':
-          this.isShowDownloadMultiple = true
-          break
-        case 'play':
-          this.testPlay()
-          this.removeAllSelect()
-          break
-        case 'add':
-          this.isShowListAddMultiple = true
-          break
-      }
-    },
+    // handleFlowBtnClick(action) {
+    //   switch (action) {
+    //     case 'download':
+    //       this.isShowDownloadMultiple = true
+    //       break
+    //     case 'play':
+    //       this.testPlay()
+    //       this.removeAllSelect()
+    //       break
+    //     case 'add':
+    //       this.isShowListAddMultiple = true
+    //       break
+    //   }
+    // },
     filterList(list) {
       return this.searchSourceId == 'all'
         ? list.filter(s => this.assertApiSupport(s.source))
         : this.assertApiSupport(this.searchSourceId)
           ? [...list] : []
     },
-    handleListAddModalClose(isClearSelect) {
-      if (isClearSelect) this.removeAllSelect()
+    handleListAddModalClose() {
+      this.isShowListAdd = false
+    },
+    handleListAddMultipleModalClose(isClearSelect) {
+      if (isClearSelect) this.removeAllSelectListDetail()
       this.isShowListAddMultiple = false
     },
     handleContextMenu(event) {
       if (!event.target.classList.contains('select')) return
+      event.stopImmediatePropagation()
       let classList = this.$refs.dom_scrollContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
@@ -380,6 +416,59 @@ export default {
     assertApiSupport(source) {
       return assertApiSupport(source)
     },
+    handleListItemRigthClick(event, index) {
+      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
+      if (dom_selected) dom_selected.classList.remove('selected')
+      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
+      let dom_td = findParentNode(event.target, 'TD')
+      this.listMenu.rightClickItemIndex = index
+      this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
+      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.$nextTick(() => {
+        this.listMenu.isShowItemMenu = true
+      })
+    },
+    hideListMenu() {
+      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
+      if (dom_selected) dom_selected.classList.remove('selected')
+      this.listMenu.isShowItemMenu = false
+      this.listMenu.rightClickItemIndex = -1
+    },
+    handleListItemMenuClick(action) {
+      // console.log(action)
+      let index = this.listMenu.rightClickItemIndex
+      this.hideListMenu()
+      let minfo
+      switch (action && action.action) {
+        case 'play':
+          this.testPlay(index)
+          break
+        case 'addTo':
+          if (this.selectdData.length) {
+            this.$nextTick(() => {
+              this.isShowListAddMultiple = true
+            })
+          } else {
+            this.musicInfo = this.listInfo.list[index]
+            this.$nextTick(() => {
+              this.isShowListAdd = true
+            })
+          }
+          break
+        case 'download':
+          if (this.selectdData.length) {
+            this.isShowDownloadMultiple = true
+          } else {
+            minfo = this.listInfo.list[index]
+            if (!this.assertApiSupport(minfo.source)) return
+            this.musicInfo = minfo
+            this.$nextTick(() => {
+              this.isShowDownload = true
+            })
+          }
+          break
+      }
+    },
   },
 }
 </script>
@@ -397,7 +486,7 @@ export default {
   flex: none;
 }
 .list {
-  position: relative;
+  // position: relative;
   height: 100%;
   font-size: 14px;
   display: flex;
@@ -498,10 +587,10 @@ export default {
   .mixin-ellipsis-1;
   max-width: 150px;
   &:hover {
-    background-color: @color-theme_2-hover;
+    background-color: @color-btn-hover;
   }
   &:active {
-    background-color: @color-theme_2-active;
+    background-color: @color-btn-active;
   }
 }
 .history-clear-btn {
@@ -536,10 +625,10 @@ each(@themes, {
       color: ~'@{color-@{value}-btn}';
       background-color: ~'@{color-@{value}-btn-background}';
       &:hover {
-        background-color: ~'@{color-@{value}-theme_2-hover}';
+        background-color: ~'@{color-@{value}-btn-hover}';
       }
       &:active {
-        background-color: ~'@{color-@{value}-theme_2-active}';
+        background-color: ~'@{color-@{value}-btn-active}';
       }
     }
     .tbody {

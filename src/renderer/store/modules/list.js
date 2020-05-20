@@ -80,6 +80,15 @@ const mutations = {
     if (targetList.list.some(s => s.songmid === musicInfo.songmid)) return
     targetList.list.push(musicInfo)
   },
+  listMove(state, { fromId, musicInfo, toId }) {
+    const fromList = allList[fromId]
+    const toList = allList[toId]
+    if (!fromList || !toList) return
+    fromList.list.splice(fromList.list.indexOf(musicInfo), 1)
+    let index = toList.list.findIndex(s => s.songmid === musicInfo.songmid)
+    if (index > -1) return toList.list.splice(index, 1)
+    toList.list.push(musicInfo)
+  },
   listAddMultiple(state, { id, list }) {
     let targetList = allList[id]
     if (!targetList) return
@@ -92,6 +101,12 @@ const mutations = {
       map[item.songmid] = item
     }
     targetList.list.splice(0, targetList.list.length, ...ids.map(id => map[id]))
+  },
+  // { fromId, toId, list }
+  listMoveMultiple(state, { fromId, toId, list }) {
+    console.log(state.commit)
+    this.commit('list/listRemoveMultiple', { id: fromId, list })
+    this.commit('list/listAddMultiple', { id: toId, list })
   },
   listRemove(state, { id, index }) {
     let targetList = allList[id]
