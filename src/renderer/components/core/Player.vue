@@ -254,7 +254,7 @@ export default {
           this.audio.currentTime = this.audioErrorTime
           this.audioErrorTime = 0
         }
-        if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: 'default', index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
+        if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         this.status = this.statusText = this.$t('core.player.loading')
       })
       this.audio.addEventListener('loadstart', () => {
