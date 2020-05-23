@@ -47,13 +47,14 @@ module.exports = merge(baseConfig, {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../../src/static'),
-        to: path.join(__dirname, '../../dist/electron/static'),
-        ignore: ['.*'],
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../../src/static'),
+          to: path.join(__dirname, '../../dist/electron/static'),
+        },
+      ],
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"',
