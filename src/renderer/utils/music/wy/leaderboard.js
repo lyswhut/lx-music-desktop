@@ -1,8 +1,50 @@
-import { httpGet, cancelHttp } from '../../request'
-import { formatPlayTime } from '../../index'
+import { weapi } from './utils/crypto'
+import { httpFetch } from '../../request'
+import musicDetailApi from './musicDetail'
+
+const topList = [
+  { id: 'wy__19723756', bangid: '19723756', name: '云音乐飙升榜' },
+  { id: 'wy__3778678', bangid: '3778678', name: '云音乐热歌榜' },
+  { id: 'wy__3779629', bangid: '3779629', name: '云音乐新歌榜' },
+  { id: 'wy__2884035', bangid: '2884035', name: '云音乐原创榜' },
+  { id: 'wy__2250011882', bangid: '2250011882', name: '抖音排行榜' },
+  { id: 'wy__1978921795', bangid: '1978921795', name: '云音乐电音榜' },
+  { id: 'wy__4395559', bangid: '4395559', name: '华语金曲榜' },
+  { id: 'wy__71384707', bangid: '71384707', name: '云音乐古典音乐榜' },
+  { id: 'wy__10520166', bangid: '10520166', name: '云音乐国电榜' },
+  { id: 'wy__2006508653', bangid: '2006508653', name: '电竞音乐榜' },
+  { id: 'wy__991319590', bangid: '991319590', name: '云音乐说唱榜' },
+  { id: 'wy__180106', bangid: '180106', name: 'UK排行榜周榜' },
+  { id: 'wy__60198', bangid: '60198', name: '美国Billboard周榜' },
+  { id: '21845217', bangid: '21845217', name: 'KTV嗨榜' },
+  { id: 'wy__11641012', bangid: '11641012', name: 'iTunes榜' },
+  { id: 'wy__120001', bangid: '120001', name: 'Hit FM Top榜' },
+  { id: 'wy__60131', bangid: '60131', name: '日本Oricon周榜' },
+  { id: 'wy__3733003', bangid: '3733003', name: '韩国Melon排行榜周榜' },
+  { id: 'wy__60255', bangid: '60255', name: '韩国Mnet排行榜周榜' },
+  { id: 'wy__46772709', bangid: '46772709', name: '韩国Melon原声周榜' },
+  { id: 'wy__64016', bangid: '64016', name: '中国TOP排行榜(内地榜)' },
+  { id: 'wy__112504', bangid: '112504', name: '中国TOP排行榜(港台榜)' },
+  { id: 'wy__3112516681', bangid: '3112516681', name: '中国新乡村音乐排行榜' },
+  { id: 'wy__10169002', bangid: '10169002', name: '香港电台中文歌曲龙虎榜' },
+  { id: 'wy__27135204', bangid: '27135204', name: '法国 NRJ EuroHot 30周榜' },
+  { id: 'wy__1899724', bangid: '1899724', name: '中国嘻哈榜' },
+  { id: 'wy__112463', bangid: '112463', name: '台湾Hito排行榜' },
+  { id: 'wy__3812895', bangid: '3812895', name: 'Beatport全球电子舞曲榜' },
+  { id: 'wy__2617766278', bangid: '2617766278', name: '新声榜' },
+  { id: 'wy__745956260', bangid: '745956260', name: '云音乐韩语榜' },
+  { id: 'wy__2847251561', bangid: '2847251561', name: '说唱TOP榜' },
+  { id: 'wy__2023401535', bangid: '2023401535', name: '英国Q杂志中文版周榜' },
+  { id: 'wy__2809513713', bangid: '2809513713', name: '云音乐欧美热歌榜' },
+  { id: 'wy__2809577409', bangid: '2809577409', name: '云音乐欧美新歌榜' },
+  { id: 'wy__71385702', bangid: '71385702', name: '云音乐ACG音乐榜' },
+  { id: 'wy__3001835560', bangid: '3001835560', name: '云音乐ACG动画榜' },
+  { id: 'wy__3001795926', bangid: '3001795926', name: '云音乐ACG游戏榜' },
+  { id: 'wy__3001890046', bangid: '3001890046', name: '云音乐ACG VOCALOID榜' },
+]
 
 export default {
-  limit: 300,
+  limit: 100000,
   list: [
     {
       id: 'wybsb',
@@ -61,102 +103,100 @@ export default {
   regExps: {
     list: /<textarea id="song-list-pre-data" style="display:none;">(.+?)<\/textarea>/,
   },
-  _cancelRequestObj: null,
-  _cancelPromiseCancelFn: null,
-  getData(url) {
-    if (this._cancelRequestObj != null) {
-      cancelHttp(this._cancelRequestObj)
-      this._cancelPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._cancelPromiseCancelFn = reject
-      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
-        this._cancelRequestObj = null
-        this._cancelPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        resolve(body)
-      })
+  _requestBoardsObj: null,
+  _requestBoardsDetailObj: null,
+  getBoardsData() {
+    if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
+    this._requestBoardsObj = httpFetch('https://music.163.com/weapi/toplist', {
+      method: 'post',
+      form: weapi({}),
     })
+    return this._requestBoardsObj.promise
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
+  getData(id) {
+    if (this._requestBoardsDetailObj) this._requestBoardsDetailObj.cancelHttp()
+    this._requestBoardsDetailObj = httpFetch('https://music.163.com/weapi/v3/playlist/detail', {
+      method: 'post',
+      form: weapi({
+        id,
+        n: 100000,
+        p: 1,
+      }),
     })
-    return arr.join('、')
+    return this._requestBoardsDetailObj.promise
   },
-  filterData(rawList) {
+
+  filterBoardsData(rawList) {
     // console.log(rawList)
-    return rawList.map(item => {
-      const types = []
-      const _types = {}
-      let size
-      switch (item.privilege.maxbr) {
-        case 999000:
-          size = null
-          types.push({ type: 'flac', size })
-          _types.flac = {
-            size,
-          }
-        case 320000:
-          size = null
-          types.push({ type: '320k', size })
-          _types['320k'] = {
-            size,
-          }
-          // case 192000:
-          // case 190000:
-          //   size = null
-          //   types.push({ type: '192k', size })
-          //   _types['192k'] = {
-          //     size,
-          //   }
-          // case '160000':
-
-        default:
-          size = null
-          types.push({ type: '128k', size })
-          _types['128k'] = {
-            size,
-          }
-          break
-      }
-
-      types.reverse()
-
-      return {
-        singer: this.getSinger(item.artists),
-        name: item.name,
-        albumName: item.album.name,
-        albumId: item.album.id,
-        source: 'wy',
-        interval: formatPlayTime(item.duration / 1000),
-        songmid: item.id,
-        img: item.album.picUrl,
-        lrc: null,
-        types,
-        _types,
-        typeUrl: {},
-      }
-    })
+    let list = []
+    for (const board of rawList) {
+      // 排除 MV榜
+      // if (board.id == 201) continue
+      list.push({
+        id: 'wy__' + board.id,
+        name: board.name,
+        bangid: String(board.id),
+      })
+    }
+    return list
   },
-  getList(id, page) {
-    let type = this.list.find(s => s.id === id)
-    if (!type) return Promise.reject()
-    return this.getData(this.getUrl(type.bangid)).then(html => {
-      let result = html.match(this.regExps.list)
-      if (!result) return Promise.reject()
-      const list = this.filterData(JSON.parse(RegExp.$1))
-      return {
-        total: list.length,
-        list,
-        limit: this.limit,
-        page,
-        source: 'tx',
+  async getBoards(retryNum = 0) {
+    // if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    // let response
+    // try {
+    //   response = await this.getBoardsData()
+    // } catch (error) {
+    //   return this.getBoards(retryNum)
+    // }
+    // console.log(response.body)
+    // if (response.statusCode !== 200 || response.body.code !== 200) return this.getBoards(retryNum)
+    // const list = this.filterBoardsData(response.body.list)
+    // console.log(list)
+    // console.log(JSON.stringify(list))
+    // this.list = list
+    // return {
+    //   list,
+    //   source: 'wy',
+    // }
+    this.list = topList
+    return {
+      list: topList,
+      source: 'wy',
+    }
+  },
+  async getList(bangid, page, retryNum = 0) {
+    if (++retryNum > 6) return Promise.reject(new Error('try max num'))
+    // console.log(bangid)
+    let resp
+    try {
+      resp = await this.getData(bangid)
+    } catch (err) {
+      if (err.message == 'try max num') {
+        throw err
+      } else {
+        return this.getList(bangid, page, retryNum)
       }
-    })
+    }
+    if (resp.statusCode !== 200 || resp.body.code !== 200) return this.getList(bangid, page, retryNum)
+    // console.log(resp.body)
+    let musicDetail
+    try {
+      musicDetail = await musicDetailApi.getList(resp.body.playlist.trackIds.map(trackId => trackId.id))
+    } catch (err) {
+      console.log(err)
+      if (err.message == 'try max num') {
+        throw err
+      } else {
+        return this.getList(bangid, page, retryNum)
+      }
+    }
+    // console.log(musicDetail)
+    return {
+      total: musicDetail.list.length,
+      list: musicDetail.list,
+      limit: this.limit,
+      page,
+      source: 'wy',
+    }
   },
 }

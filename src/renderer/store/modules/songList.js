@@ -135,7 +135,13 @@ const mutations = {
     state.listDetail.limit = result.limit
     state.listDetail.page = page
     state.listDetail.key = key
-    state.listDetail.info = result.info || {}
+    state.listDetail.info = result.info || {
+      name: state.selectListInfo.name,
+      img: state.selectListInfo.img,
+      desc: state.selectListInfo.desc,
+      author: state.selectListInfo.author,
+      play_count: state.selectListInfo.play_count,
+    }
     cache.set(key, result)
   },
   setVisibleListDetail(state, bool) {

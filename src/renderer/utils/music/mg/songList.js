@@ -6,16 +6,18 @@ export default {
   _requestObj_list: null,
   _requestObj_listDetail: null,
   limit_list: 10,
-  limit_song: 1000,
+  limit_song: 10000,
   successCode: '000000',
   sortList: [
     {
       name: '推荐',
       id: '15127315',
+      // id: '1',
     },
     {
       name: '最新',
       id: '15127272',
+      // id: '2',
     },
   ],
   regExps: {
@@ -34,8 +36,12 @@ export default {
     // }
     // return `http://music.migu.cn/v3/music/playlist?tagId=${tagId}&page=${page}&from=migu`
     if (tagId == null) {
+      // return `http://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=${this.limit_list}&start=${page}&templateVersion=5&type=1`
+      // return `https://c.musicapp.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=${this.limit_list}&start=${page}&templateVersion=5&type=${sortId}`
+      // http://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=50&start=2&templateVersion=5&type=1
       return `http://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&columnId=${sortId}&startIndex=${(page - 1) * 10}`
     }
+    // return `https://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?area=2&count=${this.limit_list}&start=${page}&tags=${tagId}&templateVersion=5&type=3`
     return `http://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&tagId=${tagId}&startIndex=${(page - 1) * 10}`
   },
   getSongListDetailUrl(id, page) {
@@ -68,19 +74,20 @@ export default {
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       // console.log(JSON.stringify(body))
+      console.log(body)
       return {
         list: this.filterListDetail(body.list),
         page,
         limit: this.limit_song,
         total: body.totalCount,
         source: 'mg',
-        info: {
-          // name: body.result.info.list_title,
-          // img: body.result.info.list_pic,
-          // desc: body.result.info.list_desc,
-          // author: body.result.info.userinfo.username,
-          // play_count: this.formatPlayCount(body.result.listen_num),
-        },
+        // info: {
+        //   // name: body.result.info.list_title,
+        //   // img: body.result.info.list_pic,
+        //   // desc: body.result.info.list_desc,
+        //   // author: body.result.info.userinfo.username,
+        //   // play_count: this.formatPlayCount(body.result.listen_num),
+        // },
       }
     })
   },
@@ -145,7 +152,18 @@ export default {
   getList(sortId, tagId, page, tryNum = 0) {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
-    this._requestObj_list = httpFetch(this.getSongListUrl(sortId, tagId, page))
+    this._requestObj_list = httpFetch(this.getSongListUrl(sortId, tagId, page), {
+      // headers: {
+      //   sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
+      //   timestamp: 1578225871982,
+      //   appId: 'yyapp2',
+      //   mode: 'android',
+      //   ua: 'Android_migu',
+      //   version: '6.9.4',
+      //   osVersion: 'android 7.0',
+      //   'User-Agent': 'okhttp/3.9.1',
+      // },
+    })
     // return this._requestObj_list.promise.then(({ statusCode, body }) => {
     //   if (statusCode !== 200) return this.getList(sortId, tagId, page)
     //   let list = body.replace(/[\r\n]/g, '').match(this.regExps.list)
@@ -167,6 +185,7 @@ export default {
     // })
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.retCode !== '100000' || body.retMsg.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
+      // console.log(body)
       return {
         list: this.filterList(body.retMsg.playlist),
         total: parseInt(body.retMsg.countSize),
@@ -175,6 +194,18 @@ export default {
         source: 'mg',
       }
     })
+    // return this._requestObj_list.promise.then(({ body }) => {
+    //   if (body.retCode !== '100000') return this.getList(sortId, tagId, page, ++tryNum)
+    //   // if (body.code !== '000000') return this.getList(sortId, tagId, page, ++tryNum)
+    //   console.log(body)
+    //   // return {
+    //   //   list: this.filterList(body.data.contentItemList[0].itemList),
+    //   //   total: parseInt(body.retMsg.countSize),
+    //   //   page,
+    //   //   limit: this.limit_list,
+    //   //   source: 'mg',
+    //   // }
+    // })
   },
   filterList(rawData) {
     return rawData.map(item => ({

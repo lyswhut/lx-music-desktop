@@ -47,7 +47,7 @@
   "search_history_title": "Select whether to show search history",
   "search_history": "Search history",
   "search_focus_search_box_title": "Whether the search box is automatically focused on startup",
-  "search_focus_search_box": "Focus Search Box",
+  "search_focus_search_box": "Whether the search box is focused on startup",
 
   "list": "List",
   "list_source_title": "Select whether to show music source",

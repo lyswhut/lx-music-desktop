@@ -1,6 +1,8 @@
-import { httpGet, cancelHttp } from '../../request'
+import { httpGet, cancelHttp, httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
-import { formatSinger, getToken, matchToken } from './util'
+import { formatSinger } from './util'
+
+const boardList = [{ id: 'kw__93', name: '酷我飙升榜', bangid: '93' }, { id: 'kw__17', name: '酷我新歌榜', bangid: '17' }, { id: 'kw__16', name: '酷我热歌榜', bangid: '16' }, { id: 'kw__158', name: '抖音热歌榜', bangid: '158' }, { id: 'kw__284', name: '酷我热评榜', bangid: '284' }, { id: 'kw__290', name: 'ACG新歌榜', bangid: '290' }, { id: 'kw__286', name: '台湾KKBOX榜', bangid: '286' }, { id: 'kw__279', name: '春日浅唱榜', bangid: '279' }, { id: 'kw__281', name: '巴士随身听榜', bangid: '281' }, { id: 'kw__255', name: 'KTV点唱榜', bangid: '255' }, { id: 'kw__280', name: '家务进行曲榜', bangid: '280' }, { id: 'kw__282', name: '熬夜修仙榜', bangid: '282' }, { id: 'kw__283', name: '枕边轻音乐榜', bangid: '283' }, { id: 'kw__278', name: '古风音乐榜', bangid: '278' }, { id: 'kw__264', name: 'Vlog音乐榜', bangid: '264' }, { id: 'kw__242', name: '酷我电音榜', bangid: '242' }, { id: 'kw__187', name: '流行趋势榜', bangid: '187' }, { id: 'kw__204', name: '现场音乐榜', bangid: '204' }, { id: 'kw__186', name: 'ACG神曲榜', bangid: '186' }, { id: 'kw__185', name: '最强翻唱榜', bangid: '185' }, { id: 'kw__26', name: '经典怀旧榜', bangid: '26' }, { id: 'kw__104', name: '酷我华语榜', bangid: '104' }, { id: 'kw__182', name: '酷我粤语榜', bangid: '182' }, { id: 'kw__22', name: '酷我欧美榜', bangid: '22' }, { id: 'kw__184', name: '酷我韩语榜', bangid: '184' }, { id: 'kw__183', name: '酷我日语榜', bangid: '183' }, { id: 'kw__145', name: '会员畅听榜', bangid: '145' }, { id: 'kw__153', name: '网红新歌榜', bangid: '153' }, { id: 'kw__64', name: '影视金曲榜', bangid: '64' }, { id: 'kw__176', name: 'DJ嗨歌榜', bangid: '176' }, { id: 'kw__106', name: '酷我真声音', bangid: '106' }, { id: 'kw__12', name: 'Billboard榜', bangid: '12' }, { id: 'kw__49', name: 'iTunes音乐榜', bangid: '49' }, { id: 'kw__180', name: 'beatport电音榜', bangid: '180' }, { id: 'kw__13', name: '英国UK榜', bangid: '13' }, { id: 'kw__164', name: '百大DJ榜', bangid: '164' }, { id: 'kw__246', name: 'YouTube音乐排行榜', bangid: '246' }, { id: 'kw__265', name: '韩国Genie榜', bangid: '265' }, { id: 'kw__14', name: '韩国M-net榜', bangid: '14' }, { id: 'kw__8', name: '香港电台榜', bangid: '8' }, { id: 'kw__15', name: '日本公信榜', bangid: '15' }, { id: 'kw__151', name: '腾讯音乐人原创榜', bangid: '151' }]
 
 export default {
   list: [
@@ -61,15 +63,19 @@ export default {
     },
   ],
   getUrl: (p, l, id) => `http://kbangserver.kuwo.cn/ksong.s?from=pc&fmt=json&pn=${p - 1}&rn=${l}&type=bang&data=content&id=${id}&show_copyright_off=0&pcmp4=1&isbang=1`,
-  getUrl2: (p, l, id) => `http://www.kuwo.cn/api/www/bang/bang/musicList?bangId=${id}&pn=${p}&rn=${l}`,
   regExps: {
 
   },
-  limit: 30,
+  limit: 100,
+  _requestBoardsObj: null,
+
   _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
-  _cancelRequestObj2: null,
-  _cancelPromiseCancelFn2: null,
+  getBoardsData() {
+    if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
+    this._requestBoardsObj = httpFetch('http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=0&rn=1000&fmt=json&level=2')
+    return this._requestBoardsObj.promise
+  },
   getData(url) {
     if (this._cancelRequestObj != null) {
       cancelHttp(this._cancelRequestObj)
@@ -77,45 +83,18 @@ export default {
     }
     return new Promise((resolve, reject) => {
       this._cancelPromiseCancelFn = reject
-      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
+      this._cancelRequestObj = httpGet(url, (err, resp) => {
         this._cancelRequestObj = null
         this._cancelPromiseCancelFn = null
         if (err) {
           console.log(err)
           reject(err)
         }
-        resolve(body)
+        resolve(resp)
       })
     })
   },
-  async getData2(url) {
-    if (this._cancelRequestObj2 != null) {
-      cancelHttp(this._cancelRequestObj2)
-      this._cancelPromiseCancelFn2(new Error('取消http请求'))
-    }
-    let token = window.kw_token.token
-    if (!token) token = await getToken()
-    return new Promise((resolve, reject) => {
-      this._cancelPromiseCancelFn2 = reject
-      this._cancelRequestObj2 = httpGet(url, {
-        headers: {
-          Referer: 'http://www.kuwo.cn/',
-          csrf: token,
-          cookie: 'kw_token=' + token,
-        },
-      }, (err, resp, body) => {
-        this._cancelRequestObj2 = null
-        this._cancelPromiseCancelFn2 = null
-        if (err) {
-          console.log(err)
-          return reject(err)
-        }
-        window.kw_token.token = matchToken(resp.headers)
-        resolve(body)
-      })
-    })
-  },
-  filterData(rawList, rawList2) {
+  filterData(rawList) {
     // console.log(rawList)
     // console.log(rawList.length, rawList2.length)
     return rawList.map((item, inedx) => {
@@ -160,7 +139,7 @@ export default {
         albumId: item.albumid,
         songmid: item.id,
         source: 'kw',
-        interval: rawList2[inedx] && formatPlayTime(rawList2[inedx].duration),
+        interval: formatPlayTime(parseInt(item.song_duration)),
         img: item.pic,
         lrc: null,
         types,
@@ -169,29 +148,53 @@ export default {
       }
     })
   },
-  loadData(p1, p2, page, bangid, retryNum = 0) {
-    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
-    return Promise.all([p1, p2]).then(([data1, data2]) => {
-      // console.log(data1, data2)
-      if (!data1.musiclist.length) {
-        return this.loadData(this.getData(this.getUrl(page, this.limit, bangid)),
-          data2.data.musicList.length
-            ? Promise.resolve(data2)
-            : this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid, retryNum)
-      }
-      if (!data2.data.musicList.length) {
-        return this.loadData(Promise.resolve(data1), this.getData2(this.getUrl2(page, this.limit, bangid)), page, bangid, retryNum)
-      }
-      return Promise.resolve([data1, data2])
-    })
+
+  filterBoardsData(rawList) {
+    // console.log(rawList)
+    let list = []
+    for (const board of rawList) {
+      if (board.source != '1') continue
+      list.push({
+        id: 'kw__' + board.sourceid,
+        name: board.name,
+        bangid: String(board.sourceid),
+      })
+    }
+    return list
   },
-  getList(id, page) {
-    let type = this.list.find(s => s.id === id)
-    if (!type) return Promise.reject()
-    return this.loadData(this.getData(this.getUrl(page, this.limit, type.bangid)), this.getData2(this.getUrl2(page, this.limit, type.bangid)), page, type.bangid).then(([data1, data2]) => {
+  async getBoards(retryNum = 0) {
+    // if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    // let response
+    // try {
+    //   response = await this.getBoardsData()
+    // } catch (error) {
+    //   return this.getBoards(retryNum)
+    // }
+    // console.log(response.body)
+    // if (response.statusCode !== 200 || !response.body.child) return this.getBoards(retryNum)
+    // const list = this.filterBoardsData(response.body.child)
+    // // console.log(list)
+    // console.log(JSON.stringify(list))
+    // this.list = list
+    // return {
+    //   list,
+    //   source: 'kw',
+    // }
+    this.list = boardList
+    return {
+      list: boardList,
+      source: 'kw',
+    }
+  },
+
+  getList(id, page, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    return this.getData(this.getUrl(page, this.limit, id)).then(({ statusCode, body }) => {
+      // console.log(body)
+      if (statusCode !== 200 || !body.musiclist) return this.getList(id, page, retryNum)
       // console.log(data1.musiclist, data2.data)
-      let total = parseInt(data1.num)
-      let list = this.filterData(data1.musiclist, data2.data.musicList)
+      let total = parseInt(body.num)
+      let list = this.filterData(body.musiclist)
       return {
         total,
         list,

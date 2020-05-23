@@ -15,3 +15,5 @@ require('./tray')
 require('./updateSetting')
 
 require('./xm_verify')
+
+require('./kw_decodeLyric')

@@ -67,11 +67,11 @@ const buildHttpPromose = (url, options) => {
   })
   obj.cancelHttp = () => {
     if (!obj.requestObj) return obj.isCancelled = true
-    obj.cancelFn(new Error(requestMsg.cancelRequest))
     cancelHttp(obj.requestObj)
     obj.requestObj = null
-    obj.cancelFn = null
     obj.promise = obj.cancelHttp = null
+    obj.cancelFn(new Error(requestMsg.cancelRequest))
+    obj.cancelFn = null
   }
   return obj
 }

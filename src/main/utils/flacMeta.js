@@ -64,7 +64,8 @@ module.exports = (filePath, meta) => {
   if (!/^http/.test(picUrl)) {
     return writeMeta(filePath, meta)
   }
-  let picPath = filePath.replace(/\.flac$/, '') + path.extname(picUrl).replace(extReg, '$1')
+  let ext = path.extname(picUrl)
+  let picPath = filePath.replace(/\.flac$/, '') + (ext ? ext.replace(extReg, '$1') : '.jpg')
 
   request(picUrl)
     .on('response', respones => {

@@ -2,6 +2,22 @@ import { httpFetch } from '../../request'
 // import { formatPlayTime } from '../../index'
 // import jshtmlencode from 'js-htmlencode'
 
+const boardList = [
+  // { id: 'bd__601', name: '歌单榜', bangid: '601' },
+  { id: 'bd__2', name: '热歌榜', bangid: '2' },
+  { id: 'bd__20', name: '华语金曲榜', bangid: '20' },
+  { id: 'bd__25', name: '网络歌曲榜', bangid: '25' },
+  { id: 'bd__1', name: '新歌榜', bangid: '1' },
+  { id: 'bd__21', name: '欧美金曲榜', bangid: '21' },
+  { id: 'bd__200', name: '原创音乐榜', bangid: '200' },
+  { id: 'bd__22', name: '经典老歌榜', bangid: '22' },
+  { id: 'bd__24', name: '影视金曲榜', bangid: '24' },
+  { id: 'bd__23', name: '情歌对唱榜', bangid: '23' },
+  { id: 'bd__11', name: '摇滚榜', bangid: '11' },
+  { id: 'bd__105', name: '好童星榜', bangid: '105' },
+  { id: 'bd__106', name: '雅克•藏羌彝原创音乐榜', bangid: '106' },
+]
+
 export default {
   limit: 20,
   list: [
@@ -111,14 +127,20 @@ export default {
     // return rawData.map(item => JSON.parse(item.replace(this.regExps.item, '$1').replace(/&quot;/g, '"').replace(/\\\//g, '/').replace(/(@s_1,w_)\d+(,h_)\d+/, '$1500$2500')))
     return rawData.map(item => JSON.parse(item.replace(this.regExps.item, '$1').replace(/&quot;/g, '"').replace(/\\\//g, '/')))
   },
-  getList(id, page) {
-    let type = this.list.find(s => s.id === id)
-    if (!type) return Promise.reject()
-    return this.getData(this.getUrl(type.bangid, page)).then(({ body }) => {
+  async getBoards(retryNum = 0) {
+    this.list = boardList
+    return {
+      list: boardList,
+      source: 'bd',
+    }
+  },
+  getList(bangid, page, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    return this.getData(this.getUrl(bangid, page)).then(({ body }) => {
       let result = body.match(this.regExps.item)
-      if (!result) return Promise.reject(new Error('匹配list失败'))
+      if (!result) return this.getList(bangid, page, retryNum)
       let info = body.match(this.regExps.info)
-      if (!info) return Promise.reject(new Error('匹配info失败'))
+      if (!info) return this.getList(bangid, page, retryNum)
       const list = this.filterData(this.parseData(result))
       this.limit = parseInt(info[2])
       return {

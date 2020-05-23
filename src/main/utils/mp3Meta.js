@@ -10,7 +10,8 @@ module.exports = (filePath, meta) => {
     delete meta.APIC
     return NodeID3.write(meta, filePath)
   }
-  let picPath = filePath.replace(/\.mp3$/, '') + path.extname(meta.APIC).replace(extReg, '$1')
+  let ext = path.extname(meta.APIC)
+  let picPath = filePath.replace(/\.mp3$/, '') + (ext ? ext.replace(extReg, '$1') : '.jpg')
   request(meta.APIC)
     .on('response', respones => {
       if (respones.statusCode !== 200 && respones.statusCode != 206) {

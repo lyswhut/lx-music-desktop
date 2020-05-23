@@ -9,7 +9,7 @@ export default {
   _requestObj_listDetail: null,
   _requestObj_listDetailLink: null,
   limit_list: 36,
-  limit_song: 10000000,
+  limit_song: 100000,
   successCode: 0,
   sortList: [
     {

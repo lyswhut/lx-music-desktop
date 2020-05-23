@@ -1,4 +1,4 @@
-const autoprefixer = require('autoprefixer')
+// const autoprefixer = require('autoprefixer')
 const pxtorem = require('postcss-pxtorem')
 
 module.exports = {
@@ -28,6 +28,6 @@ module.exports = {
       minPixelValue: 0,
       exclude: [/node_modules/i],
     }),
-    autoprefixer(),
+    // autoprefixer(),
   ],
 }

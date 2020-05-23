@@ -1,5 +1,7 @@
-import { httpGet, cancelHttp } from '../../request'
+import { httpGet, cancelHttp, httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
+
+let boardList = [{ id: 'tx__4', name: '流行指数榜', bangid: '4' }, { id: 'tx__26', name: '热歌榜', bangid: '26' }, { id: 'tx__27', name: '新歌榜', bangid: '27' }, { id: 'tx__62', name: '飙升榜', bangid: '62' }, { id: 'tx__58', name: '说唱榜', bangid: '58' }, { id: 'tx__57', name: '电音榜', bangid: '57' }, { id: 'tx__28', name: '网络歌曲榜', bangid: '28' }, { id: 'tx__5', name: '内地榜', bangid: '5' }, { id: 'tx__3', name: '欧美榜', bangid: '3' }, { id: 'tx__59', name: '香港地区榜', bangid: '59' }, { id: 'tx__16', name: '韩国榜', bangid: '16' }, { id: 'tx__60', name: '抖音排行榜', bangid: '60' }, { id: 'tx__29', name: '影视金曲榜', bangid: '29' }, { id: 'tx__17', name: '日本榜', bangid: '17' }, { id: 'tx__52', name: '腾讯音乐人原创榜', bangid: '52' }, { id: 'tx__36', name: 'K歌金曲榜', bangid: '36' }, { id: 'tx__61', name: '台湾地区榜', bangid: '61' }, { id: 'tx__63', name: 'DJ舞曲榜', bangid: '63' }, { id: 'tx__64', name: '综艺新歌榜', bangid: '64' }, { id: 'tx__65', name: '国风热歌榜', bangid: '65' }, { id: 'tx__66', name: 'ACG新歌榜', bangid: '66' }, { id: 'tx__67', name: '听歌识曲榜', bangid: '67' }, { id: 'tx__70', name: '达人音乐榜', bangid: '70' }]
 
 export default {
   limit: 300,
@@ -54,11 +56,11 @@ export default {
       name: '日本榜',
       bangid: 17,
     },
-    // {
-    //   id: 'txtybb',
-    //   name: 'YouTube榜',
-    //   bangid: 128,
-    // },
+    {
+      id: 'txtybb',
+      name: 'YouTube榜',
+      bangid: 128,
+    },
   ],
   getUrl(id, period, limit) {
     return `https://u.y.qq.com/cgi-bin/musicu.fcg?format=json&inCharset=utf8&outCharset=utf-8&platform=yqq.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
@@ -83,8 +85,14 @@ export default {
   },
   periods: {},
   periodUrl: 'https://c.y.qq.com/node/pc/wk_v15/top.html',
+  _requestBoardsObj: null,
   _cancelRequestObj: null,
   _cancelPromiseCancelFn: null,
+  getBoardsData() {
+    if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
+    this._requestBoardsObj = httpFetch('https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&uin=0&needNewCode=1&platform=h5')
+    return this._requestBoardsObj.promise
+  },
   getData(url) {
     if (this._cancelRequestObj != null) {
       cancelHttp(this._cancelRequestObj)
@@ -182,15 +190,57 @@ export default {
       return info && info.period
     })
   },
-  getList(id, page) {
-    let type = this.list.find(s => s.id === id)
-    if (!type) return Promise.reject()
-    let info = this.periods[type.bangid]
-    let p = info ? Promise.resolve(info.period) : this.getPeriods(type.bangid)
+  filterBoardsData(rawList) {
+    // console.log(rawList)
+    let list = []
+    for (const board of rawList) {
+      // 排除 MV榜
+      if (board.id == 201) continue
+
+      if (board.topTitle.startsWith('巅峰榜·')) {
+        board.topTitle = board.topTitle.substring(4, board.topTitle.length)
+      }
+      if (!board.topTitle.endsWith('榜')) board.topTitle += '榜'
+      list.push({
+        id: 'tx__' + board.id,
+        name: board.topTitle,
+        bangid: String(board.id),
+      })
+    }
+    return list
+  },
+  async getBoards(retryNum = 0) {
+    // if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    // let response
+    // try {
+    //   response = await this.getBoardsData()
+    // } catch (error) {
+    //   return this.getBoards(retryNum)
+    // }
+    // // console.log(response.body)
+    // if (response.statusCode !== 200 || response.body.code !== 0) return this.getBoards(retryNum)
+    // const list = this.filterBoardsData(response.body.data.topList)
+    // // console.log(list)
+    // this.list = list
+    // return {
+    //   list,
+    //   source: 'tx',
+    // }
+    this.list = boardList
+    return {
+      list: boardList,
+      source: 'tx',
+    }
+  },
+  getList(bangid, page, retryNum = 0) {
+    if (++retryNum > 3) return Promise.reject(new Error('try max num'))
+    bangid = parseInt(bangid)
+    let info = this.periods[bangid]
+    let p = info ? Promise.resolve(info.period) : this.getPeriods(bangid)
     return p.then(period => {
-      return this.getData(this.getUrl(type.bangid, period, this.limit)).then(data => {
+      return this.getData(this.getUrl(bangid, period, this.limit)).then(data => {
         // console.log(data)
-        if (data.code !== 0) return Promise.reject()
+        if (data.code !== 0) return this.getList(bangid, page, retryNum)
         return {
           total: data.toplist.data.songInfoList.length,
           list: this.filterData(data.toplist.data.songInfoList),

@@ -16,7 +16,7 @@ electronDebug({
 // Install `vue-devtools`
 electron.app.on('ready', () => {
   installExtension(VUEJS_DEVTOOLS)
-    .then(name => console.log(`Added Extension:  ${name}`))
+    .then(info => console.log(`Added Extension:  ${info.name}`))
     .catch(err => console.log('An error occurred: ', err))
 })
 

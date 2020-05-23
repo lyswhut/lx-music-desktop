@@ -8,7 +8,7 @@ export default {
   _requestObj_list: null,
   _requestObj_listRecommend: null,
   _requestObj_listDetail: null,
-  listDetailLimit: 100,
+  listDetailLimit: 10000,
   currentTagInfo: {
     id: undefined,
     info: undefined,

@@ -1,17 +1,17 @@
 <template lang="pug">
   div(:class="$style.leaderboard")
     //- div(:class="$style.header")
-      material-tab(:class="$style.tab" :list="types" align="left" item-key="id" item-name="name" v-model="tabId")
-      material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+      material-tab(:class="$style.tab" :list="boards" align="left" item-key="id" item-name="name" v-model="tabId")
+      material-select(:class="$style.select" :list="sources.sources" item-key="id" item-name="name" v-model="source")
     div(:class="$style.lists" ref="dom_lists")
       div(:class="$style.listsSelect")
         //- h2(:class="$style.listsTitle") {{$t('core.aside.my_list')}}
-        material-selection(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
+        material-selection(:class="$style.select" :list="sources" item-key="id" item-name="name" v-model="source")
         //- button(:class="$style.listsAdd" @click="handleShowNewList" :title="$t('view.list.lists_new_list_btn')")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :title="item.name" v-for="item in types" :key="item.id" @click="handleToggleList(item.id)")
+        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :title="item.name" v-for="item in boardList" :key="item.id" @click="handleToggleList(item.id)")
           span(:class="$style.listsLabel") {{item.name}}
     div(:class="$style.list")
       material-song-list(v-model="selectdData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
@@ -40,23 +40,29 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('leaderboard', ['sourceInfo', 'list', 'info']),
+    ...mapGetters('leaderboard', ['sources', 'boards', 'list', 'info']),
     ...mapGetters('list', ['defaultList']),
-    types() {
-      return this.source ? this.sourceInfo.sourceList[this.source] : []
+    boardList() {
+      return this.source && this.boards[this.source] ? this.boards[this.source] : []
     },
   },
   watch: {
     tabId(n, o) {
       this.setLeaderboard({ tabId: n })
-      if (!o && this.page !== 1) return
+      if (!n || (!o && this.page !== 1)) return
       this.getList(1).then(() => {
         this.page = this.info.page
       })
     },
     source(n, o) {
       this.setLeaderboard({ source: n })
-      if (o) this.tabId = this.types[0] && this.types[0].id
+      if (o) this.tabId = null
+      this.getBoardsList().then(() => {
+        if (this.tabId != null) return
+        this.$nextTick(() => {
+          this.tabId = this.boardList[0] && this.boardList[0].id
+        })
+      })
     },
   },
   mounted() {
@@ -66,7 +72,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setLeaderboard']),
-    ...mapActions('leaderboard', ['getList']),
+    ...mapActions('leaderboard', ['getBoardsList', 'getList']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),

@@ -6,6 +6,7 @@
 import { weapi, linuxapi } from './utils/crypto'
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
+import musicDetailApi from './musicDetail'
 
 export default {
   _requestObj_tags: null,
@@ -80,13 +81,26 @@ export default {
         },
       }),
     })
-    const { body } = await this._requestObj_listDetail.promise
-    if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
+    const { statusCode, body } = await this._requestObj_listDetail.promise
+    if (statusCode !== 200 || body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
+    console.log(body)
+    let musicDetail
+    try {
+      musicDetail = await musicDetailApi.getList(body.playlist.trackIds.map(trackId => trackId.id))
+    } catch (err) {
+      console.log(err)
+      if (err.message == 'try max num') {
+        throw err
+      } else {
+        return this.getListDetail(id, page, ++tryNum)
+      }
+    }
+    console.log(musicDetail)
     return {
-      list: this.filterListDetail(body),
+      list: musicDetail.list,
       page,
       limit: this.limit_song,
-      total: body.playlist.tracks.length,
+      total: musicDetail.list.length,
       source: 'wy',
       info: {
         play_count: this.formatPlayCount(body.playlist.playCount),
