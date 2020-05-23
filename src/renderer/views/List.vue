@@ -114,6 +114,7 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           play: true,
+          copyName: true,
           addTo: true,
           moveTo: true,
           download: true,
@@ -203,6 +204,11 @@ export default {
           name: this.$t('view.list.list_download'),
           action: 'download',
           disabled: !this.listMenu.itemMenuControl.download,
+        },
+        {
+          name: this.$t('view.list.list_copy_name'),
+          action: 'copyName',
+          disabled: !this.listMenu.itemMenuControl.copyName,
         },
         {
           name: this.$t('view.list.list_add_to'),
@@ -705,6 +711,10 @@ export default {
       switch (action && action.action) {
         case 'play':
           this.testPlay(index)
+          break
+        case 'copyName':
+          minfo = this.list[index]
+          clipboardWriteText(this.setting.download.fileName.replace('歌名', minfo.name).replace('歌手', minfo.singer))
           break
         case 'addTo':
           if (this.selectdListDetailData.length) {

@@ -113,7 +113,7 @@ export default {
     // },
     title() {
       return this.musicInfo.name
-        ? `${this.musicInfo.name} - ${this.musicInfo.singer}`
+        ? this.setting.download.fileName.replace('歌名', this.musicInfo.name).replace('歌手', this.musicInfo.singer)
         : '^-^'
     },
     nowPlayTimeStr() {
