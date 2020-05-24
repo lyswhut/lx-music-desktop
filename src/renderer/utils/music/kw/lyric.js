@@ -5,7 +5,6 @@ export default {
   lrcInfoRxp: /<lyric>(.+?)<\/lyric>[\s\S]+<lyric_zz>(.+?)<\/lyric_zz>/,
   parseLyricInfo(str) {
     let result = str.match(this.lrcInfoRxp)
-    if (!result) return null
     return result ? { lyric: result[1], lyric_zz: result[2] } : null
   },
   getLyric(songId, isGetLyricx = false) {
@@ -17,8 +16,8 @@ export default {
       Object.assign(requestObj, httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${isGetLyricx ? info.lyric_zz : info.lyric}`))
       return requestObj.promise.then(({ statusCode, body, raw }) => {
         if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
-        return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64 => {
-          return Buffer.from(base64, 'base64').toString()
+        return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
+          return Buffer.from(base64Data, 'base64').toString()
         })
       })
     })
