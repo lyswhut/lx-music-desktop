@@ -11,7 +11,7 @@ eventHub.$on(baseName.bindKey, () => {
     eventHub.$emit(`key_${key}_${type}`, { event, keys, key })
   })
 })
-eventHub.$on(baseName.bindKey, keyBind.unbindKey)
+eventHub.$on(baseName.unbindKey, keyBind.unbindKey)
 
 eventHub.$on(baseName.min, () => rendererSend(NAMES.mainWindow.min))
 eventHub.$on(baseName.max, () => rendererSend(NAMES.mainWindow.max))
