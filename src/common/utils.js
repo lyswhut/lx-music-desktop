@@ -164,6 +164,7 @@ exports.initSetting = () => {
   // 重置 ^0.18.2 排行榜ID
   if (!newSetting.leaderboard.tabId.includes('__')) newSetting.leaderboard.tabId = 'kw__16'
 
+  // newSetting.controlBtnPosition = 'right'
   electronStore_config.set('version', settingVersion)
   electronStore_config.set('setting', newSetting)
   return newSetting

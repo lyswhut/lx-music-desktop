@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { sync } from 'vuex-router-sync'
 
-import './config/event'
+import './event'
 
 // Components
 import './components'

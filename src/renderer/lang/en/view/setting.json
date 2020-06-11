@@ -24,6 +24,9 @@
   "basic_to_tray": "Minimize to system tray when closing",
   "basic_lang_title": "The language displayed in the software",
   "basic_lang": "Language",
+  "basic_control_btn_position": "Control Button Position",
+  "basic_control_btn_position_left": "Left",
+  "basic_control_btn_position_right": "Right",
 
   "play": "Play",
   "play_toggle_title": "If none selected, it stopped when the music playing is done.",

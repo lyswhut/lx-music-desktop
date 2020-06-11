@@ -1,21 +1,28 @@
 <template lang="pug">
-  div(:class="$style.toolbar")
+  div(:class="[$style.toolbar, setting.controlBtnPosition == 'left' ? $style.controlBtnLeft : $style.controlBtnRight]")
     //- img(v-if="icon")
     //- h1 {{title}}
     material-search-input(:class="$style.input"
       @event="handleEvent" :list="tipList" :visibleList="visibleList"
       v-model="searchText")
-    div(:class="$style.control")
+
+    div(:class="$style.logo" v-if="setting.controlBtnPosition == 'left'") L X
+    div(:class="$style.control" v-else)
       button(type="button" :class="$style.min" :title="$t('core.toolbar.min')" @click="min")
+        svg(:class="$style.icon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
+          use(xlink:href='#icon-window-minimize')
+
       //- button(type="button" :class="$style.max" @click="max")
       button(type="button" :class="$style.close" :title="$t('core.toolbar.close')" @click="close")
+        svg(:class="$style.icon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
+          use(xlink:href='#icon-window-close')
 </template>
 
 <script>
-import { rendererSend, NAMES } from 'common/ipc'
 import { mapGetters, mapMutations } from 'vuex'
 import music from '../../utils/music'
 import { debounce } from '../../utils'
+import { base as eventBaseName } from '../../event/names'
 export default {
   data() {
     return {
@@ -113,13 +120,13 @@ export default {
     },
 
     min() {
-      rendererSend(NAMES.mainWindow.min)
+      window.eventHub.$emit(eventBaseName.min)
     },
     max() {
-      rendererSend(NAMES.mainWindow.max)
+      window.eventHub.$emit(eventBaseName.max)
     },
     close() {
-      rendererSend(NAMES.mainWindow.close)
+      window.eventHub.$emit(eventBaseName.close)
     },
   },
 }
@@ -129,51 +136,48 @@ export default {
 <style lang="less" module>
 @import '../../assets/styles/layout.less';
 
-@control-btn-width: @height-toolbar * .5;
+@control-btn-width: @height-toolbar * .26;
 
 .toolbar {
   display: flex;
   height: @height-toolbar;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: space-between;
   padding-left: 15px;
   -webkit-app-region: drag;
   z-index: 2;
-  position: relative;
-}
-:global(.nd) {
-  .toolbar {
-    -webkit-app-region: no-drag;
+
+  &.controlBtnLeft {
+    .control {
+      display: none;
+    }
+  }
+  &.controlBtnRight {
+    justify-content: space-between;
   }
 }
-.input {
-  -webkit-app-region: no-drag;
-  position: absolute;
-  left: 15px;
-  top: 13px;
+
+.logo {
+  box-sizing: border-box;
+  padding: 0 @height-toolbar * .4;
+  height: @height-toolbar;
+  color: @color-theme;
+  flex: none;
+  text-align: center;
+  line-height: @height-toolbar;
+  font-weight: bold;
+  // -webkit-app-region: no-drag;
 }
-
-// img {
-//   flex: none;
-//   height: 100%;
-// }
-
-// h1 {
-//   text-align: center;
-//   padding: 8px;
-//   flex: auto;
-//   -webkit-app-region: drag;
-//   -webkit-user-select: none;
-// }
 
 .control {
   display: flex;
   align-items: center;
   height: 100%;
+  left: 15px;
   -webkit-app-region: no-drag;
-  padding: 0 @control-btn-width * 0.6;
+  padding: 0 @control-btn-width * 1.5;
   &:hover {
-    button:before {
+    .icon {
       opacity: 1;
     }
   }
@@ -184,99 +188,51 @@ export default {
     height: @control-btn-width;
     background: none;
     border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     outline: none;
-    padding: 0;
+    padding: 1px;
     cursor: pointer;
+    border-radius: 50%;
+    color: #fff;
+
     + button {
-      margin-left: @control-btn-width * 0.4;
+      margin-left: @control-btn-width * 1.2;
     }
 
-    &:after {
-      content: ' ';
-      display: block;
-      border-radius: 50%;
-      width: 14px;
-      height: 14px;
-      transition: background-color 0.2s ease-in-out;
-    }
-
-    &:before {
-      display: block;
-      position: absolute;
-      opacity: 0;
-      transition: opacity @transition-theme;
-    }
-
-    &.min:after {
+    &.min {
       background-color: @color-minBtn;
     }
-    &.max:after {
+    &.max {
       background-color: @color-maxBtn;
     }
-    &.close:after {
+    &.close {
       background-color: @color-closeBtn;
     }
+  }
+}
 
-    &.min:hover:after {
-      background-color: @color-minBtn-hover;
-      opacity: 1;
-    }
-    &.max:hover:after {
-      background-color: @color-maxBtn-hover;
-    }
-    &.close:hover:after {
-      background-color: @color-closeBtn-hover;
-    }
-  }
+.icon {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
 }
-.min {
-  &:before {
-    content: ' ';
-    width: 8px;
-    height: 2px;
-    left: @control-btn-width / 2 - 4;
-    top: @control-btn-width / 2 - 1;
-    background-color: #fff;
-  }
-}
-.close {
-  &:before {
-    content: '×';
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 14px;
-    line-height: 1;
-    color: #fff;
-  }
-}
+
 
 each(@themes, {
   :global(#container.@{value}) {
     .control {
       button {
-        &.min:after {
+        &.min {
           background-color: ~'@{color-@{value}-minBtn}';
         }
-        &.max:after {
+        &.max {
           background-color: ~'@{color-@{value}-maxBtn}';
         }
-        &.close:after {
+        &.close {
           background-color: ~'@{color-@{value}-closeBtn}';
         }
-        &.min:hover:after {
-          background-color: ~'@{color-@{value}-minBtn-hover}';
-        }
-        &.max:hover:after {
-          background-color: ~'@{color-@{value}-maxBtn-hover}';
-        }
-        &.close:hover:after {
-          background-color: ~'@{color-@{value}-closeBtn-hover}';
-        }
       }
+    }
+    .logo {
+      color: ~'@{color-@{value}-theme}';
     }
   }
 })

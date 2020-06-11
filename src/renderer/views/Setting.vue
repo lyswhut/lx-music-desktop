@@ -46,6 +46,12 @@ div.scroll(:class="$style.setting")
         material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
           name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
 
+    dd
+      h3 {{$t('view.setting.basic_control_btn_position')}}
+      div
+        material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
+          name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
+
     dt {{$t('view.setting.play')}}
     dd(:title="$t('view.setting.play_toggle_title')")
       h3 {{$t('view.setting.play_toggle')}}
@@ -240,6 +246,7 @@ import { mergeSetting } from '../../common/utils'
 import apiSourceInfo from '../utils/music/api-source-info'
 import fs from 'fs'
 import languageList from '@/lang/languages.json'
+import { base as eventBaseName } from '../event/names'
 
 export default {
   name: 'Setting',
@@ -306,6 +313,18 @@ export default {
         {
           name: this.$t('view.setting.download_name3'),
           value: '歌名',
+        },
+      ]
+    },
+    controlBtnPositionList() {
+      return [
+        {
+          name: this.$t('view.setting.basic_control_btn_position_left'),
+          id: 'left',
+        },
+        {
+          name: this.$t('view.setting.basic_control_btn_position_right'),
+          id: 'right',
         },
       ]
     },
@@ -376,6 +395,7 @@ export default {
         sourceId: 0,
         randomAnimate: true,
         isAgreePact: false,
+        controlBtnPosition: 'left',
         apiSource: 'temp',
       },
       languageList,
@@ -410,12 +430,12 @@ export default {
   },
   mounted() {
     navigator.mediaDevices.addEventListener('devicechange', this.getMediaDevice)
-    window.eventHub.$on('set_config', this.handleUpdateSetting)
+    window.eventHub.$on(eventBaseName.set_config, this.handleUpdateSetting)
     this.init()
   },
   beforeDestroy() {
     navigator.mediaDevices.removeEventListener('devicechange', this.getMediaDevice)
-    window.eventHub.$off('set_config', this.handleUpdateSetting)
+    window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),

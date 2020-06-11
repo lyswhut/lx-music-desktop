@@ -24,6 +24,9 @@
   "basic_to_tray": "关闭时最小化到系统托盘",
   "basic_lang_title": "软件显示的语言",
   "basic_lang": "语言",
+  "basic_control_btn_position": "控制按钮位置",
+  "basic_control_btn_position_left": "左边",
+  "basic_control_btn_position_right": "右边",
 
   "play": "播放设置",
   "play_toggle_title": "都不选时播放完当前歌曲就停止播放",

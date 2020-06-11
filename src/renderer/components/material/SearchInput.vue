@@ -1,24 +1,25 @@
 <template lang="pug">
-div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', small ? $style.small : '']")
-  div(:class="$style.form")
-    input(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
-          @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
-          @change="sendEvent('change')"
-          @keyup.enter="handleSearch"
-          @keyup.40.prevent="handleKeyDown"
-          @keyup.38.prevent="handleKeyUp"
-          @contextmenu="handleContextMenu")
-    button(type="button" @click="handleSearch")
-      slot
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
-          use(xlink:href='#icon-search')
-  //- transition(name="custom-classes-transition"
-  //-             enter-active-class="animated flipInX"
-  //-             leave-active-class="animated flipOutX")
-  div(v-if="list" :class="$style.list" :style="listStyle")
-    ul(ref="dom_list")
-      li(v-for="(item, index) in list" :key="item" :class="selectIndex === index ? $style.select : null" @mouseenter="selectIndex = index" @click="handleTemplistClick(index)")
-        span {{item}}
+div(:class="$style.container")
+  div(:class="[$style.search, focus ? $style.active : '', big ? $style.big : '', small ? $style.small : '']")
+    div(:class="$style.form")
+      input(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
+            @focus="handleFocus" @blur="handleBlur" @input="$emit('input', text)"
+            @change="sendEvent('change')"
+            @keyup.enter="handleSearch"
+            @keyup.40.prevent="handleKeyDown"
+            @keyup.38.prevent="handleKeyUp"
+            @contextmenu="handleContextMenu")
+      button(type="button" @click="handleSearch")
+        slot
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
+            use(xlink:href='#icon-search')
+    //- transition(name="custom-classes-transition"
+    //-             enter-active-class="animated flipInX"
+    //-             leave-active-class="animated flipOutX")
+    div(v-if="list" :class="$style.list" :style="listStyle")
+      ul(ref="dom_list")
+        li(v-for="(item, index) in list" :key="item" :class="selectIndex === index ? $style.select : null" @mouseenter="selectIndex = index" @click="handleTemplistClick(index)")
+          span {{item}}
 </template>
 
 <script>
@@ -135,12 +136,20 @@ export default {
 <style lang="less" module>
 @import '../../assets/styles/layout.less';
 
+.container {
+  position: relative;
+  width: 35%;
+  height: @height-toolbar * 0.52;
+  -webkit-app-region: no-drag;
+}
+
 .search {
+  position: absolute;
+  width: 100%;
   border-radius: @form-radius;
   transition: box-shadow .4s ease, background-color @transition-theme;
   display: flex;
   flex-flow: column nowrap;
-  width: 35%;
   background-color: @color-search-form-background;
 
   &.active {

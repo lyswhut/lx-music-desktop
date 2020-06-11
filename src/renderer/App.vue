@@ -28,6 +28,8 @@ import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
 import { throttle, openUrl } from './utils'
+import { base as eventBaseName } from './event/names'
+
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 dnscache({
   enable: true,
@@ -92,7 +94,7 @@ export default {
   },
   mounted() {
     document.body.classList.add(this.isNt ? 'noTransparent' : 'transparent')
-    window.eventHub.$emit('bindKey')
+    window.eventHub.$emit(eventBaseName.bindKey)
     this.init()
   },
   watch: {
@@ -202,7 +204,7 @@ export default {
         // this.setDesktopLyricConfig(config)
         // console.log('set_config', JSON.stringify(this.setting) === JSON.stringify(config))
         this.setSetting(Object.assign({}, this.setting, config))
-        window.eventHub.$emit('set_config', config)
+        window.eventHub.$emit(eventBaseName.set_config, config)
       })
       // 更新超时定时器
       this.updateTimeout = setTimeout(() => {
@@ -346,7 +348,7 @@ export default {
       document.body.removeEventListener('mouseleave', this.enableIgnoreMouseEvents)
     }
     document.body.removeEventListener('click', this.handleBodyClick)
-    window.eventHub.$emit('unbindKey')
+    window.eventHub.$emit(eventBaseName.unbindKey)
   },
 }
 </script>

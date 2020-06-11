@@ -1,8 +1,9 @@
 const path = require('path')
 const os = require('os')
+const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.29',
+  version: '1.0.30',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -19,7 +20,7 @@ const defaultSetting = {
     height: 700,
     x: -1,
     y: -1,
-    theme: 'green',
+    theme: 0,
     style: {
       fontSize: 125,
       opacity: 80,
@@ -84,6 +85,7 @@ const defaultSetting = {
   randomAnimate: true,
   ignoreVersion: null,
   isAgreePact: false,
+  controlBtnPosition: isMac ? 'left' : 'right',
 }
 
 const overwriteSetting = {
