@@ -1,8 +1,8 @@
-const { mainHandle } = require('../../common/ipc')
+const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
-mainHandle('clearCache', async(event, options) => {
-  if (!global.mainWindow) throw new Error('mainwindow is undefined')
-  return global.mainWindow.webContents.session.clearCache()
+mainHandle(ipcMainWindowNames.clear_cache, async(event, options) => {
+  if (!global.modals.mainWindow) throw new Error('mainWindow is undefined')
+  return global.modals.mainWindow.webContents.session.clearCache()
 })
 
 

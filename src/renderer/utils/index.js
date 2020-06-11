@@ -1,9 +1,7 @@
 import fs from 'fs'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
-import { rendererSend, rendererInvoke } from '../../common/ipc'
-import { defaultSetting, overwriteSetting } from '../config/defaultSetting'
-import apiSource from '../config/api-source'
+import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -133,13 +131,13 @@ export const checkPath = (path) => new Promise(resolve => {
  * 选择路径
  * @param {*} 选项
  */
-export const selectDir = options => rendererInvoke('selectDir', options)
+export const selectDir = options => rendererInvoke(NAMES.mainWindow.select_dir, options)
 
 /**
  * 打开保存对话框
  * @param {*} 选项
  */
-export const openSaveDir = options => rendererInvoke('showSaveDialog', options)
+export const openSaveDir = options => rendererInvoke(NAMES.mainWindow.show_save_dialog, options)
 
 /**
  * 在资源管理器中打开目录
@@ -176,54 +174,26 @@ export const isObject = item => item && typeof item === 'object' && !Array.isArr
 
 /**
  * 对象深度合并
- * 注意：循环引用的对象会出现死循环
  * @param  {} target 要合并源对象
  * @param  {} source 要合并目标对象
  */
-export const objectDeepMerge = (target, source) => {
+export const objectDeepMerge = (target, source, mergedObj) => {
+  if (!mergedObj) {
+    mergedObj = new Set()
+    mergedObj.add(target)
+  }
   let base = {}
   Object.keys(source).forEach(item => {
-    if (Array.isArray(source[item])) {
-      let arr = Array.isArray(target[item]) ? target[item] : []
-      target[item] = arr.concat(source[item])
-      return
-    } else if (isObject(source[item])) {
+    if (isObject(source[item])) {
+      if (mergedObj.has(source[item])) return
       if (!isObject(target[item])) target[item] = {}
-      objectDeepMerge(target[item], source[item])
+      mergedObj.add(source[item])
+      objectDeepMerge(target[item], source[item], mergedObj)
       return
     }
     base[item] = source[item]
   })
   Object.assign(target, base)
-}
-
-/**
- * 升级设置
- * @param {*} setting
- */
-export const updateSetting = (setting, version) => {
-  const defaultVersion = defaultSetting.version
-  if (!version) {
-    if (setting) {
-      version = setting.version
-      delete setting.version
-    }
-  }
-
-  if (!setting) {
-    setting = defaultSetting
-  } else if (checkVersion(version, defaultVersion)) {
-    objectDeepMerge(defaultSetting, setting)
-    objectDeepMerge(defaultSetting, overwriteSetting)
-    setting = defaultSetting
-  }
-
-  if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
-    let api = apiSource.find(api => !api.disabled)
-    if (api) setting.apiSource = api.id
-  }
-
-  return { setting, version: defaultVersion }
 }
 
 /**
@@ -267,7 +237,7 @@ export const clipboardReadText = str => clipboard.readText()
  * @param {*} meta
  */
 export const setMeta = (filePath, meta) => {
-  rendererSend('setMusicMeta', { filePath, meta })
+  rendererSend(NAMES.mainWindow.set_music_meta, { filePath, meta })
 }
 
 /**
@@ -357,19 +327,19 @@ export const findParentNode = (target, tagName) => target.tagName == tagName ? t
 /**
  * 获取缓存大小
  */
-export const getCacheSize = () => rendererInvoke('getCacheSize')
+export const getCacheSize = () => rendererInvoke(NAMES.mainWindow.get_cache_size)
 
 /**
  * 清除缓存
  */
-export const clearCache = () => rendererInvoke('clearCache')
+export const clearCache = () => rendererInvoke(NAMES.mainWindow.clear_cache)
 
 /**
  * 设置窗口大小
  * @param {*} width
  * @param {*} height
  */
-export const setWindowSize = (width, height) => rendererSend('setWindowSize', { width, height })
+export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.set_window_size, { width, height })
 
 
 export const getProxyInfo = () => window.globalObj.proxy.enable

@@ -1,8 +1,8 @@
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
-mainOn('setIgnoreMouseEvents', (event, isIgnored) => {
-  if (!global.mainWindow) return
+mainOn(ipcMainWindowNames.set_ignore_mouse_events, (event, isIgnored) => {
+  if (!global.modals.mainWindow) return
   isIgnored
-    ? global.mainWindow.setIgnoreMouseEvents(true, { forward: true })
-    : global.mainWindow.setIgnoreMouseEvents(false)
+    ? global.modals.mainWindow.setIgnoreMouseEvents(true, { forward: true })
+    : global.modals.mainWindow.setIgnoreMouseEvents(false)
 })

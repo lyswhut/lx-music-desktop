@@ -127,7 +127,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { rendererSend } from '../../../common/ipc'
+import { rendererSend, NAMES } from '../../../common/ipc'
 import { checkVersion, openUrl, clipboardWriteText, sizeFormate } from '../../utils'
 
 export default {
@@ -165,7 +165,7 @@ export default {
     handleRestartClick(event) {
       this.handleClose()
       event.target.disabled = true
-      rendererSend('quit-update')
+      rendererSend(NAMES.mainWindow.quit_update)
     },
     handleCopy(text) {
       clipboardWriteText(text)

@@ -1,8 +1,8 @@
-import path from 'path'
-import os from 'os'
+const path = require('path')
+const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.26',
+  version: '1.0.29',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -10,6 +10,21 @@ const defaultSetting = {
     volume: 1,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
+  },
+  desktopLyric: {
+    enable: false,
+    isLock: false,
+    isAlwaysOnTop: false,
+    width: 600,
+    height: 700,
+    x: -1,
+    y: -1,
+    theme: 'green',
+    style: {
+      fontSize: 125,
+      opacity: 80,
+      isZoomActiveLrc: true,
+    },
   },
   list: {
     isShowAlbumName: true,
@@ -26,7 +41,7 @@ const defaultSetting = {
   },
   leaderboard: {
     source: 'kw',
-    tabId: 'kwbiaosb',
+    tabId: 'kw__16',
   },
   songList: {
     source: 'kg',
@@ -79,4 +94,5 @@ const overwriteSetting = {
 if (new Date().getMonth() < 2) defaultSetting.themeId = 9
 
 
-export { defaultSetting, overwriteSetting }
+exports.defaultSetting = defaultSetting
+exports.overwriteSetting = overwriteSetting

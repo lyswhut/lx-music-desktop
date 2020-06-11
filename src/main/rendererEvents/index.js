@@ -11,8 +11,8 @@ require('./clearCache')
 require('./getCacheSize')
 require('./setIgnoreMouseEvent')
 require('./getEnvParams')
-require('./tray')
-require('./updateSetting')
+require('./setAppSetting')
+require('./setLyricInfo')
 
 require('./xm_verify')
 

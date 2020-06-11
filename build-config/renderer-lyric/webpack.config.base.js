@@ -1,22 +1,27 @@
 const path = require('path')
-const webpack = require('webpack')
-const HTMLPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const HTMLPlugin = require('html-webpack-plugin')
 
 const vueLoaderConfig = require('../vue-loader.config')
 
+
 module.exports = {
-  target: 'web',
-  entry: path.join(__dirname, '../../src/renderer/main.js'),
+  target: 'electron-renderer',
+  entry: {
+    'renderer-lyric': path.join(__dirname, '../../src/renderer-lyric/main.js'),
+  },
   output: {
-    path: path.join(__dirname, '../../dist/web'),
+    filename: '[name].js',
+    libraryTarget: 'commonjs2',
+    path: path.join(__dirname, '../../dist/electron'),
+    publicPath: './',
   },
   resolve: {
     alias: {
       '@': path.join(__dirname, '../../src/renderer'),
       common: path.join(__dirname, '../../src/common'),
     },
-    extensions: ['*', '.js', '.vue', '.json', '.css'],
+    extensions: ['*', '.js', '.json', '.vue', '.node'],
   },
   module: {
     rules: [
@@ -57,22 +62,26 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'imgs/[name].[ext]',
-          },
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'imgs/[name]--[folder].[ext]',
+        },
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'media/[name]--[folder].[ext]',
         },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 10000,
-            name: 'fonts/[name].[ext]',
-          },
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: 'fonts/[name]--[folder].[ext]',
         },
       },
     ],
@@ -81,17 +90,13 @@ module.exports = {
     maxEntrypointSize: 300000,
   },
   plugins: [
-    new VueLoaderPlugin(),
     new HTMLPlugin({
-      filename: 'index.html',
-      template: path.resolve(__dirname, '../../src/index.pug'),
-      nodeModules: false,
+      filename: 'lyric.html',
+      template: path.join(__dirname, '../../src/renderer-lyric/index.pug'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
       __dirname,
     }),
-    new webpack.DefinePlugin({
-      'process.env.IS_WEB': 'true',
-    }),
+    new VueLoaderPlugin(),
   ],
 }

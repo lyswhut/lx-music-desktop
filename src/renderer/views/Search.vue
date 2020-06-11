@@ -52,10 +52,10 @@
       div(v-else :class="$style.noitem_list")
         p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
-    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     //- material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="handleListAddModalClose")
-    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddMultipleModalClose")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectedData" @close="handleListAddMultipleModalClose")
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
 </template>
 
@@ -73,7 +73,7 @@ export default {
       clickIndex: -1,
       isShowDownload: false,
       musicInfo: null,
-      selectdData: [],
+      selectedData: [],
       // isShowEditBtn: false,
       isShowDownloadMultiple: false,
       searchSourceId: null,
@@ -133,7 +133,7 @@ export default {
     this.handleGetHotSearch()
   },
   watch: {
-    // selectdData(n) {
+    // selectedData(n) {
     //   const len = n.length
     //   if (len) {
     //     this.isShowEditBtn = true
@@ -277,8 +277,8 @@ export default {
     },
     handleSelectData(event, clickIndex) {
       if (this.keyEvent.isShiftDown) {
-        if (this.selectdData.length) {
-          let lastSelectIndex = this.listInfo.list.indexOf(this.selectdData[this.selectdData.length - 1])
+        if (this.selectedData.length) {
+          let lastSelectIndex = this.listInfo.list.indexOf(this.selectedData[this.selectedData.length - 1])
           this.removeAllSelect()
           if (lastSelectIndex != clickIndex) {
             let isNeedReverse = false
@@ -288,8 +288,8 @@ export default {
               clickIndex = temp
               isNeedReverse = true
             }
-            this.selectdData = this.listInfo.list.slice(lastSelectIndex, clickIndex + 1)
-            if (isNeedReverse) this.selectdData.reverse()
+            this.selectedData = this.listInfo.list.slice(lastSelectIndex, clickIndex + 1)
+            if (isNeedReverse) this.selectedData.reverse()
             let nodes = this.$refs.dom_tbody.childNodes
             do {
               nodes[lastSelectIndex].classList.add('active')
@@ -298,22 +298,22 @@ export default {
           }
         } else {
           event.currentTarget.classList.add('active')
-          this.selectdData.push(this.listInfo.list[clickIndex])
+          this.selectedData.push(this.listInfo.list[clickIndex])
         }
       } else if (this.keyEvent.isModDown) {
         let item = this.listInfo.list[clickIndex]
-        let index = this.selectdData.indexOf(item)
+        let index = this.selectedData.indexOf(item)
         if (index < 0) {
-          this.selectdData.push(item)
+          this.selectedData.push(item)
           event.currentTarget.classList.add('active')
         } else {
-          this.selectdData.splice(index, 1)
+          this.selectedData.splice(index, 1)
           event.currentTarget.classList.remove('active')
         }
-      } else if (this.selectdData.length) this.removeAllSelect()
+      } else if (this.selectedData.length) this.removeAllSelect()
     },
     removeAllSelect() {
-      this.selectdData = []
+      this.selectedData = []
       let dom_tbody = this.$refs.dom_tbody
       if (!dom_tbody) return
       let nodes = dom_tbody.querySelectorAll('.active')
@@ -322,15 +322,9 @@ export default {
       }
     },
     testPlay(index) {
-      let targetSong
-      if (index == null) {
-        targetSong = this.selectdData[0]
-        this.listAddMultiple({ id: 'default', list: this.filterList(this.selectdData) })
-      } else {
-        if (!this.assertApiSupport(this.listInfo.list[index].source)) return
-        targetSong = this.listInfo.list[index]
-        this.listAdd({ id: 'default', musicInfo: targetSong })
-      }
+      let targetSong = this.listInfo.list[index]
+      // if (!targetSong || !this.assertApiSupport(targetSong.source)) return
+      this.listAdd({ id: 'default', musicInfo: targetSong })
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid,
       )
@@ -349,13 +343,13 @@ export default {
       this.isShowDownload = false
     },
     handleAddDownloadMultiple(type) {
-      this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
+      this.createDownloadMultiple({ list: this.filterList(this.selectedData), type })
       this.removeAllSelect()
       this.isShowDownloadMultiple = false
     },
     handleSelectAllData() {
       this.removeAllSelect()
-      this.selectdData = [...this.listInfo.list]
+      this.selectedData = [...this.listInfo.list]
       let nodes = this.$refs.dom_tbody.childNodes
       for (const node of nodes) {
         node.classList.add('active')
@@ -441,10 +435,14 @@ export default {
       let minfo
       switch (action && action.action) {
         case 'play':
+          if (this.selectedData.length) {
+            this.listAddMultiple({ id: 'default', list: this.filterList(this.selectedData) })
+            this.removeAllSelect()
+          }
           this.testPlay(index)
           break
         case 'addTo':
-          if (this.selectdData.length) {
+          if (this.selectedData.length) {
             this.$nextTick(() => {
               this.isShowListAddMultiple = true
             })
@@ -456,7 +454,7 @@ export default {
           }
           break
         case 'download':
-          if (this.selectdData.length) {
+          if (this.selectedData.length) {
             this.isShowDownloadMultiple = true
           } else {
             minfo = this.listInfo.list[index]

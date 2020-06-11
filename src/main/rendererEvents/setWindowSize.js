@@ -1,7 +1,7 @@
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
-mainOn('setWindowSize', (event, options) => {
-  if (!global.mainWindow) return
-  global.mainWindow.setBounds(options)
+mainOn(ipcMainWindowNames.set_window_size, (event, options) => {
+  if (!global.modals.mainWindow) return
+  global.modals.mainWindow.setBounds(options)
 })
 

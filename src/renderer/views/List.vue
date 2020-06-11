@@ -777,6 +777,8 @@ export default {
   display: flex;
   position: relative;
 }
+
+@lists-item-height: 36px;
 .lists {
   flex: none;
   width: 16%;
@@ -857,18 +859,19 @@ export default {
 }
 .listsLabel {
   display: block;
-  height: 36px;
+  height: @lists-item-height;
   padding: 0 10px;
   font-size: 13px;
-  line-height: 36px;
+  line-height: @lists-item-height;
   .mixin-ellipsis-1;
 }
 .listsInput {
   width: 100%;
-  height: 36px;
+  height: @lists-item-height;
   border: none;
   padding: 0;
-  line-height: 36px;
+  // padding-bottom: 1px;
+  line-height: @lists-item-height;
   background: none;
   outline: none;
   font-size: 13px;
@@ -884,7 +887,7 @@ export default {
   }
 }
 .newLeave {
-  margin-top: -36px;
+  margin-top: -@lists-item-height;
   z-index: -1;
 }
 

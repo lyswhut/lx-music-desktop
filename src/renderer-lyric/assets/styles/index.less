@@ -1,0 +1,56 @@
+@import './reset.less';
+@import './animate.less';
+*, *::after, *::before {
+	-webkit-user-drag: none;
+}
+
+html {
+  font-size: 16px;
+}
+
+.nobreak {
+  white-space: nowrap;
+}
+
+.auto-hidden {
+  .mixin-ellipsis-1;
+}
+
+.center {
+  text-align: center;
+}
+
+.break {
+  word-break: break-all;
+}
+
+.select {
+  user-select: text;
+}
+.no-select {
+  user-select: none;
+}
+
+a {
+  color: #000;
+}
+
+
+small {
+  font-size: .8em;
+}
+.small {
+  font-size: .9em;
+}
+strong {
+  font-weight: bold;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+svg {
+  transition: @transition-theme;
+  transition-property: fill;
+}

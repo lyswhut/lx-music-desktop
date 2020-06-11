@@ -1,47 +1,18 @@
 
 // const isDev = process.env.NODE_ENV === 'development'
 import Store from 'electron-store'
-import { updateSetting } from '../utils'
 import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
-const electronStore_list = window.electronStore_list = new Store({
+
+window.electronStore_list = new Store({
   name: 'playList',
 })
 const electronStore_config = window.electronStore_config = new Store({
   name: 'config',
 })
 let setting = electronStore_config.get('setting')
-if (!electronStore_config.get('version') && setting) { // 迁移配置
-  electronStore_config.set('version', electronStore_config.get('setting.version'))
-  electronStore_config.delete('setting.version')
-  const list = electronStore_config.get('list')
-  if (list) {
-    if (list.defaultList) electronStore_list.set('defaultList', list.defaultList)
-    if (list.loveList) electronStore_list.set('loveList', list.loveList)
-    electronStore_config.delete('list')
-  }
-  const downloadList = electronStore_config.get('download')
-  if (downloadList) {
-    if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
-    electronStore_config.delete('download')
-  }
-}
+let settingVersion = electronStore_config.get('version')
 
-// 迁移列表滚动位置设置 ^0.18.3
-if (setting && setting.list.scroll) {
-  let scroll = setting.list.scroll
-  const electronStore_list = window.electronStore_list = new Store({
-    name: 'playList',
-  })
-  electronStore_list.set('defaultList.location', scroll.locations.defaultList || 0)
-  electronStore_list.set('loveList.location', scroll.locations.loveList || 0)
-  electronStore_config.delete('setting.list.scroll')
-  electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
-}
-
-const { version: settingVersion, setting: newSetting } = updateSetting(setting, electronStore_config.get('version'))
-electronStore_config.set('version', settingVersion)
-electronStore_config.set('setting', setting)
 process.versions.app = version
 
 window.i18n.locale = setting.langId
@@ -94,6 +65,11 @@ export default {
       class: 'ming',
     },
     {
+      id: 12,
+      name: '青出于黑',
+      class: 'blue2',
+    },
+    {
       id: 7,
       name: '月里嫦娥',
       class: 'mid_autumn',
@@ -122,7 +98,7 @@ export default {
     downloadProgress: null,
   },
   userInfo: null,
-  setting: newSetting,
+  setting,
   settingVersion,
 
   windowSizeList,

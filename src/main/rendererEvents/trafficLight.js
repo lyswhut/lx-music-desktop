@@ -1,18 +1,18 @@
 const { app } = require('electron')
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
-mainOn('min', event => {
-  if (global.mainWindow) {
-    global.mainWindow.minimize()
+mainOn(ipcMainWindowNames.min, event => {
+  if (global.modals.mainWindow) {
+    global.modals.mainWindow.minimize()
   }
 })
-mainOn('max', event => {
-  if (global.mainWindow) {
-    global.mainWindow.maximize()
+mainOn(ipcMainWindowNames.max, event => {
+  if (global.modals.mainWindow) {
+    global.modals.mainWindow.maximize()
   }
 })
-mainOn('close', (event, isForce) => {
+mainOn(ipcMainWindowNames.close, (event, isForce) => {
   if (isForce) return app.exit(0)
   global.isTrafficLightClose = true
-  if (global.mainWindow) global.mainWindow.close()
+  if (global.modals.mainWindow) global.modals.mainWindow.close()
 })

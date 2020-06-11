@@ -6,14 +6,15 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   return
 }
+if (!global.modals) global.modals = {}
 app.on('second-instance', (event, argv, cwd) => {
-  if (global.mainWindow) {
-    if (global.mainWindow.isMinimized()) {
-      global.mainWindow.restore()
-    } else if (global.mainWindow.isVisible()) {
-      global.mainWindow.focus()
+  if (global.modals.mainWindow) {
+    if (global.modals.mainWindow.isMinimized()) {
+      global.modals.mainWindow.restore()
+    } else if (global.modals.mainWindow.isVisible()) {
+      global.modals.mainWindow.focus()
     } else {
-      global.mainWindow.show()
+      global.modals.mainWindow.show()
     }
   } else {
     app.quit()
@@ -21,11 +22,10 @@ app.on('second-instance', (event, argv, cwd) => {
 })
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
+require('./env')
 const { navigationUrlWhiteList } = require('../common/config')
-const { getAppSetting, parseEnv, getWindowSizeInfo } = require('./utils')
-const { isMac, isLinux } = require('../common/utils')
-
-global.envParams = parseEnv()
+const { getWindowSizeInfo } = require('./utils')
+const { isMac, isLinux, initSetting } = require('../common/utils')
 
 
 // https://github.com/electron/electron/issues/22691
@@ -67,6 +67,7 @@ app.on('web-contents-created', (event, contents) => {
 
 require('../common/error')
 require('./events')
+require('./event')
 require('./rendererEvents')
 const winEvent = require('./rendererEvents/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
@@ -88,7 +89,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  global.mainWindow = new BrowserWindow({
+  global.modals.mainWindow = new BrowserWindow({
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -107,32 +108,32 @@ function createWindow() {
     },
   })
 
-  global.mainWindow.loadURL(winURL)
+  global.modals.mainWindow.loadURL(winURL)
 
-  winEvent(global.mainWindow)
+  winEvent(global.modals.mainWindow)
   // mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()
 }
 
 function init() {
-  global.appSetting = getAppSetting()
+  global.appSetting = initSetting()
+  global.lx_event.common.initSetting()
   createWindow()
-  global.lx_event.tray.create()
 }
 
 app.on('ready', init)
 
 app.on('activate', () => {
-  if (global.mainWindow) {
-    if (global.mainWindow.isMinimized()) {
-      global.mainWindow.restore()
-    } else if (global.mainWindow.isVisible()) {
-      global.mainWindow.focus()
+  if (global.modals.mainWindow) {
+    if (global.modals.mainWindow.isMinimized()) {
+      global.modals.mainWindow.restore()
+    } else if (global.modals.mainWindow.isVisible()) {
+      global.modals.mainWindow.focus()
     } else {
-      global.mainWindow.show()
+      global.modals.mainWindow.show()
     }
-  } else if (global.mainWindow === null) {
+  } else if (global.modals.mainWindow === null) {
     init()
   }
 })

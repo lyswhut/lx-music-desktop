@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { weapi } from './utils/crypto'
-import { formatPlayTime, sizeFormate } from '../../.'
+import { formatPlayTime, sizeFormate } from '../..'
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/song_detail.js
 
 export default {

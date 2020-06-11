@@ -1,5 +1,5 @@
 const { BrowserView } = require('electron')
-const { mainHandle } = require('../../../common/ipc')
+const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../../common/ipc')
 const { getWindowSizeInfo } = require('../../utils')
 
 let view
@@ -9,16 +9,16 @@ let rejectFn
 const closeView = async() => {
   if (!view) return
   // await view.webContents.session.clearCache()
-  if (global.mainWindow) global.mainWindow.removeBrowserView(view)
+  if (global.modals.mainWindow) global.modals.mainWindow.removeBrowserView(view)
   await view.webContents.session.clearStorageData()
   view.destroy()
   view = null
 }
 
-mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
-  if (!global.mainWindow) return reject(new Error('mainwindow is undefined'))
+mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise((resolve, reject) => {
+  if (!global.modals.mainWindow) return reject(new Error('mainWindow is undefined'))
   if (view) {
-    global.mainWindow.removeBrowserView(view)
+    global.modals.mainWindow.removeBrowserView(view)
     view.destroy()
   }
 
@@ -48,7 +48,7 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
       })
   })
 
-  global.mainWindow.setBrowserView(view)
+  global.modals.mainWindow.setBrowserView(view)
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   view.setBounds({ x: (windowSizeInfo.width - 380) / 2, y: ((windowSizeInfo.height - 320 + 52) / 2), width: 380, height: 320 })
   view.webContents.loadURL(url, {
@@ -57,7 +57,7 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   // view.webContents.openDevTools()
 }))
 
-mainHandle('xm_verify_close', async() => {
+mainHandle(ipcMainWindowNames.handle_xm_verify_close, async() => {
   await closeView()
   if (!rejectFn) return
   if (!isActioned) rejectFn(new Error('canceled verify'))

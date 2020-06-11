@@ -1,6 +1,6 @@
-const { mainHandle } = require('../../common/ipc')
+const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
-mainHandle('getEnvParams', async(event, options) => {
-  return global.envParams
+mainHandle(ipcMainWindowNames.get_env_params, async(event, options) => {
+  return global.envParams.cmdParams
 })
 

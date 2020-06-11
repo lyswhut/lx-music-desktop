@@ -1,27 +1,30 @@
 const { app, Tray, Menu } = require('electron')
 const { isWin } = require('../../common/utils')
-const { tray: TRAY_EVENT_NAME } = require('../events/_name')
+const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME } = require('../events/_name')
 const path = require('path')
-global.lx_event.tray.on(TRAY_EVENT_NAME.create, () => {
-  createTray()
-})
-global.lx_event.tray.on(TRAY_EVENT_NAME.destroy, () => {
-  destroyTray()
+let isEnableTray = null
+global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
+  if (sourceName === TRAY_EVENT_NAME.name) return
+  if (isEnableTray !== global.appSetting.tray.isToTray) {
+    isEnableTray = global.appSetting.tray.isToTray
+    global.appSetting.tray.isToTray ? createTray() : destroyTray()
+  }
+  createMenu(global.modals.tray)
 })
 
 const createTray = () => {
-  if ((global.tray && !global.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
+  if ((global.modals.tray && !global.modals.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
   const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate@2x.ico' : 'trayTemplate.png')
 
   // 托盘
-  global.tray = new Tray(iconPath)
+  global.modals.tray = new Tray(iconPath)
 
-  global.tray.setToolTip('洛雪音乐助手')
-  if (isWin) createMenu(global.tray)
-  global.tray.setIgnoreDoubleClickEvents(true)
-  global.tray.on('click', () => {
-    const mainWindow = global.mainWindow
+  global.modals.tray.setToolTip('洛雪音乐助手')
+  createMenu(global.modals.tray)
+  global.modals.tray.setIgnoreDoubleClickEvents(true)
+  global.modals.tray.on('click', () => {
+    const mainWindow = global.modals.mainWindow
     if (!mainWindow) return
     mainWindow.isVisible()
       ? mainWindow.focus()
@@ -30,21 +33,55 @@ const createTray = () => {
 }
 
 const destroyTray = () => {
-  if (!global.tray) return
-  global.tray.destroy()
-  global.tray = null
+  if (!global.modals.tray) return
+  global.modals.tray.destroy()
+  global.modals.tray = null
 }
 
 const createMenu = tray => {
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: '退出',
-      click() {
-        global.isQuitting = true
-        app.quit()
-      },
+  if (!global.modals.tray || !isWin) return
+  let menu = []
+  menu.push(global.appSetting.desktopLyric.enable ? {
+    label: '关闭桌面歌词',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { enable: false } }, TRAY_EVENT_NAME.name)
     },
-  ])
+  } : {
+    label: '开启桌面歌词',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { enable: true } }, TRAY_EVENT_NAME.name)
+    },
+  })
+  menu.push(global.appSetting.desktopLyric.isLock ? {
+    label: '解锁桌面歌词',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { isLock: false } }, TRAY_EVENT_NAME.name)
+    },
+  } : {
+    label: '锁定桌面歌词',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { isLock: true } }, TRAY_EVENT_NAME.name)
+    },
+  })
+  menu.push(global.appSetting.desktopLyric.isAlwaysOnTop ? {
+    label: '取消置顶',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { isAlwaysOnTop: false } }, TRAY_EVENT_NAME.name)
+    },
+  } : {
+    label: '置顶歌词',
+    click() {
+      global.lx_event.common.setAppConfig({ desktopLyric: { isAlwaysOnTop: true } }, TRAY_EVENT_NAME.name)
+    },
+  })
+  menu.push({
+    label: '退出',
+    click() {
+      global.isQuitting = true
+      app.quit()
+    },
+  })
+  const contextMenu = Menu.buildFromTemplate(menu)
   tray.setContextMenu(contextMenu)
 }
 

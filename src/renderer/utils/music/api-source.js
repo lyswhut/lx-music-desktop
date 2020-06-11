@@ -1,9 +1,9 @@
-import apiSource from '../../config/api-source'
+import apiSourceInfo from './api-source-info'
 
 const apiList = {}
 const supportQuality = {}
 
-for (const api of apiSource) {
+for (const api of apiSourceInfo) {
   supportQuality[api.id] = api.supportQualitys
   for (const source of Object.keys(api.supportQualitys)) {
     apiList[`${api.id}_api_${source}`] = require(`./${source}/api-${api.id}`).default

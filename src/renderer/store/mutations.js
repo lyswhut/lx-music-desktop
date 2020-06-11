@@ -51,4 +51,7 @@ export default {
   setPrevSelectListId(state, val) {
     state.setting.list.prevSelectListId = val
   },
+  setDesktopLyricConfig(state, config) {
+    state.setting.desktopLyric = Object.assign(state.setting.desktopLyric, config)
+  },
 }

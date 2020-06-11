@@ -1,10 +1,10 @@
 const request = require('request')
 
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
 const tasks = []
 
-mainOn('request', (event, options) => {
+mainOn(ipcMainWindowNames.handle_request, (event, options) => {
   // console.log(args)
   if (!options) return
   let index = fetchData(options, (err, resp) => {
@@ -19,7 +19,7 @@ mainOn('request', (event, options) => {
   event.returnValue = index
 })
 
-mainOn('cancelRequest', (event, index) => {
+mainOn(ipcMainWindowNames.cancel_request, (event, index) => {
   if (index == null) return
   let r = tasks[index]
   if (r == null) return

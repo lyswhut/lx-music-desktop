@@ -14,11 +14,11 @@
         li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :title="item.name" v-for="item in boardList" :key="item.id" @click="handleToggleList(item.id)")
           span(:class="$style.listsLabel") {{item.name}}
     div(:class="$style.list")
-      material-song-list(v-model="selectdData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
+      material-song-list(v-model="selectedData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
-    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
+    material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
-    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectdData" @close="handleListAddModalClose")
+    material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectedData" @close="handleListAddModalClose")
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
       page: 1,
       isShowDownload: false,
       musicInfo: null,
-      selectdData: [],
+      selectedData: [],
       isShowDownloadMultiple: false,
       isShowListAdd: false,
       isShowListAddMultiple: false,
@@ -101,7 +101,7 @@ export default {
     handleMenuClick(info) {
       switch (info.action) {
         case 'download':
-          if (this.selectdData.length) {
+          if (this.selectedData.length) {
             this.isShowDownloadMultiple = true
           } else {
             this.musicInfo = this.list[info.index]
@@ -111,13 +111,17 @@ export default {
           }
           break
         case 'play':
+          if (this.selectedData.length) {
+            this.listAddMultiple({ id: 'default', list: this.selectedData })
+            this.resetSelect()
+          }
           this.testPlay(info.index)
           break
         case 'search':
           this.handleSearch(info.index)
           break
         case 'addTo':
-          if (this.selectdData.length) {
+          if (this.selectedData.length) {
             this.$nextTick(() => {
               this.isShowListAddMultiple = true
             })
@@ -131,15 +135,8 @@ export default {
       }
     },
     testPlay(index) {
-      let targetSong
-      if (index == null) {
-        targetSong = this.selectdData[0]
-        this.listAddMultiple({ id: 'default', list: this.selectdData })
-        this.resetSelect()
-      } else {
-        targetSong = this.list[index]
-        this.listAdd({ id: 'default', musicInfo: targetSong })
-      }
+      let targetSong = this.list[index]
+      this.listAdd({ id: 'default', musicInfo: targetSong })
       let targetIndex = this.defaultList.list.findIndex(
         s => s.songmid === targetSong.songmid,
       )
@@ -170,7 +167,7 @@ export default {
     },
     handleAddDownloadMultiple(type) {
       if (this.source == 'xm' && type == 'flac') type = 'wav'
-      this.createDownloadMultiple({ list: [...this.selectdData], type })
+      this.createDownloadMultiple({ list: [...this.selectedData], type })
       this.isShowDownloadMultiple = false
       this.resetSelect()
     },
@@ -212,7 +209,7 @@ export default {
       this.tabId = id
     },
     resetSelect() {
-      this.selectdData = []
+      this.selectedData = []
     },
   },
 }

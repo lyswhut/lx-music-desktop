@@ -59,7 +59,7 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { rendererSend } from 'common/ipc'
+import { rendererSend, NAMES } from 'common/ipc'
 import { scrollTo } from '../../utils'
 
 let cancelScrollFn = null
@@ -119,14 +119,14 @@ export default {
     },
   },
   watch: {
-    'musicInfo.img': {
-      handler(n) {
-        if (n) {
-          this.bgStyle.backgroundImage = `url(${n})`
-        }
-      },
-      immediate: true,
-    },
+    // 'musicInfo.img': {
+    //   handler(n) {
+    //     if (n) {
+    //       this.bgStyle.backgroundImage = `url(${n})`
+    //     }
+    //   },
+    //   immediate: true,
+    // },
     'lyric.lines': {
       handler(n, o) {
         this.isSetedLines = true
@@ -299,13 +299,13 @@ export default {
       this.lyricEvent.timeout = null
     },
     min() {
-      rendererSend('min')
+      rendererSend(NAMES.mainWindow.min)
     },
     max() {
-      rendererSend('max')
+      rendererSend(NAMES.mainWindow.max)
     },
     close() {
-      rendererSend('close')
+      rendererSend(NAMES.mainWindow.close)
     },
   },
 }

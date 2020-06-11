@@ -1,21 +1,25 @@
 const path = require('path')
 const webpack = require('webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const merge = require('webpack-merge')
-const TerserPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const merge = require('webpack-merge')
+
 const baseConfig = require('./webpack.config.base')
 
 const { mergeCSSLoaderProd } = require('../utils')
+const { dependencies } = require('../../package.json')
+
+let whiteListedModules = ['vue']
 
 
 module.exports = merge(baseConfig, {
   mode: 'production',
   devtool: false,
-  output: {
-    filename: '[name].[chunkhash:8].js',
-  },
+  externals: [
+    ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d)),
+  ],
   module: {
     rules: [
       {
@@ -32,7 +36,7 @@ module.exports = merge(baseConfig, {
         }),
       },
       {
-        test: /\.styl$/,
+        test: /\.styl(:?us)?$/,
         oneOf: mergeCSSLoaderProd({
           loader: 'stylus-loader',
           options: {
@@ -43,20 +47,21 @@ module.exports = merge(baseConfig, {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      {
-        from: path.join(__dirname, '../../src/static'),
-        to: path.join(__dirname, '../dist/web/static'),
-        ignore: ['.*'],
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../../src/static'),
+          to: path.join(__dirname, '../../dist/electron/static'),
+        },
+      ],
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"',
       },
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contentHash:8].css',
+      filename: '[name].css',
     }),
     new webpack.NamedChunksPlugin(),
   ],
@@ -69,26 +74,14 @@ module.exports = merge(baseConfig, {
       }),
       new OptimizeCSSAssetsPlugin({}),
     ],
-    splitChunks: {
-      cacheGroups: {
-        // chunks: 'all',
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          enforce: true,
-          chunks: 'all',
-        },
-        styles: {
-          name: 'styles',
-          test: /\.(css|less)$/,
-          chunks: 'all',
-          enforce: true,
-        },
-      },
-    },
-    runtimeChunk: true,
   },
   performance: {
     hints: 'warning',
   },
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
 })
+
+

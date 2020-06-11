@@ -1,9 +1,9 @@
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
 
-mainOn('progress', (event, params) => {
+mainOn(ipcMainWindowNames.progress, (event, params) => {
   // console.log(params)
-  global.mainWindow && global.mainWindow.setProgressBar(params.status, {
+  global.modals.mainWindow && global.modals.mainWindow.setProgressBar(params.status, {
     mode: params.mode || 'normal',
   })
 })

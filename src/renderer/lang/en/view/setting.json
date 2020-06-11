@@ -41,6 +41,11 @@
   "play_mediaDevice_remove_stop_play": "Whether to pause playback when the audio output device is changed",
   "play_mediaDevice_remove_stop_play_title": "Whether to pause the song when the current sound output device is changed",
 
+  "desktop_lyric": "Desktop Lyric Settings",
+  "desktop_lyric_enable": "Display lyrics",
+  "desktop_lyric_lock": "Lock lyrics",
+  "desktop_lyric_always_on_top": "Make the lyrics always above other windows",
+
   "search": "Search",
   "search_hot_title": "Select whether to show popular searches",
   "search_hot": "Top Searches",

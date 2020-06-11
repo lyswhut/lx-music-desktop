@@ -1,4 +1,5 @@
 const { ipcMain, ipcRenderer } = require('electron')
+const names = require('./ipcNames')
 
 
 exports.mainOn = (event, callback) => {
@@ -15,6 +16,9 @@ exports.mainHandleOnce = (name, callback) => {
   ipcMain.handleOnce(name, callback)
 }
 
+exports.mainSend = (window, name, params) => {
+  window.webContents.send(name, params)
+}
 
 exports.rendererSend = (name, params) => {
   ipcRenderer.send(name, params)
@@ -29,3 +33,5 @@ exports.rendererOn = (name, callback) => {
 exports.rendererOnce = (name, callback) => {
   ipcRenderer.once(name, callback)
 }
+
+exports.NAMES = names

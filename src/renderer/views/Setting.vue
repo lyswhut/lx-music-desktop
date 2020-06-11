@@ -25,7 +25,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.basic_to_tray_title')")
       h3 {{$t('view.setting.basic_to_tray')}}
       div
-        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" @change="handleToTrayChange" :label="$t('view.setting.is_enable')")
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" :label="$t('view.setting.is_enable')")
 
     dd(:title="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
@@ -68,7 +68,14 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
         material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-
+    dt {{$t('view.setting.desktop_lyric')}}
+    dd
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
     dt {{$t('view.setting.search')}}
     dd(:title="$t('view.setting.search_hot_title')")
       h3 {{$t('view.setting.search_hot')}}
@@ -221,7 +228,6 @@ import {
   openDirInExplorer,
   selectDir,
   openSaveDir,
-  updateSetting,
   openUrl,
   clipboardWriteText,
   getCacheSize,
@@ -229,8 +235,9 @@ import {
   sizeFormate,
   setWindowSize,
 } from '../utils'
-import { rendererSend } from '../../common/ipc'
-import apiSource from '../config/api-source'
+import { rendererSend, NAMES } from '../../common/ipc'
+import { mergeSetting } from '../../common/utils'
+import apiSourceInfo from '../utils/music/api-source-info'
 import fs from 'fs'
 import languageList from '@/lang/languages.json'
 
@@ -268,7 +275,7 @@ export default {
       ]
     },
     apiSources() {
-      return apiSource.map(api => ({
+      return apiSourceInfo.map(api => ({
         id: api.id,
         label: this.$t('view.setting.basic_source_' + api.id) || api.name,
         disabled: api.disabled,
@@ -313,6 +320,20 @@ export default {
           volume: 1,
           mediaDeviceId: 'default',
           isMediaDeviceRemovedStopPlay: false,
+        },
+        desktopLyric: {
+          enable: false,
+          isLock: false,
+          width: 600,
+          height: 700,
+          x: -1,
+          y: -1,
+          theme: '',
+          style: {
+            fontSize: 125,
+            opacity: 80,
+            isZoomActiveLrc: true,
+          },
         },
         list: {
           isShowAlbumName: true,
@@ -366,6 +387,7 @@ export default {
     current_setting: {
       handler(n, o) {
         if (!this.settingVersion) return
+        if (JSON.stringify(this.setting) === JSON.stringify(n)) return
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
@@ -379,7 +401,7 @@ export default {
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {
-        rendererSend('progress', {
+        rendererSend(NAMES.mainWindow.progress, {
           status: -1,
           mode: 'normal',
         })
@@ -388,10 +410,12 @@ export default {
   },
   mounted() {
     navigator.mediaDevices.addEventListener('devicechange', this.getMediaDevice)
+    window.eventHub.$on('set_config', this.handleUpdateSetting)
     this.init()
   },
   beforeDestroy() {
     navigator.mediaDevices.removeEventListener('devicechange', this.getMediaDevice)
+    window.eventHub.$off('set_config', this.handleUpdateSetting)
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
@@ -424,7 +448,7 @@ export default {
         return
       }
       if (settingData.type !== 'setting') return
-      const { version: settingVersion, setting } = updateSetting(settingData.data)
+      const { version: settingVersion, setting } = mergeSetting(settingData.data)
       setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
     },
@@ -478,7 +502,7 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      const { version: settingVersion, setting } = updateSetting(allData.setting)
+      const { version: settingVersion, setting } = mergeSetting(allData.setting)
       setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
 
@@ -610,7 +634,6 @@ export default {
       }
       this.init()
       this.handleLangChange(this.current_setting.langId)
-      this.handleToTrayChange()
     },
     handleLangChange(id) {
       this.$i18n.locale = id
@@ -621,12 +644,11 @@ export default {
       this.mediaDevices = audioDevices
       // console.log(this.mediaDevices)
     },
-    handleToTrayChange(isToTray) {
-      if (isToTray != null) this.current_setting.tray.isShow = isToTray
-      rendererSend('changeTray', this.current_setting.tray)
-    },
     handleShowPact() {
       window.globalObj.isShowPact = true
+    },
+    handleUpdateSetting(config) {
+      this.current_setting = JSON.parse(JSON.stringify(config))
     },
   },
 }
@@ -737,7 +759,7 @@ export default {
         height: 100%;
         border-radius: @radius-border;
         background-position: center;
-        background-size: auto 100%;
+        background-size: cover;
         background-repeat: no-repeat;
       }
     }

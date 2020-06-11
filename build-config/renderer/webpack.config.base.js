@@ -92,7 +92,7 @@ module.exports = {
   plugins: [
     new HTMLPlugin({
       filename: 'index.html',
-      template: path.join(__dirname, '../../src/index.pug'),
+      template: path.join(__dirname, '../../src/renderer/index.pug'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
       __dirname,

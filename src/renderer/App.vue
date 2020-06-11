@@ -24,7 +24,7 @@
 <script>
 import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { rendererOn, rendererSend, rendererInvoke } from '../common/ipc'
+import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
 import { throttle, openUrl } from './utils'
@@ -73,7 +73,6 @@ export default {
   created() {
     this.saveSetting = throttle(n => {
       window.electronStore_config.set('setting', n)
-      rendererSend('updateAppSetting', n)
     })
     this.saveDefaultList = throttle(n => {
       window.electronStore_list.set('defaultList', n)
@@ -98,7 +97,8 @@ export default {
   },
   watch: {
     setting: {
-      handler(n) {
+      handler(n, o) {
+        rendererSend(NAMES.mainWindow.set_app_setting, n)
         this.saveSetting(n)
       },
       deep: true,
@@ -144,16 +144,16 @@ export default {
   },
   methods: {
     ...mapActions(['getVersionInfo']),
-    ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting']),
+    ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting', 'setDesktopLyricConfig']),
     ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
 
-      rendererInvoke('getEnvParams').then(this.handleEnvParamsInit)
+      rendererInvoke(NAMES.mainWindow.get_env_params).then(this.handleEnvParamsInit)
 
       document.body.addEventListener('click', this.handleBodyClick, true)
-      rendererOn('update-available', (e, info) => {
+      rendererOn(NAMES.mainWindow.update_available, (e, info) => {
         // this.showUpdateModal(true)
         // console.log(info)
         this.setVersionModalVisible({ isDownloading: true })
@@ -168,7 +168,7 @@ export default {
           })
         })
       })
-      rendererOn('update-error', (event, err) => {
+      rendererOn(NAMES.mainWindow.update_error, (event, err) => {
         // console.log(err)
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isError: true })
@@ -176,11 +176,11 @@ export default {
           this.showUpdateModal()
         })
       })
-      rendererOn('update-progress', (event, progress) => {
+      rendererOn(NAMES.mainWindow.update_progress, (event, progress) => {
         // console.log(progress)
         this.setDownloadProgress(progress)
       })
-      rendererOn('update-downloaded', info => {
+      rendererOn(NAMES.mainWindow.update_downloaded, info => {
         // console.log(info)
         this.clearUpdateTimeout()
         this.setVersionModalVisible({ isDownloaded: true })
@@ -188,13 +188,21 @@ export default {
           this.showUpdateModal()
         })
       })
-      rendererOn('update-not-available', (e, info) => {
+      rendererOn(NAMES.mainWindow.update_not_available, (event, info) => {
         this.clearUpdateTimeout()
         this.setNewVersion({
           version: info.version,
           desc: info.releaseNotes,
         })
         this.setVersionModalVisible({ isLatestVer: true })
+      })
+
+      rendererOn(NAMES.mainWindow.set_config, (event, config) => {
+        // console.log(config)
+        // this.setDesktopLyricConfig(config)
+        // console.log('set_config', JSON.stringify(this.setting) === JSON.stringify(config))
+        this.setSetting(Object.assign({}, this.setting, config))
+        window.eventHub.$emit('set_config', config)
       })
       // 更新超时定时器
       this.updateTimeout = setTimeout(() => {
@@ -217,13 +225,13 @@ export default {
     },
     enableIgnoreMouseEvents() {
       if (this.isNt) return
-      rendererSend('setIgnoreMouseEvents', false)
+      rendererSend(NAMES.mainWindow.set_ignore_mouse_events, false)
       // console.log('content enable')
     },
     dieableIgnoreMouseEvents() {
       if (this.isNt) return
       // console.log('content disable')
-      rendererSend('setIgnoreMouseEvents', true)
+      rendererSend(NAMES.mainWindow.set_ignore_mouse_events, true)
     },
 
     initData() { // 初始化数据
@@ -234,6 +242,8 @@ export default {
       let defaultList = window.electronStore_list.get('defaultList') || this.defaultList
       let loveList = window.electronStore_list.get('loveList') || this.loveList
       let userList = window.electronStore_list.get('userList') || this.userList
+      if (!defaultList.list) defaultList.list = []
+      if (!loveList.list) loveList.list = []
       this.initList({ defaultList, loveList, userList })
     },
     initDownloadList() {
@@ -270,6 +280,7 @@ export default {
         let len = Math.max(newVer.length, currentVer.length)
         newVer.padStart(len, '0')
         currentVer.padStart(len, '0')
+        if (result.version == '0.0.0') return this.setVersionModalVisible({ isUnknow: true })
         if (parseInt(newVer) <= parseInt(currentVer)) return this.setVersionModalVisible({ isLatestVer: true })
 
         if (result.version === this.setting.ignoreVersion) return
@@ -343,6 +354,10 @@ export default {
 <style lang="less">
 @import './assets/styles/index.less';
 @import './assets/styles/layout.less';
+
+html, body {
+  overflow: hidden;
+}
 
 body {
   user-select: none;

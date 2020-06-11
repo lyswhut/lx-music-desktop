@@ -1,6 +1,6 @@
 const { inflate } = require('zlib')
 const iconv = require('iconv-lite')
-const { mainHandle } = require('../../common/ipc')
+const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
 const handleInflate = data => new Promise((resolve, reject) => {
   inflate(data, (err, result) => {
@@ -38,8 +38,8 @@ const decodeLyric = async(buf, isGetLyricx) => {
   return iconv.decode(Buffer.from(output), 'gb18030')
 }
 
-mainHandle('kw_decodeLyric', async(event, { lrcBase64, isGetLyricx }) => {
-  if (!global.mainWindow) throw new Error('mainwindow is undefined')
+mainHandle(ipcMainWindowNames.handle_kw_decode_lyric, async(event, { lrcBase64, isGetLyricx }) => {
+  if (!global.modals.mainWindow) throw new Error('mainWindow is undefined')
   const lrc = await decodeLyric(Buffer.from(lrcBase64, 'base64'), isGetLyricx)
   return Buffer.from(lrc).toString('base64')
 })

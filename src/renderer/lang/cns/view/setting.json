@@ -41,6 +41,11 @@
   "play_mediaDevice_remove_stop_play": "音频输出设备被改变时是否暂停播放",
   "play_mediaDevice_remove_stop_play_title": "当前的声音输出设备被改变时是否暂停播放歌曲",
 
+  "desktop_lyric": "桌面歌词设置",
+  "desktop_lyric_enable": "显示歌词",
+  "desktop_lyric_lock": "锁定歌词",
+  "desktop_lyric_always_on_top": "使歌词总是在其他窗口之上",
+
   "search": "搜索设置",
   "search_hot_title": "是否显示热门搜索",
   "search_hot": "热门搜索",

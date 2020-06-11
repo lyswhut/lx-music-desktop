@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { rendererSend } from 'common/ipc'
+import { rendererSend, NAMES } from 'common/ipc'
 import { mapGetters, mapMutations } from 'vuex'
 import music from '../../utils/music'
 import { debounce } from '../../utils'
@@ -113,13 +113,13 @@ export default {
     },
 
     min() {
-      rendererSend('min')
+      rendererSend(NAMES.mainWindow.min)
     },
     max() {
-      rendererSend('max')
+      rendererSend(NAMES.mainWindow.max)
     },
     close() {
-      rendererSend('close')
+      rendererSend(NAMES.mainWindow.close)
     },
   },
 }

@@ -57,7 +57,7 @@ material-modal(:show="!setting.isAgreePact || globalObj.isShowPact" @close="hand
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { rendererSend } from '../../../common/ipc'
+import { rendererSend, NAMES } from '../../../common/ipc'
 import { openUrl } from '../../utils'
 export default {
   data() {
@@ -98,7 +98,7 @@ export default {
       this.setAgreePact()
     },
     handleClose(isExit) {
-      if (isExit) return rendererSend('close', true)
+      if (isExit) return rendererSend(NAMES.mainWindow.close, true)
       this.globalObj.isShowPact = false
     },
     openUrl(url) {

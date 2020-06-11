@@ -1,7 +1,7 @@
-const { mainOn } = require('../../common/ipc')
+const { mainOn, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
 
-mainOn('restartWindow', (event, name) => {
+mainOn(ipcMainWindowNames.restart_window, (event, name) => {
   console.log(name)
   switch (name) {
     case 'main':

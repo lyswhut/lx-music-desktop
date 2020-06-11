@@ -1,7 +1,7 @@
 import { httpGet, httpFetch } from '../../request'
 import { toMD5 } from '../../index'
 // import crateIsg from './isg'
-import { rendererInvoke } from '../../../../common/ipc'
+import { rendererInvoke, NAMES } from '../../../../common/ipc'
 
 if (!window.xm_token) {
   let data = window.localStorage.getItem('xm_token')
@@ -96,7 +96,7 @@ export const xmRequest = (path, params = '') => {
       if (resp.body.code !== 'SUCCESS' && resp.body.rgv587_flag == 'sm') {
         window.globalObj.xm.isShowVerify = true
         return wait(300).then(() => {
-          return rendererInvoke('xm_verify_open', 'https:' + resp.body.url).then(x5sec => {
+          return rendererInvoke(NAMES.mainWindow.handle_xm_verify_open, 'https:' + resp.body.url).then(x5sec => {
             handleSaveToken({ cookies: { x5sec } })
             // console.log(x5sec)
             window.globalObj.xm.isShowVerify = false
@@ -117,6 +117,6 @@ export const xmRequest = (path, params = '') => {
 
 export const closeVerifyModal = async() => {
   if (!window.globalObj.xm.isShowVerify) return
-  await rendererInvoke('xm_verify_close')
+  await rendererInvoke(NAMES.mainWindow.handle_xm_verify_close)
   window.globalObj.xm.isShowVerify = false
 }

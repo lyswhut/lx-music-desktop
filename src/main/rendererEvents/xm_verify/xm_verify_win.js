@@ -1,5 +1,5 @@
 const { BrowserWindow } = require('electron')
-const { mainHandle } = require('../../../common/ipc')
+const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../../common/ipc')
 const { getWindowSizeInfo } = require('../../utils')
 
 let win
@@ -7,7 +7,7 @@ let win
 const closeWin = async() => {
   if (!win) return
   // await win.webContents.session.clearCache()
-  // if (global.mainWindow) global.mainWindow.removeBrowserView(win)
+  // if (global.modals.mainWindow) global.modals.mainWindow.removeBrowserView(win)
   if (win.isDestroyed()) {
     win = null
     return
@@ -17,16 +17,16 @@ const closeWin = async() => {
   win = null
 }
 
-mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
-  if (!global.mainWindow) return reject(new Error('mainwindow is undefined'))
+mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise((resolve, reject) => {
+  if (!global.modals.mainWindow) return reject(new Error('mainWindow is undefined'))
   if (win) win.destroy()
 
   let isActioned = false
 
-  const mainWindowSizeInfo = global.mainWindow.getBounds()
+  const mainWindowSizeInfo = global.modals.mainWindow.getBounds()
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   win = new BrowserWindow({
-    parent: global.mainWindow,
+    parent: global.modals.mainWindow,
     width: 460,
     height: 370,
     resizable: false,
@@ -72,6 +72,6 @@ mainHandle('xm_verify_open', (event, url) => new Promise((resolve, reject) => {
   // win.webContents.openDevTools()
 }))
 
-mainHandle('xm_verify_close', async() => {
+mainHandle(ipcMainWindowNames.handle_xm_verify_close, async() => {
   await closeWin()
 })

@@ -55,18 +55,19 @@ div(:class="$style.player")
 
 <script>
 import Lyric from 'lrc-file-parser'
-import { rendererSend } from '../../../common/ipc'
+import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, assertApiSupport } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
 import path from 'path'
 
+let audio
+
 export default {
   data() {
     return {
       show: true,
-      audio: null,
       volume: 0,
       nowPlayTime: 0,
       maxPlayTime: 0,
@@ -135,6 +136,32 @@ export default {
       this.setVolume(volume)
     }, 300)
 
+    rendererOn(NAMES.mainWindow.get_lyric_info, (event, info) => {
+      switch (info.action) {
+        case 'info':
+          this.handleUpdateWinLyricInfo('info', {
+            songmid: this.musicInfo.songmid,
+            singer: this.musicInfo.singer,
+            name: this.musicInfo.name,
+            album: this.musicInfo.album,
+            lyric: this.musicInfo.lrc,
+            isPlay: this.isPlay,
+            line: this.lyric.line,
+            played_time: audio.currentTime * 1000,
+          }, info)
+          break
+        case 'status':
+          this.handleUpdateWinLyricInfo('status', {
+            isPlay: this.isPlay,
+            line: this.lyric.line,
+            played_time: audio.currentTime * 1000,
+          }, info)
+          break
+
+        default:
+          break
+      }
+    })
     navigator.mediaDevices.addEventListener('devicechange', this.handleMediaListChange)
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
@@ -157,7 +184,7 @@ export default {
       this.play()
     },
     'setting.player.togglePlayMethod'(n) {
-      this.audio.loop = n === 'singleLoop'
+      audio.loop = n === 'singleLoop'
     },
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
@@ -204,40 +231,40 @@ export default {
     ...mapMutations('list', ['updateMusicInfo']),
     ...mapMutations(['setMediaDeviceId']),
     init() {
-      this.audio = document.createElement('audio')
+      audio = new window.Audio()
       this.setMediaDevice()
-      this.volume = this.audio.volume = this.setting.player.volume
-      this.audio.controls = false
-      this.audio.autoplay = true
-      this.audio.preload = 'auto'
-      this.audio.loop = this.setting.player.togglePlayMethod === 'singleLoop'
+      this.volume = audio.volume = this.setting.player.volume
+      audio.controls = false
+      audio.autoplay = true
+      audio.preload = 'auto'
+      audio.loop = this.setting.player.togglePlayMethod === 'singleLoop'
 
-      this.audio.addEventListener('playing', () => {
+      audio.addEventListener('playing', () => {
         console.log('开始播放')
         this.statusText = this.$t('core.player.playing')
         this.status = ''
         this.startPlay()
       })
-      this.audio.addEventListener('pause', () => {
+      audio.addEventListener('pause', () => {
         console.log('暂停播放')
         window.lrc.pause()
         this.stopPlay()
         // this.status = this.statusText = this.$t('core.player.stop')
       })
-      this.audio.addEventListener('ended', () => {
+      audio.addEventListener('ended', () => {
         console.log('播放完毕')
         this.stopPlay()
         this.status = this.statusText = this.$t('core.player.end')
         this.handleNext()
       })
-      this.audio.addEventListener('error', () => {
-        // console.log('code', this.audio.error.code)
+      audio.addEventListener('error', () => {
+        // console.log('code', audio.error.code)
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
-        if (this.listId != 'download' && this.audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
+        if (this.listId != 'download' && audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
           // console.log(this.retryNum)
-          if (!this.audioErrorTime) this.audioErrorTime = this.audio.currentTime // 记录出错的播放时间
+          if (!this.audioErrorTime) this.audioErrorTime = audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
           this.status = this.statusText = this.$t('core.player.refresh_url')
@@ -248,37 +275,37 @@ export default {
         this.status = this.statusText = this.$t('core.player.error')
         this.addDelayNextTimeout()
       })
-      this.audio.addEventListener('loadeddata', () => {
-        this.maxPlayTime = this.audio.duration
+      audio.addEventListener('loadeddata', () => {
+        this.maxPlayTime = audio.duration
         if (this.audioErrorTime) {
-          this.audio.currentTime = this.audioErrorTime
+          audio.currentTime = this.audioErrorTime
           this.audioErrorTime = 0
         }
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         this.status = this.statusText = this.$t('core.player.loading')
       })
-      this.audio.addEventListener('loadstart', () => {
+      audio.addEventListener('loadstart', () => {
         this.status = this.statusText = this.$t('core.player.loading')
       })
-      this.audio.addEventListener('canplay', () => {
+      audio.addEventListener('canplay', () => {
         console.log('加载完成开始播放')
         if (this.mediaBuffer.playTime) {
           let playTime = this.mediaBuffer.playTime
           this.mediaBuffer.playTime = 0
-          this.audio.currentTime = playTime
+          audio.currentTime = playTime
         }
         if (this.mediaBuffer.timeout) {
           this.clearBufferTimeout()
         }
-        // if (this.musicInfo.lrc) window.lrc.play(this.audio.currentTime * 1000)
+        // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
         this.status = this.statusText = this.$t('core.player.loading')
       })
-      // this.audio.addEventListener('canplaythrough', () => {
+      // audio.addEventListener('canplaythrough', () => {
       //   console.log('音乐加载完毕')
-      //   // if (this.musicInfo.lyric.orgLrc) this.musicInfo.lyric.lrc.play(this.audio.currentTime * 1000)
+      //   // if (this.musicInfo.lyric.orgLrc) this.musicInfo.lyric.lrc.play(audio.currentTime * 1000)
       //   this.status = this.statusText = '播放中...'
       // })
-      this.audio.addEventListener('emptied', () => {
+      audio.addEventListener('emptied', () => {
         this.mediaBuffer.playTime = 0
         this.clearBufferTimeout()
 
@@ -286,11 +313,11 @@ export default {
         // this.status = this.statusText = '媒介资源元素突然为空，网络错误？'
       })
 
-      this.audio.addEventListener('timeupdate', () => {
-        this.nowPlayTime = this.audio.currentTime
+      audio.addEventListener('timeupdate', () => {
+        this.nowPlayTime = audio.currentTime
       })
 
-      this.audio.addEventListener('waiting', () => {
+      audio.addEventListener('waiting', () => {
         // this.musicInfo.lyric.lrc.pause()
         // console.log('缓冲中...')
         this.stopPlay()
@@ -330,11 +357,12 @@ export default {
         this.musicInfo.singer = targetSong.musicInfo.singer
         this.musicInfo.name = targetSong.musicInfo.name
         this.musicInfo.album = targetSong.albumName
-        this.audio.src = filePath
+        audio.src = filePath
         // console.log(filePath)
         this.setImg(targetSong.musicInfo)
         this.setLrc(targetSong.musicInfo)
       } else {
+        if (!this.assertApiSupport(targetSong.source)) return this.handleNext()
         this.musicInfo.songmid = targetSong.songmid
         this.musicInfo.singer = targetSong.singer
         this.musicInfo.name = targetSong.name
@@ -343,6 +371,12 @@ export default {
         this.setImg(targetSong)
         this.setLrc(targetSong)
       }
+      this.handleUpdateWinLyricInfo('music_info', {
+        songmid: this.musicInfo.songmid,
+        singer: this.musicInfo.singer,
+        name: this.musicInfo.name,
+        album: this.musicInfo.album,
+      })
     },
     checkDelayNextTimeout() {
       // console.log(this.delayNextTimeout)
@@ -423,13 +457,15 @@ export default {
     },
     startPlay() {
       this.isPlay = true
-      if (this.musicInfo.lrc) window.lrc.play(this.audio.currentTime * 1000)
+      if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
+      this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
       this.setAppTitle()
       this.sendProgressEvent(this.progress, 'normal')
     },
     stopPlay() {
       this.isPlay = false
       window.lrc.pause()
+      this.handleUpdateWinLyricInfo('pause')
       this.sendProgressEvent(this.progress, 'paused')
       this.clearAppTitle()
     },
@@ -437,7 +473,7 @@ export default {
       this.setProgress(event.offsetX / this.pregessWidth)
     },
     setProgress(pregress) {
-      if (!this.audio.src) return
+      if (!audio.src) return
       const time = pregress * this.maxPlayTime
       if (this.audioErrorTime) this.audioErrorTime = time
       if (this.mediaBuffer.playTime) {
@@ -445,9 +481,9 @@ export default {
         this.mediaBuffer.playTime = time
         this.startBuffering()
       }
-      this.audio.currentTime = time
+      audio.currentTime = time
 
-      if (!this.isPlay) this.audio.play()
+      if (!this.isPlay) audio.play()
     },
     setProgressWidth() {
       this.pregessWidth = parseInt(
@@ -455,12 +491,12 @@ export default {
       )
     },
     togglePlay() {
-      if (!this.audio.src) return
+      if (!audio.src) return
       if (this.isPlay) {
-        this.audio.pause()
+        audio.pause()
         this.clearBufferTimeout()
       } else {
-        this.audio.play()
+        audio.play()
       }
     },
     imgError(e) {
@@ -479,7 +515,7 @@ export default {
       this.status = this.statusText = this.$t('core.player.geting_url')
 
       return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
-        this.audio.src = this.musicInfo.url = targetSong.typeUrl[type]
+        audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
         // console.log('err', err.message)
         if (err.message == requestMsg.cancelRequest) return
@@ -510,16 +546,21 @@ export default {
       lrcP
         .then(() => {
           window.lrc.setLyric(this.musicInfo.lrc)
-          if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) window.lrc.play(this.audio.currentTime * 1000)
+          this.handleUpdateWinLyricInfo('lyric', this.musicInfo.lrc)
+          if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
+            window.lrc.play(audio.currentTime * 1000)
+            this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
+          }
         })
         .catch(() => {
+          this.handleUpdateWinLyricInfo('lyric', this.musicInfo.lrc)
           this.status = this.statusText = this.$t('core.player.lyric_error')
         })
     },
     handleRemoveMusic() {
       this.stopPlay()
-      this.audio.src = null
-      this.audio.removeAttribute('src')
+      audio.src = null
+      audio.removeAttribute('src')
       this.statusText = '^-^'
       this.musicInfo.img = null
       this.status = this.musicInfo.name = this.musicInfo.singer = ''
@@ -531,10 +572,12 @@ export default {
       this.lyric.lines = []
       this.lyric.line = -1
       this.lyric.text = 0
+      this.handleUpdateWinLyricInfo('lines', [])
+      this.handleUpdateWinLyricInfo('line', 0)
     },
     sendProgressEvent(status, mode) {
       // console.log(status)
-      this.setting.player.isShowTaskProgess && rendererSend('progress', {
+      this.setting.player.isShowTaskProgess && rendererSend(NAMES.mainWindow.progress, {
         status: status < 0.01 ? 0.01 : status,
         mode: mode || 'normal',
       })
@@ -556,7 +599,7 @@ export default {
       this.volume = val
       this.volumeEvent.msDownVolume = val
       // console.log(val)
-      if (this.audio) this.audio.volume = this.volume
+      if (audio) audio.volume = this.volume
     },
     handleVolumeMsUp(e) {
       this.volumeEvent.isMsDown = false
@@ -565,7 +608,7 @@ export default {
       if (!this.volumeEvent.isMsDown) return
       let val = this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 70
       this.volume = val < 0 ? 0 : val > 1 ? 1 : val
-      if (this.audio) this.audio.volume = this.volume
+      if (audio) audio.volume = this.volume
       // console.log(val)
     },
     handleCopy(text) {
@@ -597,18 +640,18 @@ export default {
       if (this.mediaBuffer.timeout) return
       this.mediaBuffer.timeout = setTimeout(() => {
         this.mediaBuffer.timeout = null
-        if (!this.mediaBuffer.playTime) this.mediaBuffer.playTime = this.audio.currentTime
-        let skipTime = this.audio.currentTime + getRandom(3, 6)
-        if (skipTime > this.maxPlayTime) skipTime = (this.maxPlayTime - this.audio.currentTime) / 2
+        if (!this.mediaBuffer.playTime) this.mediaBuffer.playTime = audio.currentTime
+        let skipTime = audio.currentTime + getRandom(3, 6)
+        if (skipTime > this.maxPlayTime) skipTime = (this.maxPlayTime - audio.currentTime) / 2
         if (skipTime - this.mediaBuffer.playTime < 1 || this.maxPlayTime - skipTime < 1) {
           this.mediaBuffer.playTime = 0
           this.handleNext()
           return
         }
         this.startBuffering()
-        this.audio.currentTime = skipTime
+        audio.currentTime = skipTime
         console.log(this.mediaBuffer.playTime)
-        console.log(this.audio.currentTime)
+        console.log(audio.currentTime)
       }, 3000)
     },
     clearBufferTimeout() {
@@ -634,7 +677,7 @@ export default {
 
       this.prevDeviceLabel = label
       // console.log(device)
-      this.audio.setSinkId(mediaDeviceId).catch(err => {
+      audio.setSinkId(mediaDeviceId).catch(err => {
         console.log(err)
         this.setMediaDeviceId('default')
       })
@@ -679,6 +722,13 @@ export default {
     },
     assertApiSupport(source) {
       return assertApiSupport(source)
+    },
+    handleUpdateWinLyricInfo(type, data, info) {
+      rendererSend(NAMES.mainWindow.set_lyric_info, {
+        type,
+        data,
+        info,
+      })
     },
   },
 }

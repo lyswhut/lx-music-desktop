@@ -139,7 +139,7 @@ export default {
   margin-bottom: 15px;
   height: 36px;
   line-height: 36px;
-  padding: 0 10px;
+  padding: 0 10px !important;
   width: 150px;
   .mixin-ellipsis-1;
 }

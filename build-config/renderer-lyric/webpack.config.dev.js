@@ -1,7 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
-const merge = require('webpack-merge')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+
+const merge = require('webpack-merge')
 
 const baseConfig = require('./webpack.config.base')
 
@@ -10,10 +11,6 @@ const { mergeCSSLoaderDev } = require('../utils')
 module.exports = merge(baseConfig, {
   mode: 'development',
   devtool: 'eval-source-map',
-  output: {
-    filename: '[name].js',
-    path: path.join(__dirname, '../../dist/web'),
-  },
   module: {
     rules: [
       {
@@ -30,7 +27,7 @@ module.exports = merge(baseConfig, {
         }),
       },
       {
-        test: /\.styl$/,
+        test: /\.styl(:?us)?$/,
         oneOf: mergeCSSLoaderDev({
           loader: 'stylus-loader',
           options: {
@@ -41,14 +38,16 @@ module.exports = merge(baseConfig, {
     ],
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new FriendlyErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"development"',
+        ELECTRON_DISABLE_SECURITY_WARNINGS: 'true',
       },
+      __static: `"${path.join(__dirname, '../../src/static').replace(/\\/g, '\\\\')}"`,
     }),
-    new FriendlyErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
   ],
   performance: {
     hints: false,
