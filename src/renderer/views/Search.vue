@@ -83,6 +83,7 @@ export default {
         isShiftDown: false,
         isModDown: false,
       },
+      lastSelectIndex: -1,
       listMenu: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -278,7 +279,7 @@ export default {
     handleSelectData(event, clickIndex) {
       if (this.keyEvent.isShiftDown) {
         if (this.selectedData.length) {
-          let lastSelectIndex = this.listInfo.list.indexOf(this.selectedData[this.selectedData.length - 1])
+          let lastSelectIndex = this.lastSelectIndex
           this.removeAllSelect()
           if (lastSelectIndex != clickIndex) {
             let isNeedReverse = false
@@ -299,6 +300,7 @@ export default {
         } else {
           event.currentTarget.classList.add('active')
           this.selectedData.push(this.listInfo.list[clickIndex])
+          this.lastSelectIndex = clickIndex
         }
       } else if (this.keyEvent.isModDown) {
         let item = this.listInfo.list[clickIndex]

@@ -404,7 +404,7 @@ body {
   border-top-left-radius: @radius-border;
   border-bottom-left-radius: @radius-border;
   overflow: hidden;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
 }
 #toolbar, #player {
   flex: none;
