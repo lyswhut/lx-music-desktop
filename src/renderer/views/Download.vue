@@ -53,7 +53,7 @@ export default {
         isShiftDown: false,
         isModDown: false,
       },
-      lastSelectIndex: -1,
+      lastSelectIndex: 0,
       listMenu: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -257,6 +257,7 @@ export default {
           this.lastSelectIndex = clickIndex
         }
       } else if (this.keyEvent.isModDown) {
+        this.lastSelectIndex = clickIndex
         let item = this.showList[clickIndex]
         let index = this.selectdData.indexOf(item)
         if (index < 0) {

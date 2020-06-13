@@ -90,7 +90,7 @@ export default {
         isADown: false,
         aDownTimeout: null,
       },
-      lastSelectIndex: -1,
+      lastSelectIndex: 0,
     }
   },
   created() {
@@ -193,6 +193,7 @@ export default {
           this.lastSelectIndex = clickIndex
         }
       } else if (this.keyEvent.isModDown) {
+        this.lastSelectIndex = clickIndex
         let item = this.list[clickIndex]
         let index = this.selectdList.indexOf(item)
         if (index < 0) {
