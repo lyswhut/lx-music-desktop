@@ -238,7 +238,6 @@ export default {
 }
 
 .big {
-  min-width: 500px;
   width: 100%;
   // input {
   //   line-height: 30px;

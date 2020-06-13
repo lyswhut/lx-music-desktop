@@ -31,13 +31,13 @@ export default {
     state.version.downloadProgress = info
   },
   setVersionModalVisible(state, { isShow, isError, isDownloaded, isTimeOut, isDownloading, isUnknow, isLatestVer }) {
-    if (isShow !== undefined) state.version.showModal = isShow
     if (isError !== undefined) state.version.isError = isError
     if (isTimeOut !== undefined) state.version.isTimeOut = isTimeOut
     if (isDownloading !== undefined) state.version.isDownloading = isDownloading
     if (isDownloaded !== undefined) state.version.isDownloaded = isDownloaded
     if (isUnknow !== undefined) state.version.isUnknow = isUnknow
     if (isLatestVer !== undefined) state.version.isLatestVer = isLatestVer
+    if (isShow !== undefined) state.version.showModal = isShow
   },
   setIgnoreVersion(state, version) {
     state.setting.ignoreVersion = version

@@ -41,8 +41,8 @@
                     material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
               transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
                 div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
-                  div(:style="{ width: '500px' }")
-                    material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big :placeholder="$t('view.song_list.input_text')")
+                  div(:style="{ width: '50%' }")
+                    material-search-input(:class="$style.searchInput" v-model="importSongListText" @event="handleImportSongListEvent" big :placeholder="$t('view.song_list.input_text')")
                       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
                         use(xlink:href='#icon-right')
                     div(:class="$style.tips")
@@ -463,6 +463,10 @@ export default {
     text-align: right;
     .mixin-ellipsis-1;
   }
+}
+
+.searchInput {
+  width: 100%;
 }
 
 .song-list-header-middle {
