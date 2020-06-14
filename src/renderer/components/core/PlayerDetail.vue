@@ -340,6 +340,7 @@ export default {
   border-radius: @radius-border;
   color: @color-theme_2-font;
   border-left: 12px solid @color-theme;
+  -webkit-app-region: no-drag;
 
   &.controlBtnLeft {
     .controBtn {
