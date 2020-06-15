@@ -1,5 +1,5 @@
 import leaderboard from './leaderboard'
-import api_source from '../api-source'
+import { apis } from '../api-source'
 import musicInfo from './musicInfo'
 import songList from './songList'
 import { httpFetch } from '../../request'
@@ -12,7 +12,7 @@ const bd = {
   musicSearch,
   hotSearch,
   getMusicUrl(songInfo, type) {
-    return api_source('bd').getMusicUrl(songInfo, type)
+    return apis('bd').getMusicUrl(songInfo, type)
   },
   getPic(songInfo) {
     const requestObj = this.getMusicInfo(songInfo)
@@ -25,10 +25,10 @@ const bd = {
     return requestObj
   },
   // getLyric(songInfo) {
-  //   return api_source('bd').getLyric(songInfo)
+  //   return apis('bd').getLyric(songInfo)
   // },
   // getPic(songInfo) {
-  //   return api_source('bd').getPic(songInfo)
+  //   return apis('bd').getPic(songInfo)
   // },
   getMusicInfo(songInfo) {
     return musicInfo.getMusicInfo(songInfo.songmid)

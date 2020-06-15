@@ -6,9 +6,7 @@
         table
           thead
             tr
-              th.nobreak.center(style="width: 37px;")
-                material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                  :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.list.unselect_all') : $t('view.list.select_all')")
+              th.nobreak.center(style="width: 10px;") #
               th.nobreak(style="width: 25%;") {{$t('view.list.name')}}
               th.nobreak(style="width: 20%;") {{$t('view.list.singer')}}
               th.nobreak(style="width: 20%;") {{$t('view.list.album')}}
@@ -16,14 +14,13 @@
               th.nobreak(style="width: 10%;") {{$t('view.list.time')}}
       div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
         table
-          tbody(@contextmenu="handleContextMenu")
+          tbody(@contextmenu="handleContextMenu" ref="dom_tbody")
             tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"
-              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', (isAPITemp && item.source != 'kw') ? $style.disabled : '']")
-              td.nobreak.center(style="width: 37px;" @click.stop)
-                  material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
+              @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', assertApiSupport(item.source) ? null : $style.disabled]")
+              td.nobreak.center(style="width: 37px;" :class="$style.noSelect" @click.stop) {{index + 1}}
               td.break(style="width: 25%;")
                 span.select {{item.name}}
-                span(:class="$style.labelSource" v-if="isShowSource") {{item.source}}
+                span(:class="[$style.labelSource, $style.noSelect]" v-if="isShowSource") {{item.source}}
                 //- span.badge.badge-light(v-if="item._types['128k']") 128K
                 //- span.badge.badge-light(v-if="item._types['192k']") 192K
                 //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
@@ -40,7 +37,7 @@
                 //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
                 //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
               td(style="width: 10%;")
-                span(:class="$style.time") {{item.interval || '--/--'}}
+                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
     div(:class="$style.noItem" v-else)
       p(v-text="list.length ? $t('view.list.loding_list') : $t('view.list.no_item')")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
@@ -52,7 +49,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, asyncSetArray, scrollTo, clipboardWriteText } from '../utils'
+import { throttle, scrollTo, clipboardWriteText, assertApiSupport } from '../utils'
 export default {
   name: 'List',
   data() {
@@ -63,8 +60,6 @@ export default {
       isShowDownload: false,
       musicInfo: null,
       selectdData: [],
-      isSelectAll: false,
-      isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
       delayShow: false,
@@ -73,6 +68,12 @@ export default {
       isShowListAddMultiple: false,
       delayTimeout: null,
       isToggleList: true,
+      keyEvent: {
+        isShiftDown: false,
+        isModDown: false,
+        isADown: false,
+        aDownTimeout: null,
+      },
     }
   },
   computed: {
@@ -87,9 +88,6 @@ export default {
     },
     list() {
       return this.listData.list
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
     listData() {
       if (!this.listId) return this.defaultList
@@ -118,16 +116,13 @@ export default {
     selectdData(n) {
       const len = n.length
       if (len) {
-        this.isSelectAll = true
-        this.isIndeterminate = len !== this.list.length
         this.isShowEditBtn = true
       } else {
-        this.isSelectAll = false
         this.isShowEditBtn = false
       }
     },
     list() {
-      this.resetSelect()
+      this.removeAllSelect()
     },
     '$route.query.scrollIndex'(n) {
       if (n == null || this.isToggleList) return
@@ -178,9 +173,13 @@ export default {
         this.setListScroll({ id: this.listId, location: e.target.scrollTop })
       }
     }, 1000)
+    this.listenEvent()
   },
   mounted() {
     this.handleDelayShow()
+  },
+  beforeDestroy() {
+    this.unlistenEvent()
   },
   methods: {
     ...mapMutations(['setListScroll']),
@@ -189,6 +188,55 @@ export default {
     ...mapMutations('player', {
       setPlayList: 'setList',
     }),
+    listenEvent() {
+      window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$on('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$on('key_mod+a_up', this.handle_key_mod_a_up)
+    },
+    unlistenEvent() {
+      window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$off('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$off('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$off('key_mod+a_up', this.handle_key_mod_a_up)
+    },
+    handle_key_shift_down() {
+      if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
+    },
+    handle_key_shift_up() {
+      if (this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = false
+    },
+    handle_key_mod_down() {
+      if (!this.keyEvent.isModDown) this.keyEvent.isModDown = true
+    },
+    handle_key_mod_up() {
+      if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
+    },
+    handle_key_mod_a_down() {
+      if (!this.keyEvent.isADown) {
+        this.keyEvent.isModDown = false
+        this.keyEvent.isADown = true
+        this.handleSelectAllData()
+        if (this.keyEvent.aDownTimeout) clearTimeout(this.keyEvent.aDownTimeout)
+        this.keyEvent.aDownTimeout = setTimeout(() => {
+          this.keyEvent.aDownTimeout = null
+          this.keyEvent.isADown = false
+        }, 500)
+      }
+    },
+    handle_key_mod_a_up() {
+      if (this.keyEvent.isADown) {
+        if (this.keyEvent.aDownTimeout) {
+          clearTimeout(this.keyEvent.aDownTimeout)
+          this.keyEvent.aDownTimeout = null
+        }
+        this.keyEvent.isADown = false
+      }
+    },
     handleDelayShow() {
       this.clearDelayTimeout()
       if (this.list.length > 150) {
@@ -234,6 +282,9 @@ export default {
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
+
+      this.handleSelectData(event, index)
+
       if (
         window.performance.now() - this.clickTime > 400 ||
         this.clickIndex !== index
@@ -246,8 +297,53 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
+    handleSelectData(event, clickIndex) {
+      if (this.keyEvent.isShiftDown) {
+        if (this.selectdData.length) {
+          let lastSelectIndex = this.list.indexOf(this.selectdData[this.selectdData.length - 1])
+          if (lastSelectIndex == clickIndex) return this.removeAllSelect()
+          this.removeAllSelect()
+          let isNeedReverse = false
+          if (clickIndex < lastSelectIndex) {
+            let temp = lastSelectIndex
+            lastSelectIndex = clickIndex
+            clickIndex = temp
+            isNeedReverse = true
+          }
+          this.selectdData = this.list.slice(lastSelectIndex, clickIndex + 1)
+          if (isNeedReverse) this.selectdData.reverse()
+          let nodes = this.$refs.dom_tbody.childNodes
+          do {
+            nodes[lastSelectIndex].classList.add('active')
+            lastSelectIndex++
+          } while (lastSelectIndex <= clickIndex)
+        } else {
+          event.currentTarget.classList.add('active')
+          this.selectdData.push(this.list[clickIndex])
+        }
+      } else if (this.keyEvent.isModDown) {
+        let item = this.list[clickIndex]
+        let index = this.selectdData.indexOf(item)
+        if (index < 0) {
+          this.selectdData.push(item)
+          event.currentTarget.classList.add('active')
+        } else {
+          this.selectdData.splice(index, 1)
+          event.currentTarget.classList.remove('active')
+        }
+      } else if (this.selectdData.length) this.removeAllSelect()
+    },
+    removeAllSelect() {
+      this.selectdData = []
+      let dom_tbody = this.$refs.dom_tbody
+      if (!dom_tbody) return
+      let nodes = dom_tbody.querySelectorAll('.active')
+      for (const node of nodes) {
+        if (node.parentNode == dom_tbody) node.classList.remove('active')
+      }
+    },
     testPlay(index) {
-      if (this.isAPITemp && this.list[index].source != 'kw') return
+      if (!this.assertApiSupport(this.list[index].source)) return
       this.setPlayList({ list: this.list, listId: this.listId, index })
     },
     handleRemove(index) {
@@ -257,7 +353,7 @@ export default {
       switch (info.action) {
         case 'download': {
           const minfo = this.list[info.index]
-          if (this.isAPITemp && minfo.source != 'kw') return
+          if (!this.assertApiSupport(minfo.source)) return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
@@ -282,17 +378,19 @@ export default {
       this.createDownload({ musicInfo: this.musicInfo, type })
       this.isShowDownload = false
     },
-    handleSelectAllData(isSelect) {
-      asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
-    },
-    resetSelect() {
-      this.isSelectAll = false
-      this.selectdData = []
+    handleSelectAllData() {
+      this.removeAllSelect()
+      this.selectdData = [...this.list]
+      let nodes = this.$refs.dom_tbody.childNodes
+      for (const node of nodes) {
+        node.classList.add('active')
+      }
+      // asyncSetArray(this.selectdData, isSelect ? [...this.list] : [])
     },
     handleAddDownloadMultiple(type) {
-      const list = this.setting.apiSource == 'temp' ? this.selectdData.filter(s => s.source == 'kw') : [...this.selectdData]
+      const list = this.selectdData.filter(s => this.assertApiSupport(s.source))
       this.createDownloadMultiple({ list, type })
-      this.resetSelect()
+      this.removeAllSelect()
       this.isShowDownloadMultiple = false
     },
     handleFlowBtnClick(action) {
@@ -302,15 +400,15 @@ export default {
           break
         case 'remove':
           this.listRemoveMultiple({ id: this.listId, list: this.selectdData })
-          this.resetSelect()
+          this.removeAllSelect()
           break
         case 'add':
           this.isShowListAddMultiple = true
           break
       }
     },
-    handleListAddModalClose(isSelect) {
-      if (isSelect) this.resetSelect()
+    handleListAddModalClose(isClearSelect) {
+      if (isClearSelect) this.removeAllSelect()
       this.isShowListAddMultiple = false
     },
     getMusicLocation(index) {
@@ -331,6 +429,9 @@ export default {
         if (!str.length) return
         clipboardWriteText(str)
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
   },
 }
@@ -364,21 +465,32 @@ export default {
 }
 .thead {
   flex: none;
+  tr > th:first-child {
+    color: @color-theme_2-font-label;
+    // padding-left: 10px;
+  }
 }
 .tbody {
   flex: auto;
   overflow-y: auto;
-  td {
-    font-size: 12px;
-  }
+
   tr {
     &.active {
       color: @color-theme;
     }
   }
+  td {
+    font-size: 12px;
+
+    &:first-child {
+      // padding-left: 10px;
+      font-size: 11px;
+      color: @color-theme_2-font-label;
+    }
+  }
 
   &.copying {
-    .labelSource, .time {
+    .no-select {
       display: none;
     }
   }
@@ -416,6 +528,11 @@ each(@themes, {
       tr {
         &.active {
           color: ~'@{color-@{value}-theme}';
+        }
+      }
+      td {
+        &:first-child {
+          color: ~'@{color-@{value}-theme_2-font-label}';
         }
       }
     }

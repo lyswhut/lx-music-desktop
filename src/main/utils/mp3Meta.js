@@ -26,6 +26,7 @@ module.exports = (filePath, meta) => {
             NodeID3.write(meta, filePath)
           } else {
             delete meta.APIC
+            NodeID3.write(meta, filePath)
           }
           fs.unlink(picPath, err => {
             if (err) console.log(err.message)

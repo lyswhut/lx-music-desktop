@@ -112,6 +112,7 @@ export default {
         cursor: pointer;
         padding: 0 10px;
         font-size: 12px;
+        min-width: 56px;
         // color: @color-btn;
         outline: none;
         transition: background-color @transition-theme;

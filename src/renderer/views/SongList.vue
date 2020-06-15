@@ -40,9 +40,15 @@
                     material-pagination(:count="listData.total" :limit="listData.limit" :page="listData.page" @btn-click="handleToggleListPage")
               transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
                 div(:class="$style.importSongListContent" v-show="sortId === 'importSongList'")
-                  material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big placeholder="输入歌单链接或歌单ID")
-                    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-                      use(xlink:href='#icon-right')
+                  div(:style="{ width: '500px' }")
+                    material-search-input(v-model="importSongListText" @event="handleImportSongListEvent" big :placeholder="$t('view.song_list.input_text')")
+                      svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
+                        use(xlink:href='#icon-right')
+                    div(:class="$style.tips")
+                      ul
+                        li {{$t('view.song_list.tip_1')}}
+                        li {{$t('view.song_list.tip_2')}}
+                        li {{$t('view.song_list.tip_3')}}
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
             div(v-show="!listData.list.length" :class="$style.noitem")
               p {{$t('view.song_list.loding_list')}}
@@ -54,7 +60,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { scrollTo } from '../utils'
+import { scrollTo, assertApiSupport } from '../utils'
 // import music from '../utils/music'
 export default {
   name: 'SongList',
@@ -76,6 +82,7 @@ export default {
       importSongListText: '',
       listWidth: 645,
       isGetDetailFailed: false,
+      isInitedTagListWidth: false,
       // detailLoading: true,
     }
   },
@@ -93,15 +100,13 @@ export default {
         case 'tx':
         case 'mg':
         case 'kg':
+        case 'xm':
           list.push({
-            name: `打开${this.sourceInfo.sources.find(s => s.id == this.source).name}歌单`,
+            name: this.$t('view.song_list.open_list', { name: this.sourceInfo.sources.find(s => s.id == this.source).name }),
             id: 'importSongList',
           })
       }
       return list
-    },
-    isAPITemp() {
-      return this.setting.apiSource == 'temp'
     },
     tagList() {
       let tagInfo = this.tags[this.source]
@@ -161,7 +166,7 @@ export default {
     this.isToggleSource = true
     this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
-    this.setTagListWidth()
+    if (!this.isVisibleListDetail) this.setTagListWidth()
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -200,7 +205,7 @@ export default {
         this.resetSelect()
       } else {
         targetSong = this.listDetail.list[index]
-        if (this.isAPITemp && targetSong.source != 'kw') return
+        if (!this.assertApiSupport(targetSong.source)) return
         this.listAdd({ id: 'default', musicInfo: targetSong })
       }
       let targetIndex = this.defaultList.list.findIndex(
@@ -242,12 +247,7 @@ export default {
       this.isShowDownload = false
     },
     handleAddDownloadMultiple(type) {
-      switch (this.source) {
-        // case 'kg':
-        case 'tx':
-        case 'wy':
-          type = '128k'
-      }
+      if (this.source == 'xm' && type == 'flac') type = 'wav'
       this.createDownloadMultiple({ list: this.filterList(this.selectdData), type })
       this.resetSelect()
       this.isShowDownloadMultiple = false
@@ -291,7 +291,11 @@ export default {
       this.selectdData = []
     },
     hideListDetail() {
-      setTimeout(() => this.setVisibleListDetail(false), 50)
+      setTimeout(async() => {
+        this.setVisibleListDetail(false)
+        await this.$nextTick()
+        this.setTagListWidth()
+      }, 50)
     },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
@@ -320,17 +324,21 @@ export default {
       this.handleGetListDetail(this.importSongListText, 1)
     },
     filterList(list) {
-      return this.setting.apiSource == 'temp' ? list.filter(s => s.source == 'kw') : [...list]
+      return list.filter(s => this.assertApiSupport(s.source))
     },
     setTagListWidth() {
+      this.isInitedTagListWidth = true
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     handleGetListDetail(id, page) {
       this.isGetDetailFailed = false
-      this.getListDetail({ id, page }).catch(err => {
+      return this.getListDetail({ id, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
       })
+    },
+    assertApiSupport(source) {
+      return assertApiSupport(source)
     },
     /*     addSongListDetail() {
       // this.detailLoading = true
@@ -528,6 +536,17 @@ export default {
   }
 }
 
+.tips {
+  padding: 15px 0;
+  font-size: 12px;
+  color: @color-theme_2-font;
+  line-height: 1.5;
+  ul {
+    list-style: decimal;
+    padding-left: 15px;
+  }
+}
+
 each(@themes, {
   :global(#container.@{value}) {
     .song-list-header-middle {
@@ -544,6 +563,9 @@ each(@themes, {
       p {
         color: ~'@{color-@{value}-theme_2-font-label}';
       }
+    }
+    .tips {
+      color: ~'@{color-@{value}-theme_2-font}';
     }
   }
 })

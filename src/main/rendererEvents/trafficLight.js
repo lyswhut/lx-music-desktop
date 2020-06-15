@@ -1,6 +1,5 @@
-// const { app } = require('electron')
+const { app } = require('electron')
 const { mainOn } = require('../../common/ipc')
-
 
 mainOn('min', event => {
   if (global.mainWindow) {
@@ -12,11 +11,8 @@ mainOn('max', event => {
     global.mainWindow.maximize()
   }
 })
-mainOn('close', event => {
-  if (global.mainWindow) {
-    // global.mainWindowdow.destroy()
-    // console.log('close')
-    // app.quit()
-    global.mainWindow.close()
-  }
+mainOn('close', (event, isForce) => {
+  if (isForce) return app.exit(0)
+  global.isTrafficLightClose = true
+  if (global.mainWindow) global.mainWindow.close()
 })

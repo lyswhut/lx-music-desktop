@@ -1,6 +1,6 @@
 <template lang="pug">
 div(:class="$style.aside")
-  div(:class="$style.logo")
+  div(:class="['animated', logoAnimate, $style.logo]")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' height='100%' viewBox='0 0 127 61' space='preserve')
       use(xlink:href='#icon-logo')
 
@@ -29,6 +29,7 @@ div(:class="$style.aside")
 
 <script>
 import { mapGetters } from 'vuex'
+// import { getRandom } from '../../utils'
 export default {
   props: {
     list: {
@@ -41,12 +42,34 @@ export default {
   data() {
     return {
       active: 'search',
+      animates: [
+        'bounce',
+        // 'flash',
+        // 'pulse',
+        'rubberBand',
+        // 'shake',
+        // 'headShake',
+        'swing',
+        'tada',
+        // 'wobble',
+        'jello',
+        // 'heartBeat',
+      ],
+      logoAnimate: '',
     }
   },
   computed: {
     ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
   },
-  methods: {},
+  // mounted() {
+  //   this.logoAnimate = this.animates[getRandom(0, this.animates.length)]
+  // },
+  // methods: {
+  //   handleMouseEnter() {
+  //     console.log('object')
+  //     this.logoAnimate = this.animates[getRandom(0, this.animates.length)]
+  //   },
+  // },
 }
 </script>
 
@@ -66,12 +89,18 @@ export default {
   display: flex;
   flex-flow: column nowrap;
 }
+:global(.nd) {
+  .aside {
+    -webkit-app-region: no-drag;
+  }
+}
 .logo {
   box-sizing: border-box;
   padding: 12% 13%;
   // height: 120px;
   color: @color-theme-font;
   flex: none;
+  // -webkit-app-region: no-drag;
 }
 
 .menu {

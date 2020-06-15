@@ -6,7 +6,7 @@ transition(enter-active-class="animated fadeIn"
       :leave-active-class="outClass")
       div(:class="$style.content" v-show="show" @click.stop)
         header(:class="$style.header")
-          button(type="button" @click="close")
+          button(type="button" @click="close" v-if="closeBtn")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
               use(xlink:href='#icon-delete')
         slot
@@ -20,6 +20,10 @@ export default {
     show: {
       type: Boolean,
       default: false,
+    },
+    closeBtn: {
+      type: Boolean,
+      default: true,
     },
     bgClose: {
       type: Boolean,
@@ -48,6 +52,7 @@ export default {
         'slideInLeft',
         'slideInRight',
         'slideInUp',
+        'jackInTheBox',
       ],
       animateOut: [
         'flipOutX',
@@ -80,25 +85,31 @@ export default {
     ...mapGetters(['setting']),
   },
   watch: {
-    'setting.randomAnimate': {
-      handler(n) {
-        if (n) {
-          this.unwatchFn = this.$watch('show', function(n) {
-            if (n) {
-              this.inClass = 'animated ' + this.animateIn[getRandom(0, this.animateIn.length)]
-              this.outClass = 'animated ' + this.animateOut[getRandom(0, this.animateOut.length)]
-            }
-          })
-        } else {
-          this.unwatchFn && this.unwatchFn()
-        }
-      },
-      immediate: true,
+    'setting.randomAnimate'(n) {
+      n ? this.createWatch() : this.removeWatch()
     },
   },
   mounted() {
+    if (this.setting.randomAnimate) this.createWatch()
+  },
+  beforeDestroy() {
+    this.removeWatch()
   },
   methods: {
+    createWatch() {
+      this.removeWatch()
+      this.unwatchFn = this.$watch('show', function(n) {
+        this.inClass = 'animated ' + this.animateIn[getRandom(0, this.animateIn.length)]
+        this.outClass = 'animated ' + this.animateOut[getRandom(0, this.animateOut.length)]
+      })
+      this.inClass = 'animated ' + this.animateIn[getRandom(0, this.animateIn.length)]
+      this.outClass = 'animated ' + this.animateOut[getRandom(0, this.animateOut.length)]
+    },
+    removeWatch() {
+      if (!this.unwatchFn) return
+      this.unwatchFn()
+      this.unwatchFn = null
+    },
     close() {
       this.$emit('close')
     },
@@ -127,7 +138,7 @@ export default {
   border-radius: 5px;
   box-shadow: 0 0 3px rgba(0, 0, 0, .3);
   overflow: hidden;
-  max-height: 70%;
+  max-height: 80%;
   max-width: 70%;
   position: relative;
   display: flex;
@@ -142,7 +153,9 @@ export default {
   flex: none;
   background-color: @color-theme;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  height: 18px;
 
   button {
     border: none;

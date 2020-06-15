@@ -53,6 +53,9 @@ table {
       &:hover {
         background-color: @color-theme_2-hover;
       }
+      &.active {
+        background-color: @color-theme_2-active;
+      }
       &:first-child {
         border-top: none;
       }
@@ -61,7 +64,7 @@ table {
         position: relative;
         transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-size: 13px;
-        line-height: 18px;
+        line-height: 16px;
         vertical-align: middle;
       }
     }
@@ -212,6 +215,9 @@ each(@themes, {
           border-top-color: ~'@{color-@{value}-theme_2-line}';
           &:hover {
             background-color: ~'@{color-@{value}-theme_2-hover}';
+          }
+          &.active {
+            background-color: ~'@{color-@{value}-theme_2-active}';
           }
         }
       }

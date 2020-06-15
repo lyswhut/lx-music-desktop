@@ -35,5 +35,22 @@ module.exports = {
       height: 766,
       fontSize: '18px',
     },
+    {
+      id: 5,
+      name: 'oversized',
+      width: 1380,
+      height: 886,
+      fontSize: '18px',
+    },
+    {
+      id: 6,
+      name: 'huge',
+      width: 1656,
+      height: 1062,
+      fontSize: '19px',
+    },
+  ],
+  navigationUrlWhiteList: [
+    /^https:\/\/www\.xiami\.com/,
   ],
 }

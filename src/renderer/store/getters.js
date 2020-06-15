@@ -2,7 +2,8 @@ import music from '../utils/music'
 
 export default {
   theme(state) {
-    return (state.themes[state.setting.themeId] && state.themes[state.setting.themeId].class) || ''
+    let theme = state.themes.find(theme => theme.id == state.setting.themeId)
+    return (theme && theme.class) || ''
   },
   themes(state) {
     return {

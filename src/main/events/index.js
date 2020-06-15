@@ -1,13 +1,5 @@
+global.lx_event = {}
 
-require('./request')
-// require('./appName')
-require('./progressBar')
-require('./trafficLight')
-require('./musicMeta')
-require('./selectDir')
-require('./setWindowSize')
-require('./showSaveDialog')
-require('./clearCache')
-require('./getCacheSize')
-require('./setIgnoreMouseEvent')
-require('./getEnvParams')
+const Tray = require('./tray')
+
+if (!global.lx_event.tray) global.lx_event.tray = new Tray()

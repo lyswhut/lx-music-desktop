@@ -1,12 +1,12 @@
 {
   "select_all": "Select all",
-  "unselect_all": "Unselect all",
+  "unselect_all": "Select none",
   "name": "Name",
-  "singer": "Singer",
+  "singer": "Artist",
   "album": "Album",
-  "action": "Actions",
-  "time": "Interval",
-  "lossless": "SQ",
-  "high_quality": "HQ",
-  "loding_list": "List loading..."
+  "action": "Manage",
+  "time": "Length",
+  "lossless": "Lossless",
+  "high_quality": "High Quality",
+  "loding_list": "Loading the list..."
 }

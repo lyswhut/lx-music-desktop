@@ -5,6 +5,9 @@ const { mainOn } = require('../../common/ipc')
 autoUpdater.logger = log
 // autoUpdater.autoDownload = false
 autoUpdater.logger.transports.file.level = 'info'
+
+let isFirstCheckedUpdate = true
+
 log.info('App starting...')
 
 
@@ -67,7 +70,7 @@ const handleSendEvent = action => {
   }
 }
 
-module.exports = isFirstCheckedUpdate => {
+module.exports = () => {
   if (!isFirstCheckedUpdate) {
     if (waitEvent.length) {
       waitEvent.forEach((event, index) => {
@@ -79,6 +82,8 @@ module.exports = isFirstCheckedUpdate => {
     }
     return
   }
+  isFirstCheckedUpdate = false
+
   autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...')
   })
@@ -106,6 +111,8 @@ module.exports = isFirstCheckedUpdate => {
     handleSendEvent({ type: 'update-downloaded', info })
   })
   mainOn('quit-update', () => {
+    global.isQuitting = true
+
     setTimeout(() => {
       autoUpdater.quitAndInstall(true, true)
     }, 1000)

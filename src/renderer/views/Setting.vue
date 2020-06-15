@@ -22,6 +22,11 @@ div.scroll(:class="$style.setting")
           material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
             need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
+    dd(:title="$t('view.setting.basic_to_tray_title')")
+      h3 {{$t('view.setting.basic_to_tray')}}
+      div
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" @change="handleToTrayChange" :label="$t('view.setting.is_enable')")
+
     dd(:title="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
       div
@@ -58,7 +63,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
-        material-selection(:list="mediaDevices" :class="$style.gapLeft" @change="handleMediaDeviceChange" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+        material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
         material-btn(min :title="$t('view.setting.play_mediaDevice_refresh_btn_title')" :class="[$style.btnMediaDeviceRefresh, $style.gapLeft]" @click="getMediaDevice")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
             use(xlink:href='#icon-refresh')
@@ -73,6 +78,10 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.search_history')}}
       div
         material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
+    dd(:title="$t('view.setting.search_focus_search_box_title')")
+      h3 {{$t('view.setting.search_focus_search_box')}}
+      div
+        material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
 
     dt {{$t('view.setting.list')}}
     dd(:title="$t('view.setting.list_source_title')")
@@ -172,48 +181,35 @@ div.scroll(:class="$style.setting")
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b906260/')") 网盘地址
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://t-s.lanzous.com/b0bf2cfa')") 网盘地址
         | &nbsp;&nbsp;密码：
         span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
       p.small
         | 软件的常见问题可转至：
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        | 阅读常见问题后仍有问题可加企鹅群&nbsp;
+        strong 仔细 仔细 仔细
+        | 地阅读常见问题后，
+      p.small
+        | 仍有问题可加企鹅群&nbsp;
         span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
-        | &nbsp;反馈，或到 GitHub 提交&nbsp;
+        | &nbsp;反馈
+        strong (为免满人，无事勿加，入群先看群公告)
+        | ，或到 GitHub 提交&nbsp;
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
       br
-      p.small
-        span 如果你资金充裕，或许可以
-        material-btn(@click="handleOpenUrl('https://cdn.stsky.cn/qrc.png')" min title="土豪，你好 🙂") 捐赠下作者
-        span ~❤️，捐赠完全是一种
-        strong 用户自愿
-        | 的行为，
-      p.small 捐赠不会获得任何特权，并且你可能还要做好前一秒捐赠，下一秒软件将不可用的心理准备！
-      p.small
-        | 由于软件开发的初衷仅是为了
-        span(:class="$style.delLine") 自用
-        | 学习研究，因此软件直至停止维护都将会一直保持纯净。
+      p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
+      p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
+      p.small
+        | 你已签署本软件的&nbsp;
+        material-btn(min @click="handleShowPact") 许可协议
+        | ，协议的在线版本在&nbsp;
+        strong.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
+        | &nbsp;。
       br
-      p.small
-        | 使用本软件可能产生的
-        strong 任何涉及版权相关的数据
-        | 请于
-        strong 24小时内删除
-        | ，
-      p.small
-        |  本软件仅用于学习与交流使用，禁止将本软件用于
-        strong 非法用途
-        | 或
-        strong 商业用途
-        | 。
-      p.small
-        | 使用本软件造成的一切后果由
-        strong 使用者
-        | 承担！
+
       p
         small By：
         | 落雪无痕
@@ -336,6 +332,7 @@ export default {
           tempSearchSource: 'kw',
           isShowHotSearch: false,
           isShowHistorySearch: false,
+          isFocusSearchBox: false,
         },
         download: {
           savePath: '',
@@ -356,12 +353,17 @@ export default {
           isAutoClearSearchInput: false,
           isAutoClearSearchList: false,
         },
+        tray: {
+          isShow: false,
+          isToTray: false,
+        },
         windowSizeId: 1,
         langId: 'cns',
         themeId: 0,
         sourceId: 0,
         randomAnimate: true,
-        apiSource: 'messoer',
+        isAgreePact: false,
+        apiSource: 'temp',
       },
       languageList,
       cacheSize: '0 B',
@@ -375,6 +377,9 @@ export default {
         this.setSetting(JSON.parse(JSON.stringify(n)))
       },
       deep: true,
+    },
+    'setting.isAgreePact'(n) {
+      this.current_setting.isAgreePact = n
     },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
@@ -412,15 +417,16 @@ export default {
     handleOpenDir(dir) {
       openDirInExplorer(dir)
     },
-    importSetting(path) {
+    async importSetting(path) {
       let settingData
       try {
-        settingData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        settingData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }
       if (settingData.type !== 'setting') return
       const { version: settingVersion, setting } = updateSetting(settingData.data)
+      setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
     },
     exportSetting(path) {
@@ -433,10 +439,10 @@ export default {
         console.log(err)
       })
     },
-    importPlayList(path) {
+    async importPlayList(path) {
       let listData
       try {
-        listData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        listData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }
@@ -463,15 +469,16 @@ export default {
         console.log(err)
       })
     },
-    importAllData(path) {
+    async importAllData(path) {
       let allData
       try {
-        allData = JSON.parse(fs.readFileSync(path, 'utf8'))
+        allData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
       } catch (error) {
         return
       }
       if (allData.type !== 'allData') return
       const { version: settingVersion, setting } = updateSetting(allData.setting)
+      setting.isAgreePact = false
       this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
@@ -599,6 +606,8 @@ export default {
         window.globalObj.proxy[key] = setting.network.proxy[key]
       }
       this.init()
+      this.handleLangChange(this.current_setting.langId)
+      this.handleToTrayChange()
     },
     handleLangChange(id) {
       this.$i18n.locale = id
@@ -609,8 +618,12 @@ export default {
       this.mediaDevices = audioDevices
       // console.log(this.mediaDevices)
     },
-    handleMediaDeviceChange(audioDevice) {
-      this.setMediaDeviceId(audioDevice.deviceId)
+    handleToTrayChange(isToTray) {
+      if (isToTray != null) this.current_setting.tray.isShow = isToTray
+      rendererSend('changeTray', this.current_setting.tray)
+    },
+    handleShowPact() {
+      window.globalObj.isShowPact = true
     },
   },
 }
@@ -649,7 +662,8 @@ export default {
     margin: 25px 0 15px;
   }
   p {
-    padding: 5px 0;
+    padding: 3px 0;
+    line-height: 1.3;
     .btn {
       + .btn {
         margin-left: 10px;

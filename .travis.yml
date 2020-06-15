@@ -1,4 +1,3 @@
-sudo: true
 language: node_js
 node_js: 12
 
@@ -41,3 +40,4 @@ before_cache:
 branches:
   only:
     - master
+    - dev

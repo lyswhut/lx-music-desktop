@@ -69,17 +69,25 @@ export default {
         } else {
           checked.splice(index, 1)
         }
-      } else if (typeof this.checked == 'boolean') {
-        let bool = this.bool
-        if (this.indeterminate) {
-          bool = true
-          this.$nextTick(() => {
-            this.bool = bool
-          })
-        }
-        checked = bool
       } else {
-        checked = this.bool == null ? '' : this.value
+        let bool = this.bool
+        switch (typeof this.checked) {
+          case 'boolean':
+            if (this.indeterminate) {
+              bool = true
+              this.$nextTick(() => {
+                this.bool = bool
+              })
+            }
+            checked = bool
+            break
+          case 'number':
+            checked = this.value
+            break
+          default:
+            checked = bool ? this.value : ''
+            break
+        }
       }
       this.$emit('input', checked)
       this.$emit('change', checked)

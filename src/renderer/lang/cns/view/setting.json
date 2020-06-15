@@ -18,6 +18,10 @@
   "basic_window_size_medium": "中",
   "basic_window_size_big": "大",
   "basic_window_size_larger": "较大",
+  "basic_window_size_oversized": "超大",
+  "basic_window_size_huge": "巨大",
+  "basic_to_tray_title": "关闭时不退出软件将其最小化到系统托盘",
+  "basic_to_tray": "关闭时最小化到系统托盘",
   "basic_lang_title": "软件显示的语言",
   "basic_lang": "语言",
 
@@ -42,6 +46,8 @@
   "search_hot": "热门搜索",
   "search_history_title": "是否显示历史搜索记录",
   "search_history": "搜索历史",
+  "search_focus_search_box_title": "启动时是否自动聚焦搜索框",
+  "search_focus_search_box": "聚焦搜索框",
 
   "list": "列表设置",
   "list_source_title": "是否显示歌曲源",
@@ -58,7 +64,7 @@
   "download_name_title": "下载歌曲时的命名方式",
   "download_name": "文件命名方式",
   "download_embed_pic_title": "是否将封面嵌入音频文件中",
-  "download_embed_pic": "封面嵌入（只支持MP3格式）",
+  "download_embed_pic": "封面嵌入",
   "download_lyric_title": "是否同时下载歌词文件",
   "download_lyric": "歌词下载",
   "download_name1": "歌名 - 歌手",
@@ -91,7 +97,7 @@
   "backup_part_import_setting_desc": "选择配置文件",
   "backup_part_export_setting_desc": "选择设置保存位置",
   "backup_part_import_list_desc": "选择列表文件",
-  "backup_part_export_list_desc": "选择设置保存位置",
+  "backup_part_export_list_desc": "选择歌单保存位置",
 
   "other": "其他",
   "other_cache": "缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）",

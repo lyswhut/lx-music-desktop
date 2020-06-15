@@ -9,6 +9,8 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '@': path.join(__dirname, '../../src/main'),
+      events: path.join(__dirname, '../../src/main/events'),
       common: path.join(__dirname, '../../src/common'),
     },
     extensions: ['*', '.js', '.json', '.node'],

@@ -8,9 +8,7 @@ div(:class="$style.download")
       table
         thead
           tr
-            th.nobreak.center(style="width: 37px;")
-              material-checkbox(id="search_select_all" v-model="isSelectAll" @change="handleSelectAllData"
-                :indeterminate="isIndeterminate" :title="isSelectAll && !isIndeterminate ? $t('view.download.unselect_all') : $t('view.download.select_all')")
+            th.nobreak.center(style="width: 10px;") #
             th.nobreak(style="width: 28%;") {{$t('view.download.name')}}
             th.nobreak(style="width: 22%;") {{$t('view.download.progress')}}
             th.nobreak(style="width: 15%;") {{$t('view.download.status')}}
@@ -18,10 +16,9 @@ div(:class="$style.download")
             th.nobreak(style="width: 20%;") {{$t('view.download.action')}}
     div.scroll(v-if="list.length" :class="$style.tbody")
       table
-        tbody
+        tbody(ref="dom_tbody")
           tr(v-for='(item, index) in showList' :key='item.key' @click="handleDoubleClick($event, index)" :class="playListIndex === index ? $style.active : ''")
-            td.nobreak.center(style="width: 37px;" @click.stop)
-              material-checkbox(:id="index.toString()" v-model="selectdData" :value="item")
+            td.nobreak.center(style="width: 37px;" @click.stop) {{index + 1}}
             td.break(style="width: 28%;")
               span.select {{item.musicInfo.name}} - {{item.musicInfo.singer}}
             td.break(style="width: 22%;") {{item.progress.progress}}%
@@ -39,6 +36,8 @@ div(:class="$style.download")
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { checkPath, openDirInExplorer } from '../utils'
+import path from 'path'
+
 export default {
   name: 'Download',
   data() {
@@ -46,8 +45,6 @@ export default {
       clickTime: window.performance.now(),
       clickIndex: -1,
       selectdData: [],
-      isSelectAll: false,
-      isIndeterminate: false,
       isShowEditBtn: false,
       isShowDownloadMultiple: false,
       tabs: [
@@ -73,10 +70,17 @@ export default {
         },
       ],
       tabId: 'all',
+      keyEvent: {
+        isShiftDown: false,
+        isModDown: false,
+        isADown: false,
+        aDownTimeout: null,
+      },
     }
   },
   computed: {
-    ...mapGetters('download', ['list', 'dls', 'downloadStatus']),
+    ...mapGetters(['setting']),
+    ...mapGetters('download', ['list', 'downloadStatus']),
     ...mapGetters('player', ['listId', 'playIndex']),
     isPlayList() {
       return this.listId == 'download'
@@ -107,36 +111,77 @@ export default {
     selectdData(n) {
       const len = n.length
       if (len) {
-        this.isSelectAll = true
-        this.isIndeterminate = len !== this.showList.length
         this.isShowEditBtn = true
       } else {
-        this.isSelectAll = false
         this.isShowEditBtn = false
       }
     },
     list() {
-      this.resetSelect()
+      this.removeAllSelect()
     },
   },
+  created() {
+    this.listenEvent()
+  },
+  beforeDestroy() {
+    this.unlistenEvent()
+  },
   methods: {
-    ...mapActions('download', ['removeTask', 'removeTaskMultiple', 'startTask']),
+    ...mapActions('download', ['removeTask', 'removeTasks', 'startTask', 'startTasks', 'pauseTask', 'pauseTasks']),
     ...mapMutations('player', ['setList']),
-    ...mapMutations('download', ['pauseTask']),
-    handlePauseTask(index) {
-      let info = this.list[index]
-      let dl = this.dls[info.key]
-      dl ? dl.stop() : this.pauseTask(info)
-      console.log('pause')
+    listenEvent() {
+      window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$on('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$on('key_mod+a_up', this.handle_key_mod_a_up)
     },
-    handleStartTask(index) {
-      console.log('start')
-      let info = this.list[index]
-      let dl = this.dls[info.key]
-      dl ? dl.start() : this.startTask(info)
+    unlistenEvent() {
+      window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
+      window.eventHub.$off('key_shift_up', this.handle_key_shift_up)
+      window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
+      window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
+      window.eventHub.$off('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$off('key_mod+a_up', this.handle_key_mod_a_up)
+    },
+    handle_key_shift_down() {
+      if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
+    },
+    handle_key_shift_up() {
+      if (this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = false
+    },
+    handle_key_mod_down() {
+      if (!this.keyEvent.isModDown) this.keyEvent.isModDown = true
+    },
+    handle_key_mod_up() {
+      if (this.keyEvent.isModDown) this.keyEvent.isModDown = false
+    },
+    handle_key_mod_a_down() {
+      if (!this.keyEvent.isADown) {
+        this.keyEvent.isModDown = false
+        this.keyEvent.isADown = true
+        this.handleSelectAllData()
+        if (this.keyEvent.aDownTimeout) clearTimeout(this.keyEvent.aDownTimeout)
+        this.keyEvent.aDownTimeout = setTimeout(() => {
+          this.keyEvent.aDownTimeout = null
+          this.keyEvent.isADown = false
+        }, 500)
+      }
+    },
+    handle_key_mod_a_up() {
+      if (this.keyEvent.isADown) {
+        if (this.keyEvent.aDownTimeout) {
+          clearTimeout(this.keyEvent.aDownTimeout)
+          this.keyEvent.aDownTimeout = null
+        }
+        this.keyEvent.isADown = false
+      }
     },
     handleDoubleClick(event, index) {
       if (event.target.classList.contains('select')) return
+
+      this.handleSelectData(event, index)
 
       if (
         window.performance.now() - this.clickTime > 400 ||
@@ -150,6 +195,52 @@ export default {
       this.clickTime = 0
       this.clickIndex = -1
     },
+    handleSelectData(event, clickIndex) {
+      if (this.keyEvent.isShiftDown) {
+        if (this.selectdData.length) {
+          let lastSelectIndex = this.showList.indexOf(this.selectdData[this.selectdData.length - 1])
+          this.removeAllSelect()
+          if (lastSelectIndex != clickIndex) {
+            let isNeedReverse = false
+            if (clickIndex < lastSelectIndex) {
+              let temp = lastSelectIndex
+              lastSelectIndex = clickIndex
+              clickIndex = temp
+              isNeedReverse = true
+            }
+            this.selectdData = this.showList.slice(lastSelectIndex, clickIndex + 1)
+            if (isNeedReverse) this.selectdData.reverse()
+            let nodes = this.$refs.dom_tbody.childNodes
+            do {
+              nodes[lastSelectIndex].classList.add('active')
+              lastSelectIndex++
+            } while (lastSelectIndex <= clickIndex)
+          }
+        } else {
+          event.currentTarget.classList.add('active')
+          this.selectdData.push(this.showList[clickIndex])
+        }
+      } else if (this.keyEvent.isModDown) {
+        let item = this.showList[clickIndex]
+        let index = this.selectdData.indexOf(item)
+        if (index < 0) {
+          this.selectdData.push(item)
+          event.currentTarget.classList.add('active')
+        } else {
+          this.selectdData.splice(index, 1)
+          event.currentTarget.classList.remove('active')
+        }
+      } else if (this.selectdData.length) this.removeAllSelect()
+    },
+    removeAllSelect() {
+      this.selectdData = []
+      let dom_tbody = this.$refs.dom_tbody
+      if (!dom_tbody) return
+      let nodes = dom_tbody.querySelectorAll('.active')
+      for (const node of nodes) {
+        if (node.parentNode == dom_tbody) node.classList.remove('active')
+      }
+    },
     handleClick(index) {
       const key = this.showList[index].key
       index = this.list.findIndex(i => i.key === key)
@@ -162,26 +253,27 @@ export default {
         this.handleStartTask(index)
       }
     },
-    handlePlay(index) {
-      if (!checkPath(this.list[index].filePath)) return
-      let path = this.list[index].filePath
-      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.filePath === path) })
+    async handlePlay(index) {
+      const targetSong = this.list[index]
+      if (!await checkPath(path.join(this.setting.download.savePath, targetSong.fileName))) return
+      this.setList({ list: this.list, listId: 'download', index: this.list.findIndex(i => i.key === targetSong.key) })
     },
     handleListBtnClick(info) {
-      const key = this.showList[info.index].key
+      let item = this.showList[info.index]
+      const key = item.key
       let index = this.list.findIndex(i => i.key === key)
       switch (info.action) {
         case 'play':
           this.handlePlay(index)
           break
         case 'start':
-          this.handleStartTask(index)
+          this.startTask(item)
           break
         case 'pause':
-          this.handlePauseTask(index)
+          this.pauseTask(item)
           break
         case 'remove':
-          this.removeTask(index)
+          this.removeTask(item)
           break
         case 'file':
           this.handleOpenFolder(index)
@@ -191,49 +283,35 @@ export default {
           break
       }
     },
-    handleSelectAllData(isSelect) {
-      this.selectdData = isSelect ? [...this.showList] : []
+    handleSelectAllData() {
+      this.removeAllSelect()
+      this.selectdData = [...this.showList]
+
+      let nodes = this.$refs.dom_tbody.childNodes
+      for (const node of nodes) {
+        node.classList.add('active')
+      }
     },
-    resetSelect() {
-      this.isSelectAll = false
-      this.selectdData = []
-    },
-    handleFlowBtnClick(action) {
+    async handleFlowBtnClick(action) {
+      let selectdData = [...this.selectdData]
+      this.removeAllSelect()
+      await this.$nextTick()
+
       switch (action) {
         case 'start':
-          this.selectdData.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.RUN) return
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handleStartTask(index)
-          })
+          this.startTasks(selectdData)
           break
-        case 'pause': {
-          let runs = []
-          this.selectdData.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            if (item.status == this.downloadStatus.RUN) return runs.push(item)
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handlePauseTask(index)
-          })
-          runs.forEach(item => {
-            if (item.isComplate || item.status == this.downloadStatus.PAUSE) return
-            let index = this.list.indexOf(item)
-            if (index < 0) return
-            this.handlePauseTask(index)
-          })
+        case 'pause':
+          this.pauseTasks(selectdData)
           break
-        }
         case 'remove':
-          this.removeTaskMultiple(this.selectdData)
+          this.removeTasks(selectdData)
           break
       }
-      this.resetSelect()
     },
-    handleOpenFolder(index) {
+    async handleOpenFolder(index) {
       let path = this.list[index].filePath
-      if (!checkPath(path)) return
+      if (!await checkPath(path)) return
       openDirInExplorer(path)
     },
     handleSearch(index) {
@@ -288,12 +366,21 @@ export default {
 }
 .thead {
   flex: none;
+  tr > th:first-child {
+    color: @color-theme_2-font-label;
+    // padding-left: 10px;
+  }
 }
 .tbody {
   flex: auto;
   overflow-y: auto;
   td {
     font-size: 12px;
+    &:first-child {
+      // padding-left: 10px;
+      font-size: 11px;
+      color: @color-theme_2-font-label;
+    }
   }
   tr {
     &.active {
@@ -308,6 +395,11 @@ each(@themes, {
       tr {
         &.active {
           color: ~'@{color-@{value}-theme}';
+        }
+      }
+      td {
+        &:first-child {
+          color: ~'@{color-@{value}-theme_2-font-label}';
         }
       }
     }

@@ -29,6 +29,9 @@ export default {
     info() {
       return this.musicInfo || {}
     },
+    qualityList() {
+      return window.globalObj.qualityList[this.musicInfo.source]
+    },
   },
   methods: {
     handleClick(type) {
@@ -41,6 +44,7 @@ export default {
       switch (type) {
         case 'flac':
         case 'ape':
+        case 'wav':
           return this.$t('material.download_modal.lossless')
         case '320k':
           return this.$t('material.download_modal.high_quality')
@@ -50,14 +54,7 @@ export default {
       }
     },
     checkSource(type) {
-      switch (this.musicInfo.source) {
-        case 'wy':
-        case 'tx':
-          return type == '128k'
-
-        default:
-          return true
-      }
+      return this.qualityList.includes(type)
     },
   },
 }

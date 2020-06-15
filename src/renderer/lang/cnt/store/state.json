@@ -4,8 +4,10 @@
   "theme_yellow": "信口雌黃",
   "theme_orange": "橙黃橘綠",
   "theme_red": "熱情似火",
+  "theme_pink": "粉裝玉琢",
   "theme_purple": "重斤球紫",
   "theme_grey": "灰常美麗",
+  "theme_ming": "青出於黑",
   "theme_mid_autumn": "月裡嫦娥",
   "theme_naruto": "木葉之村",
   "theme_happy_new_year": "新年快樂",
@@ -14,6 +16,7 @@
   "source_tx": "企鵝音樂",
   "source_wy": "網易音樂",
   "source_mg": "咪咕音樂",
+  "source_xm": "蝦米音樂",
   "source_bd": "百度音樂",
   "source_all": "聚合搜索",
   "source_alias_kw": "小蝸音樂",
@@ -22,5 +25,6 @@
   "source_alias_wy": "小芸音樂",
   "source_alias_mg": "小蜜音樂",
   "source_alias_bd": "小杜音樂",
+  "source_alias_xm": "小霞音樂",
   "source_alias_all": "聚合大會"
 }

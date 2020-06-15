@@ -3,13 +3,12 @@ import needle from 'needle'
 import { debugRequest } from './env'
 import { requestMsg } from './message'
 import { bHh } from './music/options'
-import { deflateRawSync } from 'zlib'
+import { deflateRaw } from 'zlib'
 import { getProxyInfo } from './index'
 // import fs from 'fs'
 
 const request = (url, options, callback) => {
   let data
-  if (options.method == 'get') options.headers['Content-Length'] = 0
   if (options.body) {
     data = options.body
   } else if (options.form) {
@@ -49,10 +48,11 @@ const defaultHeaders = {
 const buildHttpPromose = (url, options) => {
   let requestObj
   let cancelFn
+  let isCancelled = false
   let p = new Promise((resolve, reject) => {
     cancelFn = reject
     debugRequest && console.log(`\n---send request------${url}------------`)
-    requestObj = fetchData(url, options.method, options, (err, resp, body) => {
+    fetchData(url, options.method, options, (err, resp, body) => {
     // options.isShowProgress && window.api.hideProgress()
       debugRequest && console.log(`\n---response------${url}------------`)
       debugRequest && console.log(body)
@@ -69,12 +69,15 @@ const buildHttpPromose = (url, options) => {
         return reject(err)
       }
       resolve(resp)
+    }).then(ro => {
+      requestObj = ro
+      if (isCancelled) obj.cancelHttp()
     })
   })
   const obj = {
     promise: p,
     cancelHttp() {
-      if (!requestObj) return
+      if (!requestObj) return isCancelled = true
       cancelFn(new Error(requestMsg.cancelRequest))
       cancelHttp(requestObj)
       requestObj = null
@@ -248,9 +251,16 @@ export const http_jsonp = (url, options, callback) => {
   })
 }
 
+const handleDeflateRaw = data => new Promise((resolve, reject) => {
+  deflateRaw(data, (err, buf) => {
+    if (err) return reject(err)
+    resolve(buf)
+  })
+})
+
 const regx = /(?:\d\w)+/g
 
-const fetchData = (url, method, {
+const fetchData = async(url, method, {
   headers = {},
   format = 'json',
   timeout = 15000,
@@ -264,7 +274,7 @@ const fetchData = (url, method, {
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
     let v = process.versions.app.split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join('')
-    headers[s] = !s || `${deflateRawSync(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString('base64')).toString('hex')}&${parseInt(v)}`
+    headers[s] = !s || `${(await handleDeflateRaw(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString('base64'))).toString('hex')}&${parseInt(v)}`
     delete headers[bHh]
   }
   return request(url, {

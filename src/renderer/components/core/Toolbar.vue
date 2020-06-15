@@ -141,6 +141,11 @@ export default {
   z-index: 2;
   position: relative;
 }
+:global(.nd) {
+  .toolbar {
+    -webkit-app-region: no-drag;
+  }
+}
 .input {
   -webkit-app-region: no-drag;
   position: absolute;
@@ -166,7 +171,7 @@ export default {
   align-items: center;
   height: 100%;
   -webkit-app-region: no-drag;
-  padding: 0 @control-btn-width / 2;
+  padding: 0 @control-btn-width * 0.6;
   &:hover {
     button:before {
       opacity: 1;
@@ -186,7 +191,7 @@ export default {
     padding: 0;
     cursor: pointer;
     + button {
-      margin-left: @control-btn-width / 2;
+      margin-left: @control-btn-width * 0.4;
     }
 
     &:after {

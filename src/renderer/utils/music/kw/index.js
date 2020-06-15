@@ -5,7 +5,7 @@ import { formatSinger, getToken } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
 import pic from './pic'
-import api_source from '../api-source'
+import { apis } from '../api-source'
 import songList from './songList'
 import hotSearch from './hotSearch'
 
@@ -58,7 +58,7 @@ const kw = {
   },
 
   getMusicUrl(songInfo, type) {
-    return api_source('kw').getMusicUrl(songInfo, type)
+    return apis('kw').getMusicUrl(songInfo, type)
   },
 
   getMusicInfo(songInfo) {

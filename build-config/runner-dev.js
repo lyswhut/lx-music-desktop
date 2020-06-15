@@ -7,12 +7,11 @@ const path = require('path')
 const { spawn } = require('child_process')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const mainConfig = require('./main/webpack.config.dev')
 const rendererConfig = require('./renderer/webpack.config.dev')
-
-const { logStats } = require('./utils')
 
 let electronProcess = null
 let manualRestart = false
@@ -31,7 +30,7 @@ function startRenderer() {
 
     compiler.hooks.compilation.tap('compilation', compilation => {
       // console.log(Object.keys(compilation.hooks))
-      compilation.hooks.htmlWebpackPluginAfterEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
+      HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
         hotMiddleware.publish({ action: 'reload' })
         cb()
       })
@@ -59,7 +58,7 @@ function startRenderer() {
             resolve()
           })
         },
-      }
+      },
     )
 
     server.listen(9080)
@@ -73,7 +72,6 @@ function startMain() {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      logStats('Main', chalk.white.bold('compiling...'))
       hotMiddleware.publish({ action: 'compiling' })
       done()
     })
@@ -137,34 +135,24 @@ function electronLog(data, color) {
   }
 }
 
-function greeting() {
-/*   const cols = process.stdout.columns
-  let text = ''
-
-  if (cols > 104) text = 'electron-vue'
-  else if (cols > 76) text = 'electron-|vue'
-  else text = false
-
-  if (text) {
-    say(text, {
-      colors: ['yellow'],
-      font: 'simple3d',
-      space: false,
-    })
-  } else console.log(chalk.yellow.bold('\n  electron-vue')) */
-  console.log(chalk.blue('getting ready...') + '\n')
-}
-
 function init() {
-  greeting()
+  const Spinnies = require('spinnies')
+  const spinners = new Spinnies({ color: 'blue' })
+  spinners.add('main', { text: 'main compiling' })
+  spinners.add('renderer', { text: 'renderer compiling' })
+  function handleSuccess(name) {
+    spinners.succeed(name, { text: name + ' compile success!' })
+  }
+  function handleFail(name) {
+    spinners.fail(name, { text: name + ' compile fail!' })
+  }
 
-  Promise.all([startRenderer(), startMain()])
-    .then(() => {
-      startElectron()
-    })
-    .catch(err => {
-      console.error(err)
-    })
+  Promise.all([
+    startRenderer().then(() => handleSuccess('renderer')).catch(() => handleFail('renderer')),
+    startMain().then(() => handleSuccess('main')).catch(() => handleFail('main')),
+  ]).then(startElectron).catch(err => {
+    console.error(err)
+  })
 }
 
 init()

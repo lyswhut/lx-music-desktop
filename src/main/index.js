@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron')
+const { app, BrowserWindow, shell } = require('electron')
 const path = require('path')
 
 // 单例应用程序
@@ -7,36 +7,72 @@ if (!app.requestSingleInstanceLock()) {
   return
 }
 app.on('second-instance', (event, argv, cwd) => {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.focus()
+  if (global.mainWindow) {
+    if (global.mainWindow.isMinimized()) {
+      global.mainWindow.restore()
+    } else if (global.mainWindow.isVisible()) {
+      global.mainWindow.focus()
+    } else {
+      global.mainWindow.show()
+    }
   } else {
     app.quit()
   }
 })
 
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = global.isDev = process.env.NODE_ENV !== 'production'
+const { navigationUrlWhiteList } = require('../common/config')
+
+app.on('web-contents-created', (event, contents) => {
+  contents.on('will-navigate', (event, navigationUrl) => {
+    if (isDev) return console.log('navigation to url:', navigationUrl)
+    if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) return event.preventDefault()
+    console.log('navigation to url:', navigationUrl)
+  })
+  contents.on('new-window', async(event, navigationUrl) => {
+    event.preventDefault()
+    if (/^devtools/.test(navigationUrl)) return
+    console.log(navigationUrl)
+    await shell.openExternal(navigationUrl)
+  })
+  contents.on('will-attach-webview', (event, webPreferences, params) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload
+    delete webPreferences.preloadURL
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false
+
+    // Verify URL being loaded
+    if (!navigationUrlWhiteList.some(url => url.test(params.src))) {
+      event.preventDefault()
+    }
+  })
+})
+
+// https://github.com/electron/electron/issues/22691
+app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 // https://github.com/electron/electron/issues/18397
 app.allowRendererProcessReuse = !isDev
 
-const { getWindowSizeInfo, parseEnv } = require('./utils')
+const { getAppSetting, parseEnv, getWindowSizeInfo } = require('./utils')
 
 global.envParams = parseEnv()
 
 require('../common/error')
 require('./events')
-const winEvent = require('./events/winEvent')
+require('./rendererEvents')
+const winEvent = require('./rendererEvents/winEvent')
 const autoUpdate = require('./utils/autoUpdate')
-const { isLinux, isMac } = require('../common/utils')
+const { isMac, isLinux } = require('../common/utils')
 
 
-let mainWindow
 let winURL
-let isFirstCheckedUpdate = true
 
 if (isDev) {
-  global.__static = path.join(__dirname, '../static')
+  // eslint-disable-next-line no-undef
+  global.__static = __static
   winURL = 'http://localhost:9080'
 } else {
   global.__static = path.join(__dirname, '/static')
@@ -44,11 +80,11 @@ if (isDev) {
 }
 
 function createWindow() {
-  let windowSizeInfo = getWindowSizeInfo()
+  const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   /**
    * Initial window options
    */
-  mainWindow = global.mainWindow = new BrowserWindow({
+  global.mainWindow = new BrowserWindow({
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -59,6 +95,7 @@ function createWindow() {
     resizable: false,
     maximizable: false,
     fullscreenable: false,
+    show: false,
     webPreferences: {
       // contextIsolation: true,
       webSecurity: !isDev,
@@ -66,66 +103,42 @@ function createWindow() {
     },
   })
 
-  mainWindow.loadURL(winURL)
+  global.mainWindow.loadURL(winURL)
 
-  winEvent(mainWindow)
+  winEvent(global.mainWindow)
   // mainWindow.webContents.openDevTools()
 
-  if (!isDev) {
-    autoUpdate(isFirstCheckedUpdate)
-    isFirstCheckedUpdate = false
-  }
+  if (!isDev) autoUpdate()
 }
 
-if (isMac) {
-  const template = [
-    {
-      label: app.getName(),
-      submenu: [
-        { label: '关于洛雪音乐', role: 'about' },
-        { type: 'separator' },
-        { label: '隐藏', role: 'hide' },
-        { label: '显示其他', role: 'hideothers' },
-        { label: '显示全部', role: 'unhide' },
-        { type: 'separator' },
-        { label: '退出', accelerator: 'Command+Q', click: () => app.quit() },
-      ],
-    },
-    {
-      label: '窗口',
-      role: 'window',
-      submenu: [
-        { label: '最小化', role: 'minimize' },
-        { label: '关闭', role: 'close' },
-      ],
-    },
-    {
-      label: '编辑',
-      submenu: [
-        { label: '撤销', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
-        { label: '恢复', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
-        { type: 'separator' },
-        { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
-        { label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-        { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-        { label: '选择全部', accelerator: 'CmdOrCtrl+A', role: 'selectAll' },
-      ],
-    },
-  ]
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
-} else {
-  Menu.setApplicationMenu(null)
+function init() {
+  global.appSetting = getAppSetting()
+  createWindow()
+  global.lx_event.tray.create()
 }
 
-app.on('ready', createWindow)
-
-app.on('window-all-closed', () => {
-  if (!isMac) app.quit()
-})
+app.on('ready', init)
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
+  if (global.mainWindow) {
+    if (global.mainWindow.isMinimized()) {
+      global.mainWindow.restore()
+    } else if (global.mainWindow.isVisible()) {
+      global.mainWindow.focus()
+    } else {
+      global.mainWindow.show()
+    }
+  } else if (global.mainWindow === null) {
+    init()
   }
 })
+
+app.on('window-all-closed', () => {
+  if (isMac) {
+    global.lx_event.tray.destroy()
+  } else {
+    app.quit()
+  }
+})
+
+require('./modules')
