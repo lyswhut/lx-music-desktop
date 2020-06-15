@@ -31,7 +31,7 @@ export default {
       },
       lrcConfig: {
         enable: false,
-        isLock: false,
+        isLock: true,
         isAlwaysOnTop: false,
         width: 600,
         height: 700,
