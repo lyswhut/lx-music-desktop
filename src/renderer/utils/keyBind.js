@@ -1,13 +1,13 @@
-import { isMac, isWin } from '../../common/utils'
+import { isMac } from '../../common/utils'
 
 const downKeys = new Set()
 
 const handleEvent = (type, event, keys) => {
-  if (isWin) {
-    let index = keys.indexOf('ctrl')
-    if (index > -1) keys.splice(index, 1, 'mod')
-  } else if (isMac) {
+  if (isMac) {
     let index = keys.indexOf('meta')
+    if (index > -1) keys.splice(index, 1, 'mod')
+  } else {
+    let index = keys.indexOf('ctrl')
     if (index > -1) keys.splice(index, 1, 'mod')
   }
   let key = keys.join('+')
