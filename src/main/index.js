@@ -8,13 +8,14 @@ if (!app.requestSingleInstanceLock()) {
 }
 if (!global.modals) global.modals = {}
 app.on('second-instance', (event, argv, cwd) => {
-  if (global.modals.mainWindow) {
-    if (global.modals.mainWindow.isMinimized()) {
-      global.modals.mainWindow.restore()
-    } else if (global.modals.mainWindow.isVisible()) {
-      global.modals.mainWindow.focus()
+  if (global.modules.mainWindow) {
+    if (global.modules.mainWindow.isMinimized()) {
+      global.modules.mainWindow.restore()
+    }
+    if (global.modules.mainWindow.isVisible()) {
+      global.modules.mainWindow.focus()
     } else {
-      global.modals.mainWindow.show()
+      global.modules.mainWindow.show()
     }
   } else {
     app.quit()
