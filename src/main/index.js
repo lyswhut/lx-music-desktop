@@ -6,7 +6,7 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   return
 }
-if (!global.modals) global.modals = {}
+if (!global.modules) global.modules = {}
 app.on('second-instance', (event, argv, cwd) => {
   if (global.modules.mainWindow) {
     if (global.modules.mainWindow.isMinimized()) {
@@ -26,7 +26,7 @@ const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
 const { navigationUrlWhiteList } = require('../common/config')
 const { getWindowSizeInfo } = require('./utils')
-const { isMac, isLinux, initSetting } = require('../common/utils')
+const { isMac, isLinux, initSetting, initHotKey } = require('../common/utils')
 
 
 // https://github.com/electron/electron/issues/22691
@@ -90,7 +90,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  global.modals.mainWindow = new BrowserWindow({
+  global.modules.mainWindow = new BrowserWindow({
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -109,32 +109,40 @@ function createWindow() {
     },
   })
 
-  global.modals.mainWindow.loadURL(winURL)
+  global.modules.mainWindow.loadURL(winURL)
 
-  winEvent(global.modals.mainWindow)
+  winEvent(global.modules.mainWindow)
   // mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()
 }
 
+global.appHotKey = {
+  enable: true,
+  config: {},
+  state: null,
+}
+
 function init() {
   global.appSetting = initSetting()
+  global.appHotKey.config = initHotKey()
   global.lx_event.common.initSetting()
+  global.lx_event.hotKey.init()
   createWindow()
 }
 
 app.on('ready', init)
 
 app.on('activate', () => {
-  if (global.modals.mainWindow) {
-    if (global.modals.mainWindow.isMinimized()) {
-      global.modals.mainWindow.restore()
-    } else if (global.modals.mainWindow.isVisible()) {
-      global.modals.mainWindow.focus()
+  if (global.modules.mainWindow) {
+    if (global.modules.mainWindow.isMinimized()) {
+      global.modules.mainWindow.restore()
+    } else if (global.modules.mainWindow.isVisible()) {
+      global.modules.mainWindow.focus()
     } else {
-      global.modals.mainWindow.show()
+      global.modules.mainWindow.show()
     }
-  } else if (global.modals.mainWindow === null) {
+  } else if (global.modules.mainWindow === null) {
     init()
   }
 })

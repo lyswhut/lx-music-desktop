@@ -2,7 +2,7 @@ const { mainHandle, NAMES: { mainWindow: ipcMainWindowNames } } = require('../..
 const { dialog } = require('electron')
 
 mainHandle(ipcMainWindowNames.select_dir, async(event, options) => {
-  if (!global.modals.mainWindow) throw new Error('mainWindow is undefined')
-  return dialog.showOpenDialog(global.modals.mainWindow, options)
+  if (!global.modules.mainWindow) throw new Error('mainWindow is undefined')
+  return dialog.showOpenDialog(global.modules.mainWindow, options)
 })
 

@@ -220,6 +220,8 @@ each(@themes, {
   :global(#container.@{value}) {
     .control {
       button {
+        color: ~'@{color-@{value}-theme_2}';
+
         &.min {
           background-color: ~'@{color-@{value}-minBtn}';
         }

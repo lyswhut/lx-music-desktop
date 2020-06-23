@@ -13,6 +13,7 @@ require('./setIgnoreMouseEvent')
 require('./getEnvParams')
 require('./setAppSetting')
 require('./setLyricInfo')
+require('./hotKey')
 
 require('./xm_verify')
 

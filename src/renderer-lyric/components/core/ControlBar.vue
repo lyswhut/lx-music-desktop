@@ -51,7 +51,7 @@ div(:class="$style.container")
 </template>
 
 <script>
-import { rendererSend, NAMES } from '../../../common/ipc'
+import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
 
 export default {
   props: {
@@ -107,6 +107,9 @@ export default {
   },
   mounted() {
     this.config = JSON.parse(JSON.stringify(this.lrcConfig))
+    rendererOn(NAMES.winLyric.key_down, (event, key) => {
+
+    })
   },
   methods: {
     sendEvent() {

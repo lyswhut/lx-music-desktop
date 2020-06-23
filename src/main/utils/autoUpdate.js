@@ -61,10 +61,10 @@ function sendStatusToWindow(text) {
 
 let waitEvent = []
 const handleSendEvent = action => {
-  if (global.modals.mainWindow) {
+  if (global.modules.mainWindow) {
     setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
-      if (!global.modals.mainWindow) return
-      mainSend(global.modals.mainWindow, action.type, action.info)
+      if (!global.modules.mainWindow) return
+      mainSend(global.modules.mainWindow, action.type, action.info)
     }, 2000)
   } else {
     waitEvent.push(action)
@@ -76,8 +76,8 @@ module.exports = () => {
     if (waitEvent.length) {
       waitEvent.forEach((event, index) => {
         setTimeout(() => { // 延迟发送事件，过早发送可能渲染进程还没启动完成
-          if (!global.modals.mainWindow) return
-          mainSend(global.modals.mainWindow, event.type, event.info)
+          if (!global.modules.mainWindow) return
+          mainSend(global.modules.mainWindow, event.type, event.info)
         }, 2000 * (index + 1))
       })
       waitEvent = []

@@ -131,6 +131,31 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.download_lyric')}}
       div
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
+
+    dt {{$t('view.setting.hot_key')}}
+    dd
+      h3 {{$t('view.setting.hot_key_local_title')}}
+      div
+        material-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('view.setting.is_enable')" @change="handleHotKeySaveConfig")
+      div(:class="$style.hotKeyContainer")
+        div(:class="$style.hotKeyItem" v-for="item in hotKeys.local")
+          h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
+          material-input.key-bind(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('view.setting.hot_key_unset_input')"
+            :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
+            @focus="handleHotKeyFocus($event, item, 'local')"
+            @blur="handleHotKeyBlur($event, item, 'local')")
+
+      h3 {{$t('view.setting.hot_key_global_title')}}
+      div
+        material-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('view.setting.is_enable')" @change="handleEnableHotKey")
+      div(:class="$style.hotKeyContainer")
+        div(:class="$style.hotKeyItem" v-for="item in hotKeys.global")
+          h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
+          material-input.key-bind(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
+            :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" @input.prevent readonly :placeholder="$t('view.setting.hot_key_unset_input')"
+            @focus="handleHotKeyFocus($event, item, 'global')"
+            @blur="handleHotKeyBlur($event, item, 'global')")
+
     dt {{$t('view.setting.network')}}
     dd
       h3 {{$t('view.setting.network_proxy_title')}}
@@ -241,12 +266,17 @@ import {
   sizeFormate,
   setWindowSize,
 } from '../utils'
-import { rendererSend, NAMES } from '../../common/ipc'
-import { mergeSetting } from '../../common/utils'
+import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
+import { mergeSetting, isMac } from '../../common/utils'
 import apiSourceInfo from '../utils/music/api-source-info'
 import fs from 'fs'
 import languageList from '@/lang/languages.json'
 import { base as eventBaseName } from '../event/names'
+import * as hotKeys from '../../common/hotKey'
+import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
+
+let hotKeyTargetInput
+let newHotKey
 
 export default {
   name: 'Setting',
@@ -398,9 +428,123 @@ export default {
         controlBtnPosition: 'left',
         apiSource: 'temp',
       },
+      current_hot_key: {
+        local: {
+          enable: false,
+          keys: {},
+        },
+        global: {
+          enable: false,
+          keys: {},
+        },
+      },
       languageList,
       cacheSize: '0 B',
       mediaDevices: [],
+      hotKeys: {
+        local: [
+          {
+            name: hotKeys.player.toggle_play.name,
+            action: hotKeys.player.toggle_play.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.prev.name,
+            action: hotKeys.player.prev.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.next.name,
+            action: hotKeys.player.next.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.common.focusSearchInput.name,
+            action: hotKeys.common.focusSearchInput.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.common.min.name,
+            action: hotKeys.common.min.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.common.close.name,
+            action: hotKeys.common.close.action,
+            type: eventsNameMainWindow.name,
+          },
+        ],
+        global: [
+          {
+            name: hotKeys.common.min_toggle.name,
+            action: hotKeys.common.min_toggle.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.common.hide_toggle.name,
+            action: hotKeys.common.hide_toggle.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.common.close.name,
+            action: hotKeys.common.close.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.toggle_play.name,
+            action: hotKeys.player.toggle_play.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.prev.name,
+            action: hotKeys.player.prev.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.next.name,
+            action: hotKeys.player.next.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.volume_up.name,
+            action: hotKeys.player.volume_up.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.volume_down.name,
+            action: hotKeys.player.volume_down.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.player.volume_mute.name,
+            action: hotKeys.player.volume_mute.action,
+            type: eventsNameMainWindow.name,
+          },
+          {
+            name: hotKeys.desktop_lyric.toggle_visible.name,
+            action: hotKeys.desktop_lyric.toggle_visible.action,
+            type: eventsNameWinLyric.name,
+          },
+          {
+            name: hotKeys.desktop_lyric.toggle_lock.name,
+            action: hotKeys.desktop_lyric.toggle_lock.action,
+            type: eventsNameWinLyric.name,
+          },
+          {
+            name: hotKeys.desktop_lyric.toggle_always_top.name,
+            action: hotKeys.desktop_lyric.toggle_always_top.action,
+            type: eventsNameWinLyric.name,
+          },
+        ],
+      },
+      hotKeyConfig: {
+        local: {},
+        global: {},
+      },
+      hotKeyStatus: {
+
+      },
+      isEditHotKey: false,
     }
   },
   watch: {
@@ -431,11 +575,15 @@ export default {
   mounted() {
     navigator.mediaDevices.addEventListener('devicechange', this.getMediaDevice)
     window.eventHub.$on(eventBaseName.set_config, this.handleUpdateSetting)
+    window.eventHub.$on(eventBaseName.key_down, this.handleKeyDown)
+    window.eventHub.$on(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
     this.init()
   },
   beforeDestroy() {
     navigator.mediaDevices.removeEventListener('devicechange', this.getMediaDevice)
     window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
+    window.eventHub.$off(eventBaseName.key_down, this.handleKeyDown)
+    window.eventHub.$off(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
@@ -446,6 +594,9 @@ export default {
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       this.getCacheSize()
       this.getMediaDevice()
+      this.current_hot_key = window.appHotKeyConfig
+      this.initHotKeyConfig()
+      this.getHotKeyStatus()
     },
     handleChangeSavePath() {
       selectDir({
@@ -670,6 +821,150 @@ export default {
     handleUpdateSetting(config) {
       this.current_setting = JSON.parse(JSON.stringify(config))
     },
+    initHotKeyConfig() {
+      let config = {}
+      for (const type of Object.keys(this.current_hot_key)) {
+        let typeInfo = this.current_hot_key[type]
+        let configInfo = config[type] = {}
+        for (const key of Object.keys(typeInfo.keys)) {
+          let info = typeInfo.keys[key]
+          if (info.name == null) continue
+          configInfo[info.name] = {
+            key,
+            info,
+          }
+        }
+      }
+      this.hotKeyConfig = config
+    },
+    async handleHotKeyFocus(event, info, type) {
+      await rendererInvoke(NAMES.hotKey.enable, false)
+      window.isEditingHotKey = true
+      this.isEditHotKey = true
+      let config = this.hotKeyConfig[type][info.name]
+      newHotKey = config && config.key
+      hotKeyTargetInput = event.target
+      event.target.value = this.$t('view.setting.hot_key_tip_input')
+    },
+    async handleHotKeyBlur(event, info, type) {
+      await rendererInvoke(NAMES.hotKey.enable, true)
+      window.isEditingHotKey = false
+      this.isEditHotKey = false
+      hotKeyTargetInput = null
+      let config = this.hotKeyConfig[type][info.name]
+      let originKey
+      if (newHotKey) {
+        if (type == 'global' && newHotKey) {
+          try {
+            await rendererInvoke(NAMES.hotKey.set_config, {
+              action: 'register',
+              data: {
+                key: newHotKey,
+                info,
+              },
+            })
+          } catch (error) {
+            console.log(error)
+            return
+          }
+        }
+      }
+      if (config) {
+        if (config.key == newHotKey) return
+        originKey = config.key
+        delete this.current_hot_key[type].keys[config.key]
+      } else if (!newHotKey) return
+
+      if (newHotKey) {
+        for (const tempType of Object.keys(this.current_hot_key)) {
+          if (tempType == type) continue
+          config = this.current_hot_key[tempType].keys[newHotKey]
+          if (config) {
+            console.log(newHotKey, info, config, info.name, config.name)
+            delete this.current_hot_key[tempType].keys[newHotKey]
+            break
+          }
+        }
+        this.current_hot_key[type].keys[newHotKey] = info
+      }
+
+      this.initHotKeyConfig()
+      // console.log(this.current_hot_key.global.keys)
+      if (originKey) {
+        try {
+          await rendererInvoke(NAMES.hotKey.set_config, {
+            action: 'unregister',
+            data: originKey,
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      await this.handleHotKeySaveConfig()
+      await this.getHotKeyStatus()
+    },
+    formatHotKeyName(name) {
+      if (name.includes('arrow')) {
+        name = name.replace(/arrow(left|right|up|down)/, s => {
+          switch (s) {
+            case 'arrowleft': return '←'
+            case 'arrowright': return '→'
+            case 'arrowup': return '↑'
+            case 'arrowdown': return '↓'
+          }
+        })
+      }
+      if (name.includes('mod')) name = name.replace('mod', isMac ? 'Command' : 'Ctrl')
+      name = name.replace(/(\+|^)[a-z]/g, l => l.toUpperCase())
+      if (name.length > 1) name = name.replace(/\+/g, ' + ')
+      return name
+    },
+    handleKeyDown({ event, keys, key, type }) {
+      // if (!event || event.repeat) return
+      if (!event || event.repeat || type == 'up' || !this.isEditHotKey) return
+      event.preventDefault()
+      // console.log(event, key)
+      switch (key) {
+        case 'delete':
+        case 'backspace':
+          key = ''
+          break
+      }
+      hotKeyTargetInput.value = this.formatHotKeyName(key)
+      // console.log(keys, key, type)
+      newHotKey = key
+    },
+    handleUpdateHotKeyConfig(config) {
+      // console.log(config)
+      for (const type of Object.keys(config)) {
+        this.current_hot_key[type] = config[type]
+      }
+    },
+    async handleHotKeySaveConfig() {
+      // console.log(this.current_hot_key)
+      window.appHotKeyConfig = this.current_hot_key
+      await rendererInvoke(NAMES.hotKey.set_config, {
+        action: 'config',
+        data: this.current_hot_key,
+        source: eventsNameMainWindow.name,
+      })
+    },
+    async handleEnableHotKey() {
+      await rendererInvoke(NAMES.hotKey.set_config, {
+        action: 'enable',
+        data: this.current_hot_key.global.enable,
+        source: eventsNameMainWindow.name,
+      })
+      await this.handleHotKeySaveConfig()
+      await this.getHotKeyStatus()
+    },
+    getHotKeyStatus() {
+      return rendererInvoke(NAMES.hotKey.status).then(status => {
+        // console.log(status)
+        this.hotKeyStatus = status
+        return status
+      })
+    },
   },
 }
 </script>
@@ -804,6 +1099,40 @@ export default {
   }
 }
 
+.hotKeyContainer {
+  display: flex;
+  flex-flow: row wrap;
+  // margin-top: -15px;
+  margin-bottom: 15px;
+}
+.hotKeyItem {
+  width: 30%;
+  padding-right: 35px;
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+.hotKeyItemTitle {
+  .mixin-ellipsis-1;
+  padding-bottom: 5px;
+  color: @color-theme_2-font-label;
+  font-size: 12px;
+}
+.hotKeyItemInput {
+  width: 100%;
+  box-sizing: border-box;
+  // font-family: monospace;
+  &:focus {
+    background-color: @color-theme_2-active;
+    text-decoration: none;
+  }
+  &::placeholder {
+    color: rgba(197, 197, 197, 0.7)!important;
+  }
+}
+.hotKeyFailed {
+  text-decoration: line-through;
+}
+
 .save-path {
   font-size: 12px;
 }
@@ -851,6 +1180,10 @@ each(@themes, {
       dt {
         border-left-color: ~'@{color-@{value}-theme}';
       }
+    }
+
+    .hotKeyItemTitle {
+      color: ~'@{color-@{value}-theme_2-font-label}';
     }
 
     .theme {

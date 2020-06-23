@@ -276,7 +276,7 @@ export default {
     }
   }
   :global(.label) {
-    color: rgba(0, 0, 0, 0.95) !important;
+    color: @color-theme_2-font !important;
   }
   :global(.icon) {
     opacity: .6;
@@ -364,6 +364,9 @@ export default {
 each(@themes, {
   :global(#container.@{value}) {
     .listsSelect {
+      :global(.label) {
+        color: ~'@{color-@{value}-theme_2-font}' !important;
+      }
       :global(.list) {
         li {
           background-color: ~'@{color-@{value}-theme_2-background_2}';

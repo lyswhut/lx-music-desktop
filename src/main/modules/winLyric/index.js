@@ -36,7 +36,7 @@ const winEvent = lyricWindow => {
   // })
 
   lyricWindow.on('closed', () => {
-    lyricWindow = global.modals.lyricWindow = null
+    lyricWindow = global.modules.lyricWindow = null
   })
 
 
@@ -62,7 +62,7 @@ const winEvent = lyricWindow => {
   lyricWindow.once('ready-to-show', () => {
     lyricWindow.show()
     let config = global.appSetting.desktopLyric
-    global.modals.lyricWindow.setBounds({
+    global.modules.lyricWindow.setBounds({
       height: config.height,
       width: config.width,
       y: config.y,
@@ -74,7 +74,7 @@ const winEvent = lyricWindow => {
 
 
 const createWindow = () => {
-  if (global.modals.lyricWindow) return
+  if (global.modules.lyricWindow) return
   if (!global.appSetting.desktopLyric.enable) return
   // const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   const { x, y, width, height, isAlwaysOnTop } = global.appSetting.desktopLyric
@@ -84,7 +84,7 @@ const createWindow = () => {
   /**
    * Initial window options
    */
-  global.modals.lyricWindow = new BrowserWindow({
+  global.modules.lyricWindow = new BrowserWindow({
     height: height > screenHeight ? screenHeight : height,
     width: width > screenWidth ? screenWidth : width,
     x: Math.max(-8, screenWidth < (width + x) ? screenWidth - width : x),
@@ -110,13 +110,13 @@ const createWindow = () => {
     },
   })
 
-  global.modals.lyricWindow.loadURL(winURL)
+  global.modules.lyricWindow.loadURL(winURL)
 
-  winEvent(global.modals.lyricWindow)
+  winEvent(global.modules.lyricWindow)
   // mainWindow.webContents.openDevTools()
 }
 
 const closeWindow = () => {
-  if (!global.modals.lyricWindow) return
-  global.modals.lyricWindow.close()
+  if (!global.modules.lyricWindow) return
+  global.modules.lyricWindow.close()
 }

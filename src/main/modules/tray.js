@@ -9,22 +9,22 @@ global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
     isEnableTray = global.appSetting.tray.isToTray
     global.appSetting.tray.isToTray ? createTray() : destroyTray()
   }
-  createMenu(global.modals.tray)
+  createMenu(global.modules.tray)
 })
 
 const createTray = () => {
-  if ((global.modals.tray && !global.modals.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
+  if ((global.modules.tray && !global.modules.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
   const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate@2x.ico' : 'trayTemplate.png')
 
   // 托盘
-  global.modals.tray = new Tray(iconPath)
+  global.modules.tray = new Tray(iconPath)
 
-  global.modals.tray.setToolTip('洛雪音乐助手')
-  createMenu(global.modals.tray)
-  global.modals.tray.setIgnoreDoubleClickEvents(true)
-  global.modals.tray.on('click', () => {
-    const mainWindow = global.modals.mainWindow
+  global.modules.tray.setToolTip('洛雪音乐助手')
+  createMenu(global.modules.tray)
+  global.modules.tray.setIgnoreDoubleClickEvents(true)
+  global.modules.tray.on('click', () => {
+    const mainWindow = global.modules.mainWindow
     if (!mainWindow) return
     mainWindow.isVisible()
       ? mainWindow.focus()
@@ -33,13 +33,13 @@ const createTray = () => {
 }
 
 const destroyTray = () => {
-  if (!global.modals.tray) return
-  global.modals.tray.destroy()
-  global.modals.tray = null
+  if (!global.modules.tray) return
+  global.modules.tray.destroy()
+  global.modules.tray = null
 }
 
 const createMenu = tray => {
-  if (!global.modals.tray || !isWin) return
+  if (!global.modules.tray || !isWin) return
   let menu = []
   menu.push(global.appSetting.desktopLyric.enable ? {
     label: '关闭桌面歌词',

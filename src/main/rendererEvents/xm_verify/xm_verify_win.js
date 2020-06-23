@@ -7,7 +7,7 @@ let win
 const closeWin = async() => {
   if (!win) return
   // await win.webContents.session.clearCache()
-  // if (global.modals.mainWindow) global.modals.mainWindow.removeBrowserView(win)
+  // if (global.modules.mainWindow) global.modules.mainWindow.removeBrowserView(win)
   if (win.isDestroyed()) {
     win = null
     return
@@ -18,15 +18,15 @@ const closeWin = async() => {
 }
 
 mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise((resolve, reject) => {
-  if (!global.modals.mainWindow) return reject(new Error('mainWindow is undefined'))
+  if (!global.modules.mainWindow) return reject(new Error('mainWindow is undefined'))
   if (win) win.destroy()
 
   let isActioned = false
 
-  const mainWindowSizeInfo = global.modals.mainWindow.getBounds()
+  const mainWindowSizeInfo = global.modules.mainWindow.getBounds()
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   win = new BrowserWindow({
-    parent: global.modals.mainWindow,
+    parent: global.modules.mainWindow,
     width: 460,
     height: 370,
     resizable: false,

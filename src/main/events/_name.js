@@ -7,6 +7,9 @@ exports.mainWindow = {
   name: 'mainWindow',
   setLyricInfo: 'setLyricInfo',
   destroy: 'destroy',
+  quit: 'quit',
+  toggle_minimize: 'toggle_minimize',
+  toggle_hide: 'toggle_hide',
 }
 
 exports.tray = {
@@ -20,4 +23,11 @@ exports.winLyric = {
   create: 'create',
   close: 'close',
   inited: 'inited',
+}
+
+exports.hotKey = {
+  name: 'hotKey',
+  init: 'init',
+  config: 'config',
+  keyDown: 'keyDown',
 }

@@ -9,16 +9,16 @@ let rejectFn
 const closeView = async() => {
   if (!view) return
   // await view.webContents.session.clearCache()
-  if (global.modals.mainWindow) global.modals.mainWindow.removeBrowserView(view)
+  if (global.modules.mainWindow) global.modules.mainWindow.removeBrowserView(view)
   await view.webContents.session.clearStorageData()
   view.destroy()
   view = null
 }
 
 mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise((resolve, reject) => {
-  if (!global.modals.mainWindow) return reject(new Error('mainWindow is undefined'))
+  if (!global.modules.mainWindow) return reject(new Error('mainWindow is undefined'))
   if (view) {
-    global.modals.mainWindow.removeBrowserView(view)
+    global.modules.mainWindow.removeBrowserView(view)
     view.destroy()
   }
 
@@ -48,7 +48,7 @@ mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise
       })
   })
 
-  global.modals.mainWindow.setBrowserView(view)
+  global.modules.mainWindow.setBrowserView(view)
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   view.setBounds({ x: (windowSizeInfo.width - 380) / 2, y: ((windowSizeInfo.height - 320 + 52) / 2), width: 380, height: 320 })
   view.webContents.loadURL(url, {

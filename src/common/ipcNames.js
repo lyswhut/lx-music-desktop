@@ -36,6 +36,11 @@ const names = {
     get_lyric_info: 'get_lyric_info',
     set_lyric_info: 'set_lyric_info',
     set_config: 'set_config',
+    set_hot_key_config: 'set_hot_key_config',
+    key_down: 'key_down',
+    quit: 'quit',
+    min_toggle: 'min_toggle',
+    hide_toggle: 'hide_toggle',
   },
   winLyric: {
     close: 'close',
@@ -44,6 +49,12 @@ const names = {
     set_lyric_config: 'set_lyric_config',
     get_lyric_config: 'get_lyric_config',
     set_win_bounds: 'set_win_bounds',
+    key_down: 'key_down',
+  },
+  hotKey: {
+    enable: 'enable',
+    status: 'status',
+    set_config: 'set_config',
   },
 }
 
@@ -56,3 +67,4 @@ for (const item of Object.keys(names)) {
 
 exports.mainWindow = names.mainWindow
 exports.winLyric = names.winLyric
+exports.hotKey = names.hotKey

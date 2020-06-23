@@ -60,6 +60,7 @@ import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, de
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
+import { player as eventPlayerNames } from '../../../common/hotKey'
 import path from 'path'
 
 let audio
@@ -172,6 +173,7 @@ export default {
     document.removeEventListener('mousemove', this.handleVolumeMsMove)
     document.removeEventListener('mouseup', this.handleVolumeMsUp)
     window.removeEventListener('resize', this.handleResize)
+    this.handleRegisterEvent('off')
   },
   watch: {
     changePlay(n) {
@@ -185,6 +187,9 @@ export default {
     },
     'setting.player.togglePlayMethod'(n) {
       audio.loop = n === 'singleLoop'
+    },
+    'setting.player.isMute'(n) {
+      audio.muted = n
     },
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
@@ -230,6 +235,16 @@ export default {
     ...mapMutations(['setVolume']),
     ...mapMutations('list', ['updateMusicInfo']),
     ...mapMutations(['setMediaDeviceId']),
+    handleRegisterEvent(action) {
+      let eventHub = window.eventHub
+      let name = action == 'on' ? '$on' : '$off'
+      eventHub[name](eventPlayerNames.toggle_play.action, this.togglePlay)
+      eventHub[name](eventPlayerNames.next.action, this.handleNext)
+      eventHub[name](eventPlayerNames.prev.action, this.handlePrev)
+      eventHub[name](eventPlayerNames.volume_up.action, this.handleSetVolumeUp)
+      eventHub[name](eventPlayerNames.volume_down.action, this.handleSetVolumeDown)
+      eventHub[name](eventPlayerNames.volume_mute.action, this.handleSetVolumeMute)
+    },
     init() {
       audio = new window.Audio()
       this.setMediaDevice()
@@ -238,6 +253,7 @@ export default {
       audio.autoplay = true
       audio.preload = 'auto'
       audio.loop = this.setting.player.togglePlayMethod === 'singleLoop'
+      audio.muted = this.setting.player.isMute
 
       audio.addEventListener('playing', () => {
         console.log('开始播放')
@@ -258,7 +274,7 @@ export default {
         this.handleNext()
       })
       audio.addEventListener('error', () => {
-        // console.log('code', audio.error.code)
+        // console.log('code', audio.error)
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
@@ -339,6 +355,8 @@ export default {
         },
         offset: 100,
       })
+
+      this.handleRegisterEvent('on')
     },
     async play() {
       console.log('play', this.playIndex)
@@ -606,10 +624,17 @@ export default {
     },
     handleVolumeMsMove(e) {
       if (!this.volumeEvent.isMsDown) return
-      let val = this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 70
-      this.volume = val < 0 ? 0 : val > 1 ? 1 : val
+      this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 70)
+    },
+    handleSetVolumeUp(step = 0.02) {
+      this.handleSetVolume(this.volume + step)
+    },
+    handleSetVolumeDown(step = 0.02) {
+      this.handleSetVolume(this.volume - step)
+    },
+    handleSetVolume(num) {
+      this.volume = num < 0 ? 0 : num > 1 ? 1 : num
       if (audio) audio.volume = this.volume
-      // console.log(val)
     },
     handleCopy(text) {
       clipboardWriteText(text)

@@ -2,6 +2,7 @@ const log = require('electron-log')
 const Store = require('electron-store')
 const { defaultSetting, overwriteSetting } = require('./defaultSetting')
 const apiSource = require('../renderer/utils/music/api-source-info')
+const defaultHotKey = require('./defaultHotKey')
 
 exports.isLinux = process.platform == 'linux'
 exports.isWin = process.platform == 'win32'
@@ -168,4 +169,30 @@ exports.initSetting = () => {
   electronStore_config.set('version', settingVersion)
   electronStore_config.set('setting', newSetting)
   return newSetting
+}
+
+/**
+ * 初始化快捷键设置
+ */
+exports.initHotKey = () => {
+  const electronStore_hotKey = new Store({
+    name: 'hotKey',
+  })
+
+  let localConfig = electronStore_hotKey.get('local')
+  if (!localConfig) {
+    localConfig = defaultHotKey.local
+    electronStore_hotKey.set('local', localConfig)
+  }
+
+  let globalConfig = electronStore_hotKey.get('global')
+  if (!globalConfig) {
+    globalConfig = defaultHotKey.global
+    electronStore_hotKey.set('global', globalConfig)
+  }
+
+  return {
+    global: globalConfig,
+    local: localConfig,
+  }
 }

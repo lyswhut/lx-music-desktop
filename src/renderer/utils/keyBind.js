@@ -60,8 +60,11 @@ const handleKeyDown = event => {
     case 'Meta':
     case 'Shift':
       break
+    case ' ':
+      keys.push('space')
+      break
     default:
-      keys.push(event.key.toLowerCase())
+      keys.push((event.code.includes('Numpad') ? event.code.replace(/^Numpad(\w{1,3})\w*$/i, 'num$1') : event.key).toLowerCase())
       break
   }
   handleEvent('down', event, keys)
@@ -75,8 +78,11 @@ const handleKeyUp = event => {
     case 'Control':
       keys.push('ctrl')
       break
+    case ' ':
+      keys.push('space')
+      break
     default:
-      keys.push(event.key.toLowerCase())
+      keys.push((event.code.includes('Numpad') ? event.code.replace(/^Numpad(\w{1,3})\w*$/i, 'num$1') : event.key).toLowerCase())
       break
   }
   handleEvent('up', event, keys)
@@ -96,8 +102,9 @@ const unbindKey = () => {
 }
 
 const clearDownKeys = () => {
-  for (const key of downKeys) {
-    handleSendEvent(key, 'up')
+  let keys = Array.from(downKeys)
+  for (let i = keys.length - 1; i > -1; i--) {
+    handleSendEvent(keys[i], 'up')
   }
   downKeys.clear()
 }

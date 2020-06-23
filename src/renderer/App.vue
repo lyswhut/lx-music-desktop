@@ -73,9 +73,6 @@ export default {
     },
   },
   created() {
-    this.saveSetting = throttle(n => {
-      window.electronStore_config.set('setting', n)
-    })
     this.saveDefaultList = throttle(n => {
       window.electronStore_list.set('defaultList', n)
     }, 500)
@@ -101,7 +98,6 @@ export default {
     setting: {
       handler(n, o) {
         rendererSend(NAMES.mainWindow.set_app_setting, n)
-        this.saveSetting(n)
       },
       deep: true,
     },
@@ -282,7 +278,7 @@ export default {
         let len = Math.max(newVer.length, currentVer.length)
         newVer.padStart(len, '0')
         currentVer.padStart(len, '0')
-        if (result.version == '0.0.0') return this.setVersionModalVisible({ isUnknow: true })
+        if (result.version == '0.0.0') return this.setVersionModalVisible({ isUnknow: true, isShow: true })
         if (parseInt(newVer) <= parseInt(currentVer)) return this.setVersionModalVisible({ isLatestVer: true })
 
         if (result.version === this.setting.ignoreVersion) return
@@ -384,6 +380,7 @@ body {
   display: flex;
   height: 100%;
   overflow: hidden;
+  color: @color-theme_2-font;
   background: @color-theme-bgimg @color-theme-bgposition no-repeat;
   background-size: @color-theme-bgsize;
   transition: background-color @transition-theme;
@@ -416,6 +413,7 @@ body {
 
 each(@themes, {
   #container.@{value} {
+    color: ~'@{color-@{value}-theme_2-font}';
     background-color: ~'@{color-@{value}-theme}';
     background-image: ~'@{color-@{value}-theme-bgimg}';
     background-size: ~'@{color-@{value}-theme-bgsize}';

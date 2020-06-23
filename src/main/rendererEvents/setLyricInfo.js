@@ -6,5 +6,5 @@ mainOn(ipcMainWindowNames.set_lyric_info, (event, info) => {
     global.lx_event.mainWindow.setLyricInfo(info)
     return
   }
-  mainSend(global.modals[info.info.modal], info.info.name, info)
+  mainSend(global.modules[info.info.modal], info.info.name, info)
 })

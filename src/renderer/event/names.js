@@ -1,5 +1,6 @@
 const names = {
   base: {
+    key_down: 'key_down',
     bindKey: 'bindKey',
     unbindKey: 'unbindKey',
     focus: 'focus',
@@ -7,6 +8,7 @@ const names = {
     max: 'max',
     close: 'close',
     set_config: 'set_config',
+    set_hot_key_config: 'set_hot_key_config',
   },
 }
 

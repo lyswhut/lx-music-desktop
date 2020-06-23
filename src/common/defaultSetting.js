@@ -3,12 +3,13 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.30',
+  version: '1.0.31',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
     isShowTaskProgess: true,
     volume: 1,
+    isMute: false,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
   },

@@ -39,7 +39,7 @@ const decodeLyric = async(buf, isGetLyricx) => {
 }
 
 mainHandle(ipcMainWindowNames.handle_kw_decode_lyric, async(event, { lrcBase64, isGetLyricx }) => {
-  if (!global.modals.mainWindow) throw new Error('mainWindow is undefined')
+  if (!global.modules.mainWindow) throw new Error('mainWindow is undefined')
   const lrc = await decodeLyric(Buffer.from(lrcBase64, 'base64'), isGetLyricx)
   return Buffer.from(lrc).toString('base64')
 })

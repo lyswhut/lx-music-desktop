@@ -24,6 +24,7 @@ div(:class="$style.container")
 
 <script>
 import { clipboardReadText } from '../../utils'
+import { common as eventCommonNames } from '../../../common/hotKey'
 export default {
   props: {
     placeholder: {
@@ -77,9 +78,21 @@ export default {
     },
   },
   mounted() {
-    if (this.$store.getters.setting.search.isFocusSearchBox) this.$refs.dom_input.focus()
+    if (this.$store.getters.setting.search.isFocusSearchBox) this.handleFocusInput()
+    this.handleRegisterEvent('on')
+  },
+  beforeDestroy() {
+    this.handleRegisterEvent('off')
   },
   methods: {
+    handleRegisterEvent(action) {
+      let eventHub = window.eventHub
+      let name = action == 'on' ? '$on' : '$off'
+      eventHub[name](eventCommonNames.focusSearchInput.action, this.handleFocusInput)
+    },
+    handleFocusInput() {
+      this.$refs.dom_input.focus()
+    },
     handleTemplistClick(index) {
       this.sendEvent('listClick', index)
     },

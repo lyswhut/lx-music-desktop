@@ -10,8 +10,8 @@ const {
 const { winLyric: WIN_LYRIC_EVENT_NAME } = require('../../events/_name')
 
 mainOn(ipcWinLyricNames.get_lyric_info, (event, action) => {
-  if (!global.modals.mainWindow) return
-  mainSend(global.modals.mainWindow, ipcMainWindowNames.get_lyric_info, {
+  if (!global.modules.mainWindow) return
+  mainSend(global.modules.mainWindow, ipcMainWindowNames.get_lyric_info, {
     name: ipcWinLyricNames.set_lyric_info,
     modal: 'lyricWindow',
     action,
@@ -32,8 +32,8 @@ let winY
 let wasW
 let wasY
 mainOn(ipcWinLyricNames.set_win_bounds, (event, { x = 0, y = 0, w = 0, h = 0 }) => {
-  if (!global.modals.lyricWindow) return
-  bounds = global.modals.lyricWindow.getBounds()
+  if (!global.modules.lyricWindow) return
+  bounds = global.modules.lyricWindow.getBounds()
   wasW = global.envParams.workAreaSize.width
   wasY = global.envParams.workAreaSize.height + 8
 
@@ -71,5 +71,5 @@ mainOn(ipcWinLyricNames.set_win_bounds, (event, { x = 0, y = 0, w = 0, h = 0 }) 
   }
 
   // console.log(bounds)
-  global.modals.lyricWindow.setBounds(bounds)
+  global.modules.lyricWindow.setBounds(bounds)
 })

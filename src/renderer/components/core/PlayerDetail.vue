@@ -333,7 +333,7 @@ export default {
   height: 100%;
   top: 0;
   left: 0;
-  background-color: #fff;
+  background-color: @color-theme_2-background_1;
   z-index: 10;
   // -webkit-app-region: drag;
   overflow: hidden;
@@ -489,7 +489,7 @@ export default {
     content: ' ';
     height: 100px;
     width: 100%;
-    background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,#fff 95%);
+    background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
     pointer-events: none;
   }
   &:after {
@@ -499,7 +499,7 @@ export default {
     content: ' ';
     height: 100px;
     width: 100%;
-    background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,#fff 95%);
+    background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
     pointer-events: none;
   }
 }
@@ -645,6 +645,15 @@ each(@themes, {
   :global(#container.@{value}) {
     .container {
       border-left-color: ~'@{color-@{value}-theme}';
+      background-color: ~'@{color-@{value}-theme_2-background_1}';
+    }
+    .right {
+      &:before {
+        background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
+      }
+      &:after {
+        background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
+      }
     }
     .control {
       button {

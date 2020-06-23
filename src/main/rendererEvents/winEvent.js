@@ -17,7 +17,7 @@ module.exports = mainWindow => {
   })
 
   mainWindow.on('closed', () => {
-    mainWindow = global.modals.mainWindow = null
+    mainWindow = global.modules.mainWindow = null
   })
 
   // mainWindow.on('restore', () => {
