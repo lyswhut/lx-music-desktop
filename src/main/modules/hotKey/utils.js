@@ -56,6 +56,10 @@ exports.init = (isForce = false) => {
   global.appHotKey.state = {}
   // console.log(global.appHotKey.config.global.keys)
   for (const key of Object.keys(global.appHotKey.config.global.keys)) {
-    handleRegisterHotkey({ key, info: global.appHotKey.config.global.keys[key] })
+    try {
+      handleRegisterHotkey({ key, info: global.appHotKey.config.global.keys[key] })
+    } catch (err) {
+      log.info(err)
+    }
   }
 }

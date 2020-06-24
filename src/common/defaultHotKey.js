@@ -9,12 +9,12 @@ module.exports = {
         name: hotKeyPlayer.toggle_play.name,
         action: hotKeyPlayer.toggle_play.action,
       },
-      'mod+left': {
+      'mod+arrowleft': {
         type: hotKeyPlayer.prev.type,
         name: hotKeyPlayer.prev.name,
         action: hotKeyPlayer.prev.action,
       },
-      'mod+right': {
+      'mod+arrowright': {
         type: hotKeyPlayer.next.type,
         name: hotKeyPlayer.next.name,
         action: hotKeyPlayer.next.action,
@@ -69,22 +69,22 @@ module.exports = {
         name: hotKeyPlayer.toggle_play.name,
         action: hotKeyPlayer.toggle_play.action,
       },
-      'mod+alt+left': {
+      'mod+alt+arrowleft': {
         type: hotKeyPlayer.prev.type,
         name: hotKeyPlayer.prev.name,
         action: hotKeyPlayer.prev.action,
       },
-      'mod+alt+right': {
+      'mod+alt+arrowright': {
         type: hotKeyPlayer.next.type,
         name: hotKeyPlayer.next.name,
         action: hotKeyPlayer.next.action,
       },
-      'mod+alt+up': {
+      'mod+alt+arrowup': {
         type: hotKeyPlayer.volume_up.type,
         name: hotKeyPlayer.volume_up.name,
         action: hotKeyPlayer.volume_up.action,
       },
-      'mod+alt+down': {
+      'mod+alt+arrowdown': {
         type: hotKeyPlayer.volume_down.type,
         name: hotKeyPlayer.volume_down.name,
         action: hotKeyPlayer.volume_down.action,
