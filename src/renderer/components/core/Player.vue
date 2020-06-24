@@ -820,7 +820,7 @@ export default {
 }
 .middle-container {
   height: 100%;
-  padding: 5px 8px 5px 8px;
+  padding: 5px 10px 5px 8px;
   display: flex;
   flex-flow: column nowrap;
 }
@@ -914,10 +914,10 @@ export default {
   flex: none;
   height: 46%;
   // margin-top: -2px;
-  transition: @transition-theme;
-  transition-property: color;
-  color: @color-theme;
-  transition: opacity 0.1s ease;
+  // transition: @transition-theme;
+  // transition-property: color;
+  // color: @color-theme;
+  transition: opacity 0.2s ease;
   opacity: 1;
   cursor: pointer;
 
@@ -925,8 +925,11 @@ export default {
     fill: currentColor;
     filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
   }
+  &:hover {
+    opacity: 0.8;
+  }
   &:active {
-    opacity: 0.7;
+    opacity: 0.6;
   }
 }
 

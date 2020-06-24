@@ -619,10 +619,10 @@ export default {
   padding: 5px;
   cursor: pointer;
   flex: none;
-  transition: @transition-theme;
-  transition-property: color;
+  // transition: @transition-theme;
+  // transition-property: color;
   color: @color-player-detail-play-btn;
-  transition: opacity 0.1s ease;
+  transition: opacity 0.2s ease;
   opacity: 1;
   cursor: pointer;
 
