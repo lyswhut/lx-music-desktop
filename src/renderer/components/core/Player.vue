@@ -4,35 +4,41 @@ div(:class="$style.player")
     img(v-if="musicInfo.img" :src="musicInfo.img" @error="imgError")
     svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='102%' width='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
-  div(:class="$style.right" v-if="!isShowPlayerDetail")
-    div(:class="$style.column1")
-      div(:class="$style.container")
-        div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
-        div(:class="$style.volumeContent")
-          div(:class="$style.volume")
-            div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
-          div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
+  div(:class="$style.middle")
+    div(:class="$style.middleContainer" v-if="!isShowPlayerDetail")
+      div(:class="$style.column1")
+        div(:class="$style.container")
+          div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
+          div(:class="$style.volumeContent")
+            div(:class="$style.volume")
+              div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
+            div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
 
-        //- div(:class="$style.playBtn" @click='handleNext' title="音量")
-          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
-            use(xlink:href='#icon-sound')
-        div(:class="$style.playBtn" @click='handleNext' :title="$t('core.player.next')")
-          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
-            use(xlink:href='#icon-nextMusic')
-        div(:class="$style.playBtn" :title="isPlay ? $t('core.player.pause') : $t('core.player.play')" @click='togglePlay')
-          svg(v-if="isPlay" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
-            use(xlink:href='#icon-pause')
-          svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
-            use(xlink:href='#icon-play')
-    div(:class="$style.column2")
-      div(:class="$style.progress" v-if="!isShowPlayerDetail")
-        //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
-        div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
-      div(:class="$style.progressMask" @click='handleSetProgress' ref="dom_progress")
-    div(:class="$style.column3")
-      span {{nowPlayTimeStr}}
-      span(:class="$style.statusText") {{statusText}}
-      span {{maxPlayTimeStr}}
+          //- div(:class="$style.playBtn" @click='handleNext' title="音量")
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
+              use(xlink:href='#icon-sound')
+
+      div(:class="$style.column2")
+        div(:class="$style.progress" v-if="!isShowPlayerDetail")
+          //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
+          div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
+        div(:class="$style.progressMask" @click='handleSetProgress' ref="dom_progress")
+      div(:class="$style.column3")
+        span {{nowPlayTimeStr}}
+        span(:class="$style.statusText") {{statusText}}
+        span {{maxPlayTimeStr}}
+  div(:class="$style.right")
+    div(:class="$style.playBtn" @click='handlePrev' :title="$t('core.player.next')" style="transform: rotate(180deg);")
+      svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
+        use(xlink:href='#icon-nextMusic')
+    div(:class="$style.playBtn" :title="isPlay ? $t('core.player.pause') : $t('core.player.play')" @click='togglePlay')
+      svg(v-if="isPlay" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
+        use(xlink:href='#icon-pause')
+      svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
+        use(xlink:href='#icon-play')
+    div(:class="$style.playBtn" @click='handleNext' :title="$t('core.player.next')")
+      svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
+        use(xlink:href='#icon-nextMusic')
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
@@ -610,7 +616,7 @@ export default {
       this.volumeEvent.isMsDown = true
       this.volumeEvent.msDownX = e.clientX
 
-      let val = e.offsetX / 70
+      let val = e.offsetX / 80
       if (val < 0) val = 0
       if (val > 1) val = 1
 
@@ -624,7 +630,7 @@ export default {
     },
     handleVolumeMsMove(e) {
       if (!this.volumeEvent.isMsDown) return
-      this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 70)
+      this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 80)
     },
     handleSetVolumeUp(step = 0.02) {
       this.handleSetVolume(this.volume + step)
@@ -778,12 +784,12 @@ export default {
 }
 .left {
   width: @height-player - 2;
-  height: @height-player - 2;
+  height: 100%;
   color: @color-theme;
   transition: @transition-theme;
   transition-property: color;
   flex: none;
-  padding: 2px;
+  padding: 2PX;
   opacity: 1;
   transition: @transition-theme;
   transition-property: opacity;
@@ -809,12 +815,23 @@ export default {
     // border: 2px solid @color-theme_2-background_1;
   }
 }
-.right {
+.middle {
   flex: auto;
-  // margin-left: 10px;
-  padding: 5px 10px 5px 8px;
+}
+.middle-container {
+  height: 100%;
+  padding: 5px 8px 5px 8px;
   display: flex;
   flex-flow: column nowrap;
+}
+.right {
+  height: 100%;
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding-left: 15px;
+  padding-right: 20px;
 }
 .column1 {
   flex: auto;
@@ -842,10 +859,9 @@ export default {
 
 .volume-content {
   position: relative;
-  width: 100px;
+  width: 80px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
   opacity: .5;
   transition: opacity @transition-theme;
   &:hover {
@@ -885,22 +901,18 @@ export default {
 
 .volume-mask {
   position: absolute;
-  left: 15px;
-  right: 15px;
   top: 0;
-  width: 70%;
+  width: 100%;
   height: 100%;
   cursor: pointer;
 }
 
 .play-btn {
   + .play-btn {
-    margin-left: 10px;
+    margin-left: 15px;
   }
   flex: none;
-  height: 95%;
-  width: 20px;
-  align-self: center;
+  height: 46%;
   // margin-top: -2px;
   transition: @transition-theme;
   transition-property: color;
@@ -926,8 +938,8 @@ export default {
 
 .progress {
   width: 100%;
-  height: 0.15rem;
-  border-radius: 0.2rem;
+  height: 3px;
+  border-radius: 10px;
   // overflow: hidden;
   transition: @transition-theme;
   transition-property: background-color;

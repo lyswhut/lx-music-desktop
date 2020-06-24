@@ -411,7 +411,7 @@ export default {
     padding: 1px;
     cursor: pointer;
     border-radius: 50%;
-    color: #fff;
+    color: @color-theme_2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -655,8 +655,9 @@ each(@themes, {
         background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
       }
     }
-    .control {
+    .controBtn {
       button {
+        color: ~'@{color-@{value}-theme_2}';
         // &.hide:after {
         //   background-color: ~'@{color-@{value}-hideBtn}';
         // }

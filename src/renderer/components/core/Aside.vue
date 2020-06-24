@@ -154,7 +154,7 @@ export default {
     padding: 1px;
     cursor: pointer;
     border-radius: 50%;
-    color: #fff;
+    color: @color-theme_2;
 
     &.min {
       background-color: @color-minBtn;
