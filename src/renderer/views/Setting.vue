@@ -137,7 +137,7 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.hot_key_local_title')}}
       div
         material-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('view.setting.is_enable')" @change="handleHotKeySaveConfig")
-      div(:class="$style.hotKeyContainer")
+      div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
         div(:class="$style.hotKeyItem" v-for="item in hotKeys.local")
           h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
           material-input.key-bind(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('view.setting.hot_key_unset_input')"
@@ -148,7 +148,7 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.hot_key_global_title')}}
       div
         material-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('view.setting.is_enable')" @change="handleEnableHotKey")
-      div(:class="$style.hotKeyContainer")
+      div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
         div(:class="$style.hotKeyItem" v-for="item in hotKeys.global")
           h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
           material-input.key-bind(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
@@ -854,7 +854,7 @@ export default {
       let config = this.hotKeyConfig[type][info.name]
       let originKey
       if (newHotKey) {
-        if (type == 'global' && newHotKey) {
+        if (type == 'global' && newHotKey && this.current_hot_key.global.enable) {
           try {
             await rendererInvoke(NAMES.hotKey.set_config, {
               action: 'register',
@@ -890,7 +890,7 @@ export default {
 
       this.initHotKeyConfig()
       // console.log(this.current_hot_key.global.keys)
-      if (originKey) {
+      if (originKey && this.current_hot_key.global.enable) {
         try {
           await rendererInvoke(NAMES.hotKey.set_config, {
             action: 'unregister',
@@ -1104,6 +1104,7 @@ export default {
   flex-flow: row wrap;
   // margin-top: -15px;
   margin-bottom: 15px;
+  transition: opacity @transition-theme;
 }
 .hotKeyItem {
   width: 30%;
