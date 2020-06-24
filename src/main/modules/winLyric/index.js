@@ -61,14 +61,9 @@ const winEvent = lyricWindow => {
 
   lyricWindow.once('ready-to-show', () => {
     lyricWindow.show()
-    let config = global.appSetting.desktopLyric
-    global.modules.lyricWindow.setBounds({
-      height: config.height,
-      width: config.width,
-      y: config.y,
-      x: config.x,
-    })
-    global.lx_event.winLyric.inited()
+    if (global.appSetting.desktopLyric.isLock) {
+      global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
+    }
   })
 }
 

@@ -9,8 +9,6 @@ if (isMac) {
         { label: '关于洛雪音乐', role: 'about' },
         { type: 'separator' },
         { label: '隐藏', role: 'hide' },
-        { label: '显示其他', role: 'hideothers' },
-        { label: '显示全部', role: 'unhide' },
         { type: 'separator' },
         {
           label: '退出',
@@ -26,20 +24,20 @@ if (isMac) {
       label: '窗口',
       role: 'window',
       submenu: [
-        { label: '最小化', role: 'minimize' },
+        { label: '最小化', role: 'minimize', accelerator: 'Command+W' },
         { label: '关闭', role: 'close' },
       ],
     },
     {
       label: '编辑',
       submenu: [
-        { label: '撤销', accelerator: 'CmdOrCtrl+Z', role: 'undo' },
-        { label: '恢复', accelerator: 'Shift+CmdOrCtrl+Z', role: 'redo' },
+        { label: '撤销', accelerator: 'Command+Z', role: 'undo' },
+        { label: '恢复', accelerator: 'Shift+Command+Z', role: 'redo' },
         { type: 'separator' },
-        { label: '剪切', accelerator: 'CmdOrCtrl+X', role: 'cut' },
-        { label: '复制', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-        { label: '粘贴', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-        { label: '选择全部', accelerator: 'CmdOrCtrl+A', role: 'selectAll' },
+        { label: '剪切', accelerator: 'Command+X', role: 'cut' },
+        { label: '复制', accelerator: 'Command+C', role: 'copy' },
+        { label: '粘贴', accelerator: 'Command+V', role: 'paste' },
+        { label: '选择全部', accelerator: 'Command+A', role: 'selectAll' },
       ],
     },
   ]

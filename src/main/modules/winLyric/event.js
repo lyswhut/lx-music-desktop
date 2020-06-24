@@ -5,8 +5,26 @@ const { desktop_lyric } = require('../../../common/hotKey')
 let isLock = null
 let isEnable = null
 let isAlwaysOnTop = null
-const setLrcConfig = isForceSet => {
+const setLrcConfig = () => {
   let desktopLyric = global.appSetting.desktopLyric
+  if (global.modules.lyricWindow) {
+    mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, {
+      config: desktopLyric,
+      languageId: global.appSetting.langId,
+    })
+    if (isLock != desktopLyric.isLock) {
+      isLock = desktopLyric.isLock
+      if (desktopLyric.isLock) {
+        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
+      } else {
+        global.modules.lyricWindow.setIgnoreMouseEvents(false)
+      }
+    }
+    if (isAlwaysOnTop != desktopLyric.isAlwaysOnTop) {
+      isAlwaysOnTop = desktopLyric.isAlwaysOnTop
+      global.modules.lyricWindow.setAlwaysOnTop(desktopLyric.isAlwaysOnTop, 'screen-saver')
+    }
+  }
   if (isEnable != desktopLyric.enable) {
     isEnable = desktopLyric.enable
     if (desktopLyric.enable) {
@@ -15,30 +33,12 @@ const setLrcConfig = isForceSet => {
       global.lx_event.winLyric.close()
     }
   }
-  if (global.modules.lyricWindow) {
-    mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, {
-      config: desktopLyric,
-      languageId: global.appSetting.langId,
-    })
-    if (isForceSet || isLock != desktopLyric.isLock) {
-      isLock = desktopLyric.isLock
-      if (desktopLyric.isLock) {
-        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
-      } else {
-        global.modules.lyricWindow.setIgnoreMouseEvents(false)
-      }
-    }
-    if (isForceSet || isAlwaysOnTop != desktopLyric.isAlwaysOnTop) {
-      isAlwaysOnTop = desktopLyric.isAlwaysOnTop
-      global.modules.lyricWindow.setAlwaysOnTop(desktopLyric.isAlwaysOnTop, 'screen-saver')
-    }
-  }
 }
 global.lx_event.common.on(COMMON_EVENT_NAME.config, name => {
   if (WIN_LYRIC_EVENT_NAME.name === name) return
   setLrcConfig(false)
 })
-global.lx_event.winLyric.on(WIN_LYRIC_EVENT_NAME.inited, () => setLrcConfig(true))
+// global.lx_event.winLyric.on(WIN_LYRIC_EVENT_NAME.inited, () => setLrcConfig(true))
 
 global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.setLyricInfo, info => {
   if (!global.modules.lyricWindow) return
