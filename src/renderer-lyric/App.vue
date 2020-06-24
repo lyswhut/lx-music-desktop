@@ -105,8 +105,8 @@ export default {
     },
   },
   created() {
-    rendererOn(NAMES.winLyric.set_lyric_config, (event, config) => this.lrcConfig = config)
-    rendererInvoke(NAMES.winLyric.get_lyric_config).then(config => this.lrcConfig = config)
+    rendererOn(NAMES.winLyric.set_lyric_config, (event, config) => this.handleUpdateConfig(config))
+    rendererInvoke(NAMES.winLyric.get_lyric_config).then(config => this.handleUpdateConfig(config))
   },
   mounted() {
     document.addEventListener('mousemove', this.handleMouseMove)
@@ -117,6 +117,10 @@ export default {
     document.removeEventListener('mouseup', this.handleMouseUp)
   },
   methods: {
+    handleUpdateConfig({ config, languageId }) {
+      this.lrcConfig = config
+      if (this.$i18n.locale !== languageId && languageId != null) this.$i18n.locale = languageId
+    },
     handleMouseDown(origin, event) {
       this.handleMouseUp()
       this.resize.origin = origin

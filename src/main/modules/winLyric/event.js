@@ -16,7 +16,10 @@ const setLrcConfig = isForceSet => {
     }
   }
   if (global.modules.lyricWindow) {
-    mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, desktopLyric)
+    mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, {
+      config: desktopLyric,
+      languageId: global.appSetting.langId,
+    })
     if (isForceSet || isLock != desktopLyric.isLock) {
       isLock = desktopLyric.isLock
       if (desktopLyric.isLock) {

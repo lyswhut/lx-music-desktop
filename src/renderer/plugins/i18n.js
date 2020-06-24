@@ -14,8 +14,8 @@ import messages from '@/lang'
 Vue.use(VueI18n)
 
 const i18n = window.i18n = new VueI18n({
-  locale: 'cns',
-  fallbackLocale: 'cns',
+  locale: 'zh-cn',
+  fallbackLocale: 'zh-cn',
   messages,
 })
 

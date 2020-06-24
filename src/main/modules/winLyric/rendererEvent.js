@@ -23,7 +23,7 @@ mainOn(ipcWinLyricNames.set_lyric_config, (event, config) => {
 })
 
 mainHandle(ipcWinLyricNames.get_lyric_config, async() => {
-  return global.appSetting.desktopLyric
+  return { config: global.appSetting.desktopLyric, languageId: global.appSetting.langId }
 })
 
 let bounds

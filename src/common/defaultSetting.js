@@ -79,7 +79,7 @@ const defaultSetting = {
   },
   windowSizeId: 2,
   themeId: 0,
-  langId: 'cns',
+  langId: null,
   sourceId: 'kw',
   apiSource: 'temp',
   sourceNameType: 'alias',

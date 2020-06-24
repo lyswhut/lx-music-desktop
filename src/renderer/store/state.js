@@ -3,6 +3,8 @@
 import Store from 'electron-store'
 import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
+import { rendererSend, NAMES } from '../../common/ipc'
+import languageList from '@/lang/languages.json'
 
 window.electronStore_list = new Store({
   name: 'playList',
@@ -15,7 +17,29 @@ let settingVersion = electronStore_config.get('version')
 
 process.versions.app = version
 
+// Set language automatically
+if (!window.i18n.availableLocales.includes(setting.langId)) {
+  let langId = null
+  let locale = window.navigator.language.toLocaleLowerCase()
+  if (window.i18n.availableLocales.includes(locale)) {
+    langId = locale
+  } else {
+    for (const lang of languageList) {
+      if (lang.alternate == locale) {
+        langId = lang.locale
+        break
+      }
+    }
+    if (langId == null) langId = 'en-us'
+  }
+  setting.langId = langId
+  electronStore_config.set('setting', setting)
+  rendererSend(NAMES.mainWindow.set_app_setting, setting)
+  console.log('Set lang', setting.langId)
+}
+
 window.i18n.locale = setting.langId
+
 
 export default {
   themes: [
