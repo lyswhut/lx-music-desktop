@@ -38,7 +38,6 @@ global.lx_event.common.on(COMMON_EVENT_NAME.config, name => {
   if (WIN_LYRIC_EVENT_NAME.name === name) return
   setLrcConfig(false)
 })
-// global.lx_event.winLyric.on(WIN_LYRIC_EVENT_NAME.inited, () => setLrcConfig(true))
 
 global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.setLyricInfo, info => {
   if (!global.modules.lyricWindow) return

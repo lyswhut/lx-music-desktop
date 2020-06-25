@@ -10,10 +10,6 @@ class WinLyric extends EventEmitter {
   close() {
     this.emit(WIN_LYRIC_EVENT_NAME.close)
   }
-
-  inited() {
-    this.emit(WIN_LYRIC_EVENT_NAME.inited)
-  }
 }
 
 module.exports = WinLyric

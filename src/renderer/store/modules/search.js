@@ -179,12 +179,11 @@ const mutations = {
       total += source.total
       limit += source.limit
     }
-    list = handleSortList(list, state.text)
     state.allPage = Math.max(...pages)
     state.total = total
     state.limit = limit
     state.page = page
-    state.list = list
+    state.list = handleSortList(list, state.text)
   },
   clearList(state) {
     for (const source of Object.keys(state.sourceList)) {

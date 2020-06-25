@@ -22,7 +22,6 @@ exports.winLyric = {
   name: 'winLyric',
   create: 'create',
   close: 'close',
-  inited: 'inited',
 }
 
 exports.hotKey = {

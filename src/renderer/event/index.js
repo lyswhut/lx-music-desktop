@@ -62,7 +62,7 @@ rendererOn(NAMES.mainWindow.focus, () => {
   eventHub.$emit(baseName.focus)
 })
 rendererOn(NAMES.mainWindow.key_down, (event, { type, key }) => {
-  console.log(appHotKeyConfig.global.keys[key])
+  // console.log(appHotKeyConfig.global.keys[key])
   if (appHotKeyConfig.global.keys[key]) {
     window.eventHub.$emit(appHotKeyConfig.global.keys[key].action)
   }

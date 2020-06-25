@@ -1,5 +1,5 @@
 <template lang="pug">
-#container(v-if="isProd && !isNt" :class="[theme, nd ? 'nd' : '']" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
+#container(v-if="isProd && !isNt" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
   core-aside#left
   #right
     core-toolbar#toolbar
@@ -9,7 +9,7 @@
   material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
-#container(v-else :class="[theme, nd ? 'nd' : '']")
+#container(v-else :class="theme")
   core-aside#left
   #right
     core-toolbar#toolbar
@@ -58,7 +58,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('player', ['isShowPlayerDetail']),
     ...mapGetters(['setting', 'theme', 'version', 'windowSizeActive']),
     ...mapGetters('list', ['defaultList', 'loveList', 'userList']),
     ...mapGetters('download', {
@@ -68,9 +67,6 @@ export default {
     ...mapGetters('search', {
       searchHistoryList: 'historyList',
     }),
-    nd() {
-      return this.isShowPlayerDetail
-    },
   },
   created() {
     this.saveDefaultList = throttle(n => {
