@@ -23,6 +23,8 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { openUrl } from '../utils'
+import musicSdk from '../utils/music'
 export default {
   name: 'Leaderboard',
   data() {
@@ -99,6 +101,8 @@ export default {
       }
     },
     handleMenuClick(info) {
+      let minfo
+      let url
       switch (info.action) {
         case 'download':
           if (this.selectedData.length) {
@@ -132,6 +136,11 @@ export default {
             })
           }
           break
+        case 'sourceDetail':
+          minfo = this.list[info.index]
+          url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
+          if (!url) return
+          openUrl(url)
       }
     },
     testPlay(index) {

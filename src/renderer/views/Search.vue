@@ -61,8 +61,8 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo, clipboardWriteText, assertApiSupport, findParentNode } from '../utils'
-// import music from '../utils/music'
+import { scrollTo, clipboardWriteText, assertApiSupport, findParentNode, openUrl } from '../utils'
+import musicSdk from '../utils/music'
 export default {
   name: 'Search',
   data() {
@@ -90,6 +90,7 @@ export default {
           play: true,
           addTo: true,
           download: true,
+          sourceDetail: true,
         },
         menuLocation: {
           x: 0,
@@ -177,6 +178,11 @@ export default {
           name: this.$t('view.search.list_add_to'),
           action: 'addTo',
           disabled: !this.listMenu.itemMenuControl.addTo,
+        },
+        {
+          name: this.$t('view.search.list_source_detail'),
+          action: 'sourceDetail',
+          disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
       ]
     },
@@ -414,6 +420,7 @@ export default {
       return assertApiSupport(source)
     },
     handleListItemRigthClick(event, index) {
+      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.listInfo.list[index].source].getMusicDetailPageUrl
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
@@ -436,6 +443,7 @@ export default {
       let index = this.listMenu.rightClickItemIndex
       this.hideListMenu()
       let minfo
+      let url
       switch (action && action.action) {
         case 'play':
           if (this.selectedData.length) {
@@ -467,6 +475,12 @@ export default {
               this.isShowDownload = true
             })
           }
+          break
+        case 'sourceDetail':
+          minfo = this.listInfo.list[index]
+          url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
+          if (!url) return
+          openUrl(url)
           break
       }
     },

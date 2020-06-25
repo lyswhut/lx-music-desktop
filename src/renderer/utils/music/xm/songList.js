@@ -138,6 +138,7 @@ export default {
         source: 'xm',
         interval: formatPlayTime(parseInt(songData.length / 1000)),
         songmid: songData.songId,
+        songStringId: songData.songStringId,
         img: songData.albumLogo || songData.albumLogoS,
         lrc: null,
         lrcUrl: songData.lyricInfo && songData.lyricInfo.lyricFile,

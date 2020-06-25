@@ -76,6 +76,7 @@ export default {
         interval: formatPlayTime(parseInt(songData.length / 1000)),
         songmid: songData.songId,
         img: songData.albumLogo || songData.albumLogoS,
+        songStringId: songData.songStringId,
         lrc: null,
         lrcUrl: songData.lyricInfo && songData.lyricInfo.lyricFile,
         types,

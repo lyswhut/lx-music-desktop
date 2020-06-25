@@ -21,6 +21,9 @@ const tx = {
   getPic(songInfo) {
     return apis('tx').getPic(songInfo)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return `https://y.qq.com/n/yqq/song/${songInfo.songmid}.html`
+  },
 }
 
 export default tx

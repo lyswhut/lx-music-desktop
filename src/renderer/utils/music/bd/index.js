@@ -33,6 +33,9 @@ const bd = {
   getMusicInfo(songInfo) {
     return musicInfo.getMusicInfo(songInfo.songmid)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return `http://music.taihe.com/song/${songInfo.songmid}`
+  },
 }
 
 export default bd

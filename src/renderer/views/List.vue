@@ -69,7 +69,8 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, scrollTo, clipboardWriteText, assertApiSupport, findParentNode } from '../utils'
+import { throttle, scrollTo, clipboardWriteText, assertApiSupport, findParentNode, openUrl } from '../utils'
+import musicSdk from '../utils/music'
 export default {
   name: 'List',
   data() {
@@ -120,6 +121,7 @@ export default {
           moveTo: true,
           download: true,
           remove: true,
+          sourceDetail: true,
         },
         menuLocation: {
           x: 0,
@@ -210,6 +212,11 @@ export default {
           name: this.$t('view.list.list_copy_name'),
           action: 'copyName',
           disabled: !this.listMenu.itemMenuControl.copyName,
+        },
+        {
+          name: this.$t('view.list.list_source_detail'),
+          action: 'sourceDetail',
+          disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
         {
           name: this.$t('view.list.list_add_to'),
@@ -658,6 +665,7 @@ export default {
       })
     },
     handleListItemRigthClick(event, index) {
+      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
@@ -711,6 +719,7 @@ export default {
       let index = this.listMenu.rightClickItemIndex
       this.hideListMenu()
       let minfo
+      let url
       switch (action && action.action) {
         case 'play':
           this.testPlay(index)
@@ -765,6 +774,11 @@ export default {
             this.handleRemove(index)
           }
           break
+        case 'sourceDetail':
+          minfo = this.list[index]
+          url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
+          if (!url) return
+          openUrl(url)
       }
     },
   },

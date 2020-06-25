@@ -20,6 +20,9 @@ const mg = {
   getPic(songInfo) {
     return pic.getPic(songInfo)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return `http://music.migu.cn/v3/music/song/${songInfo.copyrightId}`
+  },
 }
 
 export default mg

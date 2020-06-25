@@ -99,6 +99,10 @@ const kw = {
     return pic.getPic(songInfo)
   },
 
+  getMusicDetailPageUrl(songInfo) {
+    return `http://www.kuwo.cn/play_detail/${songInfo.songmid}`
+  },
+
   init() {
     getToken()
   },

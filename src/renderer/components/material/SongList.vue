@@ -49,6 +49,7 @@ div(:class="$style.songList")
 <script>
 import { mapGetters } from 'vuex'
 import { scrollTo, clipboardWriteText, assertApiSupport, findParentNode } from '../../utils'
+import musicSdk from '../../utils/music'
 export default {
   name: 'MaterialSongList',
   model: {
@@ -114,14 +115,19 @@ export default {
           disabled: !this.listMenu.itemMenuControl.download,
         },
         {
+          name: this.$t('material.song_list.list_search'),
+          action: 'search',
+          disabled: !this.listMenu.itemMenuControl.search,
+        },
+        {
           name: this.$t('material.song_list.list_add_to'),
           action: 'addTo',
           disabled: !this.listMenu.itemMenuControl.addTo,
         },
         {
-          name: this.$t('material.song_list.list_search'),
-          action: 'search',
-          disabled: !this.listMenu.itemMenuControl.search,
+          name: this.$t('material.song_list.list_source_detail'),
+          action: 'sourceDetail',
+          disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
       ]
     },
@@ -169,6 +175,7 @@ export default {
           addTo: true,
           download: true,
           search: true,
+          sourceDetail: true,
         },
         menuLocation: {
           x: 0,
@@ -326,6 +333,7 @@ export default {
       return assertApiSupport(source)
     },
     handleListItemRigthClick(event, index) {
+      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')

@@ -20,6 +20,9 @@ const wy = {
   getPic(songInfo) {
     return getMusicInfo(songInfo.songmid).then(info => info.al.picUrl)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return `https://music.163.com/#/song?id=${songInfo.songmid}`
+  },
 }
 
 export default wy

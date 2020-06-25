@@ -61,8 +61,8 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { scrollTo, assertApiSupport } from '../utils'
-// import music from '../utils/music'
+import { scrollTo, assertApiSupport, openUrl } from '../utils'
+import musicSdk from '../utils/music'
 export default {
   name: 'SongList',
   data() {
@@ -203,6 +203,8 @@ export default {
       }
     },
     handleMenuClick(info) {
+      let minfo
+      let url
       switch (info.action) {
         case 'download':
           if (this.selectedData.length) {
@@ -236,6 +238,11 @@ export default {
             })
           }
           break
+        case 'sourceDetail':
+          minfo = this.listDetail.list[info.index]
+          url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
+          if (!url) return
+          openUrl(url)
       }
     },
     testPlay(index) {

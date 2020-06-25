@@ -23,6 +23,9 @@ const kg = {
   getPic(songInfo) {
     return pic.getPic(songInfo)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return `https://www.kugou.com/song/#hash=${songInfo.hash}`
+  },
   // getPic(songInfo) {
   //   return apis('kg').getPic(songInfo)
   // },

@@ -948,14 +948,13 @@ export default {
 .progress {
   width: 100%;
   height: 3px;
-  border-radius: 10px;
   // overflow: hidden;
   transition: @transition-theme;
   transition-property: background-color;
   background-color: @color-player-progress;
   // background-color: #f5f5f5;
   position: relative;
-  border-radius: @radius-progress-border;
+  border-radius: 20px;
 }
 .progress-mask {
   position: absolute;
@@ -972,7 +971,7 @@ export default {
   width: 100%;
   height: 100%;
   transform-origin: 0;
-  border-radius: @radius-progress-border;
+  border-radius: 20px;
 }
 .progress-bar1 {
   background-color: @color-player-progress-bar1;
@@ -1008,6 +1007,7 @@ export default {
   color: @color-player-status-text;
   .mixin-ellipsis-1;
   // padding: 0 5px;
+  padding-right: 5px;
   flex: 1 1 0;
   // text-align: center;
   line-height: 1.2;

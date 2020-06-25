@@ -23,6 +23,9 @@ const xm = {
     return Promise.reject(new Error('fail'))
     // return pic.getPic(songInfo)
   },
+  getMusicDetailPageUrl(songInfo) {
+    return songInfo.songStringId ? `https://www.xiami.com/song/${songInfo.songStringId}` : null
+  },
   // init() {
   //   getToken()
   // },

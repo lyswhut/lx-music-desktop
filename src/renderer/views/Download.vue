@@ -36,7 +36,8 @@ div(:class="$style.download")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { checkPath, openDirInExplorer, findParentNode } from '../utils'
+import { checkPath, openDirInExplorer, findParentNode, openUrl } from '../utils'
+import musicSdk from '../utils/music'
 import path from 'path'
 
 export default {
@@ -63,6 +64,7 @@ export default {
           file: true,
           search: true,
           remove: true,
+          sourceDetail: true,
         },
         menuLocation: {
           x: 0,
@@ -144,6 +146,11 @@ export default {
           name: this.$t('view.download.menu_file'),
           action: 'file',
           hide: !this.listMenu.itemMenuControl.file,
+        },
+        {
+          name: this.$t('view.download.menu_source_detail'),
+          action: 'sourceDetail',
+          disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
         {
           name: this.$t('view.download.menu_search'),
@@ -359,6 +366,7 @@ export default {
       this.selectdData = []
     },
     handleListItemRigthClick(event, index) {
+      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.showList[index].musicInfo.source].getMusicDetailPageUrl
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
@@ -401,6 +409,7 @@ export default {
       this.hideListMenu()
       // let key
       let item
+      let url
 
       switch (action && action.action) {
         case 'play':
@@ -456,6 +465,11 @@ export default {
             })
           }
           break
+        case 'sourceDetail':
+          item = this.showList[index].musicInfo
+          url = musicSdk[item.source].getMusicDetailPageUrl(item)
+          if (!url) return
+          openUrl(url)
       }
     },
   },
