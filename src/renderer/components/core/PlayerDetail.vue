@@ -29,7 +29,7 @@
           ul
 
       div(:class="$style.right")
-        div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" @mousedown="handleLyricMouseDown" ref="dom_lyric")
+        div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
           div(:class="$style.lyricSpace")
           p(v-for="(info, index) in lyricLines" :key="index" :class="lyric.line == index ? $style.lrcActive : null") {{info.text}}
           div(:class="$style.lyricSpace")
@@ -300,6 +300,16 @@ export default {
         if (!this.isPlay) return
         this.handleScrollLrc()
       }, 3000)
+    },
+    handleWheel(event) {
+      console.log(event.deltaY)
+      if (!this.lyricEvent.isStopScroll) this.lyricEvent.isStopScroll = true
+      if (cancelScrollFn) {
+        cancelScrollFn()
+        cancelScrollFn = null
+      }
+      this.$refs.dom_lyric.scrollTop = this.$refs.dom_lyric.scrollTop + event.deltaY
+      this.startLyricScrollTimeout()
     },
     clearLyricScrollTimeout() {
       if (!this.lyricEvent.timeout) return

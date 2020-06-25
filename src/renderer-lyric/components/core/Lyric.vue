@@ -1,5 +1,5 @@
 <template lang="pug">
-div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" :style="lrcStyles" @mousedown="handleLyricMouseDown" ref="dom_lyric")
+div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
   div(:class="$style.lyricSpace")
   div(v-for="(info, index) in lyricLines" :key="index" :class="[$style.lineContent, lyric.line == index ? (lrcConfig.style.isZoomActiveLrc ? $style.lrcActiveZoom : $style.lrcActive) : null]")
     p(:class="$style.lrcLine") {{info.text}}
@@ -237,6 +237,16 @@ export default {
         if (!this.isPlay) return
         this.handleScrollLrc()
       }, 3000)
+    },
+    handleWheel(event) {
+      // console.log(event.deltaY)
+      if (!this.lyricEvent.isStopScroll) this.lyricEvent.isStopScroll = true
+      if (cancelScrollFn) {
+        cancelScrollFn()
+        cancelScrollFn = null
+      }
+      this.$refs.dom_lyric.scrollTop = this.$refs.dom_lyric.scrollTop + event.deltaY
+      this.startLyricScrollTimeout()
     },
     clearLyricScrollTimeout() {
       if (!this.lyricEvent.timeout) return
