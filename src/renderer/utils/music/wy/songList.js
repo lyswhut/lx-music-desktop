@@ -83,10 +83,12 @@ export default {
     })
     const { statusCode, body } = await this._requestObj_listDetail.promise
     if (statusCode !== 200 || body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
-    console.log(body)
+    let limit = 1000
+    let rangeStart = (page - 1) * limit
+    // console.log(body)
     let musicDetail
     try {
-      musicDetail = await musicDetailApi.getList(body.playlist.trackIds.map(trackId => trackId.id))
+      musicDetail = await musicDetailApi.getList(body.playlist.trackIds.slice(rangeStart, limit * page).map(trackId => trackId.id))
     } catch (err) {
       console.log(err)
       if (err.message == 'try max num') {
@@ -95,12 +97,12 @@ export default {
         return this.getListDetail(id, page, ++tryNum)
       }
     }
-    console.log(musicDetail)
+    // console.log(musicDetail)
     return {
       list: musicDetail.list,
       page,
-      limit: this.limit_song,
-      total: musicDetail.list.length,
+      limit,
+      total: body.playlist.trackIds.length,
       source: 'wy',
       info: {
         play_count: this.formatPlayCount(body.playlist.playCount),
