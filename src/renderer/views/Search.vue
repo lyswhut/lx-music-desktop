@@ -36,7 +36,7 @@
                   :download-btn="assertApiSupport(item.source)"
                   @btn-click="handleListBtnClick")
         div(:class="$style.pagination")
-          material-pagination(:count="listInfo.total" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
+          material-pagination(:max-page="listInfo.allPage" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
     div(v-else :class="$style.noitem")
       div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || setting.search.isShowHistorySearch")
         dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
@@ -115,7 +115,7 @@ export default {
     // console.log('mounted')
 
     // 处理搜索源不存在时页面报错的问题
-    if (!this.sourceList[this.setting.search.searchSource]) {
+    if (!this.sourceList[this.setting.search.searchSource] && this.setting.search.searchSource != 'all') {
       this.setSearchSource({
         searchSource: 'kw',
       })

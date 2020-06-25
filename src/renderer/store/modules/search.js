@@ -27,6 +27,67 @@ for (const source of music.sources) {
   sourceMaxPage[source.id] = 0
 }
 
+// https://blog.csdn.net/xcxy2015/article/details/77164126#comments
+const similar = (a, b) => {
+  if (!a || !b) return 0
+  if (a.length > b.length) { // 保证 a <= b
+    let t = b
+    b = a
+    a = t
+  }
+  let al = a.length
+  let bl = b.length
+  let mp = [] // 一个表
+  let i, j, ai, lt, tmp // ai：字符串a的第i个字符。 lt：左上角的值。 tmp：暂存新的值。
+  for (i = 0; i <= bl; i++) mp[i] = i
+  for (i = 1; i <= al; i++) {
+    ai = a.charAt(i - 1)
+    lt = mp[0]
+    mp[0] = mp[0] + 1
+    for (j = 1; j <= bl; j++) {
+      tmp = Math.min(mp[j] + 1, mp[j - 1] + 1, lt + (ai == b.charAt(j - 1) ? 0 : 1))
+      lt = mp[j]
+      mp[j] = tmp
+    }
+  }
+  return 1 - (mp[bl] / bl)
+}
+
+const sortInsert = (arr, data) => {
+  let key = data.num
+  let left = 0
+  let right = arr.length - 1
+
+  while (left <= right) {
+    let middle = parseInt((left + right) / 2)
+    if (key == arr[middle]) {
+      left = middle
+      break
+    } else if (key < arr[middle].num) {
+      right = middle - 1
+    } else {
+      left = middle + 1
+    }
+  }
+  while (left > 0) {
+    if (arr[left - 1].num != key) break
+    left--
+  }
+
+  arr.splice(left, 0, data)
+}
+
+const handleSortList = (list, keyword) => {
+  let arr = []
+  for (const item of list) {
+    sortInsert(arr, {
+      num: similar(keyword, `${item.name} ${item.singer}`),
+      data: item,
+    })
+  }
+  return arr.map(item => item.data).reverse()
+}
+
 sources.push({
   id: 'all',
   name: '聚合搜索',
@@ -65,12 +126,29 @@ const actions = {
       let task = []
       for (const source of sources) {
         if (source.id == 'all') continue
-        task.push(music[source.id].musicSearch.search(text, page))
+        task.push(music[source.id].musicSearch.search(text, page).catch(error => {
+          console.log(error)
+          return {
+            allPage: 1,
+            limit: 30,
+            list: [],
+            source: source.id,
+            total: 0,
+          }
+        }))
       }
       Promise.all(task).then(results => commit('setLists', { results, page }))
     } else {
-      return music[rootState.setting.search.searchSource].musicSearch.search(text, page, limit)
-        .then(data => commit('setList', { page, ...data }))
+      return music[rootState.setting.search.searchSource].musicSearch.search(text, page, limit).catch(error => {
+        console.log(error)
+        return {
+          allPage: 1,
+          limit: 30,
+          list: [],
+          source: rootState.setting.search.searchSource,
+          total: 0,
+        }
+      }).then(data => commit('setList', { page, ...data }))
     }
   },
 }
@@ -101,7 +179,7 @@ const mutations = {
       total += source.total
       limit += source.limit
     }
-    list.sort((a, b) => a.name.charCodeAt(0) - b.name.charCodeAt(0))
+    list = handleSortList(list, state.text)
     state.allPage = Math.max(...pages)
     state.total = total
     state.limit = limit

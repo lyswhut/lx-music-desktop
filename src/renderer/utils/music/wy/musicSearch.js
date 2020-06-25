@@ -30,6 +30,7 @@ export default {
   },
   handleResult(rawList) {
     // console.log(rawList)
+    if (!rawList) return []
     return rawList.map(item => {
       const types = []
       const _types = {}
@@ -83,6 +84,7 @@ export default {
     if (limit != null) this.limit = limit
     return this.musicSearch(str, page).then(result => {
       if (!result || result.code !== 200) return this.search(str, page, { limit }, retryNum)
+      // console.log(result.result)
       let list = this.handleResult(result.result.songs)
 
       if (list == null) return this.search(str, page, { limit }, retryNum)

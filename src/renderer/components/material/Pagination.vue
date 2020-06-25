@@ -56,6 +56,10 @@ export default {
       type: Number,
       default: 7,
     },
+    maxPage: {
+      type: Number,
+      default: null,
+    },
   },
   data() {
     return {
@@ -65,7 +69,7 @@ export default {
   computed: {
     ...mapGetters(['userInfo']),
     allPage() {
-      return Math.ceil(this.count / this.limit) || 1
+      return this.maxPage == null ? Math.ceil(this.count / this.limit) || 1 : this.maxPage
     },
     pageEvg() {
       return Math.floor(this.btnLength / 2)
