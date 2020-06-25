@@ -24,8 +24,9 @@ div(:class="$style.player")
           div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
         div(:class="$style.progressMask" @click='handleSetProgress' ref="dom_progress")
       div(:class="$style.column3")
-        span {{nowPlayTimeStr}}
         span(:class="$style.statusText") {{statusText}}
+        span {{nowPlayTimeStr}}
+        span(style="margin: 0 5px;") /
         span {{maxPlayTimeStr}}
   div(:class="$style.right")
     div(:class="$style.playBtn" @click='handlePrev' :title="$t('core.player.next')" style="transform: rotate(180deg);")
@@ -80,7 +81,7 @@ export default {
       maxPlayTime: 0,
       isPlay: false,
       status: '',
-      statusText: '^-^',
+      statusText: '',
       musicInfo: {
         songmid: null,
         img: null,
@@ -625,6 +626,10 @@ export default {
       // console.log(val)
       if (audio) audio.volume = this.volume
     },
+    handleSetVolumeMute() {
+      audio.muted = !audio.muted
+      this.setVolume(audio.muted)
+    },
     handleVolumeMsUp(e) {
       this.volumeEvent.isMsDown = false
     },
@@ -806,6 +811,7 @@ export default {
     fill: currentColor;
   }
   img {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
     max-width: 100%;
     max-height: 100%;
     transition: @transition-theme;
@@ -1001,9 +1007,9 @@ export default {
   transition-property: color;
   color: @color-player-status-text;
   .mixin-ellipsis-1;
-  padding: 0 5px;
+  // padding: 0 5px;
   flex: 1 1 0;
-  text-align: center;
+  // text-align: center;
   line-height: 1.2;
   width: 0;
 }

@@ -43,7 +43,11 @@ export default {
     state.setting.ignoreVersion = version
   },
   setVolume(state, val) {
-    state.setting.player.volume = val
+    if (typeof val == 'boolean') {
+      state.setting.player.isMute = val
+    } else {
+      state.setting.player.volume = val
+    }
   },
   setMediaDeviceId(state, val) {
     state.setting.player.mediaDeviceId = val
