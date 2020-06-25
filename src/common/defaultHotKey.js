@@ -24,11 +24,6 @@ module.exports = {
         name: hotKeyCommon.focusSearchInput.name,
         action: hotKeyCommon.focusSearchInput.action,
       },
-      'mod+w': {
-        type: hotKeyCommon.min.type,
-        name: hotKeyCommon.min.name,
-        action: hotKeyCommon.min.action,
-      },
     },
   },
   global: {

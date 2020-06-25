@@ -72,10 +72,14 @@ const createWindow = () => {
   if (global.modules.lyricWindow) return
   if (!global.appSetting.desktopLyric.enable) return
   // const windowSizeInfo = getWindowSizeInfo(global.appSetting)
-  const { x, y, width, height, isAlwaysOnTop } = global.appSetting.desktopLyric
+  let { x, y, width, height, isAlwaysOnTop } = global.appSetting.desktopLyric
   let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
   screenWidth += 16
   screenHeight += 16
+  if (x == null) {
+    x = screenWidth - width - 8
+    y = screenHeight - height - 8
+  }
   /**
    * Initial window options
    */
