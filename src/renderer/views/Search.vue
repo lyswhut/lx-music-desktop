@@ -628,6 +628,9 @@ export default {
 
 each(@themes, {
   :global(#container.@{value}) {
+    .labelSource {
+      color: ~'@{color-@{value}-theme}';
+    }
     .noitem {
       p {
         color: ~'@{color-@{value}-theme_2-font-label}';
