@@ -65,6 +65,7 @@
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :is-move="isMoveMultiple" :from-list-id="listData.id" :musicList="selectdListDetailData" :exclude-list-id="excludeListId" @close="handleListAddMultipleModalClose")
     material-menu(:menus="listsItemMenu" :location="listsData.menuLocation" item-name="name" :isShow="listsData.isShowItemMenu" @menu-click="handleListsItemMenuClick")
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
+    material-search-list(:list="list" @action="handleMusicSearchAction" :visible="isVisibleMusicSearch")
 </template>
 
 <script>
@@ -130,6 +131,7 @@ export default {
       },
       isMove: false,
       isMoveMultiple: false,
+      isVisibleMusicSearch: false,
     }
   },
   computed: {
@@ -251,7 +253,7 @@ export default {
     },
     '$route.query.scrollIndex'(n) {
       if (n == null || this.isToggleList) return
-      this.restoreScroll(true)
+      this.restoreScroll(this.$route.query.scrollIndex, true)
       this.isToggleList = true
     },
   },
@@ -322,6 +324,7 @@ export default {
       window.eventHub.$on('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$on('key_mod_up', this.handle_key_mod_up)
       window.eventHub.$on('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$on('key_mod+f_down', this.handle_key_mod_f_down)
     },
     unlistenEvent() {
       window.eventHub.$off('key_shift_down', this.handle_key_shift_down)
@@ -329,6 +332,10 @@ export default {
       window.eventHub.$off('key_mod_down', this.handle_key_mod_down)
       window.eventHub.$off('key_mod_up', this.handle_key_mod_up)
       window.eventHub.$off('key_mod+a_down', this.handle_key_mod_a_down)
+      window.eventHub.$off('key_mod+f_down', this.handle_key_mod_f_down)
+    },
+    handle_key_mod_f_down() {
+      this.isVisibleMusicSearch = true
     },
     handle_key_shift_down() {
       if (!this.keyEvent.isShiftDown) this.keyEvent.isShiftDown = true
@@ -355,11 +362,11 @@ export default {
         this.delayTimeout = setTimeout(() => {
           this.delayTimeout = null
           this.delayShow = true
-          this.restoreScroll()
+          this.restoreScroll(this.$route.query.scrollIndex, false)
         }, 200)
       } else {
         this.delayShow = true
-        this.restoreScroll()
+        this.restoreScroll(this.$route.query.scrollIndex, false)
       }
     },
     clearDelayTimeout() {
@@ -368,9 +375,19 @@ export default {
         this.delayTimeout = null
       }
     },
-    restoreScroll(isAnimation) {
+    handleScrollList(index, isAnimation, callback = () => {}) {
+      let location = this.getMusicLocation(index) - 150
+      if (location < 0) location = 0
+      if (isAnimation) {
+        scrollTo(this.$refs.dom_scrollContent, location, 300, callback)
+      } else {
+        this.$refs.dom_scrollContent.scrollTo(0, location)
+        callback()
+      }
+    },
+    restoreScroll(index, isAnimation) {
       if (!this.list.length) return
-      if (this.$route.query.scrollIndex == null) {
+      if (index == null) {
         let location = this.listData.location || 0
         if (this.setting.list.isSaveScrollLocation && location) {
           this.$nextTick(() => {
@@ -381,9 +398,7 @@ export default {
       }
 
       this.$nextTick(() => {
-        let location = this.getMusicLocation(this.$route.query.scrollIndex) - 150
-        if (location < 0) location = 0
-        isAnimation ? scrollTo(this.$refs.dom_scrollContent, location) : this.$refs.dom_scrollContent.scrollTo(0, location)
+        this.handleScrollList(index, isAnimation)
         this.$router.replace({
           path: 'list',
           query: {
@@ -782,6 +797,22 @@ export default {
           url = musicSdk[minfo.source].getMusicDetailPageUrl(minfo)
           if (!url) return
           openUrl(url)
+      }
+    },
+    handleMusicSearchAction({ action, data: { index, isPlay } = {} }) {
+      this.isVisibleMusicSearch = false
+      switch (action) {
+        case 'listClick':
+          if (index < 0) return
+          this.handleScrollList(index, true, () => {
+            let dom = document.getElementById('mid_' + this.list[index].songmid)
+            dom.classList.add('selected')
+            setTimeout(() => {
+              dom.classList.remove('selected')
+              if (isPlay) this.testPlay(index)
+            }, 600)
+          })
+          break
       }
     },
   },
