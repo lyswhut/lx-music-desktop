@@ -139,7 +139,8 @@ export default {
     padding: 0 5px;
     text-align: center;
     outline: none;
-    transition: background-color @transition-theme;
+    transition: @transition-theme;
+    transition-property: background-color, opacity;
     box-sizing: border-box;
     .mixin-ellipsis-1;
 

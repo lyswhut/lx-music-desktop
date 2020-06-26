@@ -421,6 +421,9 @@ export default {
     },
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.listInfo.list[index].source].getMusicDetailPageUrl
+      this.listMenu.itemMenuControl.play =
+        this.listMenu.itemMenuControl.download =
+        this.assertApiSupport(this.listInfo.list[index].source)
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
