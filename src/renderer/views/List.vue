@@ -70,7 +70,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, scrollTo, clipboardWriteText, assertApiSupport, findParentNode, openUrl } from '../utils'
+import { throttle, scrollTo, clipboardWriteText, assertApiSupport, openUrl } from '../utils'
 import musicSdk from '../utils/music'
 export default {
   name: 'List',
@@ -687,7 +687,7 @@ export default {
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = findParentNode(event.target, 'TD')
+      let dom_td = event.target.closest('td')
 
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX

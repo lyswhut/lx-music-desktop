@@ -36,7 +36,7 @@ div(:class="$style.download")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { checkPath, openDirInExplorer, findParentNode, openUrl } from '../utils'
+import { checkPath, openDirInExplorer, openUrl } from '../utils'
 import musicSdk from '../utils/music'
 import path from 'path'
 
@@ -370,7 +370,7 @@ export default {
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = findParentNode(event.target, 'TD')
+      let dom_td = event.target.closest('td')
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
       this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop

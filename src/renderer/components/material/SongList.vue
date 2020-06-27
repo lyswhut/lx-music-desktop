@@ -48,7 +48,7 @@ div(:class="$style.songList")
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo, clipboardWriteText, assertApiSupport, findParentNode } from '../../utils'
+import { scrollTo, clipboardWriteText, assertApiSupport } from '../../utils'
 import musicSdk from '../../utils/music'
 export default {
   name: 'MaterialSongList',
@@ -340,7 +340,7 @@ export default {
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')
       this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = findParentNode(event.target, 'TD')
+      let dom_td = event.target.closest('td')
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
       this.listMenu.menuLocation.y = dom_td.offsetParent.offsetTop + dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop

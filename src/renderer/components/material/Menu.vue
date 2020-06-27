@@ -37,7 +37,7 @@ export default {
     },
     location: {
       handler(n) {
-        this.listStyles.left = n.x + 'px'
+        this.listStyles.left = n.x + 2 + 'px'
         this.listStyles.top = n.y + 'px'
         if (this.show) {
           if (this.listStyles.transitionProperty != this.transition2) this.listStyles.transitionProperty = this.transition2
@@ -89,10 +89,10 @@ export default {
       const offsetHeight = containerHeight - top - listHeight
       let x = 0
       let y = 0
-      if (containerWidth > listWidth && offsetWidth < 0) {
-        x = offsetWidth - 15
+      if (containerWidth > listWidth && offsetWidth < 17) {
+        x = offsetWidth - 17
       }
-      if (containerHeight > listHeight && offsetHeight < 0) {
+      if (containerHeight > listHeight && offsetHeight < 5) {
         y = offsetHeight - 5
       }
       return `${x}px, ${y}px`

@@ -321,9 +321,6 @@ export const asyncSetArray = (from, to, num = 100) => new Promise(resolve => {
   })
 })
 
-export const findParentNode = (target, tagName) => target.tagName == tagName ? target : target === document ? null : findParentNode(target.parentNode, tagName)
-
-
 /**
  * 获取缓存大小
  */
