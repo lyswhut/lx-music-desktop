@@ -27,7 +27,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
-import { throttle, openUrl } from './utils'
+import { throttle, openUrl, compareVer } from './utils'
 import { base as eventBaseName } from './event/names'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -269,13 +269,8 @@ export default {
         this.setNewVersion(result)
         return result
       }).then(result => {
-        let newVer = result.version.replace(/\./g, '')
-        let currentVer = this.version.version.replace(/\./g, '')
-        let len = Math.max(newVer.length, currentVer.length)
-        newVer.padStart(len, '0')
-        currentVer.padStart(len, '0')
         if (result.version == '0.0.0') return this.setVersionModalVisible({ isUnknow: true, isShow: true })
-        if (parseInt(newVer) <= parseInt(currentVer)) return this.setVersionModalVisible({ isLatestVer: true })
+        if (compareVer(this.version.version, result.version) != -1) return this.setVersionModalVisible({ isLatestVer: true })
 
         if (result.version === this.setting.ignoreVersion) return
         // console.log(this.version)

@@ -25,7 +25,7 @@ const updateChangeLog = async(newVerNum, newChangeLog) => {
   let changeLog = fs.readFileSync(changelogPath, 'utf-8')
   const prevVer = await getPrevVer()
   const log = `## [${newVerNum}](${pkg.repository.url.replace(/^git\+(http.+)\.git$/, '$1')}/compare/v${prevVer}...v${newVerNum}) - ${formatTime()}\n\n${newChangeLog}`
-  fs.writeFileSync(changelogPath, changeLog.replace(new RegExp(`(## [?0.1.1]?)`), log + '\n$1'), 'utf-8')
+  fs.writeFileSync(changelogPath, changeLog.replace(new RegExp('(## [?0.1.1]?)'), log + '\n$1'), 'utf-8')
 }
 
 const renderChangeLog = md => md_renderer(md)
@@ -49,7 +49,7 @@ module.exports = async newVerNum => {
 
   console.log(chalk.blue('new version: ') + chalk.green(newVerNum))
 
-  fs.writeFileSync(jp('../version.json'), JSON.stringify(version, null, 2) + '\n', 'utf-8')
+  fs.writeFileSync(jp('../version.json'), JSON.stringify(version) + '\n', 'utf-8')
 
   fs.writeFileSync(jp(pkgDir), JSON.stringify(pkg, null, 2) + '\n', 'utf-8')
 

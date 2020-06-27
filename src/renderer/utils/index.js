@@ -147,27 +147,23 @@ export const openDirInExplorer = dir => {
   shell.showItemInFolder(dir)
 }
 
-export const checkVersion = (currentVer, targetVer) => {
-  // console.log(currentVer)
-  // console.log(targetVer)
-  currentVer = currentVer.split('.')
-  targetVer = targetVer.split('.')
-  let maxLen = Math.max(currentVer.length, targetVer.length)
-  if (currentVer.length < maxLen) {
-    for (let index = 0, len = maxLen - currentVer.length; index < len; index++) {
-      currentVer.push(0)
-    }
+// https://stackoverflow.com/a/53387532
+export const compareVer = (currentVer, targetVer) => {
+  // treat non-numerical characters as lower version
+  // replacing them with a negative number based on charcode of each character
+  const fix = s => `.${s.toLowerCase().charCodeAt(0) - 2147483647}.`
+
+  currentVer = ('' + currentVer).replace(/[^0-9.]/g, fix).split('.')
+  targetVer = ('' + targetVer).replace(/[^0-9.]/g, fix).split('.')
+  let c = Math.max(currentVer.length, targetVer.length)
+  for (let i = 0; i < c; i++) {
+    // convert to integer the most efficient way
+    currentVer[i] = ~~currentVer[i]
+    targetVer[i] = ~~targetVer[i]
+    if (currentVer[i] > targetVer[i]) return 1
+    else if (currentVer[i] < targetVer[i]) return -1
   }
-  if (targetVer.length < maxLen) {
-    for (let index = 0, len = maxLen - targetVer.length; index < len; index++) {
-      targetVer.push(0)
-    }
-  }
-  for (let index = 0; index < currentVer.length; index++) {
-    if (parseInt(currentVer[index]) < parseInt(targetVer[index])) return true
-    if (parseInt(currentVer[index]) > parseInt(targetVer[index])) return false
-  }
-  return false
+  return 0
 }
 
 export const isObject = item => item && typeof item === 'object' && !Array.isArray(item)
