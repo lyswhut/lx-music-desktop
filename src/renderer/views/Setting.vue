@@ -192,6 +192,11 @@ div.scroll(:class="$style.setting")
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") {{$t('view.setting.backup_all_export')}}
     dt {{$t('view.setting.other')}}
     dd
+      h3 {{$t('view.setting.other_tray_theme')}}
+      div
+        material-checkbox(:id="'setting_tray_theme_' + item.id" v-model="current_setting.tray.themeId" name="setting_tray_theme" need :class="$style.gapLeft"
+          :label="$t('view.setting.other_tray_theme_' + item.name)" :key="item.id" :value="item.id" v-for="item in trayThemeList")
+    dd
       h3 {{$t('view.setting.other_cache')}}
       div
         p
@@ -358,6 +363,18 @@ export default {
         },
       ]
     },
+    trayThemeList() {
+      return [
+        {
+          id: 0,
+          name: 'native',
+        },
+        {
+          id: 1,
+          name: 'origin',
+        },
+      ]
+    },
   },
   data() {
     return {
@@ -418,6 +435,7 @@ export default {
         tray: {
           isShow: false,
           isToTray: false,
+          themeId: 0,
         },
         windowSizeId: 1,
         langId: 'cns',

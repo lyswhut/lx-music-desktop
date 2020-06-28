@@ -17,9 +17,14 @@ global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.quit, () => {
   global.modules.mainWindow.close()
 })
 global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.toggle_minimize, () => {
-  global.modules.mainWindow.isMinimized()
-    ? global.modules.mainWindow.restore()
-    : global.modules.mainWindow.minimize()
+  if (global.modules.mainWindow.isMinimized()) {
+    if (!global.modules.mainWindow.isVisible()) {
+      global.modules.mainWindow.show()
+    }
+    global.modules.mainWindow.restore()
+  } else {
+    global.modules.mainWindow.minimize()
+  }
 })
 global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.toggle_hide, () => {
   global.modules.mainWindow.isVisible()

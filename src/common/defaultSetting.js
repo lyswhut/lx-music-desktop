@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.31',
+  version: '1.0.32',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -76,6 +76,7 @@ const defaultSetting = {
   tray: {
     isShow: false,
     isToTray: false,
+    themeId: 0,
   },
   windowSizeId: 2,
   themeId: 0,

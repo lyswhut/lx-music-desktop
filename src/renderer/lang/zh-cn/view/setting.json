@@ -128,6 +128,9 @@
   "backup_part_export_list_desc": "选择歌单保存位置",
 
   "other": "其他",
+  "other_tray_theme": "托盘图标样式",
+  "other_tray_theme_native": "纯色",
+  "other_tray_theme_origin": "原色",
   "other_cache": "缓存大小（清理缓存后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小）",
   "other_cache_label": "软件已使用缓存大小：",
   "other_cache_label_title": "当前已用缓存",

@@ -3,8 +3,25 @@ const { isWin } = require('../../common/utils')
 const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME } = require('../events/_name')
 const path = require('path')
 let isEnableTray = null
+let themeId = null
+const themeList = [
+  {
+    id: 0,
+    fileName: 'tray0Template',
+    isNative: true,
+  },
+  {
+    id: 1,
+    fileName: 'tray1Template',
+    isNative: false,
+  },
+]
 global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
   if (sourceName === TRAY_EVENT_NAME.name) return
+  if (themeId !== global.appSetting.tray.themeId) {
+    themeId = global.appSetting.tray.themeId
+    setTrayImage(themeId)
+  }
   if (isEnableTray !== global.appSetting.tray.isToTray) {
     isEnableTray = global.appSetting.tray.isToTray
     global.appSetting.tray.isToTray ? createTray() : destroyTray()
@@ -15,7 +32,9 @@ global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
 const createTray = () => {
   if ((global.modules.tray && !global.modules.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? 'trayTemplate@2x.ico' : 'trayTemplate.png')
+  themeId = global.appSetting.tray.themeId
+  let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
+  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
 
   // 托盘
   global.modules.tray = new Tray(iconPath)
@@ -85,3 +104,9 @@ const createMenu = tray => {
   tray.setContextMenu(contextMenu)
 }
 
+const setTrayImage = themeId => {
+  if (!global.modules.tray) return
+  let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
+  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
+  global.modules.tray.setImage(iconPath)
+}

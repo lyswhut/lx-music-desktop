@@ -128,6 +128,9 @@
   "backup_part_export_list_desc": "Save the list to...",
 
   "other": "Extras",
+  "other_tray_theme": "Tray Icon Style",
+  "other_tray_theme_native": "Solid Color",
+  "other_tray_theme_origin": "Primary Color",
   "other_cache": "Cache size (Not recommended since resources such as pictures after the cache is cleaned need re-downloading. The software will dynamically manage the cache size based on disk space)",
   "other_cache_label": "Cache size used: ",
   "other_cache_label_title": "Currently used cache size",
