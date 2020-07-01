@@ -59,6 +59,7 @@
   "list_scroll_title": "是否記住播放列表滾動條位置",
   "list_scroll": "記住列表滾動位置（僅對我的音樂分類有效）",
   "download": "下載設置",
+  "download_enable": "是否啟用下載功能",
   "download_path_title": "下載歌曲保存的路徑",
   "download_path": "下載路徑",
   "download_path_label": "當前下載路徑：",

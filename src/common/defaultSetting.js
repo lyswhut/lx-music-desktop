@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.32',
+  version: '1.0.33',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -35,6 +35,7 @@ const defaultSetting = {
     isSaveScrollLocation: true,
   },
   download: {
+    enable: false,
     savePath: path.join(os.homedir(), 'Desktop'),
     fileName: '歌名 - 歌手',
     maxDownloadNum: 3,

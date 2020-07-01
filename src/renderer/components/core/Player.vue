@@ -21,7 +21,7 @@ div(:class="$style.player")
       div(:class="$style.column2")
         div(:class="$style.progress" v-if="!isShowPlayerDetail")
           //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
-          div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
+          div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})`, willChange: isPlay || isActiveTransition ? 'transform' : 'auto' }")
         div(:class="$style.progressMask" @click='handleSetProgress' ref="dom_progress")
       div(:class="$style.column3")
         span(:class="$style.statusText") {{statusText}}

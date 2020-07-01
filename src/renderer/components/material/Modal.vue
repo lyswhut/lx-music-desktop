@@ -132,6 +132,7 @@ export default {
   align-items: center;
   justify-items: center;
   z-index: 99;
+  // will-change: transform;
 }
 
 .content {

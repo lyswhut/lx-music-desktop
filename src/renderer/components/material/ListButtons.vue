@@ -6,7 +6,7 @@ div(:class="$style.btns")
   button(type="button" v-if="listAddBtn" @contextmenu.capture.stop :title="$t('material.list_buttons.add_to')" @click.stop="handleClick('listAdd')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
       use(xlink:href='#icon-addTo')
-  button(type="button" v-if="downloadBtn" @contextmenu.capture.stop :title="$t('material.list_buttons.download')" @click.stop="handleClick('download')")
+  button(type="button" v-if="downloadBtn && setting.download.enable" @contextmenu.capture.stop :title="$t('material.list_buttons.download')" @click.stop="handleClick('download')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 475.078 475.077' space='preserve')
       use(xlink:href='#icon-download')
   //- button(type="button" :title="$t('material.list_buttons.add')" v-if="userInfo" @click.stop="handleClick('add')")
@@ -31,7 +31,7 @@ div(:class="$style.btns")
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -73,7 +73,7 @@ export default {
     },
   },
   computed: {
-    // ...mapGetters(['userInfo']),
+    ...mapGetters(['setting']),
   },
   methods: {
     handleClick(action) {

@@ -110,6 +110,8 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt {{$t('view.setting.download')}}
+    dd
+      material-checkbox(id="setting_download_enable" v-model="current_setting.download.enable" :label="$t('view.setting.download_enable')")
     dd(:title="$t('view.setting.download_path_title')")
       h3 {{$t('view.setting.download_path')}}
       div
@@ -414,6 +416,7 @@ export default {
           isFocusSearchBox: false,
         },
         download: {
+          enable: false,
           savePath: '',
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,

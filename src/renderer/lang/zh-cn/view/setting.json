@@ -64,6 +64,7 @@
   "list_scroll": "记住列表滚动位置（仅对我的音乐分类有效）",
 
   "download": "下载设置",
+  "download_enable": "是否启用下载功能",
   "download_path_title": "下载歌曲保存的路径",
   "download_path": "下载路径",
   "download_path_label": "当前下载路径：",

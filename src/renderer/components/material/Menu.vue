@@ -1,9 +1,10 @@
 <template lang="pug">
 ul(:class="$style.list" :style="listStyles" ref="dom_list")
-  li(v-for="item in menus" @click="handleClick(item)" v-if="!item.hide" :disabled="item.disabled") {{item[itemName]}}
+  li(v-for="item in menus" @click="handleClick(item)" v-if="!item.hide && (item.action == 'download' ? setting.download.enable : true)" :disabled="item.disabled") {{item[itemName]}}
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -27,6 +28,9 @@ export default {
         return { x: 0, y: 0 }
       },
     },
+  },
+  computed: {
+    ...mapGetters(['setting']),
   },
   watch: {
     isShow: {
@@ -131,6 +135,7 @@ export default {
   box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
   z-index: 10;
   overflow: hidden;
+  // will-change: transform;
   li {
     cursor: pointer;
     min-width: 80px;

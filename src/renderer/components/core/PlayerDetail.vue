@@ -39,7 +39,7 @@
           div(:class="$style.progressContent")
             div(:class="$style.progress")
               //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
-              div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${playInfo.progress || 0})` }")
+              div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${playInfo.progress || 0})`, willChange: isPlay || isActiveTransition ? 'transform' : 'auto' }")
             div(:class="$style.progressMask" @click='setProgress' ref="dom_progress")
         div(:class="$style.timeLabel")
           span(style="margin-left: 15px") {{playInfo.status}}

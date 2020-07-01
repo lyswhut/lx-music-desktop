@@ -64,6 +64,7 @@
   "list_scroll": "Remember playlist scrolling position (for Your library only)",
 
   "download": "Download",
+  "download_enable": "Whether to enable download function",
   "download_path_title": "Define the path to downloading",
   "download_path": "Download path",
   "download_path_label": "Current: ",
