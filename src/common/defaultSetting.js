@@ -59,7 +59,7 @@ const defaultSetting = {
     isAutoClearSearchList: false,
   },
   search: {
-    searchSource: 'kw',
+    searchSource: 'all',
     tempSearchSource: 'kw',
     isShowHotSearch: false,
     isShowHistorySearch: false,
