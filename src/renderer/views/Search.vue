@@ -388,7 +388,7 @@ export default {
       this.isShowListAdd = false
     },
     handleListAddMultipleModalClose(isClearSelect) {
-      if (isClearSelect) this.removeAllSelectListDetail()
+      if (isClearSelect) this.removeAllSelect()
       this.isShowListAddMultiple = false
     },
     handleContextMenu(event) {
