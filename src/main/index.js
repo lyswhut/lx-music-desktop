@@ -112,7 +112,7 @@ function createWindow() {
   global.modules.mainWindow.loadURL(winURL)
 
   winEvent(global.modules.mainWindow)
-  // mainWindow.webContents.openDevTools()
+  // global.modules.mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()
 }

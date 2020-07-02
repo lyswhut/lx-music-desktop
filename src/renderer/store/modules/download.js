@@ -164,25 +164,33 @@ const getUrl = (downloadInfo, isRefresh) => {
  * @param {*} filePath
  * @param {*} isEmbedPic // 是否嵌入图片
  */
-const saveMeta = (downloadInfo, filePath, isEmbedPic) => {
+const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
   if (downloadInfo.type === 'ape') return
-  const promise = isEmbedPic
-    ? downloadInfo.musicInfo.img
-      ? Promise.resolve(downloadInfo.musicInfo.img)
-      : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise
-    : Promise.resolve()
-  promise.then(url => {
+  const tasks = [
+    isEmbedPic
+      ? downloadInfo.musicInfo.img
+        ? Promise.resolve(downloadInfo.musicInfo.img)
+        : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise.catch(err => {
+          console.log(err)
+          return null
+        })
+      : Promise.resolve(),
+    isEmbedLyric
+      ? downloadInfo.musicInfo.lrc
+        ? Promise.resolve(downloadInfo.musicInfo.lrc)
+        : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.catch(err => {
+          console.log(err)
+          return null
+        })
+      : Promise.resolve(),
+  ]
+  Promise.all(tasks).then(([imgUrl, lyric]) => {
     setMeta(filePath, {
       title: downloadInfo.musicInfo.name,
       artist: downloadInfo.musicInfo.singer,
       album: downloadInfo.musicInfo.albumName,
-      APIC: url,
-    })
-  }).catch(() => {
-    setMeta(filePath, {
-      title: downloadInfo.musicInfo.name,
-      artist: downloadInfo.musicInfo.singer,
-      album: downloadInfo.musicInfo.albumName,
+      APIC: imgUrl,
+      lyric,
     })
   })
 }
@@ -311,7 +319,7 @@ const actions = {
         commit('onCompleted', downloadInfo)
         dispatch('startTask')
 
-        saveMeta(downloadInfo, downloadInfo.filePath, rootState.setting.download.isEmbedPic)
+        saveMeta(downloadInfo, downloadInfo.filePath, rootState.setting.download.isEmbedPic, rootState.setting.download.isEmbedLyric)
         if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, downloadInfo.filePath)
         console.log('on complate')
       },

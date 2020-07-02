@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.33',
+  version: '1.0.34',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -41,6 +41,7 @@ const defaultSetting = {
     maxDownloadNum: 3,
     isDownloadLrc: false,
     isEmbedPic: true,
+    isEmbedLyric: true,
   },
   leaderboard: {
     source: 'kw',

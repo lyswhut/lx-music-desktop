@@ -113,7 +113,7 @@ export default {
         albumId: decodeName(info.ALBUMID || ''),
         interval: Number.isNaN(interval) ? 0 : formatPlayTime(interval),
         albumName: info.ALBUM ? decodeName(info.ALBUM) : '',
-        lyric: null,
+        lrc: null,
         img: null,
         types,
         _types,

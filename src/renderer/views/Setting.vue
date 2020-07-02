@@ -125,10 +125,12 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
-    dd(:title="$t('view.setting.download_embed_pic_title')")
-      h3 {{$t('view.setting.download_embed_pic')}}
-      div
-        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.is_enable')")
+    dd
+      h3 {{$t('view.setting.download_data_embed')}}
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.download_embed_pic')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_download_isEmbedLyric" v-model="current_setting.download.isEmbedLyric" :label="$t('view.setting.download_embed_lyric')")
     dd(:title="$t('view.setting.download_lyric_title')")
       h3 {{$t('view.setting.download_lyric')}}
       div
@@ -421,6 +423,7 @@ export default {
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,
           isEmbedPic: true,
+          isEmbedLyric: true,
         },
         network: {
           proxy: {
