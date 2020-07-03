@@ -37,11 +37,11 @@ div(:class="$style.aside")
       dd
         router-link(:active-class="$style.active" :title="$t('core.aside.my_list')" :to="`list?id=${setting.list.prevSelectListId || defaultList.id}`")
           div(:class="$style.icon")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 459.39 388.44' space='preserve')
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 444.87 391.18' space='preserve')
               use(xlink:href='#icon-love')
     dl
       //- dt {{$t('core.aside.other')}}
-      dd
+      dd(v-if="setting.download.enable")
         router-link(:active-class="$style.active" to="download" :title="$t('core.aside.download')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 425.2 425.2' space='preserve')
