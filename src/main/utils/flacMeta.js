@@ -10,7 +10,6 @@ const extReg = /^(\.(?:jpe?g|png)).*$/
 const vendor = 'reference libFLAC 1.2.1 20070917'
 
 const writeMeta = async(filePath, meta, picPath) => {
-  if (meta.lyric) delete meta.lyric
   const comments = Object.keys(meta).map(key => `${key.toUpperCase()}=${meta[key] || ''}`)
   const data = {
     vorbis: {

@@ -184,13 +184,13 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
         })
       : Promise.resolve(),
   ]
-  Promise.all(tasks).then(([imgUrl, lyric]) => {
+  Promise.all(tasks).then(([imgUrl, lyrics]) => {
     setMeta(filePath, {
       title: downloadInfo.musicInfo.name,
       artist: downloadInfo.musicInfo.singer,
       album: downloadInfo.musicInfo.albumName,
       APIC: imgUrl,
-      lyric,
+      lyrics,
     })
   })
 }

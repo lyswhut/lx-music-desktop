@@ -41,7 +41,7 @@ const defaultSetting = {
     maxDownloadNum: 3,
     isDownloadLrc: false,
     isEmbedPic: true,
-    isEmbedLyric: true,
+    isEmbedLyric: false,
   },
   leaderboard: {
     source: 'kw',

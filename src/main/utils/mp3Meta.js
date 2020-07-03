@@ -5,12 +5,12 @@ const request = require('request')
 const extReg = /^(\.(?:jpe?g|png)).*$/
 
 const handleWriteMeta = (meta, filePath) => {
-  if (meta.lyric) {
+  if (meta.lyrics) {
     meta.unsynchronisedLyrics = {
       language: 'zho',
-      text: meta.lyric,
+      text: meta.lyrics,
     }
-    delete meta.lyric
+    delete meta.lyrics
   }
   NodeID3.write(meta, filePath)
 }

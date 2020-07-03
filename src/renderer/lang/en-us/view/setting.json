@@ -74,7 +74,7 @@
   "download_name": "Music file naming",
   "download_data_embed": "Whether to embed the following content in the audio file",
   "download_embed_pic": "Embedding cover",
-  "download_embed_lyric": "Embedding lyric (supports MP3 format only)",
+  "download_embed_lyric": "Embedding lyric",
   "download_lyric_title": "Select whether to download the lyrics file",
   "download_lyric": "Lyrics download",
   "download_name1": "Title - Artist",
