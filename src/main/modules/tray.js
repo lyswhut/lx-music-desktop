@@ -22,9 +22,9 @@ global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
     themeId = global.appSetting.tray.themeId
     setTrayImage(themeId)
   }
-  if (isEnableTray !== global.appSetting.tray.isToTray) {
-    isEnableTray = global.appSetting.tray.isToTray
-    global.appSetting.tray.isToTray ? createTray() : destroyTray()
+  if (isEnableTray !== global.appSetting.tray.isShow) {
+    isEnableTray = global.appSetting.tray.isShow
+    global.appSetting.tray.isShow ? createTray() : destroyTray()
   }
   createMenu(global.modules.tray)
 })

@@ -25,7 +25,7 @@ div.scroll(:class="$style.setting")
     dd(:title="$t('view.setting.basic_to_tray_title')")
       h3 {{$t('view.setting.basic_to_tray')}}
       div
-        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isToTray" :label="$t('view.setting.is_enable')")
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.is_enable')")
 
     dd(:title="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
@@ -988,6 +988,9 @@ export default {
         this.hotKeyStatus = status
         return status
       })
+    },
+    handleTrayShowChange(isShow) {
+      this.current_setting.tray.isToTray = isShow
     },
   },
 }
