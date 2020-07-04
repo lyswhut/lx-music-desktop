@@ -36,7 +36,7 @@
 
 所用技术栈：
 
-- Electron 8
+- Electron 9
 - Vue 2
 
 已支持的平台：
