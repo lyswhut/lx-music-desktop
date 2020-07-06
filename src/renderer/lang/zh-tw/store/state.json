@@ -27,5 +27,8 @@
   "source_alias_mg": "小蜜音樂",
   "source_alias_bd": "小杜音樂",
   "source_alias_xm": "小霞音樂",
-  "source_alias_all": "聚合大會"
+  "source_alias_all": "聚合大會",
+
+  "load_list_file_error_title": "播放列表數據加載錯誤",
+  "load_list_file_error_detail": "我們已經幫你把舊的列表文件備份到{path}\n它以 JSON 格式存儲，你可以嘗試手動修復並恢復它\n\n錯誤詳情：{detail}"
 }

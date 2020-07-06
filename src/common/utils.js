@@ -3,6 +3,9 @@ const Store = require('electron-store')
 const { defaultSetting, overwriteSetting } = require('./defaultSetting')
 const apiSource = require('../renderer/utils/music/api-source-info')
 const defaultHotKey = require('./defaultHotKey')
+const { dialog, app } = require('electron')
+const path = require('path')
+const fs = require('fs')
 
 exports.isLinux = process.platform == 'linux'
 exports.isWin = process.platform == 'win32'
@@ -125,9 +128,25 @@ exports.mergeSetting = (setting, version) => {
  * @param {*} setting
  */
 exports.initSetting = () => {
-  const electronStore_list = new Store({
-    name: 'playList',
-  })
+  let electronStore_list
+  try {
+    electronStore_list = new Store({
+      name: 'playList',
+      clearInvalidConfig: false,
+    })
+  } catch (error) {
+    log.error(error)
+    const backPath = path.join(app.getPath('userData'), 'playList.json.bak')
+    fs.copyFileSync(path.join(app.getPath('userData'), 'playList.json'), backPath)
+    dialog.showMessageBoxSync({
+      type: 'error',
+      message: 'Playlist data loading error',
+      detail: `We have helped you back up the old list file to ${backPath}\nYou can try to repair and restore it manually\n\nError detail: ${error.message}`,
+    })
+    electronStore_list = new Store({
+      name: 'playList',
+    })
+  }
   const electronStore_config = new Store({
     name: 'config',
   })

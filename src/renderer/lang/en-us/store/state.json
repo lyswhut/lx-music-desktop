@@ -30,5 +30,8 @@
   "source_alias_xm": "XM Music",
   "source_alias_bd": "BD Music",
 
-  "source_alias_all": "Aggregated"
+  "source_alias_all": "Aggregated",
+
+  "load_list_file_error_title": "Error loading playlist data",
+  "load_list_file_error_detail": "We have helped you back up the old list file to {path}\nIt is stored in JSON format, you can try to repair and restore it manually\n\nError details: {detail}"
 }

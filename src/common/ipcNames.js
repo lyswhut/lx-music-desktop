@@ -41,6 +41,8 @@ const names = {
     quit: 'quit',
     min_toggle: 'min_toggle',
     hide_toggle: 'hide_toggle',
+    get_data_path: 'get_data_path',
+    show_dialog: 'show_dialog',
   },
   winLyric: {
     close: 'close',

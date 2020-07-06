@@ -14,6 +14,8 @@ require('./getEnvParams')
 require('./setAppSetting')
 require('./setLyricInfo')
 require('./hotKey')
+require('./getDataPath')
+require('./showDialog')
 
 require('./xm_verify')
 

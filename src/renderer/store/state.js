@@ -3,12 +3,11 @@
 import Store from 'electron-store'
 import { windowSizeList } from '../../common/config'
 import { version } from '../../../package.json'
-import { rendererSend, NAMES } from '../../common/ipc'
+import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
 import languageList from '@/lang/languages.json'
+import path from 'path'
 
-window.electronStore_list = new Store({
-  name: 'playList',
-})
+
 const electronStore_config = window.electronStore_config = new Store({
   name: 'config',
 })
@@ -39,6 +38,27 @@ if (!window.i18n.availableLocales.includes(setting.langId)) {
 }
 
 window.i18n.locale = setting.langId
+
+try {
+  window.electronStore_list = new Store({
+    name: 'playList',
+    clearInvalidConfig: false,
+  })
+} catch (error) {
+  rendererInvoke(NAMES.mainWindow.get_data_path).then(dataPath => {
+    rendererSend(NAMES.mainWindow.show_dialog, {
+      type: 'error',
+      message: window.i18n.t('store.state.load_list_file_error_title'),
+      detail: window.i18n.t('store.state.load_list_file_error_detail', {
+        path: path.join(dataPath, 'playList.json.bak'),
+        detail: error.message,
+      }),
+    })
+  })
+  window.electronStore_list = new Store({
+    name: 'playList',
+  })
+}
 
 
 export default {
