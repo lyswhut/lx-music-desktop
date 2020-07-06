@@ -94,7 +94,9 @@ exports.objectDeepMerge = (target, source, mergedObj) => {
 }
 
 exports.mergeSetting = (setting, version) => {
-  const defaultVersion = defaultSetting.version
+  let defaultSettingCopy = JSON.parse(JSON.stringify(defaultSetting))
+  let overwriteSettingCopy = JSON.parse(JSON.stringify(overwriteSetting))
+  const defaultVersion = defaultSettingCopy.version
   if (!version) {
     if (setting) {
       version = setting.version
@@ -103,11 +105,11 @@ exports.mergeSetting = (setting, version) => {
   }
 
   if (!setting) {
-    setting = defaultSetting
+    setting = defaultSettingCopy
   } else if (exports.compareVer(version, defaultVersion) < 0) {
-    exports.objectDeepMerge(defaultSetting, setting)
-    exports.objectDeepMerge(defaultSetting, overwriteSetting)
-    setting = defaultSetting
+    exports.objectDeepMerge(defaultSettingCopy, setting)
+    exports.objectDeepMerge(defaultSettingCopy, overwriteSettingCopy)
+    setting = defaultSettingCopy
   }
 
   if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {

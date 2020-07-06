@@ -283,6 +283,7 @@ import languageList from '@/lang/languages.json'
 import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
+import { gzip, gunzip } from 'zlib'
 
 let hotKeyTargetInput
 let newHotKey
@@ -638,7 +639,7 @@ export default {
     async importSetting(path) {
       let settingData
       try {
-        settingData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
+        settingData = JSON.parse(await this.handleReadFile(path))
       } catch (error) {
         return
       }
@@ -653,14 +654,12 @@ export default {
         type: 'setting',
         data: Object.assign({ version: this.settingVersion }, this.setting),
       }
-      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
-        console.log(err)
-      })
+      this.handleSaveFile(path, JSON.stringify(data))
     },
     async importPlayList(path) {
       let listData
       try {
-        listData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
+        listData = JSON.parse(await this.handleReadFile(path))
       } catch (error) {
         return
       }
@@ -685,14 +684,12 @@ export default {
           ...this.userList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(data, null, 2), 'utf8', err => {
-        console.log(err)
-      })
+      this.handleSaveFile(path, JSON.stringify(data))
     },
     async importAllData(path) {
       let allData
       try {
-        allData = JSON.parse(await fs.promises.readFile(path, 'utf8'))
+        allData = JSON.parse(await this.handleReadFile(path))
       } catch (error) {
         return
       }
@@ -709,7 +706,7 @@ export default {
         this.setList(list)
       }
     },
-    exportAllData(path) {
+    async exportAllData(path) {
       let allData = {
         type: 'allData',
         setting: Object.assign({ version: this.settingVersion }, this.setting),
@@ -719,16 +716,14 @@ export default {
           ...this.userList,
         ],
       }
-      fs.writeFile(path, JSON.stringify(allData, null, 2), 'utf8', err => {
-        console.log(err)
-      })
+      this.handleSaveFile(path, JSON.stringify(allData))
     },
     handleImportAllData() {
       selectDir({
         title: this.$t('view.setting.backup_all_import_desc'),
         properties: ['openFile'],
         filters: [
-          { name: 'Setting', extensions: ['json'] },
+          { name: 'Setting', extensions: ['json', 'lxmc'] },
           { name: 'All Files', extensions: ['*'] },
         ],
       }).then(result => {
@@ -739,7 +734,7 @@ export default {
     handleExportAllData() {
       openSaveDir({
         title: this.$t('view.setting.backup_all_export_desc'),
-        defaultPath: 'lx_datas.json',
+        defaultPath: 'lx_datas.lxmc',
       }).then(result => {
         if (result.canceled) return
         this.exportAllData(result.filePath)
@@ -750,7 +745,7 @@ export default {
         title: this.$t('view.setting.backup_part_import_setting_desc'),
         properties: ['openFile'],
         filters: [
-          { name: 'Setting', extensions: ['json'] },
+          { name: 'Setting', extensions: ['json', 'lxmc'] },
           { name: 'All Files', extensions: ['*'] },
         ],
       }).then(result => {
@@ -761,7 +756,7 @@ export default {
     handleExportSetting() {
       openSaveDir({
         title: this.$t('view.setting.backup_part_export_setting_desc'),
-        defaultPath: 'lx_setting.json',
+        defaultPath: 'lx_setting.lxmc',
       }).then(result => {
         if (result.canceled) return
         this.exportSetting(result.filePath)
@@ -772,7 +767,7 @@ export default {
         title: this.$t('view.setting.backup_part_import_list_desc'),
         properties: ['openFile'],
         filters: [
-          { name: 'Play List', extensions: ['json'] },
+          { name: 'Play List', extensions: ['json', 'lxmc'] },
           { name: 'All Files', extensions: ['*'] },
         ],
       }).then(result => {
@@ -783,7 +778,7 @@ export default {
     handleExportPlayList() {
       openSaveDir({
         title: this.$t('view.setting.backup_part_export_list_desc'),
-        defaultPath: 'lx_list.json',
+        defaultPath: 'lx_list.lxmc',
       }).then(result => {
         if (result.canceled) return
         this.exportPlayList(result.filePath)
@@ -991,6 +986,35 @@ export default {
     },
     handleTrayShowChange(isShow) {
       this.current_setting.tray.isToTray = isShow
+    },
+    async handleSaveFile(path, data) {
+      if (!path.endsWith('.lxmc')) path += '.lxmc'
+      fs.writeFile(path, await this.gzip(data), 'binary', err => {
+        console.log(err)
+      })
+    },
+    async handleReadFile(path) {
+      let isJSON = path.endsWith('.json')
+      let data = await fs.promises.readFile(path, isJSON ? 'utf8' : 'binary')
+      if (!data || isJSON) return data
+      data = await this.gunzip(Buffer.from(data, 'binary'))
+      return data.toString('utf8')
+    },
+    gzip(str) {
+      return new Promise((resolve, reject) => {
+        gzip(str, (err, result) => {
+          if (err) return reject(err)
+          resolve(result)
+        })
+      })
+    },
+    gunzip(buf) {
+      return new Promise((resolve, reject) => {
+        gunzip(buf, (err, result) => {
+          if (err) return reject(err)
+          resolve(result.toString())
+        })
+      })
     },
   },
 }
