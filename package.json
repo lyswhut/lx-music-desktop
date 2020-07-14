@@ -193,7 +193,7 @@
     "file-loader": "^6.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^4.3.0",
-    "less": "^3.11.3",
+    "less": "^3.12.0",
     "less-loader": "^6.2.0",
     "markdown-it": "^11.0.0",
     "mini-css-extract-plugin": "^0.9.0",
@@ -217,7 +217,7 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-merge": "^5.0.8"
+    "webpack-merge": "^5.0.9"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
@@ -225,7 +225,7 @@
     "electron-log": "^4.2.2",
     "electron-store": "^5.2.0",
     "electron-updater": "^4.3.1",
-    "iconv-lite": "^0.6.1",
+    "iconv-lite": "^0.6.2",
     "image-size": "^0.8.3",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.5",
