@@ -6,6 +6,7 @@ import { version } from '../../../package.json'
 import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
 import languageList from '@/lang/languages.json'
 import path from 'path'
+import { openDirInExplorer } from '../utils'
 
 
 const electronStore_config = window.electronStore_config = new Store({
@@ -46,14 +47,15 @@ try {
   })
 } catch (error) {
   rendererInvoke(NAMES.mainWindow.get_data_path).then(dataPath => {
-    rendererSend(NAMES.mainWindow.show_dialog, {
+    let filePath = path.join(dataPath, 'playList.json.bak')
+    rendererInvoke(NAMES.mainWindow.show_dialog, {
       type: 'error',
       message: window.i18n.t('store.state.load_list_file_error_title'),
       detail: window.i18n.t('store.state.load_list_file_error_detail', {
-        path: path.join(dataPath, 'playList.json.bak'),
+        path: filePath,
         detail: error.message,
       }),
-    })
+    }).then(() => openDirInExplorer(filePath))
   })
   window.electronStore_list = new Store({
     name: 'playList',
