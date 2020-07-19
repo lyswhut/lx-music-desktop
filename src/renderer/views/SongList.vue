@@ -172,6 +172,10 @@ export default {
     this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
     if (!this.isVisibleListDetail) this.setTagListWidth()
+    this.listenEvent()
+  },
+  beforeDestroy() {
+    this.unlistenEvent()
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -180,6 +184,22 @@ export default {
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
     ...mapMutations('player', ['setList']),
+    listenEvent() {
+      window.eventHub.$on('key_backspace_down', this.handle_key_backspace_down)
+    },
+    unlistenEvent() {
+      window.eventHub.$off('key_backspace_down', this.handle_key_backspace_down)
+    },
+    handle_key_backspace_down({ event }) {
+      if (!this.isVisibleListDetail ||
+        event.repeat ||
+        this.isShowDownload ||
+        this.isShowDownloadMultiple ||
+        this.isShowListAdd ||
+        this.isShowListAddMultiple ||
+        event.target.classList.contains('key-bind')) return
+      this.hideListDetail()
+    },
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
