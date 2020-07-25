@@ -6,6 +6,16 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.0.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.0.0...v1.0.1) - 2020-07-25
+
+### 优化
+
+- 对我的列表歌曲搜索结果进行相似度排序
+
+### 修复
+
+- 修复在 Windows 系统下缩放比非100%时，拖动桌面歌词会自动加大桌面歌词窗口的问题
+
 ## [1.0.0](https://github.com/lyswhut/lx-music-desktop/compare/v0.18.2...v1.0.0) - 2020-07-24
 
 ### 新增
