@@ -218,7 +218,12 @@ export default {
         this.$refs.dom_lyric.scrollTop = this.lyricEvent.msDownScrollY + this.lyricEvent.msDownY - e.clientY
         this.startLyricScrollTimeout()
       } else if (this.winEvent.isMsDown) {
-        rendererSend(NAMES.winLyric.set_win_bounds, { x: e.clientX - this.winEvent.msDownX, y: e.clientY - this.winEvent.msDownY })
+        rendererSend(NAMES.winLyric.set_win_bounds, {
+          x: e.clientX - this.winEvent.msDownX,
+          y: e.clientY - this.winEvent.msDownY,
+          w: window.innerWidth,
+          h: window.innerHeight,
+        })
       }
 
       // if (this.volumeEvent.isMsDown) {

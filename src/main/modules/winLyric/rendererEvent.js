@@ -31,32 +31,33 @@ let winX
 let winY
 let wasW
 let wasY
+let offset = 8
 mainOn(ipcWinLyricNames.set_win_bounds, (event, { x = 0, y = 0, w = 0, h = 0 }) => {
   if (!global.modules.lyricWindow) return
   bounds = global.modules.lyricWindow.getBounds()
   wasW = global.envParams.workAreaSize.width
-  wasY = global.envParams.workAreaSize.height + 8
+  wasY = global.envParams.workAreaSize.height + offset
 
-  bounds.width = w + bounds.width
-  bounds.height = h + bounds.height
-  if (bounds.width > wasW - 8) {
-    bounds.width = wasW - 8
-  } else if (bounds.width < 300) {
-    bounds.width = 300
+  bounds.width = w
+  bounds.height = h
+  if (bounds.width > wasW - offset) {
+    bounds.width = wasW - offset
+  } else if (bounds.width < 380) {
+    bounds.width = 380
   }
   if (bounds.height > wasY) {
-    bounds.height = wasY + 8
-  } else if (bounds.height < 120) {
-    bounds.height = 120
+    bounds.height = wasY + offset
+  } else if (bounds.height < 80) {
+    bounds.height = 80
   }
 
 
   if (x != 0) {
     winX = bounds.x + x
-    if (winX > wasW - bounds.width + 8) {
-      winX = wasW - bounds.width + 8
-    } else if (winX < -8) {
-      winX = -8
+    if (winX > wasW - bounds.width + offset) {
+      winX = wasW - bounds.width + offset
+    } else if (winX < -offset) {
+      winX = -offset
     }
     bounds.x = winX
   }
@@ -64,12 +65,12 @@ mainOn(ipcWinLyricNames.set_win_bounds, (event, { x = 0, y = 0, w = 0, h = 0 }) 
     winY = bounds.y + y
     if (winY > wasY - bounds.height) {
       winY = wasY - bounds.height
-    } else if (winY < -8) {
-      winY = -8
+    } else if (winY < -offset) {
+      winY = -offset
     }
     bounds.y = winY
   }
 
-  // console.log(bounds)
+  // console.log(bounds, x, y, w, h)
   global.modules.lyricWindow.setBounds(bounds)
 })

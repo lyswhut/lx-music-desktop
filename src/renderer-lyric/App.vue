@@ -134,7 +134,10 @@ export default {
       if (!this.resize.origin) return
       // if (!event.target.classList.contains('resize-' + this.resize.origin)) return
       // console.log(event.target)
-      let bounds = {}
+      let bounds = {
+        w: 0,
+        h: 0,
+      }
       let temp
       switch (this.resize.origin) {
         case 'left':
@@ -185,6 +188,8 @@ export default {
           break
       }
       // console.log(bounds)
+      bounds.w = window.innerWidth + bounds.w
+      bounds.h = window.innerHeight + bounds.h
       rendererSend(NAMES.winLyric.set_win_bounds, bounds)
     },
     handleMouseOver() {

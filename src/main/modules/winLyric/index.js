@@ -67,29 +67,29 @@ const winEvent = lyricWindow => {
   })
 }
 
-
+let offset = 8
 const createWindow = () => {
   if (global.modules.lyricWindow) return
   if (!global.appSetting.desktopLyric.enable) return
   // const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   let { x, y, width, height, isAlwaysOnTop } = global.appSetting.desktopLyric
   let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
-  screenWidth += 16
-  screenHeight += 16
+  screenWidth += offset * 2
+  screenHeight += offset * 2
   if (x == null) {
-    x = screenWidth - width - 8
-    y = screenHeight - height - 8
+    x = screenWidth - width - offset
+    y = screenHeight - height - offset
   }
   /**
    * Initial window options
    */
   global.modules.lyricWindow = new BrowserWindow({
-    height: height > screenHeight ? screenHeight : height,
-    width: width > screenWidth ? screenWidth : width,
-    x: Math.max(-8, screenWidth < (width + x) ? screenWidth - width : x),
-    y: Math.max(-8, screenHeight < (height + y) ? screenHeight - height : y),
-    minWidth: 300,
-    minHeight: 300,
+    height: Math.max(height > screenHeight ? screenHeight : height, 80),
+    width: Math.max(width > screenWidth ? screenWidth : width, 380),
+    x: Math.max(-offset, screenWidth < (width + x) ? screenWidth - width : x),
+    y: Math.max(-offset, screenHeight < (height + y) ? screenHeight - height : y),
+    minWidth: 380,
+    minHeight: 80,
     useContentSize: true,
     frame: false,
     transparent: true,
