@@ -6,7 +6,7 @@
       @event="handleEvent" :list="tipList" :visibleList="visibleList"
       v-model="searchText")
 
-    div(:class="$style.logo" v-if="setting.controlBtnPosition == 'left'") L X
+    div(:class="$style.logo" v-if="setting.controlBtnPosition == 'left'") 
     div(:class="$style.control" v-else)
       button(type="button" :class="$style.min" :title="$t('core.toolbar.min')" @click="min")
         svg(:class="$style.icon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')

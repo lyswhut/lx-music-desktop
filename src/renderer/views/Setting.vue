@@ -224,42 +224,40 @@ div.scroll(:class="$style.setting")
     dt {{$t('view.setting.about')}}
     dd
       p.small
-        | 本软件完全免费，代码已开源，开源地址：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+        | 本软件是基于洛雪音乐助手进行修改的 
+        strong 五音版
+        |&nbsp;, 此版本主要为五音助手APP用户制作，后续会跟进原版迭代更新，感谢五音助手用户的支持！
       p.small
-        | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://t-s.lanzous.com/b0bf2cfa')") 网盘地址
-        | &nbsp;&nbsp;密码：
-        span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
+        | 五音助手最新版本发布地址（包含Android、Windows、MAC、Linux版）：&nbsp;
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.sixyin.com/42.html')") 点我前往下载
+      br
       p.small
-        | 软件的常见问题可转至：
+        | 软件的常见问题可转至洛雪音乐助手常见问题：&nbsp;
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
-        strong 仔细 仔细 仔细
+        strong 仔细 仔细 仔细&nbsp;
         | 地阅读常见问题后，
       p.small
-        | 仍有问题可加企鹅群&nbsp;
-        span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
+        | 仍有问题可加五音不全QQ群&nbsp;
+        span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=0NGcjsSt')") 604939182
         | &nbsp;反馈
-        strong (为免满人，无事勿加，入群先看群公告)
-        | ，或到 GitHub 提交&nbsp;
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
-
-      br
-      p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
-      p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
       p.small
         | 你已签署本软件的&nbsp;
-        material-btn(min @click="handleShowPact") 许可协议
-        | ，协议的在线版本在&nbsp;
-        strong.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
-        | &nbsp;。
+        material-btn(min @click="handleShowPact") 许可协议 
+        |。
       br
 
       p
-        small By：
+        small Made By：
         | 落雪无痕
+      p
+        small Modify By：
+        | 六音
+      
+      p.small
+        | 原版洛雪音乐助手开源地址：
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
 </template>
 
 <script>

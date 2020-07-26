@@ -1,7 +1,7 @@
 This project (software) is issued based on the Apache License 2.0 license. Before using this software, you (users) need to sign this agreement before you can continue to use it. The following agreement is a supplement to the Apache License 2.0. In case of conflict, use the following agreement Shall prevail.
 
 
-Terms agreed: "this software" in this agreement refers to the Luo Xue Music desktop version of the project; "user" refers to the user who signed this agreement; "official music platform" refers to the built-in software including Kuwo, Kugou, Migu The official platforms of music sources, etc. are collectively referred to; "copyright data" refers to data including but not limited to images, audio, names, etc. that others own the copyright.
+Terms agreed: "this software" in this agreement refers to the Luo Xue Music desktop version (five tone version) of the project; "user" refers to the user who signed this agreement; "official music platform" refers to the built-in software including Kuwo, Kugou, Migu The official platforms of music sources, etc. are collectively referred to; "copyright data" refers to data including but not limited to images, audio, names, etc. that others own the copyright.
 
 1. The principle of the data source of this software is to pull data from the public servers of each official music platform. After simply filtering and merging the data for display, this software is not responsible for the accuracy of the data.
 2. Copyright data may be generated during the use of this software. For this copyright data, the software does not own their ownership. In order to avoid infringement, users must clear the copyright generated during the use of this software within 24 hours data.
@@ -15,4 +15,4 @@ Terms agreed: "this software" in this agreement refers to the Luo Xue Music desk
 * The original intention of this software is to help the official music platform to simplify the data generation for display, and to help users quickly locate the music platform where the desired content is based on the song title, artist and other keywords.
 * Music platform is not easy, it is recommended to support genuine resources to the corresponding music platform.
 
-By: lyswhut
+By: lyswhut & sixyin

@@ -204,7 +204,7 @@ export const openUrl = url => {
  * 设置标题
  */
 let dom_title = document.getElementsByTagName('title')[0]
-export const setTitle = (title = '洛雪音乐助手') => {
+export const setTitle = (title = '洛雪音乐助手(五音版)') => {
   dom_title.innerText = title
 }
 

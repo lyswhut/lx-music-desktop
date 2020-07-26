@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
-  "productName": "lx-music-desktop",
+  "productName": "洛雪音乐助手(五音版)",
   "scripts": {
     "php": "babel file.php -o file.js",
     "pack": "node build-config/pack.js && npm run pack:win",
@@ -79,7 +79,7 @@
     ],
     "win": {
       "icon": "./resources/icons/256x256.ico",
-      "legalTrademarks": "lyswhut",
+      "legalTrademarks": "sixyin",
       "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
     "mac": {
@@ -87,12 +87,12 @@
       "category": "public.app-category.music"
     },
     "linux": {
-      "maintainer": "lyswhut <lyswhut@qq.com>",
+      "maintainer": "sixyin <33755623@qq.com>",
       "artifactName": "${productName} v${version} ${env.ARCH}.${ext}",
       "icon": "./resources/icons",
       "category": "Utility;AudioVideo;Audio;Player;Music;",
       "desktop": {
-        "Name[zh_CN]": "洛雪音乐助手"
+        "Name[zh_CN]": "洛雪音乐助手(五音版)"
       }
     },
     "nsis": {
@@ -101,7 +101,7 @@
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": true,
       "license": "./licenses/license.rtf",
-      "shortcutName": "lx-music"
+      "shortcutName": "洛雪音乐助手(五音版)"
     },
     "dmg": {
       "window": {
@@ -112,7 +112,7 @@
         {
           "x": 106,
           "y": 252,
-          "name": "lx-music"
+          "name": "洛雪音乐助手(五音版)"
         },
         {
           "x": 490,
@@ -121,7 +121,7 @@
           "path": "/Applications"
         }
       ],
-      "title": "洛雪音乐助手 v${version}"
+      "title": "洛雪音乐助手(五音版) v${version}"
     },
     "appImage": {
       "license": "./licenses/license_zh.txt",
@@ -130,20 +130,20 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "lyswhut",
+        "owner": "sixyin",
         "repo": "lx-music-desktop"
       },
       {
         "package": "lx-music-desktop",
         "repo": "lx-music-desktop",
-        "user": "lyswhut",
+        "user": "sixyin",
         "provider": "bintray"
       }
     ]
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lyswhut/lx-music-desktop.git"
+    "url": "git+https://github.com/sixyin/lx-music-desktop.git"
   },
   "keywords": [
     "music-player",
@@ -151,14 +151,14 @@
     "vuejs2"
   ],
   "author": {
-    "name": "lyswhut",
-    "email": "lyswhut@qq.com"
+    "name": "sixyin",
+    "email": "33755623@qq.com"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lyswhut/lx-music-desktop/issues"
+    "url": "https://github.com/sixyin/lx-music-desktop/issues"
   },
-  "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
+  "homepage": "https://github.com/sixyin/lx-music-desktop#readme",
   "devDependencies": {
     "@babel/core": "^7.10.5",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",

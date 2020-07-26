@@ -2,6 +2,17 @@
 
 module.exports = [
   {
+    id: 'yj',
+    name: '五音接口',
+    disabled: false,
+    supportQualitys: {
+      tx: ['128k', '320k', 'flac'],
+      wy: ['128k', '320k', 'flac'],
+      kw: ['128k', '320k', 'flac'],
+      mg: ['128k', '320k', 'flac'],
+    },
+  },
+  {
     id: 'test',
     name: '测试接口',
     disabled: false,

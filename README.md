@@ -1,12 +1,10 @@
-<p align="center"><a href="https://github.com/lyswhut/lx-music-desktop"><img width="200" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/icon.png" alt="lx-music logo"></a></p>
+<p align="center"><a href="https://github.com/sixyin/lx-music-desktop"><img width="200" src="https://github.com/sixyin/lx-music-desktop/blob/master/doc/images/icon.png" alt="lx-music logo"></a></p>
 
 <p align="center">
-  <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/lyswhut/lx-music-desktop" alt="Release version"></a>
-  <a href="https://ci.appveyor.com/project/lyswhut/lx-music-desktop"><img src="https://ci.appveyor.com/api/projects/status/flrsqd5ymp8fnte5?svg=true" alt="Build status"></a>
-  <a href="https://travis-ci.org/lyswhut/lx-music-desktop"><img src="https://travis-ci.org/lyswhut/lx-music-desktop.svg?branch=master" alt="Build status"></a>
-  <a href="https://electronjs.org/releases/stable"><img src="https://img.shields.io/github/package-json/dependency-version/lyswhut/lx-music-desktop/dev/electron/master" alt="Electron version"></a>
+  <a href="https://github.com/sixyin/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/sixyin/lx-music-desktop" alt="Release version"></a>
+  <a href="https://electronjs.org/releases/stable"><img src="https://img.shields.io/github/package-json/dependency-version/sixyin/lx-music-desktop/dev/electron/master" alt="Electron version"></a>
   <!-- <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/latest/total" alt="Downloads"></a> -->
-  <a href="https://github.com/lyswhut/lx-music-desktop/tree/dev"><img src="https://img.shields.io/github/package-json/v/lyswhut/lx-music-desktop/dev" alt="Dev branch version"></a>
+  <a href="https://github.com/sixyin/lx-music-desktop/tree/dev"><img src="https://img.shields.io/github/package-json/v/sixyin/lx-music-desktop/dev" alt="Dev branch version"></a>
   <!-- <a href="https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lyswhut/lx-music-desktop" alt="License"></a> -->
 </p>
 
@@ -28,7 +26,7 @@
 [9]: https://img.shields.io/github/license/lyswhut/lx-music-desktop
 [10]: https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE -->
 
-<h2 align="center">洛雪音乐助手桌面版</h2>
+<h2 align="center">洛雪音乐助手桌面版(五音版)</h2>
 
 ### 说明
 
@@ -45,9 +43,8 @@
 - Mac OS
 - Linux
 
-软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
-软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载（网盘内有MAC、windows版）：`https://t-s.lanzous.com/b0bf2cfa/` 密码：`glqw`<br>
+软件变化请查看：[更新日志](https://github.com/sixyin/lx-music-desktop/blob/master/CHANGELOG.md)<br>
+软件下载请转到：[发布页面](http://www.sixyin.com/544.html)<br>
 使用常见问题请转至：[常见问题](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md)
 
 ### 源码使用方法
@@ -74,7 +71,7 @@ npm run pack:linux
 
 ### UI界面
 
-<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
+<p><a href="https://github.com/sixyin/lx-music-desktop"><img width="100%" src="https://github.com/sixyin/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
 
 ### 启动参数
 
@@ -85,11 +82,11 @@ npm run pack:linux
 
 ### 常见问题
 
-常见问题已移至：<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>
+常见问题已移至：<https://github.com/sixyin/lx-music-desktop/blob/master/FAQ.md>
 
 ### 项目协议
 
-本项目基于 [Apache License 2.0](https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE) 许可证发行，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
+本项目基于 [Apache License 2.0](https://github.com/sixyin/lx-music-desktop/blob/master/LICENSE) 许可证发行，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
 
 词语约定：本协议中的“本项目”指洛雪音乐桌面版项目；“使用者”指签署本协议的使用者；“官方音乐平台”指对本项目内置的包括酷我、酷狗、咪咕等音乐源的官方平台统称；“版权数据”指包括但不限于图像、音频、名字等在内的他人拥有所属版权的数据。
 
@@ -103,4 +100,4 @@ npm run pack:linux
 若你使用了本项目，将代表你接收以上协议。
 
 音乐平台不易，请尊重版权，支持正版。<br>
-若对此有疑问请 mail to: lyswhut+qq.com (请将`+`替换成`@`)
+若对此有疑问请 mail to: 33755623+qq.com (请将`+`替换成`@`)

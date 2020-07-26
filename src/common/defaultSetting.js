@@ -35,7 +35,7 @@ const defaultSetting = {
     isSaveScrollLocation: true,
   },
   download: {
-    enable: false,
+    enable: true,
     savePath: path.join(os.homedir(), 'Desktop'),
     fileName: '歌名 - 歌手',
     maxDownloadNum: 3,
@@ -48,7 +48,7 @@ const defaultSetting = {
     tabId: 'kw__16',
   },
   songList: {
-    source: 'kg',
+    source: 'kw',
     sortId: '5',
     tagInfo: {
       name: '默认',
@@ -81,10 +81,10 @@ const defaultSetting = {
     themeId: 0,
   },
   windowSizeId: 2,
-  themeId: 0,
+  themeId: 6,
   langId: null,
   sourceId: 'kw',
-  apiSource: 'temp',
+  apiSource: 'yj',
   sourceNameType: 'alias',
   randomAnimate: true,
   ignoreVersion: null,
