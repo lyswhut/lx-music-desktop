@@ -191,7 +191,7 @@ export default {
       }
       if (this.lyricEvent.isStopScroll) return
       let dom_p = this.dom_lines[this.lyric.line]
-      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.38) : 0)
+      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
     },
     handleLyricMouseDown(e) {
       if (e.target.classList.contains(this.$style.lrcLine)) {
