@@ -9,7 +9,7 @@ div(:class="$style.player")
       div(:class="$style.column1")
         div(:class="$style.container")
           div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
-          div(:class="$style.volumeContent")
+          div(:class="$style.volumeContent" v-if="!setting.player.isMute")
             div(:class="$style.volume")
               div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
             div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
