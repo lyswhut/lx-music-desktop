@@ -239,7 +239,7 @@ export default {
     handleSearch() {
       if (!this.text.length) return this.resultList = []
       let list = []
-      let rxp = new RegExp(this.text.split('').join('.*'), 'i')
+      let rxp = new RegExp(this.text.split('').join('.*') + '.*', 'i')
       for (const item of this.list) {
         if (rxp.test(`${item.name}${item.singer}${item.albumName ? item.albumName : ''}`)) list.push(item)
       }
