@@ -9,8 +9,8 @@ div(:class="$style.player")
       div(:class="$style.column1")
         div(:class="$style.container")
           div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
-          div(:class="$style.volumeContent" v-if="!setting.player.isMute")
-            div(:class="$style.volume")
+          div(:class="$style.volumeContent")
+            div(:class="[$style.volume, setting.player.isMute ? $style.muted : null]")
               div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
             div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
 
@@ -623,8 +623,9 @@ export default {
 
       this.volume = val
       this.volumeEvent.msDownVolume = val
-      // console.log(val)
       if (audio) audio.volume = this.volume
+
+      if (this.setting.player.isMute) this.setVolume(false)
     },
     handleSetVolumeMute() {
       audio.muted = !audio.muted
@@ -882,11 +883,15 @@ export default {
   border-radius: 10px;
   // overflow: hidden;
   transition: @transition-theme;
-  transition-property: background-color;
+  transition-property: background-color, opacity;
   background-color: @color-player-progress-bar1;
   // background-color: #f5f5f5;
   position: relative;
   border-radius: @radius-progress-border;
+}
+
+.muted {
+  opacity: .5;
 }
 
 .volume-bar {
@@ -904,6 +909,7 @@ export default {
   background-color: @color-theme;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
+
 
 .volume-mask {
   position: absolute;

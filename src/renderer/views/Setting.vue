@@ -587,6 +587,9 @@ export default {
     'setting.player.mediaDeviceId'(n) {
       this.current_setting.player.mediaDeviceId = n
     },
+    'setting.player.isMute'(n) {
+      this.current_setting.player.isMute = n
+    },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {
