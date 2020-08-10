@@ -116,7 +116,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('player', ['list', 'playIndex', 'changePlay', 'listId', 'isShowPlayerDetail']),
+    ...mapGetters('player', ['list', 'playIndex', 'changePlay', 'listId', 'isShowPlayerDetail', 'playedList']),
     // pic() {
     //   return this.musicInfo.img ? this.musicInfo.img : ''
     // },
@@ -194,6 +194,8 @@ export default {
     },
     'setting.player.togglePlayMethod'(n) {
       audio.loop = n === 'singleLoop'
+      if (this.playedList.length) this.clearPlayedList()
+      if (n == 'random' && this.playIndex > -1) this.setPlayedList(this.list[this.playIndex])
     },
     'setting.player.isMute'(n) {
       audio.muted = n
@@ -238,6 +240,9 @@ export default {
       'fixPlayIndex',
       'resetChangePlay',
       'visiblePlayerDetail',
+      'clearPlayedList',
+      'setPlayedList',
+      'removePlayedList',
     ]),
     ...mapMutations(['setVolume']),
     ...mapMutations('list', ['updateMusicInfo']),
@@ -369,6 +374,7 @@ export default {
       console.log('play', this.playIndex)
       this.checkDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
+      if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(targetSong)
       this.retryNum = 0
       this.audioErrorTime = 0
 
@@ -420,20 +426,51 @@ export default {
     async filterList() {
       // if (this.list.listName === null) return
       let list
+      let playedList = [...this.playedList]
       if (this.listId == 'download') {
         list = []
         for (const item of this.list) {
           const filePath = path.join(this.setting.download.savePath, item.fileName)
           if (!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath)) continue
+
+          let index = playedList.indexOf(item)
+          if (index > -1) {
+            playedList.splice(index, 1)
+            continue
+          }
           list.push(item)
         }
       } else {
-        list = this.list.filter(s => this.assertApiSupport(s.source))
+        list = this.list.filter(s => {
+          let index = playedList.indexOf(s)
+          if (index > -1) {
+            playedList.splice(index, 1)
+            return false
+          }
+          return this.assertApiSupport(s.source)
+        })
+      }
+      if (!list.length && this.playedList.length) {
+        this.clearPlayedList()
+        return this.filterList()
       }
       return list
     },
     async handlePrev() {
       // console.log(playIndex)
+      if (this.setting.player.togglePlayMethod == 'random' && this.playedList.length) {
+        let index = this.playedList.indexOf(this.targetSong)
+        index -= 1
+        if (index > -1) {
+          let listIndex = this.list.indexOf(this.playedList[index])
+          if (listIndex < 0) {
+            this.removePlayedList(index)
+            return this.handlePrev()
+          }
+          this.setPlayIndex(listIndex)
+          return
+        }
+      }
       let list = await this.filterList()
       if (!list.length) return this.setPlayIndex(-1)
       let playIndex = list.indexOf(this.list[this.playIndex])
@@ -455,6 +492,20 @@ export default {
     },
     async handleNext() {
       // if (this.list.listName === null) return
+      // eslint-disable-next-line no-debugger
+      if (this.setting.player.togglePlayMethod == 'random' && this.playedList.length) {
+        let index = this.playedList.indexOf(this.targetSong)
+        index += 1
+        if (index < this.playedList.length) {
+          let listIndex = this.list.indexOf(this.playedList[index])
+          if (listIndex < 0) {
+            this.removePlayedList(index)
+            return this.handleNext()
+          }
+          this.setPlayIndex(listIndex)
+          return
+        }
+      }
       let list = await this.filterList()
       if (!list.length) return this.setPlayIndex(-1)
       let playIndex = list.indexOf(this.list[this.playIndex])

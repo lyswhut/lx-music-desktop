@@ -9,6 +9,7 @@ const state = {
   playIndex: -1,
   changePlay: false,
   isShowPlayerDetail: false,
+  playedList: [],
 }
 
 let urlRequest
@@ -22,6 +23,7 @@ const getters = {
   changePlay: satte => satte.changePlay,
   playIndex: state => state.playIndex,
   isShowPlayerDetail: state => state.isShowPlayerDetail,
+  playedList: state => state.playedList,
 }
 
 // actions
@@ -84,6 +86,7 @@ const mutations = {
     state.listInfo = list
     state.playIndex = index
     state.changePlay = true
+    if (state.playedList.length) this.commit('player/clearPlayedList')
   },
   setPlayIndex(state, index) {
     state.playIndex = index
@@ -95,6 +98,16 @@ const mutations = {
   },
   resetChangePlay(state) {
     state.changePlay = false
+  },
+  setPlayedList(state, item) {
+    if (state.playedList.includes(item)) return
+    state.playedList.push(item)
+  },
+  removePlayedList(state, index) {
+    state.playedList.splice(index, 1)
+  },
+  clearPlayedList(state) {
+    state.playedList = []
   },
   visiblePlayerDetail(state, visible) {
     state.isShowPlayerDetail = visible
