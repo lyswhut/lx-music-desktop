@@ -515,6 +515,9 @@ export default {
         window.getComputedStyle(this.$refs.dom_progress, null).width,
       )
     },
+    /**
+     * 播放/暂停
+     */
     togglePlay() {
       if (!audio.src) return
       if (this.isPlay) {

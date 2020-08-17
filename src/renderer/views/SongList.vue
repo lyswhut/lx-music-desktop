@@ -14,6 +14,7 @@
             //- | &nbsp;
             //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="playSongListDetail") 播放
             //- | &nbsp;
+            material-btn(:class="$style.closeDetailButton" @click="playAll") {{$t('view.song_list.play_all')}}
             material-btn(:class="$style.closeDetailButton" @click="hideListDetail") {{$t('view.song_list.back')}}
         material-song-list(v-model="selectedData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit"
          :total="listDetail.total" :noItem="isGetDetailFailed ? $t('view.song_list.loding_list_fail') : $t('view.song_list.loding_list')" :list="listDetail.list")
@@ -359,6 +360,14 @@ export default {
         this.setTagListWidth()
       }, 50)
     },
+    playAll() {
+      if (this.listDetail.list.length) {
+        const filterList = this.filterList(this.listDetail.list)
+        this.listAddMultiple({ id: 'default', list: filterList })
+        this.resetSelect()
+        this.testPlay(0)
+      }
+    },
     handleListAddModalClose(isSelect) {
       if (isSelect) this.resetSelect()
       this.isShowListAddMultiple = false
@@ -515,7 +524,9 @@ export default {
   flex: none;
   display: flex;
   align-items: center;
-  padding-right: 15px;
+  > * {
+    margin-right: 15px;
+  }
 }
 
 .song-list-detail-content {
