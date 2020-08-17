@@ -7,9 +7,9 @@
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :title="defaultList.name" @click="handleListToggle(defaultList.id)")
+        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :title="defaultList.name" @click="handleListToggle(defaultList.id)" @contextmenu="handleListsItemRigthClick($event, -2)")
           span(:class="$style.listsLabel") {{defaultList.name}}
-        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :title="loveList.name" @click="handleListToggle(loveList.id)")
+        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :title="loveList.name" @click="handleListToggle(loveList.id)" @contextmenu="handleListsItemRigthClick($event, -1)")
           span(:class="$style.listsLabel") {{loveList.name}}
         li.user-list(:class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null]" @contextmenu="handleListsItemRigthClick($event, index)" :title="item.name" v-for="(item, index) in userList" :key="item.id")
           span(:class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)") {{item.name}}
@@ -100,6 +100,7 @@ export default {
       listsData: {
         isShowItemMenu: false,
         itemMenuControl: {
+          play: true,
           rename: true,
           moveup: true,
           movedown: true,
@@ -176,6 +177,11 @@ export default {
     },
     listsItemMenu() {
       return [
+        {
+          name: this.$t('view.list.lists_play'),
+          action: 'play',
+          disabled: !this.listsData.itemMenuControl.play,
+        },
         {
           name: this.$t('view.list.lists_rename'),
           action: 'rename',
@@ -661,6 +667,7 @@ export default {
       let location = offsetTop - 150
       if (location > 0) this.$refs.dom_lists_list.scrollTop = location
     },
+    /** 切换歌单为激活状态 */
     handleListToggle(id) {
       if (id == this.listId) return
       this.$router.push({
@@ -669,8 +676,10 @@ export default {
       }).catch(_ => _)
     },
     handleListsItemRigthClick(event, index) {
+      // console.log('handleListsItemRigthClick', index)
       this.listsData.itemMenuControl.moveup = index > 0
-      this.listsData.itemMenuControl.movedown = index < this.userList.length - 1
+      this.listsData.itemMenuControl.movedown = index >= 0 && index < this.userList.length - 1
+      this.listsData.itemMenuControl.remove = this.listsData.itemMenuControl.rename = index > 0
       this.listsData.rightClickItemIndex = index
       this.listsData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
       this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
@@ -708,6 +717,13 @@ export default {
       this.listsData.isShowItemMenu = false
       let dom
       switch (action && action.action) {
+        case 'play':
+          this.handleListToggle(this.lists[index + 2].id)
+          // console.log('play--', index, this.lists[index + 2])
+          this.$nextTick(() => {
+            this.testPlay(0)
+          })
+          break
         case 'rename':
           dom = this.$refs.dom_lists_list.querySelectorAll('.user-list')[index]
           this.$nextTick(() => {
