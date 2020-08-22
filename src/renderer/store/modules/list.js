@@ -28,6 +28,12 @@ const state = {
     list: [],
     location: 0,
   },
+  tempList: {
+    id: 'temp',
+    name: '临时列表',
+    list: [],
+    location: 0,
+  },
   userList: [],
 }
 
@@ -140,15 +146,19 @@ const mutations = {
     if (!targetList) return
     Object.assign(targetList.list[index], data)
   },
-  createUserList(state, name) {
-    let newList = {
-      name,
-      id: `userlist_${Date.now()}`,
-      list: [],
-      location: 0,
+  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [] }) {
+    let newList = state.userList.find(item => item.id === id)
+    if (!newList) {
+      newList = {
+        name,
+        id,
+        list: [],
+        location: 0,
+      }
+      state.userList.push(newList)
+      allListUpdate(newList)
     }
-    state.userList.push(newList)
-    allListUpdate(newList)
+    this.commit('list/listAddMultiple', { id, list })
   },
   removeUserList(state, index) {
     let list = state.userList.splice(index, 1)[0]

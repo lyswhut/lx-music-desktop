@@ -91,7 +91,7 @@ export default {
       this.newListName = event.target.value = ''
       this.isEditing = false
       if (!name) return
-      this.createUserList(name)
+      this.createUserList({ name })
     },
   },
 }

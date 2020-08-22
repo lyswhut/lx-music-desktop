@@ -79,37 +79,29 @@ const actions = {
       cache.has(key)
         ? Promise.resolve(cache.get(key))
         : music[source].songList.getListDetail(id, page)
-    ).then(result => commit('setListDetail', { result, key, page }))
+    ).then(result => commit('setListDetail', { result, key, source, id, page }))
   },
-/*   getListDetailAll({ state, rootState }, id) {
+  getListDetailAll({ state, rootState }, id) {
     let source = rootState.setting.songList.source
-    let key = `sdetail__${source}__${id}__all`
-    if (cache.has(key)) return Promise.resolve(cache.get(key))
-    music[source].songList.getListDetail(id, 1).then(result => {
-      let data = { list: result.list, id }
-      if (result.total <= result.limit) {
-        data = { list: result.list, id }
-        cache.set(key, data)
-        return data
-      }
+    const loadData = (id, page) => {
+      let key = `sdetail__${source}__${id}__${page}`
+      return cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getListDetail(id, page).then(result => {
+        cache.set(key, result)
+        return result
+      })
+    }
+    return loadData(id, 1).then(result => {
+      if (result.total <= result.limit) return result.list
 
       let maxPage = Math.ceil(result.total / result.limit)
       const loadDetail = (loadPage = 1) => {
-        let task = []
-        let loadNum = 0
-        while (loadPage <= maxPage && loadNum < 3) {
-          task.push(music[source].songList.getListDetail(id, ++loadPage))
-          loadNum++
-        }
         return loadPage == maxPage
-          ? Promise.all(task)
-          : Promise.all(task).then(result => loadDetail(loadPage).then(result2 => [...result, ...result2]))
+          ? loadData(id, ++loadPage).then(result => result.list)
+          : loadData(id, ++loadPage).then(result1 => loadDetail(loadPage).then(result2 => [...result1.list, ...result2]))
       }
-      return loadDetail().then(result2 => {
-        console.log(result2)
-      })
+      return loadDetail().then(result2 => [...result.list, ...result2])
     })
-  }, */
+  },
 }
 
 // mitations
@@ -129,8 +121,10 @@ const mutations = {
     state.list.key = key
     cache.set(key, result)
   },
-  setListDetail(state, { result, key, page }) {
+  setListDetail(state, { result, key, source, id, page }) {
     state.listDetail.list = result.list
+    state.listDetail.id = id
+    state.listDetail.source = source
     state.listDetail.total = result.total
     state.listDetail.limit = result.limit
     state.listDetail.page = page
@@ -153,6 +147,8 @@ const mutations = {
   },
   clearListDetail(state) {
     state.listDetail = {
+      id: null,
+      source: null,
       list: [],
       desc: null,
       total: 0,

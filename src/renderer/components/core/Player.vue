@@ -706,7 +706,7 @@ export default {
       this.setProgressWidth()
     },
     handleToMusicLocation() {
-      if (this.listId == 'download') return
+      if (!this.listId || this.listId == 'download') return
       if (this.playIndex == -1) return
       this.$router.push({
         path: 'list',
