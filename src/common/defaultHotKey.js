@@ -44,21 +44,6 @@ module.exports = {
         name: null,
         action: hotKeyPlayer.next.action,
       },
-      VolumeUp: {
-        type: hotKeyPlayer.volume_up.type,
-        name: null,
-        action: hotKeyPlayer.volume_up.action,
-      },
-      VolumeDown: {
-        type: hotKeyPlayer.volume_down.type,
-        name: null,
-        action: hotKeyPlayer.volume_down.action,
-      },
-      VolumeMute: {
-        type: hotKeyPlayer.volume_mute.type,
-        name: null,
-        action: hotKeyPlayer.volume_mute.action,
-      },
       'mod+alt+f5': {
         type: hotKeyPlayer.toggle_play.type,
         name: hotKeyPlayer.toggle_play.name,

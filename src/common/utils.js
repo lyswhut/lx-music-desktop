@@ -206,6 +206,15 @@ exports.initHotKey = () => {
   }
 
   let globalConfig = electronStore_hotKey.get('global')
+
+  // 移除v1.0.1及之前设置的全局声音媒体快捷键接管
+  if (globalConfig && globalConfig.keys.VolumeUp) {
+    delete globalConfig.keys.VolumeUp
+    delete globalConfig.keys.VolumeDown
+    delete globalConfig.keys.VolumeMute
+    electronStore_hotKey.set('global', globalConfig)
+  }
+
   if (!globalConfig) {
     globalConfig = defaultHotKey.global
     electronStore_hotKey.set('global', globalConfig)
