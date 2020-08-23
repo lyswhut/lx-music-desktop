@@ -58,6 +58,10 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
             v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
+    dd
+      h3 {{$t('view.setting.play_lyric_transition')}}
+      div
+        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
     dd(:title="$t('view.setting.play_quality_title')")
       h3 {{$t('view.setting.play_quality')}}
       div

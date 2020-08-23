@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.35',
+  version: '1.0.36',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -12,6 +12,7 @@ const defaultSetting = {
     isMute: false,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
+    isShowLyricTransition: true,
   },
   desktopLyric: {
     enable: false,

@@ -35,6 +35,7 @@
   "play_toggle_random": "Playlist shuffle",
   "play_toggle_list": "Play in order",
   "play_toggle_single_loop": "Single repeat",
+  "play_lyric_transition": "Show lyrics translation",
   "play_quality_title": "The 320k quality is preferred for playing",
   "play_quality": "Prefer High Quality 320k",
   "play_task_bar_title": "Show playing progress on the taskbar",

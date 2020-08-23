@@ -60,9 +60,9 @@ const actions = {
   getLrc({ commit, state }, musicInfo) {
     if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-    return lrcRequest.promise.then(lrc => {
+    return lrcRequest.promise.then(({ lyric, tlyric }) => {
       lrcRequest = null
-      commit('setLrc', { musicInfo, lrc })
+      commit('setLrc', { musicInfo, lyric, tlyric })
     }).catch(err => {
       lrcRequest = null
       return Promise.reject(err)
@@ -80,7 +80,8 @@ const mutations = {
     datas.musicInfo.img = datas.url
   },
   setLrc(state, datas) {
-    datas.musicInfo.lrc = datas.lrc
+    datas.musicInfo.lrc = datas.lyric
+    datas.musicInfo.tlrc = datas.tlyric
   },
   setList(state, { list, index }) {
     state.listInfo = list

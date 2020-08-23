@@ -6,13 +6,17 @@ export default {
     matchLrc: /.+"lyric":"([\w=+/]*)".+/,
   },
   getLyric(songmid) {
-    const requestObj = httpFetch(`https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=${songmid}&g_tk=2001461048&loginUin=0&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&platform=yqq`, {
+    const requestObj = httpFetch(`https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?songmid=${songmid}&g_tk=5381&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&platform=yqq`, {
       headers: {
         Referer: 'https://y.qq.com/portal/player.html',
       },
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return decodeName(b64DecodeUnicode(body.replace(this.regexps.matchLrc, '$1')))
+      if (body.code != 0) return Promise.reject(new Error('获取歌词失败'))
+      return {
+        lyric: decodeName(b64DecodeUnicode(body.lyric)),
+        tlyric: decodeName(b64DecodeUnicode(body.trans)),
+      }
     })
     return requestObj
   },

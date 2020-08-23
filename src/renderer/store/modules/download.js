@@ -177,7 +177,7 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
       : Promise.resolve(),
     isEmbedLyric
       ? downloadInfo.musicInfo.lrc
-        ? Promise.resolve(downloadInfo.musicInfo.lrc)
+        ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
         : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.catch(err => {
           console.log(err)
           return null
@@ -190,7 +190,7 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
       artist: downloadInfo.musicInfo.singer,
       album: downloadInfo.musicInfo.albumName,
       APIC: imgUrl,
-      lyrics,
+      lyrics: lyrics.lyric,
     })
   })
 }
@@ -202,10 +202,10 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
  */
 const downloadLyric = (downloadInfo, filePath) => {
   const promise = downloadInfo.musicInfo.lrc
-    ? Promise.resolve(downloadInfo.musicInfo.lrc)
+    ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
     : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
-  promise.then(lrc => {
-    if (lrc) saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrc)
+  promise.then(lrcs => {
+    if (lrcs.lyric) saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric)
   })
 }
 

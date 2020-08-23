@@ -153,6 +153,7 @@ export default {
             name: this.musicInfo.name,
             album: this.musicInfo.album,
             lyric: this.musicInfo.lrc,
+            tlyric: this.musicInfo.tlrc,
             isPlay: this.isPlay,
             line: this.lyric.line,
             played_time: audio.currentTime * 1000,
@@ -202,6 +203,9 @@ export default {
     },
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
+    },
+    'setting.player.isShowLyricTransition'() {
+      this.setLyric()
     },
     async list(n, o) {
       if (n === o && this.musicInfo.songmid) {
@@ -612,24 +616,22 @@ export default {
     },
     setLrc(targetSong) {
       this.musicInfo.lrc = targetSong.lrc
+      this.musicInfo.tlrc = targetSong.tlrc
 
-      let lrcP = this.musicInfo.lrc
+      let lrcP = this.musicInfo.lrc && this.musicInfo.tlrc != null
         ? Promise.resolve()
         : this.getLrc(targetSong).then(() => {
           this.musicInfo.lrc = targetSong.lrc
+          this.musicInfo.tlrc = targetSong.tlrc
         })
 
       lrcP
         .then(() => {
-          window.lrc.setLyric(this.musicInfo.lrc)
-          this.handleUpdateWinLyricInfo('lyric', this.musicInfo.lrc)
-          if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
-            window.lrc.play(audio.currentTime * 1000)
-            this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
-          }
+          this.setLyric()
+          this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
         })
         .catch(() => {
-          this.handleUpdateWinLyricInfo('lyric', this.musicInfo.lrc)
+          this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
           this.status = this.statusText = this.$t('core.player.lyric_error')
         })
     },
@@ -817,6 +819,13 @@ export default {
         data,
         info,
       })
+    },
+    setLyric() {
+      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc + '\n' : '') + this.musicInfo.lrc)
+      if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
+        window.lrc.play(audio.currentTime * 1000)
+        this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
+      }
     },
   },
 }

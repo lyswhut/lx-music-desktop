@@ -35,6 +35,7 @@
   "play_toggle_random": "列表随机",
   "play_toggle_list": "顺序播放",
   "play_toggle_single_loop": "单曲循环",
+  "play_lyric_transition": "显示歌词翻译",
   "play_quality_title": "启用时将优先播放320K品质的歌曲",
   "play_quality": "优先播放高品质音乐",
   "play_task_bar_title": "在任务栏上显示当前歌曲播放进度",
