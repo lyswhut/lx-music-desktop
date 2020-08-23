@@ -119,7 +119,6 @@ export default {
   },
   methods: {
     handleUpdateConfig({ config, languageId, isShowLyricTransition }) {
-      console.log(isShowLyricTransition)
       this.lrcConfig = config
       this.isShowLyricTransition = isShowLyricTransition
       if (this.$i18n.locale !== languageId && languageId != null) this.$i18n.locale = languageId

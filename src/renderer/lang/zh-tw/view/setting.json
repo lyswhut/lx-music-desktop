@@ -3,6 +3,7 @@
   "basic_theme": "主題顏色",
   "basic_animation_title": "彈出層的動畫效果",
   "basic_animation": "彈出層隨機動畫",
+  "basic_show_animation": "顯示切換動畫",
   "basic_source_title": "選擇音樂來源",
   "basic_source_test": "測試接口（幾乎軟件的所有功能都可用）",
   "basic_source_temp": "臨時接口（軟件的某些功能不可用，建議測試接口不可用再使用本接口）",

@@ -10,6 +10,11 @@ div.scroll(:class="$style.setting")
             span
             label {{$t('store.state.theme_' + theme.class)}}
 
+    dd
+      h3 {{$t('view.setting.basic_show_animation')}}
+      div
+        material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
+
     dd(:title="$t('view.setting.basic_animation_title')")
       h3 {{$t('view.setting.basic_animation')}}
       div
@@ -454,6 +459,7 @@ export default {
         langId: 'cns',
         themeId: 0,
         sourceId: 0,
+        isShowAnimation: true,
         randomAnimate: true,
         isAgreePact: false,
         controlBtnPosition: 'left',

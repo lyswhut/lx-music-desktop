@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.36',
+  version: '1.0.38',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -88,6 +88,7 @@ const defaultSetting = {
   sourceId: 'kw',
   apiSource: 'temp',
   sourceNameType: 'alias',
+  isShowAnimation: true,
   randomAnimate: true,
   ignoreVersion: null,
   isAgreePact: false,

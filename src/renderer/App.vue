@@ -135,6 +135,20 @@ export default {
     'windowSizeActive.fontSize'(n) {
       document.documentElement.style.fontSize = n
     },
+    'setting.isShowAnimation': {
+      handler(n) {
+        if (n) {
+          if (document.body.classList.contains('disableAnimation')) {
+            document.body.classList.remove('disableAnimation')
+          }
+        } else {
+          if (!document.body.classList.contains('disableAnimation')) {
+            document.body.classList.add('disableAnimation')
+          }
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(['getVersionInfo']),
@@ -352,6 +366,11 @@ body {
   user-select: none;
   height: 100vh;
   box-sizing: border-box;
+}
+
+.disableAnimation * {
+  transition: none !important;
+  animation: none !important;
 }
 
 .transparent {

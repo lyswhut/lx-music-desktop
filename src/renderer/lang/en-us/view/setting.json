@@ -1,6 +1,7 @@
 {
   "basic": "General",
   "basic_theme": "Theme",
+  "basic_show_animation": "Show switching animation",
   "basic_animation_title": "Animation effect of the pop-up layer",
   "basic_animation": "Random pop-up animation",
   "basic_source_title": "Choose a music source",
