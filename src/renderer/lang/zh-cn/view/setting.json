@@ -48,6 +48,7 @@
   "desktop_lyric_enable": "显示歌词",
   "desktop_lyric_lock": "锁定歌词",
   "desktop_lyric_always_on_top": "使歌词总是在其他窗口之上",
+  "desktop_lyric_lock_screen": "不允许歌词窗口拖出主屏幕之外",
 
   "search": "搜索设置",
   "search_hot_title": "是否显示热门搜索",

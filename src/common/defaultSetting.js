@@ -3,7 +3,7 @@ const os = require('os')
 const { isMac } = require('./utils')
 
 const defaultSetting = {
-  version: '1.0.34',
+  version: '1.0.35',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -22,6 +22,7 @@ const defaultSetting = {
     x: null,
     y: null,
     theme: 0,
+    isLockScreen: true,
     style: {
       fontSize: 120,
       opacity: 95,

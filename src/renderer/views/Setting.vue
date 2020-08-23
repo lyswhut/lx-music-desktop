@@ -82,6 +82,8 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
     dt {{$t('view.setting.search')}}
     dd(:title="$t('view.setting.search_hot_title')")
       h3 {{$t('view.setting.search_hot')}}
