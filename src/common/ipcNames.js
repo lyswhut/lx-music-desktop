@@ -43,6 +43,14 @@ const names = {
     hide_toggle: 'hide_toggle',
     get_data_path: 'get_data_path',
     show_dialog: 'show_dialog',
+
+    get_setting: 'get_setting',
+    get_playlist: 'get_playlist',
+    save_playlist: 'save_playlist',
+    get_data: 'get_data',
+    set_data: 'set_data',
+    save_data: 'save_data',
+    get_hot_key: 'get_hot_key',
   },
   winLyric: {
     close: 'close',

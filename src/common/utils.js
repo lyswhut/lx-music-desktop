@@ -188,7 +188,7 @@ exports.initSetting = () => {
   // newSetting.controlBtnPosition = 'right'
   electronStore_config.set('version', settingVersion)
   electronStore_config.set('setting', newSetting)
-  return newSetting
+  return { version: settingVersion, setting: newSetting }
 }
 
 /**

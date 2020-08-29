@@ -1,14 +1,4 @@
-import Store from 'electron-store'
 import music from '../../utils/music'
-
-const electronStore_data = window.electronStore_data = new Store({
-  name: 'data',
-})
-let historyList = electronStore_data.get('searchHistoryList')
-if (historyList == null) {
-  historyList = []
-  electronStore_data.set('searchHistoryList', historyList)
-}
 
 const sources = []
 const sourceList = {}
@@ -103,7 +93,7 @@ const state = {
   allPage: 1,
   total: 0,
   sourceMaxPage,
-  historyList,
+  historyList: [],
 }
 
 // getters
@@ -210,6 +200,9 @@ const mutations = {
   },
   clearHistory(state) {
     state.historyList = []
+  },
+  setHistory(state, list) {
+    state.historyList = list
   },
 }
 

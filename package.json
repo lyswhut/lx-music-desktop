@@ -60,7 +60,7 @@
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
   },
   "browserslist": [
-    "Electron 9.2.1"
+    "Electron 10.0.1"
   ],
   "engines": {
     "node": ">= 12"
@@ -169,7 +169,6 @@
     "babel-loader": "^8.1.0",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
-    "browserslist": "^4.14.0",
     "cfonts": "^2.8.6",
     "chalk": "^4.1.0",
     "changelog-parser": "^2.8.0",
@@ -178,7 +177,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.6.0",
     "del": "^5.1.0",
-    "electron": "^9.2.1",
+    "electron": "^10.1.0",
     "electron-builder": "^22.8.0",
     "electron-debug": "^3.1.0",
     "electron-devtools-installer": "^3.1.1",
@@ -195,9 +194,9 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^4.3.0",
     "less": "^3.12.2",
-    "less-loader": "^6.2.0",
+    "less-loader": "^7.0.0",
     "markdown-it": "^11.0.0",
-    "mini-css-extract-plugin": "^0.10.0",
+    "mini-css-extract-plugin": "^0.11.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
     "postcss-pxtorem": "^5.1.1",

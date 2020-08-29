@@ -9,11 +9,11 @@ export default {
   setSetting(state, val) {
     state.setting = val
   },
-  setAgreePact(state) {
-    state.setting.isAgreePact = true
-  },
   setSettingVersion(state, val) {
     state.settingVersion = val
+  },
+  setAgreePact(state) {
+    state.setting.isAgreePact = true
   },
   setLeaderboard(state, { tabId, source }) {
     if (tabId != null) state.setting.leaderboard.tabId = tabId

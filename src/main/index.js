@@ -35,7 +35,7 @@ app.commandLine.appendSwitch('wm-window-animations-disabled')
 // https://github.com/electron/electron/issues/18397
 // 开发模式下为true时 多次引入native模块会导致渲染进程卡死
 // https://github.com/electron/electron/issues/22791
-app.allowRendererProcessReuse = !isDev
+// app.allowRendererProcessReuse = !isDev
 
 
 app.on('web-contents-created', (event, contents) => {
@@ -124,7 +124,9 @@ global.appHotKey = {
 }
 
 function init() {
-  global.appSetting = initSetting()
+  const info = initSetting()
+  global.appSetting = info.setting
+  global.appSettingVersion = info.version
   global.appHotKey.config = initHotKey()
   global.lx_event.common.initSetting()
   global.lx_event.hotKey.init()
