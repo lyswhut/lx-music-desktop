@@ -239,7 +239,7 @@ div.scroll(:class="$style.setting")
         span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://t-s.lanzous.com/b0bf2cfa')") 网盘地址
+        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')") 网盘地址
         | &nbsp;&nbsp;密码：
         span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
       p.small
