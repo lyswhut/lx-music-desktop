@@ -95,7 +95,7 @@ export default {
       switch (this.source) {
         case 'wy':
         case 'kw':
-        case 'bd':
+        // case 'bd':
         case 'tx':
         case 'mg':
         case 'kg':
