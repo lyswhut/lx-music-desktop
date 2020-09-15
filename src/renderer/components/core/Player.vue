@@ -40,9 +40,17 @@ div(:class="$style.player")
     div(:class="$style.playBtn" @click='handleNext' :title="$t('core.player.next')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
         use(xlink:href='#icon-nextMusic')
+    div(:class="$style.playBtn" @click='changePlaybackMode' :title="$t('core.player.next')")
+      svg(v-if="playbackMode == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 24 24' space='preserve')
+        use(xlink:href="#icon-listLoop")
+      svg(v-else-if="playbackMode == 'random'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 24 24' space='preserve')
+        use(xlink:href="#icon-random")
+      svg(v-else-if="playbackMode == 'singleLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 24 24' space='preserve')
+        use(xlink:href="#icon-singleLoop")
+      svg(v-else-if="playbackMode == 'list'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 24 24' space='preserve')
+        use(xlink:href="#icon-list")
   //- transition(enter-active-class="animated lightSpeedIn"
-  transition(enter-active-class="animated lightSpeedIn"
-      leave-active-class="animated slideOutDown")
+  transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown")
     core-player-detail(v-if="isShowPlayerDetail" :musicInfo="musicInfo"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
@@ -133,6 +141,9 @@ export default {
     },
     progress() {
       return this.nowPlayTime / this.maxPlayTime || 0
+    },
+    playbackMode() {
+      return this.setting.player.togglePlayMethod
     },
   },
   mounted() {
@@ -476,6 +487,12 @@ export default {
       if (index < 0) return
       index = this.list.indexOf(list[index])
       this.setPlayIndex(index)
+    },
+    async changePlaybackMode() {
+      let modes = ['listLoop', 'random', 'list', 'singleLoop']
+      let idx = modes.indexOf(this.setting.player.togglePlayMethod)
+      let modeIdx = idx + 1 > 3 ? 0 : idx + 1
+      this.setting.player.togglePlayMethod = modes[modeIdx]
     },
     hanldeListRandom(list, index) {
       return getRandom(0, list.length)
