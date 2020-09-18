@@ -9,11 +9,31 @@ div(:class="$style.player")
       div(:class="$style.column1")
         div(:class="$style.container")
           div(:class="$style.title" @click="handleCopy(title)" :title="title + $t('core.player.copy_title')") {{title}}
-          div(:class="$style.volumeContent")
-            div(:class="[$style.volume, setting.player.isMute ? $style.muted : null]")
-              div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
-            div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
+          div(:class="$style.controlBtn")
 
+            div(:class="$style.volumeContent")
+              div(:class="[$style.volume, setting.player.isMute ? $style.muted : null]")
+                div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
+              div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
+            div(:class="$style.titleBtn" @click='toggleDesktopLyric' :title="setting.desktopLyric.enable ? $t('core.player.desktop_lyric_off') : $t('core.player.desktop_lyric_on')")
+              svg(v-if="setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-desktop-lyric-off')
+              svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-desktop-lyric-on')
+            div(:class="$style.titleBtn" @click='toggleNextPlayMode' :title="nextTogglePlayName")
+              svg(v-if="setting.player.togglePlayMethod == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='80%' viewBox='0 0 24 24' space='preserve')
+                use(xlink:href='#icon-list-loop')
+              svg(v-else-if="setting.player.togglePlayMethod == 'random'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
+                use(xlink:href='#icon-list-random')
+              svg(v-else-if="setting.player.togglePlayMethod == 'list'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
+                use(xlink:href='#icon-list-order')
+              svg(v-else-if="setting.player.togglePlayMethod == 'singleLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
+                use(xlink:href='#icon-single-loop')
+              svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
+                use(xlink:href='#icon-single')
+            div(:class="$style.titleBtn" @click='addMusicTo' :title="$t('core.player.add_music_to')")
+              svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='80%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-add-2')
           //- div(:class="$style.playBtn" @click='handleNext' title="音量")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 291.063 291.064' space='preserve')
               use(xlink:href='#icon-sound')
@@ -47,6 +67,8 @@ div(:class="$style.player")
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction")
+
+  material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong" @close="isShowAddMusicTo = false")
   svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
     defs
       g(:id="$style.iconPic")
@@ -71,6 +93,13 @@ import { player as eventPlayerNames } from '../../../common/hotKey'
 import path from 'path'
 
 let audio
+
+const playNextModes = [
+  'listLoop',
+  'random',
+  'list',
+  'singleLoop',
+]
 
 export default {
   data() {
@@ -112,6 +141,7 @@ export default {
         timeout: null,
         playTime: 0,
       },
+      isShowAddMusicTo: false,
     }
   },
   computed: {
@@ -133,6 +163,15 @@ export default {
     },
     progress() {
       return this.nowPlayTime / this.maxPlayTime || 0
+    },
+    nextTogglePlayName() {
+      switch (this.setting.player.togglePlayMethod) {
+        case 'listLoop': return this.$t('core.player.play_toggle_mode_list_loop')
+        case 'random': return this.$t('core.player.play_toggle_mode_random')
+        case 'singleLoop': return this.$t('core.player.play_toggle_mode_single_loop')
+        case 'list': return this.$t('core.player.play_toggle_mode_list')
+        default: return this.$t('core.player.play_toggle_mode_off')
+      }
     },
   },
   mounted() {
@@ -248,7 +287,7 @@ export default {
       'setPlayedList',
       'removePlayedList',
     ]),
-    ...mapMutations(['setVolume']),
+    ...mapMutations(['setVolume', 'setPlayNextMode', 'setVisibleDesktopLyric']),
     ...mapMutations('list', ['updateMusicInfo']),
     ...mapMutations(['setMediaDeviceId']),
     handleRegisterEvent(action) {
@@ -369,7 +408,7 @@ export default {
           this.lyric.lines = lines
           this.lyric.line = 0
         },
-        offset: 100,
+        offset: 80,
       })
 
       this.handleRegisterEvent('on')
@@ -626,13 +665,11 @@ export default {
         })
 
       lrcP
-        .then(() => {
+        .catch(() => {
+          this.status = this.statusText = this.$t('core.player.lyric_error')
+        }).finally(() => {
           this.setLyric()
           this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
-        })
-        .catch(() => {
-          this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
-          this.status = this.statusText = this.$t('core.player.lyric_error')
         })
     },
     handleRemoveMusic() {
@@ -827,6 +864,18 @@ export default {
         this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
       }
     },
+    toggleDesktopLyric() {
+      this.setVisibleDesktopLyric(!this.setting.desktopLyric.enable)
+    },
+    toggleNextPlayMode() {
+      let index = playNextModes.indexOf(this.setting.player.togglePlayMethod)
+      if (++index >= playNextModes.length) index = -1
+      this.setPlayNextMode(playNextModes[index] || '')
+    },
+    addMusicTo() {
+      if (!this.musicInfo.songmid) return
+      this.isShowAddMusicTo = true
+    },
   },
 }
 </script>
@@ -916,17 +965,26 @@ export default {
 }
 
 .title {
-  flex: 1 1 0;
-  width: 0;
+  flex: 0 1 auto;
+  min-width: 0;
   padding-right: 5px;
   font-size: 14px;
   line-height: 18px;
   .mixin-ellipsis-1;
 }
 
+.controlBtn {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+
 .volume-content {
+  flex: none;
   position: relative;
   width: 80px;
+  margin-right: 10px;
   display: flex;
   align-items: center;
   opacity: .5;
@@ -977,6 +1035,32 @@ export default {
   width: 100%;
   height: 100%;
   cursor: pointer;
+}
+
+.titleBtn {
+  flex: none;
+  margin-left: 5px;
+  height: 100%;
+  width: 20px;
+  color: @color-theme;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+
+  transition: opacity 0.2s ease;
+  opacity: .5;
+  cursor: pointer;
+
+  svg {
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
+  }
+  &:hover {
+    opacity: 1;
+  }
+  &:active {
+    opacity: 1;
+  }
 }
 
 .play-btn {
@@ -1106,6 +1190,9 @@ each(@themes, {
       // img {
       //   border-color: ~'@{color-@{value}-theme_2-background_1}';
       // }
+    }
+    .titleBtn {
+      color: ~'@{color-@{value}-theme}';
     }
     .play-btn {
       color: ~'@{color-@{value}-theme}';

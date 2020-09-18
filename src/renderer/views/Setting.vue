@@ -602,6 +602,12 @@ export default {
     'setting.player.isMute'(n) {
       this.current_setting.player.isMute = n
     },
+    'setting.desktopLyric.enable'(n) {
+      this.current_setting.desktopLyric.enable = n
+    },
+    'setting.player.togglePlayMethod'(n) {
+      this.current_setting.player.togglePlayMethod = n
+    },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {

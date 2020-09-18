@@ -49,6 +49,12 @@ export default {
       state.setting.player.volume = val
     }
   },
+  setPlayNextMode(state, val) {
+    state.setting.player.togglePlayMethod = val
+  },
+  setVisibleDesktopLyric(state, val) {
+    state.setting.desktopLyric.enable = val
+  },
   setMediaDeviceId(state, val) {
     state.setting.player.mediaDeviceId = val
   },

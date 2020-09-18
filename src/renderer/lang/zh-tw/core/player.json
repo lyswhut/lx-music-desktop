@@ -17,5 +17,13 @@
   "hide_detail": "隱藏詳情頁",
   "name": "歌曲名：",
   "singer": "藝術家：",
-  "album": "專輯名："
+  "album": "專輯名：",
+  "add_music_to": "添加當前歌曲到...",
+  "desktop_lyric_on": "開啟桌面歌詞",
+  "desktop_lyric_off": "關閉桌面歌詞",
+  "play_toggle_mode_list_loop": "列表循環",
+  "play_toggle_mode_random": "列表隨機",
+  "play_toggle_mode_list": "順序播放",
+  "play_toggle_mode_single_loop": "單曲循環",
+  "play_toggle_mode_off": "禁用"
 }
