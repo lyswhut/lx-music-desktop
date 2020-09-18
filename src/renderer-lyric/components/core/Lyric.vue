@@ -27,6 +27,10 @@ export default {
         }
       },
     },
+    isShowLyricTransition: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -58,6 +62,10 @@ export default {
       lyricLines: [],
       isSetedLines: false,
       isPlay: false,
+      lyrics: {
+        lyric: '',
+        tlyric: '',
+      },
     }
   },
   computed: {
@@ -112,6 +120,11 @@ export default {
       },
       immediate: true,
     },
+    isShowLyricTransition(n) {
+      console.log(n)
+      this.setLyric()
+      rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+    },
   },
   created() {
     rendererOn(NAMES.winLyric.set_lyric_info, (event, data) => this.handleSetInfo(data))
@@ -144,7 +157,9 @@ export default {
       // console.log(type, data)
       switch (type) {
         case 'lyric':
-          window.lrc.setLyric(data)
+          this.lyrics.lyric = data.lrc
+          this.lyrics.tlyric = data.tlrc
+          this.setLyric()
           break
         case 'play':
           this.isPlay = true
@@ -156,7 +171,9 @@ export default {
           break
         case 'info':
           // console.log('info', data)
-          window.lrc.setLyric(data.lyric)
+          this.lyrics.lyric = data.lyric
+          this.lyrics.tlyric = data.tlyric
+          this.setLyric()
           this.$nextTick(() => {
             this.lyric.line = data.line
             rendererSend(NAMES.winLyric.get_lyric_info, 'status')
@@ -191,7 +208,7 @@ export default {
       }
       if (this.lyricEvent.isStopScroll) return
       let dom_p = this.dom_lines[this.lyric.line]
-      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.38) : 0)
+      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
     },
     handleLyricMouseDown(e) {
       if (e.target.classList.contains(this.$style.lrcLine)) {
@@ -260,6 +277,9 @@ export default {
     },
     close() {
       rendererSend(NAMES.winLyric.close)
+    },
+    setLyric() {
+      window.lrc.setLyric((this.isShowLyricTransition && this.lyrics.tlyric ? this.lyrics.tlyric + '\n' : '') + this.lyrics.lyric)
     },
   },
 }

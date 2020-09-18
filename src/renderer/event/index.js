@@ -1,21 +1,22 @@
 import Vue from 'vue'
 import keyBind from '../utils/keyBind'
-import { rendererOn, rendererSend, NAMES } from '../../common/ipc'
+import { rendererOn, rendererSend, NAMES, rendererInvoke } from '../../common/ipc'
 import { base as baseName } from './names'
-import Store from 'electron-store'
 import { common as hotKeyNamesCommon } from '../../common/hotKey'
 
 const eventHub = window.eventHub = new Vue()
 
-const electronStore_hotKey = window.electronStore_hotKey = new Store({
-  name: 'hotKey',
-})
-
 window.isEditingHotKey = false
-const appHotKeyConfig = window.appHotKeyConfig = {
-  local: electronStore_hotKey.get('local'),
-  global: electronStore_hotKey.get('global'),
+let appHotKeyConfig = {
+  local: {},
+  global: {},
 }
+rendererInvoke(NAMES.mainWindow.get_hot_key).then(({ local, global }) => {
+  appHotKeyConfig = window.appHotKeyConfig = {
+    local,
+    global,
+  }
+})
 
 eventHub.$on(baseName.bindKey, () => {
   keyBind.bindKey((key, type, event, keys) => {

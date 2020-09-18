@@ -27,7 +27,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
-import { throttle, openUrl, compareVer } from './utils'
+import { throttle, openUrl, compareVer, getPlayList } from './utils'
 import { base as eventBaseName } from './event/names'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -70,19 +70,34 @@ export default {
   },
   created() {
     this.saveDefaultList = throttle(n => {
-      window.electronStore_list.set('defaultList', n)
+      rendererSend(NAMES.mainWindow.save_playlist, {
+        type: 'defaultList',
+        data: n,
+      })
     }, 500)
     this.saveLoveList = throttle(n => {
-      window.electronStore_list.set('loveList', n)
+      rendererSend(NAMES.mainWindow.save_playlist, {
+        type: 'loveList',
+        data: n,
+      })
     }, 500)
     this.saveUserList = throttle(n => {
-      window.electronStore_list.set('userList', n)
+      rendererSend(NAMES.mainWindow.save_playlist, {
+        type: 'userList',
+        data: n,
+      })
     }, 500)
     this.saveDownloadList = throttle(n => {
-      window.electronStore_list.set('downloadList', n)
+      rendererSend(NAMES.mainWindow.save_playlist, {
+        type: 'downloadList',
+        data: n,
+      })
     }, 1000)
     this.saveSearchHistoryList = throttle(n => {
-      window.electronStore_data.set('searchHistoryList', n)
+      rendererSend(NAMES.mainWindow.set_data, {
+        path: 'searchHistoryList',
+        data: n,
+      })
     }, 500)
   },
   mounted() {
@@ -135,12 +150,29 @@ export default {
     'windowSizeActive.fontSize'(n) {
       document.documentElement.style.fontSize = n
     },
+    'setting.isShowAnimation': {
+      handler(n) {
+        if (n) {
+          if (document.body.classList.contains('disableAnimation')) {
+            document.body.classList.remove('disableAnimation')
+          }
+        } else {
+          if (!document.body.classList.contains('disableAnimation')) {
+            document.body.classList.add('disableAnimation')
+          }
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(['getVersionInfo']),
     ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting', 'setDesktopLyricConfig']),
     ...mapMutations('list', ['initList']),
     ...mapMutations('download', ['updateDownloadList']),
+    ...mapMutations('search', {
+      setSearchHistoryList: 'setHistory',
+    }),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
 
@@ -229,19 +261,23 @@ export default {
     },
 
     initData() { // 初始化数据
-      this.initPlayList() // 初始化播放列表
-      this.initDownloadList() // 初始化下载列表
+      this.initLocalList() // 初始化播放列表
+      // this.initDownloadList() // 初始化下载列表
+      this.initSearchHistoryList() // 初始化搜索历史列表
     },
-    initPlayList() {
-      let defaultList = window.electronStore_list.get('defaultList') || this.defaultList
-      let loveList = window.electronStore_list.get('loveList') || this.loveList
-      let userList = window.electronStore_list.get('userList') || this.userList
-      if (!defaultList.list) defaultList.list = []
-      if (!loveList.list) loveList.list = []
-      this.initList({ defaultList, loveList, userList })
+    initLocalList() {
+      getPlayList().then(({ defaultList, loveList, userList, downloadList }) => {
+        if (!defaultList) defaultList = this.defaultList
+        if (!loveList) loveList = this.loveList
+        if (!userList) userList = this.userList
+
+        if (!defaultList.list) defaultList.list = []
+        if (!loveList.list) loveList.list = []
+        this.initList({ defaultList, loveList, userList })
+        this.initDownloadList(downloadList) // 初始化下载列表
+      })
     },
-    initDownloadList() {
-      let downloadList = window.electronStore_list.get('downloadList')
+    initDownloadList(downloadList) {
       if (downloadList) {
         downloadList.forEach(item => {
           if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
@@ -251,6 +287,16 @@ export default {
         })
         this.updateDownloadList(downloadList)
       }
+    },
+    initSearchHistoryList() {
+      rendererInvoke(NAMES.mainWindow.get_data, 'searchHistoryList').then(historyList => {
+        if (historyList == null) {
+          historyList = []
+          rendererInvoke(NAMES.mainWindow.set_data, { path: 'searchHistoryList', data: historyList })
+        } else {
+          this.setSearchHistoryList(historyList)
+        }
+      })
     },
     showUpdateModal() {
       (this.version.newVersion && this.version.newVersion.history
@@ -352,6 +398,11 @@ body {
   user-select: none;
   height: 100vh;
   box-sizing: border-box;
+}
+
+.disableAnimation * {
+  transition: none !important;
+  animation: none !important;
 }
 
 .transparent {

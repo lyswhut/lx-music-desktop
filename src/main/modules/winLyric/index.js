@@ -80,14 +80,18 @@ const createWindow = () => {
     x = screenWidth - width - offset
     y = screenHeight - height - offset
   }
+  if (global.appSetting.desktopLyric.isLockScreen) {
+    x = Math.max(-offset, screenWidth < (width + x) ? screenWidth - width : x)
+    y = Math.max(-offset, screenHeight < (height + y) ? screenHeight - height : y)
+  }
   /**
    * Initial window options
    */
   global.modules.lyricWindow = new BrowserWindow({
     height: Math.max(height > screenHeight ? screenHeight : height, 80),
     width: Math.max(width > screenWidth ? screenWidth : width, 380),
-    x: Math.max(-offset, screenWidth < (width + x) ? screenWidth - width : x),
-    y: Math.max(-offset, screenHeight < (height + y) ? screenHeight - height : y),
+    x,
+    y,
     minWidth: 380,
     minHeight: 80,
     useContentSize: true,

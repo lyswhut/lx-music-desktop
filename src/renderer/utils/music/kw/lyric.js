@@ -17,7 +17,10 @@ export default {
       return requestObj.promise.then(({ statusCode, body, raw }) => {
         if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
         return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
-          return Buffer.from(base64Data, 'base64').toString()
+          return {
+            lyric: Buffer.from(base64Data, 'base64').toString(),
+            tlyric: '',
+          }
         })
       })
     })

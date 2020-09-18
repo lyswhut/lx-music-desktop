@@ -183,6 +183,7 @@ export default {
   }
 
   button {
+    display: flex;
     position: relative;
     width: @control-btn-width;
     height: @control-btn-width;

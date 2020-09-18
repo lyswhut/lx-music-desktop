@@ -6,37 +6,9 @@ const { merge } = require('webpack-merge')
 
 const baseConfig = require('./webpack.config.base')
 
-const { mergeCSSLoaderDev } = require('../utils')
-
 module.exports = merge(baseConfig, {
   mode: 'development',
   devtool: 'eval-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        oneOf: mergeCSSLoaderDev(),
-      },
-      {
-        test: /\.less$/,
-        oneOf: mergeCSSLoaderDev({
-          loader: 'less-loader',
-          options: {
-            sourceMap: true,
-          },
-        }),
-      },
-      {
-        test: /\.styl(:?us)?$/,
-        oneOf: mergeCSSLoaderDev({
-          loader: 'stylus-loader',
-          options: {
-            sourceMap: true,
-          },
-        }),
-      },
-    ],
-  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),

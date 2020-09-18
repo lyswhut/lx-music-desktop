@@ -147,7 +147,7 @@ export default {
     height: @control-btn-width;
     background: none;
     border: none;
-    // display: flex;
+    display: flex;
     // justify-content: center;
     // align-items: center;
     outline: none;

@@ -124,7 +124,9 @@ global.appHotKey = {
 }
 
 function init() {
-  global.appSetting = initSetting()
+  const info = initSetting()
+  global.appSetting = info.setting
+  global.appSettingVersion = info.version
   global.appHotKey.config = initHotKey()
   global.lx_event.common.initSetting()
   global.lx_event.hotKey.init()

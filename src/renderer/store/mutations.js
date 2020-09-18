@@ -9,11 +9,11 @@ export default {
   setSetting(state, val) {
     state.setting = val
   },
-  setAgreePact(state) {
-    state.setting.isAgreePact = true
-  },
   setSettingVersion(state, val) {
     state.settingVersion = val
+  },
+  setAgreePact(state) {
+    state.setting.isAgreePact = true
   },
   setLeaderboard(state, { tabId, source }) {
     if (tabId != null) state.setting.leaderboard.tabId = tabId
@@ -48,6 +48,12 @@ export default {
     } else {
       state.setting.player.volume = val
     }
+  },
+  setPlayNextMode(state, val) {
+    state.setting.player.togglePlayMethod = val
+  },
+  setVisibleDesktopLyric(state, val) {
+    state.setting.desktopLyric.enable = val
   },
   setMediaDeviceId(state, val) {
     state.setting.player.mediaDeviceId = val

@@ -10,11 +10,9 @@
             h3(:title="listDetail.info.name || selectListInfo.name") {{listDetail.info.name || selectListInfo.name}}
             p(:title="listDetail.info.desc || selectListInfo.desc") {{listDetail.info.desc || selectListInfo.desc}}
           div(:class="$style.songListHeaderRight")
-            //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="addSongListDetail") 添加
-            //- | &nbsp;
-            //- material-btn(:class="$style.closeDetailButton" :disabled="detailLoading" @click="playSongListDetail") 播放
-            //- | &nbsp;
-            material-btn(:class="$style.closeDetailButton" @click="hideListDetail") {{$t('view.song_list.back')}}
+            material-btn(:class="$style.headerRightBtn" :disabled="detailLoading" @click="playSongListDetail") {{$t('view.song_list.play_all')}}
+            material-btn(:class="$style.headerRightBtn" :disabled="detailLoading" @click="addSongListDetail") {{$t('view.song_list.add_all')}}
+            material-btn(:class="$style.headerRightBtn" @click="hideListDetail") {{$t('view.song_list.back')}}
         material-song-list(v-model="selectedData" @action="handleSongListAction" :source="source" :page="listDetail.page" :limit="listDetail.limit"
          :total="listDetail.total" :noItem="isGetDetailFailed ? $t('view.song_list.loding_list_fail') : $t('view.song_list.loding_list')" :list="listDetail.list")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
@@ -84,7 +82,7 @@ export default {
       listWidth: 645,
       isGetDetailFailed: false,
       isInitedTagListWidth: false,
-      // detailLoading: true,
+      detailLoading: false,
     }
   },
   computed: {
@@ -97,7 +95,7 @@ export default {
       switch (this.source) {
         case 'wy':
         case 'kw':
-        case 'bd':
+        // case 'bd':
         case 'tx':
         case 'mg':
         case 'kg':
@@ -179,11 +177,13 @@ export default {
   },
   methods: {
     ...mapMutations(['setSongList']),
-    ...mapActions('songList', ['getTags', 'getList', 'getListDetail']),
+    ...mapActions('songList', ['getTags', 'getList', 'getListDetail', 'getListDetailAll']),
     ...mapMutations('songList', ['setVisibleListDetail', 'setSelectListInfo']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('list', ['listAdd', 'listAddMultiple']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
+    ...mapMutations('player', {
+      setPlayList: 'setList',
+    }),
     listenEvent() {
       window.eventHub.$on('key_backspace_down', this.handle_key_backspace_down)
     },
@@ -273,7 +273,7 @@ export default {
         s => s.songmid === targetSong.songmid,
       )
       if (targetIndex > -1) {
-        this.setList({
+        this.setPlayList({
           list: this.defaultList,
           index: targetIndex,
         })
@@ -402,15 +402,28 @@ export default {
     assertApiSupport(source) {
       return assertApiSupport(source)
     },
-    /*     addSongListDetail() {
-      // this.detailLoading = true
-      // this.getListDetailAll(this.selectListInfo.id).then(() => {
-      //   this.detailLoading = false
-      // })
+    async fetchList() {
+      this.detailLoading = true
+      const list = await this.getListDetailAll(this.selectListInfo.id)
+      this.detailLoading = false
+      return list
     },
-    playSongListDetail() {
-
-    }, */
+    async addSongListDetail() {
+      if (!this.listDetail.info.name) return
+      const list = await this.fetchList()
+      this.createUserList({ name: this.listDetail.info.name, id: `${this.listDetail.source}__${this.listDetail.id}`, list })
+    },
+    async playSongListDetail() {
+      if (!this.listDetail.info.name) return
+      const list = await this.fetchList()
+      this.setPlayList({
+        list: {
+          list,
+          id: null,
+        },
+        index: 0,
+      })
+    },
   },
 }
 </script>
@@ -516,6 +529,17 @@ export default {
   display: flex;
   align-items: center;
   padding-right: 15px;
+}
+.header-right-btn {
+  border-radius: 0;
+  &:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+  &:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
 }
 
 .song-list-detail-content {

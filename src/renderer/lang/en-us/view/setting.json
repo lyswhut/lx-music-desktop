@@ -1,6 +1,7 @@
 {
   "basic": "General",
   "basic_theme": "Theme",
+  "basic_show_animation": "Show switching animation",
   "basic_animation_title": "Animation effect of the pop-up layer",
   "basic_animation": "Random pop-up animation",
   "basic_source_title": "Choose a music source",
@@ -35,6 +36,7 @@
   "play_toggle_random": "Playlist shuffle",
   "play_toggle_list": "Play in order",
   "play_toggle_single_loop": "Single repeat",
+  "play_lyric_transition": "Show lyrics translation",
   "play_quality_title": "The 320k quality is preferred for playing",
   "play_quality": "Prefer High Quality 320k",
   "play_task_bar_title": "Show playing progress on the taskbar",
@@ -48,6 +50,7 @@
   "desktop_lyric_enable": "Display lyrics",
   "desktop_lyric_lock": "Lock lyrics",
   "desktop_lyric_always_on_top": "Make the lyrics always above other windows",
+  "desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the main screen",
 
   "search": "Search",
   "search_hot_title": "Select whether to show popular searches",

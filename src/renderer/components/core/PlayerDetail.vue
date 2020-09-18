@@ -526,7 +526,7 @@ export default {
     padding: 8px 0;
     line-height: 1.2;
     overflow-wrap: break-word;
-    transition: @transition-theme;
+    transition: @transition-theme !important;
     transition-property: color, font-size;
   }
 }

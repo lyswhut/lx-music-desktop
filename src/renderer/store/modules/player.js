@@ -9,6 +9,7 @@ const state = {
   playIndex: -1,
   changePlay: false,
   isShowPlayerDetail: false,
+  playedList: [],
 }
 
 let urlRequest
@@ -22,6 +23,7 @@ const getters = {
   changePlay: satte => satte.changePlay,
   playIndex: state => state.playIndex,
   isShowPlayerDetail: state => state.isShowPlayerDetail,
+  playedList: state => state.playedList,
 }
 
 // actions
@@ -58,9 +60,9 @@ const actions = {
   getLrc({ commit, state }, musicInfo) {
     if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-    return lrcRequest.promise.then(lrc => {
+    return lrcRequest.promise.then(({ lyric, tlyric }) => {
       lrcRequest = null
-      commit('setLrc', { musicInfo, lrc })
+      commit('setLrc', { musicInfo, lyric, tlyric })
     }).catch(err => {
       lrcRequest = null
       return Promise.reject(err)
@@ -78,12 +80,14 @@ const mutations = {
     datas.musicInfo.img = datas.url
   },
   setLrc(state, datas) {
-    datas.musicInfo.lrc = datas.lrc
+    datas.musicInfo.lrc = datas.lyric
+    datas.musicInfo.tlrc = datas.tlyric
   },
   setList(state, { list, index }) {
     state.listInfo = list
     state.playIndex = index
     state.changePlay = true
+    if (state.playedList.length) this.commit('player/clearPlayedList')
   },
   setPlayIndex(state, index) {
     state.playIndex = index
@@ -95,6 +99,16 @@ const mutations = {
   },
   resetChangePlay(state) {
     state.changePlay = false
+  },
+  setPlayedList(state, item) {
+    if (state.playedList.includes(item)) return
+    state.playedList.push(item)
+  },
+  removePlayedList(state, index) {
+    state.playedList.splice(index, 1)
+  },
+  clearPlayedList(state) {
+    state.playedList = []
   },
   visiblePlayerDetail(state, visible) {
     state.isShowPlayerDetail = visible

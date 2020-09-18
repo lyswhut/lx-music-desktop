@@ -151,29 +151,33 @@ exports.initSetting = () => {
     name: 'config',
   })
   let setting = electronStore_config.get('setting')
-  if (!electronStore_config.get('version') && setting) { // 迁移配置
-    electronStore_config.set('version', electronStore_config.get('setting.version'))
-    electronStore_config.delete('setting.version')
-    const list = electronStore_config.get('list')
-    if (list) {
-      if (list.defaultList) electronStore_list.set('defaultList', list.defaultList)
-      if (list.loveList) electronStore_list.set('loveList', list.loveList)
-      electronStore_config.delete('list')
+  if (setting) {
+    let version = electronStore_config.get('version')
+    if (!version) { // 迁移配置
+      version = electronStore_config.get('setting.version')
+      electronStore_config.set('version', version)
+      electronStore_config.delete('setting.version')
+      const list = electronStore_config.get('list')
+      if (list) {
+        if (list.defaultList) electronStore_list.set('defaultList', list.defaultList)
+        if (list.loveList) electronStore_list.set('loveList', list.loveList)
+        electronStore_config.delete('list')
+      }
+      const downloadList = electronStore_config.get('download')
+      if (downloadList) {
+        if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
+        electronStore_config.delete('download')
+      }
     }
-    const downloadList = electronStore_config.get('download')
-    if (downloadList) {
-      if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
-      electronStore_config.delete('download')
-    }
-  }
 
-  // 迁移列表滚动位置设置 ~0.18.3
-  if (setting && setting.list.scroll) {
-    let scroll = setting.list.scroll
-    electronStore_list.set('defaultList.location', scroll.locations.defaultList || 0)
-    electronStore_list.set('loveList.location', scroll.locations.loveList || 0)
-    electronStore_config.delete('setting.list.scroll')
-    electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
+    // 迁移列表滚动位置设置 ~0.18.3
+    if (setting.list.scroll) {
+      let scroll = setting.list.scroll
+      electronStore_list.set('defaultList.location', scroll.locations.defaultList || 0)
+      electronStore_list.set('loveList.location', scroll.locations.loveList || 0)
+      electronStore_config.delete('setting.list.scroll')
+      electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
+    }
   }
 
   const { version: settingVersion, setting: newSetting } = exports.mergeSetting(setting, electronStore_config.get('version'))
@@ -184,7 +188,7 @@ exports.initSetting = () => {
   // newSetting.controlBtnPosition = 'right'
   electronStore_config.set('version', settingVersion)
   electronStore_config.set('setting', newSetting)
-  return newSetting
+  return { version: settingVersion, setting: newSetting }
 }
 
 /**
@@ -202,6 +206,15 @@ exports.initHotKey = () => {
   }
 
   let globalConfig = electronStore_hotKey.get('global')
+
+  // 移除v1.0.1及之前设置的全局声音媒体快捷键接管
+  if (globalConfig && globalConfig.keys.VolumeUp) {
+    delete globalConfig.keys.VolumeUp
+    delete globalConfig.keys.VolumeDown
+    delete globalConfig.keys.VolumeMute
+    electronStore_hotKey.set('global', globalConfig)
+  }
+
   if (!globalConfig) {
     globalConfig = defaultHotKey.global
     electronStore_hotKey.set('global', globalConfig)

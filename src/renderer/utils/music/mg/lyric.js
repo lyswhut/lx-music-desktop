@@ -12,7 +12,10 @@ export default {
           requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
           return tryRequestObj.promise
         }
-        return body
+        return {
+          lyric: body,
+          tlyric: '',
+        }
       })
       return requestObj
     } else {
@@ -28,7 +31,10 @@ export default {
           requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
           return tryRequestObj.promise
         }
-        return body.lyric
+        return {
+          lyric: body.lyric,
+          tlyric: '',
+        }
       })
       return requestObj
     }

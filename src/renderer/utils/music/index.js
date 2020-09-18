@@ -34,10 +34,10 @@ const sources = {
       name: '虾米音乐',
       id: 'xm',
     },
-    {
-      name: '百度音乐',
-      id: 'bd',
-    },
+    // {
+    //   name: '百度音乐',
+    //   id: 'bd',
+    // },
   ],
   kw,
   kg,

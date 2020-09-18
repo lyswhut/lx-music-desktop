@@ -172,7 +172,7 @@ class Task extends EventEmitter {
         this.chunkInfo.startByte = 0
         this.resumeLastChunk = null
         this.progress.downloaded = 0
-        if (unlinkErr) this.__handleError(unlinkErr)
+        if (unlinkErr && unlinkErr.code !== 'ENOENT') this.__handleError(unlinkErr)
       })
     })
   }

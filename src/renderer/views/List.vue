@@ -643,7 +643,7 @@ export default {
         this.listsData.isShowNewList = false
       })
 
-      this.createUserList(name)
+      this.createUserList({ name })
     },
     handleShowNewList() {
       this.listsData.isShowNewList = true

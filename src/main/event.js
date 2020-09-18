@@ -22,6 +22,7 @@ global.lx_event.mainWindow.on(MAIN_WINDOW_EVENT_NAME.toggle_minimize, () => {
       global.modules.mainWindow.show()
     }
     global.modules.mainWindow.restore()
+    global.modules.mainWindow.focus()
   } else {
     global.modules.mainWindow.minimize()
   }

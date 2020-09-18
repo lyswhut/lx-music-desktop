@@ -78,7 +78,7 @@ export default {
     return arr.join('、')
   },
   filterData(rawList) {
-    console.log(rawList)
+    // console.log(rawList)
     let ids = new Set()
     const list = []
     rawList.forEach(songData => {
