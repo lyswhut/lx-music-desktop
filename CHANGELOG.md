@@ -37,7 +37,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### 其他
 
-- 更新electron到 10.1.0
+- 更新electron到 10.1.2
 
 ## [1.0.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.0.0...v1.0.1) - 2020-07-25
 
