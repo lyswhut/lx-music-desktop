@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -171,7 +171,7 @@
     "cfonts": "^2.8.6",
     "chalk": "^4.1.0",
     "changelog-parser": "^2.8.0",
-    "copy-webpack-plugin": "^6.1.0",
+    "copy-webpack-plugin": "^6.1.1",
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
     "css-loader": "^4.3.0",
