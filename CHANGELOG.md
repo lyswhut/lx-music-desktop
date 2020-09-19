@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.1.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.1.0...v1.1.1) - 2020-09-19
+
+### 修复
+
+- 修复某些情况下桌面歌词不会播放的问题
+
 ## [1.1.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.0.1...v1.1.0) - 2020-09-18
 
 ### 新增
