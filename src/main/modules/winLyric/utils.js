@@ -16,17 +16,17 @@ exports.getLyricWindowBounds = (bounds, { x = 0, y = 0, w = 0, h = 0 }) => {
     if (w > wasW + offset) w = wasW + offset
     if (h > wasH + offset) h = wasH + offset
     if (x == null) {
-      if (global.appSetting.desktopLyric.x > wasW - w) {
-        x = wasW - w - global.appSetting.desktopLyric.x
-      } else if (global.appSetting.desktopLyric.x < -offset) {
-        x = global.appSetting.desktopLyric.x + offset
+      if (bounds.x > wasW - w) {
+        x = wasW - w - bounds.x
+      } else if (bounds.x < -offset) {
+        x = bounds.x + offset
       } else {
         x = 0
       }
-      if (global.appSetting.desktopLyric.y > wasH - h) {
-        y = wasH - h - global.appSetting.desktopLyric.y
-      } else if (global.appSetting.desktopLyric.y < -offset) {
-        y = global.appSetting.desktopLyric.y + offset
+      if (bounds.y > wasH - h) {
+        y = wasH - h - bounds.y
+      } else if (bounds.y < -offset) {
+        y = bounds.y + offset
       } else {
         y = 0
       }
