@@ -1,7 +1,7 @@
 const { common: COMMON_EVENT_NAME, winLyric: WIN_LYRIC_EVENT_NAME, hotKey: HOT_KEY_EVENT_NAME, mainWindow: MAIN_WINDOW_EVENT_NAME } = require('../../events/_name')
 const { mainSend, NAMES: { winLyric: ipcWinLyricNames } } = require('../../../common/ipc')
 const { desktop_lyric } = require('../../../common/hotKey')
-const { setLyricWindow } = require('./utils')
+const { getLyricWindowBounds } = require('./utils')
 
 let isLock = null
 let isEnable = null
@@ -27,6 +27,17 @@ const setLrcConfig = () => {
       isAlwaysOnTop = desktopLyric.isAlwaysOnTop
       global.modules.lyricWindow.setAlwaysOnTop(desktopLyric.isAlwaysOnTop, 'screen-saver')
     }
+    if (isLockScreen != desktopLyric.isLockScreen) {
+      isLockScreen = desktopLyric.isLockScreen
+      if (desktopLyric.isLockScreen) {
+        global.modules.lyricWindow.setBounds(getLyricWindowBounds(global.modules.lyricWindow.getBounds(), {
+          x: null,
+          y: null,
+          w: desktopLyric.width,
+          h: desktopLyric.height,
+        }))
+      }
+    }
   }
   if (isEnable != desktopLyric.enable) {
     isEnable = desktopLyric.enable
@@ -34,17 +45,6 @@ const setLrcConfig = () => {
       global.lx_event.winLyric.create()
     } else {
       global.lx_event.winLyric.close()
-    }
-  }
-  if (isLockScreen != desktopLyric.isLockScreen) {
-    isLockScreen = desktopLyric.isLockScreen
-    if (desktopLyric.isLockScreen) {
-      setLyricWindow({
-        x: desktopLyric.x,
-        y: desktopLyric.y,
-        w: desktopLyric.width,
-        h: desktopLyric.height,
-      })
     }
   }
 }
