@@ -668,8 +668,8 @@ export default {
         .catch(() => {
           this.status = this.statusText = this.$t('core.player.lyric_error')
         }).finally(() => {
-          this.setLyric()
           this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
+          this.setLyric()
         })
     },
     handleRemoveMusic() {
