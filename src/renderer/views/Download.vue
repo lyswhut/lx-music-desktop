@@ -29,7 +29,6 @@ div(:class="$style.download")
                 :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
                 :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)" :list-add-btn="false"
                 :play-btn="item.status == downloadStatus.COMPLETED" :search-btn="item.status == downloadStatus.ERROR" @btn-click="handleListBtnClick")
-    //- material-flow-btn(:show="isShowEditBtn" :play-btn="false" :download-btn="false" :add-btn="false" :start-btn="true" :pause-btn="true" @btn-click="handleFlowBtnClick")
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
   div(:class="$style.noItem" v-else)
 </template>
@@ -47,7 +46,6 @@ export default {
       clickTime: window.performance.now(),
       clickIndex: -1,
       selectdData: [],
-      // isShowEditBtn: false,
       isShowDownloadMultiple: false,
       tabId: 'all',
       keyEvent: {
@@ -166,14 +164,6 @@ export default {
     },
   },
   watch: {
-    selectdData(n) {
-      const len = n.length
-      if (len) {
-        this.isShowEditBtn = true
-      } else {
-        this.isShowEditBtn = false
-      }
-    },
     list() {
       this.removeAllSelect()
     },

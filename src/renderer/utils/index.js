@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
@@ -341,3 +342,22 @@ export const getProxyInfo = () => window.globalObj.proxy.enable
 
 
 export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined
+
+export const getSetting = () => rendererInvoke(NAMES.mainWindow.get_setting)
+export const saveSetting = () => rendererInvoke(NAMES.mainWindow.set_app_setting)
+
+export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).catch(error => {
+  rendererInvoke(NAMES.mainWindow.get_data_path).then(dataPath => {
+    let filePath = path.join(dataPath, 'playList.json.bak')
+    rendererInvoke(NAMES.mainWindow.show_dialog, {
+      type: 'error',
+      message: window.i18n.t('store.state.load_list_file_error_title'),
+      detail: window.i18n.t('store.state.load_list_file_error_detail', {
+        path: filePath,
+        detail: error.message,
+      }),
+    }).then(() => openDirInExplorer(filePath))
+  })
+  return rendererInvoke(NAMES.mainWindow.get_playlist, true)
+})
+

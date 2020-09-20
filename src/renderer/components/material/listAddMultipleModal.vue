@@ -62,7 +62,7 @@ export default {
         this.defaultList,
         this.loveList,
         ...this.userList,
-      ].filter(l => l.id != this.excludeListId)
+      ].filter(l => l.id != this.excludeListId.includes(l.id))
     },
     spaceNum() {
       return this.lists.length < 2 ? 0 : (3 - this.lists.length % 3 - 1)
@@ -92,7 +92,7 @@ export default {
       this.newListName = event.target.value = ''
       this.isEditing = false
       if (!name) return
-      this.createUserList(name)
+      this.createUserList({ name })
     },
   },
 }

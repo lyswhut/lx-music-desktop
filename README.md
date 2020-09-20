@@ -2,10 +2,12 @@
 
 <p align="center">
   <a href="https://github.com/sixyin/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/sixyin/lx-music-desktop" alt="Release version"></a>
+  <a href="https://ci.appveyor.com/project/sixyin/lx-music-desktop"><img src="https://ci.appveyor.com/api/projects/status/flrsqd5ymp8fnte5?svg=true" alt="Build status"></a>
+  <a href="https://travis-ci.com/sixyin/lx-music-desktop"><img src="https://travis-ci.com/sixyin/lx-music-desktop.svg?branch=master" alt="Build status"></a>
   <a href="https://electronjs.org/releases/stable"><img src="https://img.shields.io/github/package-json/dependency-version/sixyin/lx-music-desktop/dev/electron/master" alt="Electron version"></a>
-  <!-- <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/downloads/lyswhut/lx-music-desktop/latest/total" alt="Downloads"></a> -->
+  <!-- <a href="https://github.com/sixyin/lx-music-desktop/releases"><img src="https://img.shields.io/github/downloads/sixyin/lx-music-desktop/latest/total" alt="Downloads"></a> -->
   <a href="https://github.com/sixyin/lx-music-desktop/tree/dev"><img src="https://img.shields.io/github/package-json/v/sixyin/lx-music-desktop/dev" alt="Dev branch version"></a>
-  <!-- <a href="https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/lyswhut/lx-music-desktop" alt="License"></a> -->
+  <!-- <a href="https://github.com/sixyin/lx-music-desktop/blob/master/LICENSE"><img src="https://img.shields.io/github/license/sixyin/lx-music-desktop" alt="License"></a> -->
 </p>
 
 <!-- [![GitHub release][1]][2]

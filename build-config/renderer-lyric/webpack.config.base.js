@@ -1,9 +1,12 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HTMLPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const vueLoaderConfig = require('../vue-loader.config')
+const { mergeCSSLoader } = require('../utils')
 
+const isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
   target: 'electron-renderer',
@@ -45,6 +48,28 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        oneOf: mergeCSSLoader(),
+      },
+      {
+        test: /\.less$/,
+        oneOf: mergeCSSLoader({
+          loader: 'less-loader',
+          options: {
+            sourceMap: true,
+          },
+        }),
+      },
+      {
+        test: /\.styl(:?us)?$/,
+        oneOf: mergeCSSLoader({
+          loader: 'stylus-loader',
+          options: {
+            sourceMap: true,
+          },
+        }),
       },
       {
         test: /\.pug$/,
@@ -98,5 +123,11 @@ module.exports = {
       __dirname,
     }),
     new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: isDev ? '[name].css' : '[name].[contenthash:8].css',
+      chunkFilename: isDev ? '[id].css' : '[id].[contenthash:8].css',
+    }),
   ],
 }

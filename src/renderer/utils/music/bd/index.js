@@ -21,7 +21,7 @@ const bd = {
   },
   getLyric(songInfo) {
     const requestObj = this.getMusicInfo(songInfo)
-    requestObj.promise = requestObj.promise.then(info => httpFetch(info.lrclink).promise.then(resp => resp.body))
+    requestObj.promise = requestObj.promise.then(info => httpFetch(info.lrclink).promise.then(resp => ({ lyric: resp.body, tlyric: '' })))
     return requestObj
   },
   // getLyric(songInfo) {

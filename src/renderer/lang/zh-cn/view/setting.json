@@ -3,6 +3,7 @@
   "basic_theme": "主题颜色",
   "basic_animation_title": "弹出层的动画效果",
   "basic_animation": "弹出层随机动画",
+  "basic_show_animation": "显示切换动画",
   "basic_source_title": "选择音乐来源",
   "basic_source_yj": "五音版接口（为五音助手用户专门打造的五音版）",
   "basic_source_test": "测试接口（几乎软件的所有功能都可用）",
@@ -36,6 +37,7 @@
   "play_toggle_random": "列表随机",
   "play_toggle_list": "顺序播放",
   "play_toggle_single_loop": "单曲循环",
+  "play_lyric_transition": "显示歌词翻译",
   "play_quality_title": "启用时将优先播放320K品质的歌曲",
   "play_quality": "优先播放高品质音乐",
   "play_task_bar_title": "在任务栏上显示当前歌曲播放进度",
@@ -49,6 +51,7 @@
   "desktop_lyric_enable": "显示歌词",
   "desktop_lyric_lock": "锁定歌词",
   "desktop_lyric_always_on_top": "使歌词总是在其他窗口之上",
+  "desktop_lyric_lock_screen": "不允许歌词窗口拖出主屏幕之外",
 
   "search": "搜索设置",
   "search_hot_title": "是否显示热门搜索",

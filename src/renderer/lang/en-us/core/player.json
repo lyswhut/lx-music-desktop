@@ -17,5 +17,13 @@
   "hide_detail": "Hide detail page",
   "name": "Name: ",
   "singer": "Artist: ",
-  "album": "Album: "
+  "album": "Album: ",
+  "add_music_to": "Add the current song to...",
+  "desktop_lyric_on": "Open Desktop Lyrics",
+  "desktop_lyric_off": "Close Desktop Lyrics",
+  "play_toggle_mode_list_loop": "List Loop",
+  "play_toggle_mode_random": "List Random",
+  "play_toggle_mode_list": "Play in order",
+  "play_toggle_mode_single_loop": "Single Loop",
+  "play_toggle_mode_off": "Disable"
 }

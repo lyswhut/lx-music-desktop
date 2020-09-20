@@ -10,6 +10,11 @@ div.scroll(:class="$style.setting")
             span
             label {{$t('store.state.theme_' + theme.class)}}
 
+    dd
+      h3 {{$t('view.setting.basic_show_animation')}}
+      div
+        material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
+
     dd(:title="$t('view.setting.basic_animation_title')")
       h3 {{$t('view.setting.basic_animation')}}
       div
@@ -58,6 +63,10 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
             v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
+    dd
+      h3 {{$t('view.setting.play_lyric_transition')}}
+      div
+        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
     dd(:title="$t('view.setting.play_quality_title')")
       h3 {{$t('view.setting.play_quality')}}
       div
@@ -82,6 +91,8 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
     dt {{$t('view.setting.search')}}
     dd(:title="$t('view.setting.search_hot_title')")
       h3 {{$t('view.setting.search_hot')}}
@@ -446,6 +457,7 @@ export default {
         langId: 'cns',
         themeId: 0,
         sourceId: 0,
+        isShowAnimation: true,
         randomAnimate: true,
         isAgreePact: false,
         controlBtnPosition: 'left',
@@ -584,6 +596,15 @@ export default {
     },
     'setting.player.mediaDeviceId'(n) {
       this.current_setting.player.mediaDeviceId = n
+    },
+    'setting.player.isMute'(n) {
+      this.current_setting.player.isMute = n
+    },
+    'setting.desktopLyric.enable'(n) {
+      this.current_setting.desktopLyric.enable = n
+    },
+    'setting.player.togglePlayMethod'(n) {
+      this.current_setting.player.togglePlayMethod = n
     },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return

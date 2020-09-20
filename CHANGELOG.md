@@ -6,6 +6,45 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.1.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.1.0...v1.1.1) - 2020-09-19
+
+### 修复
+
+- 修复某些情况下桌面歌词不会播放的问题
+
+## [1.1.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.0.1...v1.1.0) - 2020-09-18
+
+### 新增
+
+- 在歌单详情界面新增播放当前歌单按钮、收藏歌单按钮，注：播放歌单不会将歌曲添加到试听列表
+- 新增`不允许将歌词窗口拖出主屏幕之外`的设置项，默认开启，在连接多个屏幕时想要拖动到其他屏幕时可关闭此设置
+- 新增大部分平台的歌词翻译，感谢 @InoriHimea 提供的[krc解码算法](https://github.com/lyswhut/lx-music-desktop/issues/296#issuecomment-683285784)
+- 新增`显示歌词翻译`设置，默认开启，仅支持某些平台，注：无论该设置是否开启，嵌入或下载歌词时都不会带上翻译
+- 新增`显示切换动画`设置，默认开启，关闭时将基本禁用软件内的所有切换动画
+- 播放状态栏新增桌面歌词的开关、播放模式的切换、歌曲的收藏按钮，Thanks to @andylow for the [icon](https://github.com/lyswhut/lx-music-desktop/pull/309)!
+
+### 修复
+
+- 修复使用全局快捷键还原窗口时，窗口没有获取焦点的问题
+- 修复我的列表搜索对最后一个字符的匹配问题
+- 修复窗口在`较小`模式下最小化/关闭按钮不居中的问题
+
+### 优化
+
+- 桌面歌词当前播放行改为上下居中
+- 为区分静音状态，静音时音量条会变淡，调整音量条时将会取消静音
+- 优化随机播放机制，现在通过`下一曲`切换歌曲时，直到播放完整个列表之前将不会再随机到之前播放过的歌曲，并且通过`上一曲`可以正确播放上一首歌曲
+- 当下载目录没有写入权限时将显示没有写入权限的提示
+
+### 移除
+
+- 移除默认的全局声音媒体快捷键接管
+- 移除对百度音乐的支持，因百度音乐原有的大部分API失效，而且该平台相对其他平台来说音乐太少了，可有可无，以后再看情况恢复
+
+### 其他
+
+- 更新electron到 10.1.2
+
 ## [1.0.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.0.0...v1.0.1) - 2020-07-25
 
 ### 优化

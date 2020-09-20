@@ -177,7 +177,7 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
       : Promise.resolve(),
     isEmbedLyric
       ? downloadInfo.musicInfo.lrc
-        ? Promise.resolve(downloadInfo.musicInfo.lrc)
+        ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
         : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.catch(err => {
           console.log(err)
           return null
@@ -190,7 +190,7 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
       artist: downloadInfo.musicInfo.singer,
       album: downloadInfo.musicInfo.albumName,
       APIC: imgUrl,
-      lyrics,
+      lyrics: lyrics.lyric,
     })
   })
 }
@@ -202,10 +202,10 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
  */
 const downloadLyric = (downloadInfo, filePath) => {
   const promise = downloadInfo.musicInfo.lrc
-    ? Promise.resolve(downloadInfo.musicInfo.lrc)
+    ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
     : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
-  promise.then(lrc => {
-    if (lrc) saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrc)
+  promise.then(lrcs => {
+    if (lrcs.lyric) saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric)
   })
 }
 
@@ -218,13 +218,13 @@ const refreshUrl = function(commit, downloadInfo) {
     if (!dl) return
     dl.refreshUrl(result.url)
     dl.start().catch(err => {
-      commit('onError', downloadInfo)
+      commit('onError', { downloadInfo, errorMsg: err.message })
       commit('setStatusText', { downloadInfo, text: err.message })
       this.dispatch('download/startTask')
     })
   }).catch(err => {
     // console.log(err)
-    commit('onError', downloadInfo)
+    commit('onError', { downloadInfo, errorMsg: err.message })
     commit('setStatusText', { downloadInfo, text: err.message })
     this.dispatch('download/startTask')
   })
@@ -299,7 +299,7 @@ const actions = {
     try {
       await checkPath(rootState.setting.download.savePath)
     } catch (error) {
-      commit('onError', downloadInfo)
+      commit('onError', { downloadInfo, errorMsg: error.message })
       commit('setStatusText', '检查下载目录出错: ' + error.message)
       await dispatch('startTask')
       return
@@ -324,9 +324,14 @@ const actions = {
         console.log('on complate')
       },
       onError(err) {
+        // console.log(err)
+        if (err.code == 'EPERM') {
+          commit('onError', { downloadInfo, errorMsg: '歌曲下载目录没有写入权限，请尝试更改歌曲保存路径' })
+          return
+        }
         // console.log(tryNum[downloadInfo.key])
         if (++tryNum[downloadInfo.key] > 2) {
-          commit('onError', downloadInfo)
+          commit('onError', { downloadInfo, errorMsg: err.message })
           dispatch('startTask')
           return
         }
@@ -375,7 +380,7 @@ const actions = {
       dls[downloadInfo.key] = download(options)
     }).catch(err => {
       // console.log(err.message)
-      commit('onError', downloadInfo)
+      commit('onError', { downloadInfo, errorMsg: err.message })
       commit('setStatusText', { downloadInfo, text: err.message })
       dispatch('startTask')
     })
@@ -437,7 +442,7 @@ const actions = {
       try {
         await dl.start()
       } catch (error) {
-        commit('onError', downloadInfo)
+        commit('onError', { downloadInfo, errorMsg: error.message })
         commit('setStatusText', error.message)
         await dispatch('startTask')
       }
@@ -448,7 +453,7 @@ const actions = {
   startTasks(store, list) {
     if (isRuningActionTask) return
     isRuningActionTask = true
-    return startTasks(store, [...list]).finally(() => {
+    return startTasks(store, list.filter(item => !(item.isComplate || item.status == state.downloadStatus.RUN || item.status == state.downloadStatus.WAITING))).finally(() => {
       isRuningActionTask = false
     })
   },
@@ -522,9 +527,9 @@ const mutations = {
     downloadInfo.status = state.downloadStatus.COMPLETED
     downloadInfo.statusText = '下载完成'
   },
-  onError(state, downloadInfo) {
+  onError(state, { downloadInfo, errorMsg }) {
     downloadInfo.status = state.downloadStatus.ERROR
-    downloadInfo.statusText = '任务出错'
+    downloadInfo.statusText = errorMsg || '任务出错'
   },
   onStart(state, downloadInfo) {
     downloadInfo.status = state.downloadStatus.RUN

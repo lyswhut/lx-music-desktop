@@ -18,4 +18,4 @@ const apis = source => {
   throw new Error('Api is not found')
 }
 
-export { apis, supportQuality }
+export { apis, getAPI, supportQuality }

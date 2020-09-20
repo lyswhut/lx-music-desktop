@@ -1,6 +1,23 @@
 import { httpGet, httpFetch } from '../../request'
 import { xmRequest } from './util'
 
+const parseLyric = str => {
+  str = str.replace(/(?:<\d+>|\r)/g, '')
+  let tlyric = []
+  let lyric = str.replace(/\[[\d:.]+\].*?\n\[x-trans\].*/g, s => {
+    // console.log(s)
+    let [lrc, tlrc] = s.split('\n')
+    tlrc = tlrc.replace('[x-trans]', lrc.replace(/^(\[[\d:.]+\]).*$/, '$1'))
+    tlyric.push(tlrc)
+    return lrc
+  })
+  tlyric = tlyric.join('\n')
+  return {
+    lyric,
+    tlyric,
+  }
+}
+
 export default {
   failTime: 0,
   expireTime: 60 * 1000 * 1000,
@@ -13,7 +30,10 @@ export default {
         requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
         return tryRequestObj.promise
       }
-      return body
+      return url.endsWith('.xtrc') ? parseLyric(body) : {
+        lyric: body,
+        tlyric: '',
+      }
     })
     return requestObj
   },
@@ -27,7 +47,10 @@ export default {
         },
       }, function(err, resp, body) {
         if (err || resp.statusCode !== 200) return this.getLyricFile(url, ++retryNum).then(resolve).catch(reject)
-        return resolve(body)
+        return resolve(url.endsWith('.xtrc') ? parseLyric(body) : {
+          lyric: body,
+          tlyric: '',
+        })
       })
     })
   },
@@ -47,8 +70,12 @@ export default {
         return tryRequestObj.promise
       }
       if (!body.result.data.lyrics.length) return Promise.reject(new Error('未找到歌词'))
-      let lrc = body.result.data.lyrics.find(lyric => /\.lrc$/.test(lyric.lyricUrl))
-      return lrc ? lrc.content : Promise.reject(new Error('未找到歌词'))
+      let lrc = body.result.data.lyrics.find(lyric => /\.(trc|lrc)$/.test(lyric.lyricUrl))
+      return lrc
+        ? lrc.lyricUrl.endsWith('.trc')
+          ? parseLyric(lrc.content)
+          : { lyric: lrc.content, tlyric: '' }
+        : Promise.reject(new Error('未找到歌词'))
     })
     return requestObj
   },
@@ -74,7 +101,7 @@ export default {
     return requestObj
   },
   getLyric(songInfo) {
-    if (songInfo.lrcUrl && /\.lrc$/.test(songInfo.lrcUrl)) return this.getLyricFile_1(songInfo.lrcUrl)
+    if (songInfo.lrcUrl && /\.(xtrc|lrc)$/.test(songInfo.lrcUrl)) return this.getLyricFile_1(songInfo.lrcUrl)
     return Date.now() - this.failTime > this.expireTime ? this.getLyricUrl_1(songInfo) : this.getLyricUrl_2(songInfo)
   },
 }
