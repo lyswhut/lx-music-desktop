@@ -54,8 +54,8 @@ const actions = {
 // mitations
 const mutations = {
   initList(state, { defaultList, loveList, userList }) {
-    if (defaultList != null) state.defaultList.list = defaultList.list
-    if (loveList != null) state.loveList.list = loveList.list
+    if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list, location: defaultList.location })
+    if (loveList != null) Object.assign(state.loveList, { list: loveList.list, location: loveList.location })
     if (userList != null) state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
