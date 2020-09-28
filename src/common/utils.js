@@ -173,10 +173,11 @@ exports.initSetting = () => {
     // 迁移列表滚动位置设置 ~0.18.3
     if (setting.list.scroll) {
       let scroll = setting.list.scroll
-      electronStore_list.set('defaultList.location', scroll.locations.defaultList || 0)
-      electronStore_list.set('loveList.location', scroll.locations.loveList || 0)
+      electronStore_list.set('defaultList.location', scroll.locations.default || 0)
+      electronStore_list.set('loveList.location', scroll.locations.love || 0)
       electronStore_config.delete('setting.list.scroll')
       electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
+      delete setting.list.scroll
     }
   }
 
