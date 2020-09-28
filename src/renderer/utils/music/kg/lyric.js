@@ -21,12 +21,10 @@ const parseLyric = str => {
     let time = parseInt(result[2])
     let ms = time % 1000
     time /= 1000
-    let h = parseInt(time / 3600).toString().padStart(2, '0')
-    time %= 3600
     let m = parseInt(time / 60).toString().padStart(2, '0')
     time %= 60
     let s = parseInt(time).toString().padStart(2, '0')
-    time = `${h}:${m}:${s}.${ms}`
+    time = `${m}:${s}.${ms}`
     if (tlyric) tlyric[i] = `[${time}]${tlyric[i++][0]}`
     return str.replace(result[1], time)
   })
