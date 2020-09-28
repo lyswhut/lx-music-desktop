@@ -605,6 +605,9 @@ export default {
     'setting.desktopLyric.enable'(n) {
       this.current_setting.desktopLyric.enable = n
     },
+    'setting.desktopLyric.isLock'(n) {
+      this.current_setting.desktopLyric.isLock = n
+    },
     'setting.player.togglePlayMethod'(n) {
       this.current_setting.player.togglePlayMethod = n
     },

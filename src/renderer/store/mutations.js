@@ -55,6 +55,9 @@ export default {
   setVisibleDesktopLyric(state, val) {
     state.setting.desktopLyric.enable = val
   },
+  setLockDesktopLyric(state, val) {
+    state.setting.desktopLyric.isLock = val
+  },
   setMediaDeviceId(state, val) {
     state.setting.player.mediaDeviceId = val
   },

@@ -15,7 +15,7 @@ div(:class="$style.player")
               div(:class="[$style.volume, setting.player.isMute ? $style.muted : null]")
                 div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
               div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :title="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
-            div(:class="$style.titleBtn" @click='toggleDesktopLyric' :title="setting.desktopLyric.enable ? $t('core.player.desktop_lyric_off') : $t('core.player.desktop_lyric_on')")
+            div(:class="$style.titleBtn" @click='toggleDesktopLyric' @contextmenu="handleToggleLockDesktopLyric" :title="toggleDesktopLyricBtnTitle")
               svg(v-if="setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-desktop-lyric-off')
               svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
@@ -173,6 +173,17 @@ export default {
         default: return this.$t('core.player.play_toggle_mode_off')
       }
     },
+    toggleDesktopLyricBtnTitle() {
+      return `${
+        this.setting.desktopLyric.enable
+          ? this.$t('core.player.desktop_lyric_off')
+          : this.$t('core.player.desktop_lyric_on')
+      }（${
+        this.setting.desktopLyric.isLock
+          ? this.$t('core.player.desktop_lyric_unlock')
+          : this.$t('core.player.desktop_lyric_lock')
+      }）`
+    },
   },
   mounted() {
     this.init()
@@ -287,7 +298,7 @@ export default {
       'setPlayedList',
       'removePlayedList',
     ]),
-    ...mapMutations(['setVolume', 'setPlayNextMode', 'setVisibleDesktopLyric']),
+    ...mapMutations(['setVolume', 'setPlayNextMode', 'setVisibleDesktopLyric', 'setLockDesktopLyric']),
     ...mapMutations('list', ['updateMusicInfo']),
     ...mapMutations(['setMediaDeviceId']),
     handleRegisterEvent(action) {
@@ -867,6 +878,9 @@ export default {
     toggleDesktopLyric() {
       this.setVisibleDesktopLyric(!this.setting.desktopLyric.enable)
     },
+    handleToggleLockDesktopLyric() {
+      this.setLockDesktopLyric(!this.setting.desktopLyric.isLock)
+    },
     toggleNextPlayMode() {
       let index = playNextModes.indexOf(this.setting.player.togglePlayMethod)
       if (++index >= playNextModes.length) index = -1
@@ -1147,6 +1161,7 @@ export default {
   display: flex;
   padding-top: 2px;
   // justify-content: space-between;
+  height: 16px;
   align-items: center;
 }
 
