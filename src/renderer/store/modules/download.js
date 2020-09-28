@@ -159,7 +159,7 @@ const getUrl = (downloadInfo, isRefresh) => {
 }
 
 // 修复 1.1.x版本 酷狗源歌词格式
-const fixKgLyric = lrc => lrc.startsWith('\ufeff[id:$00000000]') ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
+const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
 
 /**
  * 设置歌曲meta信息
