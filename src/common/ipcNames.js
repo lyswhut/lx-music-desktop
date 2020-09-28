@@ -48,7 +48,6 @@ const names = {
     get_playlist: 'get_playlist',
     save_playlist: 'save_playlist',
     get_data: 'get_data',
-    set_data: 'set_data',
     save_data: 'save_data',
     get_hot_key: 'get_hot_key',
   },

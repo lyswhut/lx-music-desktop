@@ -86,7 +86,6 @@ export default {
       // isShowEditBtn: false,
       isShowDownloadMultiple: false,
       delayShow: false,
-      routeLeaveLocation: null,
       isShowListAdd: false,
       isShowListAddMultiple: false,
       delayTimeout: null,
@@ -289,18 +288,14 @@ export default {
   // },
   beforeRouteLeave(to, from, next) {
     this.clearDelayTimeout()
-    this.routeLeaveLocation = (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0
+    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
     next()
   },
   created() {
     this.listId = this.$route.query.id || this.defaultList.id
     this.setPrevSelectListId(this.listId)
-    this.handleScroll = throttle(e => {
-      if (this.routeLeaveLocation) {
-        this.setListScroll({ id: this.listId, location: this.routeLeaveLocation })
-      } else {
-        this.setListScroll({ id: this.listId, location: e.target.scrollTop })
-      }
+    this.handleSaveScroll = throttle((listId, location) => {
+      this.setListScroll({ id: listId, location })
     }, 1000)
     this.listenEvent()
   },
@@ -310,6 +305,7 @@ export default {
   },
   beforeDestroy() {
     this.unlistenEvent()
+    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
   },
   methods: {
     ...mapMutations(['setPrevSelectListId']),
@@ -368,6 +364,9 @@ export default {
         this.delayShow = true
         this.restoreScroll(this.$route.query.scrollIndex, false)
       }
+    },
+    handleScroll(e) {
+      this.handleSaveScroll(this.listId, e.target.scrollTop)
     },
     clearDelayTimeout() {
       if (this.delayTimeout) {
