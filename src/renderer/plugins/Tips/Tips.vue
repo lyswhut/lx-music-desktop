@@ -40,10 +40,10 @@ export default {
       const offsetHeight = containerHeight - top - tipsHeight
       let x = 0
       let y = 0
-      if (tipsWidth < containerWidth / 2 && containerWidth > tipsWidth && offsetWidth < 5) {
+      if (tipsWidth < left && containerWidth > tipsWidth && offsetWidth < 5) {
         x = -tipsWidth - 12
       }
-      if (tipsHeight < containerHeight / 2 && containerHeight > tipsHeight && offsetHeight < 5) {
+      if (tipsHeight < top && containerHeight > tipsHeight && offsetHeight < 5) {
         y = -tipsHeight - 8
       }
       return `${x}px, ${y}px`
