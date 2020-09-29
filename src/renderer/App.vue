@@ -94,7 +94,7 @@ export default {
       })
     }, 1000)
     this.saveSearchHistoryList = throttle(n => {
-      rendererSend(NAMES.mainWindow.set_data, {
+      rendererSend(NAMES.mainWindow.save_data, {
         path: 'searchHistoryList',
         data: n,
       })
@@ -292,7 +292,7 @@ export default {
       rendererInvoke(NAMES.mainWindow.get_data, 'searchHistoryList').then(historyList => {
         if (historyList == null) {
           historyList = []
-          rendererInvoke(NAMES.mainWindow.set_data, { path: 'searchHistoryList', data: historyList })
+          rendererSend(NAMES.mainWindow.save_data, { path: 'searchHistoryList', data: historyList })
         } else {
           this.setSearchHistoryList(historyList)
         }

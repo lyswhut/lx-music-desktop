@@ -8,7 +8,7 @@ const {
   },
 } = require('../../../common/ipc')
 const { winLyric: WIN_LYRIC_EVENT_NAME } = require('../../events/_name')
-const { setLyricWindow } = require('./utils')
+const { getLyricWindowBounds } = require('./utils')
 
 mainOn(ipcWinLyricNames.get_lyric_info, (event, action) => {
   if (!global.modules.mainWindow) return
@@ -28,5 +28,5 @@ mainHandle(ipcWinLyricNames.get_lyric_config, async() => {
 })
 
 mainOn(ipcWinLyricNames.set_win_bounds, (event, options) => {
-  setLyricWindow(options)
+  global.modules.lyricWindow.setBounds(getLyricWindowBounds(global.modules.lyricWindow.getBounds(), options))
 })

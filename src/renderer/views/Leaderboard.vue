@@ -7,11 +7,11 @@
       div(:class="$style.listsSelect")
         //- h2(:class="$style.listsTitle") {{$t('core.aside.my_list')}}
         material-selection(:class="$style.select" :list="sources" item-key="id" item-name="name" v-model="source")
-        //- button(:class="$style.listsAdd" @click="handleShowNewList" :title="$t('view.list.lists_new_list_btn')")
+        //- button(:class="$style.listsAdd" @click="handleShowNewList" :tips="$t('view.list.lists_new_list_btn')")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :title="item.name" v-for="item in boardList" :key="item.id" @click="handleToggleList(item.id)")
+        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :tips="item.name" v-for="item in boardList" :key="item.id" @click="handleToggleList(item.id)")
           span(:class="$style.listsLabel") {{item.name}}
     div(:class="$style.list")
       material-song-list(v-model="selectedData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")

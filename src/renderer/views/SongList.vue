@@ -31,7 +31,7 @@
                       div(:class="$style.left" :style="{ backgroundImage: 'url('+item.img+')' }")
                         //- img(:src="item.img")
                       div(:class="$style.right" :src="item.img")
-                        h4(:title="item.name") {{item.name}}
+                        h4 {{item.name}}
                         p(:class="$style.play_count") {{item.play_count}}
                         p(:class="$style.author") {{item.author}}
                     li(:class="$style.item" style="cursor: default;" v-for="i in spaceNum")

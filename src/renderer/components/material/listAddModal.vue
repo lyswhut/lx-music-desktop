@@ -6,8 +6,8 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       span(:class="$style.name") {{this.musicInfo && `${musicInfo.name}`}}
       | &nbsp;{{$t('material.list_add_modal.title_last')}}
     div.scroll(:class="$style.btnContent")
-      material-btn(:class="$style.btn" :title="$t('material.list_add_modal.btn_title', { name: item.name })" :key="item.id" @click="handleClick(index)" v-for="(item, index) in lists") {{item.name}}
-      material-btn(:class="[$style.btn, $style.newList, isEditing ? $style.editing : null]" @click="handleEditing($event)" :title="$t('view.list.lists_new_list_btn')")
+      material-btn(:class="$style.btn" :tips="$t('material.list_add_modal.btn_title', { name: item.name })" :key="item.id" @click="handleClick(index)" v-for="(item, index) in lists") {{item.name}}
+      material-btn(:class="[$style.btn, $style.newList, isEditing ? $style.editing : null]" @click="handleEditing($event)" :tips="$t('view.list.lists_new_list_btn')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 42 42' space='preserve')
           use(xlink:href='#icon-addTo')
         input.key-bind(:class="$style.newListInput" :value="newListName" type="text" :placeholder="$t('view.list.lists_new_list_input')" @keyup.enter="handleSaveList($event)" @blur="handleSaveList($event)")

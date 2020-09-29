@@ -2,15 +2,15 @@ const Store = require('electron-store')
 const { mainOn, NAMES: { mainWindow: ipcMainWindowNames }, mainHandle } = require('../../common/ipc')
 
 
-const electronStore_list = new Store({
-  name: 'playList',
-})
+let electronStore_list
 
 mainHandle(ipcMainWindowNames.get_playlist, async(event, isIgnoredError = false) => {
-  let electronStore_list = new Store({
-    name: 'playList',
-    clearInvalidConfig: !isIgnoredError,
-  })
+  if (!electronStore_list) {
+    electronStore_list = new Store({
+      name: 'playList',
+      clearInvalidConfig: !isIgnoredError,
+    })
+  }
 
   return {
     defaultList: electronStore_list.get('defaultList'),
@@ -20,4 +20,4 @@ mainHandle(ipcMainWindowNames.get_playlist, async(event, isIgnoredError = false)
   }
 })
 
-mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => electronStore_list.set(type, data))
+mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => electronStore_list && electronStore_list.set(type, data))

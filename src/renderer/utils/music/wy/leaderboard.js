@@ -16,7 +16,7 @@ const topList = [
   { id: 'wy__991319590', bangid: '991319590', name: '云音乐说唱榜' },
   { id: 'wy__180106', bangid: '180106', name: 'UK排行榜周榜' },
   { id: 'wy__60198', bangid: '60198', name: '美国Billboard周榜' },
-  { id: '21845217', bangid: '21845217', name: 'KTV嗨榜' },
+  { id: 'wy__21845217', bangid: '21845217', name: 'KTV嗨榜' },
   { id: 'wy__11641012', bangid: '11641012', name: 'iTunes榜' },
   { id: 'wy__120001', bangid: '120001', name: 'Hit FM Top榜' },
   { id: 'wy__60131', bangid: '60131', name: '日本Oricon周榜' },
