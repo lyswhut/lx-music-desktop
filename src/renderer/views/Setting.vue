@@ -6,7 +6,7 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.basic_theme')}}
       div
         ul(:class="$style.theme")
-          li(v-for="theme in themes.list" :key="theme.id" :title="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
+          li(v-for="theme in themes.list" :key="theme.id" :tips="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
             span
             label {{$t('store.state.theme_' + theme.class)}}
 
@@ -15,37 +15,37 @@ div.scroll(:class="$style.setting")
       div
         material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
 
-    dd(:title="$t('view.setting.basic_animation_title')")
+    dd(:tips="$t('view.setting.basic_animation_title')")
       h3 {{$t('view.setting.basic_animation')}}
       div
         material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.is_enable')")
 
-    dd(:title="$t('view.setting.basic_source_title')")
+    dd(:tips="$t('view.setting.basic_source_title')")
       h3 {{$t('view.setting.basic_source')}}
       div
         div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
           material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
             need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
-    dd(:title="$t('view.setting.basic_to_tray_title')")
+    dd(:tips="$t('view.setting.basic_to_tray_title')")
       h3 {{$t('view.setting.basic_to_tray')}}
       div
         material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.is_enable')")
 
-    dd(:title="$t('view.setting.basic_window_size_title')")
+    dd(:tips="$t('view.setting.basic_window_size_title')")
       h3 {{$t('view.setting.basic_window_size')}}
       div
         material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
-    dd(:title="$t('view.setting.basic_lang_title')")
+    dd(:tips="$t('view.setting.basic_lang_title')")
       h3 {{$t('view.setting.basic_lang')}}
       div
         material-checkbox(v-for="item in languageList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
           @change="handleLangChange(item.locale)" :class="$style.gapLeft"
           need v-model="current_setting.langId" :value="item.locale" :label="item.name")
 
-    dd(:title="$t('view.setting.basic_sourcename_title')")
+    dd(:tips="$t('view.setting.basic_sourcename_title')")
       h3 {{$t('view.setting.basic_sourcename')}}
       div
         material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
@@ -58,7 +58,7 @@ div.scroll(:class="$style.setting")
           name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
     dt {{$t('view.setting.play')}}
-    dd(:title="$t('view.setting.play_toggle_title')")
+    dd(:tips="$t('view.setting.play_toggle_title')")
       h3 {{$t('view.setting.play_toggle')}}
       div
         material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
@@ -67,19 +67,19 @@ div.scroll(:class="$style.setting")
       h3 {{$t('view.setting.play_lyric_transition')}}
       div
         material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
-    dd(:title="$t('view.setting.play_quality_title')")
+    dd(:tips="$t('view.setting.play_quality_title')")
       h3 {{$t('view.setting.play_quality')}}
       div
         material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.is_enable')")
-    dd(:title="$t('view.setting.play_task_bar_title')")
+    dd(:tips="$t('view.setting.play_task_bar_title')")
       h3 {{$t('view.setting.play_task_bar')}}
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
-    dd(:title="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
+    dd(:tips="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
       h3 {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
       div
         material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.is_enable')")
-    dd(:title="$t('view.setting.play_mediaDevice_title')")
+    dd(:tips="$t('view.setting.play_mediaDevice_title')")
       h3 {{$t('view.setting.play_mediaDevice')}}
       div
         material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
@@ -94,44 +94,44 @@ div.scroll(:class="$style.setting")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
     dt {{$t('view.setting.search')}}
-    dd(:title="$t('view.setting.search_hot_title')")
+    dd(:tips="$t('view.setting.search_hot_title')")
       h3 {{$t('view.setting.search_hot')}}
       div
         material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
-    dd(:title="$t('view.setting.search_history_title')")
+    dd(:tips="$t('view.setting.search_history_title')")
       h3 {{$t('view.setting.search_history')}}
       div
         material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
-    dd(:title="$t('view.setting.search_focus_search_box_title')")
+    dd(:tips="$t('view.setting.search_focus_search_box_title')")
       h3 {{$t('view.setting.search_focus_search_box')}}
       div
         material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
 
     dt {{$t('view.setting.list')}}
-    dd(:title="$t('view.setting.list_source_title')")
+    dd(:tips="$t('view.setting.list_source_title')")
       h3 {{$t('view.setting.list_source')}}
       div
         material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.is_show')")
-    dd(:title="$t('view.setting.list_scroll_title')")
+    dd(:tips="$t('view.setting.list_scroll_title')")
       h3 {{$t('view.setting.list_scroll')}}
       div
         material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.is_enable')")
-    //- dd(:title="播放列表是否显示专辑栏")
+    //- dd(:tips="播放列表是否显示专辑栏")
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
     dt {{$t('view.setting.download')}}
     dd
       material-checkbox(id="setting_download_enable" v-model="current_setting.download.enable" :label="$t('view.setting.download_enable')")
-    dd(:title="$t('view.setting.download_path_title')")
+    dd(:tips="$t('view.setting.download_path_title')")
       h3 {{$t('view.setting.download_path')}}
       div
         p
           | {{$t('view.setting.download_path_label')}}
-          span.auto-hidden.hover(:title="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
+          span.auto-hidden.hover(:tips="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
         p
           material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
-    dd(:title="$t('view.setting.download_name_title')")
+    dd(:tips="$t('view.setting.download_name_title')")
       h3 {{$t('view.setting.download_name')}}
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
@@ -142,7 +142,7 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.download_embed_pic')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_download_isEmbedLyric" v-model="current_setting.download.isEmbedLyric" :label="$t('view.setting.download_embed_lyric')")
-    dd(:title="$t('view.setting.download_lyric_title')")
+    dd(:tips="$t('view.setting.download_lyric_title')")
       h3 {{$t('view.setting.download_lyric')}}
       div
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
@@ -216,7 +216,7 @@ div.scroll(:class="$style.setting")
       div
         p
           | {{$t('view.setting.other_cache_label')}}
-          span.auto-hidden(:title="$t('view.setting.other_cache_label_title')") {{cacheSize}}
+          span.auto-hidden(:tips="$t('view.setting.other_cache_label_title')") {{cacheSize}}
         p
           material-btn(:class="$style.btn" min @click="clearCache") {{$t('view.setting.other_cache_clear_btn')}}
     dt {{$t('view.setting.update')}}
@@ -236,25 +236,25 @@ div.scroll(:class="$style.setting")
     dd
       p.small
         | 本软件完全免费，代码已开源，开源地址：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
       p.small
         | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')") 网盘地址
+        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')") 网盘地址
         | &nbsp;&nbsp;密码：
-        span.hover(:title="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
+        span.hover(:tips="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
       p.small
         | 软件的常见问题可转至：
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
+        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
         strong 仔细 仔细 仔细
         | 地阅读常见问题后，
       p.small
         | 仍有问题可加企鹅群&nbsp;
-        span.hover(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
+        span.hover(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
         | &nbsp;反馈
         strong (为免满人，无事勿加，入群先看群公告)
         | ，或到 GitHub 提交&nbsp;
-        span.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
       br
       p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
@@ -264,7 +264,7 @@ div.scroll(:class="$style.setting")
         | 你已签署本软件的&nbsp;
         material-btn(min @click="handleShowPact") 许可协议
         | ，协议的在线版本在&nbsp;
-        strong.hover.underline(:title="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
+        strong.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
         | &nbsp;。
       br
 

@@ -5,7 +5,7 @@ material-modal(:show="show" :bg-close="bgClose" @close="handleClose")
       | {{ info.name }}
       br
       | {{ info.singer }}
-    material-btn(:class="$style.btn" v-if="checkSource(type.type)" :title="!checkSource(type.type) && $t('material.download_modal.btn_tip')" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
+    material-btn(:class="$style.btn" v-if="checkSource(type.type)" :tips="!checkSource(type.type) && $t('material.download_modal.btn_tip')" :disabled="!checkSource(type.type)" :key="type.type" @click="handleClick(type.type)" v-for="type in info.types") {{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}
 
 </template>
 

@@ -6,7 +6,7 @@
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.847 451.847' space='preserve')
           use(xlink:href='#icon-down')
     ul.list.scroll(:class="$style.list" :style="listStyles" ref="dom_list")
-      li(v-for="item in list" :class="(itemKey ? item[itemKey] : item) == value ? $style.active : null" @click="handleClick(item)" :title="itemName ? item[itemName] : item") {{itemName ? item[itemName] : item}}
+      li(v-for="item in list" :class="(itemKey ? item[itemKey] : item) == value ? $style.active : null" @click="handleClick(item)" :tips="itemName ? item[itemName] : item") {{itemName ? item[itemName] : item}}
 </template>
 
 <script>

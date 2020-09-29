@@ -1,10 +1,10 @@
 <template lang="pug">
 div(:class="$style.aside")
   div(:class="$style.controlBtn" v-if="setting.controlBtnPosition == 'left'")
-    button(type="button" :class="$style.close" :title="$t('core.toolbar.close')" @click="close")
+    button(type="button" :class="$style.close" :tips="$t('core.toolbar.close')" @click="close")
       svg(:class="$style.controlBtniIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
         use(xlink:href='#icon-window-close')
-    button(type="button" :class="$style.min" :title="$t('core.toolbar.min')" @click="min")
+    button(type="button" :class="$style.min" :tips="$t('core.toolbar.min')" @click="min")
       svg(:class="$style.controlBtniIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
         use(xlink:href='#icon-window-minimize')
 
@@ -16,18 +16,18 @@ div(:class="$style.aside")
     dl
       //- dt {{$t('core.aside.online_music')}}
       dd
-        router-link(:active-class="$style.active" to="search" :title="$t('core.aside.search')")
+        router-link(:active-class="$style.active" to="search" :tips="$t('core.aside.search')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 425.2 425.2' space='preserve')
               use(xlink:href='#icon-search-2')
       dd
-        router-link(:active-class="$style.active" to="songList" :title="$t('core.aside.song_list')")
+        router-link(:active-class="$style.active" to="songList" :tips="$t('core.aside.song_list')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 425.2 425.2' space='preserve')
               use(xlink:href='#icon-album')
           //- span {{$t('core.aside.song_list')}}
       dd
-        router-link(:active-class="$style.active" to="leaderboard" :title="$t('core.aside.leaderboard')")
+        router-link(:active-class="$style.active" to="leaderboard" :tips="$t('core.aside.leaderboard')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 425.22 425.2' space='preserve')
               use(xlink:href='#icon-leaderboard')
@@ -35,20 +35,20 @@ div(:class="$style.aside")
     dl
       //- dt {{$t('core.aside.my_music')}}
       dd
-        router-link(:active-class="$style.active" :title="$t('core.aside.my_list')" :to="`list?id=${setting.list.prevSelectListId || defaultList.id}`")
+        router-link(:active-class="$style.active" :tips="$t('core.aside.my_list')" :to="`list?id=${setting.list.prevSelectListId || defaultList.id}`")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 444.87 391.18' space='preserve')
               use(xlink:href='#icon-love')
     dl
       //- dt {{$t('core.aside.other')}}
       dd(v-if="setting.download.enable")
-        router-link(:active-class="$style.active" to="download" :title="$t('core.aside.download')")
+        router-link(:active-class="$style.active" to="download" :tips="$t('core.aside.download')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 425.2 425.2' space='preserve')
               use(xlink:href='#icon-download-2')
           //- span {{$t('core.aside.download')}}
       dd
-        router-link(:active-class="$style.active" to="setting" :title="$t('core.aside.setting')")
+        router-link(:active-class="$style.active" to="setting" :tips="$t('core.aside.setting')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 493.23 436.47' space='preserve')
               use(xlink:href='#icon-setting')
