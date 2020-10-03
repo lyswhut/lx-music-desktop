@@ -45,10 +45,10 @@
         dl(:class="$style.noitemList" v-if="setting.search.isShowHistorySearch && historyList.length")
           dt(:class="$style.noitemListTitle")
             span {{$t('view.search.history_search')}}
-            span(:class="$style.historyClearBtn" @click="clearHistory" :title="$t('view.search.history_clear')")
+            span(:class="$style.historyClearBtn" @click="clearHistory" :tips="$t('view.search.history_clear')")
               svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-eraser')
-          dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :title="$t('view.search.history_remove')") {{item}}
+          dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :tips="$t('view.search.history_remove')") {{item}}
       div(v-else :class="$style.noitem_list")
         p {{$t('view.search.no_item')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")

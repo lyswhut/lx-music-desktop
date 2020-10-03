@@ -3,15 +3,15 @@
     div(:class="$style.lists" ref="dom_lists")
       div(:class="$style.listHeader")
         h2(:class="$style.listsTitle") {{$t('core.aside.my_list')}}
-        button(:class="$style.listsAdd" @click="handleShowNewList" :title="$t('view.list.lists_new_list_btn')")
+        button(:class="$style.listsAdd" @click="handleShowNewList" :tips="$t('view.list.lists_new_list_btn')")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :title="defaultList.name" @click="handleListToggle(defaultList.id)")
+        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :tips="defaultList.name" @click="handleListToggle(defaultList.id)")
           span(:class="$style.listsLabel") {{defaultList.name}}
-        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :title="loveList.name" @click="handleListToggle(loveList.id)")
+        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :tips="loveList.name" @click="handleListToggle(loveList.id)")
           span(:class="$style.listsLabel") {{loveList.name}}
-        li.user-list(:class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null]" @contextmenu="handleListsItemRigthClick($event, index)" :title="item.name" v-for="(item, index) in userList" :key="item.id")
+        li.user-list(:class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null]" @contextmenu="handleListsItemRigthClick($event, index)" :tips="item.name" v-for="(item, index) in userList" :key="item.id")
           span(:class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)") {{item.name}}
           input.key-bind(:class="$style.listsInput" @contextmenu.stop type="text" @keyup.enter="handleListsSave(index, $event)" @blur="handleListsSave(index, $event)" :value="item.name" :placeholder="item.name")
         transition(enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="handleListsNewAfterLeave")
@@ -86,7 +86,6 @@ export default {
       // isShowEditBtn: false,
       isShowDownloadMultiple: false,
       delayShow: false,
-      routeLeaveLocation: null,
       isShowListAdd: false,
       isShowListAddMultiple: false,
       delayTimeout: null,
@@ -289,18 +288,14 @@ export default {
   // },
   beforeRouteLeave(to, from, next) {
     this.clearDelayTimeout()
-    this.routeLeaveLocation = (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0
+    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
     next()
   },
   created() {
     this.listId = this.$route.query.id || this.defaultList.id
     this.setPrevSelectListId(this.listId)
-    this.handleScroll = throttle(e => {
-      if (this.routeLeaveLocation) {
-        this.setListScroll({ id: this.listId, location: this.routeLeaveLocation })
-      } else {
-        this.setListScroll({ id: this.listId, location: e.target.scrollTop })
-      }
+    this.handleSaveScroll = throttle((listId, location) => {
+      this.setListScroll({ id: listId, location })
     }, 1000)
     this.listenEvent()
   },
@@ -310,6 +305,7 @@ export default {
   },
   beforeDestroy() {
     this.unlistenEvent()
+    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
   },
   methods: {
     ...mapMutations(['setPrevSelectListId']),
@@ -368,6 +364,9 @@ export default {
         this.delayShow = true
         this.restoreScroll(this.$route.query.scrollIndex, false)
       }
+    },
+    handleScroll(e) {
+      this.handleSaveScroll(this.listId, e.target.scrollTop)
     },
     clearDelayTimeout() {
       if (this.delayTimeout) {

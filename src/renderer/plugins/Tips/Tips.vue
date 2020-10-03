@@ -1,0 +1,93 @@
+<template>
+  <transition name="tips-fade" @after-leave="afterLeave">
+    <div v-show="visible" :style="{ left: position.left + 'px' , top: position.top + 'px', transform: transform }" ref="dom_tips" :class="$style.tips">{{message}}</div>
+  </transition>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      visible: false,
+      message: '',
+      position: {
+        top: 0,
+        left: 0,
+      },
+      transform: 'translate(0, 0)',
+      cancel: null,
+      setTips: null,
+    }
+  },
+  watch: {
+    message() {
+      this.$nextTick(() => {
+        this.transform = `translate(${this.handleGetOffsetXY(this.position.left, this.position.top)})`
+      })
+    },
+  },
+  methods: {
+    afterLeave(el, done) {
+      el.parentNode.removeChild(el)
+    },
+    handleGetOffsetXY(left, top) {
+      const tipsWidth = this.$refs.dom_tips.clientWidth
+      const tipsHeight = this.$refs.dom_tips.clientHeight
+      const dom_container = document.body
+      const containerWidth = dom_container.clientWidth
+      const containerHeight = dom_container.clientHeight
+      const offsetWidth = containerWidth - left - tipsWidth
+      const offsetHeight = containerHeight - top - tipsHeight
+      let x = 0
+      let y = 0
+      if (tipsWidth < left && containerWidth > tipsWidth && offsetWidth < 5) {
+        x = -tipsWidth - 12
+      }
+      if (tipsHeight < top && containerHeight > tipsHeight && offsetHeight < 5) {
+        y = -tipsHeight - 8
+      }
+      return `${x}px, ${y}px`
+    },
+  },
+}
+</script>
+
+<style lang="less" module>
+@import '../../assets/styles/layout.less';
+
+.tips {
+  position: fixed;
+  // transform: scale(1);
+  line-height: 1.2;
+  word-wrap: break-word;
+  padding: 4px 5px;
+  z-index: 999;
+  font-size: 12px;
+  max-width: 80%;
+  color: @color-theme_2-font;
+  border-radius: 3px;
+  background: @color-green-theme_2-background_1;
+  overflow: hidden;
+  pointer-events: none;
+  // text-align: justify;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+:global(.tips-fade-enter-active), :global(.tips-fade-leave-active) {
+  transition: opacity .2s;
+}
+:global(.tips-fade-enter), :global(.tips-fade-leave-to) {
+  opacity: 0;
+}
+
+each(@themes, {
+  :global(#container.@{value}) {
+    ~.tips {
+      color: ~'@{color-@{value}-theme_2-font}';
+      background: ~'@{color-@{value}-theme_2-background_1}';
+    }
+  }
+})
+
+
+</style>

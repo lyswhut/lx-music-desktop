@@ -9,4 +9,4 @@ const electronStore_data = new Store({
 mainHandle(ipcMainWindowNames.get_data, async(event, path) => electronStore_data.get(path))
 
 
-mainOn(ipcMainWindowNames.save_data, (event, { path, data }) => electronStore_data.get(path, data))
+mainOn(ipcMainWindowNames.save_data, (event, { path, data }) => electronStore_data.set(path, data))

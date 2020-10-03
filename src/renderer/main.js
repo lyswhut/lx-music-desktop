@@ -57,3 +57,4 @@ getSetting().then(({ setting, version }) => {
     render: h => h(App),
   })
 })
+

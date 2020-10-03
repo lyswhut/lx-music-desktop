@@ -6,6 +6,34 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.2.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.1.1...v1.2.0) - 2020-09-30
+
+提前祝大家中秋&国庆快乐~
+
+### 新增
+
+- 播放控制栏开启/关闭桌面歌词按钮 新增右击按钮时锁定/解锁桌面歌词功能
+
+### 优化
+
+- 优化我的列表滚动条位置的保存逻辑
+- 更新设置-备份与恢复功能的描述
+- 优化软件内鼠标悬停的提示界面
+
+### 修复
+
+- 修复桌面歌词窗口不允许拖出桌面之外的位置计算偏移Bug
+- 修复网易云KTV嗨榜无法加载的问题
+- 修复初始化搜索历史列表功能
+- 修复重启软件后试听列表与收藏列表无法恢复上次的滚动位置的问题
+- 修复歌曲封面无法嵌入的Bug
+- 修复酷狗歌词格式问题
+- 修复关闭切换动画时从搜索候选列表点击内容无效的问题
+
+### 其他
+
+- 更新 Electron 到 v10.1.3
+
 ## [1.1.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.1.0...v1.1.1) - 2020-09-19
 
 ### 修复

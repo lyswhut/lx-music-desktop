@@ -101,8 +101,10 @@ export default {
       this.sendEvent('focus')
     },
     handleBlur() {
-      this.focus = false
-      this.sendEvent('blur')
+      setTimeout(() => {
+        this.focus = false
+        this.sendEvent('blur')
+      }, 80)
     },
     handleSearch() {
       this.hideList()

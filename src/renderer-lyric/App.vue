@@ -4,7 +4,7 @@
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       .control-bar(v-show="!lrcConfig.isLock")
         core-control-bar(:lrcConfig="lrcConfig" :themes="themeList")
-    core-lyric(:lrcConfig="lrcConfig")
+    core-lyric(:lrcConfig="lrcConfig" :isShowLyricTransition="isShowLyricTransition")
   div.resize-left(@mousedown.self="handleMouseDown('left', $event)")
   div.resize-top(@mousedown.self="handleMouseDown('top', $event)")
   div.resize-right(@mousedown.self="handleMouseDown('right', $event)")
@@ -44,6 +44,7 @@ export default {
           isZoomActiveLrc: true,
         },
       },
+      isShowLyricTransition: true,
       themeList: [
         {
           id: 0,
@@ -117,8 +118,9 @@ export default {
     document.removeEventListener('mouseup', this.handleMouseUp)
   },
   methods: {
-    handleUpdateConfig({ config, languageId }) {
+    handleUpdateConfig({ config, languageId, isShowLyricTransition }) {
       this.lrcConfig = config
+      this.isShowLyricTransition = isShowLyricTransition
       if (this.$i18n.locale !== languageId && languageId != null) this.$i18n.locale = languageId
     },
     handleMouseDown(origin, event) {

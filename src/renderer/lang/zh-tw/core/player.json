@@ -21,6 +21,8 @@
   "add_music_to": "添加當前歌曲到...",
   "desktop_lyric_on": "開啟桌面歌詞",
   "desktop_lyric_off": "關閉桌面歌詞",
+  "desktop_lyric_lock": "右擊鎖定歌詞",
+  "desktop_lyric_unlock": "右擊解鎖歌詞",
   "play_toggle_mode_list_loop": "列表循環",
   "play_toggle_mode_random": "列表隨機",
   "play_toggle_mode_list": "順序播放",
