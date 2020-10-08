@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "一个免费的音乐下载助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -207,7 +207,7 @@
     "spinnies": "^0.5.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^4.1.0",
-    "terser-webpack-plugin": "^4.2.2",
+    "terser-webpack-plugin": "^4.2.3",
     "url-loader": "^4.1.0",
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.12",
