@@ -99,7 +99,7 @@
   "hot_key_desktop_lyric_toggle_lock": "桌面歌詞鎖定切換",
   "hot_key_desktop_lyric_toggle_always_top": "桌面歌詞置頂切換",
   "network": "網絡設置",
-  "network_proxy_title": "代理設置（亂設置軟件將無法聯網）",
+  "network_proxy_title": "HTTP代理設置（亂設置軟件將無法聯網）",
   "network_proxy_host": "主機",
   "network_proxy_port": "端口",
   "network_proxy_username": "用戶名",
