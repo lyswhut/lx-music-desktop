@@ -23,7 +23,7 @@ module.exports = merge(baseConfig, {
       onErrors(severity, errors) { // Silent warning from electron-debug
         if (severity != 'warning') return
 
-        for (let i = errors.length; i > -1; i--) {
+        for (let i = errors.length - 1; i > -1; i--) {
           const error = errors[i]
           if (error.file == './node_modules/electron-debug/index.js') errors.splice(i, 1)
         }
