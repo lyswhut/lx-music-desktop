@@ -1,7 +1,7 @@
 <template lang="pug">
   input(:class="$style.input" :type="type" :placeholder="placeholder" :value="value" :disabled="disabled"
-    @focus="$emit('focus', $event)" @blur="$emit('blur', $event)" @input="$emit('input', $event.trim())" @change="$emit('change', text)"
-    @keyup.enter="$emit('submit', text)")
+    @focus="$emit('focus', $event)" @blur="$emit('blur', $event)" @input="$emit('input', $event.target.value.trim())" @change="$emit('change', $event.target.value.trim())"
+    @keyup.enter="$emit('submit', $event.target.value.trim())")
 </template>
 
 <script>

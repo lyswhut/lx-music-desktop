@@ -106,7 +106,7 @@
   "hot_key_desktop_lyric_toggle_always_top": "Top Desktop Lyrics Switch",
 
   "network": "Network",
-  "network_proxy_title": "Proxy (False setting would block Internet connections)",
+  "network_proxy_title": "HTTP Proxy (False setting would block Internet connections)",
   "network_proxy_host": "Host",
   "network_proxy_port": "Port",
   "network_proxy_username": "Username",
