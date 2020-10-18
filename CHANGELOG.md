@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.2.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.2.1...v1.2.2) - 2020-10-18
+
+### 修复
+
+- 降级 Electron 到 9.x.x 版本修复 Linux 版桌面歌词窗口变白的问题
+
 ## [1.2.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.2.0...v1.2.1) - 2020-10-18
 
 ### 优化
