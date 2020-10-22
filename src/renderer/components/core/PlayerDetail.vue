@@ -472,7 +472,10 @@ export default {
   img {
     max-width: 100%;
     max-height: 100%;
-    border: 5px solid @color-theme-hover;
+    box-shadow: 0 0 4px @color-theme-hover;
+    border-radius: 6px;
+    opacity: .8;
+    // border: 5px solid @color-theme-hover;
     // border-radius: @radius-border;
     // border: 5px solid #fff;
   }
@@ -687,7 +690,8 @@ each(@themes, {
     }
     .img {
       img {
-        border-color: ~'@{color-@{value}-theme-hover}';
+        box-shadow: 0 0 4px ~'@{color-@{value}-theme-hover}';
+        // border-color: ~'@{color-@{value}-theme-hover}';
       }
     }
     .lrc-active {
