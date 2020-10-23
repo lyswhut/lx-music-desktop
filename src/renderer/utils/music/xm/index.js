@@ -5,6 +5,8 @@ import musicSearch from './musicSearch'
 // import pic from './pic'
 import lyric from './lyric'
 import hotSearch from './hotSearch'
+import comment from './comment'
+import musicInfo from './musicInfo'
 import { closeVerifyModal } from './util'
 
 const xm = {
@@ -13,6 +15,7 @@ const xm = {
   leaderboard,
   hotSearch,
   closeVerifyModal,
+  comment,
   getMusicUrl(songInfo, type) {
     return apis('xm').getMusicUrl(songInfo, type)
   },
@@ -24,7 +27,12 @@ const xm = {
     // return pic.getPic(songInfo)
   },
   getMusicDetailPageUrl(songInfo) {
-    return songInfo.songStringId ? `https://www.xiami.com/song/${songInfo.songStringId}` : null
+    if (songInfo.songStringId) return `https://www.xiami.com/song/${songInfo.songStringId}`
+
+    musicInfo.getMusicInfo(songInfo).then(({ data }) => {
+      songInfo.songStringId = data.songStringId
+    })
+    return `https://www.xiami.com/song/${songInfo.songmid}`
   },
   // init() {
   //   getToken()

@@ -20,6 +20,39 @@ export const sizeFormate = size => {
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
 
+/**
+  * 日期格式化
+  * @param {*} date 时间
+  * @param {String} format 时间格式，默认YYYY-MM-DD hh:mm:ss
+  */
+export const dateFormat = (date = new Date(), format = 'YYYY-MM-DD hh:mm:ss') => {
+  if (typeof date != 'object') date = new Date(date)
+  const munFix = (n) => n < 10 ? ('0' + n) : n
+  return format
+    .replace('YYYY', date.getFullYear())
+    .replace('MM', munFix(date.getMonth() + 1))
+    .replace('DD', munFix(date.getDate()))
+    .replace('hh', munFix(date.getHours()))
+    .replace('mm', munFix(date.getMinutes()))
+    .replace('ss', munFix(date.getSeconds()))
+}
+
+/**
+ * 时间格式化
+ */
+export const dateFormat2 = time => {
+  let differ = parseInt((Date.now() - time) / 1000)
+  if (differ < 60) {
+    return differ + '秒前'
+  } else if (differ < 3600) {
+    return parseInt(differ / 60) + '分钟前'
+  } else if (differ < 86400) {
+    return parseInt(differ / 3600) + '小时前'
+  } else {
+    return dateFormat(time)
+  }
+}
+
 export const formatPlayTime = time => {
   let m = parseInt(time / 60)
   let s = parseInt(time % 60)

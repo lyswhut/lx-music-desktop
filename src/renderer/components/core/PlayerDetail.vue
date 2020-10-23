@@ -21,7 +21,7 @@
         //- div(:class="$style.info")
         div(:class="$style.info")
           img(:class="$style.img" :src="musicInfo.img" v-if="musicInfo.img")
-          div(:class="$style.description" @click="isShowComment = true")
+          div(:class="$style.description" @click="handleShowComment")
             p {{$t('core.player.name')}}{{musicInfo.name}}
             p {{$t('core.player.singer')}}{{musicInfo.singer}}
             p(v-if="musicInfo.album") {{$t('core.player.album')}}{{musicInfo.album}}
@@ -35,15 +35,15 @@
       div(:class="$style.comment")
         div(:class="$style.commentHeader" @click="isShowComment = false")
           h3 {{title}}
-        div.scroll(:class="$style.commentMain")
-          div
+        div.scroll(:class="$style.commentMain" ref="dom_comment")
+          div(v-if="comment.page == 1")
             h2(:class="$style.commentType") 热门评论
             material-comment-floor(v-if="comment.hotComments.length" :class="$style.reply_floor" :comments="comment.hotComments")
           div
             h2(:class="$style.commentType") 最新评论
             material-comment-floor(v-if="comment.comments.length" :class="$style.reply_floor" :comments="comment.comments")
           div(:class="$style.pagination")
-            material-pagination(:count="comment.total" :limit="comment.limit" :page="comment.page" @btn-click="handleToggleCommentPage")
+            material-pagination(:count="comment.total" :btnLength="5" :limit="comment.limit" :page="comment.page" @btn-click="handleToggleCommentPage")
 
     div(:class="$style.footer")
       div(:class="$style.left")
@@ -80,6 +80,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { base as eventBaseName } from '../../event/names'
 import { scrollTo } from '../../utils'
+import music from '../../utils/music'
 
 let cancelScrollFn = null
 
@@ -219,106 +220,45 @@ export default {
       isSetedLines: false,
       isShowComment: false,
       comment: {
+        musicInfo: {
+          name: '',
+          singer: '',
+        },
         page: 1,
         total: 10,
         maxPage: 1,
-        limit: 5,
-        comments: [{
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [
-            {
-              text: ['123123hhh'],
-              userName: 'dsads',
-              avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-              time: '2020-10-22 22:14:17',
-              likedCount: 100,
-            },
-          ],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [
-            {
-              text: ['123123hhh'],
-              userName: 'dsads',
-              avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-              time: '2020-10-22 22:14:17',
-              likedCount: 100,
-            },
-            {
-              text: ['123123hhh'],
-              userName: 'dsads',
-              avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-              time: '2020-10-22 22:14:17',
-              likedCount: 100,
-            },
-          ],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }, {
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [],
-        }],
-        hotComments: [{
-          text: ['123123hhh'],
-          userName: 'dsads',
-          avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          time: '2020-10-22 22:14:17',
-          likedCount: 100,
-          reply: [
-            {
-              text: ['123123hhh'],
-              userName: 'dsads',
-              avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-              time: '2020-10-22 22:14:17',
-              likedCount: 100,
-            },
-          ],
-        }],
+        limit: 20,
+        comments: [
+          // {
+          //   text: ['123123hhh'],
+          //   userName: 'dsads',
+          //   avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
+          //   time: '2020-10-22 22:14:17',
+          //   timeStr: '2020-10-22 22:14:17',
+          //   likedCount: 100,
+          //   reply: [],
+          // },
+        ],
+        hotComments: [
+          // {
+          //   text: ['123123hhh'],
+          //   userName: 'dsads',
+          //   avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
+          //   time: '2020-10-22 22:14:17',
+          //   timeStr: '2020-10-22 22:14:17',
+          //   likedCount: 100,
+          //   reply: [
+          //     {
+          //       text: ['123123hhh'],
+          //       userName: 'dsads',
+          //       avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
+          //       time: '2020-10-22 22:14:17',
+          //       timeStr: '2020-10-22 22:14:17',
+          //       likedCount: 100,
+          //     },
+          //   ],
+          // },
+        ],
       },
     }
   },
@@ -340,8 +280,8 @@ export default {
     ...mapGetters(['setting']),
     ...mapGetters('player', ['isShowPlayerDetail']),
     title() {
-      return this.musicInfo.name
-        ? this.setting.download.fileName.replace('歌名', this.musicInfo.name).replace('歌手', this.musicInfo.singer)
+      return this.comment.musicInfo.name
+        ? this.setting.download.fileName.replace('歌名', this.comment.musicInfo.name).replace('歌手', this.comment.musicInfo.singer)
         : '^-^'
     },
   },
@@ -445,8 +385,40 @@ export default {
     close() {
       window.eventHub.$emit(eventBaseName.close)
     },
+    handleShowComment() {
+      if (!this.musicInfo.songmid || !music[this.musicInfo.source].comment) return
+      if (this.musicInfo.songmid != this.comment.musicInfo.songmid) {
+        this.comment.page = 1
+        this.comment.total = 0
+        this.comment.maxPage = 1
+      }
+      this.isShowComment = true
+      this.comment.musicInfo = this.musicInfo
+      music[this.comment.musicInfo.source].comment.getComment(this.comment.musicInfo, this.comment.page, this.comment.limit).then(comment => {
+        this.comment.comments = comment.comments
+        this.comment.total = comment.total
+        this.comment.maxPage = comment.maxPage
+        this.$nextTick(() => {
+          scrollTo(this.$refs.dom_comment, 0, 300, () => {
+            this.comment.comments = comment.comments
+          })
+        })
+      })
+      music[this.comment.musicInfo.source].comment.getHotComment(this.comment.musicInfo, this.comment.page, this.comment.limit).then(hotComment => {
+        this.comment.hotComments = hotComment.comments
+      })
+    },
     handleToggleCommentPage(page) {
-
+      music[this.comment.musicInfo.source].comment.getComment(this.comment.musicInfo, page, this.comment.limit).then(comment => {
+        this.comment.page = page
+        this.comment.total = comment.total
+        this.comment.maxPage = comment.maxPage
+        this.$nextTick(() => {
+          scrollTo(this.$refs.dom_comment, 0, 300, () => {
+            this.comment.comments = comment.comments
+          })
+        })
+      })
     },
   },
 }
@@ -596,7 +568,7 @@ export default {
   }
 }
 .left {
-  flex: auto;
+  flex: 40%;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;

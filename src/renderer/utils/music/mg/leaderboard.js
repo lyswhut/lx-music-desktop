@@ -137,6 +137,7 @@ export default {
         albumName: item.album,
         albumId: item.albumId,
         songmid: item.copyrightId,
+        songId: item.songId,
         copyrightId: item.copyrightId,
         source: 'mg',
         interval: null,
@@ -195,7 +196,7 @@ export default {
   getList(bangid, page, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     return this.getData(this.getUrl(bangid, page)).then(({ statusCode, body }) => {
-      // console.log(body)
+      console.log(body)
       if (statusCode !== 200 || body.code !== this.successCode) return this.getList(bangid, page, retryNum)
       const list = this.filterData(body.data.columnInfo.dataList)
       return {

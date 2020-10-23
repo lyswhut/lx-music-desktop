@@ -8,6 +8,7 @@ import pic from './pic'
 import { apis } from '../api-source'
 import songList from './songList'
 import hotSearch from './hotSearch'
+import comment from './comment'
 
 const kw = {
   _musicInfoRequestObj: null,
@@ -36,6 +37,7 @@ const kw = {
   leaderboard,
   songList,
   hotSearch,
+  comment,
   getLyric(songInfo, isGetLyricx) {
     // let singer = songInfo.singer.indexOf('、') > -1 ? songInfo.singer.split('、')[0] : songInfo.singer
     return lyric.getLyric(songInfo.songmid, isGetLyricx)

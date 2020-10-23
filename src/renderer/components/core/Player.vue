@@ -63,7 +63,7 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :musicInfo="musicInfo"
+    core-player-detail(v-if="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction")
@@ -767,6 +767,7 @@ export default {
       })
     },
     showPlayerDetail() {
+      if (!this.targetSong) return
       this.visiblePlayerDetail(true)
     },
     handleTransitionEnd(e) {
