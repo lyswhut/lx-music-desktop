@@ -84,12 +84,11 @@ export default {
     if (limit != null) this.limit = limit
     return this.musicSearch(str, page).then(result => {
       if (!result || result.code !== 200) return this.search(str, page, { limit }, retryNum)
-      // console.log(result.result)
-      let list = this.handleResult(result.result.songs)
+      let list = this.handleResult(result.result.songs || [])
 
       if (list == null) return this.search(str, page, { limit }, retryNum)
 
-      this.total = result.result.songCount
+      this.total = result.result.songCount || 0
       this.page = page
       this.allPage = Math.ceil(this.total / this.limit)
 

@@ -25,7 +25,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
           | 自动更新~
       material-btn(:class="$style.btn" @click.onec="handleRestartClick") 立即重启更新
   main(:class="$style.main" v-else-if="version.isError && !version.isUnknow && version.newVersion.version != version.version")
-    h2 ❌ 版本更新出错 ❌
+    h2 🌟发现新版本🌟
 
     div.scroll(:class="$style.info")
       div(:class="$style.current")
@@ -41,12 +41,8 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
 
     div(:class="$style.footer")
       div(:class="$style.desc")
-        p 发现有新版本啦，但是自动更新功能出问题了，
-        p
-          | 你可以去&nbsp;
-          strong.hover.underline(@click="handleOpenUrl('https://www.sixyin.com/544.html')" title="点击打开") 软件发布网站
-          | &nbsp;下载新版本。
-      material-btn(:class="$style.btn" @click.onec="handleIgnoreClick") {{ isIgnored ? '恢复当前版本的更新失败提醒' : '忽略当前版本的更新失败提醒'}}
+        p 发现有新版本啦，快去下载新版本吧
+      material-btn(:class="$style.btn" @click.onec="handleOpenUrl('https://www.sixyin.com/544.html')" title="点击打开") 软件发布网站
   main(:class="$style.main" v-else-if="version.isDownloading && version.isTimeOut && !version.isUnknow")
     h2 ❗️ 新版本下载超时 ❗️
     div(:class="$style.desc")

@@ -107,7 +107,7 @@
   "hot_key_desktop_lyric_toggle_always_top": "桌面歌词置顶切换",
 
   "network": "网络设置",
-  "network_proxy_title": "代理设置（乱设置软件将无法联网）",
+  "network_proxy_title": "HTTP代理设置（乱设置软件将无法联网）",
   "network_proxy_host": "主机",
   "network_proxy_port": "端口",
   "network_proxy_username": "用户名",
