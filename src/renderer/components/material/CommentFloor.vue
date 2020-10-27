@@ -85,6 +85,7 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-end;
   min-width: 0;
+  color: @color-theme_2-font-label;
 }
 .name {
   flex: 0 1 auto;
@@ -93,14 +94,12 @@ export default {
 }
 .time {
   flex: none;
-  color: @color-theme_2-font-label;
   font-size: 11px;
   margin-left: 5px;
 }
 .likes {
   flex: 1 0 auto;
   margin-left: 10px;
-  color: @color-theme_2-font-label;
   font-size: 11px;
   align-self: flex-end;
   text-align: right;
@@ -137,5 +136,26 @@ export default {
 
   background-color: @color-reply-floor;
 }
+
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .listItem {
+      border-bottom-color: ~'@{color-@{value}-theme_2-active}';
+    }
+    .content {
+      color: ~'@{color-@{value}-theme_2-font}';
+    }
+    .info {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+    }
+    .likesIcon {
+      color: ~'@{color-@{value}-theme-active}';
+    }
+    .reply_floor {
+      background-color: ~'@{color-@{value}-reply-floor}';
+    }
+  }
+})
 
 </style>

@@ -21,7 +21,7 @@
         //- div(:class="$style.info")
         div(:class="$style.info")
           img(:class="$style.img" :src="musicInfo.img" v-if="musicInfo.img")
-          div(:class="$style.description" @click="handleShowComment")
+          div(:class="$style.description")
             p {{$t('core.player.name')}}{{musicInfo.name}}
             p {{$t('core.player.singer')}}{{musicInfo.singer}}
             p(v-if="musicInfo.album") {{$t('core.player.album')}}{{musicInfo.album}}
@@ -32,21 +32,28 @@
           p(v-for="(info, index) in lyricLines" :key="index" :class="lyric.line == index ? $style.lrcActive : null") {{info.text}}
           div(:class="$style.lyricSpace")
 
-      div(:class="$style.comment")
-        div(:class="$style.commentHeader" @click="isShowComment = false")
-          h3 {{title}}
-        div.scroll(:class="$style.commentMain" ref="dom_comment")
-          div(v-if="comment.page == 1")
-            h2(:class="$style.commentType") 热门评论
-            material-comment-floor(v-if="comment.hotComments.length" :class="$style.reply_floor" :comments="comment.hotComments")
-          div
-            h2(:class="$style.commentType") 最新评论
-            material-comment-floor(v-if="comment.comments.length" :class="$style.reply_floor" :comments="comment.comments")
-          div(:class="$style.pagination")
-            material-pagination(:count="comment.total" :btnLength="5" :limit="comment.limit" :page="comment.page" @btn-click="handleToggleCommentPage")
+      material-music-comment(:class="$style.comment" :titleFormat="this.setting.download.fileName" :musicInfo="musicInfo" v-model="isShowComment")
 
     div(:class="$style.footer")
-      div(:class="$style.left")
+      div(:class="$style.footerLeft")
+        div(:class="$style.footerLeftControlBtns")
+          div(:class="[$style.footerLeftControlBtn, isShowComment ? $style.active : null]" @click="isShowComment = !isShowComment" :tips="$t('core.player.comment_show')")
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-comment')
+          div(:class="$style.footerLeftControlBtn" @click="$emit('toggle-next-play-mode')" :tips="nextTogglePlayName")
+            svg(v-if="setting.player.togglePlayMethod == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-list-loop')
+            svg(v-else-if="setting.player.togglePlayMethod == 'random'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-list-random')
+            svg(v-else-if="setting.player.togglePlayMethod == 'list'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-list-order')
+            svg(v-else-if="setting.player.togglePlayMethod == 'singleLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='110%' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-single-loop')
+            svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-single')
+          div(:class="$style.footerLeftControlBtn" @click="$emit('add-music-to', musicInfo)" :tips="$t('core.player.add_music_to')")
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
+              use(xlink:href='#icon-add-2')
         div(:class="$style.progressContainer")
           div(:class="$style.progressContent")
             div(:class="$style.progress")
@@ -80,7 +87,6 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { base as eventBaseName } from '../../event/names'
 import { scrollTo } from '../../utils'
-import music from '../../utils/music'
 
 let cancelScrollFn = null
 
@@ -137,6 +143,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    nextTogglePlayName: String,
   },
   watch: {
     // 'musicInfo.img': {
@@ -219,47 +226,6 @@ export default {
       lyricLines: [],
       isSetedLines: false,
       isShowComment: false,
-      comment: {
-        musicInfo: {
-          name: '',
-          singer: '',
-        },
-        page: 1,
-        total: 10,
-        maxPage: 1,
-        limit: 20,
-        comments: [
-          // {
-          //   text: ['123123hhh'],
-          //   userName: 'dsads',
-          //   avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          //   time: '2020-10-22 22:14:17',
-          //   timeStr: '2020-10-22 22:14:17',
-          //   likedCount: 100,
-          //   reply: [],
-          // },
-        ],
-        hotComments: [
-          // {
-          //   text: ['123123hhh'],
-          //   userName: 'dsads',
-          //   avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          //   time: '2020-10-22 22:14:17',
-          //   timeStr: '2020-10-22 22:14:17',
-          //   likedCount: 100,
-          //   reply: [
-          //     {
-          //       text: ['123123hhh'],
-          //       userName: 'dsads',
-          //       avatar: 'http://img4.kuwo.cn/star/userhead/39/52/1602393411654_512039239s.jpg',
-          //       time: '2020-10-22 22:14:17',
-          //       timeStr: '2020-10-22 22:14:17',
-          //       likedCount: 100,
-          //     },
-          //   ],
-          // },
-        ],
-      },
     }
   },
   mounted() {
@@ -279,11 +245,6 @@ export default {
   computed: {
     ...mapGetters(['setting']),
     ...mapGetters('player', ['isShowPlayerDetail']),
-    title() {
-      return this.comment.musicInfo.name
-        ? this.setting.download.fileName.replace('歌名', this.comment.musicInfo.name).replace('歌手', this.comment.musicInfo.singer)
-        : '^-^'
-    },
   },
   methods: {
     ...mapMutations('player', [
@@ -384,41 +345,6 @@ export default {
     },
     close() {
       window.eventHub.$emit(eventBaseName.close)
-    },
-    handleShowComment() {
-      if (!this.musicInfo.songmid || !music[this.musicInfo.source].comment) return
-      if (this.musicInfo.songmid != this.comment.musicInfo.songmid) {
-        this.comment.page = 1
-        this.comment.total = 0
-        this.comment.maxPage = 1
-      }
-      this.isShowComment = true
-      this.comment.musicInfo = this.musicInfo
-      music[this.comment.musicInfo.source].comment.getComment(this.comment.musicInfo, this.comment.page, this.comment.limit).then(comment => {
-        this.comment.comments = comment.comments
-        this.comment.total = comment.total
-        this.comment.maxPage = comment.maxPage
-        this.$nextTick(() => {
-          scrollTo(this.$refs.dom_comment, 0, 300, () => {
-            this.comment.comments = comment.comments
-          })
-        })
-      })
-      music[this.comment.musicInfo.source].comment.getHotComment(this.comment.musicInfo, this.comment.page, this.comment.limit).then(hotComment => {
-        this.comment.hotComments = hotComment.comments
-      })
-    },
-    handleToggleCommentPage(page) {
-      music[this.comment.musicInfo.source].comment.getComment(this.comment.musicInfo, page, this.comment.limit).then(comment => {
-        this.comment.page = page
-        this.comment.total = comment.total
-        this.comment.maxPage = comment.maxPage
-        this.$nextTick(() => {
-          scrollTo(this.$refs.dom_comment, 0, 300, () => {
-            this.comment.comments = comment.comments
-          })
-        })
-      })
     },
   },
 }
@@ -660,36 +586,8 @@ export default {
 
 .comment {
   flex: 0 0 0;
-  display: flex;
-  flex-flow: column nowrap;
-  transition: @transition-theme;
-  transition-property: flex-basis opacity;
-  overflow: hidden;
   opacity: 0;
-
-}
-.commentHeader {
-  flex: none;
-  padding-bottom: 10px;
-  // border-bottom: 1px solid #eee;
-  h3 {
-    font-size: 14px;
-  }
-}
-.commentMain {
-  flex: auto;
-  padding-left: 15px;
-  padding-right: 10px;
-  background-color: @color-reply-floor;
-  border-radius: 4px;
-}
-.commentType {
-  padding: 10px 0;
-  font-size: 13px;
-  color: @color-theme_2-font;
-}
-.pagination {
-  padding: 10px 0;
+  margin-left: 10px;
 }
 
 .footer {
@@ -698,7 +596,39 @@ export default {
   display: flex;
   align-items: center;
 }
+.footerLeft {
+  flex: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 13px;
+  overflow: hidden;
+}
+.footerLeftControlBtns {
+  color: @color-theme_2-font;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+.footerLeftControlBtn {
+  width: 18px;
+  height: 18px;
+  opacity: .5;
+  cursor: pointer;
+  transition: opacity @transition-theme;
 
+  &:hover {
+    opacity: .9;
+  }
+
+  +.footerLeftControlBtn {
+    margin-left: 6px;
+  }
+
+  &.active {
+    color: @color-theme;
+    opacity: .8;
+  }
+}
 .progress-container {
   width: 100%;
   position: relative;
@@ -757,6 +687,7 @@ export default {
 }
 .time-label {
   width: 100%;
+  height: 18px;
   display: flex;
   justify-content: space-between;
   span {
@@ -805,6 +736,9 @@ each(@themes, {
     .container {
       border-left-color: ~'@{color-@{value}-theme}';
       background-color: ~'@{color-@{value}-theme_2-background_1}';
+    }
+    .leftControlBtns {
+      color: ~'@{color-@{value}-theme_2-font}';
     }
     .right {
       &:before {

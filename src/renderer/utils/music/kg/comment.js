@@ -15,10 +15,10 @@ export default {
     const { body, statusCode } = await _requestObj.promise
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取评论失败')
-    return { source: 'kg', comments: this.filterComment(body.list), total: body.count, page, limit, maxPage: Math.ceil(body.count / limit) || 1 }
+    return { source: 'kg', comments: this.filterComment(body.list || []), total: body.count, page, limit, maxPage: Math.ceil(body.count / limit) || 1 }
   },
   async getHotComment({ hash, songmid }, page = 1, limit = 100) {
-    console.log(songmid)
+    // console.log(songmid)
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022`, {
@@ -29,7 +29,7 @@ export default {
     const { body, statusCode } = await _requestObj2.promise
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取热门评论失败')
-    return { source: 'kg', comments: this.filterComment(body.weightList) }
+    return { source: 'kg', comments: this.filterComment(body.weightList || []) }
   },
   async getReplyComment({ songmid }, replyId, page = 1, limit = 100) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
@@ -42,7 +42,7 @@ export default {
     const { body, statusCode } = await _requestObj2.promise
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取回复评论失败')
-    return { source: 'kg', comments: this.filterComment(body.list) }
+    return { source: 'kg', comments: this.filterComment(body.list || []) }
   },
   filterComment(rawList) {
     return rawList.map(item => {

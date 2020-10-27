@@ -43,11 +43,11 @@ export const dateFormat = (date = new Date(), format = 'YYYY-MM-DD hh:mm:ss') =>
 export const dateFormat2 = time => {
   let differ = parseInt((Date.now() - time) / 1000)
   if (differ < 60) {
-    return differ + '秒前'
+    return window.i18n.t('base.date_format_second', { num: differ })
   } else if (differ < 3600) {
-    return parseInt(differ / 60) + '分钟前'
+    return window.i18n.t('base.date_format_minute', { num: parseInt(differ / 60) })
   } else if (differ < 86400) {
-    return parseInt(differ / 3600) + '小时前'
+    return window.i18n.t('base.date_format_hour', { num: parseInt(differ / 3600) })
   } else {
     return dateFormat(time)
   }

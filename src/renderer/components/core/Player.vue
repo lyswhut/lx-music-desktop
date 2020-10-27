@@ -66,7 +66,9 @@ div(:class="$style.player")
     core-player-detail(v-if="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
-                      :isPlay="isPlay" @action="handlePlayDetailAction")
+                      :isPlay="isPlay" @action="handlePlayDetailAction"
+                      :nextTogglePlayName="nextTogglePlayName"
+                      @toggle-next-play-mode="toggleNextPlayMode" @add-music-to="addMusicTo")
 
   material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong" @close="isShowAddMusicTo = false")
   svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
