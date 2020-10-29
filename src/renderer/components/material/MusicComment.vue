@@ -165,8 +165,8 @@ export default {
       this.isShowComment = true
       this.currentMusicInfo = this.musicInfo
 
+      if (this.page == 1) this.handleGetHotComment(this.currentMusicInfo)
       this.handleGetNewComment(this.currentMusicInfo, this.page, this.limit)
-      this.handleGetHotComment(this.currentMusicInfo)
     },
     handleToggleCommentPage(page) {
       this.nextPage = page

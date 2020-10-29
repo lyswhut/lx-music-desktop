@@ -737,9 +737,6 @@ each(@themes, {
       border-left-color: ~'@{color-@{value}-theme}';
       background-color: ~'@{color-@{value}-theme_2-background_1}';
     }
-    .leftControlBtns {
-      color: ~'@{color-@{value}-theme_2-font}';
-    }
     .right {
       &:before {
         background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
@@ -774,6 +771,14 @@ each(@themes, {
     }
     .lrc-active {
       color: ~'@{color-@{value}-theme}';
+    }
+    .footerLeftControlBtns {
+      color: ~'@{color-@{value}-theme_2-font}';
+    }
+    .footerLeftControlBtn {
+      &.active {
+        color: ~'@{color-@{value}-theme}';
+      }
     }
     .progress {
       background-color: ~'@{color-@{value}-player-progress}';

@@ -14,7 +14,7 @@ export default {
     })
     const { body, statusCode } = await _requestObj.promise
     if (statusCode != 200 || body.result !== 'ok') throw new Error('获取评论失败')
-    console.log(body)
+    // console.log(body)
     return { source: 'kw', comments: this.filterComment(body.rows), total: body.total, page, limit, maxPage: Math.ceil(body.total / limit) || 1 }
   },
   async getHotComment({ songmid }, page = 1, limit = 100) {
@@ -31,6 +31,7 @@ export default {
     return { source: 'kw', comments: this.filterComment(body.rows) }
   },
   filterComment(rawList) {
+    if (!rawList) return []
     return rawList.map(item => {
       let data = {
         id: item.id,
