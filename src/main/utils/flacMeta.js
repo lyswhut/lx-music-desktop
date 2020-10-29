@@ -72,9 +72,9 @@ module.exports = (filePath, meta) => {
       if (respones.statusCode !== 200 && respones.statusCode != 206) return writeMeta(filePath, meta)
       respones
         .pipe(fs.createWriteStream(picPath))
-        .on('finish', () => {
+        .on('finish', async() => {
           if (respones.complete) {
-            writeMeta(filePath, meta, picPath)
+            await writeMeta(filePath, meta, picPath)
           } else {
             writeMeta(filePath, meta)
           }
