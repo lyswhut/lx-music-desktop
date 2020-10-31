@@ -85,6 +85,7 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-end;
   min-width: 0;
+  line-height: 1.3;
   color: @color-theme_2-font-label;
 }
 .name {
@@ -113,7 +114,7 @@ export default {
 .comment_text {
   text-align: justify;
   font-size: 14px;
-  padding-top: 8px;
+  padding-top: 5px;
   p {
     line-height: 1.5;
     word-break: break-all;
