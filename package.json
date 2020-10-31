@@ -206,7 +206,7 @@
     "rimraf": "^3.0.2",
     "spinnies": "^0.5.1",
     "stylus": "^0.54.8",
-    "stylus-loader": "^4.1.1",
+    "stylus-loader": "^4.2.0",
     "terser-webpack-plugin": "^4.2.3",
     "url-loader": "^4.1.1",
     "vue-loader": "^15.9.4",
@@ -215,7 +215,7 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-merge": "^5.2.0"
+    "webpack-merge": "^5.3.0"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
@@ -228,7 +228,7 @@
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.5",
     "needle": "^2.5.2",
-    "node-id3": "^0.2.0",
+    "node-id3": "^0.2.1",
     "request": "^2.88.2",
     "vue": "^2.6.12",
     "vue-i18n": "^8.22.1",
