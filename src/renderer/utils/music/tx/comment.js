@@ -161,7 +161,7 @@ export default {
       return {
         id: item.subcommentid,
         rootId: item.rootcommentid,
-        text: item.rootcommentcontent ? this.replaceEmoji(item.rootcommentcontent).replace(/\\\n/g, '\n').split('\n') : [],
+        text: item.rootcommentcontent ? this.replaceEmoji(item.rootcommentcontent).replace(/\\n/g, '\n').split('\n') : [],
         time,
         timeStr: time ? dateFormat2(time) : null,
         userName: item.rootcommentnick ? item.rootcommentnick.substring(1) : '',
@@ -172,7 +172,7 @@ export default {
           let index = c.subcommentid.lastIndexOf('_')
           return {
             id: c.subcommentid,
-            text: this.replaceEmoji(c.subcommentcontent).replace(/\\\n/g, '\n').split('\n'),
+            text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n').split('\n'),
             time: parseInt(c.subcommentid.substring(index + 1) + '000'),
             timeStr: dateFormat2(parseInt(c.subcommentid.substring(index + 1) + '000')),
             userName: c.replynick.substring(1),
