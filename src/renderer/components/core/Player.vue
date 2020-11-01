@@ -17,9 +17,9 @@ div(:class="$style.player")
               div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :tips="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
             div(:class="$style.titleBtn" @click='toggleDesktopLyric' @contextmenu="handleToggleLockDesktopLyric" :tips="toggleDesktopLyricBtnTitle")
               svg(v-if="setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
-                use(xlink:href='#icon-desktop-lyric-off')
-              svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-desktop-lyric-on')
+              svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                use(xlink:href='#icon-desktop-lyric-off')
             div(:class="$style.titleBtn" @click='toggleNextPlayMode' :tips="nextTogglePlayName")
               svg(v-if="setting.player.togglePlayMethod == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='80%' viewBox='0 0 24 24' space='preserve')
                 use(xlink:href='#icon-list-loop')
@@ -63,10 +63,12 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :musicInfo="musicInfo"
+    core-player-detail(v-if="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
-                      :isPlay="isPlay" @action="handlePlayDetailAction")
+                      :isPlay="isPlay" @action="handlePlayDetailAction"
+                      :nextTogglePlayName="nextTogglePlayName"
+                      @toggle-next-play-mode="toggleNextPlayMode" @add-music-to="addMusicTo")
 
   material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong" @close="isShowAddMusicTo = false")
   svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
@@ -767,6 +769,7 @@ export default {
       })
     },
     showPlayerDetail() {
+      if (!this.targetSong) return
       this.visiblePlayerDetail(true)
     },
     handleTransitionEnd(e) {

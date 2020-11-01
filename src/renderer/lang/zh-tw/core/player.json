@@ -27,5 +27,16 @@
   "play_toggle_mode_random": "列表隨機",
   "play_toggle_mode_list": "順序播放",
   "play_toggle_mode_single_loop": "單曲循環",
-  "play_toggle_mode_off": "禁用"
+  "play_toggle_mode_off": "禁用",
+
+  "comment_show": "顯示歌曲評論",
+  "comment_hot_loading": "熱門評論加載中",
+  "comment_new_loading": "最新評論加載中",
+  "comment_hot_load_error": "熱門評論加載失敗，點擊嘗試重新加載",
+  "comment_new_load_error": "最新評論加載失敗，點擊嘗試重新加載",
+  "comment_refresh": "刷新評論",
+  "comment_no_content": "暫無評論",
+  "comment_hot_title": "熱門評論",
+  "comment_new_title": "最新評論",
+  "comment_title": "{name} 的評論"
 }

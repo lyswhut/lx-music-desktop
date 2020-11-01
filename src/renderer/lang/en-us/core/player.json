@@ -27,5 +27,16 @@
   "play_toggle_mode_random": "List Random",
   "play_toggle_mode_list": "Play in order",
   "play_toggle_mode_single_loop": "Single Loop",
-  "play_toggle_mode_off": "Disable"
+  "play_toggle_mode_off": "Disable",
+
+  "comment_show": "Show song comments",
+  "comment_hot_loading": "Hot comments are loading",
+  "comment_new_loading": "Latest comments are loading",
+  "comment_hot_load_error": "Hot comments failed to load, click to try to reload",
+  "comment_new_load_error": "The latest comment failed to load, click to try to reload",
+  "comment_refresh": "Refresh comments",
+  "comment_no_content": "No comments yet",
+  "comment_hot_title": "Hot Comment",
+  "comment_new_title": "Latest comment",
+  "comment_title": "{name} comment"
 }

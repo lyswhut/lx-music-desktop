@@ -6,6 +6,20 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.3.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.2.2...v1.3.0) - 2020-11-01
+
+### 新增
+
+- 播放详情页新增歌曲评论加载显示（某些平台暂不支持显示子评论）
+
+### 优化
+
+- 修改播放详情页的歌曲图片的显示效果
+
+### 修复
+
+- 修复小芸源音乐搜索结果最多只有20条搜索结果的问题
+
 ## [1.2.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.2.1...v1.2.2) - 2020-10-18
 
 ### 修复

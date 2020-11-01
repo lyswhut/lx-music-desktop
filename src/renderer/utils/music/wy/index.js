@@ -5,12 +5,14 @@ import getMusicInfo from './musicInfo'
 import musicSearch from './musicSearch'
 import songList from './songList'
 import hotSearch from './hotSearch'
+import comment from './comment'
 
 const wy = {
   leaderboard,
   musicSearch,
   songList,
   hotSearch,
+  comment,
   getMusicUrl(songInfo, type) {
     return apis('wy').getMusicUrl(songInfo, type)
   },

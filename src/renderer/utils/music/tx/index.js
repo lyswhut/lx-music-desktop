@@ -4,12 +4,14 @@ import songList from './songList'
 import musicSearch from './musicSearch'
 import { apis } from '../api-source'
 import hotSearch from './hotSearch'
+import comment from './comment'
 
 const tx = {
   leaderboard,
   songList,
   musicSearch,
   hotSearch,
+  comment,
 
   getMusicUrl(songInfo, type) {
     return apis('tx').getMusicUrl(songInfo, type)

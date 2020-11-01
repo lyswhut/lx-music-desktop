@@ -5,12 +5,14 @@ import musicSearch from './musicSearch'
 import pic from './pic'
 import lyric from './lyric'
 import hotSearch from './hotSearch'
+import comment from './comment'
 
 const mg = {
   songList,
   musicSearch,
   leaderboard,
   hotSearch,
+  comment,
   getMusicUrl(songInfo, type) {
     return apis('mg').getMusicUrl(songInfo, type)
   },
