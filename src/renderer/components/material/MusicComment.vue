@@ -18,7 +18,7 @@ div(:class="$style.comment")
       material-comment-floor(v-if="!isHotLoadError && hotComments.length" :class="[$style.commentFloor, isHotLoading ? $style.loading : null]" :comments="hotComments")
       p(:class="$style.commentLabel" v-else-if="!isHotLoadError && !isHotLoading") {{$t('core.player.comment_no_content')}}
     div
-      h2(:class="$style.commentType") {{$t('core.player.comment_new_title')}}
+      h2(:class="$style.commentType") {{$t('core.player.comment_new_title')}} ({{total}})
       p(:class="$style.commentLabel" style="cursor: pointer;" v-if="isNewLoadError" @click="handleGetNewComment(currentMusicInfo, nextPage, limit)") {{$t('core.player.comment_new_load_error')}}
       p(:class="$style.commentLabel" v-else-if="isNewLoading && !newComments.length") {{$t('core.player.comment_new_loading')}}
       material-comment-floor(v-if="!isNewLoadError && newComments.length" :class="[$style.commentFloor, isNewLoading ? $style.loading : null]" :comments="newComments")
@@ -137,6 +137,7 @@ export default {
           scrollTo(this.$refs.dom_comment, 0, 300)
         })
       }).catch(err => {
+        console.log(err)
         if (err.message == '取消请求') return
         this.isNewLoadError = true
         this.isNewLoading = false
@@ -149,6 +150,7 @@ export default {
         this.isHotLoading = false
         this.hotComments = hotComment.comments
       }).catch(err => {
+        console.log(err)
         if (err.message == '取消请求') return
         this.isHotLoadError = true
         this.isHotLoading = false
@@ -156,12 +158,12 @@ export default {
     },
     handleShowComment() {
       if (!this.musicInfo.songmid || !music[this.musicInfo.source].comment) return
-      if (this.musicInfo.songmid != this.currentMusicInfo.songmid) {
-        this.page = 1
-        this.total = 0
-        this.maxPage = 1
-        this.nextPage = 1
-      }
+      // if (this.musicInfo.songmid != this.currentMusicInfo.songmid) {
+      this.page = 1
+      this.total = 0
+      this.maxPage = 1
+      this.nextPage = 1
+      // }
       this.isShowComment = true
       this.currentMusicInfo = this.musicInfo
 
@@ -235,7 +237,7 @@ export default {
 .commentType {
   padding: 10px 0;
   font-size: 13px;
-  color: @color-theme_2-font;
+  color: @color-theme;
 }
 .commentFloor {
   opacity: 1;
@@ -261,7 +263,7 @@ each(@themes, {
       color: ~'@{color-@{value}-theme_2-font-label}';
     }
     .commentType {
-      color: ~'@{color-@{value}-theme_2-font}';
+      color: ~'@{color-@{value}-theme}';
     }
   }
 })
