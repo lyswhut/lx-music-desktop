@@ -667,23 +667,15 @@ export default {
       }
     },
     setLrc(targetSong) {
-      this.musicInfo.lrc = targetSong.lrc
-      this.musicInfo.tlrc = targetSong.tlrc
-
-      let lrcP = this.musicInfo.lrc && this.musicInfo.tlrc != null
-        ? Promise.resolve()
-        : this.getLrc(targetSong).then(() => {
-          this.musicInfo.lrc = targetSong.lrc
-          this.musicInfo.tlrc = targetSong.tlrc
-        })
-
-      lrcP
-        .catch(() => {
-          this.status = this.statusText = this.$t('core.player.lyric_error')
-        }).finally(() => {
-          this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
-          this.setLyric()
-        })
+      this.getLrc(targetSong).then(() => {
+        this.musicInfo.lrc = targetSong.lrc
+        this.musicInfo.tlrc = targetSong.tlrc
+      }).catch(() => {
+        this.status = this.statusText = this.$t('core.player.lyric_error')
+      }).finally(() => {
+        this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
+        this.setLyric()
+      })
     },
     handleRemoveMusic() {
       this.stopPlay()

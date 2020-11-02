@@ -3,6 +3,7 @@ import { decodeLyric } from './util'
 
 const parseLyric = str => {
   str = str.replace(/(?:<\d+,\d+,\d+>|\r)/g, '')
+  if (str.startsWith('\ufeff[id:$00000000]')) str = str.replace('\ufeff[id:$00000000]\n', '')
   let trans = str.match(/\[language:([\w=\\/+]+)\]/)
   let tlyric
   if (trans) {
