@@ -1,9 +1,9 @@
 {
-  "name": "lx-music-desktop",
-  "version": "1.2.2",
-  "description": "一个免费的音乐下载助手",
+  "name": "5yin",
+  "version": "1.3.0",
+  "description": "一个基于洛雪音乐助手修改的免费音乐下载助手",
   "main": "./dist/electron/main.js",
-  "productName": "洛雪音乐助手(五音版)",
+  "productName": "五音助手",
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win",
     "pack:win": "npm run pack:win:setup:x86_64 && npm run pack:win:7z",
@@ -90,7 +90,7 @@
       "icon": "./resources/icons",
       "category": "Utility;AudioVideo;Audio;Player;Music;",
       "desktop": {
-        "Name[zh_CN]": "洛雪音乐助手(五音版)"
+        "Name[zh_CN]": "五音助手"
       }
     },
     "nsis": {
@@ -99,7 +99,7 @@
       "allowToChangeInstallationDirectory": true,
       "differentialPackage": true,
       "license": "./licenses/license.rtf",
-      "shortcutName": "洛雪音乐助手(五音版)"
+      "shortcutName": "五音助手"
     },
     "dmg": {
       "window": {
@@ -110,7 +110,7 @@
         {
           "x": 106,
           "y": 252,
-          "name": "洛雪音乐助手(五音版)"
+          "name": "五音助手"
         },
         {
           "x": 490,
@@ -119,7 +119,7 @@
           "path": "/Applications"
         }
       ],
-      "title": "洛雪音乐助手(五音版) v${version}"
+      "title": "五音助手 v${version}"
     },
     "appImage": {
       "license": "./licenses/license_zh.txt",
@@ -176,11 +176,11 @@
     "cross-env": "^7.0.2",
     "css-loader": "^4.3.0",
     "del": "^6.0.0",
-    "electron": "^9.3.2",
+    "electron": "^9.3.3",
     "electron-builder": "^22.9.1",
     "electron-debug": "^3.1.0",
     "electron-devtools-installer": "^3.1.1",
-    "eslint": "^7.11.0",
+    "eslint": "^7.12.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-formatter-friendly": "^7.0.0",
     "eslint-loader": "^4.0.2",
@@ -188,8 +188,8 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "file-loader": "^6.1.1",
+    "eslint-plugin-standard": "^4.0.2",
+    "file-loader": "^6.2.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^4.5.0",
     "less": "^3.12.2",
@@ -206,16 +206,16 @@
     "rimraf": "^3.0.2",
     "spinnies": "^0.5.1",
     "stylus": "^0.54.8",
-    "stylus-loader": "^4.1.1",
+    "stylus-loader": "^4.2.0",
     "terser-webpack-plugin": "^4.2.3",
     "url-loader": "^4.1.1",
-    "vue-loader": "^15.9.3",
+    "vue-loader": "^15.9.4",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-merge": "^5.2.0"
+    "webpack-merge": "^5.3.0"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
@@ -224,15 +224,15 @@
     "electron-store": "^6.0.1",
     "electron-updater": "^4.3.5",
     "iconv-lite": "^0.6.2",
-    "image-size": "^0.9.1",
+    "image-size": "^0.9.3",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.5",
     "needle": "^2.5.2",
-    "node-id3": "^0.1.19",
+    "node-id3": "^0.2.1",
     "request": "^2.88.2",
     "vue": "^2.6.12",
-    "vue-i18n": "^8.22.0",
-    "vue-router": "^3.4.7",
+    "vue-i18n": "^8.22.1",
+    "vue-router": "^3.4.8",
     "vuex": "^3.5.1",
     "vuex-router-sync": "^5.0.0"
   }

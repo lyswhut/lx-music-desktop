@@ -24,25 +24,25 @@ export default {
     list: /<li><div class="thumb">.+?<\/li>/g,
     listInfo: /.+data-original="(.+?)".*data-id="(\d+)".*<div class="song-list-name"><a\s.*?>(.+?)<\/a>.+<i class="iconfont cf-bofangliang"><\/i>(.+?)<\/div>/,
 
-    // http://music.migu.cn/v3/music/playlist/161044573?page=1
+    // https://music.migu.cn/v3/music/playlist/161044573?page=1
     listDetailLink: /^.+\/playlist\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
   },
   tagsUrl: 'https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/indexTagPage.do?needAll=0',
   getSongListUrl(sortId, tagId, page) {
     // if (tagId == null) {
     //   return sortId == 'recommend'
-    //     ? `http://music.migu.cn/v3/music/playlist?page=${page}&from=migu`
-    //     : `http://music.migu.cn/v3/music/playlist?sort=${sortId}&page=${page}&from=migu`
+    //     ? `https://music.migu.cn/v3/music/playlist?page=${page}&from=migu`
+    //     : `https://music.migu.cn/v3/music/playlist?sort=${sortId}&page=${page}&from=migu`
     // }
-    // return `http://music.migu.cn/v3/music/playlist?tagId=${tagId}&page=${page}&from=migu`
+    // return `https://music.migu.cn/v3/music/playlist?tagId=${tagId}&page=${page}&from=migu`
     if (tagId == null) {
-      // return `http://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=${this.limit_list}&start=${page}&templateVersion=5&type=1`
+      // return `https://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=${this.limit_list}&start=${page}&templateVersion=5&type=1`
       // return `https://c.musicapp.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=${this.limit_list}&start=${page}&templateVersion=5&type=${sortId}`
-      // http://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=50&start=2&templateVersion=5&type=1
-      return `http://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&columnId=${sortId}&startIndex=${(page - 1) * 10}`
+      // https://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?count=50&start=2&templateVersion=5&type=1
+      return `https://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&columnId=${sortId}&startIndex=${(page - 1) * 10}`
     }
     // return `https://app.c.nf.migu.cn/MIGUM2.0/v2.0/content/getMusicData.do?area=2&count=${this.limit_list}&start=${page}&tags=${tagId}&templateVersion=5&type=3`
-    return `http://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&tagId=${tagId}&startIndex=${(page - 1) * 10}`
+    return `https://m.music.migu.cn/migu/remoting/playlist_bycolumnid_tag?playListType=2&type=1&tagId=${tagId}&startIndex=${(page - 1) * 10}`
   },
   getSongListDetailUrl(id, page) {
     return `https://app.c.nf.migu.cn/MIGUM2.0/v1.0/user/queryMusicListSongs.do?musicListId=${id}&pageNo=${page}&pageSize=${this.limit_song}`
@@ -74,7 +74,7 @@ export default {
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       // console.log(JSON.stringify(body))
-      console.log(body)
+      // console.log(body)
       return {
         list: this.filterListDetail(body.list),
         page,
@@ -135,6 +135,7 @@ export default {
         albumId: item.albumId,
         songmid: item.copyrightId,
         copyrightId: item.copyrightId,
+        songId: item.songId,
         source: 'mg',
         interval: null,
         img: item.albumImgs && item.albumImgs.length ? item.albumImgs[0].img : null,
@@ -185,7 +186,6 @@ export default {
     // })
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.retCode !== '100000' || body.retMsg.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
-      // console.log(body)
       return {
         list: this.filterList(body.retMsg.playlist),
         total: parseInt(body.retMsg.countSize),

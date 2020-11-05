@@ -5,12 +5,14 @@ import musicSearch from './musicSearch'
 import pic from './pic'
 import lyric from './lyric'
 import hotSearch from './hotSearch'
+import comment from './comment'
 
 const kg = {
   leaderboard,
   songList,
   musicSearch,
   hotSearch,
+  comment,
   getMusicUrl(songInfo, type) {
     return apis('kg').getMusicUrl(songInfo, type)
   },

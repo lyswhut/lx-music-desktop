@@ -8,7 +8,7 @@ material-modal(:show="!setting.isAgreePact || globalObj.isShowPact" @close="hand
         strong.hover.underline(@click="openUrl('http://www.apache.org/licenses/LICENSE-2.0')") Apache License 2.0
         | &nbsp;许可证发行，在使用本软件前，你（使用者）需签署本协议才可继续使用，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
       br
-      p 词语约定：本协议中的“本软件”指洛雪音乐桌面版(五音版)项目；“使用者”指签署本协议的使用者；“官方音乐平台”指对本软件内置的包括酷我、酷狗、咪咕等音乐源的官方平台统称；“版权数据”指包括但不限于图像、音频、名字等在内的他人拥有所属版权的数据。
+      p 词语约定：本协议中的“本软件”指五音助手桌面版项目；“使用者”指签署本协议的使用者；“官方音乐平台”指对本软件内置的包括酷我、酷狗、咪咕等音乐源的官方平台统称；“版权数据”指包括但不限于图像、音频、名字等在内的他人拥有所属版权的数据。
       br
       p
         strong 1、

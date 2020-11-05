@@ -36,7 +36,7 @@ export default {
     return arr.join('、')
   },
   handleResult(rawData) {
-    // console.log(rawData)
+    console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
@@ -82,6 +82,7 @@ export default {
         albumName: albumNInfo.name,
         albumId: albumNInfo.id,
         songmid: item.id,
+        songId: item.songId,
         copyrightId: item.copyrightId,
         source: 'mg',
         interval: null,

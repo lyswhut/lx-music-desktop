@@ -39,7 +39,7 @@ const createTray = () => {
   // 托盘
   global.modules.tray = new Tray(iconPath)
 
-  global.modules.tray.setToolTip('洛雪音乐助手(五音版)')
+  global.modules.tray.setToolTip('五音助手')
   createMenu(global.modules.tray)
   global.modules.tray.setIgnoreDoubleClickEvents(true)
   global.modules.tray.on('click', () => {

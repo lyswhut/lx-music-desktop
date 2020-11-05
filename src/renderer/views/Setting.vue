@@ -1,9 +1,19 @@
 <template lang="pug">
-div.scroll(:class="$style.setting")
-  dl
-    dt {{$t('view.setting.basic')}}
+//- div(:class="$style.main")
+  div.scroll(:class="$style.toc")
+    ul(:class="$style.tocList")
+      li(:class="$style.tocListItem" v-for="h2 in toc" :key="h2.id")
+        h2(:class="$style.tocH2" :tips="h2.title")
+          a(:href="'#' + h2.id") {{h2.title}}
+        ul(:class="$style.tocList" v-if="h2.children.length")
+          li(:class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id")
+            h3(:class="$style.tocH3" :tips="h3.title")
+              a(:href="'#' + h3.id") {{h3.title}}
+div.scroll(:class="$style.setting" ref="dom_setting")
+  dl(ref="dom_setting_list")
+    dt#basic {{$t('view.setting.basic')}}
     dd
-      h3 {{$t('view.setting.basic_theme')}}
+      h3#basic_theme {{$t('view.setting.basic_theme')}}
       div
         ul(:class="$style.theme")
           li(v-for="theme in themes.list" :key="theme.id" :tips="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
@@ -11,79 +21,79 @@ div.scroll(:class="$style.setting")
             label {{$t('store.state.theme_' + theme.class)}}
 
     dd
-      h3 {{$t('view.setting.basic_show_animation')}}
+      h3#basic_show_animation {{$t('view.setting.basic_show_animation')}}
       div
         material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
 
     dd(:tips="$t('view.setting.basic_animation_title')")
-      h3 {{$t('view.setting.basic_animation')}}
+      h3#basic_animation {{$t('view.setting.basic_animation')}}
       div
         material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.is_enable')")
 
     dd(:tips="$t('view.setting.basic_source_title')")
-      h3 {{$t('view.setting.basic_source')}}
+      h3#basic_source {{$t('view.setting.basic_source')}}
       div
         div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
           material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
             need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
 
     dd(:tips="$t('view.setting.basic_to_tray_title')")
-      h3 {{$t('view.setting.basic_to_tray')}}
+      h3#basic_to_tray {{$t('view.setting.basic_to_tray')}}
       div
         material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.is_enable')")
 
     dd(:tips="$t('view.setting.basic_window_size_title')")
-      h3 {{$t('view.setting.basic_window_size')}}
+      h3#basic_window_size {{$t('view.setting.basic_window_size')}}
       div
         material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
           need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
     dd(:tips="$t('view.setting.basic_lang_title')")
-      h3 {{$t('view.setting.basic_lang')}}
+      h3#basic_lang {{$t('view.setting.basic_lang')}}
       div
         material-checkbox(v-for="item in languageList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
           @change="handleLangChange(item.locale)" :class="$style.gapLeft"
           need v-model="current_setting.langId" :value="item.locale" :label="item.name")
 
     dd(:tips="$t('view.setting.basic_sourcename_title')")
-      h3 {{$t('view.setting.basic_sourcename')}}
+      h3#basic_sourcename {{$t('view.setting.basic_sourcename')}}
       div
         material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
           name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
 
     dd
-      h3 {{$t('view.setting.basic_control_btn_position')}}
+      h3#basic_control_btn_position {{$t('view.setting.basic_control_btn_position')}}
       div
         material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
           name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
-    dt {{$t('view.setting.play')}}
+    dt#play {{$t('view.setting.play')}}
     dd(:tips="$t('view.setting.play_toggle_title')")
-      h3 {{$t('view.setting.play_toggle')}}
+      h3#play_toggle {{$t('view.setting.play_toggle')}}
       div
         material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
             v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
     dd
-      h3 {{$t('view.setting.play_lyric_transition')}}
+      h3#play_lyric_transition {{$t('view.setting.play_lyric_transition')}}
       div
         material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
     dd(:tips="$t('view.setting.play_quality_title')")
-      h3 {{$t('view.setting.play_quality')}}
+      h3#play_quality {{$t('view.setting.play_quality')}}
       div
         material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.is_enable')")
     dd(:tips="$t('view.setting.play_task_bar_title')")
-      h3 {{$t('view.setting.play_task_bar')}}
+      h3#play_task_bar {{$t('view.setting.play_task_bar')}}
       div
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
     dd(:tips="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
-      h3 {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
+      h3#play_mediaDevice_remove_stop_play {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
       div
         material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.is_enable')")
     dd(:tips="$t('view.setting.play_mediaDevice_title')")
-      h3 {{$t('view.setting.play_mediaDevice')}}
+      h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
       div
         material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-    dt {{$t('view.setting.desktop_lyric')}}
+    dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
     dd
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
@@ -93,38 +103,38 @@ div.scroll(:class="$style.setting")
         material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
-    dt {{$t('view.setting.search')}}
+    dt#search {{$t('view.setting.search')}}
     dd(:tips="$t('view.setting.search_hot_title')")
-      h3 {{$t('view.setting.search_hot')}}
+      h3#search_hot {{$t('view.setting.search_hot')}}
       div
         material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
     dd(:tips="$t('view.setting.search_history_title')")
-      h3 {{$t('view.setting.search_history')}}
+      h3#search_history {{$t('view.setting.search_history')}}
       div
         material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
     dd(:tips="$t('view.setting.search_focus_search_box_title')")
-      h3 {{$t('view.setting.search_focus_search_box')}}
+      h3#search_focus_search_box {{$t('view.setting.search_focus_search_box')}}
       div
         material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
 
-    dt {{$t('view.setting.list')}}
+    dt#list {{$t('view.setting.list')}}
     dd(:tips="$t('view.setting.list_source_title')")
-      h3 {{$t('view.setting.list_source')}}
+      h3#list_source {{$t('view.setting.list_source')}}
       div
         material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.is_show')")
     dd(:tips="$t('view.setting.list_scroll_title')")
-      h3 {{$t('view.setting.list_scroll')}}
+      h3#list_scroll {{$t('view.setting.list_scroll')}}
       div
         material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.is_enable')")
     //- dd(:tips="播放列表是否显示专辑栏")
       h3 专辑栏
       div
         material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
-    dt {{$t('view.setting.download')}}
+    dt#download {{$t('view.setting.download')}}
     dd
       material-checkbox(id="setting_download_enable" v-model="current_setting.download.enable" :label="$t('view.setting.download_enable')")
     dd(:tips="$t('view.setting.download_path_title')")
-      h3 {{$t('view.setting.download_path')}}
+      h3#download_path {{$t('view.setting.download_path')}}
       div
         p
           | {{$t('view.setting.download_path_label')}}
@@ -132,24 +142,24 @@ div.scroll(:class="$style.setting")
         p
           material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
     dd(:tips="$t('view.setting.download_name_title')")
-      h3 {{$t('view.setting.download_name')}}
+      h3#download_name {{$t('view.setting.download_name')}}
       div
         material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
             v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
     dd
-      h3 {{$t('view.setting.download_data_embed')}}
+      h3#download_data_embed {{$t('view.setting.download_data_embed')}}
       div(:class="$style.gapTop")
         material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.download_embed_pic')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_download_isEmbedLyric" v-model="current_setting.download.isEmbedLyric" :label="$t('view.setting.download_embed_lyric')")
     dd(:tips="$t('view.setting.download_lyric_title')")
-      h3 {{$t('view.setting.download_lyric')}}
+      h3#download_lyric {{$t('view.setting.download_lyric')}}
       div
         material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
 
-    dt {{$t('view.setting.hot_key')}}
+    dt#hot_key {{$t('view.setting.hot_key')}}
     dd
-      h3 {{$t('view.setting.hot_key_local_title')}}
+      h3#hot_key_local_title {{$t('view.setting.hot_key_local_title')}}
       div
         material-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('view.setting.is_enable')" @change="handleHotKeySaveConfig")
       div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
@@ -160,7 +170,7 @@ div.scroll(:class="$style.setting")
             @focus="handleHotKeyFocus($event, item, 'local')"
             @blur="handleHotKeyBlur($event, item, 'local')")
 
-      h3 {{$t('view.setting.hot_key_global_title')}}
+      h3#hot_key_global_title {{$t('view.setting.hot_key_global_title')}}
       div
         material-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('view.setting.is_enable')" @change="handleEnableHotKey")
       div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
@@ -171,9 +181,9 @@ div.scroll(:class="$style.setting")
             @focus="handleHotKeyFocus($event, item, 'global')"
             @blur="handleHotKeyBlur($event, item, 'global')")
 
-    dt {{$t('view.setting.network')}}
+    dt#network {{$t('view.setting.network')}}
     dd
-      h3 {{$t('view.setting.network_proxy_title')}}
+      h3#network_proxy_title {{$t('view.setting.network_proxy_title')}}
       div
         p
           material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
@@ -183,43 +193,43 @@ div.scroll(:class="$style.setting")
         p
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
-    dt {{$t('view.setting.odc')}}
+    dt#odc {{$t('view.setting.odc')}}
     dd
-      h3 {{$t('view.setting.odc_clear_search_input')}}
+      h3#odc_clear_search_input {{$t('view.setting.odc_clear_search_input')}}
       div
         material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.is_enable')")
     dd
-      h3 {{$t('view.setting.odc_clear_search_list')}}
+      h3#odc_clear_search_list {{$t('view.setting.odc_clear_search_list')}}
       div
         material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.is_enable')")
-    dt {{$t('view.setting.backup')}}
+    dt#backup {{$t('view.setting.backup')}}
     dd
-      h3 {{$t('view.setting.backup_part')}}
+      h3#backup_part {{$t('view.setting.backup_part')}}
       div
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") {{$t('view.setting.backup_part_import_list')}}
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") {{$t('view.setting.backup_part_export_list')}}
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") {{$t('view.setting.backup_part_import_setting')}}
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") {{$t('view.setting.backup_part_export_setting')}}
     dd
-      h3 {{$t('view.setting.backup_all')}}
+      h3#backup_all {{$t('view.setting.backup_all')}}
       div
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") {{$t('view.setting.backup_all_import')}}
         material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") {{$t('view.setting.backup_all_export')}}
-    dt {{$t('view.setting.other')}}
+    dt#other {{$t('view.setting.other')}}
     dd
-      h3 {{$t('view.setting.other_tray_theme')}}
+      h3#other_tray_theme {{$t('view.setting.other_tray_theme')}}
       div
         material-checkbox(:id="'setting_tray_theme_' + item.id" v-model="current_setting.tray.themeId" name="setting_tray_theme" need :class="$style.gapLeft"
           :label="$t('view.setting.other_tray_theme_' + item.name)" :key="item.id" :value="item.id" v-for="item in trayThemeList")
     dd
-      h3 {{$t('view.setting.other_cache')}}
+      h3#other_cache {{$t('view.setting.other_cache')}}
       div
         p
           | {{$t('view.setting.other_cache_label')}}
           span.auto-hidden(:tips="$t('view.setting.other_cache_label_title')") {{cacheSize}}
         p
           material-btn(:class="$style.btn" min @click="clearCache") {{$t('view.setting.other_cache_clear_btn')}}
-    dt {{$t('view.setting.update')}}
+    dt#update {{$t('view.setting.update')}}
     dd
       p.small
         | {{$t('view.setting.update_latest_label')}}{{version.newVersion ? version.newVersion.version : $t('view.setting.update_unknown')}}
@@ -232,7 +242,7 @@ div.scroll(:class="$style.setting")
         span(v-if="version.isLatestVer") {{$t('view.setting.update_latest')}}
         material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") {{$t('view.setting.update_open_version_modal_btn')}}
       p.small(v-else) {{$t('view.setting.update_checking')}}
-    dt {{$t('view.setting.about')}}
+    dt#about {{$t('view.setting.about')}}
     dd
       p.small
         | 本软件是基于洛雪音乐助手进行修改的 
@@ -243,8 +253,8 @@ div.scroll(:class="$style.setting")
         span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.sixyin.com/42.html')") 点我前往下载
       br
       p.small
-        | 软件的常见问题可转至洛雪音乐助手常见问题：&nbsp;
-        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
+        | 软件的常见问题可转至五音助手常见问题：&nbsp;
+        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/sixyin/lx-music-desktop/blob/master/FAQ.md')") 常见问题
       p.small
         strong 仔细 仔细 仔细&nbsp;
         | 地阅读常见问题后，
@@ -580,6 +590,7 @@ export default {
 
       },
       isEditHotKey: false,
+      toc: [],
     }
   },
   watch: {
@@ -639,12 +650,43 @@ export default {
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
+      // this.initTOC()
       this.getCacheSize()
       this.getMediaDevice()
       this.current_hot_key = window.appHotKeyConfig
       this.initHotKeyConfig()
       this.getHotKeyStatus()
     },
+    // initTOC() {
+    //   const list = this.$refs.dom_setting_list.children
+    //   const toc = []
+    //   let prevTitle
+    //   for (const item of list) {
+    //     if (item.tagName == 'DT') {
+    //       prevTitle = {
+    //         title: item.innerText.replace(/[（(].+?[)）]/, ''),
+    //         id: item.getAttribute('id'),
+    //         dom: item,
+    //         children: [],
+    //       }
+    //       toc.push(prevTitle)
+    //       continue
+    //     }
+    //     const h3 = item.querySelector('h3')
+    //     if (h3) {
+    //       prevTitle.children.push({
+    //         title: h3.innerText.replace(/[（(].+?[)）]/, ''),
+    //         id: h3.getAttribute('id'),
+    //         dom: h3,
+    //       })
+    //     }
+    //   }
+    //   console.log(toc)
+    //   this.toc = toc
+    // },
+    // handleListScroll(event) {
+    //   // console.log(event.target.scrollTop)
+    // },
     handleChangeSavePath() {
       selectDir({
         title: this.$t('view.setting.download_select_save_path'),
@@ -849,6 +891,7 @@ export default {
     },
     handleLangChange(id) {
       this.$i18n.locale = id
+      // this.$nextTick(() => this.initTOC())
     },
     async getMediaDevice() {
       const devices = await navigator.mediaDevices.enumerateDevices()
@@ -1045,12 +1088,56 @@ export default {
 <style lang="less" module>
 @import '../assets/styles/layout.less';
 
+// .main {
+//   display: flex;
+//   flex-flow: row nowrap;
+//   height: 100%;
+//   border-top: 1px solid rgba(0, 0, 0, 0.12);
+// }
+
+// .toc {
+//   flex: 0 0 15%;
+//   overflow-y: scroll;
+//   padding: 10px;
+//   a {
+//     text-decoration: none;
+//     display: block;
+//     line-height: 1.5;
+//     .mixin-ellipsis-1;
+//   }
+// }
+// .tocH2 {
+//   font-size: 14px;
+//   a {
+//     color: @color-theme;
+//   }
+// }
+// .tocH3 {
+//   font-size: 13px;
+//   opacity: .8;
+// }
+
+// .tocList {
+//   .tocList {
+//     padding-left: 15px;
+//   }
+// }
+// .tocListItem {
+//   +.tocListItem {
+//     padding-top: 10px;
+//   }
+// }
+// .tocSubListItem {
+//   padding-top: 10px;
+// }
+
 .setting {
   padding: 0 15px 30px 15px;
   font-size: 14px;
   box-sizing: border-box;
   overflow-y: auto;
   height: 100%;
+  position: relative;
 
   dt {
     border-left: 5px solid @color-theme;
@@ -1241,8 +1328,22 @@ export default {
   }
 }
 
+// :global(dt):target, :global(h3):target {
+//   animation: highlight 1s ease;
+// }
+
+// @keyframes highlight {
+//   from { background: yellow; }
+//   to { background: transparent; }
+// }
+
 each(@themes, {
   :global(#container.@{value}) {
+    // .tocH2 {
+    //   a {
+    //     color: ~'@{color-@{value}-theme}';
+    //   }
+    // }
     .tbody {
       tr {
         &.active {

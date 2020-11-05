@@ -1,5 +1,5 @@
 <template lang="pug">
-#container(v-if="isProd && !isNt" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
+#container(v-if="isProd && !isNt && !isLinux" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
   core-aside#left
   #right
     core-toolbar#toolbar
@@ -42,6 +42,7 @@ export default {
     return {
       isProd: process.env.NODE_ENV === 'production',
       isNt: false,
+      isLinux,
       globalObj: {
         apiSource: 'test',
         proxy: {},
@@ -338,12 +339,12 @@ export default {
     },
     handleEnvParamsInit(envParams) {
       this.envParams = envParams
-      this.isNt = isLinux || this.envParams.nt
+      this.isNt = this.envParams.nt
       if (this.isNt) {
         document.body.classList.remove('transparent')
         document.body.classList.add('noTransparent')
       }
-      if (this.isProd && !this.isNt) {
+      if (this.isProd && !this.isNt && !this.isLinux) {
         document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }

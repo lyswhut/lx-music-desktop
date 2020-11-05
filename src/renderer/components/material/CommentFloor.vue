@@ -7,10 +7,13 @@
             img( :class="$style.avatar" :src="item.avatar || commentDefImg" @error="handleUserImg")
           div(:class="$style.right")
             div(:class="$style.info")
-              div(:class="$style.name") {{item.userName}}
-              time(:class="$style.time") {{timeFormat(item.time)}}
-              div(:class="$style.likes") {{item.likedCount}}
-            div(:class="$style.comment_text")
+              div.select(:class="$style.name") {{item.userName}}
+              time(:class="$style.time" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
+              div(:class="$style.likes" v-if="item.likedCount != null")
+                svg(:class="$style.likesIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
+                  use(xlink:href='#icon-thumbs-up')
+                | {{item.likedCount}}
+            div.select(:class="$style.comment_text")
               p(v-for="text in item.text") {{text}}
         material-comment-floor(v-if="item.reply && item.reply.length" :class="$style.reply_floor" :comments="item.reply")
 </template>
@@ -82,31 +85,39 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-end;
   min-width: 0;
+  line-height: 1.3;
+  color: @color-theme_2-font-label;
 }
 .name {
-  flex: auto;
+  flex: 0 1 auto;
   min-width: 0;
   .mixin-ellipsis-1;
 }
 .time {
   flex: none;
-  color: @color-theme_2-font-label;
   font-size: 11px;
-  margin-left: 10px;
+  margin-left: 5px;
 }
 .likes {
-  flex: none;
+  flex: 1 0 auto;
   margin-left: 10px;
-  color: @color-theme_2-font-label;
   font-size: 11px;
   align-self: flex-end;
+  text-align: right;
+}
+.likesIcon {
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  color: @color-theme-active;
 }
 .comment_text {
   text-align: justify;
   font-size: 14px;
+  padding-top: 5px;
   p {
     line-height: 1.5;
-    margin-top: 8px;
+    word-break: break-all;
   }
 }
 
@@ -126,5 +137,26 @@ export default {
 
   background-color: @color-reply-floor;
 }
+
+
+each(@themes, {
+  :global(#container.@{value}) {
+    .listItem {
+      border-bottom-color: ~'@{color-@{value}-theme_2-active}';
+    }
+    .content {
+      color: ~'@{color-@{value}-theme_2-font}';
+    }
+    .info {
+      color: ~'@{color-@{value}-theme_2-font-label}';
+    }
+    .likesIcon {
+      color: ~'@{color-@{value}-theme-active}';
+    }
+    .reply_floor {
+      background-color: ~'@{color-@{value}-reply-floor}';
+    }
+  }
+})
 
 </style>

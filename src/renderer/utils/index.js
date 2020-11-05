@@ -20,6 +20,39 @@ export const sizeFormate = size => {
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
 
+/**
+  * 日期格式化
+  * @param {*} date 时间
+  * @param {String} format 时间格式，默认YYYY-MM-DD hh:mm:ss
+  */
+export const dateFormat = (date = new Date(), format = 'YYYY-MM-DD hh:mm:ss') => {
+  if (typeof date != 'object') date = new Date(date)
+  const munFix = (n) => n < 10 ? ('0' + n) : n
+  return format
+    .replace('YYYY', date.getFullYear())
+    .replace('MM', munFix(date.getMonth() + 1))
+    .replace('DD', munFix(date.getDate()))
+    .replace('hh', munFix(date.getHours()))
+    .replace('mm', munFix(date.getMinutes()))
+    .replace('ss', munFix(date.getSeconds()))
+}
+
+/**
+ * 时间格式化
+ */
+export const dateFormat2 = time => {
+  let differ = parseInt((Date.now() - time) / 1000)
+  if (differ < 60) {
+    return window.i18n.t('base.date_format_second', { num: differ })
+  } else if (differ < 3600) {
+    return window.i18n.t('base.date_format_minute', { num: parseInt(differ / 60) })
+  } else if (differ < 86400) {
+    return window.i18n.t('base.date_format_hour', { num: parseInt(differ / 3600) })
+  } else {
+    return dateFormat(time)
+  }
+}
+
 export const formatPlayTime = time => {
   let m = parseInt(time / 60)
   let s = parseInt(time % 60)
@@ -205,7 +238,7 @@ export const openUrl = url => {
  * 设置标题
  */
 let dom_title = document.getElementsByTagName('title')[0]
-export const setTitle = (title = '洛雪音乐助手(五音版)') => {
+export const setTitle = (title = '五音助手') => {
   dom_title.innerText = title
 }
 
