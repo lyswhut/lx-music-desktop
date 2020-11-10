@@ -382,7 +382,8 @@ export default {
       return this.searchSourceId == 'all'
         ? list.filter(s => this.assertApiSupport(s.source))
         : this.assertApiSupport(this.searchSourceId)
-          ? [...list] : []
+          ? [...list]
+          : []
     },
     handleListAddModalClose() {
       this.isShowListAdd = false

@@ -377,11 +377,13 @@ const actions = {
       },
     }
     commit('setStatusText', { downloadInfo, text: '获取URL中...' })
-    let p = options.url ? Promise.resolve() : getUrl(downloadInfo).then(result => {
-      commit('updateUrl', { downloadInfo, url: result.url })
-      if (!result.url) return Promise.reject(new Error('获取URL失败'))
-      options.url = result.url
-    })
+    let p = options.url
+      ? Promise.resolve()
+      : getUrl(downloadInfo).then(result => {
+        commit('updateUrl', { downloadInfo, url: result.url })
+        if (!result.url) return Promise.reject(new Error('获取URL失败'))
+        options.url = result.url
+      })
     p.then(() => {
       tryNum[downloadInfo.key] = 0
       dls[downloadInfo.key] = download(options)

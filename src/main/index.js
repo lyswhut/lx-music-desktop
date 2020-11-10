@@ -82,7 +82,7 @@ if (isDev) {
   winURL = 'http://localhost:9080'
 } else {
   global.__static = path.join(__dirname, '/static')
-  winURL = `file://${__dirname}/index.html`
+  winURL = `file://${path.join(__dirname, 'index.html')}`
 }
 
 function createWindow() {

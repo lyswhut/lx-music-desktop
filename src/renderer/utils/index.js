@@ -132,7 +132,7 @@ const handleScroll = (element, to, duration = 300, fn = () => {}) => {
  * @param {*} fn 滚动完成后的回调
  * @param {*} delay 延迟执行时间
  */
-export const scrollTo = (element, to, duration = 300, fn = () => {}, delay) => {
+export const scrollTo = (element, to, duration = 300, fn = () => {}, delay = 0) => {
   let cancelFn
   let timeout
   if (delay) {

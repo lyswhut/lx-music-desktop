@@ -1,3 +1,4 @@
+const path = require('path')
 const { BrowserWindow } = require('electron')
 const { winLyric: WIN_LYRIC_EVENT_NAME } = require('../../events/_name')
 const { debounce } = require('../../../common/utils')
@@ -13,7 +14,7 @@ global.lx_event.winLyric.on(WIN_LYRIC_EVENT_NAME.close, () => {
   closeWindow()
 })
 
-let winURL = global.isDev ? 'http://localhost:9081/lyric.html' : `file://${__dirname}/lyric.html`
+let winURL = global.isDev ? 'http://localhost:9081/lyric.html' : `file://${path.join(__dirname, 'lyric.html')}`
 
 const setLyricsConfig = debounce(config => {
   // if (x != null) bounds.x = x
