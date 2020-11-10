@@ -517,14 +517,17 @@ export default {
       if (this.setting.player.togglePlayMethod == 'random' && this.playedList.length) {
         let index = this.playedList.indexOf(this.targetSong)
         index -= 1
-        if (index > -1) {
-          let listIndex = this.list.indexOf(this.playedList[index])
-          if (listIndex < 0) {
-            this.removePlayedList(index)
-            return this.handlePrev()
+        while (true) {
+          if (index > -1) {
+            let listIndex = this.list.indexOf(this.playedList[index])
+            if (listIndex < 0) {
+              this.removePlayedList(index)
+              continue
+            }
+            this.setPlayIndex(listIndex)
+            return
           }
-          this.setPlayIndex(listIndex)
-          return
+          break
         }
       }
       let list = await this.filterList()
@@ -552,14 +555,17 @@ export default {
       if (this.setting.player.togglePlayMethod == 'random' && this.playedList.length) {
         let index = this.playedList.indexOf(this.targetSong)
         index += 1
-        if (index < this.playedList.length) {
-          let listIndex = this.list.indexOf(this.playedList[index])
-          if (listIndex < 0) {
-            this.removePlayedList(index)
-            return this.handleNext()
+        while (true) {
+          if (index < this.playedList.length) {
+            let listIndex = this.list.indexOf(this.playedList[index])
+            if (listIndex < 0) {
+              this.removePlayedList(index)
+              continue
+            }
+            this.setPlayIndex(listIndex)
+            return
           }
-          this.setPlayIndex(listIndex)
-          return
+          break
         }
       }
       let list = await this.filterList()
