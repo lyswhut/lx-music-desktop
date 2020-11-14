@@ -1,6 +1,6 @@
 const { app, Tray, Menu } = require('electron')
 const { isWin } = require('../../common/utils')
-const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME } = require('../events/_name')
+const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME, mainWindow: MAIN_WINDOW_NAME } = require('../events/_name')
 const path = require('path')
 let isEnableTray = null
 let themeId = null
@@ -26,6 +26,16 @@ global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
     isEnableTray = global.appSetting.tray.isShow
     global.appSetting.tray.isShow ? createTray() : destroyTray()
   }
+  createMenu(global.modules.tray)
+})
+
+global.lx_event.mainWindow.on(MAIN_WINDOW_NAME.ready_to_show, () => {
+  createMenu(global.modules.tray)
+})
+global.lx_event.mainWindow.on(MAIN_WINDOW_NAME.show, () => {
+  createMenu(global.modules.tray)
+})
+global.lx_event.mainWindow.on(MAIN_WINDOW_NAME.hide, () => {
   createMenu(global.modules.tray)
 })
 
@@ -58,8 +68,24 @@ const destroyTray = () => {
 }
 
 const createMenu = tray => {
-  if (!global.modules.tray || !isWin) return
+  if (!global.modules.tray) return
   let menu = []
+  global.modules.mainWindow && menu.push(global.modules.mainWindow.isVisible() ? {
+    label: '隐藏主界面',
+    click() {
+      global.modules.mainWindow.hide()
+    },
+  } : {
+    label: '显示主界面',
+    click() {
+      if (!global.modules.mainWindow) return
+      if (!global.modules.mainWindow.isVisible()) {
+        global.modules.mainWindow.show()
+      }
+      global.modules.mainWindow.restore()
+      global.modules.mainWindow.focus()
+    },
+  })
   menu.push(global.appSetting.desktopLyric.enable ? {
     label: '关闭桌面歌词',
     click() {
