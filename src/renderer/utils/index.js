@@ -78,8 +78,9 @@ const encodeNames = {
   '&gt;': '>',
   '&quot;': '"',
   '&apos;': "'",
+  '&#039;': "'",
 }
-export const decodeName = str => str.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;)/g, s => encodeNames[s])
+export const decodeName = str => str.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;)/gm, s => encodeNames[s])
 
 const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
