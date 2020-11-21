@@ -29,5 +29,13 @@ module.exports = mainWindow => {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
+    global.lx_event.mainWindow.readyToShow()
+  })
+
+  mainWindow.on('show', () => {
+    global.lx_event.mainWindow.show()
+  })
+  mainWindow.on('hide', () => {
+    global.lx_event.mainWindow.hide()
   })
 }

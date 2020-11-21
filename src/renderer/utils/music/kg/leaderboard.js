@@ -1,5 +1,5 @@
 import { httpGet, cancelHttp, httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 
 let boardList = [{ id: 'kg__8888', name: '酷狗TOP500', bangid: '8888' }, { id: 'kg__6666', name: '酷狗飙升榜', bangid: '6666' }, { id: 'kg__37361', name: '酷狗雷达榜', bangid: '37361' }, { id: 'kg__23784', name: '网络红歌榜', bangid: '23784' }, { id: 'kg__24971', name: 'DJ热歌榜', bangid: '24971' }, { id: 'kg__35811', name: '会员专享热歌榜', bangid: '35811' }, { id: 'kg__31308', name: '华语新歌榜', bangid: '31308' }, { id: 'kg__31310', name: '欧美新歌榜', bangid: '31310' }, { id: 'kg__31311', name: '韩国新歌榜', bangid: '31311' }, { id: 'kg__31312', name: '日本新歌榜', bangid: '31312' }, { id: 'kg__31313', name: '粤语新歌榜', bangid: '31313' }, { id: 'kg__33162', name: 'ACG新歌榜', bangid: '33162' }, { id: 'kg__21101', name: '酷狗分享榜', bangid: '21101' }, { id: 'kg__30972', name: '腾讯音乐人原创榜', bangid: '30972' }, { id: 'kg__22603', name: '5sing音乐榜', bangid: '22603' }, { id: 'kg__33160', name: '电音热歌榜', bangid: '33160' }, { id: 'kg__21335', name: '繁星音乐榜', bangid: '21335' }, { id: 'kg__33161', name: '古风新歌榜', bangid: '33161' }, { id: 'kg__33163', name: '影视金曲榜', bangid: '33163' }, { id: 'kg__33166', name: '欧美金曲榜', bangid: '33166' }, { id: 'kg__33165', name: '粤语金曲榜', bangid: '33165' }, { id: 'kg__36107', name: '小语种热歌榜', bangid: '36107' }, { id: 'kg__4681', name: '美国BillBoard榜', bangid: '4681' }, { id: 'kg__4680', name: '英国单曲榜', bangid: '4680' }, { id: 'kg__4673', name: '日本公信榜', bangid: '4673' }, { id: 'kg__38623', name: '韩国Melon音乐榜', bangid: '38623' }, { id: 'kg__42807', name: 'joox本地热歌榜', bangid: '42807' }, { id: 'kg__42808', name: '台湾KKBOX风云榜', bangid: '42808' }]
 
@@ -134,9 +134,9 @@ export default {
         }
       }
       return {
-        singer: item.singername,
-        name: item.songname,
-        albumName: item.album_name,
+        singer: decodeName(item.singername),
+        name: decodeName(item.songname),
+        albumName: decodeName(item.album_name),
         albumId: item.album_id,
         songmid: item.audio_id,
         source: 'kg',

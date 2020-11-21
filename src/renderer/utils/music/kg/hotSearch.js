@@ -1,4 +1,5 @@
 import { httpFetch } from '../../request'
+import { decodeName } from '../..'
 
 export default {
   _requestObj: null,
@@ -25,7 +26,7 @@ export default {
   filterList(rawList) {
     const list = []
     rawList.forEach(item => {
-      item.keywords.map(k => list.push(k.keyword))
+      item.keywords.map(k => list.push(decodeName(k.keyword)))
     })
     return list
   },

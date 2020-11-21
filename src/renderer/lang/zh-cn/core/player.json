@@ -29,7 +29,7 @@
   "play_toggle_mode_single_loop": "单曲循环",
   "play_toggle_mode_off": "禁用",
 
-  "comment_show": "显示歌曲评论",
+  "comment_show": "歌曲评论",
   "comment_hot_loading": "热门评论加载中",
   "comment_new_loading": "最新评论加载中",
   "comment_hot_load_error": "热门评论加载失败，点击尝试重新加载",

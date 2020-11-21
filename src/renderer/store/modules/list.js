@@ -92,8 +92,7 @@ const mutations = {
     if (!fromList || !toList) return
     fromList.list.splice(fromList.list.indexOf(musicInfo), 1)
     let index = toList.list.findIndex(s => s.songmid === musicInfo.songmid)
-    if (index > -1) return toList.list.splice(index, 1)
-    toList.list.push(musicInfo)
+    if (index < 0) toList.list.push(musicInfo)
   },
   listAddMultiple(state, { id, list }) {
     let targetList = allList[id]
@@ -110,7 +109,7 @@ const mutations = {
   },
   // { fromId, toId, list }
   listMoveMultiple(state, { fromId, toId, list }) {
-    console.log(state.commit)
+    // console.log(state.commit)
     this.commit('list/listRemoveMultiple', { id: fromId, list })
     this.commit('list/listAddMultiple', { id: toId, list })
   },

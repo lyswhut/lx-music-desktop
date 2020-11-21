@@ -29,7 +29,7 @@
   "play_toggle_mode_single_loop": "Single Loop",
   "play_toggle_mode_off": "Disable",
 
-  "comment_show": "Show song comments",
+  "comment_show": "Song comments",
   "comment_hot_loading": "Hot comments are loading",
   "comment_new_loading": "Latest comments are loading",
   "comment_hot_load_error": "Hot comments failed to load, click to try to reload",
