@@ -279,7 +279,7 @@ export default {
       rendererSend(NAMES.winLyric.close)
     },
     setLyric() {
-      window.lrc.setLyric((this.isShowLyricTransition && this.lyrics.tlyric ? this.lyrics.tlyric + '\n' : '') + this.lyrics.lyric)
+      window.lrc.setLyric((this.isShowLyricTransition && this.lyrics.tlyric ? (this.lyrics.tlyric + '\n') : '') + (this.lyrics.lyric || ''))
     },
   },
 }
