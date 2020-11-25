@@ -373,7 +373,8 @@ export default {
         this.addDelayNextTimeout()
       })
       audio.addEventListener('loadeddata', () => {
-        // console.log('loadeddata')
+        console.log('loadeddata')
+        this.clearLoadingTimeout()
         this.status = this.statusText = this.$t('core.player.loading')
         this.maxPlayTime = audio.duration
         if (window.restorePlayInfo) {
@@ -388,8 +389,8 @@ export default {
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
       })
       audio.addEventListener('loadstart', () => {
-        // console.log('loadstart')
-        this.startBuffering()
+        console.log('loadstart')
+        this.startLoadingTimeout()
         this.status = this.statusText = this.$t('core.player.loading')
       })
       audio.addEventListener('canplay', () => {
@@ -399,9 +400,8 @@ export default {
           this.mediaBuffer.playTime = 0
           audio.currentTime = playTime
         }
-        if (this.mediaBuffer.timeout) {
-          this.clearBufferTimeout()
-        }
+        this.clearBufferTimeout()
+
         // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
         this.status = this.statusText = ''
       })
@@ -412,6 +412,7 @@ export default {
       // })
       audio.addEventListener('emptied', () => {
         this.mediaBuffer.playTime = 0
+        this.clearLoadingTimeout()
         this.clearBufferTimeout()
 
         // console.log('媒介资源元素突然为空，网络错误 or 切换歌曲？')
@@ -713,6 +714,7 @@ export default {
       this.status = this.musicInfo.name = this.musicInfo.singer = ''
       this.musicInfo.songmid = null
       this.musicInfo.lrc = null
+      this.musicInfo.tlrc = null
       this.musicInfo.url = null
       this.nowPlayTime = 0
       this.maxPlayTime = 0
@@ -795,8 +797,20 @@ export default {
       // console.log(e)
       this.isActiveTransition = false
     },
+    startLoadingTimeout() {
+      // console.log('start load timeout')
+      this.loadingTimeout = setTimeout(() => {
+        this.handleNext()
+      }, 10000)
+    },
+    clearLoadingTimeout() {
+      if (!this.loadingTimeout) return
+      // console.log('clear load timeout')
+      clearTimeout(this.loadingTimeout)
+      this.loadingTimeout = null
+    },
     startBuffering() {
-      console.log('start t')
+      console.error('start t')
       if (this.mediaBuffer.timeout) return
       this.mediaBuffer.timeout = setTimeout(() => {
         this.mediaBuffer.timeout = null
@@ -891,7 +905,7 @@ export default {
       })
     },
     setLyric() {
-      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc + '\n' : '') + this.musicInfo.lrc)
+      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? (this.musicInfo.tlrc + '\n') : '') + (this.musicInfo.lrc || ''))
       if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
         window.lrc.play(audio.currentTime * 1000)
         this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
