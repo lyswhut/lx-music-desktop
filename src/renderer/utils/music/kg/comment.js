@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { dateFormat2 } from '../../'
+import { decodeName, dateFormat2 } from '../../'
 
 export default {
   _requestObj: null,
@@ -48,7 +48,7 @@ export default {
     return rawList.map(item => {
       let data = {
         id: item.id,
-        text: item.content.split('\n'),
+        text: decodeName(item.content || '').split('\n'),
         time: item.addtime,
         timeStr: dateFormat2(new Date(item.addtime).getTime()),
         userName: item.user_name,
@@ -61,7 +61,7 @@ export default {
 
       return item.pcontent ? {
         id: item.id,
-        text: item.pcontent.split('\n'),
+        text: decodeName(item.pcontent).split('\n'),
         time: null,
         userName: item.puser,
         avatar: null,

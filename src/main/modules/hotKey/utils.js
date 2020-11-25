@@ -23,9 +23,11 @@ exports.registerHotkey = ({ key, info }) => {
     }
   }
   global.appHotKey.state[key].info = info
-  let status = global.appHotKey.state[key].status = globalShortcut.isRegistered(transKey) ? false : globalShortcut.register(transKey, () => {
-    handleKeyDown(key)
-  })
+  let status = global.appHotKey.state[key].status = globalShortcut.isRegistered(transKey)
+    ? false
+    : globalShortcut.register(transKey, () => {
+      handleKeyDown(key)
+    })
   return status
 }
 

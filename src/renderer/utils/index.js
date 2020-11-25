@@ -78,8 +78,9 @@ const encodeNames = {
   '&gt;': '>',
   '&quot;': '"',
   '&apos;': "'",
+  '&#039;': "'",
 }
-export const decodeName = str => str.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;)/g, s => encodeNames[s])
+export const decodeName = str => str.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;)/gm, s => encodeNames[s])
 
 const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
@@ -132,7 +133,7 @@ const handleScroll = (element, to, duration = 300, fn = () => {}) => {
  * @param {*} fn 滚动完成后的回调
  * @param {*} delay 延迟执行时间
  */
-export const scrollTo = (element, to, duration = 300, fn = () => {}, delay) => {
+export const scrollTo = (element, to, duration = 300, fn = () => {}, delay = 0) => {
   let cancelFn
   let timeout
   if (delay) {

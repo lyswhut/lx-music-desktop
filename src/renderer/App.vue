@@ -174,6 +174,9 @@ export default {
     ...mapMutations('search', {
       setSearchHistoryList: 'setHistory',
     }),
+    ...mapMutations('player', {
+      setPlayList: 'setList',
+    }),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
 
@@ -276,6 +279,7 @@ export default {
         if (!loveList.list) loveList.list = []
         this.initList({ defaultList, loveList, userList })
         this.initDownloadList(downloadList) // 初始化下载列表
+        this.initPlayInfo()
       })
     },
     initDownloadList(downloadList) {
@@ -297,6 +301,27 @@ export default {
         } else {
           this.setSearchHistoryList(historyList)
         }
+      })
+    },
+    initPlayInfo() {
+      rendererInvoke(NAMES.mainWindow.get_data, 'playInfo').then(info => {
+        // console.log(info, window.allList)
+        if (!info) return
+        if (info.listId) {
+          const list = window.allList[info.listId]
+          // console.log(list)
+          if (!list) return
+          info.list = list.list
+        }
+
+        window.restorePlayInfo = info
+        this.setPlayList({
+          list: {
+            list: info.list,
+            id: info.listId,
+          },
+          index: info.index,
+        })
       })
     },
     showUpdateModal() {

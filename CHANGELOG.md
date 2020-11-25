@@ -6,6 +6,33 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.4.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.4.0...v1.4.1) - 2020-11-25
+
+
+### 修复
+
+- 修复有歌词翻译与无歌词的音乐间切换会导致歌词翻译残留显示的问题
+- 修复歌曲URL过期时，等待刷新URL的自动切换歌曲时间间隔太短的问题
+- 修复某些电脑上的某些歌曲没有声音的问题（升级Electron9.3.4导致的，现降级到9.3.3）
+
+## [1.4.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.3.0...v1.4.0) - 2020-11-21
+
+### 新增
+
+- 托盘菜单新增显示、隐藏主界面选项，为Linux、MAC版添加托盘菜单
+- 新增播放进度信息保存
+
+### 优化
+
+- 移除kg源的歌词文件开头的空白字符串
+
+### 修复
+
+- 修复专辑图片无法嵌入的问题
+- 修复播放状态栏切换“上一首”歌曲按钮提示错误的问题
+- 修复移动单首歌曲时，如果目标列表存在该歌曲，会导致将源列表与目标列表里的目标歌曲移除
+- 修复kg源歌曲信息带有单引号等特殊字符被转义的问题
+
 ## [1.3.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.2.2...v1.3.0) - 2020-11-01
 
 ### 新增

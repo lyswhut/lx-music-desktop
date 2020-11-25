@@ -1,7 +1,7 @@
 // import '../../polyfill/array.find'
 // import jshtmlencode from 'js-htmlencode'
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 // import { debug } from '../../utils/env'
 // import { formatSinger } from './util'
 
@@ -50,9 +50,9 @@ export default {
         }
       }
       list.push({
-        singer: item.singername,
-        name: item.songname,
-        albumName: item.album_name,
+        singer: decodeName(item.singername),
+        name: decodeName(item.songname),
+        albumName: decodeName(item.album_name),
         albumId: item.album_id,
         songmid: item.audio_id,
         source: 'kg',

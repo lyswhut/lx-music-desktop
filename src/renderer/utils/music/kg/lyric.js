@@ -1,8 +1,10 @@
 import { httpFetch } from '../../request'
 import { decodeLyric } from './util'
+import { decodeName } from '../..'
 
 const parseLyric = str => {
   str = str.replace(/(?:<\d+,\d+,\d+>|\r)/g, '')
+  if (str.startsWith('\ufeff[id:$00000000]')) str = str.replace('\ufeff[id:$00000000]\n', '')
   let trans = str.match(/\[language:([\w=\\/+]+)\]/)
   let tlyric
   if (trans) {
@@ -29,6 +31,8 @@ const parseLyric = str => {
     return str.replace(result[1], time)
   })
   tlyric = tlyric ? tlyric.join('\n') : ''
+  lyric = decodeName(lyric)
+  tlyric = decodeName(tlyric)
   return {
     lyric,
     tlyric,

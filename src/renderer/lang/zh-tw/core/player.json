@@ -29,7 +29,7 @@
   "play_toggle_mode_single_loop": "單曲循環",
   "play_toggle_mode_off": "禁用",
 
-  "comment_show": "顯示歌曲評論",
+  "comment_show": "歌曲評論",
   "comment_hot_loading": "熱門評論加載中",
   "comment_new_loading": "最新評論加載中",
   "comment_hot_load_error": "熱門評論加載失敗，點擊嘗試重新加載",
