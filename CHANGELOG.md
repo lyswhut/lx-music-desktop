@@ -6,6 +6,15 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.4.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.4.0...v1.4.1) - 2020-11-25
+
+
+### 修复
+
+- 修复有歌词翻译与无歌词的音乐间切换会导致歌词翻译残留显示的问题
+- 修复歌曲URL过期时，等待刷新URL的自动切换歌曲时间间隔太短的问题
+- 修复某些电脑上的某些歌曲没有声音的问题（升级Electron9.3.4导致的，现降级到9.3.3）
+
 ## [1.4.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.3.0...v1.4.0) - 2020-11-21
 
 ### 新增
