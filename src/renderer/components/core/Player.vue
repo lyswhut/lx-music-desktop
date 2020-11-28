@@ -801,7 +801,7 @@ export default {
       // console.log('start load timeout')
       this.loadingTimeout = setTimeout(() => {
         this.handleNext()
-      }, 10000)
+      }, 20000)
     },
     clearLoadingTimeout() {
       if (!this.loadingTimeout) return
