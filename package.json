@@ -228,7 +228,7 @@
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.5",
     "needle": "^2.5.2",
-    "node-id3": "^0.1.21",
+    "node-id3": "^0.1.19",
     "request": "^2.88.2",
     "vue": "^2.6.12",
     "vue-i18n": "^8.22.1",
