@@ -810,7 +810,7 @@ export default {
       this.loadingTimeout = null
     },
     startBuffering() {
-      console.error('start t')
+      console.log('start t')
       if (this.mediaBuffer.timeout) return
       this.mediaBuffer.timeout = setTimeout(() => {
         this.mediaBuffer.timeout = null
