@@ -373,6 +373,7 @@ export default {
       }
     },
     handleGetSongListDetail() {
+      if (!this.importSongListText.length) return
       this.setSelectListInfo({
         play_count: null,
         id: this.importSongListText,
