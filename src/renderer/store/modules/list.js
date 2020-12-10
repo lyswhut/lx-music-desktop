@@ -60,7 +60,7 @@ const mutations = {
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
   },
-  setList(state, { id, list, name, location }) {
+  setList(state, { id, list, name, location, source, sourceListId }) {
     const targetList = allList[id]
     if (targetList) {
       if (name && targetList.name === name) {
@@ -76,6 +76,8 @@ const mutations = {
       id,
       list,
       location,
+      source,
+      sourceListId,
     }
     state.userList.push(newList)
     allListUpdate(newList)
@@ -145,7 +147,7 @@ const mutations = {
     if (!targetList) return
     Object.assign(targetList.list[index], data)
   },
-  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [] }) {
+  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId }) {
     let newList = state.userList.find(item => item.id === id)
     if (!newList) {
       newList = {
@@ -153,6 +155,8 @@ const mutations = {
         id,
         list: [],
         location: 0,
+        source,
+        sourceListId,
       }
       state.userList.push(newList)
       allListUpdate(newList)

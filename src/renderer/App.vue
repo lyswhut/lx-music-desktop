@@ -273,7 +273,21 @@ export default {
       getPlayList().then(({ defaultList, loveList, userList, downloadList }) => {
         if (!defaultList) defaultList = this.defaultList
         if (!loveList) loveList = this.loveList
-        if (!userList) userList = this.userList
+        if (userList) {
+          let needSave = false
+          const getListId = id => id.includes('.') ? getListId(id.substring(0, id.lastIndexOf('_'))) : id
+          userList.forEach(l => {
+            if (!l.id.includes('__') || l.source) return
+            let [source, id] = l.id.split('__')
+            id = getListId(id)
+            l.source = source
+            l.sourceListId = id
+            if (!needSave) needSave = true
+          })
+          if (needSave) this.this.saveUserList(userList)
+        } else {
+          userList = this.userList
+        }
 
         if (!defaultList.list) defaultList.list = []
         if (!loveList.list) loveList.list = []

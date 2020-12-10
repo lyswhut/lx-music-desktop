@@ -81,8 +81,8 @@ const actions = {
         : music[source].songList.getListDetail(id, page)
     ).then(result => commit('setListDetail', { result, key, source, id, page }))
   },
-  getListDetailAll({ state, rootState }, id) {
-    let source = rootState.setting.songList.source
+  getListDetailAll({ state, rootState }, { source, id }) {
+    // console.log(source, id)
     const loadData = (id, page) => {
       let key = `sdetail__${source}__${id}__${page}`
       return cache.has(key)
