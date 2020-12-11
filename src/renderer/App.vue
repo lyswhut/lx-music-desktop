@@ -284,7 +284,7 @@ export default {
             l.sourceListId = id
             if (!needSave) needSave = true
           })
-          if (needSave) this.this.saveUserList(userList)
+          if (needSave) this.saveUserList(userList)
         } else {
           userList = this.userList
         }
@@ -320,7 +320,9 @@ export default {
     initPlayInfo() {
       rendererInvoke(NAMES.mainWindow.get_data, 'playInfo').then(info => {
         // console.log(info, window.allList)
+        window.restorePlayInfo = null
         if (!info) return
+        if (info.index < 0) return
         if (info.listId) {
           const list = window.allList[info.listId]
           // console.log(list)
