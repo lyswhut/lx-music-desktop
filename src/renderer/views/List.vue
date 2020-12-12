@@ -11,7 +11,10 @@
           span(:class="$style.listsLabel") {{defaultList.name}}
         li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :tips="loveList.name" @click="handleListToggle(loveList.id)")
           span(:class="$style.listsLabel") {{loveList.name}}
-        li.user-list(:class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null]" @contextmenu="handleListsItemRigthClick($event, index)" :tips="item.name" v-for="(item, index) in userList" :key="item.id")
+        li.user-list(
+          :class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null, fetchingListStatus[item.id] ? $style.fetching : null]"
+          @contextmenu="handleListsItemRigthClick($event, index)"
+          :tips="item.name" v-for="(item, index) in userList" :key="item.id")
           span(:class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)") {{item.name}}
           input.key-bind(:class="$style.listsInput" @contextmenu.stop type="text" @keyup.enter="handleListsSave(index, $event)" @blur="handleListsSave(index, $event)" :value="item.name" :placeholder="item.name")
         transition(enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="handleListsNewAfterLeave")
@@ -924,7 +927,7 @@ export default {
 .listsItem {
   position: relative;
   transition: .3s ease;
-  transition-property: color, background-color;
+  transition-property: color, background-color, opacity;
   background-color: transparent;
   &:hover:not(.active) {
     background-color: @color-theme_2-hover;
@@ -939,6 +942,9 @@ export default {
   }
   &.clicked {
     background-color: @color-theme_2-hover;
+  }
+  &.fetching {
+    opacity: .5;
   }
   &.editing {
     padding: 0 10px;
