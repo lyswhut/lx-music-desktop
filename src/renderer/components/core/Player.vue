@@ -261,6 +261,9 @@ export default {
           name: this.musicInfo.name,
           album: this.musicInfo.album,
         })
+        this.$nextTick(() => {
+          this.sendProgressEvent(this.progress, 'paused')
+        })
         window.restorePlayInfo = null
         return
       }
