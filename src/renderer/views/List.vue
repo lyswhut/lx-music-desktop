@@ -846,18 +846,16 @@ export default {
       } else {
         this.fetchingListStatus[id] = true
       }
-      return this.getListDetailAll({ source, id: sourceListId }).catch(err => {
-        return Promise.reject(err)
-      }).finally(() => {
+      return this.getListDetailAll({ source, id: sourceListId }).finally(() => {
         this.fetchingListStatus[id] = false
       })
     },
     async handleSyncSourceList(index) {
-      const targetList = this.userList[index]
-      const list = await this.fetchList(targetList.id, targetList.source, targetList.sourceListId)
-      // console.log(targetList.list.length, list.length)
+      const targetListInfo = this.userList[index]
+      const list = await this.fetchList(targetListInfo.id, targetListInfo.source, targetListInfo.sourceListId)
+      // console.log(targetListInfo.list.length, list.length)
       this.setList({
-        ...targetList,
+        ...targetListInfo,
         list,
       })
     },
