@@ -273,7 +273,21 @@ export default {
       getPlayList().then(({ defaultList, loveList, userList, downloadList }) => {
         if (!defaultList) defaultList = this.defaultList
         if (!loveList) loveList = this.loveList
-        if (!userList) userList = this.userList
+        if (userList) {
+          let needSave = false
+          const getListId = id => id.includes('.') ? getListId(id.substring(0, id.lastIndexOf('_'))) : id
+          userList.forEach(l => {
+            if (!l.id.includes('__') || l.source) return
+            let [source, id] = l.id.split('__')
+            id = getListId(id)
+            l.source = source
+            l.sourceListId = id
+            if (!needSave) needSave = true
+          })
+          if (needSave) this.saveUserList(userList)
+        } else {
+          userList = this.userList
+        }
 
         if (!defaultList.list) defaultList.list = []
         if (!loveList.list) loveList.list = []
@@ -306,7 +320,9 @@ export default {
     initPlayInfo() {
       rendererInvoke(NAMES.mainWindow.get_data, 'playInfo').then(info => {
         // console.log(info, window.allList)
+        window.restorePlayInfo = null
         if (!info) return
+        if (info.index < 0) return
         if (info.listId) {
           const list = window.allList[info.listId]
           // console.log(list)

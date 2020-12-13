@@ -11,7 +11,10 @@
           span(:class="$style.listsLabel") {{defaultList.name}}
         li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :tips="loveList.name" @click="handleListToggle(loveList.id)")
           span(:class="$style.listsLabel") {{loveList.name}}
-        li.user-list(:class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null]" @contextmenu="handleListsItemRigthClick($event, index)" :tips="item.name" v-for="(item, index) in userList" :key="item.id")
+        li.user-list(
+          :class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null, fetchingListStatus[item.id] ? $style.fetching : null]"
+          @contextmenu="handleListsItemRigthClick($event, index)"
+          :tips="item.name" v-for="(item, index) in userList" :key="item.id")
           span(:class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)") {{item.name}}
           input.key-bind(:class="$style.listsInput" @contextmenu.stop type="text" @keyup.enter="handleListsSave(index, $event)" @blur="handleListsSave(index, $event)" :value="item.name" :placeholder="item.name")
         transition(enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="handleListsNewAfterLeave")
@@ -100,6 +103,7 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           rename: true,
+          sync: false,
           moveup: true,
           movedown: true,
           remove: true,
@@ -131,6 +135,7 @@ export default {
       isMove: false,
       isMoveMultiple: false,
       isVisibleMusicSearch: false,
+      fetchingListStatus: {},
     }
   },
   computed: {
@@ -179,6 +184,11 @@ export default {
           name: this.$t('view.list.lists_rename'),
           action: 'rename',
           disabled: !this.listsData.itemMenuControl.rename,
+        },
+        {
+          name: this.$t('view.list.lists_sync'),
+          action: 'sync',
+          disabled: !this.listsData.itemMenuControl.sync,
         },
         {
           name: this.$t('view.list.lists_moveup'),
@@ -309,7 +319,18 @@ export default {
   },
   methods: {
     ...mapMutations(['setPrevSelectListId']),
-    ...mapMutations('list', ['listRemove', 'listRemoveMultiple', 'setUserListName', 'createUserList', 'moveupUserList', 'movedownUserList', 'removeUserList', 'setListScroll']),
+    ...mapMutations('list', [
+      'listRemove',
+      'listRemoveMultiple',
+      'setUserListName',
+      'createUserList',
+      'moveupUserList',
+      'movedownUserList',
+      'removeUserList',
+      'setListScroll',
+      'setList',
+    ]),
+    ...mapActions('songList', ['getListDetailAll']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', {
       setPlayList: 'setList',
@@ -668,6 +689,8 @@ export default {
       }).catch(_ => _)
     },
     handleListsItemRigthClick(event, index) {
+      const source = this.userList[index].source
+      this.listsData.itemMenuControl.sync = !!source && !!musicSdk[source].songList
       this.listsData.itemMenuControl.moveup = index > 0
       this.listsData.itemMenuControl.movedown = index < this.userList.length - 1
       this.listsData.rightClickItemIndex = index
@@ -713,6 +736,9 @@ export default {
             dom.classList.add(this.$style.editing)
             dom.querySelector('input').focus()
           })
+          break
+        case 'sync':
+          this.handleSyncSourceList(index)
           break
         case 'moveup':
           this.moveupUserList(index)
@@ -814,6 +840,27 @@ export default {
           break
       }
     },
+    fetchList(id, source, sourceListId) {
+      if (this.fetchingListStatus[id] == null) {
+        this.$set(this.fetchingListStatus, id, true)
+      } else {
+        this.fetchingListStatus[id] = true
+      }
+      return this.getListDetailAll({ source, id: sourceListId }).catch(err => {
+        return Promise.reject(err)
+      }).finally(() => {
+        this.fetchingListStatus[id] = false
+      })
+    },
+    async handleSyncSourceList(index) {
+      const targetList = this.userList[index]
+      const list = await this.fetchList(targetList.id, targetList.source, targetList.sourceListId)
+      // console.log(targetList.list.length, list.length)
+      this.setList({
+        ...targetList,
+        list,
+      })
+    },
   },
 }
 </script>
@@ -880,7 +927,7 @@ export default {
 .listsItem {
   position: relative;
   transition: .3s ease;
-  transition-property: color, background-color;
+  transition-property: color, background-color, opacity;
   background-color: transparent;
   &:hover:not(.active) {
     background-color: @color-theme_2-hover;
@@ -895,6 +942,9 @@ export default {
   }
   &.clicked {
     background-color: @color-theme_2-hover;
+  }
+  &.fetching {
+    opacity: .5;
   }
   &.editing {
     padding: 0 10px;
