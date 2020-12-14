@@ -9,6 +9,15 @@ for (const source of music.sources) {
   sources.push(source)
 }
 
+const filterList = list => {
+  const keys = new Set()
+  return list.filter(item => {
+    if (keys.has(item.songmid)) return false
+    keys.add(item.songmid)
+    return true
+  })
+}
+
 // state
 const state = {
   tags: {},
@@ -78,20 +87,22 @@ const actions = {
     return (
       cache.has(key)
         ? Promise.resolve(cache.get(key))
-        : music[source].songList.getListDetail(id, page)
+        : music[source].songList.getListDetail(id, page).then(result => ({ ...result, list: filterList(result.list) }))
     ).then(result => commit('setListDetail', { result, key, source, id, page }))
   },
-  getListDetailAll({ state, rootState }, id) {
-    let source = rootState.setting.songList.source
+  getListDetailAll({ state, rootState }, { source, id }) {
+    // console.log(source, id)
     const loadData = (id, page) => {
       let key = `sdetail__${source}__${id}__${page}`
-      return cache.has(key) ? Promise.resolve(cache.get(key)) : music[source].songList.getListDetail(id, page).then(result => {
-        cache.set(key, result)
-        return result
-      })
+      return cache.has(key)
+        ? Promise.resolve(cache.get(key))
+        : music[source].songList.getListDetail(id, page).then(result => {
+          cache.set(key, result)
+          return result
+        })
     }
     return loadData(id, 1).then(result => {
-      if (result.total <= result.limit) return result.list
+      if (result.total <= result.limit) return filterList(result.list)
 
       let maxPage = Math.ceil(result.total / result.limit)
       const loadDetail = (loadPage = 1) => {
@@ -99,7 +110,7 @@ const actions = {
           ? loadData(id, ++loadPage).then(result => result.list)
           : loadData(id, ++loadPage).then(result1 => loadDetail(loadPage).then(result2 => [...result1.list, ...result2]))
       }
-      return loadDetail().then(result2 => [...result.list, ...result2])
+      return loadDetail().then(result2 => [...result.list, ...result2]).then(list => filterList(list))
     })
   },
 }

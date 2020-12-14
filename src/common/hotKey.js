@@ -1,4 +1,4 @@
-const names = require('../main/events/_name')
+const names = require('@main/events/_name')
 const hotKey = {
   common: {
     min: {

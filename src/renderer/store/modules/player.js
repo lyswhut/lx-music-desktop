@@ -59,6 +59,15 @@ const actions = {
   },
   getLrc({ commit, state }, musicInfo) {
     if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
+    if (musicInfo.lrc && musicInfo.tlrc != null) {
+      if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
+        let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
+        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc })
+      }
+      return Promise.resolve()
+    }
+
+
     lrcRequest = music[musicInfo.source].getLyric(musicInfo)
     return lrcRequest.promise.then(({ lyric, tlyric }) => {
       lrcRequest = null

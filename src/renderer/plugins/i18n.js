@@ -9,7 +9,7 @@
 // Lib imports
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
-import messages from '@/lang'
+import messages from '@renderer/lang'
 
 Vue.use(VueI18n)
 

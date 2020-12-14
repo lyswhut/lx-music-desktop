@@ -1,6 +1,5 @@
 const path = require('path')
 const os = require('os')
-const { isMac } = require('./utils')
 
 const defaultSetting = {
   version: '1.0.38',
@@ -92,7 +91,7 @@ const defaultSetting = {
   randomAnimate: true,
   ignoreVersion: null,
   isAgreePact: false,
-  controlBtnPosition: isMac ? 'left' : 'right',
+  controlBtnPosition: process.platform === 'darwin' ? 'left' : 'right',
 }
 
 const overwriteSetting = {
