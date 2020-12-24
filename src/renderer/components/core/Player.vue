@@ -264,6 +264,7 @@ export default {
         this.$nextTick(() => {
           this.sendProgressEvent(this.progress, 'paused')
         })
+        if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(musicInfo)
         window.restorePlayInfo = null
         return
       }
