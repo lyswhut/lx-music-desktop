@@ -1,6 +1,6 @@
 <template lang="pug">
-  input(:class="$style.input" :type="type" :placeholder="placeholder" :value="value" :disabled="disabled"
-    @focus="$emit('focus', $event)" @blur="$emit('blur', $event)" @input="$emit('input', $event.target.value.trim())" @change="$emit('change', $event.target.value.trim())"
+  input(:class="$style.input" ref="dom_input" :type="type" :placeholder="placeholder" :value="value" :disabled="disabled"
+    @focus="$emit('focus', $event)" @blur="$emit('blur', $event)" @input="handleInput" @change="$emit('change', $event.target.value.trim())"
     @keyup.enter="$emit('submit', $event.target.value.trim())")
 </template>
 
@@ -24,6 +24,16 @@ export default {
       default: 'text',
     },
   },
+  methods: {
+    handleInput(event) {
+      let value = event.target.value.trim()
+      event.target.value = value
+      this.$emit('input', value)
+    },
+    focus() {
+      this.$refs.dom_input.focus()
+    },
+  },
 }
 </script>
 
@@ -41,6 +51,13 @@ export default {
   transition: background-color 0.2s ease;
   background-color: @color-btn-background;
   font-size: 13.3px;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   &[disabled] {
     opacity: .4;
   }

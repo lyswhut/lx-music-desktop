@@ -405,9 +405,7 @@ export default {
     },
     async fetchList() {
       this.detailLoading = true
-      return this.getListDetailAll({ source: this.source, id: this.selectListInfo.id }).catch(err => {
-        return Promise.reject(err)
-      }).finally(() => {
+      return this.getListDetailAll({ source: this.source, id: this.selectListInfo.id }).finally(() => {
         this.detailLoading = false
       })
     },

@@ -4,11 +4,14 @@ import { debounce } from '../../utils'
 let instance
 let prevTips
 
-const getTips = el => el.getAttribute('tips')
-  ? el.getAttribute('tips')
-  : el.parentNode === document.documentElement
-    ? null
-    : getTips(el.parentNode)
+const getTips = el =>
+  el
+    ? el.getAttribute('tips')
+      ? el.getAttribute('tips')
+      : el.parentNode === document.documentElement
+        ? null
+        : getTips(el.parentNode)
+    : null
 
 const showTips = debounce(event => {
   let msg = getTips(event.target)

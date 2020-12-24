@@ -185,6 +185,12 @@ const mutations = {
   setListScroll(state, { id, location }) {
     if (allList[id]) allList[id].location = location
   },
+  sortList(state, { id, sortNum, musicInfos }) {
+    let targetList = allList[id]
+    this.commit('list/listRemoveMultiple', { id, list: musicInfos })
+
+    targetList.list.splice(sortNum - 1, 0, ...musicInfos)
+  },
 }
 
 export default {
