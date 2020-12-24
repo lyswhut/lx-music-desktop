@@ -2,8 +2,9 @@
 material-modal(:show="show" @close="handleClose")
   main(:class="$style.main")
     h2 {{selectedNum > 0 ? $t('material.list_sort_modal.title_multiple', { num: selectedNum }) : $t('material.list_sort_modal.title', { name: musicInfo ? musicInfo.name : '' })}}
-    material-input(:class="$style.input" type="number" v-model="sortNum" ref="input" :placeholder="$t('material.list_sort_modal.input_tip')" @keydown.native.enter="handleSubmit")
-    material-btn(:class="$style.btn" @click="handleSubmit") {{$t('material.list_sort_modal.btn_confirm')}}
+    material-input(:class="$style.input" type="number" v-model="sortNum" ref="input" @blur.native="verify" :placeholder="$t('material.list_sort_modal.input_tip')" @keydown.native.enter="handleSubmit")
+    div(:class="$style.footer")
+      material-btn(:class="$style.btn" @click="handleSubmit") {{$t('material.list_sort_modal.btn_confirm')}}
 </template>
 
 <script>
@@ -46,10 +47,14 @@ export default {
     handleClose() {
       this.$emit('close')
     },
-    handleSubmit() {
+    verify() {
       let num = /^[1-9]\d*/.exec(this.sortNum)
       num = num ? parseInt(num[0]) : ''
       this.sortNum = num.toString()
+      return num
+    },
+    handleSubmit() {
+      let num = this.verify()
       if (this.sortNum == '') return
       this.$emit('confirm', num)
     },
@@ -64,7 +69,7 @@ export default {
 .main {
   padding: 0 15px;
   max-width: 530px;
-  min-width: 320px;
+  min-width: 280px;
   display: flex;
   flex-flow: column nowrap;
   min-height: 0;
@@ -74,6 +79,7 @@ export default {
     font-size: 13px;
     color: @color-theme_2-font;
     line-height: 1.3;
+    word-break: break-all;
     // text-align: center;
     padding: 15px 0 8px;
   }
@@ -84,16 +90,22 @@ export default {
   // height: 26px;
   padding: 8px 8px;
 }
+.footer {
+  margin: 20px 0 15px auto;
+}
 .btn {
-  margin: 20px auto 15px;
   // box-sizing: border-box;
   // margin-left: 15px;
   // margin-bottom: 15px;
   // height: 36px;
   // line-height: 36px;
   // padding: 0 10px !important;
-  min-width: 100px;
+  min-width: 70px;
   // .mixin-ellipsis-1;
+
+  +.btn {
+    margin-left: 10px;
+  }
 }
 
 each(@themes, {

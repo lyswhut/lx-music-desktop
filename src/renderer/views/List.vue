@@ -288,6 +288,12 @@ export default {
         this.handleDelayShow()
       })
     })
+    this.isShowDownload = false
+    this.isShowDownloadMultiple = false
+    this.isShowListAdd = false
+    this.isShowListAddMultiple = false
+    this.isShowListSortModal = false
+    this.listMenu.isShowItemMenu = false
     next()
   },
   // mounted() {
