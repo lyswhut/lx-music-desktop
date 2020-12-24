@@ -296,11 +296,11 @@ import {
   sizeFormate,
   setWindowSize,
 } from '../utils'
-import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
+import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
 import apiSourceInfo from '../utils/music/api-source-info'
 import fs from 'fs'
-import languageList from '@/lang/languages.json'
+import languageList from '@renderer/lang/languages.json'
 import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'

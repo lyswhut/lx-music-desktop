@@ -87,7 +87,7 @@ div(:class="$style.player")
 <script>
 import Lyric from 'lrc-file-parser'
 import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
-import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, assertApiSupport } from '../../utils'
+import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, throttle, assertApiSupport } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
@@ -130,7 +130,7 @@ export default {
         line: 0,
       },
       delayNextTimeout: null,
-      audioErrorTime: 0,
+      restorePlayTime: 0,
       retryNum: 0,
       isMac,
       volumeEvent: {
@@ -195,6 +195,12 @@ export default {
     this.handleSaveVolume = debounce(volume => {
       this.setVolume(volume)
     }, 300)
+    this.savePlayInfo = throttle(n => {
+      rendererSend(NAMES.mainWindow.save_data, {
+        path: 'playInfo',
+        data: n,
+      })
+    }, 2000)
 
     rendererOn(NAMES.mainWindow.get_lyric_info, (event, info) => {
       switch (info.action) {
@@ -238,9 +244,32 @@ export default {
   watch: {
     changePlay(n) {
       if (!n) return
+      this.resetChangePlay()
+      if (window.restorePlayInfo) {
+        let musicInfo = this.targetSong = this.list[window.restorePlayInfo.index]
+        this.musicInfo.songmid = musicInfo.songmid
+        this.musicInfo.singer = musicInfo.singer
+        this.musicInfo.name = musicInfo.name
+        this.musicInfo.album = musicInfo.albumName
+        this.setImg(musicInfo)
+        this.setLrc(musicInfo)
+        this.nowPlayTime = this.restorePlayTime = window.restorePlayInfo.time
+        this.maxPlayTime = window.restorePlayInfo.maxTime || 0
+        this.handleUpdateWinLyricInfo('music_info', {
+          songmid: this.musicInfo.songmid,
+          singer: this.musicInfo.singer,
+          name: this.musicInfo.name,
+          album: this.musicInfo.album,
+        })
+        this.$nextTick(() => {
+          this.sendProgressEvent(this.progress, 'paused')
+        })
+        if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(musicInfo)
+        window.restorePlayInfo = null
+        return
+      }
       // console.log('changePlay')
       this.handleRemoveMusic()
-      this.resetChangePlay()
       if (this.playIndex < 0) return
       this.stopPlay()
       this.play()
@@ -287,6 +316,13 @@ export default {
     },
     nowPlayTime(n, o) {
       if (Math.abs(n - o) > 2) this.isActiveTransition = true
+      this.savePlayInfo({
+        time: n,
+        maxTime: this.maxPlayTime,
+        listId: this.listId,
+        list: this.listId == null ? this.list : null,
+        index: this.playIndex,
+      })
     },
   },
   methods: {
@@ -299,6 +335,7 @@ export default {
       'clearPlayedList',
       'setPlayedList',
       'removePlayedList',
+      'setList',
     ]),
     ...mapMutations(['setVolume', 'setPlayNextMode', 'setVisibleDesktopLyric', 'setLockDesktopLyric']),
     ...mapMutations('list', ['updateMusicInfo']),
@@ -348,7 +385,7 @@ export default {
         this.stopPlay()
         if (this.listId != 'download' && audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
           // console.log(this.retryNum)
-          if (!this.audioErrorTime) this.audioErrorTime = audio.currentTime // 记录出错的播放时间
+          if (!this.restorePlayTime) this.restorePlayTime = audio.currentTime // 记录出错的播放时间
           this.retryNum++
           this.setUrl(this.list[this.playIndex], true)
           this.status = this.statusText = this.$t('core.player.refresh_url')
@@ -360,15 +397,19 @@ export default {
         this.addDelayNextTimeout()
       })
       audio.addEventListener('loadeddata', () => {
+        console.log('loadeddata')
+        this.clearLoadingTimeout()
+        this.status = this.statusText = this.$t('core.player.loading')
         this.maxPlayTime = audio.duration
-        if (this.audioErrorTime) {
-          audio.currentTime = this.audioErrorTime
-          this.audioErrorTime = 0
+        if (this.restorePlayTime) {
+          audio.currentTime = this.restorePlayTime
+          this.restorePlayTime = 0
         }
         if (!this.targetSong.interval && this.listId != 'download') this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) } })
-        this.status = this.statusText = this.$t('core.player.loading')
       })
       audio.addEventListener('loadstart', () => {
+        console.log('loadstart')
+        this.startLoadingTimeout()
         this.status = this.statusText = this.$t('core.player.loading')
       })
       audio.addEventListener('canplay', () => {
@@ -378,11 +419,10 @@ export default {
           this.mediaBuffer.playTime = 0
           audio.currentTime = playTime
         }
-        if (this.mediaBuffer.timeout) {
-          this.clearBufferTimeout()
-        }
+        this.clearBufferTimeout()
+
         // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
-        this.status = this.statusText = this.$t('core.player.loading')
+        this.status = this.statusText = ''
       })
       // audio.addEventListener('canplaythrough', () => {
       //   console.log('音乐加载完毕')
@@ -391,6 +431,7 @@ export default {
       // })
       audio.addEventListener('emptied', () => {
         this.mediaBuffer.playTime = 0
+        this.clearLoadingTimeout()
         this.clearBufferTimeout()
 
         // console.log('媒介资源元素突然为空，网络错误 or 切换歌曲？')
@@ -432,7 +473,7 @@ export default {
       let targetSong = this.targetSong = this.list[this.playIndex]
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(targetSong)
       this.retryNum = 0
-      this.audioErrorTime = 0
+      this.restorePlayTime = 0
 
       if (this.listId == 'download') {
         const filePath = path.join(this.setting.download.savePath, targetSong.fileName)
@@ -613,7 +654,7 @@ export default {
     setProgress(pregress) {
       if (!audio.src) return
       const time = pregress * this.maxPlayTime
-      if (this.audioErrorTime) this.audioErrorTime = time
+      if (this.restorePlayTime) this.restorePlayTime = time
       if (this.mediaBuffer.playTime) {
         this.clearBufferTimeout()
         this.mediaBuffer.playTime = time
@@ -629,7 +670,13 @@ export default {
       )
     },
     togglePlay() {
-      if (!audio.src) return
+      if (!audio.src) {
+        if (this.restorePlayTime != null) {
+          if (!this.assertApiSupport(this.targetSong.source)) return this.handleNext()
+          this.setUrl(this.targetSong)
+        }
+        return
+      }
       if (this.isPlay) {
         audio.pause()
         this.clearBufferTimeout()
@@ -692,6 +739,7 @@ export default {
       this.status = this.musicInfo.name = this.musicInfo.singer = ''
       this.musicInfo.songmid = null
       this.musicInfo.lrc = null
+      this.musicInfo.tlrc = null
       this.musicInfo.url = null
       this.nowPlayTime = 0
       this.maxPlayTime = 0
@@ -773,6 +821,18 @@ export default {
     handleTransitionEnd(e) {
       // console.log(e)
       this.isActiveTransition = false
+    },
+    startLoadingTimeout() {
+      // console.log('start load timeout')
+      this.loadingTimeout = setTimeout(() => {
+        this.handleNext()
+      }, 20000)
+    },
+    clearLoadingTimeout() {
+      if (!this.loadingTimeout) return
+      // console.log('clear load timeout')
+      clearTimeout(this.loadingTimeout)
+      this.loadingTimeout = null
     },
     startBuffering() {
       console.log('start t')
@@ -870,7 +930,7 @@ export default {
       })
     },
     setLyric() {
-      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc + '\n' : '') + this.musicInfo.lrc)
+      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? (this.musicInfo.tlrc + '\n') : '') + (this.musicInfo.lrc || ''))
       if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
         window.lrc.play(audio.currentTime * 1000)
         this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)

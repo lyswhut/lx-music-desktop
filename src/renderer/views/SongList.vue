@@ -373,6 +373,7 @@ export default {
       }
     },
     handleGetSongListDetail() {
+      if (!this.importSongListText.length) return
       this.setSelectListInfo({
         play_count: null,
         id: this.importSongListText,
@@ -404,14 +405,20 @@ export default {
     },
     async fetchList() {
       this.detailLoading = true
-      const list = await this.getListDetailAll(this.selectListInfo.id)
-      this.detailLoading = false
-      return list
+      return this.getListDetailAll({ source: this.source, id: this.selectListInfo.id }).finally(() => {
+        this.detailLoading = false
+      })
     },
     async addSongListDetail() {
       if (!this.listDetail.info.name) return
       const list = await this.fetchList()
-      this.createUserList({ name: this.listDetail.info.name, id: `${this.listDetail.source}__${this.listDetail.id}`, list })
+      this.createUserList({
+        name: this.listDetail.info.name,
+        id: `${this.listDetail.source}__${this.listDetail.id}`,
+        list,
+        source: this.listDetail.source,
+        sourceListId: this.listDetail.id,
+      })
     },
     async playSongListDetail() {
       if (!this.listDetail.info.name) return

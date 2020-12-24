@@ -17,7 +17,7 @@ import store from './store'
 import '../common/error'
 
 import { getSetting } from './utils'
-import languageList from '@/lang/languages.json'
+import languageList from '@renderer/lang/languages.json'
 import { rendererSend, NAMES } from '../common/ipc'
 
 sync(store, router)

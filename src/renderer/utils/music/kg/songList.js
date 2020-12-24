@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { toMD5 } from '../utils'
 
 export default {
@@ -378,7 +378,7 @@ export default {
     id = id.toString()
     if (id.includes('special/single/')) {
       id = id.replace(this.regExps.listDetailLink, '$1')
-    } else if (/http(?:s):/.test(id)) {
+    } else if (/https?:/.test(id)) {
       return this.getUserListDetail(id.replace(/^.*http/, 'http'), page)
     } else if (/^\d+$/.test(id)) {
       return this.getUserListDetailByCode(id)
@@ -454,9 +454,9 @@ export default {
         }
       }
       return {
-        singer: item.singername,
-        name: item.songname,
-        albumName: item.album_name,
+        singer: decodeName(item.singername),
+        name: decodeName(item.songname),
+        albumName: decodeName(item.album_name),
         albumId: item.album_id,
         songmid: item.audio_id,
         source: 'kg',
@@ -507,9 +507,9 @@ export default {
         }
       }
       list.push({
-        singer: item.author_name,
-        name: item.ori_audio_name,
-        albumName: item.album_info.album_name,
+        singer: decodeName(item.author_name),
+        name: decodeName(item.ori_audio_name),
+        albumName: decodeName(item.album_info.album_name),
         albumId: item.album_info.album_id,
         songmid: item.audio_info.audio_id,
         source: 'kg',

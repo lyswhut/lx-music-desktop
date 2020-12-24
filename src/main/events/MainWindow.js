@@ -17,6 +17,18 @@ class MainWindow extends EventEmitter {
   toggleHide() {
     this.emit(MAIN_WINDOW_EVENT_NAME.toggle_hide)
   }
+
+  readyToShow() {
+    this.emit(MAIN_WINDOW_EVENT_NAME.ready_to_show)
+  }
+
+  show() {
+    this.emit(MAIN_WINDOW_EVENT_NAME.show)
+  }
+
+  hide() {
+    this.emit(MAIN_WINDOW_EVENT_NAME.hide)
+  }
 }
 
 module.exports = MainWindow

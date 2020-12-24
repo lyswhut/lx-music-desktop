@@ -138,10 +138,10 @@ export default {
   // will-change: transform;
   li {
     cursor: pointer;
-    min-width: 80px;
+    min-width: 90px;
     line-height: 34px;
     // color: @color-btn;
-    padding: 0 5px;
+    padding: 0 10px;
     text-align: center;
     outline: none;
     transition: @transition-theme;
