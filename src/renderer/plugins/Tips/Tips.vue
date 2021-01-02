@@ -17,6 +17,7 @@ export default {
       transform: 'translate(0, 0)',
       cancel: null,
       setTips: null,
+      aotoCloseTimer: null,
     }
   },
   watch: {
