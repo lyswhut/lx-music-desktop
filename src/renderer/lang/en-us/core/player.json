@@ -28,6 +28,7 @@
   "play_toggle_mode_list": "Play in order",
   "play_toggle_mode_single_loop": "Single Loop",
   "play_toggle_mode_off": "Disable",
+  "pic_tip": "Right click to locate the currently playing song in \"My List\"",
 
   "comment_show": "Song comments",
   "comment_hot_loading": "Hot comments are loading",
