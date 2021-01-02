@@ -14,7 +14,7 @@
   "buffering": "缓冲中...",
   "geting_url": "歌曲链接获取中...",
   "lyric_error": "歌词获取失败",
-  "hide_detail": "隐藏详情页",
+  "hide_detail": "隐藏详情页（界面内右键双击可快速隐藏详情页）",
   "name": "歌曲名：",
   "singer": "艺术家：",
   "album": "专辑名：",
