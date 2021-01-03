@@ -27,9 +27,13 @@ export default {
       })
     },
   },
+  beforeDestroy() {
+    const el = this.$el
+    el.parentNode.removeChild(el)
+  },
   methods: {
     afterLeave(el, done) {
-      el.parentNode.removeChild(el)
+      this.$destroy()
     },
     handleGetOffsetXY(left, top) {
       const tipsWidth = this.$refs.dom_tips.clientWidth
