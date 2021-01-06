@@ -469,7 +469,7 @@ export default {
     },
     async play() {
       console.log('play', this.playIndex)
-      this.checkDelayNextTimeout()
+      this.clearDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(targetSong)
       this.retryNum = 0
@@ -506,7 +506,7 @@ export default {
         album: this.musicInfo.album,
       })
     },
-    checkDelayNextTimeout() {
+    clearDelayNextTimeout() {
       // console.log(this.delayNextTimeout)
       if (this.delayNextTimeout) {
         clearTimeout(this.delayNextTimeout)
@@ -514,7 +514,7 @@ export default {
       }
     },
     addDelayNextTimeout() {
-      this.checkDelayNextTimeout()
+      this.clearDelayNextTimeout()
       this.delayNextTimeout = setTimeout(() => {
         this.delayNextTimeout = null
         this.handleNext()
