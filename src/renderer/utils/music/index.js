@@ -64,7 +64,16 @@ export default {
 
       tasks.push(sources[source.id].musicSearch.search(`${musicInfo.name} ${musicInfo.singer || ''} ${musicInfo.albumName || ''}`.trim(), 1, { limit: 5 }).then(res => {
         for (const item of res.list) {
-          if (item.singer === musicInfo.singer && (item.name === musicInfo.name || item.interval === musicInfo.interval)) {
+          if (
+            (
+              item.singer === musicInfo.singer &&
+              (item.name === musicInfo.name || item.interval === musicInfo.interval)
+            ) ||
+            (
+              item.interval === musicInfo.interval && item.name === musicInfo.name &&
+              (item.singer.includes(musicInfo.singer) || musicInfo.singer.includes(item.singer))
+            )
+          ) {
             return item
           }
         }
@@ -95,6 +104,7 @@ export default {
           result.splice(i, 1)
         }
       }
+      newResult.push(...result)
     }
     // console.log(newResult)
     return newResult
