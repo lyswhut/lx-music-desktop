@@ -24,6 +24,11 @@ app.on('second-instance', (event, argv, cwd) => {
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
+console.log(global.envParams.cmdParams)
+
+// Is disable hardware acceleration
+if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
+
 const { navigationUrlWhiteList } = require('../common/config')
 const { getWindowSizeInfo } = require('./utils')
 const { isMac, isLinux, initSetting, initHotKey } = require('../common/utils')
@@ -95,7 +100,7 @@ function createWindow() {
     useContentSize: true,
     width: windowSizeInfo.width,
     frame: false,
-    transparent: !global.envParams.nt,
+    transparent: !global.envParams.cmdParams.nt,
     enableRemoteModule: false,
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
@@ -124,6 +129,7 @@ global.appHotKey = {
 }
 
 function init() {
+  console.log('init')
   const info = initSetting()
   global.appSetting = info.setting
   global.appSettingVersion = info.version
