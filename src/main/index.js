@@ -28,14 +28,14 @@ console.log(global.envParams.cmdParams)
 
 // Is disable hardware acceleration
 if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
+// https://github.com/electron/electron/issues/22691
+app.commandLine.appendSwitch('wm-window-animations-disabled')
+
 
 const { navigationUrlWhiteList } = require('../common/config')
 const { getWindowSizeInfo } = require('./utils')
 const { isMac, isLinux, initSetting, initHotKey } = require('../common/utils')
 
-
-// https://github.com/electron/electron/issues/22691
-app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 // https://github.com/electron/electron/issues/18397
 // 开发模式下为true时 多次引入native模块会导致渲染进程卡死
