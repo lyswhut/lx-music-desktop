@@ -24,7 +24,7 @@ app.on('second-instance', (event, argv, cwd) => {
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
-console.log(global.envParams.cmdParams)
+// console.log(global.envParams.cmdParams)
 
 // Is disable hardware acceleration
 if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
