@@ -115,6 +115,7 @@ export default {
         albumName: info.ALBUM ? decodeName(info.ALBUM) : '',
         lrc: null,
         img: null,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},
