@@ -62,7 +62,7 @@ export default {
     for (const source of sources.sources) {
       if (!sources[source.id].musicSearch || source.id === musicInfo.source || source.id === 'xm') continue
 
-      tasks.push(sources[source.id].musicSearch.search(`${musicInfo.name} ${musicInfo.singer || ''} ${musicInfo.albumName || ''}`.trim(), 1, { limit: 5 }).then(res => {
+      tasks.push(sources[source.id].musicSearch.search(`${musicInfo.name} ${musicInfo.singer || ''}`.trim(), 1, { limit: 10 }).then(res => {
         for (const item of res.list) {
           if (
             (
@@ -80,7 +80,7 @@ export default {
         return null
       }).catch(_ => null))
     }
-    const result = (await Promise.all(tasks)).filter(s => s)
+    const result = (await Promise.all(tasks)).filter(s => s).reverse()
     const newResult = []
     if (result.length) {
       for (let i = result.length - 1; i > -1; i--) {
