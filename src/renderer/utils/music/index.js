@@ -99,6 +99,13 @@ export default {
       }
       for (let i = result.length - 1; i > -1; i--) {
         const item = result[i]
+        if (item.name === musicInfo.name && item.singer === musicInfo.singer && item.albumName === musicInfo.albumName) {
+          newResult.push(item)
+          result.splice(i, 1)
+        }
+      }
+      for (let i = result.length - 1; i > -1; i--) {
+        const item = result[i]
         if (item.singer === musicInfo.singer && item.name === musicInfo.name) {
           newResult.push(item)
           result.splice(i, 1)
