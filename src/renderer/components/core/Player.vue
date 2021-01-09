@@ -712,7 +712,7 @@ export default {
 
         this.status = this.statusText = 'Try toggle source...'
 
-        return (originMusic.otherSource ? Promise.resolve(originMusic.otherSource) : musicSdk.findMusic(originMusic)).then(res => {
+        return (originMusic.otherSource && originMusic.otherSource.length ? Promise.resolve(originMusic.otherSource) : musicSdk.findMusic(originMusic)).then(res => {
           this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { otherSource: res } })
           return res
         }).then(otherSource => {
