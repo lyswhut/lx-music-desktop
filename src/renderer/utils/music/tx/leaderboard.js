@@ -167,6 +167,7 @@ export default {
           ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0].mid}.jpg`
           : `https://y.gtimg.cn/music/photo_new/T002R500x500M000${item.album.mid}.jpg`,
         lrc: null,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

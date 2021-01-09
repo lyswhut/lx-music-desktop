@@ -14,7 +14,7 @@
   "buffering": "Buffering...",
   "geting_url": "Getting music link...",
   "lyric_error": "Failed to get lyrics",
-  "hide_detail": "Hide detail page",
+  "hide_detail": "Hide detail page (Right-click in the view to quickly hide the details page)",
   "name": "Name: ",
   "singer": "Artist: ",
   "album": "Album: ",
@@ -28,6 +28,7 @@
   "play_toggle_mode_list": "Play in order",
   "play_toggle_mode_single_loop": "Single Loop",
   "play_toggle_mode_off": "Disable",
+  "pic_tip": "Right click to locate the currently playing song in \"My List\"",
 
   "comment_show": "Song comments",
   "comment_hot_loading": "Hot comments are loading",

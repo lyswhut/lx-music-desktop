@@ -14,7 +14,7 @@
   "buffering": "緩衝中...",
   "geting_url": "歌曲鏈接獲取中...",
   "lyric_error": "歌詞獲取失敗",
-  "hide_detail": "隱藏詳情頁",
+  "hide_detail": "隱藏詳情頁（界面內右鍵雙擊可快速隱藏詳情頁）",
   "name": "歌曲名：",
   "singer": "藝術家：",
   "album": "專輯名：",
@@ -28,6 +28,7 @@
   "play_toggle_mode_list": "順序播放",
   "play_toggle_mode_single_loop": "單曲循環",
   "play_toggle_mode_off": "禁用",
+  "pic_tip": "右擊在“我的列表”定位當前播放的歌曲",
 
   "comment_show": "歌曲評論",
   "comment_hot_loading": "熱門評論加載中",

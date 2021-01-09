@@ -127,6 +127,7 @@ export default {
         songStringId: songData.songStringId,
         lrc: null,
         lrcUrl: songData.lyricInfo && songData.lyricInfo.lyricFile,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

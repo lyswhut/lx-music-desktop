@@ -144,6 +144,7 @@ export default {
         img: item.albumImgs && item.albumImgs.length ? item.albumImgs[0].img : null,
         lrc: null,
         lrcUrl: item.lrcUrl,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

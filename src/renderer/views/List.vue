@@ -127,6 +127,7 @@ export default {
           moveTo: true,
           sort: true,
           download: true,
+          search: true,
           remove: true,
           sourceDetail: true,
         },
@@ -223,6 +224,21 @@ export default {
           disabled: !this.listMenu.itemMenuControl.download,
         },
         {
+          name: this.$t('view.list.list_add_to'),
+          action: 'addTo',
+          disabled: !this.listMenu.itemMenuControl.addTo,
+        },
+        {
+          name: this.$t('view.list.list_move_to'),
+          action: 'moveTo',
+          disabled: !this.listMenu.itemMenuControl.moveTo,
+        },
+        {
+          name: this.$t('view.list.list_sort'),
+          action: 'sort',
+          disabled: !this.listMenu.itemMenuControl.sort,
+        },
+        {
           name: this.$t('view.list.list_copy_name'),
           action: 'copyName',
           disabled: !this.listMenu.itemMenuControl.copyName,
@@ -233,19 +249,9 @@ export default {
           disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
         {
-          name: this.$t('view.list.list_sort'),
-          action: 'sort',
-          disabled: !this.listMenu.itemMenuControl.sort,
-        },
-        {
-          name: this.$t('view.list.list_add_to'),
-          action: 'addTo',
-          disabled: !this.listMenu.itemMenuControl.addTo,
-        },
-        {
-          name: this.$t('view.list.list_move_to'),
-          action: 'moveTo',
-          disabled: !this.listMenu.itemMenuControl.moveTo,
+          name: this.$t('view.list.list_search'),
+          action: 'search',
+          disabled: !this.listMenu.itemMenuControl.search,
         },
         {
           name: this.$t('view.list.list_remove'),
@@ -653,6 +659,7 @@ export default {
       return assertApiSupport(source)
     },
     handleContainerClick(event) {
+      if (!this.$refs.dom_lists) return
       let isFocusList = event.target == this.$refs.dom_lists || this.$refs.dom_lists.contains(event.target)
       this.focusTarget = isFocusList ? 'list' : 'listDetail'
     },
@@ -838,6 +845,10 @@ export default {
           //   })
           // }
           break
+        case 'search':
+          minfo = this.list[index]
+          this.handleSearch(minfo)
+          break
         case 'remove':
           if (this.selectdListDetailData.length) {
             this.listRemoveMultiple({ id: this.listId, list: this.selectdListDetailData })
@@ -898,6 +909,14 @@ export default {
       })
       this.removeAllSelectListDetail()
       this.isShowListSortModal = false
+    },
+    handleSearch(musicInfo) {
+      this.$router.push({
+        path: 'search',
+        query: {
+          text: `${musicInfo.name} ${musicInfo.singer}`,
+        },
+      })
     },
   },
 }
