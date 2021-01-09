@@ -1,5 +1,5 @@
 <template lang="pug">
-#container(v-if="isProd && !isNt && !isLinux" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
+#container(v-if="isProd && !isDT && !isLinux" :class="theme" @mouseenter="enableIgnoreMouseEvents" @mouseleave="dieableIgnoreMouseEvents")
   core-aside#left
   #right
     core-toolbar#toolbar
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       isProd: process.env.NODE_ENV === 'production',
-      isNt: false,
+      isDT: false,
       isLinux,
       globalObj: {
         apiSource: 'test',
@@ -102,7 +102,7 @@ export default {
     }, 500)
   },
   mounted() {
-    document.body.classList.add(this.isNt ? 'noTransparent' : 'transparent')
+    document.body.classList.add(this.isDT ? 'disableTransparent' : 'transparent')
     window.eventHub.$emit(eventBaseName.bindKey)
     this.init()
   },
@@ -254,12 +254,12 @@ export default {
       music.init()
     },
     enableIgnoreMouseEvents() {
-      if (this.isNt) return
+      if (this.isDT) return
       rendererSend(NAMES.mainWindow.set_ignore_mouse_events, false)
       // console.log('content enable')
     },
     dieableIgnoreMouseEvents() {
-      if (this.isNt) return
+      if (this.isDT) return
       // console.log('content disable')
       rendererSend(NAMES.mainWindow.set_ignore_mouse_events, true)
     },
@@ -380,12 +380,12 @@ export default {
     },
     handleEnvParamsInit(envParams) {
       this.envParams = envParams
-      this.isNt = this.envParams.nt
-      if (this.isNt) {
+      this.isDT = this.envParams.dt
+      if (this.isDT) {
         document.body.classList.remove('transparent')
-        document.body.classList.add('noTransparent')
+        document.body.classList.add('disableTransparent')
       }
-      if (this.isProd && !this.isNt && !this.isLinux) {
+      if (this.isProd && !this.isDT && !this.isLinux) {
         document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
@@ -455,7 +455,7 @@ body {
     background-color: transparent;
   }
 }
-.noTransparent {
+.disableTransparent {
   background-color: #fff;
 
   #right {

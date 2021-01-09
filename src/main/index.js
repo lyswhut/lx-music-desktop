@@ -28,6 +28,7 @@ require('./env')
 
 // Is disable hardware acceleration
 if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
+if (global.envParams.cmdParams.dt == null && global.envParams.cmdParams.nt != null) global.envParams.cmdParams.dt = global.envParams.cmdParams.nt
 // https://github.com/electron/electron/issues/22691
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
@@ -100,7 +101,7 @@ function createWindow() {
     useContentSize: true,
     width: windowSizeInfo.width,
     frame: false,
-    transparent: !global.envParams.cmdParams.nt,
+    transparent: !global.envParams.cmdParams.dt,
     enableRemoteModule: false,
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
