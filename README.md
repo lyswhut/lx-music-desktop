@@ -81,7 +81,7 @@ npm run pack:linux
 目前软件已支持的启动参数如下：
 
 - `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
-- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动
+- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动（v1.6.0起新增）
 - `-dt` 以非透明模式启动（Disable Transparent），对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示，原来的`-nt`参数已重命名为`-dt`
 
 ### 常见问题
