@@ -144,6 +144,7 @@ export default {
         img: null,
         lrc: null,
         hash: item.HASH,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

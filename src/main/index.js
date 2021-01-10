@@ -24,13 +24,19 @@ app.on('second-instance', (event, argv, cwd) => {
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
+// console.log(global.envParams.cmdParams)
+
+// Is disable hardware acceleration
+if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
+if (global.envParams.cmdParams.dt == null && global.envParams.cmdParams.nt != null) global.envParams.cmdParams.dt = global.envParams.cmdParams.nt
+// https://github.com/electron/electron/issues/22691
+app.commandLine.appendSwitch('wm-window-animations-disabled')
+
+
 const { navigationUrlWhiteList } = require('../common/config')
 const { getWindowSizeInfo } = require('./utils')
 const { isMac, isLinux, initSetting, initHotKey } = require('../common/utils')
 
-
-// https://github.com/electron/electron/issues/22691
-app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 // https://github.com/electron/electron/issues/18397
 // 开发模式下为true时 多次引入native模块会导致渲染进程卡死
@@ -95,7 +101,7 @@ function createWindow() {
     useContentSize: true,
     width: windowSizeInfo.width,
     frame: false,
-    transparent: !global.envParams.nt,
+    transparent: !global.envParams.cmdParams.dt,
     enableRemoteModule: false,
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
@@ -124,6 +130,7 @@ global.appHotKey = {
 }
 
 function init() {
+  console.log('init')
   const info = initSetting()
   global.appSetting = info.setting
   global.appSettingVersion = info.version

@@ -6,6 +6,29 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.6.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.5.0...v1.6.0) - 2021-01-10
+
+### 新增
+
+- 我的列表右键菜单新增列表排序功能，可调整单曲、多选后的歌曲的顺序。注意：多选排序还将会按照选中歌曲时的顺序排序
+- 添加鼠标提示的自动关闭功能，鼠标长时间（目前是10秒）不动时鼠标提示将会自动关闭
+- 添加鼠标指向歌曲封面的提示（对于进度条左边的歌曲封面，你可能不知道的操作->右击在“我的列表”定位当前播放的歌曲）
+- 隐藏播放详情页按钮添加快速隐藏详情页提示（你可能不知道的操作->在播放详情页内的任意非窗口可拖动区域右键双击可以快速隐藏详情页）
+- 添加桌面歌词字体、透明度调整按钮微调提示（你可能不知道的操作->对于字体、透明度可右击微调）
+- 我的列表右键菜单添加搜索当前歌曲功能
+- 新增`-dha`参数，添加此启动参数将禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动，Linux系统的界面显示有问题时可尝试添加此参数启动，若不行可尝试添加`-dt`参数启动
+- 新增播放自动换源功能~
+
+### 变更
+
+- `-nt`参数更名为`-dt`（Disable Transparent），目前原来的`-nt`参数仍然可用，但将在后续的版本中移除
+
+### 修复
+
+- 修复恢复上次播放的歌曲时在随机播放模式下不把恢复播放的歌曲放入已播放队列的问题（该问题会导致随机模式下会导致未播放完整个列表前就会再次随机到该歌曲，以及无法通过上一曲切回该歌曲）
+- 修复音乐嵌入的封面在 Mac 系统无法显示的问题
+- 修复`-dt`（原来的`-nt`）启动参数不真正生效的问题
+
 ## [1.5.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.4.1...v1.5.0) - 2020-12-13
 
 ### 新增

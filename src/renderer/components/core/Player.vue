@@ -1,6 +1,6 @@
 <template lang="pug">
 div(:class="$style.player")
-  div(:class="$style.left" @contextmenu="handleToMusicLocation" @click="showPlayerDetail")
+  div(:class="$style.left" @contextmenu="handleToMusicLocation" @click="showPlayerDetail" :tips="$t('core.player.pic_tip')")
     img(v-if="musicInfo.img" :src="musicInfo.img" @error="imgError")
     svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='102%' width='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
@@ -92,6 +92,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { isMac } from '../../../common/utils'
 import { player as eventPlayerNames } from '../../../common/hotKey'
+import musicSdk from '@renderer/utils/music'
 import path from 'path'
 
 let audio
@@ -469,7 +470,7 @@ export default {
     },
     async play() {
       console.log('play', this.playIndex)
-      this.checkDelayNextTimeout()
+      this.clearDelayNextTimeout()
       let targetSong = this.targetSong = this.list[this.playIndex]
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(targetSong)
       this.retryNum = 0
@@ -506,7 +507,7 @@ export default {
         album: this.musicInfo.album,
       })
     },
-    checkDelayNextTimeout() {
+    clearDelayNextTimeout() {
       // console.log(this.delayNextTimeout)
       if (this.delayNextTimeout) {
         clearTimeout(this.delayNextTimeout)
@@ -514,7 +515,7 @@ export default {
       }
     },
     addDelayNextTimeout() {
-      this.checkDelayNextTimeout()
+      this.clearDelayNextTimeout()
       this.delayNextTimeout = setTimeout(() => {
         this.delayNextTimeout = null
         this.handleNext()
@@ -694,20 +695,39 @@ export default {
       if (highQuality && songInfo._types['320k'] && list && list.includes('320k')) type = '320k'
       return type
     },
-    setUrl(targetSong, isRefresh, isRetryed = false) {
+    setUrl(targetSong, isRefresh, isRetryed = false, retryedSource = [], originMusic = null) {
+      if (!retryedSource.includes(targetSong.source)) retryedSource.push(targetSong.source)
+
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = this.statusText = this.$t('core.player.geting_url')
 
-      return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(() => {
+      return this.getUrl({ musicInfo: targetSong, originMusic, type, isRefresh }).then(() => {
         audio.src = this.musicInfo.url = targetSong.typeUrl[type]
       }).catch(err => {
         // console.log('err', err.message)
         if (err.message == requestMsg.cancelRequest) return
-        if (!isRetryed) return this.setUrl(targetSong, isRefresh, true)
-        this.status = this.statusText = err.message
-        this.addDelayNextTimeout()
-        return Promise.reject(err)
+        if (!isRetryed) return this.setUrl(targetSong, isRefresh, true, retryedSource, originMusic)
+        if (!originMusic) originMusic = targetSong
+
+        this.status = this.statusText = 'Try toggle source...'
+
+        return (originMusic.otherSource && originMusic.otherSource.length ? Promise.resolve(originMusic.otherSource) : musicSdk.findMusic(originMusic)).then(res => {
+          this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { otherSource: res } })
+          return res
+        }).then(otherSource => {
+          console.log('find otherSource', otherSource)
+          if (otherSource.length) {
+            for (const item of otherSource) {
+              if (retryedSource.includes(item.source)) continue
+              console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
+              return this.setUrl(item, isRefresh, false, retryedSource, originMusic)
+            }
+          }
+          this.status = this.statusText = err.message
+          this.addDelayNextTimeout()
+          return Promise.reject(err)
+        })
       })
     },
     setImg(targetSong) {

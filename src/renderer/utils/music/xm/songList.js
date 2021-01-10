@@ -142,6 +142,7 @@ export default {
         img: songData.albumLogo || songData.albumLogoS,
         lrc: null,
         lrcUrl: songData.lyricInfo && songData.lyricInfo.lyricFile,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

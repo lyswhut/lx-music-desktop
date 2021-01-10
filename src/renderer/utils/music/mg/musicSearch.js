@@ -36,7 +36,7 @@ export default {
     return arr.join('、')
   },
   handleResult(rawData) {
-    console.log(rawData)
+    // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
@@ -89,6 +89,7 @@ export default {
         img: item.imgItems && item.imgItems.length ? item.imgItems[0].img : null,
         lrc: null,
         lrcUrl: item.lyricUrl,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

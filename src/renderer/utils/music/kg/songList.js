@@ -517,6 +517,7 @@ export default {
         img: null,
         lrc: null,
         hash: item.audio_info.hash,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},

@@ -60,6 +60,7 @@ export default {
         _interval: item.duration,
         img: null,
         lrc: null,
+        otherSource: null,
         hash: item.hash,
         types,
         _types,
