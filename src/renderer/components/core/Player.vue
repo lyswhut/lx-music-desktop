@@ -384,6 +384,7 @@ export default {
         if (!this.musicInfo.songmid) return
         console.log('出错')
         this.stopPlay()
+        this.clearLoadingTimeout()
         if (this.listId != 'download' && audio.error.code !== 1 && this.retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
           // console.log(this.retryNum)
           if (!this.restorePlayTime) this.restorePlayTime = audio.currentTime // 记录出错的播放时间
