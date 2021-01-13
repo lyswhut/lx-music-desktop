@@ -1,14 +1,14 @@
 <template lang="pug">
 //- div(:class="$style.main")
-  div.scroll(:class="$style.toc")
-    ul(:class="$style.tocList")
-      li(:class="$style.tocListItem" v-for="h2 in toc" :key="h2.id")
-        h2(:class="$style.tocH2" :tips="h2.title")
-          a(:href="'#' + h2.id") {{h2.title}}
-        ul(:class="$style.tocList" v-if="h2.children.length")
-          li(:class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id")
-            h3(:class="$style.tocH3" :tips="h3.title")
-              a(:href="'#' + h3.id") {{h3.title}}
+  //- div.scroll(:class="$style.toc")
+  //-   ul(:class="$style.tocList")
+  //-     li(:class="$style.tocListItem" v-for="h2 in toc.list" :key="h2.id")
+  //-       h2(:class="[$style.tocH2, toc.activeId == h2.id ? $style.active : null]" :tips="h2.title")
+  //-         a(:href="'#' + h2.id" @click="toc.activeId = h2.id") {{h2.title}}
+  //-       ul(:class="$style.tocList" v-if="h2.children.length")
+  //-         li(:class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id")
+  //-           h3(:class="[$style.tocH3, toc.activeId == h3.id ? $style.active : null]" :tips="h3.title")
+  //-             a(:href="'#' + h3.id" @click="toc.activeId = h3.id") {{h3.title}}
 div.scroll(:class="$style.setting" ref="dom_setting")
   dl(ref="dom_setting_list")
     dt#basic {{$t('view.setting.basic')}}
@@ -592,7 +592,10 @@ export default {
 
       },
       isEditHotKey: false,
-      toc: [],
+      toc: {
+        list: [],
+        activeId: '',
+      },
     }
   },
   watch: {
@@ -652,7 +655,7 @@ export default {
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
-      // this.initTOC()
+      this.initTOC()
       this.getCacheSize()
       this.getMediaDevice()
       this.current_hot_key = window.appHotKeyConfig
@@ -684,7 +687,7 @@ export default {
     //     }
     //   }
     //   console.log(toc)
-    //   this.toc = toc
+    //   this.toc.list = toc
     // },
     // handleListScroll(event) {
     //   // console.log(event.target.scrollTop)
@@ -1112,6 +1115,11 @@ export default {
 //   font-size: 14px;
 //   a {
 //     color: @color-theme;
+//   }
+//   &.active {
+//     a {
+//       color: @color-theme;
+//     }
 //   }
 // }
 // .tocH3 {
