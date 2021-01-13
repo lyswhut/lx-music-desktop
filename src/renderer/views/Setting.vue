@@ -655,7 +655,7 @@ export default {
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
-      this.initTOC()
+      // this.initTOC()
       this.getCacheSize()
       this.getMediaDevice()
       this.current_hot_key = window.appHotKeyConfig
