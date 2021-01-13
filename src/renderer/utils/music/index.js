@@ -61,6 +61,7 @@ export default {
     const tasks = []
     for (const source of sources.sources) {
       if (!sources[source.id].musicSearch || source.id === musicInfo.source || source.id === 'xm') continue
+      const sortedSinger = musicInfo.singer.includes('、') ? musicInfo.singer.split('、').sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0)).join('、') : null
 
       tasks.push(sources[source.id].musicSearch.search(`${musicInfo.name} ${musicInfo.singer || ''}`.trim(), 1, { limit: 10 }).then(res => {
         for (const item of res.list) {
@@ -72,6 +73,11 @@ export default {
             (
               item.interval === musicInfo.interval && item.name === musicInfo.name &&
               (item.singer.includes(musicInfo.singer) || musicInfo.singer.includes(item.singer))
+            ) ||
+            (
+              sortedSinger &&
+              item.singer.includes('、') &&
+              item.singer.split('、').sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0)).join('、') === sortedSinger
             )
           ) {
             return item
@@ -80,7 +86,7 @@ export default {
         return null
       }).catch(_ => null))
     }
-    const result = (await Promise.all(tasks)).filter(s => s).reverse()
+    const result = (await Promise.all(tasks)).filter(s => s)
     const newResult = []
     if (result.length) {
       for (let i = result.length - 1; i > -1; i--) {
@@ -111,6 +117,7 @@ export default {
           result.splice(i, 1)
         }
       }
+      newResult.reverse()
       newResult.push(...result)
     }
     // console.log(newResult)

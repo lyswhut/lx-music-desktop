@@ -1,4 +1,4 @@
-global.lx_event = {}
+if (!global.lx_event) global.lx_event = {}
 
 const Common = require('./Common')
 const MainWindow = require('./MainWindow')

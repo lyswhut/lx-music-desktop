@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.6.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.6.0...v1.6.1) - 2021-01-13
+
+### 优化
+
+- 改进自动换源时的歌曲匹配
+
+### 修复
+
+- 修复某些情况下自动换源的时间过长时会终止换源自动切歌的问题
+- 修复自动换源导致的搜索列表每页变成10条数据的问题
+- 降级electron到9.3.3修复部分系统没有声音的问题
+
 ## [1.6.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.5.0...v1.6.0) - 2021-01-10
 
 ### 新增
