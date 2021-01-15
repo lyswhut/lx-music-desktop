@@ -10,6 +10,7 @@
   "time": "Length",
   "lossless": "SQ",
   "high_quality": "HQ",
+  "loding_list": "Loading...",
   "no_item": "Search what I want to 😉",
   "hot_search": "Top Searches",
   "history_search": "History Searches",

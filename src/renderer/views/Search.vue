@@ -3,60 +3,65 @@
     //- transition
     div(:class="$style.header")
       material-tab(:class="$style.tab" :list="sources" align="left" item-key="id" item-name="name" v-model="searchSourceId")
-    div(v-if="listInfo.list.length" :class="$style.list")
-      div(:class="$style.thead")
-        table
-          thead
-            tr
-              th.nobreak.center(style="width: 5%;") #
-              th.nobreak {{$t('view.search.name')}}
-              th.nobreak(style="width: 22%;") {{$t('view.search.singer')}}
-              th.nobreak(style="width: 22%;") {{$t('view.search.album')}}
-              th.nobreak(style="width: 8%;") {{$t('view.search.time')}}
-              th.nobreak(style="width: 13%;") {{$t('view.search.action')}}
-      div.scroll(:class="$style.tbody" ref="dom_scrollContent")
-        table
-          tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
-            tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @contextmenu="handleListItemRigthClick($event, index)" @click="handleDoubleClick($event, index)")
-              td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-              td.break
-                span.select {{item.name}}
-                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
-                span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
-                span(:class="[$style.labelSource, $style.noSelect]" v-if="searchSourceId == 'all'") {{item.source}}
-              td.break(style="width: 22%;")
-                span.select {{item.singer}}
-              td.break(style="width: 22%;")
-                span.select {{item.albumName}}
-              td(style="width: 8%;")
-                span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
-              td(style="width: 13%; padding-left: 0; padding-right: 0;")
-                material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
-                  :play-btn="assertApiSupport(item.source)"
-                  :download-btn="assertApiSupport(item.source)"
-                  @btn-click="handleListBtnClick")
-        div(:class="$style.pagination")
-          material-pagination(:max-page="listInfo.allPage" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
-    div(v-else :class="$style.noitem")
-      div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || setting.search.isShowHistorySearch")
-        dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
-          dt(:class="$style.noitemListTitle") {{$t('view.search.hot_search')}}
-          dd(:class="$style.noitemListItem" @click="handleNoitemSearch(item)" v-for="item in hotSearchList") {{item}}
-        dl(:class="$style.noitemList" v-if="setting.search.isShowHistorySearch && historyList.length")
-          dt(:class="$style.noitemListTitle")
-            span {{$t('view.search.history_search')}}
-            span(:class="$style.historyClearBtn" @click="clearHistory" :tips="$t('view.search.history_clear')")
-              svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
-                use(xlink:href='#icon-eraser')
-          dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :tips="$t('view.search.history_remove')") {{item}}
-      div(v-else :class="$style.noitem_list")
-        p {{$t('view.search.no_item')}}
+    div(:class="$style.main")
+      div(:class="$style.list" v-show="isLoading || listInfo.list.length")
+        div(:class="$style.thead")
+          table
+            thead
+              tr
+                th.nobreak.center(style="width: 5%;") #
+                th.nobreak {{$t('view.search.name')}}
+                th.nobreak(style="width: 22%;") {{$t('view.search.singer')}}
+                th.nobreak(style="width: 22%;") {{$t('view.search.album')}}
+                th.nobreak(style="width: 8%;") {{$t('view.search.time')}}
+                th.nobreak(style="width: 13%;") {{$t('view.search.action')}}
+        div.scroll(:class="$style.tbody" ref="dom_scrollContent")
+          table
+            tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
+              tr(v-for='(item, index) in listInfo.list' :key='item.songmid' @contextmenu="handleListItemRigthClick($event, index)" @click="handleDoubleClick($event, index)")
+                td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
+                td.break
+                  span.select {{item.name}}
+                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
+                  span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
+                  span(:class="[$style.labelSource, $style.noSelect]" v-if="searchSourceId == 'all'") {{item.source}}
+                td.break(style="width: 22%;")
+                  span.select {{item.singer}}
+                td.break(style="width: 22%;")
+                  span.select {{item.albumName}}
+                td(style="width: 8%;")
+                  span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
+                td(style="width: 13%; padding-left: 0; padding-right: 0;")
+                  material-list-buttons(:index="index" :remove-btn="false" :class="$style.listBtn"
+                    :play-btn="assertApiSupport(item.source)"
+                    :download-btn="assertApiSupport(item.source)"
+                    @btn-click="handleListBtnClick")
+          div(:class="$style.pagination")
+            material-pagination(:max-page="listInfo.allPage" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
+      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+        div(v-show="isLoading" :class="$style.loading")
+          p {{$t('view.search.loding_list')}}
+      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+        div(v-show="!isLoading && !listInfo.list.length" :class="$style.noitem")
+          div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || setting.search.isShowHistorySearch")
+            dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
+              dt(:class="$style.noitemListTitle") {{$t('view.search.hot_search')}}
+              dd(:class="$style.noitemListItem" @click="handleNoitemSearch(item)" v-for="item in hotSearchList") {{item}}
+            dl(:class="$style.noitemList" v-if="setting.search.isShowHistorySearch && historyList.length")
+              dt(:class="$style.noitemListTitle")
+                span {{$t('view.search.history_search')}}
+                span(:class="$style.historyClearBtn" @click="clearHistory" :tips="$t('view.search.history_clear')")
+                  svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
+                    use(xlink:href='#icon-eraser')
+              dd(:class="$style.noitemListItem" v-for="(item, index) in historyList" @contextmenu="removeHistory(index)" :key="index + item" @click="handleNoitemSearch(item)" :tips="$t('view.search.history_remove')") {{item}}
+          div(v-else :class="$style.noitem_list")
+            p {{$t('view.search.no_item')}}
+      material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     //- material-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="handleListAddModalClose")
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectedData" @close="handleListAddMultipleModalClose")
-    material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
 </template>
 
 <script>
@@ -97,6 +102,7 @@ export default {
           y: 0,
         },
       },
+      isLoading: false,
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -148,6 +154,7 @@ export default {
     },
     searchSourceId(n) {
       if (n === this.setting.search.searchSource) return
+      if (this.text !== '') this.isLoading = true
       this.$nextTick(() => {
         this.page = 1
         this.handleSearch(this.text, this.page)
@@ -238,12 +245,14 @@ export default {
     },
     handleSearch(text, page) {
       if (text === '') return this.clearList()
-
+      this.isLoading = true
       this.search({ text, page, limit: this.listInfo.limit }).then(data => {
         this.page = page
         this.$nextTick(() => {
           scrollTo(this.$refs.dom_scrollContent, 0)
         })
+      }).finally(() => {
+        this.isLoading = false
       })
     },
     handleDoubleClick(event, index) {
@@ -504,6 +513,12 @@ export default {
 .header {
   flex: none;
 }
+.main {
+  flex: auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
 .list {
   // position: relative;
   height: 100%;
@@ -560,10 +575,30 @@ export default {
   // left: 50%;
   // transform: translateX(-50%);
 }
+.loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  background-color: @color-theme_2;
+
+  p {
+    font-size: 24px;
+    color: @color-theme_2-font-label;
+  }
+}
 .noitem {
-  flex: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
   overflow: hidden;
-  position: relative;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -634,6 +669,9 @@ each(@themes, {
   :global(#container.@{value}) {
     .labelSource {
       color: ~'@{color-@{value}-theme}';
+    }
+    .loading {
+      background-color: ~'@{color-@{value}-theme_2}';
     }
     .noitem {
       p {
