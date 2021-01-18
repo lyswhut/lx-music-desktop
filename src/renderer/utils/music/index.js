@@ -70,7 +70,8 @@ export default {
           arr.splice(i, 1)
         }
       }
-      return tempResult.reverse()
+      tempResult.reverse()
+      return tempResult
     }
     const trimStr = str => typeof str == 'string' ? str.trim() : str
     const sortedSinger = sortSingle(musicInfo.singer)
@@ -90,6 +91,10 @@ export default {
             (
               item.interval === musicInfo.interval && item.name === musicName &&
               (item.sortedSinger.includes(sortedSinger) || sortedSinger.includes(item.sortedSinger))
+            ) ||
+            (
+              item.name === musicName && item.albumName === musicInfo.albumName &&
+              item.interval === musicInfo.interval
             )
           ) {
             return item
