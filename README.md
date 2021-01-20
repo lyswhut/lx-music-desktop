@@ -62,7 +62,7 @@ npm run dev
 npm run pack:dir
 
 # 构建安装包（Windows版）
-npm run pack
+npm run pack:win
 
 # 构建安装包（Mac版）
 npm run pack:mac
