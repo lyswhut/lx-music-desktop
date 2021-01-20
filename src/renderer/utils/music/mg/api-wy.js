@@ -2,9 +2,9 @@ import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
 import { headers, timeout } from '../options'
 
-const api_yj = {
+const api_wy = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`https://api.sixyin.com/url/wy/${songInfo.songmid}/${type}`, {
+    const requestObj = httpFetch(`https://api.sixyin.com/url/mg/${songInfo.copyrightId}/${type}`, {
       method: 'get',
       timeout,
       headers,
@@ -17,4 +17,4 @@ const api_yj = {
   },
 }
 
-export default api_yj
+export default api_wy

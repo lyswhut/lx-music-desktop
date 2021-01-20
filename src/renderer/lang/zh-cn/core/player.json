@@ -14,7 +14,7 @@
   "buffering": "缓冲中...",
   "geting_url": "歌曲链接获取中...",
   "lyric_error": "歌词获取失败",
-  "hide_detail": "隐藏详情页",
+  "hide_detail": "隐藏详情页（界面内右键双击可快速隐藏详情页）",
   "name": "歌曲名：",
   "singer": "艺术家：",
   "album": "专辑名：",
@@ -28,6 +28,7 @@
   "play_toggle_mode_list": "顺序播放",
   "play_toggle_mode_single_loop": "单曲循环",
   "play_toggle_mode_off": "禁用",
+  "pic_tip": "右击在“我的列表”定位当前播放的歌曲",
 
   "comment_show": "歌曲评论",
   "comment_hot_loading": "热门评论加载中",

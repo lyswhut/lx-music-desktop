@@ -19,18 +19,22 @@ const showTips = debounce(event => {
   prevTips = msg
   instance = tips({
     message: msg,
+    autoCloseTime: 10000,
     position: {
       top: event.y + 12,
       left: event.x + 8,
     },
+  })
+  instance.$on('beforeClose', closeInstance => {
+    if (instance !== closeInstance) return
+    prevTips = null
+    instance = null
   })
 }, 400)
 
 const hideTips = () => {
   if (!instance) return
   instance.cancel()
-  prevTips = null
-  instance = null
 }
 
 const setTips = tips => {
@@ -39,7 +43,7 @@ const setTips = tips => {
 }
 
 const updateTips = event => {
-  if (!instance) return
+  if (!instance) return showTips(event)
   setTimeout(() => {
     let msg = getTips(event.target)
     if (!msg || prevTips === msg) return

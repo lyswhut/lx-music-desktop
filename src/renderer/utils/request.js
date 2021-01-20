@@ -270,10 +270,10 @@ const fetchData = async(url, method, {
     headers[s] = !s || `${(await handleDeflateRaw(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString('base64'))).toString('hex')}&${parseInt(v)}${v2}`
     delete headers[bHh]
   }
-  if (window.globalObj.apiSource === 'yj') {
+  if (window.globalObj.apiSource === 'wy') {
     let arrUrl = url.split('//')
     let uri = arrUrl[1].substring(arrUrl[1].indexOf('/'))
-    if (uri.indexOf('?') != -1) {
+    if (uri.indexOf('?') !== -1) {
       uri = uri.split('?')[0]
     }
     headers.wycheck = toMD5(uri + 'wycheck').substr(0, 16)

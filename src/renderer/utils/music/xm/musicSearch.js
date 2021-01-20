@@ -11,13 +11,13 @@ export default {
   total: 0,
   page: 0,
   allPage: 1,
-  musicSearch(str, page) {
+  musicSearch(str, page, limit) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
     searchRequest = xmRequest('/api/search/searchSongs', {
       key: str,
       pagingVO: {
         page: page,
-        pageSize: this.limit,
+        pageSize: limit,
       },
     })
     return searchRequest.promise.then(({ body }) => body)
@@ -79,6 +79,7 @@ export default {
         songStringId: songData.songStringId,
         lrc: null,
         lrcUrl: songData.lyricInfo && songData.lyricInfo.lyricFile,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},
@@ -88,9 +89,9 @@ export default {
   },
   search(str, page = 1, { limit } = {}, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
-    if (limit != null) this.limit = limit
+    if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page).then(result => {
+    return this.musicSearch(str, page, limit).then(result => {
       if (!result) return this.search(str, page, { limit }, retryNum)
       if (result.code !== 'SUCCESS') return this.search(str, page, { limit }, retryNum)
       // const songResultData = result.data || { songs: [], total: 0 }
@@ -100,12 +101,12 @@ export default {
 
       this.total = parseInt(result.result.data.pagingVO.count)
       this.page = page
-      this.allPage = Math.ceil(this.total / this.limit)
+      this.allPage = Math.ceil(this.total / limit)
 
       return Promise.resolve({
         list,
         allPage: this.allPage,
-        limit: this.limit,
+        limit,
         total: this.total,
         source: 'xm',
       })

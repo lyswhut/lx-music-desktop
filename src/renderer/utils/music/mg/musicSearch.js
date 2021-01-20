@@ -11,9 +11,9 @@ export default {
   total: 0,
   page: 0,
   allPage: 1,
-  musicSearch(str, page) {
+  musicSearch(str, page, limit) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${this.limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
+    searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
       headers: {
         sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
         timestamp: 1578225871982,
@@ -25,7 +25,7 @@ export default {
         'User-Agent': 'okhttp/3.9.1',
       },
     })
-    // searchRequest = httpFetch(`https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=${page}&pageSize=${this.limit}&searchSwitch={%22song%22:1,%22album%22:0,%22singer%22:0,%22tagSong%22:0,%22mvSong%22:0,%22songlist%22:0,%22bestShow%22:0}&sort=0&text=${encodeURIComponent(str)}`)
+    // searchRequest = httpFetch(`https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=${page}&pageSize=${limit}&searchSwitch={%22song%22:1,%22album%22:0,%22singer%22:0,%22tagSong%22:0,%22mvSong%22:0,%22songlist%22:0,%22bestShow%22:0}&sort=0&text=${encodeURIComponent(str)}`)
     return searchRequest.promise.then(({ body }) => body)
   },
   getSinger(singers) {
@@ -36,7 +36,7 @@ export default {
     return arr.join('、')
   },
   handleResult(rawData) {
-    console.log(rawData)
+    // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
@@ -89,6 +89,7 @@ export default {
         img: item.imgItems && item.imgItems.length ? item.imgItems[0].img : null,
         lrc: null,
         lrcUrl: item.lyricUrl,
+        otherSource: null,
         types,
         _types,
         typeUrl: {},
@@ -98,9 +99,9 @@ export default {
   },
   search(str, page = 1, { limit } = {}, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
-    if (limit != null) this.limit = limit
+    if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page).then(result => {
+    return this.musicSearch(str, page, limit).then(result => {
       // console.log(result)
       if (!result || result.code !== '000000') return Promise.reject(new Error(result ? result.info : '搜索失败'))
       const songResultData = result.songResultData || { resultList: [], totalCount: 0 }
@@ -110,12 +111,12 @@ export default {
 
       this.total = parseInt(songResultData.totalCount)
       this.page = page
-      this.allPage = Math.ceil(this.total / this.limit)
+      this.allPage = Math.ceil(this.total / limit)
 
       return Promise.resolve({
         list,
         allPage: this.allPage,
-        limit: this.limit,
+        limit,
         total: this.total,
         source: 'mg',
       })

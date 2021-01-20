@@ -2,7 +2,7 @@
 
 module.exports = [
   {
-    id: 'yj',
+    id: 'wy',
     name: '五音接口',
     disabled: false,
     supportQualitys: {

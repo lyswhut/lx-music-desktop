@@ -85,7 +85,7 @@ const defaultSetting = {
   themeId: 6,
   langId: null,
   sourceId: 'kw',
-  apiSource: 'yj',
+  apiSource: 'wy',
   sourceNameType: 'alias',
   isShowAnimation: true,
   randomAnimate: true,
@@ -99,7 +99,7 @@ const overwriteSetting = {
 }
 
 // 使用新年皮肤
-if (new Date().getMonth() < 2) defaultSetting.themeId = 9
+// if (new Date().getMonth() < 2) defaultSetting.themeId = 9
 
 
 exports.defaultSetting = defaultSetting
