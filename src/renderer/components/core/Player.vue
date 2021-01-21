@@ -145,7 +145,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('player', ['list', 'changePlay', 'playMusicInfo', 'fixPlayIndex', 'isShowPlayerDetail', 'playInfo', 'playedList']),
+    ...mapGetters('player', ['list', 'changePlay', 'playMusicInfo', 'isShowPlayerDetail', 'playInfo', 'playedList']),
     // pic() {
     //   return this.musicInfo.img ? this.musicInfo.img : ''
     // },
@@ -870,7 +870,7 @@ export default {
         this.sendProgressEvent(this.progress, 'paused')
       })
 
-      if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList({ listId: restorePlayInfo.listId, musicInfo: musicInfo })
+      if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(this.playMusicInfo)
     },
   },
 }
