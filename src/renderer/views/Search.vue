@@ -93,6 +93,7 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           play: true,
+          playLater: true,
           addTo: true,
           download: true,
           sourceDetail: true,
@@ -182,6 +183,11 @@ export default {
           disabled: !this.listMenu.itemMenuControl.download,
         },
         {
+          name: this.$t('view.search.list_play_later'),
+          action: 'playLater',
+          disabled: !this.listMenu.itemMenuControl.playLater,
+        },
+        {
           name: this.$t('view.search.list_add_to'),
           action: 'addTo',
           disabled: !this.listMenu.itemMenuControl.addTo,
@@ -206,7 +212,7 @@ export default {
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('search', ['clearList', 'setPage', 'removeHistory', 'clearHistory']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('player', ['setList', 'setTempPlayList']),
     ...mapActions('hotSearch', {
       getHotSearch: 'getList',
     }),
@@ -282,6 +288,14 @@ export default {
           break
         case 'play':
           this.testPlay(info.index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[info.index] }])
+          }
           break
         case 'listAdd':
           this.musicInfo = this.listInfo.list[info.index]
@@ -432,6 +446,7 @@ export default {
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.listInfo.list[index].source].getMusicDetailPageUrl
       this.listMenu.itemMenuControl.play =
+        this.listMenu.itemMenuControl.playLater =
         this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.listInfo.list[index].source)
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')

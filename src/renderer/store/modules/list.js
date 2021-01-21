@@ -156,9 +156,9 @@ const mutations = {
     if (!targetList) return
     targetList.list.splice(0, targetList.list.length)
   },
-  updateMusicInfo(state, { id, index, data }) {
+  updateMusicInfo(state, { id, index, data, musicInfo = {} }) {
     let targetList = allList[id]
-    if (!targetList) return
+    if (!targetList) return Object.assign(musicInfo, data)
     Object.assign(targetList.list[index], data)
   },
   createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId }) {

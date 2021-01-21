@@ -37,7 +37,7 @@
           table
             tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
               tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"  @contextmenu="handleListItemRigthClick($event, index)"
-                @click="handleDoubleClick($event, index)" :class="[isPlayList && playIndex === index ? $style.active : '', assertApiSupport(item.source) ? null : $style.disabled]")
+                @click="handleDoubleClick($event, index)" :class="[isPlayList && playInfo.playIndex === index ? $style.active : '', assertApiSupport(item.source) ? null : $style.disabled]")
                 td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
                 td.break
                   span.select {{item.name}}
@@ -122,6 +122,7 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           play: true,
+          playLater: true,
           copyName: true,
           addTo: true,
           moveTo: true,
@@ -145,12 +146,12 @@ export default {
   computed: {
     ...mapGetters(['userInfo', 'setting']),
     ...mapGetters('list', ['isInitedList', 'defaultList', 'loveList', 'userList']),
-    ...mapGetters('player', {
-      playerListId: 'listId',
-      playIndex: 'playIndex',
-    }),
+    ...mapGetters('player', ['playInfo']),
+    playerListId() {
+      return this.playInfo.listId
+    },
     isPlayList() {
-      return this.playerListId == this.listId
+      return this.playInfo.listId == this.listId
     },
     list() {
       return this.listData.list
@@ -222,6 +223,11 @@ export default {
           name: this.$t('view.list.list_download'),
           action: 'download',
           disabled: !this.listMenu.itemMenuControl.download,
+        },
+        {
+          name: this.$t('view.list.list_play_later'),
+          action: 'playLater',
+          disabled: !this.listMenu.itemMenuControl.playLater,
         },
         {
           name: this.$t('view.list.list_add_to'),
@@ -355,6 +361,7 @@ export default {
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', {
       setPlayList: 'setList',
+      setTempPlayList: 'setTempPlayList',
     }),
     listenEvent() {
       window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
@@ -726,6 +733,7 @@ export default {
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       this.listMenu.itemMenuControl.play =
+        this.listMenu.itemMenuControl.playLater =
         this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.list[index].source)
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
@@ -788,6 +796,14 @@ export default {
       switch (action && action.action) {
         case 'play':
           this.testPlay(index)
+          break
+        case 'playLater':
+          if (this.selectdListDetailData.length) {
+            this.setTempPlayList(this.selectdListDetailData.map(s => ({ listId: this.listId, musicInfo: s })))
+            this.removeAllSelectListDetail()
+          } else {
+            this.setTempPlayList([{ listId: this.listId, musicInfo: this.list[index] }])
+          }
           break
         case 'copyName':
           minfo = this.list[index]

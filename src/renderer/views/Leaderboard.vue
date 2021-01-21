@@ -77,7 +77,7 @@ export default {
     ...mapActions('leaderboard', ['getBoardsList', 'getList']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('list', ['listAdd', 'listAddMultiple']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('player', ['setList', 'setTempPlayList']),
     handleListBtnClick(info) {
       switch (info.action) {
         case 'download':
@@ -120,6 +120,14 @@ export default {
             this.resetSelect()
           }
           this.testPlay(info.index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[info.index] }])
+          }
           break
         case 'search':
           this.handleSearch(info.index)

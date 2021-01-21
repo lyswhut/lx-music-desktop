@@ -183,6 +183,7 @@ export default {
     ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
     ...mapMutations('player', {
       setPlayList: 'setList',
+      setTempPlayList: 'setTempPlayList',
     }),
     listenEvent() {
       window.eventHub.$on('key_backspace_down', this.handle_key_backspace_down)
@@ -242,6 +243,14 @@ export default {
             this.resetSelect()
           }
           this.testPlay(info.index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.listDetail.list[info.index] }])
+          }
           break
         case 'search':
           this.handleSearch(info.index)
