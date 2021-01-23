@@ -581,8 +581,9 @@ export default {
       this.musicInfo.url = targetSong.typeUrl[type]
       this.status = this.statusText = this.$t('core.player.geting_url')
 
-      return this.getUrl({ musicInfo: targetSong, originMusic, type, isRefresh }).then(() => {
-        audio.src = this.musicInfo.url = targetSong.typeUrl[type]
+      return this.getUrl({ musicInfo: targetSong, originMusic, type, isRefresh }).then(url => {
+        if ((targetSong !== this.targetSong && originMusic !== this.targetSong) || this.isPlay) return
+        audio.src = this.musicInfo.url = url
       }).catch(err => {
         // console.log('err', err.message)
         if (err.message == requestMsg.cancelRequest) return

@@ -119,12 +119,13 @@ const actions = {
       // return Promise.reject(new Error('该歌曲没有可播放的音频'))
     }
     if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
-    if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve()
+    if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve(musicInfo.typeUrl[type])
     urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
-    return urlRequest.promise.then(result => {
-      if (originMusic) commit('setUrl', { musicInfo: originMusic, url: result.url, type })
-      commit('setUrl', { musicInfo, url: result.url, type })
+    return urlRequest.promise.then(({ url }) => {
+      if (originMusic) commit('setUrl', { musicInfo: originMusic, url, type })
+      commit('setUrl', { musicInfo, url, type })
       urlRequest = null
+      return url
     }).catch(err => {
       urlRequest = null
       return Promise.reject(err)
