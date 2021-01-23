@@ -38,7 +38,7 @@
                     @btn-click="handleListBtnClick")
           div(:class="$style.pagination")
             material-pagination(:max-page="listInfo.allPage" :limit="listInfo.limit" :page="page" @btn-click="handleTogglePage")
-      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
+      transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated fadeOut")
         div(v-show="isLoading" :class="$style.loading")
           p {{$t('view.search.loding_list')}}
       transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
