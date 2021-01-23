@@ -303,7 +303,7 @@ const mutations = {
     state.changePlay = true
     // console.log(state.playMusicInfo)
     if (state.playedList.length) this.commit('player/clearPlayedList')
-    if (state.playedList.length) this.commit('player/clearTempPlayeList')
+    if (state.tempPlayList.length) this.commit('player/clearTempPlayeList')
   },
   setPlayIndex(state, index) {
     state.playIndex = index
