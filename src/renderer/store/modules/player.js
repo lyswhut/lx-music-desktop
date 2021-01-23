@@ -184,24 +184,25 @@ const actions = {
       }
     }
 
-    let list = await filterList({
+    let filteredList = await filterList({
       listInfo: state.listInfo,
       playedList: state.playedList,
       savePath: rootState.setting.download.savePath,
       commit,
     })
-    if (!list.length) return commit('setPlayMusicInfo', null)
+    if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    const currentIndex = playInfo.listPlayIndex
+    let currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    if (currentIndex == -1) currentIndex = 0
     let nextIndex = currentIndex
     if (!playInfo.isTempPlay) {
       switch (rootState.setting.player.togglePlayMethod) {
         case 'random':
-          nextIndex = getRandom(0, list.length)
+          nextIndex = getRandom(0, filteredList.length)
           break
         case 'listLoop':
         case 'list':
-          nextIndex = currentIndex === 0 ? list.length - 1 : currentIndex - 1
+          nextIndex = currentIndex === 0 ? filteredList.length - 1 : currentIndex - 1
           break
         case 'singleLoop':
           break
@@ -213,7 +214,7 @@ const actions = {
     }
 
     commit('setPlayMusicInfo', {
-      musicInfo: list[nextIndex],
+      musicInfo: filteredList[nextIndex],
       listId: currentListId,
     })
   },
@@ -243,27 +244,26 @@ const actions = {
         return
       }
     }
-    let list = await filterList({
+    let filteredList = await filterList({
       listInfo: state.listInfo,
       playedList: state.playedList,
       savePath: rootState.setting.download.savePath,
       commit,
     })
 
-    if (!list.length) return commit('setPlayMusicInfo', null)
+    if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    const currentIndex = playInfo.listPlayIndex
+    const currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
     let nextIndex = currentIndex
-    // if (!playInfo.isTempPlay) {
     switch (rootState.setting.player.togglePlayMethod) {
       case 'listLoop':
-        nextIndex = currentIndex === list.length - 1 ? 0 : currentIndex + 1
+        nextIndex = currentIndex === filteredList.length - 1 ? 0 : currentIndex + 1
         break
       case 'random':
-        nextIndex = getRandom(0, list.length)
+        nextIndex = getRandom(0, filteredList.length)
         break
       case 'list':
-        nextIndex = currentIndex === list.length - 1 ? -1 : currentIndex + 1
+        nextIndex = currentIndex === filteredList.length - 1 ? -1 : currentIndex + 1
         break
       case 'singleLoop':
         break
@@ -272,10 +272,9 @@ const actions = {
         return
     }
     if (nextIndex < 0) return
-    // }
 
     commit('setPlayMusicInfo', {
-      musicInfo: list[nextIndex],
+      musicInfo: filteredList[nextIndex],
       listId: currentListId,
     })
   },

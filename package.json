@@ -5,7 +5,7 @@
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
   "scripts": {
-    "pack": "npm run pack:win",
+    "pack": "node build-config/pack.js && npm run pack:win:setup:x64",
     "pack:win": "node build-config/pack.js && npm run pack:win:setup:x86_64 && npm run pack:win:7z",
     "pack:win:setup:x86_64": "cross-env TARGET=win_安装版 ARCH=x86_64 electron-builder -w=nsis --x64 --ia32",
     "pack:win:setup:x64": "cross-env TARGET=win_安装版 ARCH=x64 electron-builder -w=nsis --x64",
