@@ -146,7 +146,7 @@ export default {
     progress() {
       return this.version.downloadProgress
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
-        : '初始化中...'
+        : '处理更新中...'
     },
     isIgnored() {
       return this.setting.ignoreVersion == this.version.newVersion.version
