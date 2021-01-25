@@ -303,14 +303,26 @@ export default {
     },
     nowPlayTime(n, o) {
       if (Math.abs(n - o) > 2) this.isActiveTransition = true
-      if (this.playInfo.isTempPlay) return
-      this.savePlayInfo({
-        time: n,
-        maxTime: this.maxPlayTime,
-        listId: this.listId,
-        list: this.listId == null ? this.list : null,
-        index: this.playIndex,
-      })
+      if (this.setting.player.isSavePlayTime && !this.playInfo.isTempPlay) {
+        this.savePlayInfo({
+          time: n,
+          maxTime: this.maxPlayTime,
+          listId: this.listId,
+          list: this.listId == null ? this.list : null,
+          index: this.playIndex,
+        })
+      }
+    },
+    maxPlayTime(maxPlayTime) {
+      if (!this.playInfo.isTempPlay) {
+        this.savePlayInfo({
+          time: this.nowPlayTime,
+          maxTime: maxPlayTime,
+          listId: this.listId,
+          list: this.listId == null ? this.list : null,
+          index: this.playIndex,
+        })
+      }
     },
   },
   methods: {
@@ -495,6 +507,15 @@ export default {
         name: this.musicInfo.name,
         album: this.musicInfo.album,
       })
+      if (!this.playInfo.isTempPlay) {
+        this.savePlayInfo({
+          time: this.nowPlayTime,
+          maxTime: this.maxPlayTime,
+          listId: this.listId,
+          list: this.listId == null ? this.list : null,
+          index: this.playIndex,
+        })
+      }
     },
     clearDelayNextTimeout() {
       // console.log(this.delayNextTimeout)
