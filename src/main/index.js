@@ -54,6 +54,7 @@ app.on('web-contents-created', (event, contents) => {
     event.preventDefault()
     if (/^devtools/.test(navigationUrl)) return
     console.log(navigationUrl)
+    if (!/^https?:\/\//.test(navigationUrl)) return
     await shell.openExternal(navigationUrl)
   })
   contents.on('will-attach-webview', (event, webPreferences, params) => {
