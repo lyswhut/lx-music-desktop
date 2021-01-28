@@ -719,13 +719,18 @@ export default {
       }
     },
     exportPlayList(path) {
-      const data = {
+      const data = JSON.parse(JSON.stringify({
         type: 'playList',
         data: [
           this.defaultList,
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for (const list of data.data) {
+        for (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(data))
     },
@@ -750,7 +755,7 @@ export default {
       }
     },
     async exportAllData(path) {
-      let allData = {
+      let allData = JSON.parse(JSON.stringify({
         type: 'allData',
         setting: Object.assign({ version: this.settingVersion }, this.setting),
         playList: [
@@ -758,6 +763,11 @@ export default {
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for (const list of allData.playList) {
+        for (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(allData))
     },
