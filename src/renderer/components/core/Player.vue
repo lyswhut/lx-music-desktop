@@ -620,7 +620,7 @@ export default {
           console.log('find otherSource', otherSource)
           if (otherSource.length) {
             for (const item of otherSource) {
-              if (retryedSource.includes(item.source)) continue
+              if (retryedSource.includes(item.source) || !this.assertApiSupport(item.source)) continue
               console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
               return this.setUrl(item, isRefresh, false, retryedSource, originMusic)
             }
