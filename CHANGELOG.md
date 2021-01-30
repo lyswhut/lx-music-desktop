@@ -6,6 +6,13 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.7.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.7.0...v1.7.1) - 2021-01-30
+
+### 修复
+
+- 修复非透明模式下右侧滚动条无法拖动的问题
+- 修复MAC下xm音乐滑块验证问题
+
 ## [1.7.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.6.1...v1.7.0) - 2021-01-30
 
 ### 新增
