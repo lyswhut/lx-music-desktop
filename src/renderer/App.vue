@@ -462,6 +462,10 @@ body {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
+  #view { // 偏移5px距离解决非透明模式下右侧滚动条无法拖动的问题
+    margin-right: 5Px;
+  }
 }
 
 #container {
