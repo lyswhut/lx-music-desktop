@@ -195,11 +195,11 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^4.5.1",
     "less": "^3.13.1",
-    "less-loader": "^7.2.1",
+    "less-loader": "^7.3.0",
     "markdown-it": "^12.0.4",
     "mini-css-extract-plugin": "^0.12.0",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "postcss-loader": "^4.1.0",
+    "postcss-loader": "^4.2.0",
     "postcss-pxtorem": "^5.1.1",
     "pug": "^3.0.0",
     "pug-loader": "^2.4.0",
@@ -234,8 +234,8 @@
     "request": "^2.88.2",
     "vue": "^2.6.12",
     "vue-i18n": "^8.22.4",
-    "vue-router": "^3.4.9",
-    "vuex": "^3.6.0",
+    "vue-router": "^3.5.1",
+    "vuex": "^3.6.2",
     "vuex-router-sync": "^5.0.0"
   }
 }
