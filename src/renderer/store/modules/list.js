@@ -57,6 +57,20 @@ const mutations = {
     if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list, location: defaultList.location })
     if (loveList != null) Object.assign(state.loveList, { list: loveList.list, location: loveList.location })
     if (userList != null) state.userList = userList
+    if (window.localStorage.getItem('isResetOtherSource') != '1') {
+      for (const item of defaultList.list) {
+        if (item.otherSource) item.otherSource = null
+      }
+      for (const item of loveList.list) {
+        if (item.otherSource) item.otherSource = null
+      }
+      for (const list of userList) {
+        for (const item of list.list) {
+          if (item.otherSource) item.otherSource = null
+        }
+      }
+      window.localStorage.setItem('isResetOtherSource', '1')
+    }
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
   },
@@ -142,9 +156,9 @@ const mutations = {
     if (!targetList) return
     targetList.list.splice(0, targetList.list.length)
   },
-  updateMusicInfo(state, { id, index, data }) {
+  updateMusicInfo(state, { id, index, data, musicInfo = {} }) {
     let targetList = allList[id]
-    if (!targetList) return
+    if (!targetList) return Object.assign(musicInfo, data)
     Object.assign(targetList.list[index], data)
   },
   createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId }) {

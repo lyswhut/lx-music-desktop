@@ -32,22 +32,35 @@ mainHandle(ipcMainWindowNames.handle_xm_verify_open, (event, url) => new Promise
       disableHtmlFullscreenWindowResize: true,
     },
   })
-  view.webContents.on('did-finish-load', () => {
-    if (/punish\?/.test(view.webContents.getURL())) return
-    let ses = view.webContents.session
-    ses.cookies.get({ name: 'x5sec' })
-      .then(async([x5sec]) => {
+  // view.webContents.on('did-finish-load', () => {
+  //   if (/punish\?/.test(view.webContents.getURL())) return
+  //   let ses = view.webContents.session
+  //   ses.cookies.get({ name: 'x5sec' })
+  //     .then(async([x5sec]) => {
+  //       isActioned = true
+  //       await closeView()
+  //       if (!x5sec) return reject(new Error('get x5sec failed'))
+  //       resolve(x5sec.value)
+  //     }).catch(async err => {
+  //       isActioned = true
+  //       await closeView()
+  //       reject(err)
+  //     })
+  // })
+  view.webContents.session.webRequest.onCompleted({ urls: ['*://www.xiami.com/*'] }, details => {
+    if (/\/_____tmd_____\/slide\?/.test(details.url)) {
+      for (const item of details.responseHeaders['set-cookie']) {
+        if (!/^x5sec=/.test(item)) continue
+        const x5sec = /x5sec=(\w+);.+$/.exec(item)
         isActioned = true
-        await closeView()
-        if (!x5sec) return reject(new Error('get x5sec failed'))
-        resolve(x5sec.value)
-      }).catch(async err => {
-        isActioned = true
-        await closeView()
-        reject(err)
-      })
+        closeView().finally(() => {
+          if (!x5sec) return reject(new Error('get x5sec failed'))
+          resolve(x5sec[1])
+        })
+      }
+    }
   })
-
+  // console.log(url)
   global.modules.mainWindow.setBrowserView(view)
   const windowSizeInfo = getWindowSizeInfo(global.appSetting)
   view.setBounds({ x: (windowSizeInfo.width - 380) / 2, y: ((windowSizeInfo.height - 320 + 52) / 2), width: 380, height: 320 })

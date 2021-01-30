@@ -6,6 +6,29 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.7.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.6.1...v1.7.0) - 2021-01-30
+
+### 新增
+
+- 搜索界面新增搜索状态的提示
+- 新增“稍后播放”功能，可在歌曲列表右键菜单使用
+- 新增“记住播放进度”功能的控制，该功能默认不再开启，可到播放设置-记住播放进度开启
+
+### 优化
+
+- 优化播放歌曲换源匹配
+- 优化设置界面设置项的展示
+
+### 修复
+
+- 修复快速切换歌曲时, 会出现播放的歌曲和界面展示的歌曲不一致的问题
+- 修复了一个由版本更新日志显示导致的潜在远程代码执行攻击漏洞，该漏洞影响v1.6.1及之前的所有版本，请务必更新到最新版本
+- 修复xm搜索源验证问题
+
+### 其他
+
+- 更新electron到9.4.2
+
 ## [1.6.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.6.0...v1.6.1) - 2021-01-13
 
 ### 优化

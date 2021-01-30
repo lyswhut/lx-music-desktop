@@ -127,7 +127,7 @@ const actions = {
           }
         }))
       }
-      Promise.all(task).then(results => commit('setLists', { results, page }))
+      return Promise.all(task).then(results => commit('setLists', { results, page }))
     } else {
       return music[rootState.setting.search.searchSource].musicSearch.search(text, page, limit).catch(error => {
         console.log(error)

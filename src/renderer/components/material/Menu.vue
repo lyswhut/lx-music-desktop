@@ -138,7 +138,7 @@ export default {
   // will-change: transform;
   li {
     cursor: pointer;
-    min-width: 90px;
+    min-width: 96px;
     line-height: 34px;
     // color: @color-btn;
     padding: 0 10px;

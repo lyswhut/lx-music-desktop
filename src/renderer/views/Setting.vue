@@ -21,14 +21,13 @@ div.scroll(:class="$style.setting" ref="dom_setting")
             label {{$t('store.state.theme_' + theme.class)}}
 
     dd
-      h3#basic_show_animation {{$t('view.setting.basic_show_animation')}}
-      div
-        material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
+      div(:class="[$style.gapTop, $style.top]")
+        material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.basic_show_animation')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.basic_animation')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.basic_to_tray')")
 
-    dd(:tips="$t('view.setting.basic_animation_title')")
-      h3#basic_animation {{$t('view.setting.basic_animation')}}
-      div
-        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.is_enable')")
 
     dd(:tips="$t('view.setting.basic_source_title')")
       h3#basic_source {{$t('view.setting.basic_source')}}
@@ -36,11 +35,6 @@ div.scroll(:class="$style.setting" ref="dom_setting")
         div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
           material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
             need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
-
-    dd(:tips="$t('view.setting.basic_to_tray_title')")
-      h3#basic_to_tray {{$t('view.setting.basic_to_tray')}}
-      div
-        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.is_enable')")
 
     dd(:tips="$t('view.setting.basic_window_size_title')")
       h3#basic_window_size {{$t('view.setting.basic_window_size')}}
@@ -68,27 +62,17 @@ div.scroll(:class="$style.setting" ref="dom_setting")
           name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
     dt#play {{$t('view.setting.play')}}
-    dd(:tips="$t('view.setting.play_toggle_title')")
-      h3#play_toggle {{$t('view.setting.play_toggle')}}
-      div
-        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
-            v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
     dd
-      h3#play_lyric_transition {{$t('view.setting.play_lyric_transition')}}
-      div
-        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.play_quality_title')")
-      h3#play_quality {{$t('view.setting.play_quality')}}
-      div
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.is_enable')")
-    dd(:tips="$t('view.setting.play_task_bar_title')")
-      h3#play_task_bar {{$t('view.setting.play_task_bar')}}
-      div
-        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
-    dd(:tips="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
-      h3#play_mediaDevice_remove_stop_play {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
-      div
-        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.is_enable')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.play_lyric_transition')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
     dd(:tips="$t('view.setting.play_mediaDevice_title')")
       h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
       div
@@ -103,29 +87,22 @@ div.scroll(:class="$style.setting" ref="dom_setting")
         material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
+
     dt#search {{$t('view.setting.search')}}
-    dd(:tips="$t('view.setting.search_hot_title')")
-      h3#search_hot {{$t('view.setting.search_hot')}}
-      div
-        material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.search_history_title')")
-      h3#search_history {{$t('view.setting.search_history')}}
-      div
-        material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.search_focus_search_box_title')")
-      h3#search_focus_search_box {{$t('view.setting.search_focus_search_box')}}
-      div
-        material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
+    dd
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.search_hot')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.search_history')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.search_focus_search_box')")
 
     dt#list {{$t('view.setting.list')}}
-    dd(:tips="$t('view.setting.list_source_title')")
-      h3#list_source {{$t('view.setting.list_source')}}
-      div
-        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.list_scroll_title')")
-      h3#list_scroll {{$t('view.setting.list_scroll')}}
-      div
-        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.is_enable')")
+    dd
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.list_source')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.list_scroll')")
     //- dd(:tips="播放列表是否显示专辑栏")
       h3 专辑栏
       div
@@ -195,13 +172,10 @@ div.scroll(:class="$style.setting" ref="dom_setting")
           material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
     dt#odc {{$t('view.setting.odc')}}
     dd
-      h3#odc_clear_search_input {{$t('view.setting.odc_clear_search_input')}}
-      div
-        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.is_enable')")
-    dd
-      h3#odc_clear_search_list {{$t('view.setting.odc_clear_search_list')}}
-      div
-        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.is_enable')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.odc_clear_search_input')")
+      div(:class="$style.gapTop")
+        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.odc_clear_search_list')")
     dt#backup {{$t('view.setting.backup')}}
     dd
       h3#backup_part {{$t('view.setting.backup_part')}}
@@ -745,13 +719,18 @@ export default {
       }
     },
     exportPlayList(path) {
-      const data = {
+      const data = JSON.parse(JSON.stringify({
         type: 'playList',
         data: [
           this.defaultList,
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for (const list of data.data) {
+        for (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(data))
     },
@@ -776,7 +755,7 @@ export default {
       }
     },
     async exportAllData(path) {
-      let allData = {
+      let allData = JSON.parse(JSON.stringify({
         type: 'allData',
         setting: Object.assign({ version: this.settingVersion }, this.setting),
         playList: [
@@ -784,6 +763,11 @@ export default {
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for (const list of allData.playList) {
+        for (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(allData))
     },
@@ -1202,6 +1186,10 @@ export default {
   }
 }
 .gap-top {
+  &.top {
+    margin-top: 25px;
+  }
+
   + .gap-top {
     margin-top: 10px;
   }

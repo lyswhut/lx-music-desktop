@@ -232,6 +232,7 @@ export const objectDeepMerge = (target, source, mergedObj) => {
  * @param {*} url
  */
 export const openUrl = url => {
+  if (!/^https?:\/\//.test(url)) return
   shell.openExternal(url)
 }
 
