@@ -289,14 +289,6 @@ export default {
         case 'play':
           this.testPlay(info.index)
           break
-        case 'playLater':
-          if (this.selectedData.length) {
-            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
-            this.resetSelect()
-          } else {
-            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[info.index] }])
-          }
-          break
         case 'listAdd':
           this.musicInfo = this.listInfo.list[info.index]
           this.$nextTick(() => {
@@ -479,6 +471,14 @@ export default {
             this.removeAllSelect()
           }
           this.testPlay(index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.listInfo.list[index] }])
+          }
           break
         case 'addTo':
           if (this.selectedData.length) {
