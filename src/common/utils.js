@@ -150,6 +150,9 @@ exports.initSetting = () => {
   const electronStore_config = new Store({
     name: 'config',
   })
+  const electronStore_downloadList = new Store({
+    name: 'downloadList',
+  })
   let setting = electronStore_config.get('setting')
   if (setting) {
     let version = electronStore_config.get('version')
@@ -165,7 +168,7 @@ exports.initSetting = () => {
       }
       const downloadList = electronStore_config.get('download')
       if (downloadList) {
-        if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
+        if (downloadList.list) electronStore_downloadList.set('list', downloadList.list)
         electronStore_config.delete('download')
       }
     }
@@ -179,6 +182,13 @@ exports.initSetting = () => {
       electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
       delete setting.list.scroll
     }
+  }
+
+  // 从我的列表分离下载列表 v1.7.0 后
+  let downloadList = electronStore_list.get('downloadList')
+  if (downloadList) {
+    electronStore_downloadList.set('list', downloadList)
+    electronStore_list.delete('downloadList')
   }
 
   const { version: settingVersion, setting: newSetting } = exports.mergeSetting(setting, electronStore_config.get('version'))
