@@ -196,13 +196,18 @@ div.scroll(:class="$style.setting" ref="dom_setting")
         material-checkbox(:id="'setting_tray_theme_' + item.id" v-model="current_setting.tray.themeId" name="setting_tray_theme" need :class="$style.gapLeft"
           :label="$t('view.setting.other_tray_theme_' + item.name)" :key="item.id" :value="item.id" v-for="item in trayThemeList")
     dd
-      h3#other_cache {{$t('view.setting.other_cache')}}
+      h3#other_resource_cache {{$t('view.setting.other_resource_cache')}}
       div
         p
-          | {{$t('view.setting.other_cache_label')}}
-          span.auto-hidden(:tips="$t('view.setting.other_cache_label_title')") {{cacheSize}}
+          | {{$t('view.setting.other_resource_cache_label')}}
+          span.auto-hidden {{cacheSize}}
         p
-          material-btn(:class="$style.btn" min @click="clearCache") {{$t('view.setting.other_cache_clear_btn')}}
+          material-btn(:class="$style.btn" min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{$t('view.setting.other_resource_cache_clear_btn')}}
+    dd
+      h3#other_play_list_cache {{$t('view.setting.other_play_list_cache')}}
+      div
+        material-btn(:class="$style.btn" min :disabled="isDisabledListCacheClear" @click="clearListCache") {{$t('view.setting.other_play_list_cache_clear_btn')}}
+
     dt#update {{$t('view.setting.update')}}
     dd
       p.small
@@ -570,6 +575,8 @@ export default {
         list: [],
         activeId: '',
       },
+      isDisabledResourceCacheClear: false,
+      isDisabledListCacheClear: false,
     }
   },
   watch: {
@@ -624,7 +631,10 @@ export default {
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
-    ...mapMutations('list', ['setList']),
+    ...mapMutations('list', {
+      setList: 'setList',
+      clearMyListCache: 'clearCache',
+    }),
     ...mapMutations(['setMediaDeviceId']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
@@ -859,10 +869,17 @@ export default {
         this.cacheSize = sizeFormate(size)
       })
     },
-    clearCache() {
+    clearResourceCache() {
+      this.isDisabledResourceCacheClear = true
       clearCache().then(() => {
         this.getCacheSize()
+        this.isDisabledResourceCacheClear = false
       })
+    },
+    clearListCache() {
+      this.isDisabledListCacheClear = true
+      this.clearMyListCache()
+      this.isDisabledListCacheClear = false
     },
     handleWindowSizeChange(index) {
       let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]

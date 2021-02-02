@@ -205,6 +205,18 @@ const mutations = {
 
     targetList.list.splice(sortNum - 1, 0, ...musicInfos)
   },
+  clearCache() {
+    const lists = Object.values(allList)
+    for (const { list } of lists) {
+      for (const item of list) {
+        if (item.otherSource) item.otherSource = null
+        if (item.typeUrl['128k']) delete item.typeUrl['128k']
+        if (item.typeUrl['320k']) delete item.typeUrl['320k']
+        if (item.typeUrl.flac) delete item.typeUrl.flac
+        if (item.typeUrl.wav) delete item.typeUrl.wav
+      }
+    }
+  },
 }
 
 export default {
