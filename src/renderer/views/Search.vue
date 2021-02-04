@@ -274,7 +274,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.testPlay(index)
+      if (this.assertApiSupport(this.listInfo.list[index].source)) this.testPlay(index)
       this.clickTime = 0
       this.clickIndex = -1
     },
