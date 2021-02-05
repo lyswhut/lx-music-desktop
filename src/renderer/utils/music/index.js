@@ -87,7 +87,7 @@ export default {
           item.name = trimStr(item.name)
           item.lowerCaseName = String(item.name).toLowerCase()
           item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
-          console.log(lowerCaseName, item.lowerCaseName)
+          // console.log(lowerCaseName, item.lowerCaseName)
           if (
             (
               item.sortedSinger === sortedSinger &&

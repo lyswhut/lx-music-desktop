@@ -31,8 +31,6 @@ div(:class="$style.songList")
                 td(:style="{ width: rowWidth.r6 }" style="padding-left: 0; padding-right: 0;")
                   material-list-buttons(:index="index" :class="$style.btns"
                     :remove-btn="false" @btn-click="handleListBtnClick"
-                    :listAdd-btn="assertApiSupport(item.source)"
-                    :play-btn="assertApiSupport(item.source)"
                     :download-btn="assertApiSupport(item.source)")
                   //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                   //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
@@ -243,7 +241,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.emitEvent(this.assertApiSupport(this.source) ? 'testPlay' : 'search', index)
+      this.emitEvent('testPlay', index)
       this.clickTime = 0
       this.clickIndex = -1
     },
@@ -340,9 +338,9 @@ export default {
     },
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
-      this.listMenu.itemMenuControl.play =
-        this.listMenu.itemMenuControl.playLater =
-        this.listMenu.itemMenuControl.download =
+      // this.listMenu.itemMenuControl.play =
+      //   this.listMenu.itemMenuControl.playLater =
+      this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.list[index].source)
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')

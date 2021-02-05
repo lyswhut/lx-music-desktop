@@ -239,7 +239,7 @@ export default {
           break
         case 'play':
           if (this.selectedData.length) {
-            this.listAddMultiple({ id: 'default', list: this.filterList(this.selectedData) })
+            this.listAddMultiple({ id: 'default', list: [...this.selectedData] })
             this.resetSelect()
           }
           this.testPlay(info.index)

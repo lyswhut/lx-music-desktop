@@ -1,3 +1,5 @@
+import musicSdk from '../../utils/music'
+
 let allList = {}
 window.allList = allList
 
@@ -48,7 +50,12 @@ const getters = {
 
 // actions
 const actions = {
-
+  getOtherSource({ state, commit }, musicInfo) {
+    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+      commit('setOtherSource', { musicInfo, otherSource })
+      return otherSource
+    })
+  },
 }
 
 // mitations
@@ -216,6 +223,9 @@ const mutations = {
         if (item.typeUrl.wav) delete item.typeUrl.wav
       }
     }
+  },
+  setOtherSource(state, { musicInfo, otherSource }) {
+    musicInfo.otherSource = otherSource
   },
 }
 

@@ -91,7 +91,6 @@ import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, de
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
 import { player as eventPlayerNames } from '../../../common/hotKey'
-import musicSdk from '@renderer/utils/music'
 import path from 'path'
 
 let audio
@@ -327,6 +326,7 @@ export default {
   },
   methods: {
     ...mapActions('player', ['getUrl', 'getPic', 'getLrc', 'playPrev', 'playNext']),
+    ...mapActions('list', ['getOtherSource']),
     ...mapMutations('player', [
       'setPlayMusicInfo',
       'setPlayIndex',
@@ -492,7 +492,7 @@ export default {
         this.setImg(targetSong.musicInfo)
         this.setLrc(targetSong.musicInfo)
       } else {
-        if (!this.assertApiSupport(targetSong.source)) return this.playNext()
+        // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
         this.musicInfo.songmid = targetSong.songmid
         this.musicInfo.singer = targetSong.singer
         this.musicInfo.name = targetSong.name
@@ -573,7 +573,7 @@ export default {
     togglePlay() {
       if (!audio.src) {
         if (this.restorePlayTime != null) {
-          if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
+          // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
           this.setUrl(this.targetSong)
         }
         return
@@ -613,10 +613,7 @@ export default {
 
         this.status = this.statusText = 'Try toggle source...'
 
-        return (originMusic.otherSource && originMusic.otherSource.length ? Promise.resolve(originMusic.otherSource) : musicSdk.findMusic(originMusic)).then(res => {
-          this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { otherSource: res }, musicInfo: originMusic })
-          return res
-        }).then(otherSource => {
+        return this.getOtherSource(originMusic).then(otherSource => {
           console.log('find otherSource', otherSource)
           if (otherSource.length) {
             for (const item of otherSource) {

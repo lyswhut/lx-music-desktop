@@ -18,8 +18,8 @@ const state = {
 }
 
 let urlRequest
-let picRequest
-let lrcRequest
+// let picRequest
+// let lrcRequest
 
 const filterList = async({ playedList, listInfo, savePath, commit }) => {
   // if (this.list.listName === null) return
@@ -44,7 +44,7 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
     }
   } else {
     list = listInfo.list.filter(s => {
-      if (!assertApiSupport(s.source)) return false
+      // if (!assertApiSupport(s.source)) return false
       canPlayList.push(s)
 
       let index = filteredPlayedList.indexOf(s)
@@ -60,6 +60,42 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
     return canPlayList
   }
   return list
+}
+
+const getPic = function(musicInfo, retryedSource = [], originMusic) {
+  console.log(musicInfo.source)
+  return music[musicInfo.source].getPic(musicInfo).promise.catch(err => {
+    if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
+    return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
+      if (!originMusic) originMusic = musicInfo
+      console.log('find otherSource', otherSource)
+      if (otherSource.length) {
+        for (const item of otherSource) {
+          if (retryedSource.includes(item.source)) continue
+          console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
+          return getPic.call(this, item, retryedSource, originMusic)
+        }
+      }
+      return Promise.reject(err)
+    })
+  })
+}
+const getLyric = function(musicInfo, retryedSource = [], originMusic) {
+  return music[musicInfo.source].getLyric(musicInfo).promise.catch(err => {
+    if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
+    return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
+      if (!originMusic) originMusic = musicInfo
+      console.log('find otherSource', otherSource)
+      if (otherSource.length) {
+        for (const item of otherSource) {
+          if (retryedSource.includes(item.source)) continue
+          console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
+          return getLyric.call(this, item, retryedSource, originMusic)
+        }
+      }
+      return Promise.reject(err)
+    })
+  })
 }
 
 // getters
@@ -120,7 +156,11 @@ const actions = {
     }
     if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
     if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve(musicInfo.typeUrl[type])
-    urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
+    try {
+      urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
+    } catch (err) {
+      return Promise.reject(err)
+    }
     return urlRequest.promise.then(({ url }) => {
       if (originMusic) commit('setUrl', { musicInfo: originMusic, url, type })
       commit('setUrl', { musicInfo, url, type })
@@ -132,18 +172,18 @@ const actions = {
     })
   },
   getPic({ commit, state }, musicInfo) {
-    if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
-    picRequest = music[musicInfo.source].getPic(musicInfo)
-    return picRequest.promise.then(url => {
-      picRequest = null
+    // if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
+    // picRequest = music[musicInfo.source].getPic(musicInfo)
+    return getPic.call(this, musicInfo).then(url => {
+      // picRequest = null
       commit('getPic', { musicInfo, url })
     }).catch(err => {
-      picRequest = null
+      // picRequest = null
       return Promise.reject(err)
     })
   },
   getLrc({ commit, state }, musicInfo) {
-    if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
+    // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     if (musicInfo.lrc && musicInfo.tlrc != null) {
       if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
         let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
@@ -153,12 +193,12 @@ const actions = {
     }
 
 
-    lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-    return lrcRequest.promise.then(({ lyric, tlyric }) => {
-      lrcRequest = null
+    // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
+    return getLyric.call(this, musicInfo).then(({ lyric, tlyric }) => {
+      // lrcRequest = null
       commit('setLrc', { musicInfo, lyric, tlyric })
     }).catch(err => {
-      lrcRequest = null
+      // lrcRequest = null
       return Promise.reject(err)
     })
   },

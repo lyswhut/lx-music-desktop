@@ -68,7 +68,7 @@ export const xmRequest = (path, params = '') => {
     isCancelled: false,
     cancelHttp() {
       if (!this.isInited) this.isCancelled = true
-      this.requestObj.cancelHttp()
+      this.requestObj && this.requestObj.cancelHttp()
     },
   }
 
