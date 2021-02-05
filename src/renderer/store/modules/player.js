@@ -1,6 +1,6 @@
 import path from 'path'
 import music from '../../utils/music'
-import { getRandom, checkPath, assertApiSupport } from '../../utils'
+import { getRandom, checkPath } from '../../utils'
 
 // state
 const state = {
