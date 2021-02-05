@@ -34,7 +34,7 @@ mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => {
       electronStore_list && electronStore_list.set(type, data)
       break
     case 'downloadList':
-      electronStore_downloadList && electronStore_downloadList.set(type, data)
+      electronStore_downloadList && electronStore_downloadList.set('list', data)
       break
   }
 })
