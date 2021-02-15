@@ -23,7 +23,7 @@
           material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
         div(:class="$style.songListContent")
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div(:class="$style.songListContent" v-show="listData.list.length")
+            div(:class="$style.songListContent")
               transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
                 div.scroll(:class="$style.songList" v-if="sortId !== 'importSongList'" ref="dom_scrollContent")
                   ul
@@ -49,7 +49,7 @@
                         li {{$t('view.song_list.tip_2')}}
                         li {{$t('view.song_list.tip_3')}}
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div(v-show="!listData.list.length" :class="$style.noitem")
+            div(v-show="!listData.list.length && sortId !== 'importSongList'" :class="$style.noitem")
               p {{$t('view.song_list.loding_list')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
