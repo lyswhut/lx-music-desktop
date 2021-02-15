@@ -48,10 +48,12 @@ export default {
     return `https://app.c.nf.migu.cn/MIGUM2.0/v1.0/user/queryMusicListSongs.do?musicListId=${id}&pageNo=${page}&pageSize=${this.limit_song}`
   },
   defaultHeaders: {
-    language: 'Chinese',
-    ua: 'Android_migu',
-    mode: 'android',
-    version: '6.8.5',
+    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+    Referer: 'https://m.music.migu.cn/',
+    // language: 'Chinese',
+    // ua: 'Android_migu',
+    // mode: 'android',
+    // version: '6.8.5',
   },
 
   /**
@@ -155,6 +157,7 @@ export default {
     if (this._requestObj_list) this._requestObj_list.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
     this._requestObj_list = httpFetch(this.getSongListUrl(sortId, tagId, page), {
+      headers: this.defaultHeaders,
       // headers: {
       //   sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
       //   timestamp: 1578225871982,
@@ -186,6 +189,7 @@ export default {
     //   })
     // })
     return this._requestObj_list.promise.then(({ body }) => {
+      // console.log(body)
       if (body.retCode !== '100000' || body.retMsg.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.retMsg.playlist),
