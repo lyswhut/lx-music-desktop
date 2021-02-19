@@ -54,7 +54,7 @@
                 td(style="width: 9%;")
                   span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
                 td(style="width: 15%; padding-left: 0; padding-right: 0;")
-                  material-list-buttons(:index="index" @btn-click="handleListBtnClick")
+                  material-list-buttons(:index="index" @btn-click="handleListBtnClick" :download-btn="assertApiSupport(item.source)")
                   //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                   //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                   //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
