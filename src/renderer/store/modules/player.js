@@ -63,7 +63,7 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
 }
 
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
-  console.log(musicInfo.source)
+  // console.log(musicInfo.source)
   return music[musicInfo.source].getPic(musicInfo).promise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
