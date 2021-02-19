@@ -301,26 +301,26 @@ export default {
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
         : this.$t('view.setting.update_init')
     },
-    togglePlayMethods() {
-      return [
-        {
-          name: this.$t('view.setting.play_toggle_list_loop'),
-          value: 'listLoop',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_random'),
-          value: 'random',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_list'),
-          value: 'list',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_single_loop'),
-          value: 'singleLoop',
-        },
-      ]
-    },
+    // togglePlayMethods() {
+    //   return [
+    //     {
+    //       name: this.$t('view.setting.play_toggle_list_loop'),
+    //       value: 'listLoop',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_random'),
+    //       value: 'random',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_list'),
+    //       value: 'list',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_single_loop'),
+    //       value: 'singleLoop',
+    //     },
+    //   ]
+    // },
     apiSources() {
       return apiSourceInfo.map(api => ({
         id: api.id,
