@@ -26,12 +26,18 @@ mainHandle(ipcMainWindowNames.get_playlist, async(event, isIgnoredError = false)
   }
 })
 
+const handleSaveList = ({ defaultList, loveList, userList }) => {
+  if (!electronStore_list) return
+  let data = {}
+  if (defaultList != null) data.defaultList = defaultList
+  if (loveList != null) data.loveList = loveList
+  if (userList != null) data.userList = userList
+  electronStore_list.set(data)
+}
 mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => {
   switch (type) {
-    case 'defaultList':
-    case 'loveList':
-    case 'userList':
-      electronStore_list && electronStore_list.set(type, data)
+    case 'myList':
+      handleSaveList(data)
       break
     case 'downloadList':
       electronStore_downloadList && electronStore_downloadList.set('list', data)

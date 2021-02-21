@@ -37,6 +37,20 @@ dnscache({
   cachesize: 1000,
 })
 
+const listThrottle = (fn, delay = 100) => {
+  let timer = null
+  let _data = {}
+  return function(data) {
+    Object.assign(_data, data)
+    if (timer) return
+    timer = setTimeout(() => {
+      timer = null
+      fn.call(this, _data)
+      _data = {}
+    }, delay)
+  }
+}
+
 export default {
   data() {
     return {
@@ -70,24 +84,12 @@ export default {
     }),
   },
   created() {
-    this.saveDefaultList = throttle(n => {
+    this.saveMyList = listThrottle(data => {
       rendererSend(NAMES.mainWindow.save_playlist, {
-        type: 'defaultList',
-        data: n,
+        type: 'myList',
+        data,
       })
-    }, 500)
-    this.saveLoveList = throttle(n => {
-      rendererSend(NAMES.mainWindow.save_playlist, {
-        type: 'loveList',
-        data: n,
-      })
-    }, 500)
-    this.saveUserList = throttle(n => {
-      rendererSend(NAMES.mainWindow.save_playlist, {
-        type: 'userList',
-        data: n,
-      })
-    }, 500)
+    }, 300)
     this.saveDownloadList = throttle(n => {
       rendererSend(NAMES.mainWindow.save_playlist, {
         type: 'downloadList',
@@ -115,19 +117,19 @@ export default {
     },
     defaultList: {
       handler(n) {
-        this.saveDefaultList(n)
+        this.saveMyList({ defaultList: n })
       },
       deep: true,
     },
     loveList: {
       handler(n) {
-        this.saveLoveList(n)
+        this.saveMyList({ loveList: n })
       },
       deep: true,
     },
     userList: {
       handler(n) {
-        this.saveUserList(n)
+        this.saveMyList({ userList: n })
       },
       deep: true,
     },
