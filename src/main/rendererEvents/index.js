@@ -18,6 +18,4 @@ require('./showDialog')
 require('./playList')
 require('./data')
 
-// require('./xm_verify')
-
 require('./kw_decodeLyric')

@@ -50,10 +50,12 @@ const sources = {
 export default {
   ...sources,
   init() {
+    const tasks = []
     for (let source of sources.sources) {
       let sm = sources[source.id]
-      sm && sm.init && sm.init()
+      sm && sm.init && tasks.push(sm.init())
     }
+    return Promise.all(tasks)
   },
   supportQuality,
 

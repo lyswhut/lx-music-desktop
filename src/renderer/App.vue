@@ -6,7 +6,6 @@
     core-view#view
     core-player#player
   core-icons
-  material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
 #container(v-else :class="theme")
@@ -16,7 +15,6 @@
     core-view#view
     core-player#player
   core-icons
-  material-xm-verify-modal(v-show="globalObj.xm.isShowVerify" :show="globalObj.xm.isShowVerify" :bg-close="false" @close="handleXMVerifyModalClose")
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
 </template>
@@ -27,7 +25,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
-import { throttle, openUrl, compareVer, getPlayList } from './utils'
+import { throttle, openUrl, compareVer, getPlayList, parseUrlParams } from './utils'
 import { base as eventBaseName } from './event/names'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -62,9 +60,6 @@ export default {
         proxy: {},
         isShowPact: false,
         qualityList: {},
-        xm: {
-          isShowVerify: false,
-        },
       },
       updateTimeout: null,
       envParams: {
@@ -179,10 +174,12 @@ export default {
     ...mapMutations('player', {
       setPlayList: 'setList',
     }),
+    ...mapActions('songList', ['getListDetailAll']),
     init() {
       document.documentElement.style.fontSize = this.windowSizeActive.fontSize
 
-      rendererInvoke(NAMES.mainWindow.get_env_params).then(this.handleEnvParamsInit)
+      const asyncTask = []
+      asyncTask.push(rendererInvoke(NAMES.mainWindow.get_env_params).then(this.handleEnvParamsInit))
 
       document.body.addEventListener('click', this.handleBodyClick, true)
       rendererOn(NAMES.mainWindow.update_available, (e, info) => {
@@ -246,14 +243,18 @@ export default {
       }, 60 * 30 * 1000)
 
       this.listenEvent()
-      this.initData()
+      asyncTask.push(this.initData())
       this.globalObj.apiSource = this.setting.apiSource
       this.globalObj.qualityList = music.supportQuality[this.setting.apiSource]
       this.globalObj.proxy = Object.assign({}, this.setting.network.proxy)
       window.globalObj = this.globalObj
 
       // 初始化音乐sdk
-      music.init()
+      asyncTask.push(music.init())
+      Promise.all(asyncTask).then(() => {
+        this.handleInitEnvParamSearch()
+        this.handleInitEnvParamPlay()
+      })
     },
     enableIgnoreMouseEvents() {
       if (this.isDT) return
@@ -267,12 +268,14 @@ export default {
     },
 
     initData() { // 初始化数据
-      this.initLocalList() // 初始化播放列表
+      return Promise.all([
+        this.initMyList(), // 初始化播放列表
+        this.initSearchHistoryList(), // 初始化搜索历史列表
+      ])
       // this.initDownloadList() // 初始化下载列表
-      this.initSearchHistoryList() // 初始化搜索历史列表
     },
-    initLocalList() {
-      getPlayList().then(({ defaultList, loveList, userList, downloadList }) => {
+    initMyList() {
+      return getPlayList().then(({ defaultList, loveList, userList, downloadList }) => {
         if (!defaultList) defaultList = this.defaultList
         if (!loveList) loveList = this.loveList
         if (userList) {
@@ -391,18 +394,91 @@ export default {
         document.body.addEventListener('mouseenter', this.dieableIgnoreMouseEvents)
         document.body.addEventListener('mouseleave', this.enableIgnoreMouseEvents)
       }
+      this.handleInitEnvParamSearch()
+      this.handleInitEnvParamPlay()
+    },
+    // 处理启动参数 search
+    handleInitEnvParamSearch() {
+      if (this.envParams.search == null) return
+      this.$router.push({
+        path: 'search',
+        query: {
+          text: this.envParams.search,
+        },
+      })
+    },
+    // 处理启动参数 play
+    handleInitEnvParamPlay() {
+      if (this.envParams.play == null || typeof this.envParams.play != 'string') return
+      // -play="source=kw&link=链接、ID"
+      // -play="source=myList&name=名字"
+      // -play="source=myList&name=名字&index=位置"
+      const params = parseUrlParams(this.envParams.play)
+      if (params.type != 'songList') return
+      this.handlePlaySongList(params)
+    },
+    handlePlaySongList(params) {
+      switch (params.source) {
+        case 'myList':
+          if (params.name != null) {
+            let targetList
+            const lists = Object.values(window.allList)
+            for (const list of lists) {
+              if (list.name === params.name) {
+                targetList = list
+                break
+              }
+            }
+            if (!targetList) return
 
-      if (this.envParams.search != null) {
-        this.$router.push({
-          path: 'search',
-          query: {
-            text: this.envParams.search,
-          },
-        })
+
+            this.setPlayList({
+              list: {
+                list: targetList.list,
+                id: targetList.id,
+              },
+              index: this.getListPlayIndex(targetList.list, params.index),
+            })
+          }
+          break
+        case 'kw':
+        case 'kg':
+        case 'tx':
+        case 'mg':
+        case 'wy':
+          this.playSongListDetail(params.source, params.link, params.index)
+          break
       }
     },
-    handleXMVerifyModalClose() {
-      music.xm.closeVerifyModal()
+    async playSongListDetail(source, link, playIndex) {
+      if (link == null) return
+      let list
+      try {
+        list = await this.getListDetailAll({ source, id: decodeURIComponent(link) })
+      } catch (err) {
+        console.log(err)
+      }
+      this.setPlayList({
+        list: {
+          list,
+          id: null,
+        },
+        index: this.getListPlayIndex(list, playIndex),
+      })
+    },
+    getListPlayIndex(list, index) {
+      if (index == null) {
+        index = 1
+      } else {
+        index = parseInt(index)
+        if (Number.isNaN(index)) {
+          index = 1
+        } else {
+          if (index < 1) index = 1
+          else if (index > list.length) index = list.length
+        }
+      }
+      return index - 1
     },
     listenEvent() {
       window.eventHub.$on('key_escape_down', this.handle_key_esc_down)
