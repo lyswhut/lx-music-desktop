@@ -7,7 +7,8 @@ module.exports = class Lyric {
   constructor({
     lyric = '',
     offset = 150,
-    className = '',
+    lineClassName = '',
+    fontClassName = 'font',
     activeLineClassName = 'active',
     lineModeClassName = 'line',
     shadowClassName = '',
@@ -20,7 +21,8 @@ module.exports = class Lyric {
     this.onPlay = onPlay
     this.onSetLyric = onSetLyric
 
-    this.className = className
+    this.lineClassName = lineClassName
+    this.fontClassName = fontClassName
     this.activeLineClassName = activeLineClassName
     this.lineModeClassName = lineModeClassName
     this.shadowClassName = shadowClassName
@@ -52,40 +54,40 @@ module.exports = class Lyric {
         for (let i = this.playingLineNum; i > num - 1; i--) {
           const font = this._lineFonts[i]
           font.reset()
-          font.fontContent.classList.remove(this.activeLineClassName)
+          font.lineContent.classList.remove(this.activeLineClassName)
         }
       } else if (num > this.playingLineNum + 1) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
           font.reset()
-          font.fontContent.classList.remove(this.activeLineClassName)
+          font.lineContent.classList.remove(this.activeLineClassName)
         }
       } else if (this.playingLineNum > -1) {
         const font = this._lineFonts[this.playingLineNum]
         font.reset()
-        font.fontContent.classList.remove(this.activeLineClassName)
+        font.lineContent.classList.remove(this.activeLineClassName)
       }
     } else {
       if (num < this.playingLineNum + 1) {
         for (let i = this.playingLineNum; i > num - 1; i--) {
           const font = this._lineFonts[i]
-          font.fontContent.classList.remove(this.activeLineClassName)
+          font.lineContent.classList.remove(this.activeLineClassName)
           font.reset()
         }
       } else if (num > this.playingLineNum + 1) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
-          font.fontContent.classList.remove(this.activeLineClassName)
+          font.lineContent.classList.remove(this.activeLineClassName)
           font.finish()
         }
       } else if (this.playingLineNum > -1) {
         const font = this._lineFonts[this.playingLineNum]
-        font.fontContent.classList.remove(this.activeLineClassName)
+        font.lineContent.classList.remove(this.activeLineClassName)
       }
     }
     this.playingLineNum = num
     const font = this._lineFonts[num]
-    font.fontContent.classList.add(this.activeLineClassName)
+    font.lineContent.classList.add(this.activeLineClassName)
     font.play(curTime - this._lines[num].time)
     this.onPlay(num, this._lines[num].text)
   }
@@ -99,7 +101,8 @@ module.exports = class Lyric {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           lyric: line.text,
-          className: this.className,
+          lineClassName: this.lineClassName,
+          fontClassName: this.fontClassName,
           lineModeClassName: this.lineModeClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
@@ -109,14 +112,15 @@ module.exports = class Lyric {
         return {
           text: line.text,
           time: line.time,
-          dom_line: fontPlayer.fontContent,
+          dom_line: fontPlayer.lineContent,
         }
       })
     } else {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           lyric: line.text,
-          className: this.className,
+          lineClassName: this.lineClassName,
+          fontClassName: this.fontClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
         })
@@ -125,7 +129,7 @@ module.exports = class Lyric {
         return {
           text: line.text.replace(fontTimeExp, ''),
           time: line.time,
-          dom_line: fontPlayer.fontContent,
+          dom_line: fontPlayer.lineContent,
         }
       })
     }

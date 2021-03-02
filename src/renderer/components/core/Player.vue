@@ -453,7 +453,8 @@ export default {
       })
 
       window.lrc = new Lyric({
-        className: 'lrc-content',
+        lineClassName: 'lrc-content',
+        fontClassName: 'font',
         shadowContent: false,
         activeLineClassName: 'active',
         onPlay: (line, text) => {

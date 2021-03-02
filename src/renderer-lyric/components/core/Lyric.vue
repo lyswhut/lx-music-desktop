@@ -131,7 +131,8 @@ export default {
   created() {
     rendererOn(NAMES.winLyric.set_lyric_info, (event, data) => this.handleSetInfo(data))
     window.lrc = new Lyric({
-      className: 'lrc-content',
+      lineClassName: 'lrc-content',
+      fontClassName: 'font',
       shadowClassName: 'shadow',
       shadowContent: true,
       activeLineClassName: 'active',
@@ -225,7 +226,8 @@ export default {
       cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
     },
     handleLyricMouseDown(e) {
-      if (e.target.classList.contains(this.$style.lrcLine)) {
+      console.log(e.target)
+      if (e.target.classList.contains('font') || e.target.parentNode.classList.contains('font')) {
         this.lyricEvent.isMsDown = true
         this.lyricEvent.msDownY = e.clientY
         this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
@@ -320,6 +322,10 @@ export default {
       line-height: 1.2;
       margin: 16px 0;
       overflow-wrap: break-word;
+
+      .font {
+        display: inline-block;
+      }
 
       .line {
         transition-property: font-size, color !important;
