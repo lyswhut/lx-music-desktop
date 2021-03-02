@@ -85,7 +85,7 @@ div(:class="$style.player")
 </template>
 
 <script>
-import Lyric from 'lrc-file-parser'
+import Lyric from '@renderer/utils/lyric-font-player'
 import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, throttle, assertApiSupport } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
@@ -452,6 +452,9 @@ export default {
       })
 
       window.lrc = new Lyric({
+        className: 'lrc-content',
+        shadowContent: false,
+        activeLineClassName: 'active',
         onPlay: (line, text) => {
           this.lyric.text = text
           this.lyric.line = line
@@ -463,7 +466,7 @@ export default {
           this.lyric.lines = lines
           this.lyric.line = 0
         },
-        offset: 80,
+        // offset: 80,
       })
 
       this.handleRegisterEvent('on')
@@ -641,6 +644,7 @@ export default {
       this.getLrc(targetSong).then(() => {
         this.musicInfo.lrc = targetSong.lrc
         this.musicInfo.tlrc = targetSong.tlrc
+        this.musicInfo.lxlrc = targetSong.lxlrc
       }).catch(() => {
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
@@ -658,6 +662,7 @@ export default {
       this.musicInfo.songmid = null
       this.musicInfo.lrc = null
       this.musicInfo.tlrc = null
+      this.musicInfo.lxlrc = null
       this.musicInfo.url = null
       this.nowPlayTime = 0
       this.maxPlayTime = 0
@@ -848,7 +853,14 @@ export default {
       })
     },
     setLyric() {
-      window.lrc.setLyric((this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? (this.musicInfo.tlrc + '\n') : '') + (this.musicInfo.lrc || ''))
+      window.lrc.setLyric(
+        this.musicInfo.lxlrc ? this.musicInfo.lxlrc : this.musicInfo.lrc,
+        // (
+        //   this.setting.player.isShowLyricTransition && this.musicInfo.tlrc
+        //     ? (this.musicInfo.tlrc + '\n')
+        //     : ''
+        // ) + (this.musicInfo.lrc || ''),
+      )
       if (this.isPlay && (this.musicInfo.url || this.listId == 'download')) {
         window.lrc.play(audio.currentTime * 1000)
         this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)

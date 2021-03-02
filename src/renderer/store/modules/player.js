@@ -187,16 +187,21 @@ const actions = {
     if (musicInfo.lrc && musicInfo.tlrc != null) {
       if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
         let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
-        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc })
+        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
+      } else if (musicInfo.lrc.startsWith('[id:$00000000]')) {
+        let str = musicInfo.lrc.replace('[id:$00000000]\n', '')
+        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
       }
-      return Promise.resolve()
+
+      if ((musicInfo.lxlrc == null && musicInfo.source != 'kg') || musicInfo.lxlrc != null) {
+        return Promise.resolve()
+      }
     }
 
-
     // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-    return getLyric.call(this, musicInfo).then(({ lyric, tlyric }) => {
+    return getLyric.call(this, musicInfo).then(({ lyric, tlyric, lxlyric }) => {
       // lrcRequest = null
-      commit('setLrc', { musicInfo, lyric, tlyric })
+      commit('setLrc', { musicInfo, lyric, tlyric, lxlyric })
     }).catch(err => {
       // lrcRequest = null
       return Promise.reject(err)
@@ -332,6 +337,7 @@ const mutations = {
   setLrc(state, datas) {
     datas.musicInfo.lrc = datas.lyric
     datas.musicInfo.tlrc = datas.tlyric
+    datas.musicInfo.lxlrc = datas.lxlyric
   },
   setList(state, { list, index }) {
     state.playMusicInfo = {
