@@ -9,6 +9,7 @@ module.exports = class Lyric {
     offset = 150,
     className = '',
     activeLineClassName = 'active',
+    lineModeClassName = 'line',
     shadowClassName = '',
     shadowContent = false,
     onPlay = function() { },
@@ -21,6 +22,7 @@ module.exports = class Lyric {
 
     this.className = className
     this.activeLineClassName = activeLineClassName
+    this.lineModeClassName = lineModeClassName
     this.shadowClassName = shadowClassName
     this.shadowContent = shadowContent
 
@@ -98,6 +100,7 @@ module.exports = class Lyric {
         const fontPlayer = new FontPlayer({
           lyric: line.text,
           className: this.className,
+          lineModeClassName: this.lineModeClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
         })

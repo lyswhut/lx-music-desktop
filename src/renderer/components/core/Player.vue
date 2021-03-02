@@ -215,8 +215,9 @@ export default {
             singer: this.musicInfo.singer,
             name: this.musicInfo.name,
             album: this.musicInfo.album,
-            lyric: this.musicInfo.lrc,
-            tlyric: this.musicInfo.tlrc,
+            lrc: this.musicInfo.lrc,
+            tlrc: this.musicInfo.tlrc,
+            lxlrc: this.musicInfo.lxlrc,
             isPlay: this.isPlay,
             line: this.lyric.line,
             played_time: audio.currentTime * 1000,
@@ -648,7 +649,7 @@ export default {
       }).catch(() => {
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
-        this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc })
+        this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc, lxlrc: this.musicInfo.lxlrc })
         this.setLyric()
       })
     },

@@ -579,16 +579,26 @@ export default {
   overflow: hidden;
   font-size: 16px;
   cursor: grab;
+  color: @color-theme_2-font;
   &.draging {
     cursor: grabbing;
   }
   :global {
     .lrc-content {
       line-height: 1.2;
-      padding: 8px 0;
+      margin: 16px 0;
       overflow-wrap: break-word;
 
+      .line {
+        transition-property: font-size, color !important;
+        background: none !important;
+        -webkit-text-fill-color: unset;
+        // -webkit-text-fill-color: none !important;
+      }
       &.active {
+        .line {
+          color: @color-theme;
+        }
         span {
           // color: @color-theme;
           font-size: 1.2em;
@@ -597,7 +607,7 @@ export default {
 
       span {
         transition: @transition-theme !important;
-        transition-property: font-size;
+        transition-property: font-size !important;
         font-size: 1em;
         background-repeat: no-repeat;
         background-color: rgba(77, 77, 77, 0.9);
@@ -810,11 +820,18 @@ each(@themes, {
       box-shadow: 0 0 4px ~'@{color-@{value}-theme-hover}';
       // border-color: ~'@{color-@{value}-theme-hover}';
     }
-    :global {
-      .lrc-content {
-        span {
-          // background-color: ~'@{color-@{value}-theme_2-font}';
-          background-image: -webkit-linear-gradient(top, ~'@{color-@{value}-theme}', ~'@{color-@{value}-theme}');
+    .lyric {
+      :global {
+        .lrc-content {
+          &.active {
+            .line {
+              color: ~'@{color-@{value}-theme}';
+            }
+          }
+          span {
+            // background-color: ~'@{color-@{value}-theme_2-font}';
+            background-image: -webkit-linear-gradient(top, ~'@{color-@{value}-theme}', ~'@{color-@{value}-theme}');
+          }
         }
       }
     }

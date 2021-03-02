@@ -20,10 +20,11 @@ const createAnimation = (dom, duration) => new window.Animation(new window.Keyfr
 // https://jsfiddle.net/ceqpnbky/1/
 
 module.exports = class FontPlayer {
-  constructor({ lyric = '', className = '', shadowContent = false, shadowClassName = '' }) {
+  constructor({ lyric = '', className = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
     this.lyric = lyric
 
     this.className = className
+    this.lineModeClassName = lineModeClassName
     this.shadowContent = shadowContent
     this.shadowClassName = shadowClassName
 
@@ -100,6 +101,7 @@ module.exports = class FontPlayer {
     this.isLineMode = true
     const dom = document.createElement('span')
     let shadowDom
+    dom.classList.add(this.lineModeClassName)
     dom.textContent = this.lyric
     if (this.shadowContent) {
       shadowDom = document.createElement('span')
