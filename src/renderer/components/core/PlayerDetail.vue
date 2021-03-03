@@ -589,6 +589,12 @@ export default {
       margin: 16px 0;
       overflow-wrap: break-word;
 
+      .translation {
+        transition: @transition-theme !important;
+        transition-property: font-size, color;
+        font-size: 1em;
+        margin-top: 5px;
+      }
       .line {
         transition-property: font-size, color !important;
         background: none !important;
@@ -597,6 +603,10 @@ export default {
       }
       &.active {
         .line {
+          color: @color-theme;
+        }
+        .translation {
+          font-size: 1.2em;
           color: @color-theme;
         }
         span {

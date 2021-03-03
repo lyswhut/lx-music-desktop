@@ -28,6 +28,10 @@ export default {
         }
       },
     },
+    isPlayLxlrc: {
+      type: Boolean,
+      default: true,
+    },
     isShowLyricTransition: {
       type: Boolean,
       default: true,
@@ -122,8 +126,11 @@ export default {
       },
       immediate: true,
     },
-    isShowLyricTransition(n) {
-      console.log(n)
+    isShowLyricTransition() {
+      this.setLyric()
+      rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+    },
+    isPlayLxlrc() {
       this.setLyric()
       rendererSend(NAMES.winLyric.get_lyric_info, 'status')
     },
@@ -226,8 +233,10 @@ export default {
       cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
     },
     handleLyricMouseDown(e) {
-      console.log(e.target)
-      if (e.target.classList.contains('font') || e.target.parentNode.classList.contains('font')) {
+      if (e.target.classList.contains('font') ||
+        e.target.parentNode.classList.contains('font') ||
+        e.target.classList.contains('translation') ||
+        e.target.parentNode.classList.contains('translation')) {
         this.lyricEvent.isMsDown = true
         this.lyricEvent.msDownY = e.clientY
         this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
@@ -296,7 +305,8 @@ export default {
     },
     setLyric() {
       window.lrc.setLyric(
-        this.lyrics.lxlyric ? this.lyrics.lxlyric : this.lyrics.lyric,
+        this.isPlayLxlrc && this.lyrics.lxlyric ? this.lyrics.lxlyric : this.lyrics.lyric,
+        this.isShowLyricTransition && this.lyrics.tlyric ? this.lyrics.tlyric : '',
         // (this.isShowLyricTransition && this.lyrics.tlyric ? (this.lyrics.tlyric + '\n') : '') + (this.lyrics.lyric || ''),
       )
     },
@@ -327,6 +337,13 @@ export default {
         display: inline-block;
       }
 
+      .translation {
+        transition: @transition-theme !important;
+        transition-property: font-size, color;
+        font-size: 0.8em;
+        margin-top: 5px;
+      }
+
       .line {
         transition-property: font-size, color !important;
         background: none !important;
@@ -335,6 +352,10 @@ export default {
       }
       &.active {
         .line {
+          color: @color-theme;
+        }
+        .translation {
+          font-size: 1em;
           color: @color-theme;
         }
         span {

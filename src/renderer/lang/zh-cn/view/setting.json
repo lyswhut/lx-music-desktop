@@ -30,6 +30,7 @@
   "play": "播放设置",
   "play_save_play_time": "记住播放进度",
   "play_lyric_transition": "显示歌词翻译",
+  "play_lyric_lxlrc": "使用卡拉OK式歌词播放（如果支持）",
   "play_quality": "优先播放320K品质的歌曲（如果支持）",
   "play_task_bar": "在任务栏上显示当前歌曲播放进度",
   "play_mediaDevice_title": "选择声音输出的媒体设备",

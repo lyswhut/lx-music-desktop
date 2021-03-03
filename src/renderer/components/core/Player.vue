@@ -275,6 +275,9 @@ export default {
     'setting.player.isShowLyricTransition'() {
       this.setLyric()
     },
+    'setting.player.isPlayLxlrc'() {
+      this.setLyric()
+    },
     async list(n, o) {
       if (n === o && this.musicInfo.songmid) {
         let index = this.listId == 'download'
@@ -856,7 +859,8 @@ export default {
     },
     setLyric() {
       window.lrc.setLyric(
-        this.musicInfo.lxlrc ? this.musicInfo.lxlrc : this.musicInfo.lrc,
+        this.setting.player.isPlayLxlrc && this.musicInfo.lxlrc ? this.musicInfo.lxlrc : this.musicInfo.lrc,
+        this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc : '',
         // (
         //   this.setting.player.isShowLyricTransition && this.musicInfo.tlrc
         //     ? (this.musicInfo.tlrc + '\n')

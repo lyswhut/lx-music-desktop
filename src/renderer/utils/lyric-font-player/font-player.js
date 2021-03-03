@@ -20,11 +20,13 @@ const createAnimation = (dom, duration) => new window.Animation(new window.Keyfr
 // https://jsfiddle.net/ceqpnbky/1/
 
 module.exports = class FontPlayer {
-  constructor({ lyric = '', lineClassName = '', fontClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
+  constructor({ lyric = '', translationLyric = '', lineClassName = '', fontClassName = '', translationClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
     this.lyric = lyric
+    this.translationLyric = translationLyric
 
     this.lineClassName = lineClassName
     this.fontClassName = fontClassName
+    this.translationClassName = translationClassName
     this.lineModeClassName = lineModeClassName
     this.shadowContent = shadowContent
     this.shadowClassName = shadowClassName
@@ -49,17 +51,33 @@ module.exports = class FontPlayer {
     this.isLineMode = false
 
     this.lineContent = document.createElement('div')
-    this.lineContent.style = 'position:relative;'
     if (this.lineClassName) this.lineContent.classList.add(this.lineClassName)
     this.fontContent = document.createElement('div')
+    this.fontContent.style = 'position:relative;display:inline-block;'
     if (this.fontClassName) this.fontContent.classList.add(this.fontClassName)
     if (this.shadowContent) {
       this.fontShadowContent = document.createElement('div')
       this.fontShadowContent.style = 'position:absolute;top:0;left:0;width:100%;z-index:-1;'
       this.fontShadowContent.className = this.shadowClassName
-      this.lineContent.appendChild(this.fontShadowContent)
+      this.fontContent.appendChild(this.fontShadowContent)
     }
     this.lineContent.appendChild(this.fontContent)
+    if (this.translationLyric) {
+      this.translationContent = document.createElement('div')
+      this.translationContent.style = 'position:relative;display:inline-block;'
+      this.translationContent.className = this.translationClassName
+      this.translationContent.textContent = this.translationLyric
+      this.lineContent.appendChild(document.createElement('br'))
+      this.lineContent.appendChild(this.translationContent)
+
+      if (this.shadowContent) {
+        this.translationShadowContent = document.createElement('div')
+        this.translationShadowContent.style = 'position:absolute;top:0;left:0;width:100%;z-index:-1;'
+        this.translationShadowContent.className = this.shadowClassName
+        this.translationShadowContent.textContent = this.translationLyric
+        this.translationContent.appendChild(this.translationShadowContent)
+      }
+    }
     this._parseLyric()
   }
 

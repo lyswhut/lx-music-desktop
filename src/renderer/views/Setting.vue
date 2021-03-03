@@ -68,6 +68,8 @@ div.scroll(:class="$style.setting" ref="dom_setting")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.play_lyric_transition')")
       div(:class="$style.gapTop")
+        material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
+      div(:class="$style.gapTop")
         material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
       div(:class="$style.gapTop")
         material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
@@ -606,6 +608,9 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       this.current_setting.player.togglePlayMethod = n
     },
+    // 'setting.player.isPlayLxlrc'(n) {
+    //   this.current_setting.player.isPlayLxlrc = n
+    // },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {

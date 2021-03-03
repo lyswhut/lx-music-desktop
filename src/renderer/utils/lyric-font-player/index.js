@@ -6,9 +6,11 @@ const fontTimeExp = /<(\d+),(\d+)>/g
 module.exports = class Lyric {
   constructor({
     lyric = '',
+    translationLyric = '',
     offset = 150,
     lineClassName = '',
     fontClassName = 'font',
+    translationClassName = 'translation',
     activeLineClassName = 'active',
     lineModeClassName = 'line',
     shadowClassName = '',
@@ -17,12 +19,14 @@ module.exports = class Lyric {
     onSetLyric = function() { },
   }) {
     this.lyric = lyric
+    this.translationLyric = translationLyric
     this.offset = offset
     this.onPlay = onPlay
     this.onSetLyric = onSetLyric
 
     this.lineClassName = lineClassName
     this.fontClassName = fontClassName
+    this.translationClassName = translationClassName
     this.activeLineClassName = activeLineClassName
     this.lineModeClassName = lineModeClassName
     this.shadowClassName = shadowClassName
@@ -37,10 +41,11 @@ module.exports = class Lyric {
     this.isLineMode = false
 
     if (this.linePlayer) {
-      this.linePlayer.setLyric(this.lyric)
+      this.linePlayer.setLyric(this.lyric, this.translationLyric)
     } else {
       this.linePlayer = new LinePlayer({
         lyric: this.lyric,
+        translationLyric: this.translationLyric,
         offset: this.offset,
         onPlay: this._handleLinePlayerOnPlay,
         onSetLyric: this._handleLinePlayerOnSetLyric,
@@ -93,6 +98,7 @@ module.exports = class Lyric {
   }
 
   _handleLinePlayerOnSetLyric = lyricLines => {
+    // console.log(lyricLines)
     // this._lines = lyricsLines
     this.isLineMode = lyricLines.length && !/^<\d+,\d+>/.test(lyricLines[0].text)
 
@@ -101,8 +107,10 @@ module.exports = class Lyric {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           lyric: line.text,
+          translationLyric: line.translation,
           lineClassName: this.lineClassName,
           fontClassName: this.fontClassName,
+          translationClassName: this.translationClassName,
           lineModeClassName: this.lineModeClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
@@ -119,8 +127,10 @@ module.exports = class Lyric {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           lyric: line.text,
+          translationLyric: line.translation,
           lineClassName: this.lineClassName,
           fontClassName: this.fontClassName,
+          translationClassName: this.translationClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
         })
@@ -148,8 +158,9 @@ module.exports = class Lyric {
     if (this.playingLineNum > -1) this._lineFonts[this.playingLineNum].pause()
   }
 
-  setLyric(lyric) {
+  setLyric(lyric, translationLyric) {
     this.lyric = lyric
+    this.translationLyric = translationLyric
     this._init()
   }
 }

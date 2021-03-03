@@ -30,6 +30,7 @@
   "play": "Play",
   "play_save_play_time": "Remember playback progress",
   "play_lyric_transition": "Show lyrics translation",
+  "play_lyric_lxlrc": "Use Karaoke-style lyrics playback (if supported)",
   "play_quality": "Play 320K quality songs first (if supported)",
   "play_task_bar": "Show playing progress on the taskbar",
   "play_mediaDevice_title": "Select a media device for audio output",
