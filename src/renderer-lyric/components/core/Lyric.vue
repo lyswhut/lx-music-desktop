@@ -322,11 +322,9 @@ export default {
   height: 100%;
   overflow: hidden;
   font-size: 16px;
-  cursor: grab;
   color: @color-theme-lyric;
-  &.draging {
-    cursor: grabbing;
-  }
+  cursor: move;
+
   :global {
     .lrc-content {
       line-height: 1.2;
@@ -335,6 +333,10 @@ export default {
 
       .font {
         display: inline-block;
+      }
+
+      .font, .translation {
+        cursor: grab;
       }
 
       .translation {
@@ -418,6 +420,15 @@ export default {
     // -webkit-background-clip: text;
     // -webkit-text-fill-color: @color-theme-lyric_2;
     // -webkit-text-stroke: thin #124628;
+  }
+}
+.draging {
+  :global {
+    .lrc-content {
+      .font, .translation {
+        cursor: grabbing;
+      }
+    }
   }
 }
 .lrc-active-zoom {
