@@ -1,5 +1,5 @@
 <template lang="pug">
-div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
+div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }, { [$style.lrcActiveZoom]: lrcConfig.style.isZoomActiveLrc } ]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
   div(:class="$style.lyricSpace")
   div(:class="[$style.lyricText]" ref="dom_lyric_text")
   //- div(v-for="(info, index) in lyricLines" :key="index" :class="[$style.lineContent, lyric.line == index ? (lrcConfig.style.isZoomActiveLrc ? $style.lrcActiveZoom : $style.lrcActive) : null]")
@@ -355,14 +355,13 @@ export default {
           color: @color-theme;
         }
         .translation {
-          font-size: 1em;
           color: @color-theme;
         }
-        span {
+        // span {
           // color: @color-theme;
-          font-size: 1.2em;
-        }
+        // }
       }
+
 
       span {
         transition: @transition-theme !important;
@@ -422,8 +421,18 @@ export default {
   }
 }
 .lrc-active-zoom {
-  .lrc-active;
-  font-size: 1.2em;
+  :global {
+    .lrc-content {
+      &.active {
+        .translation {
+          font-size: 1em;
+        }
+        span {
+          font-size: 1.2em;
+        }
+      }
+    }
+  }
 }
 .footer {
   flex: 0 0 100px;
