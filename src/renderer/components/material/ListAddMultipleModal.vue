@@ -62,7 +62,7 @@ export default {
         this.defaultList,
         this.loveList,
         ...this.userList,
-      ].filter(l => l.id != this.excludeListId.includes(l.id))
+      ].filter(l => !this.excludeListId.includes(l.id))
     },
     spaceNum() {
       return this.lists.length < 2 ? 0 : (3 - this.lists.length % 3 - 1)
