@@ -16,56 +16,67 @@ export default {
     searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => body)
   },
+  filterData(rawData) {
+    const types = []
+    const _types = {}
+    if (rawData.filesize !== 0) {
+      let size = sizeFormate(rawData.filesize)
+      types.push({ type: '128k', size, hash: rawData.hash })
+      _types['128k'] = {
+        size,
+        hash: rawData.hash,
+      }
+    }
+    if (rawData['320filesize'] !== 0) {
+      let size = sizeFormate(rawData['320filesize'])
+      types.push({ type: '320k', size, hash: rawData['320hash'] })
+      _types['320k'] = {
+        size,
+        hash: rawData['320hash'],
+      }
+    }
+    if (rawData.sqfilesize !== 0) {
+      let size = sizeFormate(rawData.sqfilesize)
+      types.push({ type: 'flac', size, hash: rawData.sqhash })
+      _types.flac = {
+        size,
+        hash: rawData.sqhash,
+      }
+    }
+    return {
+      singer: decodeName(rawData.singername),
+      name: decodeName(rawData.songname),
+      albumName: decodeName(rawData.album_name),
+      albumId: rawData.album_id,
+      songmid: rawData.hash,
+      source: 'kg',
+      interval: formatPlayTime(rawData.duration),
+      _interval: rawData.duration,
+      img: null,
+      lrc: null,
+      otherSource: null,
+      hash: rawData.hash,
+      types,
+      _types,
+      audioId: rawData.audio_id + '_' + rawData.hash,
+      typeUrl: {},
+    }
+  },
   handleResult(rawData) {
     // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
-      if (ids.has(item.audio_id)) return
-      ids.add(item.audio_id)
-      const types = []
-      const _types = {}
-      if (item.filesize !== 0) {
-        let size = sizeFormate(item.filesize)
-        types.push({ type: '128k', size, hash: item.hash })
-        _types['128k'] = {
-          size,
-          hash: item.hash,
-        }
+      const key = item.audio_id + item.hash
+      if (ids.has(key)) return
+      ids.add(key)
+      list.push(this.filterData(item))
+      for (const childItem of item.group) {
+        const key = item.audio_id + item.hash
+        if (ids.has(key)) return
+        ids.add(key)
+        list.push(this.filterData(childItem))
       }
-      if (item['320filesize'] !== 0) {
-        let size = sizeFormate(item['320filesize'])
-        types.push({ type: '320k', size, hash: item['320hash'] })
-        _types['320k'] = {
-          size,
-          hash: item['320hash'],
-        }
-      }
-      if (item.sqfilesize !== 0) {
-        let size = sizeFormate(item.sqfilesize)
-        types.push({ type: 'flac', size, hash: item.sqhash })
-        _types.flac = {
-          size,
-          hash: item.sqhash,
-        }
-      }
-      list.push({
-        singer: decodeName(item.singername),
-        name: decodeName(item.songname),
-        albumName: decodeName(item.album_name),
-        albumId: item.album_id,
-        songmid: item.audio_id,
-        source: 'kg',
-        interval: formatPlayTime(item.duration),
-        _interval: item.duration,
-        img: null,
-        lrc: null,
-        otherSource: null,
-        hash: item.hash,
-        types,
-        _types,
-        typeUrl: {},
-      })
     })
     return list
   },
