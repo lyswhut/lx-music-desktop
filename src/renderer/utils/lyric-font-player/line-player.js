@@ -168,7 +168,7 @@ module.exports = class LinePlayer {
   }
 
   setLyric(lyric, translationLyric) {
-    console.log(translationLyric)
+    // console.log(translationLyric)
     if (this.isPlay) this.pause()
     this.lyric = lyric
     this.translationLyric = translationLyric

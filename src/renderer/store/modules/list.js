@@ -207,6 +207,7 @@ const mutations = {
         if (item.typeUrl['320k']) delete item.typeUrl['320k']
         if (item.typeUrl.flac) delete item.typeUrl.flac
         if (item.typeUrl.wav) delete item.typeUrl.wav
+        if (item.lxlrc == '') item.lxlrc = null
       }
     }
   },

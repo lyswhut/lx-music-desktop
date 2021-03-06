@@ -239,7 +239,7 @@ export default {
     document.addEventListener('mousemove', this.handleMouseMsMove)
     document.addEventListener('mouseup', this.handleMouseMsUp)
     window.addEventListener('resize', this.handleResize)
-    console.log('object', this.$refs.dom_lyric_text)
+    // console.log('object', this.$refs.dom_lyric_text)
     this.setLyric(this.lyricLines)
   },
   beforeDestroy() {
