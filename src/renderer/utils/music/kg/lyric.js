@@ -2,7 +2,7 @@ import { httpFetch } from '../../request'
 import { decodeLyric } from './util'
 import { decodeName } from '../..'
 
-const headExp = /^.*\[id:\$00000000\]\n/
+const headExp = /^.*\[id:\$\w+\]\n/
 
 const parseLyric = str => {
   str = str.replace(/\r/g, '')
