@@ -386,12 +386,12 @@ export default {
         this.listMenu.itemMenuControl.file = true
         this.listMenu.itemMenuControl.start =
         this.listMenu.itemMenuControl.pause = false
-      // } else if (item.status === this.downloadStatus.ERROR || item.status === this.downloadStatus.PAUSE) {
-      //   this.listMenu.itemMenuControl.play =
-      //   this.listMenu.itemMenuControl.playLater =
-      //   this.listMenu.itemMenuControl.pause =
-      //   this.listMenu.itemMenuControl.file = false
-      //   this.listMenu.itemMenuControl.start = true
+      } else if (item.status === this.downloadStatus.ERROR || item.status === this.downloadStatus.PAUSE) {
+        this.listMenu.itemMenuControl.play =
+        this.listMenu.itemMenuControl.playLater =
+        this.listMenu.itemMenuControl.pause =
+        this.listMenu.itemMenuControl.file = false
+        this.listMenu.itemMenuControl.start = true
       } else {
         this.listMenu.itemMenuControl.play =
         this.listMenu.itemMenuControl.playLater =
