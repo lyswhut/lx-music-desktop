@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -60,7 +60,8 @@
     "build:renderer-lyric": "cross-env NODE_ENV=production webpack --config build-config/renderer-lyric/webpack.config.prod.js --progress --hide-modules",
     "build": "npm run clean:electron && npm run build:main && npm run build:renderer && npm run build:renderer-lyric",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly src",
-    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src"
+    "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src",
+    "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm update"
   },
   "browserslist": [
     "Electron 9.3.4"
@@ -181,7 +182,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^4.3.0",
     "del": "^6.0.0",
-    "electron": "^9.4.2",
+    "electron": "^9.4.4",
     "electron-builder": "^22.10.5",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.1.1",
