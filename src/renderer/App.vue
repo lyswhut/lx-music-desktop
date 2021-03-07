@@ -27,6 +27,7 @@ import { isLinux } from '../common/utils'
 import music from './utils/music'
 import { throttle, openUrl, compareVer, getPlayList, parseUrlParams } from './utils'
 import { base as eventBaseName } from './event/names'
+import apiSourceInfo from './utils/music/api-source-info'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 dnscache({
@@ -56,10 +57,16 @@ export default {
       isDT: false,
       isLinux,
       globalObj: {
-        apiSource: 'test',
+        apiSource: null,
         proxy: {},
         isShowPact: false,
         qualityList: {},
+        userApi: {
+          list: [],
+          status: false,
+          message: 'initing',
+          apis: {},
+        },
       },
       updateTimeout: null,
       envParams: {
@@ -137,8 +144,20 @@ export default {
     searchHistoryList(n) {
       this.saveSearchHistoryList(n)
     },
-    'globalObj.apiSource'(n) {
-      this.globalObj.qualityList = music.supportQuality[n]
+    'globalObj.apiSource'(n, o) {
+      if (/^user_api/.test(n)) {
+        this.globalObj.qualityList = {}
+        this.globalObj.userApi.status = false
+        this.globalObj.userApi.message = 'initing'
+      } else {
+        this.globalObj.qualityList = music.supportQuality[n]
+      }
+      if (o === null) return
+      rendererInvoke(NAMES.mainWindow.set_user_api, n).catch(err => {
+        console.log(err)
+        let api = apiSourceInfo.find(api => !api.disabled)
+        if (api) this.globalObj.apiSource = api.id
+      })
       if (n != this.setting.apiSource) {
         this.setSetting(Object.assign({}, this.setting, {
           apiSource: n,
@@ -244,8 +263,13 @@ export default {
 
       this.listenEvent()
       asyncTask.push(this.initData())
+      asyncTask.push(this.initUserApi())
       this.globalObj.apiSource = this.setting.apiSource
-      this.globalObj.qualityList = music.supportQuality[this.setting.apiSource]
+      if (/^user_api/.test(this.setting.apiSource)) {
+        rendererInvoke(NAMES.mainWindow.set_user_api, this.setting.apiSource)
+      } else {
+        this.globalObj.qualityList = music.supportQuality[this.setting.apiSource]
+      }
       this.globalObj.proxy = Object.assign({}, this.setting.network.proxy)
       window.globalObj = this.globalObj
 
@@ -344,6 +368,72 @@ export default {
           index: info.index,
         })
       })
+    },
+    initUserApi() {
+      return Promise.all([
+        rendererOn(NAMES.mainWindow.user_api_status, (event, { status, message, apiInfo }) => {
+          // console.log(apiInfo)
+          this.globalObj.userApi.status = status
+          this.globalObj.userApi.message = message
+          if (status) {
+            if (apiInfo.id === this.setting.apiSource) {
+              let apis = {}
+              let qualitys = {}
+              for (const [source, { actions, type, qualitys: sourceQualitys }] of Object.entries(apiInfo.sources)) {
+                if (type != 'music') continue
+                apis[source] = {}
+                for (const action of actions) {
+                  switch (action) {
+                    case 'musicUrl':
+                      apis[source].getMusicUrl = (songInfo, type) => {
+                        const requestKey = `request__${Math.random().toString().substring(2)}`
+                        return {
+                          canceleFn() {
+                            rendererInvoke(NAMES.mainWindow.request_user_api_cancel, requestKey)
+                          },
+                          promise: rendererInvoke(NAMES.mainWindow.request_user_api, {
+                            requestKey,
+                            data: {
+                              source: source,
+                              action: 'musicUrl',
+                              info: {
+                                type,
+                                musicInfo: songInfo,
+                              },
+                            },
+                          }).then(res => {
+                            // console.log(res)
+                            if (!/^https?:/.test(res.data.url)) return Promise.reject(new Error('Get url failed'))
+                            return { type, url: res.data.url }
+                          }).catch(err => {
+                            console.log(err.message)
+                            return Promise.reject(err)
+                          }),
+                        }
+                      }
+                      break
+
+                    default:
+                      break
+                  }
+                }
+                qualitys[source] = sourceQualitys
+              }
+              this.globalObj.qualityList = qualitys
+              this.globalObj.userApi.apis = apis
+            }
+          }
+        }),
+        rendererInvoke(NAMES.mainWindow.get_user_api_list).then(res => {
+          // console.log(res)
+          if (![...apiSourceInfo.map(s => s.id), ...res.map(s => s.id)].includes(this.setting.apiSource)) {
+            console.warn('reset api')
+            let api = apiSourceInfo.find(api => !api.disabled)
+            if (api) this.globalObj.apiSource = api.id
+          }
+          this.globalObj.userApi.list = res
+        }),
+      ])
     },
     showUpdateModal() {
       (this.version.newVersion && this.version.newVersion.history

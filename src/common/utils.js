@@ -1,7 +1,7 @@
 const log = require('electron-log')
 const Store = require('electron-store')
 const { defaultSetting, overwriteSetting } = require('./defaultSetting')
-const apiSource = require('../renderer/utils/music/api-source-info')
+// const apiSource = require('../renderer/utils/music/api-source-info')
 const defaultHotKey = require('./defaultHotKey')
 const { dialog, app } = require('electron')
 const path = require('path')
@@ -115,10 +115,10 @@ exports.mergeSetting = (setting, version) => {
     setting = defaultSettingCopy
   }
 
-  if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
-    let api = apiSource.find(api => !api.disabled)
-    if (api) setting.apiSource = api.id
-  }
+  // if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
+  //   let api = apiSource.find(api => !api.disabled)
+  //   if (api) setting.apiSource = api.id
+  // }
 
   return { setting, version: defaultVersion }
 }

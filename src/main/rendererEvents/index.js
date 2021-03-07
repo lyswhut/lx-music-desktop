@@ -19,3 +19,5 @@ require('./playList')
 require('./data')
 
 require('./kw_decodeLyric')
+
+require('./userApi')

@@ -17,8 +17,8 @@ module.exports = merge(baseConfig, {
         NODE_ENV: '"development"',
       },
       __static: `"${path.join(__dirname, '../../src/static').replace(/\\/g, '\\\\')}"`,
+      __userApi: `"${path.join(__dirname, '../../src/main/modules/userApi').replace(/\\/g, '\\\\')}"`,
     }),
-    new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrorsPlugin({
       onErrors(severity, errors) { // Silent warning from electron-debug
         if (severity != 'warning') return

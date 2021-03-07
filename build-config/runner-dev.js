@@ -179,6 +179,9 @@ function startElectron() {
 function electronLog(data, color) {
   let log = data.toString()
   if (/[0-9A-z]+/.test(log)) {
+    // 抑制 user api 窗口使用 data url 加载页面时 vue扩展 的报错日志刷屏的问题
+    if (color == 'red' && typeof log === 'string' && log.includes('"Extension server error: Operation failed: Permission denied", source: devtools://devtools/bundled/extensions/extensions.js')) return
+
     console.log(chalk[color](log))
   }
 }

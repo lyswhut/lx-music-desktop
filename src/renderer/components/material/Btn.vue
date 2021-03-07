@@ -1,5 +1,5 @@
 <template lang="pug">
-  button(:class="[$style.btn, min ? $style.min : null]" :disabled="disabled" @click="$emit('click', $event)")
+  button(:class="[$style.btn, min ? $style.min : null, outline ? $style.outline : null]" :disabled="disabled" @click="$emit('click', $event)")
     slot
 </template>
 
@@ -8,6 +8,10 @@ export default {
   props: {
     min: {
       type: Boolean,
+    },
+    outline: {
+      type: Boolean,
+      default: false,
     },
     disabled: {
       type: Boolean,
@@ -36,6 +40,10 @@ export default {
     opacity: .4;
   }
 
+  &.outline {
+    background-color: transparent;
+  }
+
   &:hover {
     background-color: @color-btn-hover;
   }
@@ -54,6 +62,9 @@ each(@themes, {
     .btn {
       color: ~'@{color-@{value}-btn}';
       background-color: ~'@{color-@{value}-btn-background}';
+      &.outline {
+        background-color: transparent;
+      }
       &:hover {
         background-color: ~'@{color-@{value}-btn-hover}';
       }
