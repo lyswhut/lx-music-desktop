@@ -468,6 +468,9 @@ each(@themes, {
       :global {
         .lrc-content {
           &.active {
+            .translation {
+              color: ~'@{color-@{value}-theme}';
+            }
             .line {
               color: ~'@{color-@{value}-theme}';
             }
