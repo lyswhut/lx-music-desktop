@@ -396,3 +396,14 @@ export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).c
   return rendererInvoke(NAMES.mainWindow.get_playlist, true)
 })
 
+// 解析URL参数为对象
+export const parseUrlParams = str => {
+  const params = {}
+  if (typeof str !== 'string') return params
+  const paramsArr = str.split('&')
+  for (const param of paramsArr) {
+    let [key, value] = param.split('=')
+    params[key] = value
+  }
+  return params
+}

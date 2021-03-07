@@ -274,7 +274,7 @@ export default {
         this.clickIndex = index
         return
       }
-      this.testPlay(index)
+      if (this.assertApiSupport(this.listInfo.list[index].source)) this.testPlay(index)
       this.clickTime = 0
       this.clickIndex = -1
     },
@@ -288,14 +288,6 @@ export default {
           break
         case 'play':
           this.testPlay(info.index)
-          break
-        case 'playLater':
-          if (this.selectedData.length) {
-            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
-            this.resetSelect()
-          } else {
-            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.list[info.index] }])
-          }
           break
         case 'listAdd':
           this.musicInfo = this.listInfo.list[info.index]
@@ -479,6 +471,14 @@ export default {
             this.removeAllSelect()
           }
           this.testPlay(index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.listInfo.list[index] }])
+          }
           break
         case 'addTo':
           if (this.selectedData.length) {

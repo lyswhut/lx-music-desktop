@@ -50,10 +50,12 @@ const sources = {
 export default {
   ...sources,
   init() {
+    const tasks = []
     for (let source of sources.sources) {
       let sm = sources[source.id]
-      sm && sm.init && sm.init()
+      sm && sm.init && tasks.push(sm.init())
     }
+    return Promise.all(tasks)
   },
   supportQuality,
 
@@ -74,26 +76,31 @@ export default {
       return tempResult
     }
     const trimStr = str => typeof str == 'string' ? str.trim() : str
-    const sortedSinger = sortSingle(musicInfo.singer)
+    const sortedSinger = String(sortSingle(musicInfo.singer)).toLowerCase()
     const musicName = trimStr(musicInfo.name)
+    const lowerCaseName = String(musicName).toLowerCase()
+    const lowerCaseAlbumName = String(musicInfo.albumName).toLowerCase()
     for (const source of sources.sources) {
       if (!sources[source.id].musicSearch || source.id === musicInfo.source || source.id === 'xm') continue
 
       tasks.push(sources[source.id].musicSearch.search(`${musicName} ${musicInfo.singer || ''}`.trim(), 1, { limit: 10 }).then(res => {
         for (const item of res.list) {
-          item.sortedSinger = sortSingle(item.singer)
+          item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
           item.name = trimStr(item.name)
+          item.lowerCaseName = String(item.name).toLowerCase()
+          item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
+          // console.log(lowerCaseName, item.lowerCaseName)
           if (
             (
               item.sortedSinger === sortedSinger &&
-              (item.name === musicName || item.interval === musicInfo.interval)
+              (item.lowerCaseName === lowerCaseName || item.interval === musicInfo.interval)
             ) ||
             (
-              item.interval === musicInfo.interval && item.name === musicName &&
+              item.interval === musicInfo.interval && item.lowerCaseName === lowerCaseName &&
               (item.sortedSinger.includes(sortedSinger) || sortedSinger.includes(item.sortedSinger))
             ) ||
             (
-              item.name === musicName && item.albumName === musicInfo.albumName &&
+              item.lowerCaseName === lowerCaseName && item.lowerCaseAlbumName === lowerCaseAlbumName &&
               item.interval === musicInfo.interval
             )
           ) {
@@ -106,12 +113,13 @@ export default {
     const result = (await Promise.all(tasks)).filter(s => s)
     const newResult = []
     if (result.length) {
-      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.name === musicName && item.interval === musicInfo.interval))
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName && item.interval === musicInfo.interval))
       newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.interval === musicInfo.interval))
-      newResult.push(...sortMusic(result, item => item.name === musicName && item.sortedSinger === sortedSinger && item.albumName === musicInfo.albumName))
-      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.name === musicName))
+      newResult.push(...sortMusic(result, item => item.lowerCaseName === lowerCaseName && item.sortedSinger === sortedSinger && item.lowerCaseAlbumName === lowerCaseAlbumName))
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName))
       for (const item of result) {
         delete item.sortedSinger
+        delete item.lowerCaseName
       }
       newResult.push(...result)
     }

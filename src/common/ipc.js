@@ -2,11 +2,17 @@ const { ipcMain, ipcRenderer } = require('electron')
 const names = require('./ipcNames')
 
 
-exports.mainOn = (event, callback) => {
-  ipcMain.on(event, callback)
+exports.mainOn = (name, callback) => {
+  ipcMain.on(name, callback)
 }
-exports.mainOnce = (event, callback) => {
-  ipcMain.once(event, callback)
+exports.mainOnce = (name, callback) => {
+  ipcMain.once(name, callback)
+}
+exports.mainOff = (name, callback) => {
+  ipcMain.removeListener(name, callback)
+}
+exports.mainOffAll = name => {
+  ipcMain.removeAllListeners(name)
 }
 
 exports.mainHandle = (name, callback) => {
@@ -14,6 +20,9 @@ exports.mainHandle = (name, callback) => {
 }
 exports.mainHandleOnce = (name, callback) => {
   ipcMain.handleOnce(name, callback)
+}
+exports.mainHandleRemove = name => {
+  ipcMain.removeListener(name)
 }
 
 exports.mainSend = (window, name, params) => {
@@ -32,6 +41,12 @@ exports.rendererOn = (name, callback) => {
 }
 exports.rendererOnce = (name, callback) => {
   ipcRenderer.once(name, callback)
+}
+exports.rendererOff = (name, callback) => {
+  ipcRenderer.removeListener(name, callback)
+}
+exports.rendererOffAll = name => {
+  ipcRenderer.removeAllListeners(name)
 }
 
 exports.NAMES = names

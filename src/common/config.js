@@ -51,6 +51,6 @@ module.exports = {
     },
   ],
   navigationUrlWhiteList: [
-    /^https:\/\/www\.xiami\.com/,
+
   ],
 }

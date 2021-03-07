@@ -54,7 +54,7 @@
                 td(style="width: 9%;")
                   span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
                 td(style="width: 15%; padding-left: 0; padding-right: 0;")
-                  material-list-buttons(:index="index" @btn-click="handleListBtnClick")
+                  material-list-buttons(:index="index" @btn-click="handleListBtnClick" :download-btn="assertApiSupport(item.source)")
                   //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
                   //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
                   //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
@@ -569,7 +569,7 @@ export default {
       }
     },
     testPlay(index) {
-      if (!this.assertApiSupport(this.list[index].source)) return
+      // if (!this.assertApiSupport(this.list[index].source)) return
       this.setPlayList({ list: this.listData, index })
     },
     handleRemove(index) {
@@ -579,7 +579,7 @@ export default {
       switch (info.action) {
         case 'download': {
           const minfo = this.list[info.index]
-          if (!this.assertApiSupport(minfo.source)) return
+          // if (!this.assertApiSupport(minfo.source)) return
           this.musicInfo = minfo
           this.$nextTick(() => {
             this.isShowDownload = true
@@ -732,9 +732,9 @@ export default {
     },
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
-      this.listMenu.itemMenuControl.play =
-        this.listMenu.itemMenuControl.playLater =
-        this.listMenu.itemMenuControl.download =
+      // this.listMenu.itemMenuControl.play =
+      //   this.listMenu.itemMenuControl.playLater =
+      this.listMenu.itemMenuControl.download =
         this.assertApiSupport(this.list[index].source)
       let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
       if (dom_selected) dom_selected.classList.remove('selected')

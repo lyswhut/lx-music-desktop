@@ -1,3 +1,5 @@
+import musicSdk from '../../utils/music'
+
 let allList = {}
 window.allList = allList
 
@@ -48,7 +50,12 @@ const getters = {
 
 // actions
 const actions = {
-
+  getOtherSource({ state, commit }, musicInfo) {
+    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+      commit('setOtherSource', { musicInfo, otherSource })
+      return otherSource
+    })
+  },
 }
 
 // mitations
@@ -57,20 +64,6 @@ const mutations = {
     if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list, location: defaultList.location })
     if (loveList != null) Object.assign(state.loveList, { list: loveList.list, location: loveList.location })
     if (userList != null) state.userList = userList
-    if (window.localStorage.getItem('isResetOtherSource') != '1') {
-      for (const item of defaultList.list) {
-        if (item.otherSource) item.otherSource = null
-      }
-      for (const item of loveList.list) {
-        if (item.otherSource) item.otherSource = null
-      }
-      for (const list of userList) {
-        for (const item of list.list) {
-          if (item.otherSource) item.otherSource = null
-        }
-      }
-      window.localStorage.setItem('isResetOtherSource', '1')
-    }
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
   },
@@ -204,6 +197,22 @@ const mutations = {
     this.commit('list/listRemoveMultiple', { id, list: musicInfos })
 
     targetList.list.splice(sortNum - 1, 0, ...musicInfos)
+  },
+  clearCache() {
+    const lists = Object.values(allList)
+    for (const { list } of lists) {
+      for (const item of list) {
+        if (item.otherSource) item.otherSource = null
+        if (item.typeUrl['128k']) delete item.typeUrl['128k']
+        if (item.typeUrl['320k']) delete item.typeUrl['320k']
+        if (item.typeUrl.flac) delete item.typeUrl.flac
+        if (item.typeUrl.wav) delete item.typeUrl.wav
+        // if (item.lxlrc == '') item.lxlrc = null
+      }
+    }
+  },
+  setOtherSource(state, { musicInfo, otherSource }) {
+    musicInfo.otherSource = otherSource
   },
 }
 

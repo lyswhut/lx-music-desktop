@@ -50,7 +50,7 @@ export default {
         singer: '',
       },
       page: 1,
-      total: 10,
+      total: 0,
       maxPage: 1,
       limit: 20,
       isHotLoading: true,
