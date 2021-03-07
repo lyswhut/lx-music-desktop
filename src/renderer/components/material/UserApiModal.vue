@@ -15,7 +15,7 @@ material-modal(:show="visible" bg-close @close="handleClose")
     div(:class="$style.note")
       p(:class="[$style.ruleLink]")
         | {{$t('material.user_api_modal.readme')}}
-        span.hover.underline(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')" tips="https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md") FAQ.md
+        span.hover.underline(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%BA%90%E8%84%9A%E6%9C%AC%E7%BC%96%E5%86%99%E8%AF%B4%E6%98%8E')" tips="https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md") FAQ.md
       p {{$t('material.user_api_modal.note')}}
     div(:class="$style.footer")
       material-btn(:class="$style.footerBtn" @click="handleImport") {{$t('material.user_api_modal.btn_import')}}
