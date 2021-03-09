@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '12.x'
       - name: Cache file
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: |
             node_modules
@@ -27,7 +27,8 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
-      - run: npm install && npm run publish:gh
+      - name: Build & Release
+        run: npm install && npm run publish:gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,7 +43,7 @@ jobs:
         with:
           node-version: '12.x'
       - name: Cache file
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: |
             node_modules
@@ -52,7 +53,8 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
-      - run: npm install && npm run publish:gh:mac
+      - name: Build & Release
+        run: npm install && npm run publish:gh:mac
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
@@ -63,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install package
-      - run: sudo apt-get install -y rpm bsdtar
+        run: sudo apt-get install -y rpm bsdtar
 
       - name: Check out git repository
         uses: actions/checkout@v2
@@ -73,7 +75,7 @@ jobs:
         with:
           node-version: '12.x'
       - name: Cache file
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: |
             node_modules
@@ -83,6 +85,7 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
-      - run: npm install && npm run publish:gh:linux
+      - name: Build & Release
+        run: npm install && npm run publish:gh:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
