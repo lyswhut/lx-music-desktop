@@ -28,6 +28,8 @@
     "publish:win:7z": "npm run publish:win:7z:x64 && npm run publish:win:7z:x86",
     "publish:win:7z:x64": "cross-env TARGET=green ARCH=win_x64 electron-builder -w=7z --x64 -p always",
     "publish:win:7z:x86": "cross-env TARGET=green ARCH=win_x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
+    "publish:win:7z:x64:noalways": "cross-env TARGET=green ARCH=win_x64 electron-builder -w=7z --x64 -p onTagOrDraft",
+    "publish:dev": "node build-config/pack.js && npm run publish:win:setup && npm run publish:win:7z:x64:noalways && npm run publish:win:7z:x86",
     "publish:gh:mac": "node build-config/pack.js && npm run publish:mac",
     "publish:mac": "npm run publish:mac:dmg",
     "publish:mac:dmg": "electron-builder -m=dmg -p onTagOrDraft",

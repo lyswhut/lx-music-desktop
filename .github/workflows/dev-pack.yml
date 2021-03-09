@@ -3,7 +3,7 @@ name: Build/release
 on:
   push:
     branches:
-      - master
+      - dev
 
 jobs:
   Windows:
@@ -28,7 +28,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
       - name: Build & Release
-        run: npm install && npm run publish:gh
+        run: npm install && npm run publish:dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
