@@ -313,7 +313,7 @@ export default {
             l.sourceListId = id
             if (!needSave) needSave = true
           })
-          if (needSave) this.saveUserList(userList)
+          if (needSave) this.saveMyList({ userList })
         } else {
           userList = this.userList
         }
