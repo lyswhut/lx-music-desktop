@@ -16,8 +16,18 @@ jobs:
         uses: actions/setup-node@v2
           with:
             node-version: '12'
-
-      - run: npm run publish:gh
+      - name: Cache file
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            %APPDATA%\npm-cache
+            %LOCALAPPDATA%\electron\Cache
+            %LOCALAPPDATA%\electron-builder\Cache
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - run: npm install && npm run publish:gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -31,8 +41,21 @@ jobs:
         uses: actions/setup-node@v2
           with:
             node-version: '12'
-      - run: npm run publish:gh:mac
+      - name: Cache file
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - run: npm install && npm run publish:gh:mac
         env:
+          ELECTRON_CACHE: $HOME/.cache/electron
+          ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   Linux:
@@ -49,6 +72,17 @@ jobs:
         uses: actions/setup-node@v2
           with:
             node-version: '12'
-      - run: npm run publish:gh:linux
+      - name: Cache file
+      - uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+      - run: npm install && npm run publish:gh:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
