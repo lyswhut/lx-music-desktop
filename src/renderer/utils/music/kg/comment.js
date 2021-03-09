@@ -31,8 +31,12 @@ export default {
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取热门评论失败')
     return { source: 'kg', comments: this.filterComment(body.weightList || []) }
   },
-  async getReplyComment({ songmid }, replyId, page = 1, limit = 100) {
+  async getReplyComment({ songmid, audioId }, replyId, page = 1, limit = 100) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
+
+    songmid = songmid.length == 32 // 修复歌曲ID存储变更导致图片获取失败的问题
+      ? audioId.split('_')[0]
+      : songmid
 
     const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getReplyWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&kugouid=687373022&appid=1001&childrenid=${songmid}&tid=${replyId}`, {
       headers: {

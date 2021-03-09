@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.8.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.8.1...v1.8.2) - 2021-03-09
+
+### 修复
+
+- 修复歌曲ID存储变更导致酷狗图片获取失败的问题
+
 ## [1.8.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.8.0...v1.8.1) - 2021-03-07
 
 ### 修复

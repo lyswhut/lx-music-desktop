@@ -48,7 +48,7 @@ export default {
       name: decodeName(rawData.songname),
       albumName: decodeName(rawData.album_name),
       albumId: rawData.album_id,
-      songmid: rawData.hash,
+      songmid: rawData.audio_id,
       source: 'kg',
       interval: formatPlayTime(rawData.duration),
       _interval: rawData.duration,
@@ -58,7 +58,6 @@ export default {
       hash: rawData.hash,
       types,
       _types,
-      audioId: rawData.audio_id + '_' + rawData.hash,
       typeUrl: {},
     }
   },
