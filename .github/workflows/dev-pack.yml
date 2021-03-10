@@ -3,9 +3,7 @@ name: Build Beta
 on:
   push:
     branches:
-      - dev
-    tags:
-      - '*-beta*'
+      - beta
 
 jobs:
   Windows:

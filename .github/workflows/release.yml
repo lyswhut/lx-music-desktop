@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '!-beta*'
 
 jobs:
   Windows:
