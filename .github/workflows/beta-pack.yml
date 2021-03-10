@@ -1,9 +1,9 @@
-name: Build
+name: Build Beta
 
 on:
   push:
     branches:
-      - master
+      - beta
 
 jobs:
   Windows:
@@ -34,7 +34,7 @@ jobs:
         run: npm install
 
       - name: Build & Release
-        run: npm run publish:gh
+        run: npm run publish:dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
