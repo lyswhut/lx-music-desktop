@@ -33,8 +33,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build & Release
-        run: npm run publish:gh
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: |
+          npm run publish:win:setup:always
+          npm run publish:win:7z:x64
+          npm run publish:win:7z:x86
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -66,8 +72,11 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build & Release
-        run: npm run publish:gh:mac
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: npm run publish:mac:dmg:always
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
@@ -104,8 +113,18 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Build & Release
-        run: npm run publish:gh:linux
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: |
+          npm run publish:linux:deb:x64:always
+          npm run publish:linux:deb:x86
+          npm run publish:linux:deb:arm64
+          npm run publish:linux:deb:armv7l
+          npm run publish:linux:appImage
+          npm run publish:linux:rpm
+          npm run publish:linux:pacman
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
