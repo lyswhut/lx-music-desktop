@@ -1,9 +1,11 @@
-name: Build/release
+name: Build
 
 on:
   push:
     branches:
       - master
+    tags:
+      - '!-beta*'
 
 jobs:
   Windows:
@@ -12,10 +14,12 @@ jobs:
     steps:
       - name: Check out git repository
         uses: actions/checkout@v2
+
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '12.x'
+
       - name: Cache file
         uses: actions/cache@v2
         with:
@@ -27,8 +31,12 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Build & Release
-        run: npm install && npm run publish:gh
+        run: npm run publish:gh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
@@ -39,10 +47,12 @@ jobs:
     steps:
       - name: Check out git repository
         uses: actions/checkout@v2
+
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '12.x'
+
       - name: Cache file
         uses: actions/cache@v2
         with:
@@ -54,8 +64,12 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Build & Release
-        run: npm install && npm run publish:gh:mac
+        run: npm run publish:gh:mac
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
@@ -76,6 +90,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12.x'
+
       - name: Cache file
         uses: actions/cache@v2
         with:
@@ -87,8 +102,12 @@ jobs:
           key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Build & Release
-        run: npm install && npm run publish:gh:linux
+        run: npm run publish:gh:linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
