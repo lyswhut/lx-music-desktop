@@ -592,7 +592,7 @@ export default {
       .translation {
         transition: @transition-theme !important;
         transition-property: font-size, color;
-        font-size: 1em;
+        font-size: .9em;
         margin-top: 5px;
       }
       .line {
@@ -606,7 +606,7 @@ export default {
           color: @color-theme;
         }
         .translation {
-          font-size: 1.2em;
+          font-size: 1.1em;
           color: @color-theme;
         }
         span {
