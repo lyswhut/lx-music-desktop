@@ -27,7 +27,7 @@ mainHandle(ipcWinLyricNames.get_lyric_config, async() => {
   return {
     config: global.appSetting.desktopLyric,
     languageId: global.appSetting.langId,
-    isShowLyricTransition: global.appSetting.player.isShowLyricTransition,
+    isShowLyricTranslation: global.appSetting.player.isShowLyricTranslation,
     isPlayLxlrc: global.appSetting.player.isPlayLxlrc,
   }
 })

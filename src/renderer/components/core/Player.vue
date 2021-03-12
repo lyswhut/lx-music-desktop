@@ -272,7 +272,7 @@ export default {
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
     },
-    'setting.player.isShowLyricTransition'() {
+    'setting.player.isShowLyricTranslation'() {
       this.setLyric()
     },
     'setting.player.isPlayLxlrc'() {
@@ -860,9 +860,9 @@ export default {
     setLyric() {
       window.lrc.setLyric(
         this.setting.player.isPlayLxlrc && this.musicInfo.lxlrc ? this.musicInfo.lxlrc : this.musicInfo.lrc,
-        this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc : '',
+        this.setting.player.isShowLyricTranslation && this.musicInfo.tlrc ? this.musicInfo.tlrc : '',
         // (
-        //   this.setting.player.isShowLyricTransition && this.musicInfo.tlrc
+        //   this.setting.player.isShowLyricTranslation && this.musicInfo.tlrc
         //     ? (this.musicInfo.tlrc + '\n')
         //     : ''
         // ) + (this.musicInfo.lrc || ''),

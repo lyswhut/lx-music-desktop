@@ -182,6 +182,11 @@ exports.initSetting = () => {
       electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
       delete setting.list.scroll
     }
+
+    if (setting.player.isShowLyricTransition != null) { // 修正拼写问题 v1.8.2 及以前
+      setting.player.isShowLyricTranslation = setting.player.isShowLyricTransition
+      delete setting.player.isShowLyricTransition
+    }
   }
 
   // 从我的列表分离下载列表 v1.7.0 后
@@ -197,8 +202,7 @@ exports.initSetting = () => {
   if (!newSetting.leaderboard.tabId.includes('__')) newSetting.leaderboard.tabId = 'kw__16'
 
   // newSetting.controlBtnPosition = 'right'
-  electronStore_config.set('version', settingVersion)
-  electronStore_config.set('setting', newSetting)
+  electronStore_config.set({ version: settingVersion, setting: newSetting })
   return { version: settingVersion, setting: newSetting }
 }
 

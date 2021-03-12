@@ -11,7 +11,7 @@ const defaultSetting = {
     isMute: false,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
-    isShowLyricTransition: false,
+    isShowLyricTranslation: false,
     isPlayLxlrc: true,
     isSavePlayTime: false,
   },

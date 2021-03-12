@@ -13,7 +13,7 @@ const setLrcConfig = () => {
     mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, {
       config: desktopLyric,
       languageId: global.appSetting.langId,
-      isShowLyricTransition: global.appSetting.player.isShowLyricTransition,
+      isShowLyricTranslation: global.appSetting.player.isShowLyricTranslation,
       isPlayLxlrc: global.appSetting.player.isPlayLxlrc,
     })
     if (isLock != desktopLyric.isLock) {
