@@ -29,6 +29,8 @@ require('./env')
 // Is disable hardware acceleration
 if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
 if (global.envParams.cmdParams.dt == null && global.envParams.cmdParams.nt != null) global.envParams.cmdParams.dt = global.envParams.cmdParams.nt
+if (global.envParams.cmdParams.dhmkh) app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling')
+
 // https://github.com/electron/electron/issues/22691
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
