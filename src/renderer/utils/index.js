@@ -379,7 +379,7 @@ export const getProxyInfo = () => window.globalObj.proxy.enable
 export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined
 
 export const getSetting = () => rendererInvoke(NAMES.mainWindow.get_setting)
-export const saveSetting = () => rendererInvoke(NAMES.mainWindow.set_app_setting)
+export const saveSetting = setting => rendererInvoke(NAMES.mainWindow.set_app_setting, setting)
 
 export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).catch(error => {
   rendererInvoke(NAMES.mainWindow.get_data_path).then(dataPath => {

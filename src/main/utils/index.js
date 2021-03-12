@@ -1,6 +1,6 @@
 const Store = require('electron-store')
 const { windowSizeList } = require('../../common/config')
-const { objectDeepMerge, throttle } = require('../../common/utils')
+const { objectDeepMerge, throttle, initSetting } = require('../../common/utils')
 
 exports.getWindowSizeInfo = ({ windowSizeId = 1 } = {}) => {
   return windowSizeList.find(i => i.id === windowSizeId) || windowSizeList[0]
@@ -32,10 +32,16 @@ exports.saveAppHotKeyConfig = config => {
   saveHotKeyConfig(config)
 }
 
-const saveSetting = throttle(n => {
-  electronStore_config.set('setting', n)
-})
-exports.updateSetting = settings => {
+// const saveSetting = throttle(n => {
+//   electronStore_config.set('setting', n)
+// })
+exports.updateSetting = (settings) => {
   objectDeepMerge(global.appSetting, settings)
-  saveSetting(global.appSetting)
+  electronStore_config.set('setting', global.appSetting)
+  exports.initSetting()
+}
+exports.initSetting = () => {
+  const info = initSetting()
+  global.appSetting = info.setting
+  global.appSettingVersion = info.version
 }

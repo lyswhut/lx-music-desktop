@@ -279,6 +279,8 @@ import {
   clearCache,
   sizeFormate,
   setWindowSize,
+  getSetting,
+  saveSetting,
 } from '../utils'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
@@ -289,6 +291,7 @@ import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
 import { gzip, gunzip } from 'zlib'
+import music from '../utils/music'
 
 let hotKeyTargetInput
 let newHotKey
@@ -748,6 +751,8 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      await this.refreshSetting(this.setting, this.settingVersion)
     },
     exportPlayList(path) {
       const data = JSON.parse(JSON.stringify({
@@ -773,9 +778,6 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      const { version: settingVersion, setting } = mergeSetting(allData.setting)
-      setting.isAgreePact = false
-      this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
       if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
@@ -784,6 +786,11 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      const { version: settingVersion, setting } = mergeSetting(allData.setting)
+      setting.isAgreePact = false
+
+      await this.refreshSetting(setting, settingVersion)
     },
     async exportAllData(path) {
       let allData = JSON.parse(JSON.stringify({
@@ -906,10 +913,18 @@ export default {
       let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
-    refreshSetting(setting, version) {
+    async refreshSetting(newSetting, newVersion) {
+      await saveSetting(newSetting)
+      const { setting, version } = await getSetting()
       this.setSetting(setting)
       this.setSettingVersion(version)
       if (setting.windowSizeId != null) this.handleWindowSizeChange(null, setting.windowSizeId)
+      window.globalObj.apiSource = setting.apiSource
+      if (/^user_api/.test(setting.apiSource)) {
+        rendererInvoke(NAMES.mainWindow.set_user_api, setting.apiSource)
+      } else {
+        window.globalObj.qualityList = music.supportQuality[setting.apiSource]
+      }
       for (let key of Object.keys(setting.network.proxy)) {
         window.globalObj.proxy[key] = setting.network.proxy[key]
       }

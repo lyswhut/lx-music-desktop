@@ -34,8 +34,8 @@ app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 
 const { navigationUrlWhiteList } = require('../common/config')
-const { getWindowSizeInfo } = require('./utils')
-const { isMac, isLinux, initSetting, initHotKey } = require('../common/utils')
+const { getWindowSizeInfo, initSetting, updateSetting } = require('./utils')
+const { isMac, isLinux, initHotKey } = require('../common/utils')
 
 
 // https://github.com/electron/electron/issues/18397
@@ -130,11 +130,16 @@ global.appHotKey = {
   state: null,
 }
 
+global.lx_core = {
+  setAppConfig(setting, name) {
+    updateSetting(setting)
+    global.lx_event.common.configStatus(name)
+  },
+}
+
 function init() {
   console.log('init')
-  const info = initSetting()
-  global.appSetting = info.setting
-  global.appSettingVersion = info.version
+  initSetting()
   global.appHotKey.config = initHotKey()
   global.lx_event.common.initSetting()
   global.lx_event.hotKey.init()
