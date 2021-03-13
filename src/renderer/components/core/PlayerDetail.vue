@@ -606,7 +606,7 @@ export default {
           color: @color-theme;
         }
         .translation {
-          font-size: 1.1em;
+          font-size: 1em;
           color: @color-theme;
         }
         span {
