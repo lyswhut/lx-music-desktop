@@ -34,10 +34,10 @@ exports.saveAppHotKeyConfig = config => {
 exports.updateSetting = (settings) => {
   objectDeepMerge(global.appSetting, settings)
   getStore('config').set('setting', global.appSetting)
-  exports.initSetting()
+  exports.initSetting(false)
 }
-exports.initSetting = () => {
-  const info = initSetting()
+exports.initSetting = (isShowErrorAlert = true) => {
+  const info = initSetting(isShowErrorAlert)
   global.appSetting = info.setting
   global.appSettingVersion = info.version
 }

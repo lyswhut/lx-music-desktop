@@ -123,9 +123,10 @@ exports.mergeSetting = (setting, version) => {
 /**
  * 初始化设置
  * @param {*} setting
+ * @param {*} isShowErrorAlert
  */
-exports.initSetting = () => {
-  const electronStore_list = getStore('playList')
+exports.initSetting = isShowErrorAlert => {
+  const electronStore_list = getStore('playList', true, isShowErrorAlert)
   const electronStore_config = getStore('config')
   const electronStore_downloadList = getStore('downloadList')
 
