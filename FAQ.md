@@ -123,7 +123,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看下面的 
 
 尝试更换网络，如切换到移动网络。
 
-### 启用软件时导致耳机意外关机
+## 使用软件时导致耳机意外关机
 
 据反馈，漫步者部分型号的耳机与本软件一起使用时将会导致耳机意外关机，
 详情看：<https://github.com/lyswhut/lx-music-desktop/issues/457>，
@@ -170,7 +170,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看下面的 
 
 ## 杀毒软件提示有病毒或恶意行为
 
-本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)。v1.8.2之前的版本构建日志：[windows包](https://ci.appveyor.com/project/lyswhut/lx-music-desktop)、[Mac/Linux包](https://travis-ci.com/github/lyswhut/lx-music-desktop)<br>
+本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)<br>
 尽管如此，但这不意味着软件是100%安全的，由于软件使用了第三方依赖，当这些依赖存在恶意行为时（[供应链攻击](https://docs.microsoft.com/zh-cn/windows/security/threat-protection/intelligence/supply-chain-malware)），软件也将会受到牵连，所以我只能尽量选择使用较多人用、信任度较高的依赖。<br>
 当然，以上说明建立的前提是在你所用的安装包是从**本项目主页上写的链接**下载的，或者有相关能力者还可以下载源代码自己构建安装包。
 
