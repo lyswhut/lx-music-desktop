@@ -3,7 +3,7 @@ const getStore = require('@common/store')
 
 
 mainHandle(ipcMainWindowNames.get_playlist, async(event, isIgnoredError = false) => {
-  const electronStore_list = getStore('playList', isIgnoredError)
+  const electronStore_list = getStore('playList', isIgnoredError, false)
 
   return {
     defaultList: electronStore_list.get('defaultList'),

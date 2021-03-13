@@ -12,24 +12,30 @@ const stores = {}
  * @param {*} isIgnoredError 是否忽略错误
  * @returns Store
  */
-module.exports = (name, isIgnoredError = true) => {
+module.exports = (name, isIgnoredError = true, isShowErrorAlert = true) => {
   if (stores[name]) return stores[name]
   let store
   try {
     store = stores[name] = new Store({ name, clearInvalidConfig: false })
   } catch (error) {
     log.error(error)
+
     if (!isIgnoredError) throw error
+
 
     const backPath = path.join(app.getPath('userData'), name + '.json.bak')
     fs.copyFileSync(path.join(app.getPath('userData'), name + '.json'), backPath)
-    dialog.showMessageBoxSync({
-      type: 'error',
-      message: name + ' data load error',
-      detail: `We have helped you back up the old ${name} file to: ${backPath}\nYou can try to repair and restore it manually\n\nError detail: ${error.message}`,
-    })
-    store = new Store({ name, clearInvalidConfig: true })
     shell.showItemInFolder(backPath)
+    if (isShowErrorAlert) {
+      dialog.showMessageBoxSync({
+        type: 'error',
+        message: name + ' data load error',
+        detail: `We have helped you back up the old ${name} file to: ${backPath}\nYou can try to repair and restore it manually\n\nError detail: ${error.message}`,
+      })
+    }
+
+
+    store = new Store({ name, clearInvalidConfig: true })
   }
   return store
 }
