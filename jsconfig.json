@@ -1,19 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    // This is the line you want to add
-    "allowSyntheticDefaultImports": true,
-
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@main": ["src/main"],
-      "@renderer": ["src/renderer"],
-      "@lyric": ["src/renderer-lyric"],
-      "@static": ["src/static"],
-      "@common": ["src/common"],
+      "@main/*": ["src/main/*"],
+      "@renderer/*": ["src/renderer/*"],
+      "@lyric/*": ["src/renderer-lyric/*"],
+      "@static/*": ["src/static/*"],
+      "@common/*": ["src/common/*"],
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules/**/*"]
+  "exclude": ["node_modules", "build", "dist"]
 }
