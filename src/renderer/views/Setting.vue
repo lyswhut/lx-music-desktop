@@ -169,11 +169,11 @@ div(:class="$style.main")
           p
             material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
           p
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
           p
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
       dt#odc {{$t('view.setting.odc')}}
       dd
         div(:class="$style.gapTop")
@@ -652,6 +652,8 @@ export default {
     window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
     window.eventHub.$off(eventBaseName.key_down, this.handleKeyDown)
     window.eventHub.$off(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
+
+    if (this.current_setting.network.proxy.enable && !this.current_setting.network.proxy.host) window.globalObj.proxy.enable = false
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),

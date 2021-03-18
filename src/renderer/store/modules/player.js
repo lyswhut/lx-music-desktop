@@ -391,7 +391,7 @@ const mutations = {
       playIndex = -1
     } else {
       let listId = playMusicInfo.listId
-      if (listId != '__temp__' && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(state.playMusicInfo.musicInfo)
+      if (listId != '__temp__' && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(playMusicInfo.musicInfo)
     }
 
     state.playMusicInfo = playMusicInfo

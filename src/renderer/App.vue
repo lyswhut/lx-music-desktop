@@ -164,6 +164,20 @@ export default {
         }))
       }
     },
+    'globalObj.proxy.enable'(n, o) {
+      if (n != this.setting.network.proxy.enable) {
+        this.setSetting({
+          ...this.setting,
+          network: {
+            ...this.setting.network,
+            proxy: {
+              ...this.setting.network.proxy,
+              enable: n,
+            },
+          },
+        })
+      }
+    },
     'windowSizeActive.fontSize'(n) {
       document.documentElement.style.fontSize = n
     },
