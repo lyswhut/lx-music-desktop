@@ -46,7 +46,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
           | 你可以去&nbsp;
           strong.hover.underline(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" tips="点击打开") 软件发布页
           | &nbsp;或&nbsp;
-          strong.hover.underline(@click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')" tips="点击打开") 网盘
+          strong.hover.underline(@click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')" tips="点击打开") 网盘
           | (密码：
           strong.hover(@click="handleCopy('glqw')" tips="点击复制") glqw
           | )&nbsp;下载新版本，
@@ -63,7 +63,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
         | 你可以去
         material-btn(min @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" tips="点击打开") 软件发布页
         | 或
-        material-btn(min @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')" tips="点击打开") 网盘
+        material-btn(min @click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')" tips="点击打开") 网盘
         | (密码：
         strong.hover(@click="handleCopy('glqw')" tips="点击复制") glqw
         | )下载新版本，
@@ -84,7 +84,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
             | 检查方法：打开
             material-btn(min @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" tips="点击打开") 软件发布页
             | 或
-            material-btn(min @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')" tips="点击打开") 网盘
+            material-btn(min @click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')" tips="点击打开") 网盘
             | (密码：
             strong.hover(@click="handleCopy('glqw')" tips="点击复制") glqw
             | )查看它们的
@@ -117,7 +117,7 @@ material-modal(:show="version.showModal" @close="handleClose" v-if="version.newV
           | 手动更新可以去&nbsp;
           strong.hover.underline(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" tips="点击打开") 软件发布页
           | &nbsp;或&nbsp;
-          strong.hover.underline(@click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')" tips="点击打开") 网盘
+          strong.hover.underline(@click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')" tips="点击打开") 网盘
           | (密码：
           strong.hover(@click="handleCopy('glqw')" tips="点击复制") glqw
           | )&nbsp;下载，
