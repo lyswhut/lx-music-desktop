@@ -36,14 +36,18 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Release package
+      - name: Build Package
         run: |
-          npm run publish:win:setup
-          npm run publish:win:7z:x64
-          npm run publish:win:7z:x86
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+          npm run pack:win:setup:x86_64
+          npm run pack:win:7z:x64
+          npm run pack:win:7z:x86
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.exe
+            build/*.7z
 
   Mac:
     name: Mac
@@ -75,13 +79,17 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Release package
-        run: npm run publish:mac:dmg
+      - name: Build Package
+        run: npm run pack:mac:dmg
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.dmg
 
   Linux:
     name: Linux
@@ -116,15 +124,21 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Release package
+      - name: Build Package
         run: |
-          npm run publish:linux:deb:x64
-          npm run publish:linux:deb:x86
-          npm run publish:linux:deb:arm64
-          npm run publish:linux:deb:armv7l
-          npm run publish:linux:appImage
-          npm run publish:linux:rpm
-          npm run publish:linux:pacman
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+          npm run pack:linux:deb:x64
+          npm run pack:linux:deb:x86
+          npm run pack:linux:deb:arm64
+          npm run pack:linux:deb:armv7l
+          npm run pack:linux:appImage
+          npm run pack:linux:rpm
+          npm run pack:linux:pacman
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.deb
+            build/*.appImage
+            build/*.rpm
+            build/*.pacman
