@@ -167,7 +167,7 @@ const mutations = {
       list.push(...source.list)
       pages.push(source.allPage)
       total += source.total
-      limit += source.limit
+      // limit = Math.max(source.limit, limit)
     }
     state.allPage = Math.max(...pages)
     state.total = total
