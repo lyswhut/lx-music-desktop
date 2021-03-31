@@ -1,6 +1,7 @@
 ### 新增
 
 - 新增启动参数`-dhmkh`，此参数将禁用Chromium的Hardware Media Key Handling特性，用于解决漫步者部分型号耳机与本程序冲突导致耳机意外关机的问题
+- 新增Windows arm64位免安装版的构建
 
 ### 优化
 

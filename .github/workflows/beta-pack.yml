@@ -41,6 +41,7 @@ jobs:
           npm run pack:win:setup:x86_64
           npm run pack:win:7z:x64
           npm run pack:win:7z:x86
+          npm run pack:win:7z:arm64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2

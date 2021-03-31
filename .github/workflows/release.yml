@@ -41,6 +41,7 @@ jobs:
           npm run publish:win:setup:always
           npm run publish:win:7z:x64
           npm run publish:win:7z:x86
+          npm run publish:win:7z:arm64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
