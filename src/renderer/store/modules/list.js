@@ -208,7 +208,6 @@ const mutations = {
         if (item.typeUrl['320k']) delete item.typeUrl['320k']
         if (item.typeUrl.flac) delete item.typeUrl.flac
         if (item.typeUrl.wav) delete item.typeUrl.wav
-        clearLyric()
 
         // v1.8.2以前的Lyric
         if (item.lxlrc) delete item.lxlrc
@@ -216,6 +215,7 @@ const mutations = {
         if (item.tlrc) delete item.tlrc
       }
     }
+    clearLyric()
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource

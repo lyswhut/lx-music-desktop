@@ -756,7 +756,7 @@ export default {
 
       await this.refreshSetting(this.setting, this.settingVersion)
     },
-    exportPlayList(path) {
+    async exportPlayList(path) {
       const data = JSON.parse(JSON.stringify({
         type: 'playList',
         data: [
@@ -765,8 +765,8 @@ export default {
           ...this.userList,
         ],
       }))
-      for (const list of data.data) {
-        for (const item of list.list) {
+      for await (const list of data.data) {
+        for await (const item of list.list) {
           if (item.otherSource) delete item.otherSource
         }
       }
@@ -804,8 +804,8 @@ export default {
           ...this.userList,
         ],
       }))
-      for (const list of allData.playList) {
-        for (const item of list.list) {
+      for await (const list of allData.playList) {
+        for await (const item of list.list) {
           if (item.otherSource) delete item.otherSource
         }
       }
