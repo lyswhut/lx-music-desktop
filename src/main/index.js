@@ -4,7 +4,7 @@ const path = require('path')
 // 单例应用程序
 if (!app.requestSingleInstanceLock()) {
   app.quit()
-  return
+  process.exit(0)
 }
 if (!global.modules) global.modules = {}
 app.on('second-instance', (event, argv, cwd) => {

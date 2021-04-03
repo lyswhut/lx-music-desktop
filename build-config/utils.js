@@ -2,8 +2,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const cssLoaderConfig = require('./css-loader.config')
 const chalk = require('chalk')
 
-const isDev = process.env.NODE_ENV === 'development'
-
 // merge css-loader
 exports.mergeCSSLoader = beforeLoader => {
   const loader = [
@@ -11,12 +9,7 @@ exports.mergeCSSLoader = beforeLoader => {
     {
       resourceQuery: /module/,
       use: [
-        {
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            hmr: isDev,
-          },
-        },
+        MiniCssExtractPlugin.loader,
         {
           loader: 'css-loader',
           options: cssLoaderConfig,
@@ -27,12 +20,7 @@ exports.mergeCSSLoader = beforeLoader => {
     // 这里匹配普通的 `<style>` 或 `<style scoped>`
     {
       use: [
-        {
-          loader: MiniCssExtractPlugin.loader,
-          options: {
-            hmr: isDev,
-          },
-        },
+        MiniCssExtractPlugin.loader,
         'css-loader',
         'postcss-loader',
       ],
