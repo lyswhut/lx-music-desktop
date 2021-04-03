@@ -37,6 +37,7 @@ module.exports = {
           loader: 'eslint-loader',
           options: {
             formatter: require('eslint-formatter-friendly'),
+            emitWarning: isDev,
           },
         },
         exclude: /node_modules/,

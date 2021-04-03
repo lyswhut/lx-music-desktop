@@ -59,6 +59,10 @@ const names = {
     request_user_api_cancel: 'request_user_api_cancel',
     get_user_api_status: 'get_user_api_status',
     user_api_status: 'user_api_status',
+
+    get_lyric: 'get_lyric',
+    save_lyric: 'save_lyric',
+    clear_lyric: 'clear_lyric',
   },
   winLyric: {
     close: 'close',

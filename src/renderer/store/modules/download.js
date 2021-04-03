@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import music from '../../utils/music'
 import { getMusicType } from '../../utils/music/utils'
-import { setMeta, saveLrc } from '../../utils'
+import { setMeta, saveLrc, getLyric, setLyric } from '../../utils'
 
 // state
 const state = {
@@ -179,12 +179,17 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
         })
       : Promise.resolve(),
     isEmbedLyric
-      ? downloadInfo.musicInfo.lrc
-        ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
-        : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.catch(err => {
-          console.log(err)
-          return null
-        })
+      ? getLyric(downloadInfo.musicInfo).then(lrcInfo => {
+        return lrcInfo.lyric
+          ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
+          : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.then(({ lyric, tlyric, lxlyric }) => {
+            setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
+            return { lyric, tlyric, lxlyric }
+          }).catch(err => {
+            console.log(err)
+            return null
+          })
+      })
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
@@ -205,9 +210,14 @@ const saveMeta = (downloadInfo, filePath, isEmbedPic, isEmbedLyric) => {
  * @param {*} filePath
  */
 const downloadLyric = (downloadInfo, filePath) => {
-  const promise = downloadInfo.musicInfo.lrc
-    ? Promise.resolve({ lyric: downloadInfo.musicInfo.lrc, tlyric: downloadInfo.musicInfo.tlrc || '' })
-    : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
+  const promise = getLyric(downloadInfo.musicInfo).then(lrcInfo => {
+    return lrcInfo.lyric
+      ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
+      : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.then(({ lyric, tlyric, lxlyric }) => {
+        setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
+        return { lyric, tlyric, lxlyric }
+      })
+  })
   promise.then(lrcs => {
     if (lrcs.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)

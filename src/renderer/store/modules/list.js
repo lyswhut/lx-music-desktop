@@ -1,4 +1,5 @@
 import musicSdk from '../../utils/music'
+import { clearLyric } from '../../utils'
 
 let allList = {}
 window.allList = allList
@@ -207,9 +208,12 @@ const mutations = {
         if (item.typeUrl['320k']) delete item.typeUrl['320k']
         if (item.typeUrl.flac) delete item.typeUrl.flac
         if (item.typeUrl.wav) delete item.typeUrl.wav
-        if (item.lxlrc) item.lxlrc = null
-        if (item.lrc) item.lrc = null
-        if (item.tlrc) item.tlrc = null
+        clearLyric()
+
+        // v1.8.2以前的Lyric
+        if (item.lxlrc) delete item.lxlrc
+        if (item.lrc) delete item.lrc
+        if (item.tlrc) delete item.tlrc
       }
     }
   },

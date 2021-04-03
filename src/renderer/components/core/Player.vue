@@ -646,10 +646,10 @@ export default {
       }
     },
     setLrc(targetSong) {
-      this.getLrc(targetSong).then(() => {
-        this.musicInfo.lrc = targetSong.lrc
-        this.musicInfo.tlrc = targetSong.tlrc
-        this.musicInfo.lxlrc = targetSong.lxlrc
+      this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
+        this.musicInfo.lrc = lyric
+        this.musicInfo.tlrc = tlyric
+        this.musicInfo.lxlrc = lxlyric
       }).catch(() => {
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {

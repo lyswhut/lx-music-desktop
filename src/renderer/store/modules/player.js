@@ -1,6 +1,6 @@
 import path from 'path'
 import music from '../../utils/music'
-import { getRandom, checkPath } from '../../utils'
+import { getRandom, checkPath, getLyric as getStoreLyric, setLyric } from '../../utils'
 
 // state
 const state = {
@@ -182,26 +182,26 @@ const actions = {
       return Promise.reject(err)
     })
   },
-  getLrc({ commit, state }, musicInfo) {
+  async getLrc({ commit, state }, musicInfo) {
+    const lrcInfo = await getStoreLyric(musicInfo)
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
-    if (musicInfo.lrc && musicInfo.tlrc != null) {
-      if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
-        let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
-        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
-      } else if (musicInfo.lrc.startsWith('[id:$00000000]')) {
-        let str = musicInfo.lrc.replace('[id:$00000000]\n', '')
-        commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
-      }
+    if (lrcInfo.lyric && lrcInfo.tlyric != null) {
+      // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
+      //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
+      //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
+      // } else if (musicInfo.lrc.startsWith('[id:$00000000]')) {
+      //   let str = musicInfo.lrc.replace('[id:$00000000]\n', '')
+      //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
+      // }
 
-      if ((musicInfo.lxlrc == null && musicInfo.source != 'kg') || musicInfo.lxlrc != null) {
-        return Promise.resolve()
-      }
+      if ((lrcInfo.lxlyric == null && musicInfo.source != 'kg') || lrcInfo.lxlyric != null) return lrcInfo
     }
 
     // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
     return getLyric.call(this, musicInfo).then(({ lyric, tlyric, lxlyric }) => {
       // lrcRequest = null
       commit('setLrc', { musicInfo, lyric, tlyric, lxlyric })
+      return { lyric, tlyric, lxlyric }
     }).catch(err => {
       // lrcRequest = null
       return Promise.reject(err)
@@ -338,6 +338,11 @@ const mutations = {
     datas.musicInfo.lrc = datas.lyric
     datas.musicInfo.tlrc = datas.tlyric
     datas.musicInfo.lxlrc = datas.lxlyric
+    setLyric(datas.musicInfo, {
+      lyric: datas.lyric,
+      tlyric: datas.tlyric,
+      lxlyric: datas.lxlyric,
+    })
   },
   setList(state, { list, index }) {
     state.playMusicInfo = {
