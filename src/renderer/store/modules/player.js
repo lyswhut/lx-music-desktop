@@ -335,9 +335,9 @@ const mutations = {
     datas.musicInfo.img = datas.url
   },
   setLrc(state, datas) {
-    datas.musicInfo.lrc = datas.lyric
-    datas.musicInfo.tlrc = datas.tlyric
-    datas.musicInfo.lxlrc = datas.lxlyric
+    // datas.musicInfo.lrc = datas.lyric
+    // datas.musicInfo.tlrc = datas.tlyric
+    // datas.musicInfo.lxlrc = datas.lxlyric
     setLyric(datas.musicInfo, {
       lyric: datas.lyric,
       tlyric: datas.tlyric,
