@@ -607,7 +607,7 @@ export default {
       if (!retryedSource.includes(targetSong.source)) retryedSource.push(targetSong.source)
 
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
-      this.musicInfo.url = targetSong.typeUrl[type]
+      // this.musicInfo.url = await getMusicUrl(targetSong, type)
       this.status = this.statusText = this.$t('core.player.geting_url')
 
       return this.getUrl({ musicInfo: targetSong, originMusic, type, isRefresh }).then(url => {

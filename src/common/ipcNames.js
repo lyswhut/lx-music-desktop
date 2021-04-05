@@ -63,6 +63,9 @@ const names = {
     get_lyric: 'get_lyric',
     save_lyric: 'save_lyric',
     clear_lyric: 'clear_lyric',
+    get_music_url: 'get_music_url',
+    save_music_url: 'save_music_url',
+    clear_music_url: 'clear_music_url',
   },
   winLyric: {
     close: 'close',

@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import music from '../../utils/music'
 import { getMusicType } from '../../utils/music/utils'
-import { setMeta, saveLrc, getLyric, setLyric } from '../../utils'
+import { setMeta, saveLrc, getLyric, setLyric, getMusicUrl, setMusicUrl } from '../../utils'
 
 // state
 const state = {
@@ -147,15 +147,20 @@ const pauseTasks = async(store, list, runs = []) => {
   await pauseTasks(store, list, runs)
 }
 
-const getUrl = (downloadInfo, isRefresh) => {
-  const url = downloadInfo.musicInfo.typeUrl[downloadInfo.type]
+const getUrl = async(downloadInfo, isRefresh) => {
+  const cachedUrl = await getMusicUrl(downloadInfo.musicInfo, downloadInfo.type)
   if (!downloadInfo.musicInfo._types[downloadInfo.type]) {
     // 兼容旧版酷我源搜索列表过滤128k音质的bug
-    if (!(downloadInfo.musicInfo.source == 'kw' && downloadInfo.type == '128k')) return Promise.reject(new Error('该歌曲没有可下载的音频'))
+    if (!(downloadInfo.musicInfo.source == 'kw' && downloadInfo.type == '128k')) throw new Error('该歌曲没有可下载的音频')
 
     // return Promise.reject(new Error('该歌曲没有可下载的音频'))
   }
-  return url && !isRefresh ? Promise.resolve({ url }) : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
+  return cachedUrl && !isRefresh
+    ? cachedUrl
+    : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise.then(({ url }) => {
+      setMusicUrl(downloadInfo.musicInfo, downloadInfo.type, url)
+      return url
+    })
 }
 
 // 修复 1.1.x版本 酷狗源歌词格式
@@ -228,12 +233,12 @@ const downloadLyric = (downloadInfo, filePath) => {
 
 const refreshUrl = function(commit, downloadInfo) {
   commit('setStatusText', { downloadInfo, text: '链接失效，正在刷新链接' })
-  getUrl(downloadInfo, true).then(result => {
-    commit('updateUrl', { downloadInfo, url: result.url })
+  getUrl(downloadInfo, true).then(url => {
+    commit('updateUrl', { downloadInfo, url })
     commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
     const dl = dls[downloadInfo.key]
     if (!dl) return
-    dl.refreshUrl(result.url)
+    dl.refreshUrl(url)
     dl.start().catch(err => {
       commit('onError', { downloadInfo, errorMsg: err.message })
       commit('setStatusText', { downloadInfo, text: err.message })
@@ -389,10 +394,10 @@ const actions = {
     commit('setStatusText', { downloadInfo, text: '获取URL中...' })
     let p = options.url
       ? Promise.resolve()
-      : getUrl(downloadInfo).then(result => {
-        commit('updateUrl', { downloadInfo, url: result.url })
-        if (!result.url) return Promise.reject(new Error('获取URL失败'))
-        options.url = result.url
+      : getUrl(downloadInfo).then(url => {
+        commit('updateUrl', { downloadInfo, url })
+        if (!url) return Promise.reject(new Error('获取URL失败'))
+        options.url = url
       })
     p.then(() => {
       tryNum[downloadInfo.key] = 0

@@ -414,3 +414,10 @@ export const setLyric = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(
   lyrics: { lyric, tlyric, lxlyric },
 })
 export const clearLyric = () => rendererSend(NAMES.mainWindow.clear_lyric)
+
+export const getMusicUrl = (musicInfo, type) => rendererInvoke(NAMES.mainWindow.get_music_url, `${musicInfo.source}_${musicInfo.songmid}_${type}`)
+export const setMusicUrl = (musicInfo, type, url) => rendererSend(NAMES.mainWindow.save_music_url, {
+  id: `${musicInfo.source}_${musicInfo.songmid}_${type}`,
+  url,
+})
+export const clearMusicUrl = () => rendererSend(NAMES.mainWindow.clear_music_url)

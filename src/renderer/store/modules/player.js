@@ -1,6 +1,13 @@
 import path from 'path'
 import music from '../../utils/music'
-import { getRandom, checkPath, getLyric as getStoreLyric, setLyric } from '../../utils'
+import {
+  getRandom,
+  checkPath,
+  getLyric as getStoreLyric,
+  setLyric,
+  setMusicUrl,
+  getMusicUrl,
+} from '../../utils'
 
 // state
 const state = {
@@ -147,20 +154,19 @@ const getters = {
 
 // actions
 const actions = {
-  getUrl({ commit, state }, { musicInfo, originMusic, type, isRefresh }) {
+  async getUrl({ commit, state }, { musicInfo, originMusic, type, isRefresh }) {
     if (!musicInfo._types[type]) {
       // 兼容旧版酷我源搜索列表过滤128k音质的bug
-      if (!(musicInfo.source == 'kw' && type == '128k')) return Promise.reject(new Error('该歌曲没有可播放的音频'))
+      if (!(musicInfo.source == 'kw' && type == '128k')) throw new Error('该歌曲没有可播放的音频')
 
       // return Promise.reject(new Error('该歌曲没有可播放的音频'))
     }
     if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
-    if (musicInfo.typeUrl[type] && !isRefresh) return Promise.resolve(musicInfo.typeUrl[type])
-    try {
-      urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
-    } catch (err) {
-      return Promise.reject(err)
-    }
+    const cachedUrl = await getMusicUrl(musicInfo, type)
+    if (cachedUrl && !isRefresh) return cachedUrl
+
+    urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
+
     return urlRequest.promise.then(({ url }) => {
       if (originMusic) commit('setUrl', { musicInfo: originMusic, url, type })
       commit('setUrl', { musicInfo, url, type })
@@ -328,8 +334,8 @@ const actions = {
 
 // mitations
 const mutations = {
-  setUrl(state, datas) {
-    datas.musicInfo.typeUrl = Object.assign({}, datas.musicInfo.typeUrl, { [datas.type]: datas.url })
+  setUrl(state, { musicInfo, type, url }) {
+    setMusicUrl(musicInfo, type, url)
   },
   getPic(state, datas) {
     datas.musicInfo.img = datas.url

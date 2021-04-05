@@ -1,5 +1,5 @@
 import musicSdk from '../../utils/music'
-import { clearLyric } from '../../utils'
+import { clearLyric, clearMusicUrl } from '../../utils'
 
 let allList = {}
 window.allList = allList
@@ -215,6 +215,7 @@ const mutations = {
         if (item.tlrc) delete item.tlrc
       }
     }
+    clearMusicUrl()
     clearLyric()
   },
   setOtherSource(state, { musicInfo, otherSource }) {
