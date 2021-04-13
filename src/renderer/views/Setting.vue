@@ -63,34 +63,34 @@ div(:class="$style.main")
           material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
             name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
-    dt#play {{$t('view.setting.play')}}
-    dd
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTranslation" :label="$t('view.setting.play_lyric_transition')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
-    dd(:tips="$t('view.setting.play_mediaDevice_title')")
-      h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
-      div
-        material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-    dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
-    dd
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
+      dt#play {{$t('view.setting.play')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTranslation" :label="$t('view.setting.play_lyric_transition')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
+      dd(:tips="$t('view.setting.play_mediaDevice_title')")
+        h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
+        div
+          material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+      dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
 
       dt#search {{$t('view.setting.search')}}
       dd
