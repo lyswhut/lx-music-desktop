@@ -130,6 +130,7 @@ module.exports = {
       template: path.join(__dirname, '../../src/renderer-lyric/index.pug'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
+      scriptLoading: 'blocking',
       __dirname,
     }),
     new VueLoaderPlugin(),
