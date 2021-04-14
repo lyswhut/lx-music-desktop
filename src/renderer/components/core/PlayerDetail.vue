@@ -579,7 +579,6 @@ export default {
   overflow: hidden;
   font-size: 16px;
   cursor: grab;
-  color: @color-theme_2-font;
   &.draging {
     cursor: grabbing;
   }
@@ -588,6 +587,7 @@ export default {
       line-height: 1.2;
       margin: 16px 0;
       overflow-wrap: break-word;
+      color: @color-player-detail-lyric;
 
       .translation {
         transition: @transition-theme !important;
@@ -833,17 +833,19 @@ each(@themes, {
     .lyric {
       :global {
         .lrc-content {
+          color: ~'@{color-@{value}-player-detail-lyric}';
+
           &.active {
             .translation {
-              color: ~'@{color-@{value}-theme}';
+              color: ~'@{color-@{value}-player-detail-lyric-active}';
             }
             .line {
-              color: ~'@{color-@{value}-theme}';
+              color: ~'@{color-@{value}-player-detail-lyric-active}';
             }
           }
           span {
-            // background-color: ~'@{color-@{value}-theme_2-font}';
-            background-image: -webkit-linear-gradient(top, ~'@{color-@{value}-theme}', ~'@{color-@{value}-theme}');
+            background-color: ~'@{color-@{value}-player-detail-lyric}';
+            background-image: -webkit-linear-gradient(top, ~'@{color-@{value}-player-detail-lyric-active}', ~'@{color-@{value}-player-detail-lyric-active}');
           }
         }
       }

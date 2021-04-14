@@ -192,6 +192,7 @@
     "html-webpack-plugin": "^5.3.1",
     "less": "^4.1.1",
     "less-loader": "^8.1.0",
+    "less-plugin-clean-css": "^1.5.1",
     "markdown-it": "^12.0.4",
     "mini-css-extract-plugin": "^1.4.1",
     "optimize-css-assets-webpack-plugin": "^5.0.4",

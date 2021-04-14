@@ -174,6 +174,7 @@ export default {
 @import '../../assets/styles/layout.less';
 
 @bar-height: 38px;
+@bar-height-padding: 7px;
 
 .container {
   position: relative;
@@ -221,20 +222,19 @@ export default {
   display: flex;
   flex-flow: row wrap;
   min-height: @bar-height;
-  padding-top: (@bar-height - 24px) / 2;
-  padding-left: (@bar-height - 24px) / 2;
+  padding-top: @bar-height-padding;
+  padding-left: @bar-height-padding;
   box-sizing: border-box;
 }
 
 .btnBack {
-  margin-top: -(@bar-height - 24px) / 2;
-  margin-left: -(@bar-height - 24px) / 2;
+  margin-top: -@bar-height-padding;
+  margin-left: -@bar-height-padding;
 }
 
 .theme-item {
   display: block;
-  margin-bottom: (@bar-height - 24px) / 2;
-  margin-right: (@bar-height - 24px) / 2;
+  margin-right: @bar-height-padding;
   width: 24px;
   height: 24px;
   border-radius: @radius-border;

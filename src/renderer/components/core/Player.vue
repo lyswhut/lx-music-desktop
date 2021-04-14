@@ -1057,7 +1057,7 @@ export default {
   height: 100%;
   border-radius: @radius-progress-border;
   transition-duration: 0.2s;
-  background-color: @color-theme;
+  background-color: @color-btn;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -1075,14 +1075,14 @@ export default {
   margin-left: 5px;
   height: 100%;
   width: 20px;
-  color: @color-theme;
+  color: @color-btn;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
 
   transition: opacity 0.2s ease;
-  opacity: .5;
+  opacity: .6;
   cursor: pointer;
 
   svg {
@@ -1226,10 +1226,10 @@ each(@themes, {
       // }
     }
     .titleBtn {
-      color: ~'@{color-@{value}-theme}';
+      color: ~'@{color-@{value}-btn}';
     }
     .play-btn {
-      color: ~'@{color-@{value}-theme}';
+      color: ~'@{color-@{value}-btn}';
       svg {
         filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
       }
@@ -1239,7 +1239,7 @@ each(@themes, {
     }
 
     .volume-bar {
-      background-color: ~'@{color-@{value}-theme}';
+      background-color: ~'@{color-@{value}-btn}';
     }
 
 

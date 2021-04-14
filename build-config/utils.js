@@ -9,7 +9,12 @@ exports.mergeCSSLoader = beforeLoader => {
     {
       resourceQuery: /module/,
       use: [
-        MiniCssExtractPlugin.loader,
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            esModule: false,
+          },
+        },
         {
           loader: 'css-loader',
           options: cssLoaderConfig,
@@ -20,7 +25,12 @@ exports.mergeCSSLoader = beforeLoader => {
     // 这里匹配普通的 `<style>` 或 `<style scoped>`
     {
       use: [
-        MiniCssExtractPlugin.loader,
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            esModule: false,
+          },
+        },
         'css-loader',
         'postcss-loader',
       ],
