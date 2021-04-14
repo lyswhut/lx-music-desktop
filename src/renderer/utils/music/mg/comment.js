@@ -16,7 +16,7 @@ export default {
     if (!info) info = list.find(s => s.songId == songmid)
     return info ? info.songId : null
   },
-  async getComment(musicInfo, page = 1, limit = 20) {
+  async getComment(musicInfo, page = 1, limit = 10) {
     if (this._requestObj) this._requestObj.cancelHttp()
     if (!musicInfo.songId) {
       let id = await this.getSongId(musicInfo)
@@ -35,7 +35,7 @@ export default {
     if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取评论失败')
     return { source: 'mg', comments: this.filterComment(body.data.items), total: body.data.itemTotal, page, limit, maxPage: Math.ceil(body.data.itemTotal / limit) || 1 }
   },
-  async getHotComment(musicInfo, page = 1, limit = 100) {
+  async getHotComment(musicInfo, page = 1, limit = 5) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     if (!musicInfo.songId) {
@@ -55,7 +55,7 @@ export default {
     if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取热门评论失败')
     return { source: 'mg', comments: this.filterComment(body.data.items) }
   },
-  async getReplyComment(musicInfo, replyId, page = 1, limit = 100) {
+  async getReplyComment(musicInfo, replyId, page = 1, limit = 10) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     const _requestObj2 = httpFetch(`https://music.migu.cn/v3/api/comment/listCommentsById?commentId=${replyId}&pageSize=${limit}&pageNo=${page}`, {
@@ -75,7 +75,7 @@ export default {
       time: item.createTime,
       timeStr: dateFormat2(new Date(item.createTime).getTime()),
       userName: item.author.name,
-      avatar: item.author.avatar,
+      avatar: item.author.avatar && item.author.avatar.startsWith('//') ? `http:${item.author.avatar}` : item.author.avatar,
       userId: item.author.id,
       likedCount: item.praiseCount,
       replyNum: item.replyTotal,

@@ -11,69 +11,79 @@ export default {
   total: 0,
   page: 0,
   allPage: 1,
-  musicSearch(str, page) {
+  musicSearch(str, page, limit) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${this.limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
+    searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => body)
+  },
+  filterData(rawData) {
+    const types = []
+    const _types = {}
+    if (rawData.filesize !== 0) {
+      let size = sizeFormate(rawData.filesize)
+      types.push({ type: '128k', size, hash: rawData.hash })
+      _types['128k'] = {
+        size,
+        hash: rawData.hash,
+      }
+    }
+    if (rawData['320filesize'] !== 0) {
+      let size = sizeFormate(rawData['320filesize'])
+      types.push({ type: '320k', size, hash: rawData['320hash'] })
+      _types['320k'] = {
+        size,
+        hash: rawData['320hash'],
+      }
+    }
+    if (rawData.sqfilesize !== 0) {
+      let size = sizeFormate(rawData.sqfilesize)
+      types.push({ type: 'flac', size, hash: rawData.sqhash })
+      _types.flac = {
+        size,
+        hash: rawData.sqhash,
+      }
+    }
+    return {
+      singer: decodeName(rawData.singername),
+      name: decodeName(rawData.songname),
+      albumName: decodeName(rawData.album_name),
+      albumId: rawData.album_id,
+      songmid: rawData.audio_id,
+      source: 'kg',
+      interval: formatPlayTime(rawData.duration),
+      _interval: rawData.duration,
+      img: null,
+      lrc: null,
+      otherSource: null,
+      hash: rawData.hash,
+      types,
+      _types,
+      typeUrl: {},
+    }
   },
   handleResult(rawData) {
     // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
-      if (ids.has(item.audio_id)) return
-      ids.add(item.audio_id)
-      const types = []
-      const _types = {}
-      if (item.filesize !== 0) {
-        let size = sizeFormate(item.filesize)
-        types.push({ type: '128k', size, hash: item.hash })
-        _types['128k'] = {
-          size,
-          hash: item.hash,
-        }
+      const key = item.audio_id + item.hash
+      if (ids.has(key)) return
+      ids.add(key)
+      list.push(this.filterData(item))
+      for (const childItem of item.group) {
+        const key = item.audio_id + item.hash
+        if (ids.has(key)) return
+        ids.add(key)
+        list.push(this.filterData(childItem))
       }
-      if (item['320filesize'] !== 0) {
-        let size = sizeFormate(item['320filesize'])
-        types.push({ type: '320k', size, hash: item['320hash'] })
-        _types['320k'] = {
-          size,
-          hash: item['320hash'],
-        }
-      }
-      if (item.sqfilesize !== 0) {
-        let size = sizeFormate(item.sqfilesize)
-        types.push({ type: 'flac', size, hash: item.sqhash })
-        _types.flac = {
-          size,
-          hash: item.sqhash,
-        }
-      }
-      list.push({
-        singer: decodeName(item.singername),
-        name: decodeName(item.songname),
-        albumName: decodeName(item.album_name),
-        albumId: item.album_id,
-        songmid: item.audio_id,
-        source: 'kg',
-        interval: formatPlayTime(item.duration),
-        _interval: item.duration,
-        img: null,
-        lrc: null,
-        otherSource: null,
-        hash: item.hash,
-        types,
-        _types,
-        typeUrl: {},
-      })
     })
     return list
   },
   search(str, page = 1, { limit } = {}, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
-    if (limit != null) this.limit = limit
+    if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page).then(result => {
+    return this.musicSearch(str, page, limit).then(result => {
       if (!result || result.errcode !== 0) return this.search(str, page, { limit }, retryNum)
       let list = this.handleResult(result.data.info)
 
@@ -81,12 +91,12 @@ export default {
 
       this.total = result.data.total
       this.page = page
-      this.allPage = Math.ceil(this.total / this.limit)
+      this.allPage = Math.ceil(this.total / limit)
 
       return Promise.resolve({
         list,
         allPage: this.allPage,
-        limit: this.limit,
+        limit,
         total: this.total,
         source: 'kg',
       })

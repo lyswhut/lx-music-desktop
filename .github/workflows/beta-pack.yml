@@ -1,0 +1,145 @@
+name: Build Beta
+
+on:
+  push:
+    branches:
+      - beta
+
+jobs:
+  Windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            %APPDATA%\npm-cache
+            %LOCALAPPDATA%\electron\Cache
+            %LOCALAPPDATA%\electron-builder\Cache
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Build Package
+        run: |
+          npm run pack:win:setup:x86_64
+          npm run pack:win:7z:x64
+          npm run pack:win:7z:x86
+          npm run pack:win:7z:arm64
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.exe
+            build/*.7z
+
+  Mac:
+    name: Mac
+    runs-on: macos-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Build Package
+        run: npm run pack:mac:dmg
+        env:
+          ELECTRON_CACHE: $HOME/.cache/electron
+          ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.dmg
+
+  Linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install package
+        run: sudo apt-get install -y rpm libarchive-tools
+
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Build Package
+        run: |
+          npm run pack:linux:deb:x64
+          npm run pack:linux:deb:x86
+          npm run pack:linux:deb:arm64
+          npm run pack:linux:deb:armv7l
+          npm run pack:linux:appImage
+          npm run pack:linux:rpm
+          npm run pack:linux:pacman
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            build/*.deb
+            build/*.appImage
+            build/*.rpm
+            build/*.pacman

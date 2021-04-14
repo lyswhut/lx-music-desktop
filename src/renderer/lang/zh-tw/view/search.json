@@ -1,5 +1,6 @@
 {
   "list_play": "播放",
+  "list_play_later": "稍後播放",
   "list_add_to": "添加到...",
   "list_download": "下載",
   "list_source_detail": "歌曲詳情頁",
@@ -10,6 +11,7 @@
   "time": "時長",
   "lossless": "無損",
   "high_quality": "高品質",
+  "loding_list": "加載中...",
   "no_item": "搜我所想~~😉",
   "hot_search": "熱門搜索",
   "history_search": "歷史搜索",

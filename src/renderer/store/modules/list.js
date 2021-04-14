@@ -1,3 +1,6 @@
+import musicSdk from '../../utils/music'
+import { clearLyric, clearMusicUrl } from '../../utils'
+
 let allList = {}
 window.allList = allList
 
@@ -48,7 +51,12 @@ const getters = {
 
 // actions
 const actions = {
-
+  getOtherSource({ state, commit }, musicInfo) {
+    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+      commit('setOtherSource', { musicInfo, otherSource })
+      return otherSource
+    })
+  },
 }
 
 // mitations
@@ -142,9 +150,9 @@ const mutations = {
     if (!targetList) return
     targetList.list.splice(0, targetList.list.length)
   },
-  updateMusicInfo(state, { id, index, data }) {
+  updateMusicInfo(state, { id, index, data, musicInfo = {} }) {
     let targetList = allList[id]
-    if (!targetList) return
+    if (!targetList) return Object.assign(musicInfo, data)
     Object.assign(targetList.list[index], data)
   },
   createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId }) {
@@ -190,6 +198,28 @@ const mutations = {
     this.commit('list/listRemoveMultiple', { id, list: musicInfos })
 
     targetList.list.splice(sortNum - 1, 0, ...musicInfos)
+  },
+  clearCache() {
+    const lists = Object.values(allList)
+    for (const { list } of lists) {
+      for (const item of list) {
+        if (item.otherSource) item.otherSource = null
+        if (item.typeUrl['128k']) delete item.typeUrl['128k']
+        if (item.typeUrl['320k']) delete item.typeUrl['320k']
+        if (item.typeUrl.flac) delete item.typeUrl.flac
+        if (item.typeUrl.wav) delete item.typeUrl.wav
+
+        // v1.8.2以前的Lyric
+        if (item.lxlrc) delete item.lxlrc
+        if (item.lrc) delete item.lrc
+        if (item.tlrc) delete item.tlrc
+      }
+    }
+    clearMusicUrl()
+    clearLyric()
+  },
+  setOtherSource(state, { musicInfo, otherSource }) {
+    musicInfo.otherSource = otherSource
   },
 }
 

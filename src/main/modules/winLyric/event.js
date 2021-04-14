@@ -2,6 +2,7 @@ const { common: COMMON_EVENT_NAME, winLyric: WIN_LYRIC_EVENT_NAME, hotKey: HOT_K
 const { mainSend, NAMES: { winLyric: ipcWinLyricNames } } = require('../../../common/ipc')
 const { desktop_lyric } = require('../../../common/hotKey')
 const { getLyricWindowBounds } = require('./utils')
+const { updateSetting } = require('../../utils')
 
 let isLock = null
 let isEnable = null
@@ -13,7 +14,8 @@ const setLrcConfig = () => {
     mainSend(global.modules.lyricWindow, ipcWinLyricNames.set_lyric_config, {
       config: desktopLyric,
       languageId: global.appSetting.langId,
-      isShowLyricTransition: global.appSetting.player.isShowLyricTransition,
+      isShowLyricTranslation: global.appSetting.player.isShowLyricTranslation,
+      isPlayLxlrc: global.appSetting.player.isPlayLxlrc,
     })
     if (isLock != desktopLyric.isLock) {
       isLock = desktopLyric.isLock
@@ -48,7 +50,7 @@ const setLrcConfig = () => {
     }
   }
 }
-global.lx_event.common.on(COMMON_EVENT_NAME.config, name => {
+global.lx_event.common.on(COMMON_EVENT_NAME.configStatus, name => {
   if (WIN_LYRIC_EVENT_NAME.name === name) return
   setLrcConfig()
 })
@@ -76,5 +78,5 @@ global.lx_event.hotKey.on(HOT_KEY_EVENT_NAME.keyDown, ({ type, key }) => {
   }
   desktopLyricSetting[settingKey] = !desktopLyricSetting[settingKey]
 
-  global.lx_event.common.setAppConfig({ desktopLyric: desktopLyricSetting }, null)
+  updateSetting({ desktopLyric: desktopLyricSetting }, null)
 })

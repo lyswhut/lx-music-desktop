@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.38',
+  version: '1.0.40',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -11,7 +11,9 @@ const defaultSetting = {
     isMute: false,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
-    isShowLyricTransition: true,
+    isShowLyricTranslation: false,
+    isPlayLxlrc: true,
+    isSavePlayTime: false,
   },
   desktopLyric: {
     enable: false,

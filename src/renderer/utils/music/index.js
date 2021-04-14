@@ -50,29 +50,70 @@ const sources = {
 export default {
   ...sources,
   init() {
+    const tasks = []
     for (let source of sources.sources) {
       let sm = sources[source.id]
-      sm && sm.init && sm.init()
+      sm && sm.init && tasks.push(sm.init())
     }
+    return Promise.all(tasks)
   },
   supportQuality,
 
   async findMusic(musicInfo) {
     const tasks = []
+    const sortSingle = singer => singer.includes('、') ? singer.split('、').sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0)).join('、') : singer
+    const sortMusic = (arr, callback) => {
+      const tempResult = []
+      for (let i = arr.length - 1; i > -1; i--) {
+        const item = arr[i]
+        if (callback(item)) {
+          delete item.sortedSinger
+          tempResult.push(item)
+          arr.splice(i, 1)
+        }
+      }
+      tempResult.reverse()
+      return tempResult
+    }
+    const trimStr = str => typeof str == 'string' ? str.trim() : str
+    const sortedSinger = String(sortSingle(musicInfo.singer)).toLowerCase()
+    const musicName = trimStr(musicInfo.name)
+    const lowerCaseName = String(musicName).toLowerCase()
+    const lowerCaseAlbumName = String(musicInfo.albumName).toLowerCase()
     for (const source of sources.sources) {
       if (!sources[source.id].musicSearch || source.id === musicInfo.source || source.id === 'xm') continue
 
-      tasks.push(sources[source.id].musicSearch.search(`${musicInfo.name} ${musicInfo.singer || ''} ${musicInfo.albumName || ''}`.trim(), 1, { limit: 5 }).then(res => {
+      tasks.push(sources[source.id].musicSearch.search(`${musicName} ${musicInfo.singer || ''}`.trim(), 1, { limit: 10 }).then(res => {
         for (const item of res.list) {
+          item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
+          item.name = trimStr(item.name)
+          item.lowerCaseName = String(item.name).toLowerCase()
+          item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
+          // console.log(lowerCaseName, item.lowerCaseName)
           if (
             (
-              item.singer === musicInfo.singer &&
-              (item.name === musicInfo.name || item.interval === musicInfo.interval)
+              item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName
             ) ||
             (
-              item.interval === musicInfo.interval && item.name === musicInfo.name &&
-              (item.singer.includes(musicInfo.singer) || musicInfo.singer.includes(item.singer))
+              item.interval === musicInfo.interval && item.lowerCaseName === lowerCaseName &&
+              (item.sortedSinger.includes(sortedSinger) || sortedSinger.includes(item.sortedSinger))
+            ) ||
+            (
+              item.lowerCaseName === lowerCaseName && item.lowerCaseAlbumName === lowerCaseAlbumName &&
+              item.interval === musicInfo.interval
             )
+          ) {
+            return item
+          }
+        }
+        for (const item of res.list) {
+          item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
+          item.name = trimStr(item.name)
+          item.lowerCaseName = String(item.name).toLowerCase()
+          item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
+          // console.log(lowerCaseName, item.lowerCaseName)
+          if (
+            item.sortedSinger === sortedSinger && item.interval === musicInfo.interval
           ) {
             return item
           }
@@ -83,33 +124,13 @@ export default {
     const result = (await Promise.all(tasks)).filter(s => s)
     const newResult = []
     if (result.length) {
-      for (let i = result.length - 1; i > -1; i--) {
-        const item = result[i]
-        if (item.singer === musicInfo.singer && item.name === musicInfo.name && item.interval === musicInfo.interval) {
-          newResult.push(item)
-          result.splice(i, 1)
-        }
-      }
-      for (let i = result.length - 1; i > -1; i--) {
-        const item = result[i]
-        if (item.singer === musicInfo.singer && item.interval === musicInfo.interval) {
-          newResult.push(item)
-          result.splice(i, 1)
-        }
-      }
-      for (let i = result.length - 1; i > -1; i--) {
-        const item = result[i]
-        if (item.name === musicInfo.name && item.singer === musicInfo.singer && item.albumName === musicInfo.albumName) {
-          newResult.push(item)
-          result.splice(i, 1)
-        }
-      }
-      for (let i = result.length - 1; i > -1; i--) {
-        const item = result[i]
-        if (item.singer === musicInfo.singer && item.name === musicInfo.name) {
-          newResult.push(item)
-          result.splice(i, 1)
-        }
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName && item.interval === musicInfo.interval))
+      newResult.push(...sortMusic(result, item => item.lowerCaseName === lowerCaseName && item.sortedSinger === sortedSinger && item.lowerCaseAlbumName === lowerCaseAlbumName))
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName))
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.interval === musicInfo.interval))
+      for (const item of result) {
+        delete item.sortedSinger
+        delete item.lowerCaseName
       }
       newResult.push(...result)
     }

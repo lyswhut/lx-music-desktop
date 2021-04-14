@@ -20,7 +20,10 @@ export default {
           relate: 1,
           resource: [
             {
-              album_audio_id: songInfo.songmid,
+              album_audio_id:
+                songInfo.songmid.length == 32 // 修复歌曲ID存储变更导致图片获取失败的问题
+                  ? songInfo.audioId.split('_')[0]
+                  : songInfo.songmid,
               album_id: songInfo.albumId,
               hash: songInfo.hash,
               id: 0,
@@ -37,7 +40,9 @@ export default {
     requestObj.promise = requestObj.promise.then(({ body }) => {
       if (body.error_code !== 0) return Promise.reject('图片获取失败')
       let info = body.data[0].info
-      return info.imgsize ? info.image.replace('{size}', info.imgsize[0]) : info.image
+      const img = info.imgsize ? info.image.replace('{size}', info.imgsize[0]) : info.image
+      if (!img) return Promise.reject('Pic get failed')
+      return img
     })
     return requestObj
   },

@@ -23,7 +23,7 @@
           material-select(:class="$style.select" :list="sourceInfo.sources" item-key="id" item-name="name" v-model="source")
         div(:class="$style.songListContent")
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div(:class="$style.songListContent" v-show="listData.list.length")
+            div(:class="$style.songListContent")
               transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
                 div.scroll(:class="$style.songList" v-if="sortId !== 'importSongList'" ref="dom_scrollContent")
                   ul
@@ -49,7 +49,7 @@
                         li {{$t('view.song_list.tip_2')}}
                         li {{$t('view.song_list.tip_3')}}
           transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-            div(v-show="!listData.list.length" :class="$style.noitem")
+            div(v-show="!listData.list.length && sortId !== 'importSongList'" :class="$style.noitem")
               p {{$t('view.song_list.loding_list')}}
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
@@ -183,6 +183,7 @@ export default {
     ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
     ...mapMutations('player', {
       setPlayList: 'setList',
+      setTempPlayList: 'setTempPlayList',
     }),
     listenEvent() {
       window.eventHub.$on('key_backspace_down', this.handle_key_backspace_down)
@@ -238,10 +239,18 @@ export default {
           break
         case 'play':
           if (this.selectedData.length) {
-            this.listAddMultiple({ id: 'default', list: this.filterList(this.selectedData) })
+            this.listAddMultiple({ id: 'default', list: [...this.selectedData] })
             this.resetSelect()
           }
           this.testPlay(info.index)
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: '__temp__', musicInfo: s })))
+            this.resetSelect()
+          } else {
+            this.setTempPlayList([{ listId: '__temp__', musicInfo: this.listDetail.list[info.index] }])
+          }
           break
         case 'search':
           this.handleSearch(info.index)
@@ -410,10 +419,11 @@ export default {
       })
     },
     async addSongListDetail() {
-      if (!this.listDetail.info.name) return
+      // console.log(this.listDetail.info)
+      // if (!this.listDetail.info.name) return
       const list = await this.fetchList()
       this.createUserList({
-        name: this.listDetail.info.name,
+        name: this.listDetail.info.name || `${this.listDetail.source}-list`,
         id: `${this.listDetail.source}__${this.listDetail.id}`,
         list,
         source: this.listDetail.source,

@@ -11,7 +11,6 @@ module.exports = merge(baseConfig, {
   devtool: 'eval-source-map',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
     new FriendlyErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {

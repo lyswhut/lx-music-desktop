@@ -1,11 +1,8 @@
 const log = require('electron-log')
-const Store = require('electron-store')
 const { defaultSetting, overwriteSetting } = require('./defaultSetting')
-const apiSource = require('../renderer/utils/music/api-source-info')
+// const apiSource = require('../renderer/utils/music/api-source-info')
+const getStore = require('./store')
 const defaultHotKey = require('./defaultHotKey')
-const { dialog, app } = require('electron')
-const path = require('path')
-const fs = require('fs')
 
 exports.isLinux = process.platform == 'linux'
 exports.isWin = process.platform == 'win32'
@@ -115,10 +112,10 @@ exports.mergeSetting = (setting, version) => {
     setting = defaultSettingCopy
   }
 
-  if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
-    let api = apiSource.find(api => !api.disabled)
-    if (api) setting.apiSource = api.id
-  }
+  // if (!apiSource.some(api => api.id === setting.apiSource && !api.disabled)) {
+  //   let api = apiSource.find(api => !api.disabled)
+  //   if (api) setting.apiSource = api.id
+  // }
 
   return { setting, version: defaultVersion }
 }
@@ -126,30 +123,13 @@ exports.mergeSetting = (setting, version) => {
 /**
  * 初始化设置
  * @param {*} setting
+ * @param {*} isShowErrorAlert
  */
-exports.initSetting = () => {
-  let electronStore_list
-  try {
-    electronStore_list = new Store({
-      name: 'playList',
-      clearInvalidConfig: false,
-    })
-  } catch (error) {
-    log.error(error)
-    const backPath = path.join(app.getPath('userData'), 'playList.json.bak')
-    fs.copyFileSync(path.join(app.getPath('userData'), 'playList.json'), backPath)
-    dialog.showMessageBoxSync({
-      type: 'error',
-      message: 'Playlist data loading error',
-      detail: `We have helped you back up the old list file to ${backPath}\nYou can try to repair and restore it manually\n\nError detail: ${error.message}`,
-    })
-    electronStore_list = new Store({
-      name: 'playList',
-    })
-  }
-  const electronStore_config = new Store({
-    name: 'config',
-  })
+exports.initSetting = isShowErrorAlert => {
+  const electronStore_list = getStore('playList', true, isShowErrorAlert)
+  const electronStore_config = getStore('config')
+  const electronStore_downloadList = getStore('downloadList')
+
   let setting = electronStore_config.get('setting')
   if (setting) {
     let version = electronStore_config.get('version')
@@ -165,7 +145,7 @@ exports.initSetting = () => {
       }
       const downloadList = electronStore_config.get('download')
       if (downloadList) {
-        if (downloadList.list) electronStore_list.set('downloadList', downloadList.list)
+        if (downloadList.list) electronStore_downloadList.set('list', downloadList.list)
         electronStore_config.delete('download')
       }
     }
@@ -179,6 +159,18 @@ exports.initSetting = () => {
       electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
       delete setting.list.scroll
     }
+
+    if (setting.player.isShowLyricTransition != null) { // 修正拼写问题 v1.8.2 及以前
+      setting.player.isShowLyricTranslation = setting.player.isShowLyricTransition
+      delete setting.player.isShowLyricTransition
+    }
+  }
+
+  // 从我的列表分离下载列表 v1.7.0 后
+  let downloadList = electronStore_list.get('downloadList')
+  if (downloadList) {
+    electronStore_downloadList.set('list', downloadList)
+    electronStore_list.delete('downloadList')
   }
 
   const { version: settingVersion, setting: newSetting } = exports.mergeSetting(setting, electronStore_config.get('version'))
@@ -187,8 +179,7 @@ exports.initSetting = () => {
   if (!newSetting.leaderboard.tabId.includes('__')) newSetting.leaderboard.tabId = 'kw__16'
 
   // newSetting.controlBtnPosition = 'right'
-  electronStore_config.set('version', settingVersion)
-  electronStore_config.set('setting', newSetting)
+  electronStore_config.set({ version: settingVersion, setting: newSetting })
   return { version: settingVersion, setting: newSetting }
 }
 
@@ -196,9 +187,7 @@ exports.initSetting = () => {
  * 初始化快捷键设置
  */
 exports.initHotKey = () => {
-  const electronStore_hotKey = new Store({
-    name: 'hotKey',
-  })
+  const electronStore_hotKey = getStore('hotKey')
 
   let localConfig = electronStore_hotKey.get('local')
   if (!localConfig) {

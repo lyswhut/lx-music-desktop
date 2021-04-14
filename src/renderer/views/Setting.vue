@@ -1,286 +1,270 @@
 <template lang="pug">
-//- div(:class="$style.main")
-  div.scroll(:class="$style.toc")
-    ul(:class="$style.tocList")
-      li(:class="$style.tocListItem" v-for="h2 in toc" :key="h2.id")
-        h2(:class="$style.tocH2" :tips="h2.title")
-          a(:href="'#' + h2.id") {{h2.title}}
-        ul(:class="$style.tocList" v-if="h2.children.length")
-          li(:class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id")
-            h3(:class="$style.tocH3" :tips="h3.title")
-              a(:href="'#' + h3.id") {{h3.title}}
-div.scroll(:class="$style.setting" ref="dom_setting")
-  dl(ref="dom_setting_list")
-    dt#basic {{$t('view.setting.basic')}}
-    dd
-      h3#basic_theme {{$t('view.setting.basic_theme')}}
-      div
-        ul(:class="$style.theme")
-          li(v-for="theme in themes.list" :key="theme.id" :tips="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
-            span
-            label {{$t('store.state.theme_' + theme.class)}}
+div(:class="$style.main")
+  //- div.scroll(:class="$style.toc")
+  //-   ul(:class="$style.tocList")
+  //-     li(:class="$style.tocListItem" v-for="h2 in toc.list" :key="h2.id")
+  //-       h2(:class="[$style.tocH2, toc.activeId == h2.id ? $style.active : null]" :tips="h2.title")
+  //-         a(:href="'#' + h2.id" @click="toc.activeId = h2.id") {{h2.title}}
+  //-       ul(:class="$style.tocList" v-if="h2.children.length")
+  //-         li(:class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id")
+  //-           h3(:class="[$style.tocH3, toc.activeId == h3.id ? $style.active : null]" :tips="h3.title")
+  //-             a(:href="'#' + h3.id" @click="toc.activeId = h3.id") {{h3.title}}
+  div.scroll(:class="$style.setting" ref="dom_setting")
+    dl(ref="dom_setting_list")
+      dt#basic {{$t('view.setting.basic')}}
+      dd
+        h3#basic_theme {{$t('view.setting.basic_theme')}}
+        div
+          ul(:class="$style.theme")
+            li(v-for="theme in themes.list" :key="theme.id" :tips="$t('store.state.theme_' + theme.class)" @click="current_setting.themeId = theme.id" :class="[theme.class, themes.active == theme.id ? $style.active : '']")
+              span
+              label {{$t('store.state.theme_' + theme.class)}}
 
-    dd
-      h3#basic_show_animation {{$t('view.setting.basic_show_animation')}}
-      div
-        material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.is_show')")
+      dd
+        div(:class="[$style.gapTop, $style.top]")
+          material-checkbox(id="setting_show_animate" v-model="current_setting.isShowAnimation" :label="$t('view.setting.basic_show_animation')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.basic_animation')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.basic_to_tray')")
 
-    dd(:tips="$t('view.setting.basic_animation_title')")
-      h3#basic_animation {{$t('view.setting.basic_animation')}}
-      div
-        material-checkbox(id="setting_animate" v-model="current_setting.randomAnimate" :label="$t('view.setting.is_enable')")
 
-    dd(:tips="$t('view.setting.basic_source_title')")
-      h3#basic_source {{$t('view.setting.basic_source')}}
-      div
-        div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
-          material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
-            need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
+      dd(:tips="$t('view.setting.basic_source_title')")
+        h3#basic_source {{$t('view.setting.basic_source')}}
+        div
+          div(v-for="item in apiSources" :key="item.id" :class="$style.gapTop")
+            material-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source" @change="handleAPISourceChange(item.id)"
+              need v-model="current_setting.apiSource" :disabled="item.disabled" :value="item.id" :label="item.label")
+          p(:class="$style.gapTop")
+            material-btn(:class="$style.btn" min @click="isShowUserApiModal = true") {{$t('view.setting.basic_source_user_api_btn')}}
 
-    dd(:tips="$t('view.setting.basic_to_tray_title')")
-      h3#basic_to_tray {{$t('view.setting.basic_to_tray')}}
-      div
-        material-checkbox(id="setting_to_tray" v-model="current_setting.tray.isShow" @change="handleTrayShowChange" :label="$t('view.setting.is_enable')")
+      dd(:tips="$t('view.setting.basic_window_size_title')")
+        h3#basic_window_size {{$t('view.setting.basic_window_size')}}
+        div
+          material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
+            need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
 
-    dd(:tips="$t('view.setting.basic_window_size_title')")
-      h3#basic_window_size {{$t('view.setting.basic_window_size')}}
-      div
-        material-checkbox(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size" @change="handleWindowSizeChange" :class="$style.gapLeft"
-          need v-model="current_setting.windowSizeId" :value="item.id" :label="$t('view.setting.basic_window_size_' + item.name)" :key="item.id")
+      dd(:tips="$t('view.setting.basic_lang_title')")
+        h3#basic_lang {{$t('view.setting.basic_lang')}}
+        div
+          material-checkbox(v-for="item in languageList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
+            @change="handleLangChange(item.locale)" :class="$style.gapLeft"
+            need v-model="current_setting.langId" :value="item.locale" :label="item.name")
 
-    dd(:tips="$t('view.setting.basic_lang_title')")
-      h3#basic_lang {{$t('view.setting.basic_lang')}}
-      div
-        material-checkbox(v-for="item in languageList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
-          @change="handleLangChange(item.locale)" :class="$style.gapLeft"
-          need v-model="current_setting.langId" :value="item.locale" :label="item.name")
+      dd(:tips="$t('view.setting.basic_sourcename_title')")
+        h3#basic_sourcename {{$t('view.setting.basic_sourcename')}}
+        div
+          material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
+            name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
 
-    dd(:tips="$t('view.setting.basic_sourcename_title')")
-      h3#basic_sourcename {{$t('view.setting.basic_sourcename')}}
-      div
-        material-checkbox(v-for="item in sourceNameTypes" :key="item.id" :class="$style.gapLeft" :id="`setting_abasic_sourcename_${item.id}`"
-          name="setting_basic_sourcename" need v-model="current_setting.sourceNameType" :value="item.id" :label="item.label")
+      dd
+        h3#basic_control_btn_position {{$t('view.setting.basic_control_btn_position')}}
+        div
+          material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
+            name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
-    dd
-      h3#basic_control_btn_position {{$t('view.setting.basic_control_btn_position')}}
-      div
-        material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
-          name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
+      dt#play {{$t('view.setting.play')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTranslation" :label="$t('view.setting.play_lyric_transition')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
+      dd(:tips="$t('view.setting.play_mediaDevice_title')")
+        h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
+        div
+          material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+      dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
 
-    dt#play {{$t('view.setting.play')}}
-    dd(:tips="$t('view.setting.play_toggle_title')")
-      h3#play_toggle {{$t('view.setting.play_toggle')}}
-      div
-        material-checkbox(:id="`setting_player_togglePlay_${item.value}`" :class="$style.gapLeft" :value="item.value" :key="item.value"
-            v-model="current_setting.player.togglePlayMethod" v-for="item in togglePlayMethods" :label="item.name")
-    dd
-      h3#play_lyric_transition {{$t('view.setting.play_lyric_transition')}}
-      div
-        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.play_quality_title')")
-      h3#play_quality {{$t('view.setting.play_quality')}}
-      div
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.is_enable')")
-    dd(:tips="$t('view.setting.play_task_bar_title')")
-      h3#play_task_bar {{$t('view.setting.play_task_bar')}}
-      div
-        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.is_enable')")
-    dd(:tips="$t('view.setting.play_mediaDevice_remove_stop_play_title')")
-      h3#play_mediaDevice_remove_stop_play {{$t('view.setting.play_mediaDevice_remove_stop_play')}}
-      div
-        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.is_enable')")
-    dd(:tips="$t('view.setting.play_mediaDevice_title')")
-      h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
-      div
-        material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-    dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
-    dd
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
-    dt#search {{$t('view.setting.search')}}
-    dd(:tips="$t('view.setting.search_hot_title')")
-      h3#search_hot {{$t('view.setting.search_hot')}}
-      div
-        material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.search_history_title')")
-      h3#search_history {{$t('view.setting.search_history')}}
-      div
-        material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.search_focus_search_box_title')")
-      h3#search_focus_search_box {{$t('view.setting.search_focus_search_box')}}
-      div
-        material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.is_enable')")
+      dt#search {{$t('view.setting.search')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_search_showHot_enable" v-model="current_setting.search.isShowHotSearch" :label="$t('view.setting.search_hot')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_search_showHistory_enable" v-model="current_setting.search.isShowHistorySearch" :label="$t('view.setting.search_history')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_search_focusSearchBox_enable" v-model="current_setting.search.isFocusSearchBox" :label="$t('view.setting.search_focus_search_box')")
 
-    dt#list {{$t('view.setting.list')}}
-    dd(:tips="$t('view.setting.list_source_title')")
-      h3#list_source {{$t('view.setting.list_source')}}
-      div
-        material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.is_show')")
-    dd(:tips="$t('view.setting.list_scroll_title')")
-      h3#list_scroll {{$t('view.setting.list_scroll')}}
-      div
-        material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.is_enable')")
-    //- dd(:tips="播放列表是否显示专辑栏")
-      h3 专辑栏
-      div
-        material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
-    dt#download {{$t('view.setting.download')}}
-    dd
-      material-checkbox(id="setting_download_enable" v-model="current_setting.download.enable" :label="$t('view.setting.download_enable')")
-    dd(:tips="$t('view.setting.download_path_title')")
-      h3#download_path {{$t('view.setting.download_path')}}
-      div
-        p
-          | {{$t('view.setting.download_path_label')}}
-          span.auto-hidden.hover(:tips="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
-        p
-          material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
-    dd(:tips="$t('view.setting.download_name_title')")
-      h3#download_name {{$t('view.setting.download_name')}}
-      div
-        material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
-            v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
-    dd
-      h3#download_data_embed {{$t('view.setting.download_data_embed')}}
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.download_embed_pic')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_download_isEmbedLyric" v-model="current_setting.download.isEmbedLyric" :label="$t('view.setting.download_embed_lyric')")
-    dd(:tips="$t('view.setting.download_lyric_title')")
-      h3#download_lyric {{$t('view.setting.download_lyric')}}
-      div
-        material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
+      dt#list {{$t('view.setting.list')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.list_source')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.list_scroll')")
+      //- dd(:tips="播放列表是否显示专辑栏")
+        h3 专辑栏
+        div
+          material-checkbox(id="setting_list_showalbum" v-model="current_setting.list.isShowAlbumName" label="是否显示专辑栏")
+      dt#download {{$t('view.setting.download')}}
+      dd
+        material-checkbox(id="setting_download_enable" v-model="current_setting.download.enable" :label="$t('view.setting.download_enable')")
+      dd(:tips="$t('view.setting.download_path_title')")
+        h3#download_path {{$t('view.setting.download_path')}}
+        div
+          p
+            | {{$t('view.setting.download_path_label')}}
+            span.auto-hidden.hover(:tips="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
+          p
+            material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
+      dd(:tips="$t('view.setting.download_name_title')")
+        h3#download_name {{$t('view.setting.download_name')}}
+        div
+          material-checkbox(:id="`setting_download_musicName_${item.value}`" :class="$style.gapLeft" name="setting_download_musicName" :value="item.value" :key="item.value" need
+              v-model="current_setting.download.fileName" v-for="item in musicNames" :label="item.name")
+      dd
+        h3#download_data_embed {{$t('view.setting.download_data_embed')}}
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_download_isEmbedPic" v-model="current_setting.download.isEmbedPic" :label="$t('view.setting.download_embed_pic')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_download_isEmbedLyric" v-model="current_setting.download.isEmbedLyric" :label="$t('view.setting.download_embed_lyric')")
+      dd(:tips="$t('view.setting.download_lyric_title')")
+        h3#download_lyric {{$t('view.setting.download_lyric')}}
+        div
+          material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
 
-    dt#hot_key {{$t('view.setting.hot_key')}}
-    dd
-      h3#hot_key_local_title {{$t('view.setting.hot_key_local_title')}}
-      div
-        material-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('view.setting.is_enable')" @change="handleHotKeySaveConfig")
-      div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
-        div(:class="$style.hotKeyItem" v-for="item in hotKeys.local")
-          h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
-          material-input.key-bind(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('view.setting.hot_key_unset_input')"
-            :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
-            @focus="handleHotKeyFocus($event, item, 'local')"
-            @blur="handleHotKeyBlur($event, item, 'local')")
+      dt#hot_key {{$t('view.setting.hot_key')}}
+      dd
+        h3#hot_key_local_title {{$t('view.setting.hot_key_local_title')}}
+        div
+          material-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('view.setting.is_enable')" @change="handleHotKeySaveConfig")
+        div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
+          div(:class="$style.hotKeyItem" v-for="item in hotKeys.local")
+            h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
+            material-input.key-bind(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('view.setting.hot_key_unset_input')"
+              :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
+              @focus="handleHotKeyFocus($event, item, 'local')"
+              @blur="handleHotKeyBlur($event, item, 'local')")
 
-      h3#hot_key_global_title {{$t('view.setting.hot_key_global_title')}}
-      div
-        material-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('view.setting.is_enable')" @change="handleEnableHotKey")
-      div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
-        div(:class="$style.hotKeyItem" v-for="item in hotKeys.global")
-          h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
-          material-input.key-bind(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
-            :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" @input.prevent readonly :placeholder="$t('view.setting.hot_key_unset_input')"
-            @focus="handleHotKeyFocus($event, item, 'global')"
-            @blur="handleHotKeyBlur($event, item, 'global')")
+        h3#hot_key_global_title {{$t('view.setting.hot_key_global_title')}}
+        div
+          material-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('view.setting.is_enable')" @change="handleEnableHotKey")
+        div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
+          div(:class="$style.hotKeyItem" v-for="item in hotKeys.global")
+            h4(:class="$style.hotKeyItemTitle") {{$t('view.setting.hot_key_' + item.name)}}
+            material-input.key-bind(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
+              :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" @input.prevent readonly :placeholder="$t('view.setting.hot_key_unset_input')"
+              @focus="handleHotKeyFocus($event, item, 'global')"
+              @blur="handleHotKeyBlur($event, item, 'global')")
 
-    dt#network {{$t('view.setting.network')}}
-    dd
-      h3#network_proxy_title {{$t('view.setting.network_proxy_title')}}
-      div
-        p
-          material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
-        p
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
-        p
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
-          material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
-    dt#odc {{$t('view.setting.odc')}}
-    dd
-      h3#odc_clear_search_input {{$t('view.setting.odc_clear_search_input')}}
-      div
-        material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.is_enable')")
-    dd
-      h3#odc_clear_search_list {{$t('view.setting.odc_clear_search_list')}}
-      div
-        material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.is_enable')")
-    dt#backup {{$t('view.setting.backup')}}
-    dd
-      h3#backup_part {{$t('view.setting.backup_part')}}
-      div
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") {{$t('view.setting.backup_part_import_list')}}
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") {{$t('view.setting.backup_part_export_list')}}
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") {{$t('view.setting.backup_part_import_setting')}}
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") {{$t('view.setting.backup_part_export_setting')}}
-    dd
-      h3#backup_all {{$t('view.setting.backup_all')}}
-      div
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") {{$t('view.setting.backup_all_import')}}
-        material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") {{$t('view.setting.backup_all_export')}}
-    dt#other {{$t('view.setting.other')}}
-    dd
-      h3#other_tray_theme {{$t('view.setting.other_tray_theme')}}
-      div
-        material-checkbox(:id="'setting_tray_theme_' + item.id" v-model="current_setting.tray.themeId" name="setting_tray_theme" need :class="$style.gapLeft"
-          :label="$t('view.setting.other_tray_theme_' + item.name)" :key="item.id" :value="item.id" v-for="item in trayThemeList")
-    dd
-      h3#other_cache {{$t('view.setting.other_cache')}}
-      div
-        p
-          | {{$t('view.setting.other_cache_label')}}
-          span.auto-hidden(:tips="$t('view.setting.other_cache_label_title')") {{cacheSize}}
-        p
-          material-btn(:class="$style.btn" min @click="clearCache") {{$t('view.setting.other_cache_clear_btn')}}
-    dt#update {{$t('view.setting.update')}}
-    dd
-      p.small
-        | {{$t('view.setting.update_latest_label')}}{{version.newVersion ? version.newVersion.version : $t('view.setting.update_unknown')}}
-      p.small {{$t('view.setting.update_current_label')}}{{version.version}}
-      p.small(v-if="this.version.downloadProgress" style="line-height: 1.5;")
-        | {{$t('view.setting.update_downloading')}}
+      dt#network {{$t('view.setting.network')}}
+      dd
+        h3#network_proxy_title {{$t('view.setting.network_proxy_title')}}
+        div
+          p
+            material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
+          p
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
+          p
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
+      dt#odc {{$t('view.setting.odc')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_odc_isAutoClearSearchInput" v-model="current_setting.odc.isAutoClearSearchInput" :label="$t('view.setting.odc_clear_search_input')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_odc_isAutoClearSearchList" v-model="current_setting.odc.isAutoClearSearchList" :label="$t('view.setting.odc_clear_search_list')")
+      dt#backup {{$t('view.setting.backup')}}
+      dd
+        h3#backup_part {{$t('view.setting.backup_part')}}
+        div
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportPlayList") {{$t('view.setting.backup_part_import_list')}}
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportPlayList") {{$t('view.setting.backup_part_export_list')}}
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportSetting") {{$t('view.setting.backup_part_import_setting')}}
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportSetting") {{$t('view.setting.backup_part_export_setting')}}
+      dd
+        h3#backup_all {{$t('view.setting.backup_all')}}
+        div
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleImportAllData") {{$t('view.setting.backup_all_import')}}
+          material-btn(:class="[$style.btn, $style.gapLeft]" min @click="handleExportAllData") {{$t('view.setting.backup_all_export')}}
+      dt#other {{$t('view.setting.other')}}
+      dd
+        h3#other_tray_theme {{$t('view.setting.other_tray_theme')}}
+        div
+          material-checkbox(:id="'setting_tray_theme_' + item.id" v-model="current_setting.tray.themeId" name="setting_tray_theme" need :class="$style.gapLeft"
+            :label="$t('view.setting.other_tray_theme_' + item.name)" :key="item.id" :value="item.id" v-for="item in trayThemeList")
+      dd
+        h3#other_resource_cache {{$t('view.setting.other_resource_cache')}}
+        div
+          p
+            | {{$t('view.setting.other_resource_cache_label')}}
+            span.auto-hidden {{cacheSize}}
+          p
+            material-btn(:class="$style.btn" min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{$t('view.setting.other_resource_cache_clear_btn')}}
+      dd
+        h3#other_play_list_cache {{$t('view.setting.other_play_list_cache')}}
+        div
+          material-btn(:class="$style.btn" min :disabled="isDisabledListCacheClear" @click="clearListCache") {{$t('view.setting.other_play_list_cache_clear_btn')}}
+
+      dt#update {{$t('view.setting.update')}}
+      dd
+        p.small
+          | {{$t('view.setting.update_latest_label')}}{{version.newVersion ? version.newVersion.version : $t('view.setting.update_unknown')}}
+        p.small {{$t('view.setting.update_current_label')}}{{version.version}}
+        p.small(v-if="this.version.downloadProgress" style="line-height: 1.5;")
+          | {{$t('view.setting.update_downloading')}}
+          br
+          | {{$t('view.setting.update_progress')}}{{downloadProgress}}
+        p(v-if="version.newVersion")
+          span(v-if="version.isLatestVer") {{$t('view.setting.update_latest')}}
+          material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") {{$t('view.setting.update_open_version_modal_btn')}}
+        p.small(v-else) {{$t('view.setting.update_checking')}}
+      dt#about {{$t('view.setting.about')}}
+      dd
+        p.small
+          | 本软件完全免费，代码已开源，开源地址：
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
+        p.small
+          | 最新版网盘下载地址（网盘内有Windows、MAC版）：
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')") 网盘地址
+          | &nbsp;&nbsp;密码：
+          span.hover(:tips="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
+        p.small
+          | 软件的常见问题可转至：
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
+        p.small
+          strong 仔细 仔细 仔细
+          | 地阅读常见问题后，
+        p.small
+          | 仍有问题可加企鹅群&nbsp;
+          span.hover(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
+          | &nbsp;反馈
+          strong (为免满人，无事勿加，入群先看群公告)
+          | ，或到 GitHub 提交&nbsp;
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+
         br
-        | {{$t('view.setting.update_progress')}}{{downloadProgress}}
-      p(v-if="version.newVersion")
-        span(v-if="version.isLatestVer") {{$t('view.setting.update_latest')}}
-        material-btn(v-else :class="[$style.btn, $style.gapLeft]" min @click="showUpdateModal") {{$t('view.setting.update_open_version_modal_btn')}}
-      p.small(v-else) {{$t('view.setting.update_checking')}}
-    dt#about {{$t('view.setting.about')}}
-    dd
-      p.small
-        | 本软件完全免费，代码已开源，开源地址：
-        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
-      p.small
-        | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')") 网盘地址
-        | &nbsp;&nbsp;密码：
-        span.hover(:tips="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
-      p.small
-        | 软件的常见问题可转至：
-        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
-      p.small
-        strong 仔细 仔细 仔细
-        | 地阅读常见问题后，
-      p.small
-        | 仍有问题可加企鹅群&nbsp;
-        span.hover(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
-        | &nbsp;反馈
-        strong (为免满人，无事勿加，入群先看群公告)
-        | ，或到 GitHub 提交&nbsp;
-        span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+        p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
+        p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
-      br
-      p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
-      p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
+        p.small
+          | 你已签署本软件的&nbsp;
+          material-btn(min @click="handleShowPact") 许可协议
+          | ，协议的在线版本在&nbsp;
+          strong.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
+          | &nbsp;。
+        br
 
-      p.small
-        | 你已签署本软件的&nbsp;
-        material-btn(min @click="handleShowPact") 许可协议
-        | ，协议的在线版本在&nbsp;
-        strong.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#%E9%A1%B9%E7%9B%AE%E5%8D%8F%E8%AE%AE')") 这里
-        | &nbsp;。
-      br
-
-      p
-        small By：
-        | 落雪无痕
+        p
+          small By：
+          | 落雪无痕
+  material-user-api-modal(v-model="isShowUserApiModal")
 </template>
 
 <script>
@@ -295,6 +279,8 @@ import {
   clearCache,
   sizeFormate,
   setWindowSize,
+  getSetting,
+  saveSetting,
 } from '../utils'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
@@ -305,6 +291,7 @@ import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
 import { gzip, gunzip } from 'zlib'
+import music from '../utils/music'
 
 let hotKeyTargetInput
 let newHotKey
@@ -322,32 +309,41 @@ export default {
         ? `${this.version.downloadProgress.percent.toFixed(2)}% - ${sizeFormate(this.version.downloadProgress.transferred)}/${sizeFormate(this.version.downloadProgress.total)} - ${sizeFormate(this.version.downloadProgress.bytesPerSecond)}/s`
         : this.$t('view.setting.update_init')
     },
-    togglePlayMethods() {
-      return [
-        {
-          name: this.$t('view.setting.play_toggle_list_loop'),
-          value: 'listLoop',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_random'),
-          value: 'random',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_list'),
-          value: 'list',
-        },
-        {
-          name: this.$t('view.setting.play_toggle_single_loop'),
-          value: 'singleLoop',
-        },
-      ]
-    },
+    // togglePlayMethods() {
+    //   return [
+    //     {
+    //       name: this.$t('view.setting.play_toggle_list_loop'),
+    //       value: 'listLoop',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_random'),
+    //       value: 'random',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_list'),
+    //       value: 'list',
+    //     },
+    //     {
+    //       name: this.$t('view.setting.play_toggle_single_loop'),
+    //       value: 'singleLoop',
+    //     },
+    //   ]
+    // },
     apiSources() {
-      return apiSourceInfo.map(api => ({
-        id: api.id,
-        label: this.$t('view.setting.basic_source_' + api.id) || api.name,
-        disabled: api.disabled,
-      }))
+      return [
+        ...apiSourceInfo.map(api => ({
+          id: api.id,
+          label: this.$t('view.setting.basic_source_' + api.id) || api.name,
+          disabled: api.disabled,
+        })),
+        ...window.globalObj.userApi.list.map(api => ({
+          id: api.id,
+          label: `${api.name}${api.description ? `（${api.description}）` : ''}${api.id == this.setting.apiSource ? `[${this.getApiStatus()}]` : ''}`,
+          status: api.status,
+          message: api.message,
+          disabled: false,
+        })),
+      ]
     },
     sourceNameTypes() {
       return [
@@ -592,7 +588,13 @@ export default {
 
       },
       isEditHotKey: false,
-      toc: [],
+      isShowUserApiModal: false,
+      toc: {
+        list: [],
+        activeId: '',
+      },
+      isDisabledResourceCacheClear: false,
+      isDisabledListCacheClear: false,
     }
   },
   watch: {
@@ -613,6 +615,9 @@ export default {
     'setting.player.isMute'(n) {
       this.current_setting.player.isMute = n
     },
+    'setting.apiSource'(n) {
+      this.current_setting.apiSource = n
+    },
     'setting.desktopLyric.enable'(n) {
       this.current_setting.desktopLyric.enable = n
     },
@@ -622,6 +627,9 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       this.current_setting.player.togglePlayMethod = n
     },
+    // 'setting.player.isPlayLxlrc'(n) {
+    //   this.current_setting.player.isPlayLxlrc = n
+    // },
     'current_setting.player.isShowTaskProgess'(n) {
       if (n) return
       this.$nextTick(() => {
@@ -644,10 +652,15 @@ export default {
     window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
     window.eventHub.$off(eventBaseName.key_down, this.handleKeyDown)
     window.eventHub.$off(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
+
+    if (this.current_setting.network.proxy.enable && !this.current_setting.network.proxy.host) window.globalObj.proxy.enable = false
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
-    ...mapMutations('list', ['setList']),
+    ...mapMutations('list', {
+      setList: 'setList',
+      clearMyListCache: 'clearCache',
+    }),
     ...mapMutations(['setMediaDeviceId']),
     init() {
       this.current_setting = JSON.parse(JSON.stringify(this.setting))
@@ -684,7 +697,7 @@ export default {
     //     }
     //   }
     //   console.log(toc)
-    //   this.toc = toc
+    //   this.toc.list = toc
     // },
     // handleListScroll(event) {
     //   // console.log(event.target.scrollTop)
@@ -740,15 +753,22 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      await this.refreshSetting(this.setting, this.settingVersion)
     },
-    exportPlayList(path) {
-      const data = {
+    async exportPlayList(path) {
+      const data = JSON.parse(JSON.stringify({
         type: 'playList',
         data: [
           this.defaultList,
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for await (const list of data.data) {
+        for await (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(data))
     },
@@ -760,9 +780,6 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      const { version: settingVersion, setting } = mergeSetting(allData.setting)
-      setting.isAgreePact = false
-      this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
       if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
@@ -771,9 +788,14 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      const { version: settingVersion, setting } = mergeSetting(allData.setting)
+      setting.isAgreePact = false
+
+      await this.refreshSetting(setting, settingVersion)
     },
     async exportAllData(path) {
-      let allData = {
+      let allData = JSON.parse(JSON.stringify({
         type: 'allData',
         setting: Object.assign({ version: this.settingVersion }, this.setting),
         playList: [
@@ -781,6 +803,11 @@ export default {
           this.loveList,
           ...this.userList,
         ],
+      }))
+      for await (const list of allData.playList) {
+        for await (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
       }
       this.handleSaveFile(path, JSON.stringify(allData))
     },
@@ -872,19 +899,34 @@ export default {
         this.cacheSize = sizeFormate(size)
       })
     },
-    clearCache() {
+    clearResourceCache() {
+      this.isDisabledResourceCacheClear = true
       clearCache().then(() => {
         this.getCacheSize()
+        this.isDisabledResourceCacheClear = false
       })
+    },
+    clearListCache() {
+      this.isDisabledListCacheClear = true
+      this.clearMyListCache()
+      this.isDisabledListCacheClear = false
     },
     handleWindowSizeChange(index) {
       let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
-    refreshSetting(setting, version) {
+    async refreshSetting(newSetting, newVersion) {
+      await saveSetting(newSetting)
+      const { setting, version } = await getSetting()
       this.setSetting(setting)
       this.setSettingVersion(version)
       if (setting.windowSizeId != null) this.handleWindowSizeChange(null, setting.windowSizeId)
+      window.globalObj.apiSource = setting.apiSource
+      if (/^user_api/.test(setting.apiSource)) {
+        rendererInvoke(NAMES.mainWindow.set_user_api, setting.apiSource)
+      } else {
+        window.globalObj.qualityList = music.supportQuality[setting.apiSource]
+      }
       for (let key of Object.keys(setting.network.proxy)) {
         window.globalObj.proxy[key] = setting.network.proxy[key]
       }
@@ -1083,6 +1125,14 @@ export default {
         })
       })
     },
+    getApiStatus() {
+      let status
+      if (window.globalObj.userApi.status) status = this.$t('view.setting.basic_source_status_success')
+      else if (window.globalObj.userApi.message == 'initing') status = this.$t('view.setting.basic_source_status_initing')
+      else status = `${this.$t('view.setting.basic_source_status_failed')} - ${window.globalObj.userApi.message}`
+
+      return status
+    },
   },
 }
 </script>
@@ -1090,12 +1140,12 @@ export default {
 <style lang="less" module>
 @import '../assets/styles/layout.less';
 
-// .main {
-//   display: flex;
-//   flex-flow: row nowrap;
-//   height: 100%;
-//   border-top: 1px solid rgba(0, 0, 0, 0.12);
-// }
+.main {
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+  // border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
 
 // .toc {
 //   flex: 0 0 15%;
@@ -1112,6 +1162,11 @@ export default {
 //   font-size: 14px;
 //   a {
 //     color: @color-theme;
+//   }
+//   &.active {
+//     a {
+//       color: @color-theme;
+//     }
 //   }
 // }
 // .tocH3 {
@@ -1194,6 +1249,10 @@ export default {
   }
 }
 .gap-top {
+  &.top {
+    margin-top: 25px;
+  }
+
   + .gap-top {
     margin-top: 10px;
   }

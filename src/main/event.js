@@ -2,7 +2,7 @@ const { common: COMMON_EVENT_NAME, mainWindow: MAIN_WINDOW_EVENT_NAME } = requir
 const { mainSend, NAMES: { mainWindow: ipcMainWindowNames } } = require('./../common/ipc')
 const { getAppHotKeyConfig } = require('./utils')
 
-global.lx_event.common.on(COMMON_EVENT_NAME.config, name => {
+global.lx_event.common.on(COMMON_EVENT_NAME.configStatus, name => {
   if (MAIN_WINDOW_EVENT_NAME.name === name) return
   if (global.modules.mainWindow) mainSend(global.modules.mainWindow, ipcMainWindowNames.set_config, global.appSetting)
 })

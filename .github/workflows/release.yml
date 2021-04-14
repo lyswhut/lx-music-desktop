@@ -1,0 +1,131 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            %APPDATA%\npm-cache
+            %LOCALAPPDATA%\electron\Cache
+            %LOCALAPPDATA%\electron-builder\Cache
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: |
+          npm run publish:win:setup:always
+          npm run publish:win:7z:x64
+          npm run publish:win:7z:x86
+          npm run publish:win:7z:arm64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+  Mac:
+    name: Mac
+    runs-on: macos-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: npm run publish:mac:dmg:always
+        env:
+          ELECTRON_CACHE: $HOME/.cache/electron
+          ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+  Linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install package
+        run: sudo apt-get install -y rpm libarchive-tools
+
+      - name: Check out git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+
+      - name: Cache file
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build src code
+        run: npm run build:src
+
+      - name: Release package
+        run: |
+          npm run publish:linux:deb:x64:always
+          npm run publish:linux:deb:x86
+          npm run publish:linux:deb:arm64
+          npm run publish:linux:deb:armv7l
+          npm run publish:linux:appImage
+          npm run publish:linux:rpm
+          npm run publish:linux:pacman
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_TOKEN: ${{ secrets.BT_TOKEN }}

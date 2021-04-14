@@ -106,7 +106,7 @@ const kw = {
   },
 
   init() {
-    getToken()
+    return getToken()
   },
 }
 
