@@ -191,7 +191,7 @@
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^5.3.1",
     "less": "^4.1.1",
-    "less-loader": "^8.1.0",
+    "less-loader": "^8.1.1",
     "less-plugin-clean-css": "^1.5.1",
     "markdown-it": "^12.0.5",
     "mini-css-extract-plugin": "^1.4.1",

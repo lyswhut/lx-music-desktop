@@ -49,52 +49,42 @@ export default {
       themeList: [
         {
           id: 0,
-          name: '绿意盎然',
           className: 'green',
         },
         {
           id: 1,
-          name: '绿意盎然',
           className: 'yellow',
         },
         {
           id: 2,
-          name: '绿意盎然',
           className: 'blue',
         },
         {
           id: 3,
-          name: '绿意盎然',
           className: 'red',
         },
         {
           id: 4,
-          name: '绿意盎然',
           className: 'pink',
         },
         {
           id: 5,
-          name: '绿意盎然',
           className: 'purple',
         },
         {
           id: 6,
-          name: '绿意盎然',
           className: 'orange',
         },
         {
           id: 7,
-          name: '绿意盎然',
           className: 'grey',
         },
         {
           id: 8,
-          name: '绿意盎然',
           className: 'ming',
         },
         {
           id: 9,
-          name: '绿意盎然',
           className: 'blue2',
         },
       ],
