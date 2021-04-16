@@ -279,6 +279,7 @@ export default {
       this.setLyric()
     },
     async list(n, o) {
+      if (this.playInfo.isTempPlay) return
       if (n === o && this.musicInfo.songmid) {
         let index = this.listId == 'download'
           ? n.findIndex(s => s.musicInfo.songmid === this.musicInfo.songmid)
