@@ -24,9 +24,6 @@ const state = {
   tempPlayList: [],
 }
 
-let urlRequest
-// let picRequest
-// let lrcRequest
 
 const filterList = async({ playedList, listInfo, savePath, commit }) => {
   // if (this.list.listName === null) return
@@ -71,7 +68,13 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
 
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
-  return music[musicInfo.source].getPic(musicInfo).promise.catch(err => {
+  let reqPromise
+  try {
+    reqPromise = music[musicInfo.source].getPic(musicInfo).promise
+  } catch (err) {
+    reqPromise = Promise.reject(err)
+  }
+  return reqPromise.promise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
       if (!originMusic) originMusic = musicInfo
@@ -88,7 +91,13 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 const getLyric = function(musicInfo, retryedSource = [], originMusic) {
-  return music[musicInfo.source].getLyric(musicInfo).promise.catch(err => {
+  let reqPromise
+  try {
+    reqPromise = music[musicInfo.source].getLyric(musicInfo).promise
+  } catch (err) {
+    reqPromise = Promise.reject(err)
+  }
+  return reqPromise.promise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
       if (!originMusic) originMusic = musicInfo
@@ -161,19 +170,20 @@ const actions = {
 
       // return Promise.reject(new Error('该歌曲没有可播放的音频'))
     }
-    if (urlRequest && urlRequest.cancelHttp) urlRequest.cancelHttp()
     const cachedUrl = await getMusicUrl(musicInfo, type)
     if (cachedUrl && !isRefresh) return cachedUrl
 
-    urlRequest = music[musicInfo.source].getMusicUrl(musicInfo, type)
-
-    return urlRequest.promise.then(({ url }) => {
+    let reqPromise
+    try {
+      reqPromise = music[musicInfo.source].getMusicUrl(musicInfo, type).promise
+    } catch (err) {
+      reqPromise = Promise.reject(err)
+    }
+    return reqPromise.then(({ url }) => {
       if (originMusic) commit('setUrl', { musicInfo: originMusic, url, type })
       commit('setUrl', { musicInfo, url, type })
-      urlRequest = null
       return url
     }).catch(err => {
-      urlRequest = null
       return Promise.reject(err)
     })
   },
