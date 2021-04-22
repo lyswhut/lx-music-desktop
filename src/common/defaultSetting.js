@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.40',
+  version: '1.0.41',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -45,6 +45,7 @@ const defaultSetting = {
     isDownloadLrc: false,
     isEmbedPic: true,
     isEmbedLyric: false,
+    isUseOtherSource: false,
   },
   leaderboard: {
     source: 'kw',

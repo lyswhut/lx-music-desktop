@@ -68,16 +68,16 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
 
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
+  if (!originMusic) originMusic = musicInfo
   let reqPromise
   try {
     reqPromise = music[musicInfo.source].getPic(musicInfo).promise
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.promise.catch(err => {
+  return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
-      if (!originMusic) originMusic = musicInfo
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
@@ -91,16 +91,16 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 const getLyric = function(musicInfo, retryedSource = [], originMusic) {
+  if (!originMusic) originMusic = musicInfo
   let reqPromise
   try {
     reqPromise = music[musicInfo.source].getLyric(musicInfo).promise
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.promise.catch(err => {
+  return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
-    return this.dispatch('list/getOtherSource', musicInfo).then(otherSource => {
-      if (!originMusic) originMusic = musicInfo
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {

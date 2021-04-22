@@ -73,6 +73,7 @@
   "download_name1": "歌名 - 歌手",
   "download_name2": "歌手 - 歌名",
   "download_name3": "歌名",
+  "download_use_other_source": "自動換源下載（當無法從歌曲的原始源下載時，嘗試切換到其他源下載，注：此功能不100%保證換源後的歌曲版本與原版一致）",
   "download_select_save_path": "選擇歌曲保存路徑",
 
   "hot_key": "快捷鍵設置",

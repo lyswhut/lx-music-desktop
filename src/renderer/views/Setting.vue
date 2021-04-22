@@ -122,6 +122,11 @@ div(:class="$style.main")
             span.auto-hidden.hover(:tips="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
           p
             material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
+      dd
+        h3#download_name {{$t('view.setting.download_use_other_source')}}
+        div
+          material-checkbox(id="setting_download_isUseOtherSource" v-model="current_setting.download.isUseOtherSource" :label="$t('view.setting.is_enable')")
+        div
       dd(:tips="$t('view.setting.download_name_title')")
         h3#download_name {{$t('view.setting.download_name')}}
         div
