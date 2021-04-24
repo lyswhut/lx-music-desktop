@@ -83,7 +83,7 @@ npm run pack:linux
 - `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
 - `-dha`  禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动（v1.6.0起新增）
 - `-dt` 以非透明模式启动（Disable Transparent），对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示（注：该参数对桌面歌词无效），原来的`-nt`参数已重命名为`-dt`（v1.6.0起重命名）
-- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling），此选项将禁用Chromium的Hardware Media Key Handling特性（v1.8.1起新增）
+- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling），此选项将禁用Chromium的Hardware Media Key Handling特性（v1.9.0起新增）
 - `-play` 启动时播放指定列表的音乐，参数说明：
   - `type`：播放类型，目前固定为`songList`
   - `source`：播放源，可用值为`kw/kg/tx/wy/mg/myList`，其中`kw/kg/tx/wy/mg`对应各源的在线列表，`myList`为本地列表
