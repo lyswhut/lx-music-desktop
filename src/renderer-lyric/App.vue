@@ -4,7 +4,7 @@
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       .control-bar(v-show="!lrcConfig.isLock")
         core-control-bar(:lrcConfig="lrcConfig" :themes="themeList")
-    core-lyric(:lrcConfig="lrcConfig" :isPlayLxlrc="isPlayLxlrc" :isShowLyricTransition="isShowLyricTransition")
+    core-lyric(:lrcConfig="lrcConfig" :isPlayLxlrc="isPlayLxlrc" :isShowLyricTranslation="isShowLyricTranslation")
   div.resize-left(@mousedown.self="handleMouseDown('left', $event)")
   div.resize-top(@mousedown.self="handleMouseDown('top', $event)")
   div.resize-right(@mousedown.self="handleMouseDown('right', $event)")
@@ -44,57 +44,47 @@ export default {
           isZoomActiveLrc: true,
         },
       },
-      isShowLyricTransition: true,
+      isShowLyricTranslation: true,
       isPlayLxlrc: true,
       themeList: [
         {
           id: 0,
-          name: '绿意盎然',
           className: 'green',
         },
         {
           id: 1,
-          name: '绿意盎然',
           className: 'yellow',
         },
         {
           id: 2,
-          name: '绿意盎然',
           className: 'blue',
         },
         {
           id: 3,
-          name: '绿意盎然',
           className: 'red',
         },
         {
           id: 4,
-          name: '绿意盎然',
           className: 'pink',
         },
         {
           id: 5,
-          name: '绿意盎然',
           className: 'purple',
         },
         {
           id: 6,
-          name: '绿意盎然',
           className: 'orange',
         },
         {
           id: 7,
-          name: '绿意盎然',
           className: 'grey',
         },
         {
           id: 8,
-          name: '绿意盎然',
           className: 'ming',
         },
         {
           id: 9,
-          name: '绿意盎然',
           className: 'blue2',
         },
       ],
@@ -119,9 +109,9 @@ export default {
     document.removeEventListener('mouseup', this.handleMouseUp)
   },
   methods: {
-    handleUpdateConfig({ config, languageId, isShowLyricTransition, isPlayLxlrc }) {
+    handleUpdateConfig({ config, languageId, isShowLyricTranslation, isPlayLxlrc }) {
       this.lrcConfig = config
-      this.isShowLyricTransition = isShowLyricTransition
+      this.isShowLyricTranslation = isShowLyricTranslation
       this.isPlayLxlrc = isPlayLxlrc
       if (this.$i18n.locale !== languageId && languageId != null) this.$i18n.locale = languageId
     },

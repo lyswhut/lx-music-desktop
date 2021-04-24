@@ -139,6 +139,7 @@ module.exports = class Lyric {
         return {
           text: line.text.replace(fontTimeExp, ''),
           time: line.time,
+          translation: line.translation,
           dom_line: fontPlayer.lineContent,
         }
       })

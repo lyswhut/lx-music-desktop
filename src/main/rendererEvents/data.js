@@ -1,12 +1,8 @@
-const Store = require('electron-store')
 const { mainOn, NAMES: { mainWindow: ipcMainWindowNames }, mainHandle } = require('../../common/ipc')
+const getStore = require('@common/store')
 
 
-const electronStore_data = new Store({
-  name: 'data',
-})
-
-mainHandle(ipcMainWindowNames.get_data, async(event, path) => electronStore_data.get(path))
+mainHandle(ipcMainWindowNames.get_data, async(event, path) => getStore('data').get(path))
 
 
-mainOn(ipcMainWindowNames.save_data, (event, { path, data }) => electronStore_data.set(path, data))
+mainOn(ipcMainWindowNames.save_data, (event, { path, data }) => getStore('data').set(path, data))

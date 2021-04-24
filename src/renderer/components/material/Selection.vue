@@ -155,7 +155,7 @@ export default {
   background-color: @color-theme_2-background_2;
   opacity: 0;
   transform: scaleY(0) translateY(0);
-  transform-origin: 0 @selection-height / 2 0;
+  transform-origin: 0 (@selection-height / 2) 0;
   transition: .25s ease;
   transition-property: transform, opacity;
   z-index: 10;

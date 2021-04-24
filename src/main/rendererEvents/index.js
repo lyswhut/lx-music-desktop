@@ -17,6 +17,8 @@ require('./getDataPath')
 require('./showDialog')
 require('./playList')
 require('./data')
+require('./lyric')
+require('./musicUrl')
 
 require('./kw_decodeLyric')
 

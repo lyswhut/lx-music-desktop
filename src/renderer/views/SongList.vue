@@ -419,10 +419,11 @@ export default {
       })
     },
     async addSongListDetail() {
-      if (!this.listDetail.info.name) return
+      // console.log(this.listDetail.info)
+      // if (!this.listDetail.info.name) return
       const list = await this.fetchList()
       this.createUserList({
-        name: this.listDetail.info.name,
+        name: this.listDetail.info.name || `${this.listDetail.source}-list`,
         id: `${this.listDetail.source}__${this.listDetail.id}`,
         list,
         source: this.listDetail.source,

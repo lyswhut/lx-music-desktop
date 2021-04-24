@@ -9,6 +9,7 @@
   "theme_grey": "灰常美丽",
   "theme_ming": "青出于黑",
   "theme_blue2": "清热版蓝",
+  "theme_black": "黑灯瞎火",
   "theme_mid_autumn": "月里嫦娥",
   "theme_naruto": "木叶之村",
   "theme_happy_new_year": "新年快乐",
@@ -33,6 +34,6 @@
 
   "source_alias_all": "聚合大会",
 
-  "load_list_file_error_title": "播放列表数据加载错误",
+  "load_list_file_error_title": "播放列表数据加载错误（建议到GitHub或加群反馈）",
   "load_list_file_error_detail": "我们已经帮你把旧的列表文件备份到{path}\n它以 JSON 格式存储，你可以尝试手动修复并恢复它\n\n错误详情：{detail}"
 }

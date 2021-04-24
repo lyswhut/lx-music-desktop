@@ -1,0 +1,9 @@
+{
+  "path-intellisense.mappings": {
+    "@main/*": "${workspaceFolder}/src/main/*",
+    "@renderer/*": "${workspaceFolder}/src/renderer/*",
+    "@lyric/*": "${workspaceFolder}/src/renderer-lyric/*",
+    "@static/*": "${workspaceFolder}/src/static/*",
+    "@common/*": "${workspaceFolder}/src/common/*",
+  }
+}

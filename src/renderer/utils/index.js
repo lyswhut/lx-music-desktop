@@ -371,7 +371,7 @@ export const clearCache = () => rendererInvoke(NAMES.mainWindow.clear_cache)
 export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.set_window_size, { width, height })
 
 
-export const getProxyInfo = () => window.globalObj.proxy.enable
+export const getProxyInfo = () => window.globalObj.proxy.enable && window.globalObj.proxy.host
   ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
   : undefined
 
@@ -379,7 +379,7 @@ export const getProxyInfo = () => window.globalObj.proxy.enable
 export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined
 
 export const getSetting = () => rendererInvoke(NAMES.mainWindow.get_setting)
-export const saveSetting = () => rendererInvoke(NAMES.mainWindow.set_app_setting)
+export const saveSetting = setting => rendererInvoke(NAMES.mainWindow.set_app_setting, setting)
 
 export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).catch(error => {
   rendererInvoke(NAMES.mainWindow.get_data_path).then(dataPath => {
@@ -407,3 +407,17 @@ export const parseUrlParams = str => {
   }
   return params
 }
+
+export const getLyric = musicInfo => rendererInvoke(NAMES.mainWindow.get_lyric, `${musicInfo.source}_${musicInfo.songmid}`)
+export const setLyric = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric, {
+  id: `${musicInfo.source}_${musicInfo.songmid}`,
+  lyrics: { lyric, tlyric, lxlyric },
+})
+export const clearLyric = () => rendererSend(NAMES.mainWindow.clear_lyric)
+
+export const getMusicUrl = (musicInfo, type) => rendererInvoke(NAMES.mainWindow.get_music_url, `${musicInfo.source}_${musicInfo.songmid}_${type}`)
+export const setMusicUrl = (musicInfo, type, url) => rendererSend(NAMES.mainWindow.save_music_url, {
+  id: `${musicInfo.source}_${musicInfo.songmid}_${type}`,
+  url,
+})
+export const clearMusicUrl = () => rendererSend(NAMES.mainWindow.clear_music_url)

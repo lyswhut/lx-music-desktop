@@ -92,8 +92,7 @@ export default {
           // console.log(lowerCaseName, item.lowerCaseName)
           if (
             (
-              item.sortedSinger === sortedSinger &&
-              (item.lowerCaseName === lowerCaseName || item.interval === musicInfo.interval)
+              item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName
             ) ||
             (
               item.interval === musicInfo.interval && item.lowerCaseName === lowerCaseName &&
@@ -107,6 +106,18 @@ export default {
             return item
           }
         }
+        for (const item of res.list) {
+          item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
+          item.name = trimStr(item.name)
+          item.lowerCaseName = String(item.name).toLowerCase()
+          item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
+          // console.log(lowerCaseName, item.lowerCaseName)
+          if (
+            item.sortedSinger === sortedSinger && item.interval === musicInfo.interval
+          ) {
+            return item
+          }
+        }
         return null
       }).catch(_ => null))
     }
@@ -114,9 +125,9 @@ export default {
     const newResult = []
     if (result.length) {
       newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName && item.interval === musicInfo.interval))
-      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.interval === musicInfo.interval))
       newResult.push(...sortMusic(result, item => item.lowerCaseName === lowerCaseName && item.sortedSinger === sortedSinger && item.lowerCaseAlbumName === lowerCaseAlbumName))
       newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.lowerCaseName === lowerCaseName))
+      newResult.push(...sortMusic(result, item => item.sortedSinger === sortedSinger && item.interval === musicInfo.interval))
       for (const item of result) {
         delete item.sortedSinger
         delete item.lowerCaseName

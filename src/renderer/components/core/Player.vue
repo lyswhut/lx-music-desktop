@@ -272,13 +272,14 @@ export default {
     'setting.player.mediaDeviceId'(n) {
       this.setMediaDevice()
     },
-    'setting.player.isShowLyricTransition'() {
+    'setting.player.isShowLyricTranslation'() {
       this.setLyric()
     },
     'setting.player.isPlayLxlrc'() {
       this.setLyric()
     },
     async list(n, o) {
+      if (this.playInfo.isTempPlay) return
       if (n === o && this.musicInfo.songmid) {
         let index = this.listId == 'download'
           ? n.findIndex(s => s.musicInfo.songmid === this.musicInfo.songmid)
@@ -607,7 +608,7 @@ export default {
       if (!retryedSource.includes(targetSong.source)) retryedSource.push(targetSong.source)
 
       let type = this.getPlayType(this.setting.player.highQuality, targetSong)
-      this.musicInfo.url = targetSong.typeUrl[type]
+      // this.musicInfo.url = await getMusicUrl(targetSong, type)
       this.status = this.statusText = this.$t('core.player.geting_url')
 
       return this.getUrl({ musicInfo: targetSong, originMusic, type, isRefresh }).then(url => {
@@ -646,10 +647,10 @@ export default {
       }
     },
     setLrc(targetSong) {
-      this.getLrc(targetSong).then(() => {
-        this.musicInfo.lrc = targetSong.lrc
-        this.musicInfo.tlrc = targetSong.tlrc
-        this.musicInfo.lxlrc = targetSong.lxlrc
+      this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
+        this.musicInfo.lrc = lyric
+        this.musicInfo.tlrc = tlyric
+        this.musicInfo.lxlrc = lxlyric
       }).catch(() => {
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
@@ -860,9 +861,9 @@ export default {
     setLyric() {
       window.lrc.setLyric(
         this.setting.player.isPlayLxlrc && this.musicInfo.lxlrc ? this.musicInfo.lxlrc : this.musicInfo.lrc,
-        this.setting.player.isShowLyricTransition && this.musicInfo.tlrc ? this.musicInfo.tlrc : '',
+        this.setting.player.isShowLyricTranslation && this.musicInfo.tlrc ? this.musicInfo.tlrc : '',
         // (
-        //   this.setting.player.isShowLyricTransition && this.musicInfo.tlrc
+        //   this.setting.player.isShowLyricTranslation && this.musicInfo.tlrc
         //     ? (this.musicInfo.tlrc + '\n')
         //     : ''
         // ) + (this.musicInfo.lrc || ''),
@@ -1057,7 +1058,7 @@ export default {
   height: 100%;
   border-radius: @radius-progress-border;
   transition-duration: 0.2s;
-  background-color: @color-theme;
+  background-color: @color-btn;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
@@ -1075,14 +1076,14 @@ export default {
   margin-left: 5px;
   height: 100%;
   width: 20px;
-  color: @color-theme;
+  color: @color-btn;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
 
   transition: opacity 0.2s ease;
-  opacity: .5;
+  opacity: .6;
   cursor: pointer;
 
   svg {
@@ -1226,10 +1227,10 @@ each(@themes, {
       // }
     }
     .titleBtn {
-      color: ~'@{color-@{value}-theme}';
+      color: ~'@{color-@{value}-btn}';
     }
     .play-btn {
-      color: ~'@{color-@{value}-theme}';
+      color: ~'@{color-@{value}-btn}';
       svg {
         filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
       }
@@ -1239,7 +1240,7 @@ each(@themes, {
     }
 
     .volume-bar {
-      background-color: ~'@{color-@{value}-theme}';
+      background-color: ~'@{color-@{value}-btn}';
     }
 
 

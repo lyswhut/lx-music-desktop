@@ -32,7 +32,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    isShowLyricTransition: {
+    isShowLyricTranslation: {
       type: Boolean,
       default: true,
     },
@@ -126,7 +126,7 @@ export default {
       },
       immediate: true,
     },
-    isShowLyricTransition() {
+    isShowLyricTranslation() {
       this.setLyric()
       rendererSend(NAMES.winLyric.get_lyric_info, 'status')
     },
@@ -306,8 +306,8 @@ export default {
     setLyric() {
       window.lrc.setLyric(
         this.isPlayLxlrc && this.lyrics.lxlyric ? this.lyrics.lxlyric : this.lyrics.lyric,
-        this.isShowLyricTransition && this.lyrics.tlyric ? this.lyrics.tlyric : '',
-        // (this.isShowLyricTransition && this.lyrics.tlyric ? (this.lyrics.tlyric + '\n') : '') + (this.lyrics.lyric || ''),
+        this.isShowLyricTranslation && this.lyrics.tlyric ? this.lyrics.tlyric : '',
+        // (this.isShowLyricTranslation && this.lyrics.tlyric ? (this.lyrics.tlyric + '\n') : '') + (this.lyrics.lyric || ''),
       )
     },
   },

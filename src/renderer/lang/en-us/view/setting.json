@@ -73,6 +73,7 @@
   "download_name1": "Title - Artist",
   "download_name2": "Artist - Title",
   "download_name3": "Title only",
+  "download_use_other_source": "Automatically change the source to download (when the song cannot be downloaded from the original source, try to switch to another source to download. Note: this function does not 100% guarantee that the version of the song after the source is changed is the same as the original version)",
   "download_select_save_path": "Select the save path",
 
   "hot_key": "Shortcut Key Settings",

@@ -1,22 +1,18 @@
-const Store = require('electron-store')
 const { windowSizeList } = require('../../common/config')
-const { objectDeepMerge, throttle } = require('../../common/utils')
+const { objectDeepMerge, throttle, initSetting } = require('../../common/utils')
+const getStore = require('@common/store')
 
 exports.getWindowSizeInfo = ({ windowSizeId = 1 } = {}) => {
   return windowSizeList.find(i => i.id === windowSizeId) || windowSizeList[0]
 }
 
-const electronStore_config = new Store({
-  name: 'config',
-})
 exports.getAppSetting = () => {
-  return electronStore_config.get('setting')
+  return getStore('config').get('setting')
 }
 
-const electronStore_hotKey = new Store({
-  name: 'hotKey',
-})
 exports.getAppHotKeyConfig = () => {
+  const electronStore_hotKey = getStore('hotKey')
+
   return {
     global: electronStore_hotKey.get('global'),
     local: electronStore_hotKey.get('local'),
@@ -25,17 +21,23 @@ exports.getAppHotKeyConfig = () => {
 const saveHotKeyConfig = throttle(config => {
   for (const key of Object.keys(config)) {
     global.appHotKey.config[key] = config[key]
-    electronStore_hotKey.set(key, config[key])
+    getStore('hotKey').set(key, config[key])
   }
 })
 exports.saveAppHotKeyConfig = config => {
   saveHotKeyConfig(config)
 }
 
-const saveSetting = throttle(n => {
-  electronStore_config.set('setting', n)
-})
-exports.updateSetting = settings => {
+// const saveSetting = throttle(n => {
+//   electronStore_config.set('setting', n)
+// })
+exports.updateSetting = (settings) => {
   objectDeepMerge(global.appSetting, settings)
-  saveSetting(global.appSetting)
+  getStore('config').set('setting', global.appSetting)
+  exports.initSetting(false)
+}
+exports.initSetting = (isShowErrorAlert = true) => {
+  const info = initSetting(isShowErrorAlert)
+  global.appSetting = info.setting
+  global.appSettingVersion = info.version
 }

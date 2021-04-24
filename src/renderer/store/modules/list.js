@@ -1,4 +1,5 @@
 import musicSdk from '../../utils/music'
+import { clearLyric, clearMusicUrl } from '../../utils'
 
 let allList = {}
 window.allList = allList
@@ -207,9 +208,15 @@ const mutations = {
         if (item.typeUrl['320k']) delete item.typeUrl['320k']
         if (item.typeUrl.flac) delete item.typeUrl.flac
         if (item.typeUrl.wav) delete item.typeUrl.wav
-        // if (item.lxlrc == '') item.lxlrc = null
+
+        // v1.8.2以前的Lyric
+        if (item.lxlrc) delete item.lxlrc
+        if (item.lrc) delete item.lrc
+        if (item.tlrc) delete item.tlrc
       }
     }
+    clearMusicUrl()
+    clearLyric()
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource

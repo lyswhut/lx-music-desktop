@@ -5,9 +5,11 @@ export default {
   _requestObj_tags: null,
   _requestObj_list: null,
   _requestObj_listDetail: null,
+  _requestObj_listDetailInfo: null,
   limit_list: 10,
   limit_song: 10000,
   successCode: '000000',
+  cachedDetailInfo: {},
   sortList: [
     {
       name: '推荐',
@@ -66,11 +68,14 @@ export default {
     return num
   },
 
-  getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
+  getListDetailList(id, page, tryNum = 0) {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
+    // https://h5.nf.migu.cn/app/v4/p/share/playlist/index.html?id=184187437&channel=0146921
 
-    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+    if (/playlist\/index\.html\?/.test(id)) {
+      id = id.replace(/.*(?:\?|&)id=(\d+)(?:&.*|$)/, '$1')
+    } else if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
 
     this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
     return this._requestObj_listDetail.promise.then(({ body }) => {
@@ -83,14 +88,45 @@ export default {
         limit: this.limit_song,
         total: body.totalCount,
         source: 'mg',
-        // info: {
-        //   // name: body.result.info.list_title,
-        //   // img: body.result.info.list_pic,
-        //   // desc: body.result.info.list_desc,
-        //   // author: body.result.info.userinfo.username,
-        //   // play_count: this.formatPlayCount(body.result.listen_num),
-        // },
       }
+    })
+  },
+
+  getListDetailInfo(id, tryNum = 0) {
+    if (this._requestObj_listDetailInfo) this._requestObj_listDetailInfo.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    if (this.cachedDetailInfo[id]) return Promise.resolve(this.cachedDetailInfo[id])
+    this._requestObj_listDetailInfo = httpFetch(`https://c.musicapp.migu.cn/MIGUM3.0/resource/playlist/v2.0?playlistId=${id}`, {
+      headers: this.defaultHeaders,
+    })
+    return this._requestObj_listDetailInfo.promise.then(({ body }) => {
+      if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
+      // console.log(JSON.stringify(body))
+      // console.log(body)
+      const cachedDetailInfo = this.cachedDetailInfo[id] = {
+        name: body.data.title,
+        img: body.data.imgItem.img,
+        desc: body.data.summary,
+        author: body.data.ownerName,
+        play_count: this.formatPlayCount(body.data.opNumItem.playNum),
+      }
+      return cachedDetailInfo
+    })
+  },
+
+  getListDetail(id, page) { // 获取歌曲列表内的音乐
+    // https://h5.nf.migu.cn/app/v4/p/share/playlist/index.html?id=184187437&channel=0146921
+    if (/playlist\/index\.html\?/.test(id)) {
+      id = id.replace(/.*(?:\?|&)id=(\d+)(?:&.*|$)/, '$1')
+    } else if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+
+    return Promise.all([
+      this.getListDetailList(id, page),
+      this.getListDetailInfo(id),
+    ]).then(([listData, info]) => {
+      listData.info = info
+      return listData
     })
   },
   filterListDetail(rawList) {

@@ -25,7 +25,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
-import { throttle, openUrl, compareVer, getPlayList, parseUrlParams } from './utils'
+import { throttle, openUrl, compareVer, getPlayList, parseUrlParams, saveSetting } from './utils'
 import { base as eventBaseName } from './event/names'
 import apiSourceInfo from './utils/music/api-source-info'
 
@@ -113,7 +113,7 @@ export default {
   watch: {
     setting: {
       handler(n, o) {
-        rendererSend(NAMES.mainWindow.set_app_setting, n)
+        saveSetting(n)
       },
       deep: true,
     },
@@ -162,6 +162,20 @@ export default {
         this.setSetting(Object.assign({}, this.setting, {
           apiSource: n,
         }))
+      }
+    },
+    'globalObj.proxy.enable'(n, o) {
+      if (n != this.setting.network.proxy.enable) {
+        this.setSetting({
+          ...this.setting,
+          network: {
+            ...this.setting.network,
+            proxy: {
+              ...this.setting.network.proxy,
+              enable: n,
+            },
+          },
+        })
       }
     },
     'windowSizeActive.fontSize'(n) {
@@ -246,7 +260,7 @@ export default {
       })
 
       rendererOn(NAMES.mainWindow.set_config, (event, config) => {
-        // console.log(config)
+        console.log(config)
         // this.setDesktopLyricConfig(config)
         // console.log('set_config', JSON.stringify(this.setting) === JSON.stringify(config))
         this.setSetting(Object.assign({}, this.setting, config))
@@ -355,7 +369,7 @@ export default {
         if (info.listId) {
           const list = window.allList[info.listId]
           // console.log(list)
-          if (!list) return
+          if (!list || !list.list[info.index]) return
           info.list = list.list
         }
 

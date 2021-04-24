@@ -63,34 +63,34 @@ div(:class="$style.main")
           material-checkbox(v-for="item in controlBtnPositionList" :key="item.id" :class="$style.gapLeft" :id="`setting_basic_control_btn_position_${item.id}`"
             name="setting_basic_control_btn_position" need v-model="current_setting.controlBtnPosition" :value="item.id" :label="item.name")
 
-    dt#play {{$t('view.setting.play')}}
-    dd
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTransition" :label="$t('view.setting.play_lyric_transition')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
-    dd(:tips="$t('view.setting.play_mediaDevice_title')")
-      h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
-      div
-        material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
-    dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
-    dd
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
-      div(:class="$style.gapTop")
-        material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
+      dt#play {{$t('view.setting.play')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_save_play_time" v-model="current_setting.player.isSavePlayTime" :label="$t('view.setting.play_save_play_time')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_transition" v-model="current_setting.player.isShowLyricTranslation" :label="$t('view.setting.play_lyric_transition')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_lyric_play_lxlrc" v-model="current_setting.player.isPlayLxlrc" :label="$t('view.setting.play_lyric_lxlrc')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_highQuality" v-model="current_setting.player.highQuality" :label="$t('view.setting.play_quality')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_showTaskProgess" v-model="current_setting.player.isShowTaskProgess" :label="$t('view.setting.play_task_bar')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="current_setting.player.isMediaDeviceRemovedStopPlay" :label="$t('view.setting.play_mediaDevice_remove_stop_play')")
+      dd(:tips="$t('view.setting.play_mediaDevice_title')")
+        h3#play_mediaDevice {{$t('view.setting.play_mediaDevice')}}
+        div
+          material-selection(:list="mediaDevices" :class="$style.gapLeft" v-model="current_setting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+      dt#desktop_lyric {{$t('view.setting.desktop_lyric')}}
+      dd
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_enable" v-model="current_setting.desktopLyric.enable" :label="$t('view.setting.desktop_lyric_enable')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lock" v-model="current_setting.desktopLyric.isLock" :label="$t('view.setting.desktop_lyric_lock')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
+        div(:class="$style.gapTop")
+          material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
 
       dt#search {{$t('view.setting.search')}}
       dd
@@ -122,6 +122,11 @@ div(:class="$style.main")
             span.auto-hidden.hover(:tips="$t('view.setting.download_path_open_label')" :class="$style.savePath" @click="handleOpenDir(current_setting.download.savePath)") {{current_setting.download.savePath}}
           p
             material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
+      dd
+        h3#download_name {{$t('view.setting.download_use_other_source')}}
+        div
+          material-checkbox(id="setting_download_isUseOtherSource" v-model="current_setting.download.isUseOtherSource" :label="$t('view.setting.is_enable')")
+        div
       dd(:tips="$t('view.setting.download_name_title')")
         h3#download_name {{$t('view.setting.download_name')}}
         div
@@ -169,11 +174,11 @@ div(:class="$style.main")
           p
             material-checkbox(id="setting_network_proxy_enable" v-model="current_setting.network.proxy.enable" @change="handleProxyChange('enable')" :label="$t('view.setting.is_enable')")
           p
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.host" @change="handleProxyChange('host')" :placeholder="$t('view.setting.network_proxy_host')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.port" @change="handleProxyChange('port')" :placeholder="$t('view.setting.network_proxy_port')")
           p
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
-            material-input(:class="$style.gapLeft" v-model="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.username" @change="handleProxyChange('username')" :placeholder="$t('view.setting.network_proxy_username')")
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.network.proxy.password" @change="handleProxyChange('password')" type="password" :placeholder="$t('view.setting.network_proxy_password')")
       dt#odc {{$t('view.setting.odc')}}
       dd
         div(:class="$style.gapTop")
@@ -232,7 +237,7 @@ div(:class="$style.main")
           span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
         p.small
           | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoux.com/b0bf2cfa/')") 网盘地址
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')") 网盘地址
           | &nbsp;&nbsp;密码：
           span.hover(:tips="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
         p.small
@@ -279,6 +284,8 @@ import {
   clearCache,
   sizeFormate,
   setWindowSize,
+  getSetting,
+  saveSetting,
 } from '../utils'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
@@ -289,6 +296,7 @@ import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
 import { gzip, gunzip } from 'zlib'
+import music from '../utils/music'
 
 let hotKeyTargetInput
 let newHotKey
@@ -649,6 +657,8 @@ export default {
     window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
     window.eventHub.$off(eventBaseName.key_down, this.handleKeyDown)
     window.eventHub.$off(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
+
+    if (this.current_setting.network.proxy.enable && !this.current_setting.network.proxy.host) window.globalObj.proxy.enable = false
   },
   methods: {
     ...mapMutations(['setSetting', 'setSettingVersion', 'setVersionModalVisible']),
@@ -748,8 +758,10 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      await this.refreshSetting(this.setting, this.settingVersion)
     },
-    exportPlayList(path) {
+    async exportPlayList(path) {
       const data = JSON.parse(JSON.stringify({
         type: 'playList',
         data: [
@@ -758,8 +770,8 @@ export default {
           ...this.userList,
         ],
       }))
-      for (const list of data.data) {
-        for (const item of list.list) {
+      for await (const list of data.data) {
+        for await (const item of list.list) {
           if (item.otherSource) delete item.otherSource
         }
       }
@@ -773,9 +785,6 @@ export default {
         return
       }
       if (allData.type !== 'allData') return
-      const { version: settingVersion, setting } = mergeSetting(allData.setting)
-      setting.isAgreePact = false
-      this.refreshSetting(setting, settingVersion)
 
       // 兼容0.6.2及以前版本的列表数据
       if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
@@ -784,6 +793,11 @@ export default {
         if (list.location == null) list.location = 0
         this.setList(list)
       }
+
+      const { version: settingVersion, setting } = mergeSetting(allData.setting)
+      setting.isAgreePact = false
+
+      await this.refreshSetting(setting, settingVersion)
     },
     async exportAllData(path) {
       let allData = JSON.parse(JSON.stringify({
@@ -795,8 +809,8 @@ export default {
           ...this.userList,
         ],
       }))
-      for (const list of allData.playList) {
-        for (const item of list.list) {
+      for await (const list of allData.playList) {
+        for await (const item of list.list) {
           if (item.otherSource) delete item.otherSource
         }
       }
@@ -906,10 +920,18 @@ export default {
       let info = index == null ? this.windowSizeList[2] : this.windowSizeList[index]
       setWindowSize(info.width, info.height)
     },
-    refreshSetting(setting, version) {
+    async refreshSetting(newSetting, newVersion) {
+      await saveSetting(newSetting)
+      const { setting, version } = await getSetting()
       this.setSetting(setting)
       this.setSettingVersion(version)
       if (setting.windowSizeId != null) this.handleWindowSizeChange(null, setting.windowSizeId)
+      window.globalObj.apiSource = setting.apiSource
+      if (/^user_api/.test(setting.apiSource)) {
+        rendererInvoke(NAMES.mainWindow.set_user_api, setting.apiSource)
+      } else {
+        window.globalObj.qualityList = music.supportQuality[setting.apiSource]
+      }
       for (let key of Object.keys(setting.network.proxy)) {
         window.globalObj.proxy[key] = setting.network.proxy[key]
       }

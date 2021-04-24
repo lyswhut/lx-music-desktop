@@ -16,7 +16,7 @@ const themeList = [
     isNative: false,
   },
 ]
-global.lx_event.common.on(COMMON_EVENT_NAME.config, sourceName => {
+global.lx_event.common.on(COMMON_EVENT_NAME.configStatus, sourceName => {
   if (sourceName === TRAY_EVENT_NAME.name) return
   if (themeId !== global.appSetting.tray.themeId) {
     themeId = global.appSetting.tray.themeId
@@ -89,34 +89,34 @@ const createMenu = tray => {
   menu.push(global.appSetting.desktopLyric.enable ? {
     label: '关闭桌面歌词',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { enable: false } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { enable: false } }, TRAY_EVENT_NAME.name)
     },
   } : {
     label: '开启桌面歌词',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { enable: true } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { enable: true } }, TRAY_EVENT_NAME.name)
     },
   })
   menu.push(global.appSetting.desktopLyric.isLock ? {
     label: '解锁桌面歌词',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { isLock: false } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { isLock: false } }, TRAY_EVENT_NAME.name)
     },
   } : {
     label: '锁定桌面歌词',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { isLock: true } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { isLock: true } }, TRAY_EVENT_NAME.name)
     },
   })
   menu.push(global.appSetting.desktopLyric.isAlwaysOnTop ? {
     label: '取消置顶',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { isAlwaysOnTop: false } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: false } }, TRAY_EVENT_NAME.name)
     },
   } : {
     label: '置顶歌词',
     click() {
-      global.lx_event.common.setAppConfig({ desktopLyric: { isAlwaysOnTop: true } }, TRAY_EVENT_NAME.name)
+      global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: true } }, TRAY_EVENT_NAME.name)
     },
   })
   menu.push({

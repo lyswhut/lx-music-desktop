@@ -1,12 +1,10 @@
 const { userApis: defaultUserApis } = require('../config')
-const Store = require('electron-store')
+const getStore = require('@common/store')
 
 let userApis
-const electronStore_userApi = new Store({
-  name: 'userApi',
-})
 
 exports.getUserApis = () => {
+  const electronStore_userApi = getStore('userApi')
   if (userApis) return userApis
   userApis = electronStore_userApi.get('userApis')
   if (!userApis) {
@@ -31,7 +29,7 @@ exports.importApi = script => {
     script,
   }
   userApis.push(apiInfo)
-  electronStore_userApi.set('userApis', userApis)
+  getStore('userApi').set('userApis', userApis)
   return apiInfo
 }
 
@@ -42,5 +40,5 @@ exports.removeApi = ids => {
       ids.splice(index, 1)
     }
   }
-  electronStore_userApi.set('userApis', userApis)
+  getStore('userApi').set('userApis', userApis)
 }

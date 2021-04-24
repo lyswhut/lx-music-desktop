@@ -2,6 +2,7 @@ const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HTMLPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CleanCSSPlugin = require('less-plugin-clean-css')
 
 const vueLoaderConfig = require('../vue-loader.config')
 const { mergeCSSLoader } = require('../utils')
@@ -37,6 +38,7 @@ module.exports = {
           loader: 'eslint-loader',
           options: {
             formatter: require('eslint-formatter-friendly'),
+            emitWarning: isDev,
           },
         },
         exclude: /node_modules/,
@@ -62,6 +64,11 @@ module.exports = {
           loader: 'less-loader',
           options: {
             sourceMap: true,
+            lessOptions: {
+              plugins: [
+                new CleanCSSPlugin({ advanced: true }),
+              ],
+            },
           },
         }),
       },
@@ -123,6 +130,7 @@ module.exports = {
       template: path.join(__dirname, '../../src/renderer/index.pug'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
+      scriptLoading: 'blocking',
       __dirname,
     }),
     new VueLoaderPlugin(),

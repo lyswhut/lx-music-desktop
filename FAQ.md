@@ -123,6 +123,12 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看下面的 
 
 尝试更换网络，如切换到移动网络。
 
+## 使用软件时导致耳机意外关机
+
+据反馈，漫步者部分型号的耳机与本软件一起使用时将会导致耳机意外关机，
+详情看：<https://github.com/lyswhut/lx-music-desktop/issues/457>，
+若出现该问题可尝试添加`-dhmkh`启动参数解决，启动参数添加方法请自行百度“windows给应用程序加启动参数的方法”。
+
 ### 其他错误
 
 按照前面的 "歌曲无法试听与下载" 方案解决。
@@ -164,7 +170,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看下面的 
 
 ## 杀毒软件提示有病毒或恶意行为
 
-本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)。v1.8.2之前的版本构建日志：[windows包](https://ci.appveyor.com/project/lyswhut/lx-music-desktop)、[Mac/Linux包](https://travis-ci.com/github/lyswhut/lx-music-desktop)<br>
+本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)<br>
 尽管如此，但这不意味着软件是100%安全的，由于软件使用了第三方依赖，当这些依赖存在恶意行为时（[供应链攻击](https://docs.microsoft.com/zh-cn/windows/security/threat-protection/intelligence/supply-chain-malware)），软件也将会受到牵连，所以我只能尽量选择使用较多人用、信任度较高的依赖。<br>
 当然，以上说明建立的前提是在你所用的安装包是从**本项目主页上写的链接**下载的，或者有相关能力者还可以下载源代码自己构建安装包。
 
@@ -278,7 +284,7 @@ send(EVENT_NAMES.inited, {
 
 | 事件名 | 描述
 | --- | ---
-| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，支持的值`['128k', '320k', 'flac']`，该字段用于控制应用可用的音质类型
+| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，有效的值为`['128k', '320k', 'flac']`，该字段用于控制应用可用的音质类型
 | `request` | 应用API请求事件名，回调入参：`handler({ source, action, info})`，回调必须返回`Promise`对象<br>`source`：音乐源，可能的值取决于初始化时传入的`sources`对象的源key值<br>`info`：请求附加信息，内容根据`action`变化<br>`action`：请求操作类型，目前只有`musicUrl`，即获取音乐URL链接，需要在 Promise 返回歌曲 url，`info`的结构：`{type, musicInfo}`，`info.type`：音乐质量，可能的值有`128k` / `320k` / `flac`（取决于初始化时对应源传入的`qualitys`值中的一个），`info.musicInfo`：音乐信息对象，里面有音乐ID、名字等信息
 
 
