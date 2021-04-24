@@ -36,19 +36,37 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Build Package
-        run: |
-          npm run pack:win:setup:x86_64
-          npm run pack:win:7z:x64
-          npm run pack:win:7z:x86
-          npm run pack:win:7z:arm64
-
-      - name: Upload Artifact
+      - name: Build Package Setup x86_64
+        run: npm run pack:win:setup:x86_64
+      - name: Upload Artifact Setup x86_64
         uses: actions/upload-artifact@v2
         with:
-          path: |
-            build/*.exe
-            build/*.7z
+          name: lx-music-desktop-x86_64-Setup
+          path: build/*x86_64 Setup.exe
+
+      - name: Build Package 7z x64
+        run: npm run pack:win:7z:x64
+      - name: Upload Artifact 7z x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-win_x64-green
+          path: build/*win_x64 green.7z
+
+      - name: Build Package 7z x86
+        run: npm run pack:win:7z:x86
+      - name: Upload Artifact 7z x86
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-win_x86-green
+          path: build/*win_x86 green.7z
+
+      - name: Build Package 7z arm64
+        run: npm run pack:win:7z:arm64
+      - name: Upload Artifact 7z arm64
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-win_arm64-green
+          path: build/*win_arm64 green.7z
 
   Mac:
     name: Mac
@@ -80,17 +98,17 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Build Package
+      - name: Build Package dmg
         run: npm run pack:mac:dmg
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
 
-      - name: Upload Artifact
+      - name: Upload Artifact dmg
         uses: actions/upload-artifact@v2
         with:
-          path: |
-            build/*.dmg
+          name: lx-music-desktop
+          path: build/*.dmg
 
   Linux:
     name: Linux
@@ -125,21 +143,58 @@ jobs:
       - name: Build src code
         run: npm run build:src
 
-      - name: Build Package
-        run: |
-          npm run pack:linux:deb:x64
-          npm run pack:linux:deb:x86
-          npm run pack:linux:deb:arm64
-          npm run pack:linux:deb:armv7l
-          npm run pack:linux:appImage
-          npm run pack:linux:rpm
-          npm run pack:linux:pacman
-
-      - name: Upload Artifact
+      - name: Build Package deb x64
+        run: npm run pack:linux:deb:x64
+      - name: Upload Artifact deb x64
         uses: actions/upload-artifact@v2
         with:
-          path: |
-            build/*.deb
-            build/*.appImage
-            build/*.rpm
-            build/*.pacman
+          name: lx-music-desktop-deb-x64
+          path: build/*.x64.deb
+
+      - name: Build Package deb x86
+        run: npm run pack:linux:deb:x86
+      - name: Upload Artifact deb x86
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-deb-x86
+          path: build/*.x86.deb
+
+      - name: Build Package deb arm64
+        run: npm run pack:linux:deb:arm64
+      - name: Upload Artifact deb arm64
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-deb-arm64
+          path: build/*.arm64.deb
+
+      - name: Build Package deb armv7l
+        run: npm run pack:linux:deb:armv7l
+      - name: Upload Artifact deb armv7l
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-deb-armv7l
+          path: build/*.armv7l.deb
+
+      - name: Build Package x64 appImage
+        run: npm run pack:linux:appImage
+      - name: Upload Artifact x64 appImage
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-x64-appImage
+          path: build/*.x64.AppImage
+
+      - name: Build Package x64 rpm
+        run: npm run pack:linux:rpm
+      - name: Upload Artifact x64 rpm
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-x64-rpm
+          path: build/*.x64.rpm
+
+      - name: Build Package x64 pacman
+        run: npm run pack:linux:pacman
+      - name: Upload Artifact x64 pacman
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-x64-pacman
+          path: build/*.x64.pacman
