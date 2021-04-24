@@ -107,7 +107,7 @@ jobs:
       - name: Upload Artifact dmg
         uses: actions/upload-artifact@v2
         with:
-          name: lx-music-desktop
+          name: lx-music-desktop-mac_dmg
           path: build/*.dmg
 
   Linux:
@@ -149,7 +149,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-deb-x64
-          path: build/*.x64.deb
+          path: build/* x64.deb
 
       - name: Build Package deb x86
         run: npm run pack:linux:deb:x86
@@ -157,7 +157,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-deb-x86
-          path: build/*.x86.deb
+          path: build/* x86.deb
 
       - name: Build Package deb arm64
         run: npm run pack:linux:deb:arm64
@@ -165,7 +165,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-deb-arm64
-          path: build/*.arm64.deb
+          path: build/* arm64.deb
 
       - name: Build Package deb armv7l
         run: npm run pack:linux:deb:armv7l
@@ -173,7 +173,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-deb-armv7l
-          path: build/*.armv7l.deb
+          path: build/* armv7l.deb
 
       - name: Build Package x64 appImage
         run: npm run pack:linux:appImage
@@ -181,7 +181,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-x64-appImage
-          path: build/*.x64.AppImage
+          path: build/* x64.AppImage
 
       - name: Build Package x64 rpm
         run: npm run pack:linux:rpm
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-x64-rpm
-          path: build/*.x64.rpm
+          path: build/* x64.rpm
 
       - name: Build Package x64 pacman
         run: npm run pack:linux:pacman
@@ -197,4 +197,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: lx-music-desktop-x64-pacman
-          path: build/*.x64.pacman
+          path: build/* x64.pacman
