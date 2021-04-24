@@ -165,12 +165,12 @@ const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMu
     reqPromise = Promise.reject(err)
   }
   return reqPromise.catch(err => {
-    if (!retryedSource.includes(musicInfo.source) || !assertApiSupport(musicInfo.source)) retryedSource.push(musicInfo.source)
+    if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
-          if (retryedSource.includes(item.source)) continue
+          if (retryedSource.includes(item.source) || !assertApiSupport(item.source)) continue
           console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
           return handleGetMusicUrl.call(this, item, type, retryedSource, originMusic)
         }
