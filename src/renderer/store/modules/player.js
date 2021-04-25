@@ -67,7 +67,7 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
   return list
 }
 
-const getMusicUrl = function(musicInfo, type, retryedSource = [], originMusic) {
+const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
   if (!originMusic) originMusic = musicInfo
   let reqPromise
@@ -78,13 +78,14 @@ const getMusicUrl = function(musicInfo, type, retryedSource = [], originMusic) {
   }
   return reqPromise.catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
+    onToggleSource()
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         for (const item of otherSource) {
           if (retryedSource.includes(item.source) || !assertApiSupport(item.source)) continue
           console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
-          return getMusicUrl.call(this, item, type, retryedSource, originMusic)
+          return getMusicUrl.call(this, item, type, onToggleSource, retryedSource, originMusic)
         }
       }
       return Promise.reject(err)
@@ -189,7 +190,7 @@ const getters = {
 
 // actions
 const actions = {
-  async getUrl({ commit, state }, { musicInfo, type, isRefresh }) {
+  async getUrl({ commit, state }, { musicInfo, type, isRefresh, onToggleSource = () => {} }) {
     if (!musicInfo._types[type]) {
       // 兼容旧版酷我源搜索列表过滤128k音质的bug
       if (!(musicInfo.source == 'kw' && type == '128k')) throw new Error('该歌曲没有可播放的音频')
@@ -199,7 +200,7 @@ const actions = {
     const cachedUrl = await getStoreMusicUrl(musicInfo, type)
     if (cachedUrl && !isRefresh) return cachedUrl
 
-    return getMusicUrl.call(this, musicInfo, type).then(({ url }) => {
+    return getMusicUrl.call(this, musicInfo, type, onToggleSource).then(({ url }) => {
       commit('setUrl', { musicInfo, url, type })
       return url
     }).catch(err => {

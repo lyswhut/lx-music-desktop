@@ -609,7 +609,14 @@ export default {
       // this.musicInfo.url = await getMusicUrl(targetSong, type)
       this.status = this.statusText = this.$t('core.player.geting_url')
 
-      return this.getUrl({ musicInfo: targetSong, type, isRefresh }).then(url => {
+      return this.getUrl({
+        musicInfo: targetSong,
+        type,
+        isRefresh,
+        onToggleSource: () => {
+          this.status = this.statusText = 'Try toggle source...'
+        },
+      }).then(url => {
         if (targetSong !== this.targetSong || this.isPlay) return
         audio.src = this.musicInfo.url = url
       }).catch(err => {
