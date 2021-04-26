@@ -983,7 +983,12 @@ export default {
       await rendererInvoke(NAMES.hotKey.enable, true)
       window.isEditingHotKey = false
       this.isEditHotKey = false
+      const prevInput = hotKeyTargetInput
       hotKeyTargetInput = null
+      if (prevInput.value == this.$t('view.setting.hot_key_tip_input')) {
+        prevInput.value = newHotKey ? this.formatHotKeyName(newHotKey) : ''
+        return
+      }
       let config = this.hotKeyConfig[type][info.name]
       let originKey
       if (newHotKey) {
