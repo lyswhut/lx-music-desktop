@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
 import { formatSinger } from './util'
+import album from './album'
 
 export default {
   _requestObj_tags: null,
@@ -133,7 +134,7 @@ export default {
   filterList(rawData) {
     return rawData.map(item => ({
       play_count: this.formatPlayCount(item.listencnt),
-      id: item.id,
+      id: `digest-${item.digest}__${item.id}`,
       author: item.uname,
       name: item.name,
       // time: item.publish_time,
@@ -144,31 +145,30 @@ export default {
     }))
   },
   filterList2(rawData) {
+    // console.log(rawData)
     const list = []
     rawData.forEach(item => {
       if (!item.label) return
       list.push(...item.list.map(item => ({
-        play_count: item.play_count === undefined ? null : this.formatPlayCount(item.listencnt),
-        id: item.id,
+        play_count: item.play_count && this.formatPlayCount(item.listencnt),
+        id: `digest-${item.digest}__${item.id}`,
         author: item.uname,
         name: item.name,
         // time: item.publish_time,
         img: item.img,
-        grade: item.favorcnt / 10,
+        grade: item.favorcnt && item.favorcnt / 10,
         desc: item.desc,
+        source: 'kw',
       })))
     })
     return list
   },
 
-  // 获取歌曲列表内的音乐
-  getListDetail(id, page, tryNum = 0) {
+  getListDetailDigest8(id, page, tryNum = 0) {
     if (this._requestObj_listDetail) {
       this._requestObj_listDetail.cancelHttp()
     }
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
-
-    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
 
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id, page))
     return this._requestObj_listDetail.promise.then(({ body }) => {
@@ -188,6 +188,66 @@ export default {
         },
       }
     })
+  },
+  getListDetailDigest5Info(id, tryNum = 0) {
+    if (this._requestObj_listDetail) {
+      this._requestObj_listDetail.cancelHttp()
+    }
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
+    this._requestObj_listDetail = httpFetch(`http://qukudata.kuwo.cn/q.k?op=query&cont=ninfo&node=${id}&pn=0&rn=1&fmt=json&src=mbox&level=2`)
+    return this._requestObj_listDetail.promise.then(({ statusCode, body }) => {
+      if (statusCode != 200 || !body.child) return this.getListDetail(id, ++tryNum)
+      // console.log(body)
+      return body.child.length ? body.child[0].sourceid : null
+    })
+  },
+  getListDetailDigest5Music(id, page, tryNum = 0) {
+    if (this._requestObj_listDetail) {
+      this._requestObj_listDetail.cancelHttp()
+    }
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
+    this._requestObj_listDetail = httpFetch(`http://nplserver.kuwo.cn/pl.svc?op=getlistinfo&pid=${id}&pn=${page - 1}}&rn=${this.limit_song}&encode=utf-8&keyset=pl2012&identity=kuwo&pcmp4=1`)
+    return this._requestObj_listDetail.promise.then(({ body }) => {
+      // console.log(body)
+      if (body.result !== 'ok') return this.getListDetail(id, page, ++tryNum)
+      return {
+        list: this.filterListDetail(body.musiclist),
+        page,
+        limit: body.rn,
+        total: body.total,
+        source: 'kw',
+        info: {
+          name: body.title,
+          img: body.pic,
+          desc: body.info,
+          author: body.uname,
+          play_count: this.formatPlayCount(body.playnum),
+        },
+      }
+    })
+  },
+  async getListDetailDigest5(id, page) {
+    const detailId = await this.getListDetailDigest5Info(id)
+    return this.getListDetailDigest5Music(detailId, page)
+  },
+
+  // 获取歌曲列表内的音乐
+  getListDetail(id, page) {
+    // console.log(id)
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+    else if (/^digest-/.test(id)) {
+      let [digest, _id] = id.split('__')
+      digest = digest.replace('digest-', '')
+      id = _id
+      switch (digest) {
+        case '8':
+          break
+        case '13': return album.getAlbumListDetail(id, page)
+        case '5':
+        default: return this.getListDetailDigest5(id, page)
+      }
+    }
+    return this.getListDetailDigest8(id, page)
   },
   filterListDetail(rawData) {
     // console.log(rawData)
