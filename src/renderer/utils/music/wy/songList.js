@@ -139,6 +139,7 @@ export default {
               size,
             }
           }
+        case 192000:
         case 128000:
           if (item.l) {
             size = sizeFormate(item.l.size)

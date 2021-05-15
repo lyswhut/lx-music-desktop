@@ -24,8 +24,9 @@ export default {
         offset: limit * (page - 1),
       }),
     })
-    return searchRequest.promise.then(({ body }) =>
-      body && body.code === 200
+    return searchRequest.promise.then(({ body }) => {
+      // console.log(body)
+      return body && body.code === 200
         ? musicDetailApi.getList(body.result.songs.map(s => s.id)).then(({ list }) => {
           this.total = body.result.songCount || 0
           this.page = page
@@ -41,7 +42,8 @@ export default {
             },
           }
         })
-        : body)
+        : body
+    })
   },
   getSinger(singers) {
     let arr = []
