@@ -109,7 +109,7 @@ export const httpFetch = (url, options = { method: 'get' }) => {
 export const cancelHttp = requestObj => {
   // console.log(requestObj)
   if (!requestObj) return
-  console.log('cancel:', requestObj)
+  // console.log('cancel:', requestObj)
   if (!requestObj.abort) return
   requestObj.abort()
 }

@@ -68,7 +68,7 @@ export const tokenRequest = async(url, options = {}) => {
   }
   const requestObj = httpFetch(url, options)
   requestObj.promise = requestObj.promise.then(resp => {
-    console.log(resp)
+    // console.log(resp)
     if (resp.statusCode == 200) {
       kw_token.token = matchToken(resp.headers)
     }

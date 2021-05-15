@@ -1,5 +1,5 @@
 import { apis } from '../api-source'
-import leaderboard from './leaderboard'
+import leaderboard from './leaderboard2'
 import songList from './songList'
 import musicSearch from './musicSearch'
 import pic from './pic'
