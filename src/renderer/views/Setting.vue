@@ -237,7 +237,7 @@ div(:class="$style.main")
           span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop
         p.small
           | 最新版网盘下载地址（网盘内有Windows、MAC版）：
-          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzous.com/b0bf2cfa/')") 网盘地址
+          span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://www.lanzoui.com/b0bf2cfa/')") 网盘地址
           | &nbsp;&nbsp;密码：
           span.hover(:tips="$t('view.setting.click_copy')" @click="clipboardWriteText('glqw')") glqw
         p.small
@@ -255,7 +255,6 @@ div(:class="$style.main")
           span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
 
         br
-        p.small 感谢以前捐赠过的人❤️，现在软件不再接受捐赠，建议把你们的爱心用来支持正版音乐，
         p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
 
         p.small
