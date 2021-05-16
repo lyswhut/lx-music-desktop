@@ -1,6 +1,6 @@
 // import '../../polyfill/array.find'
 // import jshtmlencode from 'js-htmlencode'
-import { httpGet, cancelHttp } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
 // import { debug } from '../../utils/env'
 import { formatSinger } from './util'
@@ -10,29 +10,15 @@ export default {
     mInfo: /bitrate:(\d+),format:(\w+),size:([\w.]+)/,
   },
   _musicSearchRequestObj: null,
-  _musicSearchPromiseCancelFn: null,
   limit: 30,
   total: 0,
   page: 0,
   allPage: 1,
   // cancelFn: null,
   musicSearch(str, page, limit) {
-    if (this._musicSearchRequestObj != null) {
-      cancelHttp(this._musicSearchRequestObj)
-      this._musicSearchPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._musicSearchPromiseCancelFn = reject
-      this._musicSearchRequestObj = httpGet(`http://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(str)}&pn=${page - 1}&rn=${limit}&uid=794762570&ver=kwplayer_ar_9.2.2.1&vipver=1&show_copyright_off=1&newver=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&issubtitle=1`, (err, resp, body) => {
-        this._musicSearchRequestObj = null
-        this._musicSearchPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        resolve(body)
-      })
-    })
+    if (this._musicSearchRequestObj) this._musicSearchRequestObj.cancelHttp()
+    this._musicSearchRequestObj = httpFetch(`http://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(str)}&pn=${page - 1}&rn=${limit}&uid=794762570&ver=kwplayer_ar_9.2.2.1&vipver=1&show_copyright_off=1&newver=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&issubtitle=1`)
+    return this._musicSearchRequestObj.promise
   },
   // getImg(songId) {
   //   return httpGet(`http://player.kuwo.cn/webmusic/sj/dtflagdate?flag=6&rid=MUSIC_${songId}`)
@@ -127,7 +113,7 @@ export default {
     if (retryNum > 2) return Promise.reject(new Error('try max num'))
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page, limit).then(result => {
+    return this.musicSearch(str, page, limit).then(({ body: result }) => {
       // console.log(result)
       if (!result || (result.TOTAL !== '0' && result.SHOW === '0')) return this.search(str, page, { limit }, ++retryNum)
       let list = this.handleResult(result.abslist)

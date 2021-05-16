@@ -1,4 +1,4 @@
-import { httpGet, cancelHttp, httpFetch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
 import { formatSinger } from './util'
 
@@ -69,30 +69,16 @@ export default {
   limit: 100,
   _requestBoardsObj: null,
 
-  _cancelRequestObj: null,
-  _cancelPromiseCancelFn: null,
+  _requestDataObj: null,
   getBoardsData() {
     if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this._requestBoardsObj = httpFetch('http://qukudata.kuwo.cn/q.k?op=query&cont=tree&node=2&pn=0&rn=1000&fmt=json&level=2')
     return this._requestBoardsObj.promise
   },
   getData(url) {
-    if (this._cancelRequestObj != null) {
-      cancelHttp(this._cancelRequestObj)
-      this._cancelPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._cancelPromiseCancelFn = reject
-      this._cancelRequestObj = httpGet(url, (err, resp) => {
-        this._cancelRequestObj = null
-        this._cancelPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        resolve(resp)
-      })
-    })
+    if (this._requestDataObj) this._requestDataObj.cancelHttp()
+    this._requestDataObj = httpFetch(url)
+    return this._requestDataObj.promise
   },
   filterData(rawList) {
     // console.log(rawList)
