@@ -105,10 +105,10 @@ const actions = {
       if (result.total <= result.limit) return filterList(result.list)
 
       let maxPage = Math.ceil(result.total / result.limit)
-      const loadDetail = (loadPage = 1) => {
+      const loadDetail = (loadPage = 2) => {
         return loadPage == maxPage
-          ? loadData(id, ++loadPage).then(result => result.list)
-          : loadData(id, ++loadPage).then(result1 => loadDetail(loadPage).then(result2 => [...result1.list, ...result2]))
+          ? loadData(id, loadPage).then(result => result.list)
+          : loadData(id, loadPage).then(result1 => loadDetail(++loadPage).then(result2 => [...result1.list, ...result2]))
       }
       return loadDetail().then(result2 => [...result.list, ...result2]).then(list => filterList(list))
     })

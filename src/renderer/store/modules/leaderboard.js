@@ -1,6 +1,7 @@
 import music from '../../utils/music'
 const sourceList = {}
 const sources = []
+const cache = new Map()
 for (const source of music.sources) {
   const leaderboard = music[source.id].leaderboard
   if (!leaderboard || !leaderboard.getBoards) continue
@@ -55,9 +56,38 @@ const actions = {
     let tabId = rootState.setting.leaderboard.tabId
     let [source, bangId] = tabId.split('__')
     let key = `${source}${tabId}${page}`
-    if (state.list.length && state.key == key) return true
+    if (state.list.length && state.key == key) return Promise.resolve()
     commit('clearList')
+    // return (
+    //   cache.has(key)
+    //     ? Promise.resolve(cache.get(key))
+    //     : music[source].leaderboard.getList(bangId, page)
+    // ).then(result => commit('setList', { result, key }))
     return music[source].leaderboard.getList(bangId, page).then(result => commit('setList', { result, key }))
+  },
+  getListAll({ state, rootState }, id) {
+    // console.log(source, id)
+    let [source, bangId] = id.split('__')
+    const loadData = (id, page) => {
+      let key = `${source}${id}${page}`
+      return cache.has(key)
+        ? Promise.resolve(cache.get(key))
+        : music[source].leaderboard.getList(bangId, page).then(result => {
+          cache.set(key, result)
+          return result
+        })
+    }
+    return loadData(id, 1).then(result => {
+      if (result.total <= result.limit) return result.list
+
+      let maxPage = Math.ceil(result.total / result.limit)
+      const load = (loadPage = 2) => {
+        return loadPage == maxPage
+          ? loadData(id, loadPage).then(result => result.list)
+          : loadData(id, loadPage).then(result1 => load(++loadPage).then(result2 => [...result1.list, ...result2]))
+      }
+      return load().then(result2 => [...result.list, ...result2])
+    })
   },
 }
 
@@ -72,6 +102,7 @@ const mutations = {
     state.limit = result.limit
     state.page = result.page
     state.key = key
+    cache.set(key, result)
   },
   clearList(state) {
     state.list = []
