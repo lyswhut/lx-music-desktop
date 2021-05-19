@@ -2,7 +2,6 @@ const { common: COMMON_EVENT_NAME, winLyric: WIN_LYRIC_EVENT_NAME, hotKey: HOT_K
 const { mainSend, NAMES: { winLyric: ipcWinLyricNames } } = require('../../../common/ipc')
 const { desktop_lyric } = require('../../../common/hotKey')
 const { getLyricWindowBounds } = require('./utils')
-const { updateSetting } = require('../../utils')
 
 let isLock = null
 let isEnable = null
@@ -78,5 +77,5 @@ global.lx_event.hotKey.on(HOT_KEY_EVENT_NAME.keyDown, ({ type, key }) => {
   }
   desktopLyricSetting[settingKey] = !desktopLyricSetting[settingKey]
 
-  updateSetting({ desktopLyric: desktopLyricSetting }, null)
+  global.lx_core.setAppConfig({ desktopLyric: desktopLyricSetting }, null)
 })

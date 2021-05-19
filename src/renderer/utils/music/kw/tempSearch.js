@@ -1,6 +1,6 @@
-import { httpFetch } from '../../request'
+// import { httpFetch } from '../../request'
 import { decodeName } from '../../index'
-import { getToken, matchToken } from './util'
+import { tokenRequest } from './util'
 
 
 export default {
@@ -8,18 +8,11 @@ export default {
     relWord: /RELWORD=(.+)/,
   },
   requestObj: null,
-  tempSearch(str, token) {
+  async tempSearch(str) {
     this.cancelTempSearch()
-    this.requestObj = httpFetch(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`, {
-      headers: {
-        Referer: 'http://www.kuwo.cn/',
-        csrf: token,
-        cookie: 'kw_token=' + token,
-      },
-    })
-    return this.requestObj.promise.then(({ statusCode, body, headers }) => {
-      if (statusCode != 200) return Promise.reject(new Error('请求失败'))
-      window.kw_token.token = matchToken(headers)
+    this.requestObj = await tokenRequest(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`)
+    return this.requestObj.promise.then(({ body }) => {
+      // console.log(body)
       if (body.code !== 200) return Promise.reject(new Error('请求失败'))
       return body
     })
@@ -34,8 +27,6 @@ export default {
     if (this.requestObj && this.requestObj.cancelHttp) this.requestObj.cancelHttp()
   },
   async search(str) {
-    let token = window.kw_token.token
-    if (!token) token = await getToken()
-    return this.tempSearch(str, token).then(result => this.handleResult(result.data))
+    return this.tempSearch(str).then(result => this.handleResult(result.data))
   },
 }

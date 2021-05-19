@@ -6,6 +6,30 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.10.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.9.0...v1.10.0) - 2021-05-19
+
+lx music移动端已经发布了，使用习惯仍跟桌面版一样，不过功能、界面仍比较简单，有兴趣的可以去体检一下，项目地址：
+https://github.com/lyswhut/lx-music-mobile#readme
+
+### 新增
+
+- 排行榜界面添加播放、收藏整个排行榜功能，可以右击排行榜名字后，在弹出的右键菜单中使用。注：收藏、播放存在分页的排行榜时需等待操作完成后才能切换排行榜，不然会导致操作中断。
+- 新增Mac arm64位dmg包的构建
+
+### 修复
+
+- 修复全局快捷键对桌面歌词无效的问题
+- 修复快捷键设置框内的提示问题
+- 修复在当前正常播放的列表中使用稍后播放功能时，播放完后稍后播放的歌曲后不会恢复原来播放位置播放的问题
+- 修复kw部分歌单无法打开的问题
+- 修复wy源的歌曲音质匹配问题
+- 修复mg源歌单标签、排行榜歌曲列表无法加载的问题
+- 修复了一个歌曲下载失败时不会跳过任务的问题
+
+### 其他
+
+- 更新 Electron 到 12.0.8
+
 ## [1.9.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.8.2...v1.9.0) - 2021-04-24
 
 ### 新增

@@ -11,14 +11,17 @@
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null]" :tips="item.name" v-for="item in boardList" :key="item.id" @click="handleToggleList(item.id)")
+        li(:class="[$style.listsItem, item.id == tabId ? $style.active : null, { [$style.clicked]: boardListData.rightClickItemIndex == index }]"
+            :tips="item.name" v-for="(item, index) in boardList" :key="item.id" @click="handleToggleList(item.id)"
+            @contextmenu="handleListsItemRigthClick($event, index)")
           span(:class="$style.listsLabel") {{item.name}}
     div(:class="$style.list")
-      material-song-list(v-model="selectedData" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
+      material-song-list(v-model="selectedData" ref="songList" :hideListsMenu="hideListsMenu" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
     material-list-add-multiple-modal(:show="isShowListAddMultiple" :musicList="selectedData" @close="handleListAddModalClose")
+    material-menu(:menus="listsItemMenu" :location="boardListData.menuLocation" item-name="name" :isShow="boardListData.isShowItemMenu" @menu-click="handleListsItemMenuClick")
 </template>
 
 <script>
@@ -38,6 +41,21 @@ export default {
       isShowDownloadMultiple: false,
       isShowListAdd: false,
       isShowListAddMultiple: false,
+      boardListData: {
+        isShowItemMenu: false,
+        itemMenuControl: {
+          rename: true,
+          sync: false,
+          moveup: true,
+          movedown: true,
+          remove: true,
+        },
+        rightClickItemIndex: -1,
+        menuLocation: {
+          x: 0,
+          y: 0,
+        },
+      },
     }
   },
   computed: {
@@ -46,6 +64,20 @@ export default {
     ...mapGetters('list', ['defaultList']),
     boardList() {
       return this.source && this.boards[this.source] ? this.boards[this.source] : []
+    },
+    listsItemMenu() {
+      return [
+        {
+          name: this.$t('view.leaderboard.play'),
+          action: 'play',
+          disabled: false,
+        },
+        {
+          name: this.$t('view.leaderboard.collect'),
+          action: 'collect',
+          disabled: false,
+        },
+      ]
     },
   },
   watch: {
@@ -74,9 +106,9 @@ export default {
   },
   methods: {
     ...mapMutations(['setLeaderboard']),
-    ...mapActions('leaderboard', ['getBoardsList', 'getList']),
+    ...mapActions('leaderboard', ['getBoardsList', 'getList', 'getListAll']),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
-    ...mapMutations('list', ['listAdd', 'listAddMultiple']),
+    ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
     ...mapMutations('player', ['setList', 'setTempPlayList']),
     handleListBtnClick(info) {
       switch (info.action) {
@@ -227,6 +259,55 @@ export default {
     },
     resetSelect() {
       this.selectedData = []
+    },
+    handleListsItemRigthClick(event, index) {
+      // const board = this.boardList[index]
+      // this.boardListData.itemMenuControl.sync = !!source && !!musicSdk[source].songList
+      // this.boardListData.itemMenuControl.moveup = index > 0
+      // this.boardListData.itemMenuControl.movedown = index < this.userList.length - 1
+      this.boardListData.rightClickItemIndex = index
+      this.boardListData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
+      this.boardListData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
+      // this.hideListsMenu()
+      this.$refs.songList.hideListMenu()
+      this.$nextTick(() => {
+        this.boardListData.isShowItemMenu = true
+      })
+    },
+    hideListsMenu() {
+      this.boardListData.isShowItemMenu = false
+      this.boardListData.rightClickItemIndex = -1
+    },
+    async handleListsItemMenuClick(action) {
+      let index = this.boardListData.rightClickItemIndex
+      this.hideListsMenu()
+      this.boardListData.isShowItemMenu = false
+
+      if (action) {
+        const board = this.boardList[index]
+        const list = await this.getListAll(board.id)
+        if (!list.length) return
+        switch (action && action.action) {
+          case 'play':
+            this.setList({
+              list: {
+                list,
+                id: null,
+              },
+              index: 0,
+            })
+            break
+          case 'collect':
+            this.createUserList({
+              name: board.name,
+              id: `board__${this.source}__${board.id}`,
+              list,
+              source: this.source,
+              sourceListId: `board__${board.id}`,
+            })
+            break
+        }
+      }
     },
   },
 }

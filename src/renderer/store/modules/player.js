@@ -6,7 +6,8 @@ import {
   getLyric as getStoreLyric,
   setLyric,
   setMusicUrl,
-  getMusicUrl,
+  getMusicUrl as getStoreMusicUrl,
+  assertApiSupport,
 } from '../../utils'
 
 // state
@@ -64,6 +65,32 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
     return canPlayList
   }
   return list
+}
+
+const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = [], originMusic) {
+  // console.log(musicInfo.source)
+  if (!originMusic) originMusic = musicInfo
+  let reqPromise
+  try {
+    reqPromise = music[musicInfo.source].getMusicUrl(musicInfo, type).promise
+  } catch (err) {
+    reqPromise = Promise.reject(err)
+  }
+  return reqPromise.catch(err => {
+    if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
+    onToggleSource()
+    return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
+      console.log('find otherSource', otherSource)
+      if (otherSource.length) {
+        for (const item of otherSource) {
+          if (retryedSource.includes(item.source) || !assertApiSupport(item.source)) continue
+          console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
+          return getMusicUrl.call(this, item, type, onToggleSource, retryedSource, originMusic)
+        }
+      }
+      return Promise.reject(err)
+    })
+  })
 }
 
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
@@ -163,24 +190,17 @@ const getters = {
 
 // actions
 const actions = {
-  async getUrl({ commit, state }, { musicInfo, originMusic, type, isRefresh }) {
-    if (!musicInfo._types[type]) {
-      // 兼容旧版酷我源搜索列表过滤128k音质的bug
-      if (!(musicInfo.source == 'kw' && type == '128k')) throw new Error('该歌曲没有可播放的音频')
+  async getUrl({ commit, state }, { musicInfo, type, isRefresh, onToggleSource = () => {} }) {
+    // if (!musicInfo._types[type]) {
+    //   // 兼容旧版酷我源搜索列表过滤128k音质的bug
+    //   if (!(musicInfo.source == 'kw' && type == '128k')) throw new Error('该歌曲没有可播放的音频')
 
-      // return Promise.reject(new Error('该歌曲没有可播放的音频'))
-    }
-    const cachedUrl = await getMusicUrl(musicInfo, type)
+    //   // return Promise.reject(new Error('该歌曲没有可播放的音频'))
+    // }
+    const cachedUrl = await getStoreMusicUrl(musicInfo, type)
     if (cachedUrl && !isRefresh) return cachedUrl
 
-    let reqPromise
-    try {
-      reqPromise = music[musicInfo.source].getMusicUrl(musicInfo, type).promise
-    } catch (err) {
-      reqPromise = Promise.reject(err)
-    }
-    return reqPromise.then(({ url }) => {
-      if (originMusic) commit('setUrl', { musicInfo: originMusic, url, type })
+    return getMusicUrl.call(this, musicInfo, type, onToggleSource).then(({ url }) => {
       commit('setUrl', { musicInfo, url, type })
       return url
     }).catch(err => {
@@ -412,7 +432,7 @@ const mutations = {
       playIndex = -1
     } else {
       let listId = playMusicInfo.listId
-      if (listId != '__temp__' && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(playMusicInfo.musicInfo)
+      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(playMusicInfo.musicInfo)
     }
 
     state.playMusicInfo = playMusicInfo

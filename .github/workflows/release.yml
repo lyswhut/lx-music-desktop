@@ -77,7 +77,9 @@ jobs:
         run: npm run build:src
 
       - name: Release package
-        run: npm run publish:mac:dmg:always
+        run: |
+          npm run publish:mac:dmg:always
+          npm run publish:mac:dmg:arm64
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder

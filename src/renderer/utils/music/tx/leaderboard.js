@@ -1,4 +1,4 @@
-import { httpGet, cancelHttp, httpFetch } from '../../request'
+import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
 
 let boardList = [{ id: 'tx__4', name: '流行指数榜', bangid: '4' }, { id: 'tx__26', name: '热歌榜', bangid: '26' }, { id: 'tx__27', name: '新歌榜', bangid: '27' }, { id: 'tx__62', name: '飙升榜', bangid: '62' }, { id: 'tx__58', name: '说唱榜', bangid: '58' }, { id: 'tx__57', name: '电音榜', bangid: '57' }, { id: 'tx__28', name: '网络歌曲榜', bangid: '28' }, { id: 'tx__5', name: '内地榜', bangid: '5' }, { id: 'tx__3', name: '欧美榜', bangid: '3' }, { id: 'tx__59', name: '香港地区榜', bangid: '59' }, { id: 'tx__16', name: '韩国榜', bangid: '16' }, { id: 'tx__60', name: '抖音排行榜', bangid: '60' }, { id: 'tx__29', name: '影视金曲榜', bangid: '29' }, { id: 'tx__17', name: '日本榜', bangid: '17' }, { id: 'tx__52', name: '腾讯音乐人原创榜', bangid: '52' }, { id: 'tx__36', name: 'K歌金曲榜', bangid: '36' }, { id: 'tx__61', name: '台湾地区榜', bangid: '61' }, { id: 'tx__63', name: 'DJ舞曲榜', bangid: '63' }, { id: 'tx__64', name: '综艺新歌榜', bangid: '64' }, { id: 'tx__65', name: '国风热歌榜', bangid: '65' }, { id: 'tx__66', name: 'ACG新歌榜', bangid: '66' }, { id: 'tx__67', name: '听歌识曲榜', bangid: '67' }, { id: 'tx__70', name: '达人音乐榜', bangid: '70' }]
@@ -86,30 +86,16 @@ export default {
   periods: {},
   periodUrl: 'https://c.y.qq.com/node/pc/wk_v15/top.html',
   _requestBoardsObj: null,
-  _cancelRequestObj: null,
-  _cancelPromiseCancelFn: null,
+  _requestDataObj: null,
   getBoardsData() {
     if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this._requestBoardsObj = httpFetch('https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&uin=0&needNewCode=1&platform=h5')
     return this._requestBoardsObj.promise
   },
   getData(url) {
-    if (this._cancelRequestObj != null) {
-      cancelHttp(this._cancelRequestObj)
-      this._cancelPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._cancelPromiseCancelFn = reject
-      this._cancelRequestObj = httpGet(url, (err, resp, body) => {
-        this._cancelRequestObj = null
-        this._cancelPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        resolve(body)
-      })
-    })
+    if (this._requestDataObj) this._requestDataObj.cancelHttp()
+    this._requestDataObj = httpFetch(url)
+    return this._requestDataObj.promise
   },
   getSinger(singers) {
     let arr = []
@@ -175,9 +161,9 @@ export default {
     })
   },
   getPeriods(bangid) {
-    return this.getData(this.periodUrl).then(html => {
+    return this.getData(this.periodUrl).then(({ body: html }) => {
       let result = html.match(this.regExps.periodList)
-      if (!result) return Promise.reject()
+      if (!result) return Promise.reject(new Error('get data failed'))
       result.forEach(item => {
         let result = item.match(this.regExps.period)
         if (!result) return
@@ -239,12 +225,11 @@ export default {
     let info = this.periods[bangid]
     let p = info ? Promise.resolve(info.period) : this.getPeriods(bangid)
     return p.then(period => {
-      return this.getData(this.getUrl(bangid, period, this.limit)).then(data => {
-        // console.log(data)
-        if (data.code !== 0) return this.getList(bangid, page, retryNum)
+      return this.getData(this.getUrl(bangid, period, this.limit)).then(resp => {
+        if (resp.body.code !== 0) return this.getList(bangid, page, retryNum)
         return {
-          total: data.toplist.data.songInfoList.length,
-          list: this.filterData(data.toplist.data.songInfoList),
+          total: resp.body.toplist.data.songInfoList.length,
+          list: this.filterData(resp.body.toplist.data.songInfoList),
           limit: this.limit,
           page: 1,
           source: 'tx',

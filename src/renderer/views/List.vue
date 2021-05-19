@@ -358,6 +358,9 @@ export default {
       'sortList',
     ]),
     ...mapActions('songList', ['getListDetailAll']),
+    ...mapActions('leaderboard', {
+      getBoardListAll: 'getListAll',
+    }),
     ...mapActions('download', ['createDownload', 'createDownloadMultiple']),
     ...mapMutations('player', {
       setPlayList: 'setList',
@@ -902,7 +905,15 @@ export default {
       } else {
         this.fetchingListStatus[id] = true
       }
-      return this.getListDetailAll({ source, id: sourceListId }).finally(() => {
+
+      let promise
+      if (/board__/.test(sourceListId)) {
+        const id = sourceListId.replace(/board__/, '')
+        promise = this.getBoardListAll(id)
+      } else {
+        promise = this.getListDetailAll({ source, id: sourceListId })
+      }
+      return promise.finally(() => {
         this.fetchingListStatus[id] = false
       })
     },

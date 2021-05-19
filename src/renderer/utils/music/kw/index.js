@@ -1,4 +1,4 @@
-import { httpGet, cancelHttp } from '../../request'
+import { httpFetch } from '../../request'
 import tempSearch from './tempSearch'
 import musicSearch from './musicSearch'
 import { formatSinger, getToken } from './util'
@@ -64,21 +64,10 @@ const kw = {
   },
 
   getMusicInfo(songInfo) {
-    if (this._musicInfoRequestObj != null) {
-      cancelHttp(this._musicInfoRequestObj)
-      this._musicInfoPromiseCancelFn(new Error('取消http请求'))
-    }
-    return new Promise((resolve, reject) => {
-      this._musicInfoPromiseCancelFn = reject
-      this._musicInfoRequestObj = httpGet(`http://www.kuwo.cn/api/www/music/musicInfo?mid=${songInfo.songmid}`, (err, resp, body) => {
-        this._musicInfoRequestObj = null
-        this._musicInfoPromiseCancelFn = null
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        body.code === 200 ? resolve(body.data) : reject(new Error(body.msg))
-      })
+    if (this._musicInfoRequestObj) this._musicInfoRequestObj.cancelHttp()
+    this._musicInfoRequestObj = httpFetch(`http://www.kuwo.cn/api/www/music/musicInfo?mid=${songInfo.songmid}`)
+    return this._musicInfoRequestObj.promise.then(({ body }) => {
+      return body.code === 200 ? body.data : Promise.reject(new Error(body.msg))
     })
   },
 

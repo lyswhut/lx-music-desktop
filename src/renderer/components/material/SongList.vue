@@ -84,6 +84,10 @@ export default {
       type: String,
       default: '列表加载中...',
     },
+    hideListsMenu: {
+      type: Function,
+      default: () => {},
+    },
     rowWidth: {
       type: Object,
       default() {
@@ -349,6 +353,7 @@ export default {
       this.listMenu.rightClickItemIndex = index
       this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
       this.listMenu.menuLocation.y = dom_td.offsetParent.offsetTop + dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.hideListsMenu()
       this.$nextTick(() => {
         this.listMenu.isShowItemMenu = true
       })
