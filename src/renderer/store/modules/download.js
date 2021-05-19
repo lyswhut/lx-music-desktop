@@ -460,7 +460,7 @@ const actions = {
       },
       onFail(response) {
         if (++tryNum[downloadInfo.key] > 2) {
-          commit('onError', downloadInfo)
+          commit('onError', { downloadInfo, errorMsg: '下载失败' })
           dispatch('startTask')
           return
         }
