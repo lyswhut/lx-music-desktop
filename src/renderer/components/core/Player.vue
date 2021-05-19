@@ -41,7 +41,8 @@ div(:class="$style.player")
       div(:class="$style.column2")
         div(:class="$style.progress" v-if="!isShowPlayerDetail")
           //- div(:class="[$style.progressBar, $style.progressBar1]" :style="{ transform: `scaleX(${progress || 0})` }")
-          div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})`, willChange: isPlay || isActiveTransition ? 'transform' : 'auto' }")
+          div(:class="[$style.progressBar, $style.progressBar2, isActiveTransition ? $style.barTransition : '']"
+            @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }")
         div(:class="$style.progressMask" @click='handleSetProgress' ref="dom_progress")
       div(:class="$style.column3")
         span(:class="$style.statusText") {{statusText}}
@@ -1122,7 +1123,7 @@ export default {
 
 .progress {
   width: 100%;
-  height: 3px;
+  height: 4px;
   // overflow: hidden;
   transition: @transition-theme;
   transition-property: background-color;
@@ -1155,6 +1156,7 @@ export default {
 .progress-bar2 {
   background-color: @color-player-progress-bar2;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
 }
 
 .bar-transition {

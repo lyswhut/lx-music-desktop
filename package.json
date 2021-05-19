@@ -62,6 +62,7 @@
     "build": "npm run clean:electron && npm run build:main && npm run build:renderer && npm run build:renderer-lyric",
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src",
+    "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm run pack",
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm update"
   },
   "browserslist": [
