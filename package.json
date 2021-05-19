@@ -6,7 +6,7 @@
   "productName": "lx-music-desktop",
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win:setup:x64",
-    "pack:win": "node build-config/pack.js && npm run pack:win:setup:x86_64 && npm run pack:win:7z",
+    "pack:win": "node build-config/pack.js && npm run pack:win:setup:x86_64 && npm run pack:win:setup:x64 && npm run pack:win:7z",
     "pack:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p never",
     "pack:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p never",
     "pack:win:setup:x86": "cross-env TARGET=Setup ARCH=x86 electron-builder -w=nsis --ia32 -p never",
@@ -32,8 +32,10 @@
     "pack:mac:dmg:arm64": "cross-env electron-builder -m=dmg --arm64 -p never",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "publish": "node publish",
-    "publish:win:setup:always": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p always",
-    "publish:win:setup": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p onTagOrDraft",
+    "publish:win:setup:x86_64:always": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p always",
+    "publish:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p onTagOrDraft",
+    "publish:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p onTagOrDraft",
+    "publish:win:setup:x86": "cross-env TARGET=Setup ARCH=x86 electron-builder -w=nsis --ia32 -p onTagOrDraft",
     "publish:win:portable": "npm run publish:win:portable:x86_64 && npm run publish:win:portable:x64 && npm run publish:win:portable:x86",
     "publish:win:portable:x86_64": "cross-env TARGET=portable ARCH=x86_64 electron-builder -w=portable --x64 --ia32 -p onTagOrDraft",
     "publish:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p onTagOrDraft",
@@ -66,7 +68,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm update"
   },
   "browserslist": [
-    "Electron 9.3.4"
+    "Electron 12.0.8"
   ],
   "engines": {
     "node": ">= 12"
@@ -170,6 +172,7 @@
     "babel-loader": "^8.2.2",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
+    "browserslist": "^4.16.6",
     "cfonts": "^2.9.2",
     "chalk": "^4.1.1",
     "changelog-parser": "^2.8.0",

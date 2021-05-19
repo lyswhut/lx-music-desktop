@@ -44,6 +44,22 @@ jobs:
           name: lx-music-desktop-x86_64-Setup
           path: build/*x86_64 Setup.exe
 
+      - name: Build Package Setup x64
+        run: npm run pack:win:setup:x64
+      - name: Upload Artifact Setup x64
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-x64-Setup
+          path: build/* x64 Setup.exe
+
+      - name: Build Package Setup x86
+        run: npm run pack:win:setup:x86
+      - name: Upload Artifact Setup x86
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-x86-Setup
+          path: build/* x86 Setup.exe
+
       - name: Build Package 7z x64
         run: npm run pack:win:7z:x64
       - name: Upload Artifact 7z x64
