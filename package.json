@@ -32,10 +32,10 @@
     "pack:mac:dmg:arm64": "cross-env electron-builder -m=dmg --arm64 -p never",
     "pack:dir": "node build-config/pack.js && electron-builder --dir",
     "publish": "node publish",
-    "publish:win:setup:x86_64:always": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p always",
-    "publish:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p onTagOrDraft",
-    "publish:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p onTagOrDraft",
+    "publish:win:setup:x64:always": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p always",
+    "publish:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p always",
     "publish:win:setup:x86": "cross-env TARGET=Setup ARCH=x86 electron-builder -w=nsis --ia32 -p onTagOrDraft",
+    "publish:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p onTagOrDraft",
     "publish:win:portable": "npm run publish:win:portable:x86_64 && npm run publish:win:portable:x64 && npm run publish:win:portable:x86",
     "publish:win:portable:x86_64": "cross-env TARGET=portable ARCH=x86_64 electron-builder -w=portable --x64 --ia32 -p onTagOrDraft",
     "publish:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p onTagOrDraft",
@@ -84,6 +84,7 @@
     "extraResources": [
       "./licenses"
     ],
+    "generateUpdatesFilesForAllChannels": true,
     "win": {
       "icon": "./resources/icons/256x256.ico",
       "legalTrademarks": "lyswhut",
