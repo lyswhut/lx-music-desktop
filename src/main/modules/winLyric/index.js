@@ -109,7 +109,7 @@ const createWindow = () => {
     alwaysOnTop: isAlwaysOnTop,
     skipTaskbar: true,
     webPreferences: {
-      // contextIsolation: true,
+      contextIsolation: false,
       webSecurity: !global.isDev,
       nodeIntegration: true,
     },

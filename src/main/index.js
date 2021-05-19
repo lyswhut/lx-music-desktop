@@ -28,8 +28,11 @@ require('./env')
 
 // Is disable hardware acceleration
 if (global.envParams.cmdParams.dha) app.disableHardwareAcceleration()
+
 if (global.envParams.cmdParams.dt == null && global.envParams.cmdParams.nt != null) global.envParams.cmdParams.dt = global.envParams.cmdParams.nt
 if (global.envParams.cmdParams.dhmkh) app.commandLine.appendSwitch('disable-features', 'HardwareMediaKeyHandling')
+// fix linux transparent fail. https://github.com/electron/electron/issues/25153#issuecomment-843688494
+if (process.platform == 'linux') app.commandLine.appendSwitch('use-gl', 'desktop')
 
 // https://github.com/electron/electron/issues/22691
 app.commandLine.appendSwitch('wm-window-animations-disabled')
@@ -112,7 +115,7 @@ function createWindow() {
     fullscreenable: false,
     show: false,
     webPreferences: {
-      // contextIsolation: true,
+      contextIsolation: false,
       webSecurity: !isDev,
       nodeIntegration: true,
     },

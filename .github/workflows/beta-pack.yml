@@ -99,7 +99,9 @@ jobs:
         run: npm run build:src
 
       - name: Build Package dmg
-        run: npm run pack:mac:dmg
+        run: |
+          npm run publish:mac:dmg
+          npm run publish:mac:dmg:arm64
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
@@ -107,8 +109,15 @@ jobs:
       - name: Upload Artifact dmg
         uses: actions/upload-artifact@v2
         with:
-          name: lx-music-desktop-mac_dmg
-          path: build/*.dmg
+          name: lx-music-desktop-mac-dmg
+          path: |
+            build/*.dmg
+            !build/*-arm64.dmg
+      - name: Upload Artifact dmg
+        uses: actions/upload-artifact@v2
+        with:
+          name: lx-music-desktop-mac-dmg-arm64
+          path: build/*-arm64.dmg
 
   Linux:
     name: Linux
