@@ -84,7 +84,6 @@
     "extraResources": [
       "./licenses"
     ],
-    "generateUpdatesFilesForAllChannels": true,
     "win": {
       "icon": "./resources/icons/256x256.ico",
       "legalTrademarks": "lyswhut",
