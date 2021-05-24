@@ -372,7 +372,7 @@ export default {
           if (!list || !list.list[info.index]) return
           info.list = list.list
         }
-
+        if (!info.list || !info.list[info.index]) return
         window.restorePlayInfo = info
         this.setPlayList({
           list: {
