@@ -65,13 +65,13 @@
     "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly src",
     "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-formatter-friendly --fix src",
     "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm run pack",
-    "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm update"
+    "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 12.0.8"
+    "Electron 12.0.9"
   ],
   "engines": {
-    "node": ">= 12"
+    "node": ">= 14"
   },
   "build": {
     "appId": "cn.toside.music.desktop",
@@ -176,22 +176,22 @@
     "cfonts": "^2.9.2",
     "chalk": "^4.1.1",
     "changelog-parser": "^2.8.0",
-    "copy-webpack-plugin": "^8.1.1",
+    "copy-webpack-plugin": "^9.0.0",
     "core-js": "^3.12.1",
     "cross-env": "^7.0.3",
-    "css-loader": "^5.2.4",
+    "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.0.0",
     "del": "^6.0.0",
-    "electron": "^12.0.8",
+    "electron": "^12.0.9",
     "electron-builder": "^22.11.4",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "eslint": "^7.26.0",
+    "eslint": "^7.27.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-formatter-friendly": "^7.0.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-html": "^6.1.2",
-    "eslint-plugin-import": "^2.23.2",
+    "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^4.1.0",
@@ -203,7 +203,7 @@
     "less-plugin-clean-css": "^1.5.1",
     "markdown-it": "^12.0.6",
     "mini-css-extract-plugin": "^1.6.0",
-    "postcss": "^8.2.15",
+    "postcss": "^8.3.0",
     "postcss-loader": "^5.3.0",
     "postcss-pxtorem": "^6.0.0",
     "pug": "^3.0.2",
@@ -218,7 +218,7 @@
     "url-loader": "^4.1.1",
     "vue-loader": "^15.9.7",
     "vue-template-compiler": "^2.6.12",
-    "webpack": "^5.37.0",
+    "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-hot-middleware": "^2.25.0",
@@ -230,7 +230,7 @@
     "electron-log": "^4.3.5",
     "electron-store": "^8.0.0",
     "electron-updater": "^4.3.9",
-    "iconv-lite": "^0.6.2",
+    "iconv-lite": "^0.6.3",
     "image-size": "^1.0.0",
     "js-htmlencode": "^0.3.0",
     "lrc-file-parser": "^1.0.7",
