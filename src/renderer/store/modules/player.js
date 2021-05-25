@@ -381,6 +381,7 @@ const mutations = {
     })
   },
   setList(state, { list, index }) {
+    if (!(list && list.list && list.list[index])) return
     state.playMusicInfo = {
       musicInfo: list.list[index],
       listId: list.id,

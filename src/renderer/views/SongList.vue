@@ -433,6 +433,7 @@ export default {
     async playSongListDetail() {
       if (!this.listDetail.info.name) return
       const list = await this.fetchList()
+      if (!list.length) return
       this.setPlayList({
         list: {
           list,
