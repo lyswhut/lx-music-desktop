@@ -177,7 +177,7 @@
     "chalk": "^4.1.1",
     "changelog-parser": "^2.8.0",
     "copy-webpack-plugin": "^9.0.0",
-    "core-js": "^3.12.1",
+    "core-js": "^3.13.0",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.0.0",
