@@ -68,7 +68,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 12.0.9"
+    "Electron 13.0.1"
   ],
   "engines": {
     "node": ">= 14"
@@ -167,7 +167,7 @@
     "@babel/plugin-transform-modules-umd": "^7.14.0",
     "@babel/plugin-transform-runtime": "^7.14.3",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-env": "^7.14.4",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.2",
     "babel-minify-webpack-plugin": "^0.3.1",
@@ -177,12 +177,12 @@
     "chalk": "^4.1.1",
     "changelog-parser": "^2.8.0",
     "copy-webpack-plugin": "^9.0.0",
-    "core-js": "^3.13.0",
+    "core-js": "^3.13.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^3.0.0",
     "del": "^6.0.0",
-    "electron": "^12.0.9",
+    "electron": "^13.0.1",
     "electron-builder": "^22.11.4",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
@@ -191,7 +191,7 @@
     "eslint-formatter-friendly": "^7.0.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-html": "^6.1.2",
-    "eslint-plugin-import": "^2.23.3",
+    "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^4.1.0",
@@ -218,7 +218,7 @@
     "url-loader": "^4.1.1",
     "vue-loader": "^15.9.7",
     "vue-template-compiler": "^2.6.12",
-    "webpack": "^5.37.1",
+    "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-hot-middleware": "^2.25.0",
