@@ -29,6 +29,7 @@ export default {
   ],
   regExps: {
     listDetailLink: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
+    listDetailLink2: /^.+\/playlist\/(\d+)\/\d+\/.+$/,
   },
   /**
    * 格式化播放数量
@@ -63,9 +64,14 @@ export default {
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
     if ((/[?&:/]/.test(id))) {
-      if (!this.regExps.listDetailLink.test(id)) id = await this.handleParseId(id)
+      if (this.regExps.listDetailLink.test(id)) {
+        id = id.replace(this.regExps.listDetailLink, '$1')
+      } else if (this.regExps.listDetailLink2.test(id)) {
+        id = id.replace(this.regExps.listDetailLink2, '$1')
+      } else {
+        id = await this.handleParseId(id)
+      }
       // console.log(id)
-      id = id.replace(this.regExps.listDetailLink, '$1')
     }
 
     this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
