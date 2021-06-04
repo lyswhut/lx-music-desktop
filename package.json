@@ -68,7 +68,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 13.0.1"
+    "Electron 13.1.0"
   ],
   "engines": {
     "node": ">= 14"
@@ -173,16 +173,16 @@
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-preset-minify": "^0.5.1",
     "browserslist": "^4.16.6",
-    "cfonts": "^2.9.2",
+    "cfonts": "^2.9.3",
     "chalk": "^4.1.1",
     "changelog-parser": "^2.8.0",
     "copy-webpack-plugin": "^9.0.0",
     "core-js": "^3.13.1",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.6",
-    "css-minimizer-webpack-plugin": "^3.0.0",
+    "css-minimizer-webpack-plugin": "^3.0.1",
     "del": "^6.0.0",
-    "electron": "^13.0.1",
+    "electron": "^13.1.0",
     "electron-builder": "^22.11.4",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
@@ -214,10 +214,10 @@
     "spinnies": "^0.5.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^6.0.0",
-    "terser-webpack-plugin": "^5.1.2",
+    "terser-webpack-plugin": "^5.1.3",
     "url-loader": "^4.1.1",
     "vue-loader": "^15.9.7",
-    "vue-template-compiler": "^2.6.12",
+    "vue-template-compiler": "^2.6.13",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
@@ -237,7 +237,7 @@
     "needle": "^2.6.0",
     "node-id3": "^0.2.3",
     "request": "^2.88.2",
-    "vue": "^2.6.12",
+    "vue": "^2.6.13",
     "vue-i18n": "^8.24.4",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2",
