@@ -68,7 +68,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 13.1.0"
+    "Electron 13.0.2"
   ],
   "engines": {
     "node": ">= 14"
