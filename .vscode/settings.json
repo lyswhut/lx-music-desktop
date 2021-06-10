@@ -15,4 +15,5 @@
   "i18n-ally.translate.engines": ["google-cn", "google"],
   "i18n-ally.pathMatcher": "{locale}/{namespaces}.json",
   "i18n-ally.keystyle": "flat",
+  "i18n-ally.sortKeys": true
 }
