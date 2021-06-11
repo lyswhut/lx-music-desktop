@@ -107,6 +107,13 @@ div(:class="$style.main")
           material-checkbox(id="setting_list_showSource_enable" v-model="current_setting.list.isShowSource" :label="$t('view.setting.list_source')")
         div(:class="$style.gapTop")
           material-checkbox(id="setting_list_scroll_enable" v-model="current_setting.list.isSaveScrollLocation" :label="$t('view.setting.list_scroll')")
+      dd(:tips="$t('view.setting.basic_sourcename_title')")
+        h3#list_addMusicLocationType {{$t('view.setting.list_add_music_location_type')}}
+        div
+          material-checkbox(:class="$style.gapLeft" id="setting_list_add_music_location_type_top"
+            name="setting_list_add_music_location_type" need v-model="current_setting.list.addMusicLocationType" value="top" :label="$t('view.setting.list_add_music_location_type_top')")
+          material-checkbox(:class="$style.gapLeft" id="setting_list_add_music_location_type_bottom"
+            name="setting_list_add_music_location_type" need v-model="current_setting.list.addMusicLocationType" value="bottom" :label="$t('view.setting.list_add_music_location_type_bottom')")
       //- dd(:tips="播放列表是否显示专辑栏")
         h3 专辑栏
         div
