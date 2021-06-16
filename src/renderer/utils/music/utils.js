@@ -1,4 +1,6 @@
 import crypto from 'crypto'
+import dns from 'dns'
+
 
 /**
  * 获取音乐音质
@@ -19,3 +21,21 @@ export const getMusicType = (info, type) => {
 }
 
 export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
+
+
+const ipMap = new Map()
+export const getHostIp = hostname => {
+  const ip = ipMap.get(hostname)
+  if (typeof ip === 'string') return ip
+  if (ip === true) return
+  ipMap.set(hostname, true)
+  // console.log(hostname)
+  dns.lookup(hostname, {
+    // family: 4,
+    all: false,
+  }, (err, address, family) => {
+    if (err) return console.log(err)
+    // console.log(address, family)
+    ipMap.set(hostname, address)
+  })
+}

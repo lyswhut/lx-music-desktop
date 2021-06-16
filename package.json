@@ -228,7 +228,6 @@
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
-    "dnscache": "^1.0.2",
     "electron-log": "^4.3.5",
     "electron-store": "^8.0.0",
     "electron-updater": "^4.3.9",
