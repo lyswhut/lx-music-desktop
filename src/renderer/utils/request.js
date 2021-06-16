@@ -21,7 +21,7 @@ const request = (url, options, callback) => {
     options.json = false
   }
   options.response_timeout = options.timeout
-  console.log(options)
+
   return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
     if (!err) {
       body = resp.body = resp.raw.toString()
