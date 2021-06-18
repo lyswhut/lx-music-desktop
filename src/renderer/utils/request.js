@@ -263,12 +263,13 @@ const fetchData = async(url, method, {
   console.log('---start---', url)
   headers = Object.assign({}, headers)
   if (headers[bHh]) {
+    const path = url.replace(/^https?:\/\/[\w.:]+\//, '/')
     let s = Buffer.from(bHh, 'hex').toString()
     s = s.replace(s.substr(-1), '')
     s = Buffer.from(s, 'base64').toString()
     let v = process.versions.app.split('-')[0].split('.').map(n => n.length < 3 ? n.padStart(3, '0') : n).join('')
     let v2 = process.versions.app.split('-')[1] || ''
-    headers[s] = !s || `${(await handleDeflateRaw(Buffer.from(JSON.stringify(`${url}${v}`.match(regx), null, 1).concat(v)).toString('base64'))).toString('hex')}&${parseInt(v)}${v2}`
+    headers[s] = !s || `${(await handleDeflateRaw(Buffer.from(JSON.stringify(`${path}${v}`.match(regx), null, 1).concat(v)).toString('base64'))).toString('hex')}&${parseInt(v)}${v2}`
     delete headers[bHh]
   }
   return request(url, {

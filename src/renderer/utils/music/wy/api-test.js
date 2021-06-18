@@ -1,16 +1,15 @@
 import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
 import { headers, timeout } from '../options'
-import { getHostIp } from '../utils'
+import { dnsLookup } from '../utils'
 
 const api_test = {
   getMusicUrl(songInfo, type) {
-    const ip = getHostIp('ts.tempmusic.tk')
     const requestObj = httpFetch(`http://ts.tempmusic.tk/url/wy/${songInfo.songmid}/${type}`, {
       method: 'get',
       timeout,
       headers,
-      host: ip,
+      lookup: dnsLookup,
       family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
