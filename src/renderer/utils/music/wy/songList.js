@@ -22,10 +22,10 @@ export default {
       name: '最热',
       id: 'hot',
     },
-    {
-      name: '最新',
-      id: 'new',
-    },
+    // {
+    //   name: '最新',
+    //   id: 'new',
+    // },
   ],
   regExps: {
     listDetailLink: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
@@ -192,7 +192,7 @@ export default {
       }),
     })
     return this._requestObj_list.promise.then(({ body }) => {
-      // console.log(JSON.stringify(body))
+      // console.log(body)
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.playlists),
