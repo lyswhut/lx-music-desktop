@@ -251,6 +251,8 @@ div(:class="$style.main")
           | 软件的常见问题可转至：
           span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
         p.small
+          strong 本软件没有客服
+          | ，但我们整理了一些常见的使用问题，
           strong 仔细 仔细 仔细
           | 地阅读常见问题后，
         p.small
