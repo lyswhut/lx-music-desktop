@@ -1,5 +1,5 @@
 // import '../../polyfill/array.find'
-// import jshtmlencode from 'js-htmlencode'
+
 import { httpFetch } from '../../request'
 import { sizeFormate } from '../../index'
 // import { debug } from '../../utils/env'

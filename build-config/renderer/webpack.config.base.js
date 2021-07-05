@@ -18,7 +18,7 @@ module.exports = {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../../dist/electron'),
-    publicPath: './',
+    publicPath: 'auto',
   },
   resolve: {
     alias: {
