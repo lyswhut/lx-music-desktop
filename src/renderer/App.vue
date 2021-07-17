@@ -677,7 +677,7 @@ body {
 }
 #view {
   flex: auto;
-  height: 0;
+  min-height: 0;
 }
 
 each(@themes, {
