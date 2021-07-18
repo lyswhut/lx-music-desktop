@@ -40,6 +40,7 @@ jobs:
         run: |
           npm run publish:win:setup:x64:always
           npm run publish:win:setup:x86
+          npm run publish:win:setup:arm64
           npm run publish:win:setup:x86_64
           npm run publish:win:7z:x64
           npm run publish:win:7z:x86

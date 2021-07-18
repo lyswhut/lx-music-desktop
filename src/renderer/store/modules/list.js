@@ -94,7 +94,15 @@ const mutations = {
     const targetList = allList[id]
     if (!targetList) return
     if (targetList.list.some(s => s.songmid === musicInfo.songmid)) return
-    targetList.list.push(musicInfo)
+    switch (this.state.setting.list.addMusicLocationType) {
+      case 'top':
+        targetList.list.unshift(musicInfo)
+        break
+      case 'bottom':
+      default:
+        targetList.list.push(musicInfo)
+        break
+    }
   },
   listMove(state, { fromId, musicInfo, toId }) {
     const fromList = allList[fromId]
@@ -102,12 +110,31 @@ const mutations = {
     if (!fromList || !toList) return
     fromList.list.splice(fromList.list.indexOf(musicInfo), 1)
     let index = toList.list.findIndex(s => s.songmid === musicInfo.songmid)
-    if (index < 0) toList.list.push(musicInfo)
+    if (index < 0) {
+      switch (this.state.setting.list.addMusicLocationType) {
+        case 'top':
+          toList.list.unshift(musicInfo)
+          break
+        case 'bottom':
+        default:
+          toList.list.push(musicInfo)
+          break
+      }
+    }
   },
   listAddMultiple(state, { id, list }) {
     let targetList = allList[id]
     if (!targetList) return
-    let newList = [...targetList.list, ...list]
+    let newList
+    switch (this.state.setting.list.addMusicLocationType) {
+      case 'top':
+        newList = [...list, ...targetList.list]
+        break
+      case 'bottom':
+      default:
+        newList = [...targetList.list, ...list]
+        break
+    }
     let map = {}
     let ids = []
     for (const item of newList) {

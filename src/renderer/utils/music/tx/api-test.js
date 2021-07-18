@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { requestMsg } from '../../message'
 import { headers, timeout } from '../options'
+import { dnsLookup } from '../utils'
 
 const api_messoer = {
   getMusicUrl(songInfo, type) {
@@ -8,6 +9,7 @@ const api_messoer = {
       method: 'get',
       timeout,
       headers,
+      lookup: dnsLookup,
       family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {

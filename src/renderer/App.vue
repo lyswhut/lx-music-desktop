@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import dnscache from 'dnscache'
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
@@ -30,11 +29,6 @@ import { base as eventBaseName } from './event/names'
 import apiSourceInfo from './utils/music/api-source-info'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
-dnscache({
-  enable: true,
-  ttl: 21600,
-  cachesize: 1000,
-})
 
 const listThrottle = (fn, delay = 100) => {
   let timer = null
@@ -683,7 +677,7 @@ body {
 }
 #view {
   flex: auto;
-  height: 0;
+  min-height: 0;
 }
 
 each(@themes, {

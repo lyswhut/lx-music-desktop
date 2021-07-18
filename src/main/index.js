@@ -55,12 +55,12 @@ app.on('web-contents-created', (event, contents) => {
     if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) return event.preventDefault()
     console.log('navigation to url:', navigationUrl)
   })
-  contents.on('new-window', async(event, navigationUrl) => {
-    event.preventDefault()
-    if (/^devtools/.test(navigationUrl)) return
-    console.log(navigationUrl)
-    if (!/^https?:\/\//.test(navigationUrl)) return
-    await shell.openExternal(navigationUrl)
+  contents.setWindowOpenHandler(({ url }) => {
+    if (!/^devtools/.test(url) && /^https?:\/\//.test(url)) {
+      shell.openExternal(url)
+    }
+    console.log(url)
+    return { action: 'deny' }
   })
   contents.on('will-attach-webview', (event, webPreferences, params) => {
     // Strip away preload scripts if unused or verify their location is legitimate
