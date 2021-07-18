@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 13.1.6"
+    "Electron 13.1.7"
   ],
   "engines": {
     "node": ">= 14"
