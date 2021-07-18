@@ -1,4 +1,4 @@
-const { log } = require('../../common/utils')
+const { log, isWin } = require('../../common/utils')
 const { autoUpdater } = require('electron-updater')
 const { mainOn, mainSend, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
 
@@ -120,6 +120,11 @@ module.exports = () => {
     }, 1000)
   })
 
-  autoUpdater.checkForUpdates()
+  // 由于集合安装包中不包含win arm版，这将会导致arm版更新失败
+  if (isWin && process.arch.includes('arm')) {
+    handleSendEvent({ type: ipcMainWindowNames.update_error, info: 'failed' })
+  } else {
+    autoUpdater.checkForUpdates()
+  }
 }
 
