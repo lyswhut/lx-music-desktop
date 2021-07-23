@@ -634,12 +634,14 @@ export default {
 
       if (!this.musicInfo.img) {
         this.getPic(targetSong).then(() => {
+          if (targetSong !== this.targetSong) return
           this.musicInfo.img = targetSong.img
         })
       }
     },
     setLrc(targetSong) {
       this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
+        if (targetSong !== this.targetSong) return
         this.musicInfo.lrc = lyric
         this.musicInfo.tlrc = tlyric
         this.musicInfo.lxlrc = lxlyric
