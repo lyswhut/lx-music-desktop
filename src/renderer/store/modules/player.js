@@ -165,15 +165,15 @@ const getters = {
       }
     }
     if (listPlayIndex > -1) prevPlayIndex = listPlayIndex
-    console.log({
-      listId,
-      playIndex,
-      playListId,
-      listPlayIndex,
-      isPlayList,
-      isTempPlay,
-      // musicInfo: state.playMusicInfo.musicInfo,
-    })
+    // console.log({
+    //   listId,
+    //   playIndex,
+    //   playListId,
+    //   listPlayIndex,
+    //   isPlayList,
+    //   isTempPlay,
+    //   // musicInfo: state.playMusicInfo.musicInfo,
+    // })
     return {
       listId,
       playIndex,
