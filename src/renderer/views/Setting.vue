@@ -158,7 +158,7 @@ div(:class="$style.main")
           p.small {{$t('view.setting.sync_address', { address: sync.status.address.join(', ') || '' })}}
           p.small {{$t('view.setting.sync_device', { devices: syncDevices })}}
           p
-            material-btn(:class="$style.btn" min :disabled="!current_setting.sync.enable" @click="handleRefreshSyncCode") {{$t('view.setting.sync_refresh_code')}}
+            material-btn(:class="$style.btn" min :disabled="!sync.status.status" @click="handleRefreshSyncCode") {{$t('view.setting.sync_refresh_code')}}
       dd
         h3#sync_port {{$t('view.setting.sync_port')}}
         div
