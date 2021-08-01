@@ -8,11 +8,8 @@ const { common: COMMON_EVENT_NAME } = require('@main/events/_name')
 const { throttle } = require('@common/utils')
 
 let io
-// const checkFile = path => {
-//   fsPromises.access(path, fs.constants.R_OK | fs.constants.W_OK)
-//     .then(() => console.log('can access'))
-//     .catch(() => console.error('cannot access'))
-// }
+let syncingId = null
+const wait = (time = 1000) => new Promise((resolve, reject) => setTimeout(resolve, time))
 
 const getRemoteListData = socket => new Promise((resolve, reject) => {
   console.log('getRemoteListData')
@@ -379,10 +376,19 @@ const syncList = async socket => {
   return handleMergeListDataFromSnapshot(socket, fileData)
 }
 
-module.exports = (_io, socket) => {
+const checkSyncQueue = async() => {
+  if (!syncingId) return
+  await wait()
+  return checkSyncQueue()
+}
+module.exports = async(_io, socket) => {
   io = _io
+  await checkSyncQueue()
+  syncingId = socket.data.keyInfo.clientId
   return syncList(socket).then(newListData => {
     registerUpdateSnapshotTask(socket, { ...newListData })
     return finishedSync(socket)
+  }).finally(() => {
+    syncingId = null
   })
 }

@@ -87,7 +87,7 @@ const defaultSetting = {
   },
   sync: {
     enable: false,
-    port: 23332,
+    port: '23332',
   },
   windowSizeId: 2,
   themeId: 0,
