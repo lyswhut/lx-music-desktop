@@ -124,8 +124,8 @@ jobs:
 
       - name: Build Package dmg
         run: |
-          npm run publish:mac:dmg
-          npm run publish:mac:dmg:arm64
+          npm run pack:mac:dmg
+          npm run pack:mac:dmg:arm64
         env:
           ELECTRON_CACHE: $HOME/.cache/electron
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
