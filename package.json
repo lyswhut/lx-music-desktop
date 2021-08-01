@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.11.0",
+  "version": "1.12.0-beta",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
