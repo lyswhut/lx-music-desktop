@@ -411,7 +411,7 @@ export default {
           this.restorePlayTime = 0
         }
         if (!this.targetSong.interval && this.listId != 'download') {
-          this.updateMusicInfo({ id: this.listId, index: this.playIndex, data: { interval: formatPlayTime2(this.maxPlayTime) }, musicInfo: this.targetSong })
+          this.updateMusicInfo({ listId: this.listId, id: this.targetSong.songmid, musicInfo: this.targetSong, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         }
       })
       audio.addEventListener('loadstart', () => {

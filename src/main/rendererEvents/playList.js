@@ -24,6 +24,7 @@ mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => {
   switch (type) {
     case 'myList':
       handleSaveList(data)
+      global.lx_event.common.saveMyList(data)
       break
     case 'downloadList':
       getStore('downloadList').set('list', data)

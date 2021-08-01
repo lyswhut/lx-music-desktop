@@ -23,3 +23,4 @@ require('./musicUrl')
 require('./kw_decodeLyric')
 
 require('./userApi')
+require('./sync')

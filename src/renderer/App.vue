@@ -8,6 +8,7 @@
   core-icons
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
+  material-sync-mode-modal(v-show="globalObj.sync.isShowSyncMode")
 #container(v-else :class="theme")
   core-aside#left
   #right
@@ -17,6 +18,7 @@
   core-icons
   material-version-modal(v-show="version.showModal")
   material-pact-modal(v-show="!setting.isAgreePact || globalObj.isShowPact")
+  material-sync-mode-modal(v-show="globalObj.sync.isShowSyncMode")
 </template>
 
 <script>
@@ -25,7 +27,7 @@ import { rendererOn, rendererSend, rendererInvoke, NAMES } from '../common/ipc'
 import { isLinux } from '../common/utils'
 import music from './utils/music'
 import { throttle, openUrl, compareVer, getPlayList, parseUrlParams, saveSetting } from './utils'
-import { base as eventBaseName } from './event/names'
+import { base as eventBaseName, sync as eventSyncName } from './event/names'
 import apiSourceInfo from './utils/music/api-source-info'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
@@ -60,6 +62,11 @@ export default {
           status: false,
           message: 'initing',
           apis: {},
+        },
+        sync: {
+          enable: false,
+          isShowSyncMode: false,
+          deviceName: '',
         },
       },
       updateTimeout: null,
@@ -103,6 +110,14 @@ export default {
     document.body.classList.add(this.isDT ? 'disableTransparent' : 'transparent')
     window.eventHub.$emit(eventBaseName.bindKey)
     this.init()
+    window.eventHub.$on(eventSyncName.handle_action_list, this.handleSyncAction)
+    window.eventHub.$on(eventSyncName.handle_sync_list, this.handleSyncList)
+    if (this.setting.sync.enable && this.setting.sync.port) {
+      rendererInvoke(NAMES.mainWindow.sync_enable, {
+        enable: this.setting.sync.enable,
+        port: this.setting.sync.port,
+      })
+    }
   },
   watch: {
     setting: {
@@ -193,7 +208,25 @@ export default {
   methods: {
     ...mapActions(['getVersionInfo']),
     ...mapMutations(['setNewVersion', 'setVersionModalVisible', 'setDownloadProgress', 'setSetting', 'setDesktopLyricConfig']),
-    ...mapMutations('list', ['initList']),
+    ...mapMutations('list', {
+      list_initList: 'initList',
+      list_setList: 'setList',
+      list_listAdd: 'listAdd',
+      list_listMove: 'listMove',
+      list_listAddMultiple: 'listAddMultiple',
+      list_listMoveMultiple: 'listMoveMultiple',
+      list_listRemove: 'listRemove',
+      list_listRemoveMultiple: 'listRemoveMultiple',
+      list_listClear: 'listClear',
+      list_updateMusicInfo: 'updateMusicInfo',
+      list_createUserList: 'createUserList',
+      list_removeUserList: 'removeUserList',
+      list_setUserListName: 'setUserListName',
+      list_moveupUserList: 'moveupUserList',
+      list_movedownUserList: 'movedownUserList',
+      list_setMusicPosition: 'setMusicPosition',
+      list_setSyncListData: 'setSyncListData',
+    }),
     ...mapMutations('download', ['updateDownloadList']),
     ...mapMutations('search', {
       setSearchHistoryList: 'setHistory',
@@ -272,6 +305,7 @@ export default {
       this.listenEvent()
       asyncTask.push(this.initData())
       asyncTask.push(this.initUserApi())
+      this.globalObj.sync.enable = this.setting.sync.enable
       this.globalObj.apiSource = this.setting.apiSource
       if (/^user_api/.test(this.setting.apiSource)) {
         rendererInvoke(NAMES.mainWindow.set_user_api, this.setting.apiSource)
@@ -328,7 +362,7 @@ export default {
 
         if (!defaultList.list) defaultList.list = []
         if (!loveList.list) loveList.list = []
-        this.initList({ defaultList, loveList, userList })
+        this.list_initList({ defaultList, loveList, userList })
         this.initDownloadList(downloadList) // 初始化下载列表
         this.initPlayInfo()
       })
@@ -589,6 +623,84 @@ export default {
       if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) return
       event.target.value = ''
       event.target.blur()
+    },
+    handleSyncAction({ action, data }) {
+      if (typeof data == 'object') data.isSync = true
+      // console.log(action, data)
+
+      switch (action) {
+        case 'set_list':
+          this.list_setList(data)
+          break
+        case 'list_add':
+          this.list_listAdd(data)
+          break
+        case 'list_move':
+          this.list_listMove(data)
+          break
+        case 'list_add_multiple':
+          this.list_listAddMultiple(data)
+          break
+        case 'list_move_multiple':
+          this.list_listMoveMultiple(data)
+          break
+        case 'list_remove':
+          this.list_listRemove(data)
+          break
+        case 'list_remove_multiple':
+          this.list_listRemoveMultiple(data)
+          break
+        case 'list_clear':
+          this.list_listClear(data)
+          break
+        case 'update_music_info':
+          this.list_updateMusicInfo(data)
+          break
+        case 'create_user_list':
+          this.list_createUserList(data)
+          break
+        case 'remove_user_list':
+          this.list_removeUserList(data)
+          break
+        case 'set_user_list_name':
+          this.list_setUserListName(data)
+          break
+        case 'moveup_user_list':
+          this.list_moveupUserList(data)
+          break
+        case 'movedown_user_list':
+          this.list_movedownUserList(data)
+          break
+        case 'set_music_position':
+          this.list_setMusicPosition(data)
+          break
+        default:
+          break
+      }
+    },
+    handleSyncList({ action, data }) {
+      switch (action) {
+        case 'getData':
+          global.eventHub.$emit(eventSyncName.send_sync_list, {
+            action: 'getData',
+            data: {
+              defaultList: this.defaultList,
+              loveList: this.loveList,
+              userList: this.userList,
+            },
+          })
+          break
+        case 'setData':
+          this.list_setSyncListData(data)
+          break
+        case 'selectMode':
+          this.globalObj.sync.deviceName = data.deviceName
+          this.globalObj.sync.isShowSyncMode = true
+          break
+        case 'closeSelectMode':
+          this.globalObj.sync.isShowSyncMode = false
+          break
+      }
     },
   },
   beforeDestroy() {

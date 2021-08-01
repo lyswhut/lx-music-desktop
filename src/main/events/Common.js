@@ -10,6 +10,10 @@ class Common extends EventEmitter {
   configStatus(name) {
     this.emit(COMMON_EVENT_NAME.configStatus, name)
   }
+
+  saveMyList(data) {
+    this.emit(COMMON_EVENT_NAME.saveMyList, data)
+  }
 }
 
 module.exports = Common

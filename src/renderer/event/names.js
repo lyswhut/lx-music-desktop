@@ -10,6 +10,12 @@ const names = {
     set_config: 'set_config',
     set_hot_key_config: 'set_hot_key_config',
   },
+  sync: {
+    send_action_list: 'send_action_list',
+    handle_action_list: 'handle_action_list',
+    send_sync_list: 'send_sync_list',
+    handle_sync_list: 'handle_sync_list',
+  },
 }
 
 for (const item of Object.keys(names)) {
@@ -20,3 +26,4 @@ for (const item of Object.keys(names)) {
 }
 
 export const base = names.base
+export const sync = names.sync

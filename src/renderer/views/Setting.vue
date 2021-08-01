@@ -150,6 +150,21 @@ div(:class="$style.main")
         div
           material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
 
+      dt#sync {{$t('view.setting.sync')}}
+      dd
+        material-checkbox(id="setting_sync_enable" v-model="current_setting.sync.enable" @change="handleSyncChange('enable')" :label="syncEnableTitle")
+        div
+          p.small {{$t('view.setting.sync_auth_code', { code: sync.status.code || '' })}}
+          p.small {{$t('view.setting.sync_address', { address: sync.status.address.join(', ') || '' })}}
+          p.small {{$t('view.setting.sync_device', { devices: syncDevices })}}
+          p
+            material-btn(:class="$style.btn" min :disabled="!current_setting.sync.enable" @click="handleRefreshSyncCode") {{$t('view.setting.sync_refresh_code')}}
+      dd
+        h3#sync_port {{$t('view.setting.sync_port')}}
+        div
+          p
+            material-input(:class="$style.gapLeft" v-model.trim="current_setting.sync.port" @change="handleSyncChange('port')" :placeholder="$t('view.setting.sync_port_tip')")
+
       dt#hot_key {{$t('view.setting.hot_key')}}
       dd
         h3#hot_key_local_title {{$t('view.setting.hot_key_local_title')}}
@@ -295,7 +310,7 @@ import {
   getSetting,
   saveSetting,
 } from '../utils'
-import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
+import { rendererSend, rendererInvoke, rendererOn, NAMES, rendererOff } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
 import apiSourceInfo from '../utils/music/api-source-info'
 import fs from 'fs'
@@ -410,6 +425,21 @@ export default {
         },
       ]
     },
+    syncEnableTitle() {
+      let title = this.$t('view.setting.sync_enable')
+      if (this.sync.status.message) {
+        title += ` [${this.sync.status.message}]`
+      }
+      // else if (this.sync.status.address.length) {
+      //   // title += ` [${this.sync.status.address.join(', ')}]`
+      // }
+      return title
+    },
+    syncDevices() {
+      return this.sync.status.devices.length
+        ? this.sync.status.devices.map(d => `${d.deviceName} (${d.clientId.substring(0, 5)})`).join(', ')
+        : ''
+    },
   },
   data() {
     return {
@@ -473,6 +503,10 @@ export default {
           isShow: false,
           isToTray: false,
           themeId: 0,
+        },
+        sync: {
+          enable: false,
+          port: '23332',
         },
         windowSizeId: 1,
         langId: 'cns',
@@ -608,6 +642,15 @@ export default {
       },
       isDisabledResourceCacheClear: false,
       isDisabledListCacheClear: false,
+      sync: {
+        status: {
+          status: false,
+          message: '',
+          address: [],
+          code: '',
+          devices: [],
+        },
+      },
     }
   },
   watch: {
@@ -665,6 +708,7 @@ export default {
     window.eventHub.$off(eventBaseName.set_config, this.handleUpdateSetting)
     window.eventHub.$off(eventBaseName.key_down, this.handleKeyDown)
     window.eventHub.$off(eventBaseName.set_hot_key_config, this.handleUpdateHotKeyConfig)
+    this.syncUnInit()
 
     if (this.current_setting.network.proxy.enable && !this.current_setting.network.proxy.host) window.globalObj.proxy.enable = false
   },
@@ -684,6 +728,7 @@ export default {
       this.current_hot_key = window.appHotKeyConfig
       this.initHotKeyConfig()
       this.getHotKeyStatus()
+      this.syncInit()
     },
     // initTOC() {
     //   const list = this.$refs.dom_setting_list.children
@@ -1150,6 +1195,42 @@ export default {
       else status = `${this.$t('view.setting.basic_source_status_failed')} - ${window.globalObj.userApi.message}`
 
       return status
+    },
+    setStatus(e, status) {
+      this.sync.status.status = status.status
+      this.sync.status.message = status.message
+      this.sync.status.address = status.address
+      this.sync.status.code = status.code
+      this.sync.status.devices = status.devices
+    },
+    syncInit() {
+      rendererInvoke(NAMES.mainWindow.sync_get_status).then(status => {
+        this.sync.status.status = status.status
+        this.sync.status.message = status.message
+        this.sync.status.address = status.address
+        this.sync.status.code = status.code
+        this.sync.status.devices = status.devices
+      })
+      rendererOn(NAMES.mainWindow.sync_status, this.setStatus)
+    },
+    syncUnInit() {
+      rendererOff(NAMES.mainWindow.sync_status, this.setStatus)
+    },
+    handleSyncChange(action) {
+      switch (action) {
+        case 'port':
+          if (!this.current_setting.sync.enable) return
+        case 'enable':
+          rendererInvoke(NAMES.mainWindow.sync_enable, {
+            enable: this.current_setting.sync.enable,
+            port: this.current_setting.sync.port,
+          })
+          window.globalObj.sync.enable = this.current_setting.sync.enable
+          break
+      }
+    },
+    handleRefreshSyncCode() {
+      rendererInvoke(NAMES.mainWindow.sync_generate_code)
     },
   },
 }

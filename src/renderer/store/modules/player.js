@@ -156,11 +156,11 @@ const getters = {
 
     if (listId != '__temp__') {
       if (isPlayList) {
-        playIndex = state.listInfo.list.indexOf(state.playMusicInfo.musicInfo)
+        playIndex = state.listInfo.list.findIndex(m => m.songmid == state.playMusicInfo.musicInfo.songmid)
         if (!isTempPlay) listPlayIndex = playIndex
       } else {
         let list = window.allList[listId]
-        if (list) playIndex = list.list.indexOf(state.playMusicInfo.musicInfo)
+        if (list) playIndex = list.list.findIndex(m => m.songmid == state.playMusicInfo.musicInfo.songmid)
       }
     }
     // console.log({
@@ -273,7 +273,8 @@ const actions = {
     })
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    let currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    const currentMusic = currentList[playInfo.listPlayIndex]
+    let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     if (currentIndex == -1) currentIndex = 0
     let nextIndex = currentIndex
     if (!playInfo.isTempPlay) {
@@ -334,7 +335,8 @@ const actions = {
 
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    const currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    const currentMusic = currentList[playInfo.listPlayIndex]
+    let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     let nextIndex = currentIndex
     switch (rootState.setting.player.togglePlayMethod) {
       case 'listLoop':
@@ -433,7 +435,7 @@ const mutations = {
       playIndex = -1
     } else {
       let listId = playMusicInfo.listId
-      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(playMusicInfo.musicInfo)
+      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) playIndex = state.listInfo.list.findIndex(m => m.songmid == playMusicInfo.musicInfo.songmid)
     }
 
     state.playMusicInfo = playMusicInfo
