@@ -134,7 +134,7 @@
   "sync_address": "同步服務地址：{address}",
   "sync_auth_code": "連接碼：{code}",
   "sync_device": "已連接的設備：{devices}",
-  "sync_enable": "啟用同步功能（請在受信任的網絡下使用）",
+  "sync_enable": "啟用同步功能（由於數據是明文傳輸，請在受信任的網絡下使用）",
   "sync_port": "同步端口設置",
   "sync_port_tip": "請輸入同步服務端口號",
   "sync_refresh_code": "刷新連接碼",

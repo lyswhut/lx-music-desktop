@@ -134,7 +134,7 @@
   "sync_address": "Synchronization service address: {address}",
   "sync_auth_code": "Connection code: {code}",
   "sync_device": "Connected devices: {devices}",
-  "sync_enable": "Enable the synchronization function (please use it under a trusted network)",
+  "sync_enable": "Enable the synchronization function (because the data is transmitted in clear text, please use it under a trusted network)",
   "sync_port": "Sync port settings",
   "sync_port_tip": "Please enter the synchronization service port number",
   "sync_refresh_code": "Refresh the connection code",
