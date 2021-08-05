@@ -236,6 +236,7 @@ export default {
           break
       }
     })
+    this.registerMediaSessionHandler()
     navigator.mediaDevices.addEventListener('devicechange', this.handleMediaListChange)
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
@@ -255,6 +256,8 @@ export default {
       if (window.restorePlayInfo) {
         this.handleRestorePlay(window.restorePlayInfo)
         window.restorePlayInfo = null
+        navigator.mediaSession.playbackState = 'paused'
+        this.updateMediaSessionInfo()
         return
       }
       // console.log('changePlay')
@@ -480,6 +483,7 @@ export default {
     },
     async play() {
       this.clearDelayNextTimeout()
+      this.updateMediaSessionInfo()
 
       const targetSong = this.targetSong
 
@@ -551,20 +555,28 @@ export default {
       this.handleUpdateWinLyricInfo('play', audio.currentTime * 1000)
       this.setAppTitle()
       this.sendProgressEvent(this.progress, 'normal')
+      navigator.mediaSession.playbackState = 'playing'
     },
     stopPlay() {
       this.isPlay = false
       window.lrc.pause()
       this.handleUpdateWinLyricInfo('pause')
-      this.sendProgressEvent(this.progress, 'paused')
       this.clearAppTitle()
+      this.$nextTick(() => {
+        if (this.playMusicInfo) {
+          this.sendProgressEvent(this.progress, 'paused')
+          navigator.mediaSession.playbackState = 'paused'
+        } else {
+          this.sendProgressEvent(this.progress, 'none')
+          navigator.mediaSession.playbackState = 'none'
+        }
+      })
     },
     handleSetProgress(event) {
-      this.setProgress(event.offsetX / this.pregessWidth)
+      this.setProgress(event.offsetX / this.pregessWidth * this.maxPlayTime)
     },
-    setProgress(pregress) {
+    setProgress(time) {
       if (!audio.src) return
-      const time = pregress * this.maxPlayTime
       if (this.restorePlayTime) this.restorePlayTime = time
       if (this.mediaBuffer.playTime) {
         this.clearBufferTimeout()
@@ -636,6 +648,7 @@ export default {
         this.getPic(targetSong).then(() => {
           if (targetSong !== this.targetSong) return
           this.musicInfo.img = targetSong.img
+          this.updateMediaSessionInfo()
         })
       }
     },
@@ -836,7 +849,7 @@ export default {
           this.playNext()
           break
         case 'progress':
-          this.setProgress(data)
+          this.handleSetProgress(data)
           break
         case 'volume':
           break
@@ -903,6 +916,60 @@ export default {
       })
 
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(this.playMusicInfo)
+    },
+    updateMediaSessionInfo() {
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: this.targetSong.name,
+        artist: this.targetSong.singer,
+        album: this.targetSong.albumName,
+        artwork: [
+          { src: this.targetSong.img },
+        ],
+      })
+    },
+    registerMediaSessionHandler() {
+      // navigator.mediaSession.setActionHandler('play', () => {
+      //   if (this.isPlay || !this.playMusicInfo) return
+      //   console.log('play')
+      //   this.startPlay()
+      // })
+      // navigator.mediaSession.setActionHandler('pause', () => {
+      //   if (!this.isPlay || !this.playMusicInfo) return
+      //   console.log('pause')
+      //   this.stopPlay()
+      // })
+      navigator.mediaSession.setActionHandler('stop', () => {
+        if (!this.isPlay || !this.playMusicInfo) return
+        console.log('stop')
+        this.stopPlay()
+      })
+      navigator.mediaSession.setActionHandler('seekbackward', details => {
+        if (!this.isPlay || !this.playMusicInfo) return
+        console.log('seekbackward')
+        this.setProgress(Math.max(audio.currentTime - details.seekOffset, 0))
+      })
+      navigator.mediaSession.setActionHandler('seekforward', details => {
+        if (!this.isPlay || !this.playMusicInfo) return
+        console.log('seekforward')
+        this.setProgress(Math.min(audio.currentTime + details.seekOffset, audio.duration))
+      })
+      navigator.mediaSession.setActionHandler('seekto', details => {
+        console.log('seekto', details.seekTime)
+        let time = Math.min(details.seekTime, audio.duration)
+        time = Math.max(time, 0)
+        this.setProgress(time)
+      })
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        console.log('previoustrack')
+        this.playPrev()
+      })
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        console.log('nexttrack')
+        this.playNext()
+      })
+      // navigator.mediaSession.setActionHandler('skipad', () => {
+      //   console.log('')
+      // })
     },
   },
 }
