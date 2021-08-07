@@ -918,14 +918,13 @@ export default {
       if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(this.playMusicInfo)
     },
     updateMediaSessionInfo() {
-      navigator.mediaSession.metadata = new window.MediaMetadata({
+      const mediaMetadata = {
         title: this.targetSong.name,
         artist: this.targetSong.singer,
         album: this.targetSong.albumName,
-        artwork: [
-          { src: this.targetSong.img },
-        ],
-      })
+      }
+      if (this.targetSong.img) mediaMetadata.artwork = [{ src: this.targetSong.img }]
+      navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
     },
     registerMediaSessionHandler() {
       // navigator.mediaSession.setActionHandler('play', () => {
