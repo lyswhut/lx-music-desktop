@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import keyBind from '../utils/keyBind'
 import { rendererOn, rendererSend, NAMES, rendererInvoke } from '../../common/ipc'
-import { base as baseName } from './names'
+import { base as baseName, sync as syncName } from './names'
 import { common as hotKeyNamesCommon } from '../../common/hotKey'
 
 const eventHub = window.eventHub = new Vue()
@@ -76,4 +76,19 @@ rendererOn(NAMES.mainWindow.set_hot_key_config, (event, config) => {
     window.appHotKeyConfig[type] = config[type]
   }
   window.eventHub.$emit(baseName.set_hot_key_config, config)
+})
+
+rendererOn(NAMES.mainWindow.sync_action_list, (event, { action, data }) => {
+  window.eventHub.$emit(syncName.handle_action_list, { action, data })
+})
+eventHub.$on(syncName.send_action_list, ({ action, data }) => {
+  if (!window.globalObj.sync.enable) return
+  rendererSend(NAMES.mainWindow.sync_action_list, { action, data })
+})
+rendererOn(NAMES.mainWindow.sync_list, (event, { action, data }) => {
+  window.eventHub.$emit(syncName.handle_sync_list, { action, data })
+})
+eventHub.$on(syncName.send_sync_list, ({ action, data }) => {
+  if (!window.globalObj.sync.enable) return
+  rendererSend(NAMES.mainWindow.sync_list, { action, data })
 })

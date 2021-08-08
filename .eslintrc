@@ -16,7 +16,8 @@
     "no-multiple-empty-lines": [1, {"max": 2}],
     "comma-dangle": [2, "always-multiline"],
     "standard/no-callback-literal": "off",
-    "prefer-const": "off"
+    "prefer-const": "off",
+    "no-labels": "off"
   },
   "settings": {
     "html/html-extensions": [".html", ".vue"]

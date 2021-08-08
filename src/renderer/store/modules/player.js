@@ -141,6 +141,7 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
+let prevPlayIndex
 // getters
 const getters = {
   list: state => state.listInfo.list,
@@ -156,13 +157,14 @@ const getters = {
 
     if (listId != '__temp__') {
       if (isPlayList) {
-        playIndex = state.listInfo.list.indexOf(state.playMusicInfo.musicInfo)
+        playIndex = state.listInfo.list.findIndex(m => m.songmid == state.playMusicInfo.musicInfo.songmid)
         if (!isTempPlay) listPlayIndex = playIndex
       } else {
         let list = window.allList[listId]
-        if (list) playIndex = list.list.indexOf(state.playMusicInfo.musicInfo)
+        if (list) playIndex = list.list.findIndex(m => m.songmid == state.playMusicInfo.musicInfo.songmid)
       }
     }
+    if (listPlayIndex > -1) prevPlayIndex = listPlayIndex
     // console.log({
     //   listId,
     //   playIndex,
@@ -170,7 +172,7 @@ const getters = {
     //   listPlayIndex,
     //   isPlayList,
     //   isTempPlay,
-    //   musicInfo: state.playMusicInfo.musicInfo,
+    //   // musicInfo: state.playMusicInfo.musicInfo,
     // })
     return {
       listId,
@@ -250,9 +252,9 @@ const actions = {
     if (state.playedList.length) {
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.indexOf(state.playMusicInfo) - 1; index > -1; index--) {
+      for (index = state.playedList.findIndex(m => m.songmid === state.playMusicInfo.musicInfo.songmid) - 1; index > -1; index--) {
         const playMusicInfo = state.playedList[index]
-        if (playMusicInfo.listId == currentListId && !currentList.includes(playMusicInfo.musicInfo)) {
+        if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === playMusicInfo.musicInfo.songmid)) {
           commit('removePlayedList', index)
           continue
         }
@@ -273,7 +275,19 @@ const actions = {
     })
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    let currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    let currentMusic
+    if (playInfo.listPlayIndex < 0) {
+      let index = prevPlayIndex
+      if (index > currentList.length - 1) index = 0
+      while (index > -1) {
+        currentMusic = currentList[index]
+        if (currentMusic) break
+        index--
+      }
+    } else {
+      currentMusic = currentList[playInfo.listPlayIndex]
+    }
+    let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     if (currentIndex == -1) currentIndex = 0
     let nextIndex = currentIndex
     if (!playInfo.isTempPlay) {
@@ -311,9 +325,9 @@ const actions = {
     if (state.playedList.length) {
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.indexOf(state.playMusicInfo) + 1; index < state.playedList.length; index++) {
+      for (index = state.playedList.findIndex(m => m.songmid === state.playMusicInfo.musicInfo.songmid) + 1; index < state.playedList.length; index++) {
         const playMusicInfo = state.playedList[index]
-        if (playMusicInfo.listId == currentListId && !currentList.includes(playMusicInfo.musicInfo)) {
+        if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === playMusicInfo.musicInfo.songmid)) {
           commit('removePlayedList', index)
           continue
         }
@@ -334,7 +348,19 @@ const actions = {
 
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
     const playInfo = getters.playInfo
-    const currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    let currentMusic
+    if (playInfo.listPlayIndex < 0) {
+      let index = prevPlayIndex - 1
+      if (index < 0) index = currentList.length - 1
+      while (index > -1) {
+        currentMusic = currentList[index]
+        if (currentMusic) break
+        index--
+      }
+    } else {
+      currentMusic = currentList[playInfo.listPlayIndex]
+    }
+    let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     let nextIndex = currentIndex
     switch (rootState.setting.player.togglePlayMethod) {
       case 'listLoop':
@@ -433,7 +459,7 @@ const mutations = {
       playIndex = -1
     } else {
       let listId = playMusicInfo.listId
-      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) playIndex = state.listInfo.list.indexOf(playMusicInfo.musicInfo)
+      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) playIndex = state.listInfo.list.findIndex(m => m.songmid == playMusicInfo.musicInfo.songmid)
     }
 
     state.playMusicInfo = playMusicInfo

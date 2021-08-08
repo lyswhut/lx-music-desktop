@@ -66,6 +66,13 @@ const names = {
     get_music_url: 'get_music_url',
     save_music_url: 'save_music_url',
     clear_music_url: 'clear_music_url',
+
+    sync_enable: 'sync_enable',
+    sync_status: 'sync_status',
+    sync_get_status: 'sync_get_status',
+    sync_generate_code: 'sync_generate_code',
+    sync_action_list: 'sync_action_list',
+    sync_list: 'sync_list',
   },
   winLyric: {
     close: 'close',

@@ -140,7 +140,7 @@ export default {
   box-shadow: 0 0 3px rgba(0, 0, 0, .3);
   overflow: hidden;
   max-height: 80%;
-  max-width: 70%;
+  max-width: 76%;
   position: relative;
   display: flex;
   flex-flow: column nowrap;
