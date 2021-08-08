@@ -252,7 +252,7 @@ const actions = {
     if (state.playedList.length) {
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.findIndex(m => m.songmid === state.playMusicInfo.musicInfo.songmid) - 1; index > -1; index--) {
+      for (index = state.playedList.findIndex(m => m.musicInfo.songmid === state.playMusicInfo.musicInfo.songmid) - 1; index > -1; index--) {
         const playMusicInfo = state.playedList[index]
         if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === playMusicInfo.musicInfo.songmid)) {
           commit('removePlayedList', index)
@@ -322,10 +322,11 @@ const actions = {
     }
     const currentListId = state.listInfo.id
     const currentList = state.listInfo.list
+    console.log(currentListId)
     if (state.playedList.length) {
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.findIndex(m => m.songmid === state.playMusicInfo.musicInfo.songmid) + 1; index < state.playedList.length; index++) {
+      for (index = state.playedList.findIndex(m => m.musicInfo.songmid === state.playMusicInfo.musicInfo.songmid) + 1; index < state.playedList.length; index++) {
         const playMusicInfo = state.playedList[index]
         if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === playMusicInfo.musicInfo.songmid)) {
           commit('removePlayedList', index)
@@ -362,6 +363,7 @@ const actions = {
     }
     let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     let nextIndex = currentIndex
+    console.log(currentIndex)
     switch (rootState.setting.player.togglePlayMethod) {
       case 'listLoop':
         nextIndex = currentIndex === filteredList.length - 1 ? 0 : currentIndex + 1
