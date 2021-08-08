@@ -363,7 +363,7 @@ const actions = {
     }
     let currentIndex = filteredList.findIndex(m => m.songmid == currentMusic.songmid)
     let nextIndex = currentIndex
-    console.log(currentIndex)
+
     switch (rootState.setting.player.togglePlayMethod) {
       case 'listLoop':
         nextIndex = currentIndex === filteredList.length - 1 ? 0 : currentIndex + 1
