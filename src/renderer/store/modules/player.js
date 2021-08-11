@@ -266,7 +266,7 @@ const actions = {
     if (state.playedList.length) {
       let currentSongmid
       if (state.playMusicInfo.isTempPlay) {
-        const musicInfo = playInfo.list[playInfo.listPlayIndex]
+        const musicInfo = currentList[playInfo.listPlayIndex]
         if (musicInfo) currentSongmid = musicInfo.songmid || musicInfo.musicInfo.songmid
       } else {
         currentSongmid = state.playMusicInfo.musicInfo.songmid || state.playMusicInfo.musicInfo.musicInfo.songmid
