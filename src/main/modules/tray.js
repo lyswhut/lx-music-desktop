@@ -70,55 +70,63 @@ const destroyTray = () => {
 const createMenu = tray => {
   if (!global.modules.tray) return
   let menu = []
-  global.modules.mainWindow && menu.push(global.modules.mainWindow.isVisible() ? {
-    label: '隐藏主界面',
-    click() {
-      global.modules.mainWindow.hide()
-    },
-  } : {
-    label: '显示主界面',
-    click() {
-      if (!global.modules.mainWindow) return
-      if (!global.modules.mainWindow.isVisible()) {
-        global.modules.mainWindow.show()
+  global.modules.mainWindow && menu.push(global.modules.mainWindow.isVisible()
+    ? {
+        label: '隐藏主界面',
+        click() {
+          global.modules.mainWindow.hide()
+        },
       }
-      global.modules.mainWindow.restore()
-      global.modules.mainWindow.focus()
-    },
-  })
-  menu.push(global.appSetting.desktopLyric.enable ? {
-    label: '关闭桌面歌词',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { enable: false } }, TRAY_EVENT_NAME.name)
-    },
-  } : {
-    label: '开启桌面歌词',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { enable: true } }, TRAY_EVENT_NAME.name)
-    },
-  })
-  menu.push(global.appSetting.desktopLyric.isLock ? {
-    label: '解锁桌面歌词',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { isLock: false } }, TRAY_EVENT_NAME.name)
-    },
-  } : {
-    label: '锁定桌面歌词',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { isLock: true } }, TRAY_EVENT_NAME.name)
-    },
-  })
-  menu.push(global.appSetting.desktopLyric.isAlwaysOnTop ? {
-    label: '取消置顶',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: false } }, TRAY_EVENT_NAME.name)
-    },
-  } : {
-    label: '置顶歌词',
-    click() {
-      global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: true } }, TRAY_EVENT_NAME.name)
-    },
-  })
+    : {
+        label: '显示主界面',
+        click() {
+          if (!global.modules.mainWindow) return
+          if (!global.modules.mainWindow.isVisible()) {
+            global.modules.mainWindow.show()
+          }
+          global.modules.mainWindow.restore()
+          global.modules.mainWindow.focus()
+        },
+      })
+  menu.push(global.appSetting.desktopLyric.enable
+    ? {
+        label: '关闭桌面歌词',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { enable: false } }, TRAY_EVENT_NAME.name)
+        },
+      }
+    : {
+        label: '开启桌面歌词',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { enable: true } }, TRAY_EVENT_NAME.name)
+        },
+      })
+  menu.push(global.appSetting.desktopLyric.isLock
+    ? {
+        label: '解锁桌面歌词',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { isLock: false } }, TRAY_EVENT_NAME.name)
+        },
+      }
+    : {
+        label: '锁定桌面歌词',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { isLock: true } }, TRAY_EVENT_NAME.name)
+        },
+      })
+  menu.push(global.appSetting.desktopLyric.isAlwaysOnTop
+    ? {
+        label: '取消置顶',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: false } }, TRAY_EVENT_NAME.name)
+        },
+      }
+    : {
+        label: '置顶歌词',
+        click() {
+          global.lx_core.setAppConfig({ desktopLyric: { isAlwaysOnTop: true } }, TRAY_EVENT_NAME.name)
+        },
+      })
   menu.push({
     label: '退出',
     click() {

@@ -63,17 +63,19 @@ export default {
         reply: [],
       }
 
-      return item.pcontent ? {
-        id: item.id,
-        text: decodeName(item.pcontent).split('\n'),
-        time: null,
-        userName: item.puser,
-        avatar: null,
-        userId: item.puser_id,
-        likedCount: null,
-        replyNum: null,
-        reply: [data],
-      } : data
+      return item.pcontent
+        ? {
+            id: item.id,
+            text: decodeName(item.pcontent).split('\n'),
+            time: null,
+            userName: item.puser,
+            avatar: null,
+            userId: item.puser_id,
+            likedCount: null,
+            replyNum: null,
+            reply: [data],
+          }
+        : data
     })
   },
 }

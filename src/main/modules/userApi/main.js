@@ -59,6 +59,7 @@ exports.createWindow = async userApi => {
     })
   }
   global.modules.userApiWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+    // eslint-disable-next-line node/no-callback-literal
     callback(false)
   })
 
