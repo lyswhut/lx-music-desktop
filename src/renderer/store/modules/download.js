@@ -13,9 +13,10 @@ import {
   assertApiSupport,
 } from '../../utils'
 
+window.downloadList = []
 // state
 const state = {
-  list: [],
+  list: window.downloadList,
   waitingList: [],
   downloadStatus: {
     RUN: 'run',
@@ -369,6 +370,7 @@ const actions = {
       status: state.downloadStatus.WAITING,
       statusText: '待下载',
       url: null,
+      // songmid: musicInfo.songmid,
       fileName: `${rootState.setting.download.fileName
         .replace('歌名', musicInfo.name)
         .replace('歌手', musicInfo.singer)}.${ext}`.replace(filterFileName, ''),
@@ -667,7 +669,7 @@ const mutations = {
     downloadInfo.order = order
   },
   updateDownloadList(state, list) {
-    state.list = list
+    state.list = window.downloadList = list
   },
   updateUrl(state, { downloadInfo, url }) {
     downloadInfo.url = url

@@ -268,7 +268,7 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       audio.loop = n === 'singleLoop'
       if (this.playedList.length) this.clearPlayedList()
-      if (n == 'random') this.setPlayedList(this.playMusicInfo)
+      if (n == 'random' && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
     },
     'setting.player.isMute'(n) {
       audio.muted = n
@@ -487,7 +487,7 @@ export default {
 
       const targetSong = this.targetSong
 
-      if (this.setting.player.togglePlayMethod == 'random') this.setPlayedList(this.playMusicInfo)
+      if (this.setting.player.togglePlayMethod == 'random' && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
       this.retryNum = 0
       this.restorePlayTime = 0
 
@@ -646,7 +646,7 @@ export default {
 
       if (!this.musicInfo.img) {
         this.getPic(targetSong).then(() => {
-          if (targetSong !== this.targetSong) return
+          if (targetSong.songmid !== this.musicInfo.songmid) return
           this.musicInfo.img = targetSong.img
           this.updateMediaSessionInfo()
         })
@@ -654,7 +654,7 @@ export default {
     },
     setLrc(targetSong) {
       this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
-        if (targetSong !== this.targetSong) return
+        if (targetSong.songmid !== this.musicInfo.songmid) return
         this.musicInfo.lrc = lyric
         this.musicInfo.tlrc = tlyric
         this.musicInfo.lxlrc = lxlyric
