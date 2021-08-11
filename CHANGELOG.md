@@ -6,6 +6,15 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.12.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.12.1...v1.12.2) - 2021-08-11
+
+### 修复
+
+- 修复播放下载列表的歌曲时切歌的问题
+- 修复播放下载列表的歌曲时歌词无法显示的问题
+- 修复下载列表稍后播放功能无效的问题
+- 修复同步服务器启动失败时，关闭同步服务不会清空失败信息的问题
+
 ## [1.12.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.12.0...v1.12.1) - 2021-08-08
 
 ### 修复

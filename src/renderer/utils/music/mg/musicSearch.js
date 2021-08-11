@@ -72,10 +72,12 @@ export default {
         }
       })
 
-      const albumNInfo = item.albums && item.albums.length ? {
-        id: item.albums[0].id,
-        name: item.albums[0].name,
-      } : {}
+      const albumNInfo = item.albums && item.albums.length
+        ? {
+            id: item.albums[0].id,
+            name: item.albums[0].name,
+          }
+        : {}
 
       list.push({
         singer: this.getSinger(item.singers),

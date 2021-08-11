@@ -120,7 +120,14 @@ const handleStopServer = async() => {
 }
 
 exports.stopServer = async() => {
-  if (!status.status) return
+  if (!status.status) {
+    status.status = false
+    status.message = ''
+    status.address = []
+    status.code = ''
+    global.lx_event.sync.status(status)
+    return
+  }
   console.log('stoping sync server...')
   return handleStopServer().then(() => {
     console.log('sync server stoped')

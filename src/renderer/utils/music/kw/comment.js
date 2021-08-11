@@ -44,18 +44,20 @@ export default {
         likedCount: item.like_num,
         reply: [],
       }
-      return item.reply ? {
-        id: item.id,
-        rootId: item.reply.id,
-        text: item.reply.msg.split('\n'),
-        time: item.reply.time,
-        timeStr: dateFormat2(new Date(item.reply.time).getTime()),
-        userName: decodeURIComponent(item.reply.u_name),
-        avatar: item.reply.u_pic,
-        userId: item.reply.u_id,
-        likedCount: item.reply.like_num,
-        reply: [data],
-      } : data
+      return item.reply
+        ? {
+            id: item.id,
+            rootId: item.reply.id,
+            text: item.reply.msg.split('\n'),
+            time: item.reply.time,
+            timeStr: dateFormat2(new Date(item.reply.time).getTime()),
+            userName: decodeURIComponent(item.reply.u_name),
+            avatar: item.reply.u_pic,
+            userId: item.reply.u_id,
+            likedCount: item.reply.like_num,
+            reply: [data],
+          }
+        : data
     })
   },
 }

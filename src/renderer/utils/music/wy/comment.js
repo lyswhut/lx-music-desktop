@@ -121,18 +121,20 @@ export default {
       }
 
       let replyData = item.beReplied && item.beReplied[0]
-      return replyData ? {
-        id: item.commentId,
-        rootId: replyData.beRepliedCommentId,
-        text: replyData.content ? replyData.content.split('\n') : '',
-        time: item.time,
-        timeStr: null,
-        userName: replyData.user.nickname,
-        avatar: replyData.user.avatarUrl,
-        userId: replyData.user.userId,
-        likedCount: null,
-        reply: [data],
-      } : data
+      return replyData
+        ? {
+            id: item.commentId,
+            rootId: replyData.beRepliedCommentId,
+            text: replyData.content ? replyData.content.split('\n') : '',
+            time: item.time,
+            timeStr: null,
+            userName: replyData.user.nickname,
+            avatar: replyData.user.avatarUrl,
+            userId: replyData.user.userId,
+            likedCount: null,
+            reply: [data],
+          }
+        : data
     })
   },
 }
