@@ -146,14 +146,14 @@ let prevListPlayIndex
 const getters = {
   list: state => state.listInfo.list,
   changePlay: satte => satte.changePlay,
-  playInfo(state, getters) {
+  playInfo(state) {
     if (state.playMusicInfo == null) return { listId: null, playIndex: -1, playListId: null, listPlayIndex: -1, isPlayList: false, musicInfo: null }
     const playListId = state.listInfo.id
     let listId = state.playMusicInfo.listId
     const isTempPlay = !!state.playMusicInfo.isTempPlay
     const isPlayList = listId === playListId
     let playIndex = -1
-    let listPlayIndex = state.playIndex
+    let listPlayIndex = Math.min(state.playIndex, state.listInfo.list.length - 1)
 
     if (listId != '__temp__') {
       const currentSongmid = state.playMusicInfo.musicInfo.songmid || state.playMusicInfo.musicInfo.musicInfo.songmid
