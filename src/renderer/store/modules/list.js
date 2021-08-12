@@ -82,6 +82,16 @@ const mutations = {
   setSyncListData(state, { defaultList, loveList, userList }) {
     state.defaultList.list.splice(0, state.defaultList.list.length, ...defaultList.list)
     state.loveList.list.splice(0, state.loveList.list.length, ...loveList.list)
+    for (let index = 0; index < userList.length; index++) {
+      const list = userList[index]
+      const targetList = allList[list.id]
+      if (targetList) {
+        userList.splice(index, 1, targetList)
+        targetList.name = list.name
+        targetList.list.splice(0, targetList.list.length, ...list.list)
+      }
+    }
+    console.log()
     state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
   },
