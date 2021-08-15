@@ -130,7 +130,7 @@ div(:class="$style.main")
           p
             material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
       dd
-        h3#download_name {{$t('view.setting.download_use_other_source')}}
+        h3#download_use_other_source {{$t('view.setting.download_use_other_source')}}
         div
           material-checkbox(id="setting_download_isUseOtherSource" v-model="current_setting.download.isUseOtherSource" :label="$t('view.setting.is_enable')")
         div
