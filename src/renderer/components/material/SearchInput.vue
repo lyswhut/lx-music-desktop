@@ -9,6 +9,10 @@ div(:class="$style.container")
             @keyup.40.prevent="handleKeyDown"
             @keyup.38.prevent="handleKeyUp"
             @contextmenu="handleContextMenu")
+      transition(enter-active-class="animated zoomIn" leave-active-class="animated zoomOut")
+        button(type="button" @click="handleClearList" v-show="text")
+          svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 24 24' space='preserve')
+            use(xlink:href='#icon-window-close')
       button(type="button" @click="handleSearch")
         slot
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve')
@@ -144,6 +148,11 @@ export default {
       this.text = `${this.text.substring(0, dom_input.selectionStart)}${str}${this.text.substring(dom_input.selectionEnd, this.text.length)}`
       this.$emit('input', this.text)
     },
+    handleClearList() {
+      this.text = ''
+      this.$emit('input', this.text)
+      this.sendEvent('submit')
+    },
   },
 }
 </script>
@@ -210,13 +219,16 @@ export default {
       // background-color: @color-search-form-background;
       background-color: transparent;
       outline: none;
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
       cursor: pointer;
       height: 100%;
       padding: 6px 7px;
       color: @color-btn;
       transition: background-color .2s ease;
+
+      &:last-child {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
 
       &:hover {
         background-color: @color-theme-hover;
