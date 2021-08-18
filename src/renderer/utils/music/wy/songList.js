@@ -17,6 +17,7 @@ export default {
   limit_list: 30,
   limit_song: 100000,
   successCode: 200,
+  cookie: 'MUSIC_U=',
   sortList: [
     {
       name: '最热',
@@ -63,6 +64,11 @@ export default {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
+    if (id.includes('###')) {
+      const [url, token] = id.split('###')
+      id = url
+      this.cookie = `MUSIC_U=${token}`
+    }
     if ((/[?&:/]/.test(id))) {
       if (this.regExps.listDetailLink.test(id)) {
         id = id.replace(this.regExps.listDetailLink, '$1')
@@ -76,7 +82,10 @@ export default {
 
     this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
       method: 'post',
-      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+        Cookie: this.cookie,
+      },
       form: linuxapi({
         method: 'POST',
         url: 'https://music.163.com/api/v3/playlist/detail',
