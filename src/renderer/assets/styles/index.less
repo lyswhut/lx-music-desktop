@@ -123,6 +123,9 @@ small {
 .small {
   font-size: .9em;
 }
+.tip {
+  color: @color-theme_2-font-label;
+}
 strong {
   font-weight: bold;
 }
@@ -191,6 +194,9 @@ each(@themes, {
   #container.@{value} {
     button, input, textarea, a {
       color: ~'@{color-@{value}-theme_2-font}';
+    }
+    .tip {
+      color: ~'@{color-@{value}-theme_2-font-label}';
     }
 
     .hover, a {

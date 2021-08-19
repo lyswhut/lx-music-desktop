@@ -226,13 +226,13 @@ export default {
       }
     })
   },
-  async getListDetailDigest5(id, page) {
-    const detailId = await this.getListDetailDigest5Info(id)
-    return this.getListDetailDigest5Music(detailId, page)
+  async getListDetailDigest5(id, page, retryNum) {
+    const detailId = await this.getListDetailDigest5Info(id, retryNum)
+    return this.getListDetailDigest5Music(detailId, page, retryNum)
   },
 
   // 获取歌曲列表内的音乐
-  getListDetail(id, page) {
+  getListDetail(id, page, retryNum = 0) {
     // console.log(id)
     if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
     else if (/^digest-/.test(id)) {
@@ -242,12 +242,12 @@ export default {
       switch (digest) {
         case '8':
           break
-        case '13': return album.getAlbumListDetail(id, page)
+        case '13': return album.getAlbumListDetail(id, page, retryNum)
         case '5':
-        default: return this.getListDetailDigest5(id, page)
+        default: return this.getListDetailDigest5(id, page, retryNum)
       }
     }
-    return this.getListDetailDigest8(id, page)
+    return this.getListDetailDigest8(id, page, retryNum)
   },
   filterListDetail(rawData) {
     // console.log(rawData)

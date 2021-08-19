@@ -168,19 +168,21 @@ export default {
         avatar: item.avatarurl,
         userId: item.encrypt_rootcommentuin,
         likedCount: item.praisenum,
-        reply: item.middlecommentcontent ? item.middlecommentcontent.map(c => {
-          let index = c.subcommentid.lastIndexOf('_')
-          return {
-            id: c.subcommentid,
-            text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n').split('\n'),
-            time: parseInt(c.subcommentid.substring(index + 1) + '000'),
-            timeStr: dateFormat2(parseInt(c.subcommentid.substring(index + 1) + '000')),
-            userName: c.replynick.substring(1),
-            avatar: c.avatarurl,
-            userId: c.encrypt_replyuin,
-            likedCount: c.praisenum,
-          }
-        }) : [],
+        reply: item.middlecommentcontent
+          ? item.middlecommentcontent.map(c => {
+            let index = c.subcommentid.lastIndexOf('_')
+            return {
+              id: c.subcommentid,
+              text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n').split('\n'),
+              time: parseInt(c.subcommentid.substring(index + 1) + '000'),
+              timeStr: dateFormat2(parseInt(c.subcommentid.substring(index + 1) + '000')),
+              userName: c.replynick.substring(1),
+              avatar: c.avatarurl,
+              userId: c.encrypt_replyuin,
+              likedCount: c.praisenum,
+            }
+          })
+          : [],
       }
     })
   },

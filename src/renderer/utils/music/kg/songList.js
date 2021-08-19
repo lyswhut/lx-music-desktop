@@ -165,7 +165,9 @@ export default {
             : result.body.err_code
         ) !== 0)
     ) return this.createHttp(url, options, ++retryNum)
-    return result.body.data || result.body.info
+    if (result.body.data) return result.body.data
+    if (Array.isArray(result.body.info)) return result.body
+    return result.body.info
   },
 
   createTask(hashs) {
@@ -183,9 +185,9 @@ export default {
     let list = hashs
     let tasks = []
     while (list.length) {
-      tasks.push(Object.assign({ data: list.slice(0, 20) }, data))
-      if (list.length < 20) break
-      list = list.slice(20)
+      tasks.push(Object.assign({ data: list.slice(0, 100) }, data))
+      if (list.length < 100) break
+      list = list.slice(100)
     }
     let url = 'http://kmr.service.kugou.com/v2/album_audio/audio'
     return tasks.map(task => this.createHttp(url, {
@@ -267,6 +269,68 @@ export default {
     }
   },
 
+  deDuplication(datas) {
+    let ids = new Set()
+    return datas.filter(({ hash }) => {
+      if (ids.has(hash)) return false
+      ids.add(hash)
+      return true
+    })
+  },
+
+  async getUserListDetailByLink({ info }, link) {
+    let listInfo = info['0']
+    let total = listInfo.count
+    let tasks = []
+    let page = 0
+    while (total) {
+      const limit = total > 90 ? 90 : total
+      total -= limit
+      page += 1
+      tasks.push(this.createHttp(link.replace(/pagesize=\d+/, 'pagesize=' + limit).replace(/page=\d+/, 'page=' + page), {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+          Referer: link,
+        },
+      }).then(data => data.list.info))
+    }
+    let result = await Promise.all(tasks).then(([...datas]) => datas.flat())
+    result = await Promise.all(this.createTask(this.deDuplication(result).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    // console.log(result)
+    return {
+      list: this.filterData2(result) || [],
+      page,
+      limit: this.listDetailLimit,
+      total: listInfo.count,
+      source: 'kg',
+      info: {
+        name: listInfo.name,
+        img: listInfo.pic && listInfo.pic.replace('{size}', 240),
+        // desc: body.result.info.list_desc,
+        author: listInfo.list_create_username,
+        // play_count: this.formatPlayCount(listInfo.count),
+      },
+    }
+  },
+  createGetListDetail2Task(id, total) {
+    let tasks = []
+    let page = 0
+    while (total) {
+      const limit = total > 300 ? 300 : total
+      total -= limit
+      page += 1
+      tasks.push(this.createHttp('https://mobiles.kugou.com/api/v5/special/song_v2?appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&page=' + page + '&pagesize=' + limit + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-&signature=' + toMD5('NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163263991clientver=20000dfid=-global_specialid=' + id + 'mid=1586163263991page=' + page + 'pagesize=' + limit + 'plat=0specialid=0srcappid=2919uuid=1586163263991version=8000NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'), {
+        headers: {
+          mid: '1586163263991',
+          Referer: 'https://m3ws.kugou.com/share/index.php',
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+          dfid: '-',
+          clienttime: '1586163263991',
+        },
+      }).then(data => data.info))
+    }
+    return Promise.all(tasks).then(([...datas]) => datas.flat())
+  },
   async getUserListDetail2(global_collection_id) {
     let id = global_collection_id
     if (id.length > 1000) throw new Error('get list error')
@@ -279,22 +343,14 @@ export default {
         clienttime: '1586163242519',
       },
     })
-    let songInfo = await this.createHttp('https://mobiles.kugou.com/api/v5/special/song_v2?appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&pagesize=' + info.songcount + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-&signature=' + toMD5('NVPh5oo715z5DIWAeQlhMDsWXXQV4hwtappid=1058clienttime=1586163263991clientver=20000dfid=-global_specialid=' + id + 'mid=1586163263991pagesize=' + info.songcount + 'plat=0specialid=0srcappid=2919uuid=1586163263991version=8000NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'), {
-      headers: {
-        mid: '1586163263991',
-        Referer: 'https://m3ws.kugou.com/share/index.php',
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
-        dfid: '-',
-        clienttime: '1586163263991',
-      },
-    })
-    let result = await Promise.all(this.createTask(songInfo.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    const songInfo = await this.createGetListDetail2Task(id, info.songcount)
+    let result = await Promise.all(this.createTask(this.deDuplication(songInfo).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
     // console.log(info, songInfo)
     return {
       list: this.filterData2(result) || [],
       page: 1,
-      limit: songInfo.total,
-      total: songInfo.total,
+      limit: this.listDetailLimit,
+      total: info.songcount,
       source: 'kg',
       info: {
         name: info.specialname,
@@ -333,10 +389,9 @@ export default {
     // console.log(body, location)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
     if (location) {
+      // console.log(location)
       if (location.includes('global_collection_id')) return this.getUserListDetail2(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
       if (location.includes('chain=')) return this.getUserListDetail3(location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
-
-      // console.log('location', location)
       if (location.includes('.html')) {
         if (location.includes('zlist.html')) {
           let link = location.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
@@ -348,27 +403,12 @@ export default {
           return this.getUserListDetail(link, page, ++retryNum)
         } else return this.getUserListDetail3(location.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
       }
+      // console.log('location', location)
       return this.getUserListDetail(link, page, ++retryNum)
     }
     if (typeof body == 'string') return this.getUserListDetail2(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'))
     if (body.errcode !== 0) return this.getUserListDetail(link, page, ++retryNum)
-    let listInfo = body.info['0']
-    let result = body.list.info.map(item => ({ hash: item.hash }))
-    result = await Promise.all(this.createTask(result)).then(([...datas]) => datas.flat())
-    return {
-      list: this.filterData2(result) || [],
-      page,
-      limit: this.listDetailLimit,
-      total: listInfo.count,
-      source: 'kg',
-      info: {
-        name: listInfo.name,
-        img: listInfo.pic && listInfo.pic.replace('{size}', 240),
-        // desc: body.result.info.list_desc,
-        author: listInfo.list_create_username,
-        // play_count: this.formatPlayCount(listInfo.count),
-      },
-    }
+    return this.getUserListDetailByLink(body, link)
   },
 
   getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐

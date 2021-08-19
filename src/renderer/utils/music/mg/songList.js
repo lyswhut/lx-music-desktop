@@ -7,11 +7,13 @@ export default {
   _requestObj_tags: null,
   _requestObj_list: null,
   _requestObj_listDetail: null,
+  _requestObj_listDetailLink: null,
   _requestObj_listDetailInfo: null,
   limit_list: 10,
-  limit_song: 10000,
+  limit_song: 50,
   successCode: '000000',
   cachedDetailInfo: {},
+  cachedUrl: {},
   sortList: [
     {
       name: '推荐',
@@ -83,7 +85,7 @@ export default {
     return this._requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       // console.log(JSON.stringify(body))
-      // console.log(body)
+      console.log(body)
       return {
         list: this.filterListDetail(body.list),
         page,
@@ -117,11 +119,38 @@ export default {
     })
   },
 
+  async getDetailUrl(link, page, retryNum = 0) {
+    if (retryNum > 3) return Promise.reject(new Error('link try max num'))
+
+    if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
+
+    this._requestObj_listDetailLink = httpFetch(link, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+        Referer: link,
+      },
+    })
+    const { headers: { location }, statusCode } = await this._requestObj_listDetailLink.promise
+    // console.log(body, location)
+    if (statusCode > 400) return this.getDetailUrl(link, page, ++retryNum)
+    if (location) {
+      this.cachedUrl[link] = location
+      return this.getListDetail(location, page)
+    }
+    return Promise.reject(new Error('link get failed'))
+  },
+
   getListDetail(id, page) { // 获取歌曲列表内的音乐
     // https://h5.nf.migu.cn/app/v4/p/share/playlist/index.html?id=184187437&channel=0146921
+    // http://c.migu.cn/00bTY6?ifrom=babddaadfde4ebeda289d671ab62f236
     if (/playlist\/index\.html\?/.test(id)) {
       id = id.replace(/.*(?:\?|&)id=(\d+)(?:&.*|$)/, '$1')
-    } else if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+    } else if (this.regExps.listDetailLink.test(id)) {
+      id = id.replace(this.regExps.listDetailLink, '$1')
+    } else if ((/[?&:/]/.test(id))) {
+      const url = this.cachedUrl[id]
+      return url ? this.getListDetail(url, page) : this.getDetailUrl(id, page)
+    }
 
     return Promise.all([
       this.getListDetailList(id, page),

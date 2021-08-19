@@ -1,6 +1,7 @@
 exports.common = {
   initConfig: 'initConfig',
   configStatus: 'config',
+  saveMyList: 'saveMyList',
 }
 
 exports.mainWindow = {

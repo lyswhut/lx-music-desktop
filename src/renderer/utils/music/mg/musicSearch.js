@@ -1,5 +1,5 @@
 // import '../../polyfill/array.find'
-// import jshtmlencode from 'js-htmlencode'
+
 import { httpFetch } from '../../request'
 import { sizeFormate } from '../../index'
 // import { debug } from '../../utils/env'
@@ -7,20 +7,21 @@ import { sizeFormate } from '../../index'
 
 let searchRequest
 export default {
-  limit: 30,
+  limit: 20,
   total: 0,
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
+    searchRequest = httpFetch(`http://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?ua=Android_migu&version=5.0.1&text=${encodeURIComponent(str)}&pageNo=${page}&pageSize=${limit}&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A0%2C%22mvSong%22%3A0%2C%22songlist%22%3A0%2C%22bestShow%22%3A1%7D`, {
+    // searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
       headers: {
-        sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
-        timestamp: 1578225871982,
-        appId: 'yyapp2',
-        mode: 'android',
-        ua: 'Android_migu',
-        version: '6.9.4',
+        // sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
+        // timestamp: 1578225871982,
+        // appId: 'yyapp2',
+        // mode: 'android',
+        // ua: 'Android_migu',
+        // version: '6.9.4',
         osVersion: 'android 7.0',
         'User-Agent': 'okhttp/3.9.1',
       },
@@ -71,10 +72,12 @@ export default {
         }
       })
 
-      const albumNInfo = item.albums && item.albums.length ? {
-        id: item.albums[0].id,
-        name: item.albums[0].name,
-      } : {}
+      const albumNInfo = item.albums && item.albums.length
+        ? {
+            id: item.albums[0].id,
+            name: item.albums[0].name,
+          }
+        : {}
 
       list.push({
         singer: this.getSinger(item.singers),
@@ -104,9 +107,9 @@ export default {
     return this.musicSearch(str, page, limit).then(result => {
       // console.log(result)
       if (!result || result.code !== '000000') return Promise.reject(new Error(result ? result.info : '搜索失败'))
-      const songResultData = result.songResultData || { resultList: [], totalCount: 0 }
+      const songResultData = result.songResultData || { result: [], totalCount: 0 }
 
-      let list = this.handleResult(songResultData.resultList.flat())
+      let list = this.handleResult(songResultData.result)
       if (list == null) return this.search(str, page, { limit }, retryNum)
 
       this.total = parseInt(songResultData.totalCount)

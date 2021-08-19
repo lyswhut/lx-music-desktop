@@ -1,10 +1,14 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
+import { sync as eventSyncName } from '@renderer/event/names'
 
 let allList = {}
 window.allList = allList
 
 const allListInit = (defaultList, loveList, userList) => {
+  for (const id of Object.keys(allList)) {
+    delete allList[id]
+  }
   allList[defaultList.id] = defaultList
   allList[loveList.id] = loveList
   for (const list of userList) allList[list.id] = list
@@ -67,8 +71,28 @@ const mutations = {
     if (userList != null) state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
+
+    // if (!isSync) {
+    //   window.eventHub.$emit(eventSyncName.send_action_list, {
+    //     action: 'init_list',
+    //     data: { defaultList, loveList, userList },
+    //   })
+    // }
   },
-  setList(state, { id, list, name, location, source, sourceListId }) {
+  setSyncListData(state, { defaultList, loveList, userList }) {
+    state.defaultList.list.splice(0, state.defaultList.list.length, ...defaultList.list)
+    state.loveList.list.splice(0, state.loveList.list.length, ...loveList.list)
+    state.userList = userList
+    allListInit(state.defaultList, state.loveList, state.userList)
+  },
+  setList(state, { id, list, name, location, source, sourceListId, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'set_list',
+        data: { id, list, name, location, source, sourceListId },
+      })
+    }
+
     const targetList = allList[id]
     if (targetList) {
       if (name && targetList.name === name) {
@@ -90,46 +114,127 @@ const mutations = {
     state.userList.push(newList)
     allListUpdate(newList)
   },
-  listAdd(state, { id, musicInfo }) {
+  listAdd(state, { id, musicInfo, addMusicLocationType, isSync }) {
+    if (!addMusicLocationType) addMusicLocationType = this.state.setting.list.addMusicLocationType
+
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_add',
+        data: { id, musicInfo, addMusicLocationType },
+      })
+    }
+
     const targetList = allList[id]
     if (!targetList) return
     if (targetList.list.some(s => s.songmid === musicInfo.songmid)) return
-    targetList.list.push(musicInfo)
+    switch (addMusicLocationType) {
+      case 'top':
+        targetList.list.unshift(musicInfo)
+        break
+      case 'bottom':
+      default:
+        targetList.list.push(musicInfo)
+        break
+    }
   },
-  listMove(state, { fromId, musicInfo, toId }) {
+  listMove(state, { fromId, musicInfo, toId, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_move',
+        data: { fromId, musicInfo, toId },
+      })
+    }
+
     const fromList = allList[fromId]
     const toList = allList[toId]
     if (!fromList || !toList) return
-    fromList.list.splice(fromList.list.indexOf(musicInfo), 1)
+    fromList.list.splice(fromList.list.findIndex(s => s.songmid === musicInfo.songmid), 1)
     let index = toList.list.findIndex(s => s.songmid === musicInfo.songmid)
-    if (index < 0) toList.list.push(musicInfo)
+    if (index < 0) {
+      switch (this.state.setting.list.addMusicLocationType) {
+        case 'top':
+          toList.list.unshift(musicInfo)
+          break
+        case 'bottom':
+        default:
+          toList.list.push(musicInfo)
+          break
+      }
+    }
   },
-  listAddMultiple(state, { id, list }) {
+  listAddMultiple(state, { id, list, addMusicLocationType, isSync }) {
+    if (!addMusicLocationType) addMusicLocationType = this.state.setting.list.addMusicLocationType
+
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_add_multiple',
+        data: { id, list, addMusicLocationType },
+      })
+    }
+
     let targetList = allList[id]
     if (!targetList) return
-    let newList = [...targetList.list, ...list]
-    let map = {}
-    let ids = []
-    for (const item of newList) {
-      if (map[item.songmid]) continue
-      ids.push(item.songmid)
-      map[item.songmid] = item
+    let newList
+    const map = {}
+    const ids = []
+    switch (addMusicLocationType) {
+      case 'top':
+        newList = [...list, ...targetList.list]
+        for (let i = newList.length - 1; i > -1; i--) {
+          const item = newList[i]
+          if (map[item.songmid]) continue
+          ids.unshift(item.songmid)
+          map[item.songmid] = item
+        }
+        break
+      case 'bottom':
+      default:
+        newList = [...targetList.list, ...list]
+        for (const item of newList) {
+          if (map[item.songmid]) continue
+          ids.push(item.songmid)
+          map[item.songmid] = item
+        }
+        break
     }
     targetList.list.splice(0, targetList.list.length, ...ids.map(id => map[id]))
   },
   // { fromId, toId, list }
-  listMoveMultiple(state, { fromId, toId, list }) {
+  listMoveMultiple(state, { fromId, toId, list, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_move_multiple',
+        data: { fromId, toId, list },
+      })
+    }
+
     // console.log(state.commit)
-    this.commit('list/listRemoveMultiple', { id: fromId, list })
-    this.commit('list/listAddMultiple', { id: toId, list })
+    this.commit('list/listRemoveMultiple', { listId: fromId, ids: list.map(s => s.songmid), isSync: true })
+    this.commit('list/listAddMultiple', { id: toId, list, isSync: true })
   },
-  listRemove(state, { id, index }) {
-    let targetList = allList[id]
+  listRemove(state, { listId, id, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_remove',
+        data: { listId, id },
+      })
+    }
+
+    let targetList = allList[listId]
     if (!targetList) return
+    const index = targetList.list.findIndex(item => item.songmid == id)
+    if (index < 0) return
     targetList.list.splice(index, 1)
   },
-  listRemoveMultiple(state, { id, list }) {
-    let targetList = allList[id]
+  listRemoveMultiple(state, { listId, ids: musicIds, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_remove_multiple',
+        data: { listId, ids: musicIds },
+      })
+    }
+
+    let targetList = allList[listId]
     if (!targetList) return
     let map = {}
     let ids = []
@@ -137,25 +242,50 @@ const mutations = {
       ids.push(item.songmid)
       map[item.songmid] = item
     }
-    for (const item of list) {
-      if (map[item.songmid]) delete map[item.songmid]
+    for (const songmid of musicIds) {
+      if (map[songmid]) delete map[songmid]
     }
     let newList = []
     for (const id of ids) if (map[id]) newList.push(map[id])
 
     targetList.list.splice(0, targetList.list.length, ...newList)
   },
-  listClear(state, id) {
+  listClear(state, { id, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'list_clear',
+        data: { id },
+      })
+    }
+
     let targetList = allList[id]
     if (!targetList) return
     targetList.list.splice(0, targetList.list.length)
   },
-  updateMusicInfo(state, { id, index, data, musicInfo = {} }) {
-    let targetList = allList[id]
-    if (!targetList) return Object.assign(musicInfo, data)
-    Object.assign(targetList.list[index], data)
+  updateMusicInfo(state, { listId, id, data, musicInfo, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'update_music_info',
+        data: { listId, id, data, musicInfo },
+      })
+    }
+
+    let targetList = allList[listId]
+    if (!targetList) {
+      if (musicInfo) Object.assign(musicInfo, data)
+      return
+    }
+    const targetMusicInfo = targetList.list.find(item => item.songmid == id)
+    if (targetMusicInfo) Object.assign(targetMusicInfo, data)
   },
-  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId }) {
+  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'create_user_list',
+        data: { name, id, list, source, sourceListId },
+      })
+    }
+
     let newList = state.userList.find(item => item.id === id)
     if (!newList) {
       newList = {
@@ -169,35 +299,75 @@ const mutations = {
       state.userList.push(newList)
       allListUpdate(newList)
     }
-    this.commit('list/listAddMultiple', { id, list })
+    this.commit('list/listAddMultiple', { id, list, isSync: true })
   },
-  removeUserList(state, index) {
+  removeUserList(state, { id, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'remove_user_list',
+        data: { id },
+      })
+    }
+
+    const index = state.userList.findIndex(l => l.id === id)
+    if (index < 0) return
     let list = state.userList.splice(index, 1)[0]
     allListRemove(list)
   },
-  setUserListName(state, { index, name }) {
-    let list = state.userList[index]
+  setUserListName(state, { id, name, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'set_user_list_name',
+        data: { id, name },
+      })
+    }
+
+    let list = allList[id]
     if (!list) return
     list.name = name
   },
-  moveupUserList(state, index) {
-    let targetList = state.userList[index]
+  moveupUserList(state, { id, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'moveup_user_list',
+        data: { id },
+      })
+    }
+
+    const index = state.userList.findIndex(l => l.id == id)
+    if (index < 0) return
+    let targetList = allList[id]
     state.userList.splice(index, 1)
     state.userList.splice(index - 1, 0, targetList)
   },
-  movedownUserList(state, index) {
-    let targetList = state.userList[index]
+  movedownUserList(state, { id, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'movedown_user_list',
+        data: { id },
+      })
+    }
+    const index = state.userList.findIndex(l => l.id == id)
+    if (index < 0) return
+    let targetList = allList[id]
     state.userList.splice(index, 1)
     state.userList.splice(index + 1, 0, targetList)
   },
   setListScroll(state, { id, location }) {
     if (allList[id]) allList[id].location = location
   },
-  sortList(state, { id, sortNum, musicInfos }) {
-    let targetList = allList[id]
-    this.commit('list/listRemoveMultiple', { id, list: musicInfos })
+  setMusicPosition(state, { id, position, list, isSync }) {
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'set_music_position',
+        data: { id, position, list },
+      })
+    }
 
-    targetList.list.splice(sortNum - 1, 0, ...musicInfos)
+    let targetList = allList[id]
+    this.commit('list/listRemoveMultiple', { listId: id, ids: list.map(m => m.songmid), isSync: true })
+
+    targetList.list.splice(position - 1, 0, ...list)
   },
   clearCache() {
     const lists = Object.values(allList)

@@ -1,6 +1,5 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
-import jshtmlencode from 'js-htmlencode'
+import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 
 export default {
   _requestObj_tags: null,
@@ -33,21 +32,23 @@ export default {
   tagsUrl: 'https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=%7B%22tags%22%3A%7B%22method%22%3A%22get_all_categories%22%2C%22param%22%3A%7B%22qq%22%3A%22%22%7D%2C%22module%22%3A%22playlist.PlaylistAllCategoriesServer%22%7D%7D',
   hotTagUrl: 'https://c.y.qq.com/node/pc/wk_v15/category_playlist.html',
   getListUrl(sortId, id, page) {
-    return id ? `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
-      comm: { cv: 1602, ct: 20 },
-      playlist: {
-        method: 'get_category_content',
-        param: {
-          titleid: id,
-          caller: '0',
-          category_id: id,
-          size: this.limit_list,
-          page: page - 1,
-          use_page: 1,
-        },
-        module: 'playlist.PlayListCategoryServer',
-      },
-      }))}` : `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
+    return id
+      ? `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
+          comm: { cv: 1602, ct: 20 },
+          playlist: {
+            method: 'get_category_content',
+            param: {
+              titleid: id,
+              caller: '0',
+              category_id: id,
+              size: this.limit_list,
+              page: page - 1,
+              use_page: 1,
+            },
+            module: 'playlist.PlayListCategoryServer',
+          },
+          }))}`
+      : `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
           comm: { cv: 1602, ct: 20 },
           playlist: {
             method: 'get_playlist_by_tag',
@@ -163,7 +164,7 @@ export default {
         // time: basic.publish_time,
         img: basic.cover.medium_url || basic.cover.default_url,
         // grade: basic.favorcnt / 10,
-        desc: jshtmlencode.htmlDecode(basic.desc).replace(/<br>/g, '\n'),
+        desc: decodeName(basic.desc).replace(/<br>/g, '\n'),
         source: 'tx',
       })),
       total: content.total_cnt,
@@ -219,7 +220,7 @@ export default {
       info: {
         name: cdlist.dissname,
         img: cdlist.logo,
-        desc: jshtmlencode.htmlDecode(cdlist.desc).replace(/<br>/g, '\n'),
+        desc: decodeName(cdlist.desc).replace(/<br>/g, '\n'),
         author: cdlist.nickname,
         play_count: this.formatPlayCount(cdlist.visitnum),
       },

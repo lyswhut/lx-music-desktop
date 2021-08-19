@@ -5,5 +5,15 @@
     "@lyric/*": "${workspaceFolder}/src/renderer-lyric/*",
     "@static/*": "${workspaceFolder}/src/static/*",
     "@common/*": "${workspaceFolder}/src/common/*",
-  }
+  },
+  "i18n-ally.localesPaths": [
+    "src/renderer/lang"
+  ],
+  "i18n-ally.displayLanguage": "zh-cn",
+  "i18n-ally.sourceLanguage": "zh-cn",
+  "i18n-ally.namespace": true,
+  "i18n-ally.translate.engines": ["google-cn", "google"],
+  "i18n-ally.pathMatcher": "{locale}/{namespaces}.json",
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.sortKeys": true
 }

@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.41',
+  version: '1.0.43',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -36,6 +36,7 @@ const defaultSetting = {
     isShowSource: true,
     prevSelectListId: 'default',
     isSaveScrollLocation: true,
+    addMusicLocationType: 'top',
   },
   download: {
     enable: false,
@@ -83,6 +84,10 @@ const defaultSetting = {
     isShow: false,
     isToTray: false,
     themeId: 0,
+  },
+  sync: {
+    enable: false,
+    port: '23332',
   },
   windowSizeId: 2,
   themeId: 0,

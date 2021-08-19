@@ -18,7 +18,7 @@ module.exports = {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../../dist/electron'),
-    publicPath: './',
+    publicPath: 'auto',
   },
   resolve: {
     alias: {
@@ -97,26 +97,38 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'imgs/[name]--[folder].[ext]',
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000,
+          },
+        },
+        generator: {
+          filename: 'imgs/[name]-[contenthash:8][ext]',
         },
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'media/[name]--[folder].[ext]',
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000,
+          },
+        },
+        generator: {
+          filename: 'media/[name]-[contenthash:8][ext]',
         },
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'fonts/[name]--[folder].[ext]',
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10000,
+          },
+        },
+        generator: {
+          filename: 'fonts/[name]-[contenthash:8][ext]',
         },
       },
     ],

@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     ...mapActions('download', ['removeTask', 'removeTasks', 'startTask', 'startTasks', 'pauseTask', 'pauseTasks']),
-    ...mapMutations('player', ['setList']),
+    ...mapMutations('player', ['setList', 'setTempPlayList']),
     listenEvent() {
       window.eventHub.$on('key_shift_down', this.handle_key_shift_down)
       window.eventHub.$on('key_shift_up', this.handle_key_shift_up)
@@ -311,14 +311,6 @@ export default {
           break
         case 'remove':
           this.removeTask(item)
-          break
-        case 'playLater':
-          if (this.selectedData.length) {
-            this.setTempPlayList(this.selectedData.map(s => ({ listId: 'download', musicInfo: s })))
-            this.removeAllSelect()
-          } else {
-            this.setTempPlayList([{ listId: 'download', musicInfo: item }])
-          }
           break
         case 'file':
           this.handleOpenFolder(item.filePath)
@@ -470,6 +462,14 @@ export default {
             this.$nextTick(() => {
               this.isShowDownload = true
             })
+          }
+          break
+        case 'playLater':
+          if (this.selectedData.length) {
+            this.setTempPlayList(this.selectedData.map(s => ({ listId: 'download', musicInfo: s })))
+            this.removeAllSelect()
+          } else {
+            this.setTempPlayList([{ listId: 'download', musicInfo: this.showList[index] }])
           }
           break
         case 'sourceDetail':

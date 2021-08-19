@@ -355,7 +355,7 @@ export default {
       'removeUserList',
       'setListScroll',
       'setList',
-      'sortList',
+      'setMusicPosition',
     ]),
     ...mapActions('songList', ['getListDetailAll']),
     ...mapActions('leaderboard', {
@@ -576,7 +576,7 @@ export default {
       this.setPlayList({ list: this.listData, index })
     },
     handleRemove(index) {
-      this.listRemove({ id: this.listId, index })
+      this.listRemove({ listId: this.listId, id: this.list[index].songmid })
     },
     handleListBtnClick(info) {
       switch (info.action) {
@@ -677,8 +677,9 @@ export default {
       let dom_target = this.$refs.dom_lists_list.querySelector('.' + this.$style.editing)
       if (dom_target) dom_target.classList.remove(this.$style.editing)
       let name = event.target.value.trim()
-      if (name.length) return this.setUserListName({ index, name })
-      event.target.value = this.userList[index].name
+      const targetList = this.userList[index]
+      if (name.length) return this.setUserListName({ id: targetList.id, name })
+      event.target.value = targetList.name
     },
     handleListsCreate(event) {
       if (event.target.readonly) return
@@ -774,13 +775,13 @@ export default {
           this.handleSyncSourceList(index)
           break
         case 'moveup':
-          this.moveupUserList(index)
+          this.moveupUserList({ id: this.userList[index].id })
           break
         case 'movedown':
-          this.movedownUserList(index)
+          this.movedownUserList({ id: this.userList[index].id })
           break
         case 'remove':
-          this.removeUserList(index)
+          this.removeUserList({ id: this.userList[index].id })
           break
       }
     },
@@ -870,7 +871,7 @@ export default {
           break
         case 'remove':
           if (this.selectdListDetailData.length) {
-            this.listRemoveMultiple({ id: this.listId, list: this.selectdListDetailData })
+            this.listRemoveMultiple({ listId: this.listId, ids: this.selectdListDetailData.map(m => m.songmid) })
             this.removeAllSelectListDetail()
           } else {
             this.handleRemove(index)
@@ -929,10 +930,10 @@ export default {
     },
     handleSortMusicInfo(num) {
       num = Math.min(num, this.list.length)
-      this.sortList({
+      this.setMusicPosition({
         id: this.listId,
-        sortNum: num,
-        musicInfos: this.selectdListDetailData.length ? [...this.selectdListDetailData] : [this.musicInfo],
+        position: num,
+        list: this.selectdListDetailData.length ? [...this.selectdListDetailData] : [this.musicInfo],
       })
       this.removeAllSelectListDetail()
       this.isShowListSortModal = false

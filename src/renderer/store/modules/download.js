@@ -13,9 +13,10 @@ import {
   assertApiSupport,
 } from '../../utils'
 
+window.downloadList = []
 // state
 const state = {
-  list: [],
+  list: window.downloadList,
   waitingList: [],
   downloadStatus: {
     RUN: 'run',
@@ -191,13 +192,13 @@ const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
   return cachedUrl && !isRefresh
     ? cachedUrl
     : (
-      isUseOtherSource
-        ? handleGetMusicUrl.call(this, downloadInfo.musicInfo, downloadInfo.type)
-        : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
-    ).then(({ url }) => {
-      setMusicUrl(downloadInfo.musicInfo, downloadInfo.type, url)
-      return url
-    })
+        isUseOtherSource
+          ? handleGetMusicUrl.call(this, downloadInfo.musicInfo, downloadInfo.type)
+          : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
+      ).then(({ url }) => {
+        setMusicUrl(downloadInfo.musicInfo, downloadInfo.type, url)
+        return url
+      })
 }
 const getPic = function(musicInfo, retryedSource = [], originMusic) {
   // console.log(musicInfo.source)
@@ -263,29 +264,29 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
       ? downloadInfo.musicInfo.img
         ? Promise.resolve(downloadInfo.musicInfo.img)
         : (
-          isUseOtherSource
-            ? getPic.call(this, downloadInfo.musicInfo)
-            : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise
-        ).catch(err => {
-          console.log(err)
-          return null
-        })
+            isUseOtherSource
+              ? getPic.call(this, downloadInfo.musicInfo)
+              : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise
+          ).catch(err => {
+            console.log(err)
+            return null
+          })
       : Promise.resolve(),
     isEmbedLyric
       ? getLyricFromStorage(downloadInfo.musicInfo).then(lrcInfo => {
         return lrcInfo.lyric
           ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
           : (
-            isUseOtherSource
-              ? getLyric.call(this, downloadInfo.musicInfo)
-              : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
-          ).then(({ lyric, tlyric, lxlyric }) => {
-            setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
-            return { lyric, tlyric, lxlyric }
-          }).catch(err => {
-            console.log(err)
-            return null
-          })
+              isUseOtherSource
+                ? getLyric.call(this, downloadInfo.musicInfo)
+                : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
+            ).then(({ lyric, tlyric, lxlyric }) => {
+              setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
+              return { lyric, tlyric, lxlyric }
+            }).catch(err => {
+              console.log(err)
+              return null
+            })
       })
       : Promise.resolve(),
   ]
@@ -369,6 +370,7 @@ const actions = {
       status: state.downloadStatus.WAITING,
       statusText: '待下载',
       url: null,
+      // songmid: musicInfo.songmid,
       fileName: `${rootState.setting.download.fileName
         .replace('歌名', musicInfo.name)
         .replace('歌手', musicInfo.singer)}.${ext}`.replace(filterFileName, ''),
@@ -667,7 +669,7 @@ const mutations = {
     downloadInfo.order = order
   },
   updateDownloadList(state, list) {
-    state.list = list
+    state.list = window.downloadList = list
   },
   updateUrl(state, { downloadInfo, url }) {
     downloadInfo.url = url
