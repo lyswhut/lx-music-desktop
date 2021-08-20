@@ -55,7 +55,7 @@ function startRenderer() {
           errors: true,
         },
         before(app, ctx) {
-          app.use(hotMiddleware)
+          app.use(hotMiddlewareRenderer)
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
@@ -102,7 +102,7 @@ function startRendererLyric() {
           errors: true,
         },
         before(app, ctx) {
-          app.use(hotMiddleware)
+          app.use(hotMiddlewareRendererLyric)
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
