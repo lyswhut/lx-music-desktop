@@ -25,6 +25,14 @@ eventHub.$on(baseName.bindKey, () => {
     // console.log(event, key)
     if (!window.isEditingHotKey && appHotKeyConfig.local.enable && appHotKeyConfig.local.keys[key]) {
       if (type == 'up') return
+
+      // 软件内快捷键的最小化触发时
+      // 如果已启用托盘，则隐藏程序，否则最小化程序 https://github.com/lyswhut/lx-music-desktop/issues/603
+      if (appHotKeyConfig.local.keys[key].action == hotKeyNamesCommon.min.action && global.appSetting.tray.isToTray) {
+        eventHub.$emit(hotKeyNamesCommon.hide_toggle.action)
+        return
+      }
+
       eventHub.$emit(appHotKeyConfig.local.keys[key].action)
       return
     }

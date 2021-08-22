@@ -26,6 +26,7 @@ Vue.config.productionTip = false
 Vue.config.devtools = process.env.NODE_ENV === 'development'
 
 getSetting().then(({ setting, version }) => {
+  global.appSetting = setting
   // Set language automatically
   if (!window.i18n.availableLocales.includes(setting.langId)) {
     let langId = null

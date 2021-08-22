@@ -123,6 +123,7 @@ export default {
     setting: {
       handler(n, o) {
         saveSetting(n)
+        global.appSetting = n
       },
       deep: true,
     },
