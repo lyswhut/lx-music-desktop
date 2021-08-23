@@ -64,7 +64,7 @@ export default {
     if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
-    if (id.includes('###')) {
+    if (/###/.test(id)) {
       const [url, token] = id.split('###')
       id = url
       this.cookie = `MUSIC_U=${token}`
