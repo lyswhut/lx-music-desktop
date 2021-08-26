@@ -149,6 +149,11 @@ div(:class="$style.main")
         h3#download_lyric {{$t('view.setting.download_lyric')}}
         div
           material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
+      dd
+        h3#download_lyric {{$t('view.setting.download_lyric_format')}}
+        div
+          material-checkbox(v-for="item in lrcFormatList" :key="item.id" :class="$style.gapLeft" :id="`setting_download_lrcFormat_${item.id}`"
+            name="setting_basic_control_btn_position" need v-model="current_setting.download.lrcFormat" :value="item.id" :label="item.name")
 
       dt#sync {{$t('view.setting.sync')}}
       dd
@@ -424,6 +429,18 @@ export default {
         },
       ]
     },
+    lrcFormatList() {
+      return [
+        {
+          name: this.$t('view.setting.download_lyric_format_utf8'),
+          id: 'utf8',
+        },
+        {
+          name: this.$t('view.setting.download_lyric_format_gbk'),
+          id: 'gbk',
+        },
+      ]
+    },
     trayThemeList() {
       return [
         {
@@ -494,6 +511,7 @@ export default {
           savePath: '',
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,
+          lrcFormat: 'utf8',
           isEmbedPic: true,
           isEmbedLyric: true,
         },
