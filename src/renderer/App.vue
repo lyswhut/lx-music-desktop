@@ -288,7 +288,7 @@ export default {
       })
 
       rendererOn(NAMES.mainWindow.set_config, (event, config) => {
-        console.log(config)
+        // console.log(config)
         // this.setDesktopLyricConfig(config)
         // console.log('set_config', JSON.stringify(this.setting) === JSON.stringify(config))
         this.setSetting(Object.assign({}, this.setting, config))

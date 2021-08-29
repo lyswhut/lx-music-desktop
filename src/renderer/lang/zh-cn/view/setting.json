@@ -51,6 +51,8 @@
   "desktop_lyric": "桌面歌词设置",
   "desktop_lyric_always_on_top": "使歌词总是在其他窗口之上",
   "desktop_lyric_enable": "显示歌词",
+  "desktop_lyric_font": "歌词字体",
+  "desktop_lyric_font_default": "默认",
   "desktop_lyric_lock": "锁定歌词",
   "desktop_lyric_lock_screen": "不允许歌词窗口拖出主屏幕之外",
   "download": "下载设置",

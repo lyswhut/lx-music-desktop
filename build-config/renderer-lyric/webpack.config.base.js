@@ -45,6 +45,10 @@ module.exports = {
         enforce: 'pre',
       },
       {
+        test: /\.node$/,
+        use: 'node-loader',
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig,

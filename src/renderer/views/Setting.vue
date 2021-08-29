@@ -91,6 +91,10 @@ div(:class="$style.main")
           material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
         div(:class="$style.gapTop")
           material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
+      dd
+        h3#desktop_lyric_font {{$t('view.setting.desktop_lyric_font')}}
+        div
+          material-selection(:list="fontList" :class="$style.gapLeft" v-model="current_setting.desktopLyric.style.font" item-key="id" item-name="label")
 
       dt#search {{$t('view.setting.search')}}
       dd
@@ -468,6 +472,9 @@ export default {
         ? this.sync.status.devices.map(d => `${d.deviceName} (${d.clientId.substring(0, 5)})`).join(', ')
         : ''
     },
+    fontList() {
+      return [{ id: '', label: this.$t('view.setting.desktop_lyric_font_default') }, ...this.systemFontList]
+    },
   },
   data() {
     return {
@@ -489,6 +496,7 @@ export default {
           y: -1,
           theme: '',
           style: {
+            font: '',
             fontSize: 125,
             opacity: 80,
             isZoomActiveLrc: true,
@@ -680,6 +688,7 @@ export default {
           devices: [],
         },
       },
+      systemFontList: [],
     }
   },
   watch: {
@@ -753,6 +762,7 @@ export default {
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       // this.initTOC()
       this.getCacheSize()
+      this.getSystemFonts()
       this.getMediaDevice()
       this.current_hot_key = window.appHotKeyConfig
       this.initHotKeyConfig()
@@ -1260,6 +1270,13 @@ export default {
     },
     handleRefreshSyncCode() {
       rendererInvoke(NAMES.mainWindow.sync_generate_code)
+    },
+    getSystemFonts() {
+      rendererInvoke(NAMES.mainWindow.get_system_fonts).then(fonts => {
+        this.systemFontList = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
+      }).catch(() => {
+        this.systemFontList = []
+      })
     },
   },
 }

@@ -21,6 +21,7 @@ export default {
       default() {
         return {
           style: {
+            font: '',
             fontSize: 125,
             opacity: 80,
             isZoomActiveLrc: true,
@@ -77,6 +78,7 @@ export default {
   computed: {
     lrcStyles() {
       return {
+        fontFamily: this.lrcConfig.style.font,
         fontSize: this.lrcConfig.style.fontSize / 100 + 'rem',
         opacity: this.lrcConfig.style.opacity / 100,
       }

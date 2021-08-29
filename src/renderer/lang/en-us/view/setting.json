@@ -51,6 +51,8 @@
   "desktop_lyric": "Desktop Lyric Settings",
   "desktop_lyric_always_on_top": "Make the lyrics always above other windows",
   "desktop_lyric_enable": "Display lyrics",
+  "desktop_lyric_font": "Lyric font",
+  "desktop_lyric_font_default": "Default",
   "desktop_lyric_lock": "Lock lyrics",
   "desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the main screen",
   "download": "Download",

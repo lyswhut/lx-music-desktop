@@ -83,6 +83,9 @@
     "files": [
       "dist/electron/**/*"
     ],
+    "asar": {
+      "smartUnpack": false
+    },
     "extraResources": [
       "./licenses"
     ],
@@ -205,6 +208,7 @@
     "less-plugin-clean-css": "^1.5.1",
     "markdown-it": "^12.2.0",
     "mini-css-extract-plugin": "^2.2.0",
+    "node-loader": "^2.0.0",
     "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",
     "postcss-pxtorem": "^6.0.0",
@@ -227,12 +231,13 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1",
-    "electron-log": "^4.4.1",
     "bufferutil": "^4.0.3",
+    "crypto-js": "^4.1.1",
     "eiows": "^3.6.1",
+    "electron-log": "^4.4.1",
     "electron-store": "^8.0.0",
     "electron-updater": "^4.3.9",
+    "font-list": "git+https://github.com/lyswhut/node-font-list.git#c6caf4060e471afe143a4aca30d554644522966d",
     "http-terminator": "^3.0.0",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.0",

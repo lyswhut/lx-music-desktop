@@ -45,8 +45,8 @@ export default {
   },
   computed: {
     label() {
-      if (!this.value) return ''
-      if (!this.itemName) return this.value
+      if (this.value == null) return ''
+      if (this.itemName == null) return this.value
       const item = this.list.find(l => l[this.itemKey] == this.value)
       if (!item) return ''
       return item[this.itemName]
