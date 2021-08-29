@@ -156,6 +156,14 @@
 - 添加启动参数`-dha`运行（添加的方法请自行百度“给快捷方式加参数”）
 - 尝试将绿色版的软件放在**桌面**或**我的文档**运行
 
+### Windows 7 下桌面歌词字体列表为空
+
+Windows 7 系统系统需要安装 Powershell 5.1及以上版本才可正常获取系统字体列表。
+
+想要查看当前 Powershell 版本可以在 Powershell 窗口输入命令：`Get-Host`
+
+最新 Powershell 安装包可以去官方 [Github releases](https://github.com/PowerShell/PowerShell/releases) 页下载，安装过程中若出现错误，请自行按照提示或者百度/Google解决。
+
 ## 安装版安装失败，提示安装程序并未成功地运行完成
 
 对于部分电脑出现安装失败的问题，可以做出以下尝试：
