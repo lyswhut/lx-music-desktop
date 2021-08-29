@@ -233,7 +233,6 @@
   "dependencies": {
     "bufferutil": "^4.0.3",
     "crypto-js": "^4.1.1",
-    "eiows": "^3.6.1",
     "electron-log": "^4.4.1",
     "electron-store": "^8.0.0",
     "electron-updater": "^4.3.9",
