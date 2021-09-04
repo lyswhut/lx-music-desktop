@@ -77,15 +77,6 @@ module.exports = {
         }),
       },
       {
-        test: /\.styl(:?us)?$/,
-        oneOf: mergeCSSLoader({
-          loader: 'stylus-loader',
-          options: {
-            sourceMap: true,
-          },
-        }),
-      },
-      {
         test: /\.pug$/,
         oneOf: [
           // Use pug-plain-loader handle .vue file
