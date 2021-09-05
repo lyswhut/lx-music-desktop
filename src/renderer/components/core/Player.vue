@@ -268,7 +268,7 @@ export default {
     'setting.player.togglePlayMethod'(n) {
       audio.loop = n === 'singleLoop'
       if (this.playedList.length) this.clearPlayedList()
-      if (n == 'random' && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
+      if (n == 'random' && this.playMusicInfo && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
     },
     'setting.player.isMute'(n) {
       audio.muted = n

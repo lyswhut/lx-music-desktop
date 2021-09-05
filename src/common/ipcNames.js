@@ -22,6 +22,7 @@ const names = {
     set_app_setting: 'set_app_setting',
     set_window_size: 'set_window_size',
     show_save_dialog: 'show_save_dialog',
+    get_system_fonts: 'get_system_fonts',
 
     handle_request: 'handle_request',
     cancel_request: 'cancel_request',

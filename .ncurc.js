@@ -1,7 +1,8 @@
 module.exports = {
   upgrade: true,
   reject: [
-    'vue-loader'
+    'vue-loader',
+    'webpack-dev-server',
     // 'eslint-config-standard'
   ]
 }

@@ -15,6 +15,7 @@ module.exports = merge(baseConfig, {
   },
   externals: [
     ...Object.keys(dependencies || {}),
+    // 'font-list',
   ],
   node: {
     __dirname: false,

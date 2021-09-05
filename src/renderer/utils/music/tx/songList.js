@@ -26,7 +26,7 @@ export default {
 
     // https://y.qq.com/n/yqq/playlist/7217720898.html
     // https://i.y.qq.com/n2/m/share/details/taoge.html?platform=11&appshare=android_qq&appversion=9050006&id=7217720898&ADTAG=qfshare
-    listDetailLink1: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
+    listDetailLink1: /^.+(?:(?:\?|&)id=|ryqq\/playlist\/)(\d+)(?:&.*$|#.*$|$)/,
     listDetailLink2: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
   tagsUrl: 'https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=%7B%22tags%22%3A%7B%22method%22%3A%22get_all_categories%22%2C%22param%22%3A%7B%22qq%22%3A%22%22%7D%2C%22module%22%3A%22playlist.PlaylistAllCategoriesServer%22%7D%7D',

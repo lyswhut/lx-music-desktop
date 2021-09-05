@@ -29,11 +29,10 @@ module.exports = {
         exclude: /node_modules/,
         enforce: 'pre',
       },
-      // {
-      //   test: /\.js$/,
-      //   loader: 'babel-loader',
-      //   exclude: /node_modules/,
-      // },
+      {
+        test: /\.node$/,
+        use: 'node-loader',
+      },
     ],
   },
   performance: {

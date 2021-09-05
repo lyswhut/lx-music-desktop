@@ -82,26 +82,41 @@ const mutations = {
   setSyncListData(state, { defaultList, loveList, userList }) {
     state.defaultList.list.splice(0, state.defaultList.list.length, ...defaultList.list)
     state.loveList.list.splice(0, state.loveList.list.length, ...loveList.list)
+    for (let index = 0; index < userList.length; index++) {
+      const list = userList[index]
+      const targetList = allList[list.id]
+      if (targetList) {
+        userList.splice(index, 1, targetList)
+        targetList.name = list.name
+        targetList.list.splice(0, targetList.list.length, ...list.list)
+      }
+    }
+    console.log()
     state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
   },
   setList(state, { id, list, name, location, source, sourceListId, isSync }) {
-    if (!isSync) {
-      window.eventHub.$emit(eventSyncName.send_action_list, {
-        action: 'set_list',
-        data: { id, list, name, location, source, sourceListId },
-      })
-    }
-
     const targetList = allList[id]
     if (targetList) {
       if (name && targetList.name === name) {
+        if (!isSync) {
+          window.eventHub.$emit(eventSyncName.send_action_list, {
+            action: 'set_list',
+            data: { id, list, name, location, source, sourceListId },
+          })
+        }
         targetList.list.splice(0, targetList.list.length, ...list)
         targetList.location = location
         return
       }
 
       id += '_' + Math.random()
+    }
+    if (!isSync) {
+      window.eventHub.$emit(eventSyncName.send_action_list, {
+        action: 'set_list',
+        data: { id, list, name, location, source, sourceListId },
+      })
     }
     let newList = {
       name,

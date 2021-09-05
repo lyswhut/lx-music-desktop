@@ -47,8 +47,16 @@ exports.createWindow = async userApi => {
     show: false,
     webPreferences: {
       contextIsolation: true,
-      worldSafeExecuteJavaScript: true,
+      // worldSafeExecuteJavaScript: true,
       nodeIntegration: false,
+
+      spellcheck: false,
+      autoplayPolicy: 'document-user-activation-required',
+      enableWebSQL: false,
+      disableDialogs: true,
+      webgl: false,
+      images: false,
+
       preload: path.join(dir, 'renderer/preload.js'),
     },
   })
