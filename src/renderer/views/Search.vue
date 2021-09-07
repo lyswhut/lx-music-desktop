@@ -408,12 +408,16 @@ export default {
       this.isShowListAddMultiple = false
     },
     handleContextMenu(event) {
-      if (!event.target.classList.contains('select')) return
+      const selection = window.getSelection();
+      if (!event.target.classList.contains("select") ||
+        !selection.toString()) {
+        return;
+      }
       event.stopImmediatePropagation()
       let classList = this.$refs.dom_scrollContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
-        let str = window.getSelection().toString()
+        let str = selection.toString()
         classList.remove(this.$style.copying)
         str = str.trim()
         if (!str.length) return
