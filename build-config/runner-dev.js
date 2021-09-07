@@ -16,7 +16,8 @@ const rendererLyricConfig = require('./renderer-lyric/webpack.config.dev')
 
 let electronProcess = null
 let manualRestart = false
-let hotMiddleware
+let hotMiddlewareRenderer
+let hotMiddlewareRendererLyric
 
 
 function startRenderer() {
@@ -24,7 +25,7 @@ function startRenderer() {
     // rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
     // rendererConfig.mode = 'development'
     const compiler = webpack(rendererConfig)
-    hotMiddleware = webpackHotMiddleware(compiler, {
+    hotMiddlewareRenderer = webpackHotMiddleware(compiler, {
       log: false,
       heartbeat: 2500,
     })
@@ -32,15 +33,15 @@ function startRenderer() {
     compiler.hooks.compilation.tap('compilation', compilation => {
       // console.log(Object.keys(compilation.hooks))
       HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
+        hotMiddlewareRenderer.publish({ action: 'reload' })
         cb()
       })
     })
 
-    compiler.hooks.done.tap('done', stats => {
-      // logStats('Renderer', 'Compile done')
-      // logStats('Renderer', stats)
-    })
+    // compiler.hooks.done.tap('done', stats => {
+    //   // logStats('Renderer', 'Compile done')
+    //   // logStats('Renderer', stats)
+    // })
 
     const server = new WebpackDevServer(
       compiler,
@@ -54,7 +55,7 @@ function startRenderer() {
           errors: true,
         },
         before(app, ctx) {
-          app.use(hotMiddleware)
+          app.use(hotMiddlewareRenderer)
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
@@ -71,7 +72,7 @@ function startRendererLyric() {
     // rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
     // rendererConfig.mode = 'development'
     const compiler = webpack(rendererLyricConfig)
-    hotMiddleware = webpackHotMiddleware(compiler, {
+    hotMiddlewareRendererLyric = webpackHotMiddleware(compiler, {
       log: false,
       heartbeat: 2500,
     })
@@ -79,15 +80,15 @@ function startRendererLyric() {
     compiler.hooks.compilation.tap('compilation', compilation => {
       // console.log(Object.keys(compilation.hooks))
       HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
+        hotMiddlewareRendererLyric.publish({ action: 'reload' })
         cb()
       })
     })
 
-    compiler.hooks.done.tap('done', stats => {
-      // logStats('Renderer', 'Compile done')
-      // logStats('Renderer', stats)
-    })
+    // compiler.hooks.done.tap('done', stats => {
+    //   // logStats('Renderer', 'Compile done')
+    //   // logStats('Renderer', stats)
+    // })
 
     const server = new WebpackDevServer(
       compiler,
@@ -101,7 +102,7 @@ function startRendererLyric() {
           errors: true,
         },
         before(app, ctx) {
-          app.use(hotMiddleware)
+          app.use(hotMiddlewareRendererLyric)
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
@@ -120,7 +121,8 @@ function startMain() {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      hotMiddleware.publish({ action: 'compiling' })
+      hotMiddlewareRenderer.publish({ action: 'compiling' })
+      hotMiddlewareRendererLyric.publish({ action: 'compiling' })
       done()
     })
 

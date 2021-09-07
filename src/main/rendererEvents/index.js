@@ -19,6 +19,7 @@ require('./playList')
 require('./data')
 require('./lyric')
 require('./musicUrl')
+require('./systemFonts')
 
 require('./kw_decodeLyric')
 

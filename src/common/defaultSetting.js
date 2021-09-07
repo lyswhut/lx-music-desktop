@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.43',
+  version: '1.0.45',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -26,6 +26,7 @@ const defaultSetting = {
     theme: 0,
     isLockScreen: true,
     style: {
+      font: '',
       fontSize: 120,
       opacity: 95,
       isZoomActiveLrc: true,
@@ -44,6 +45,7 @@ const defaultSetting = {
     fileName: '歌名 - 歌手',
     maxDownloadNum: 3,
     isDownloadLrc: false,
+    lrcFormat: 'utf8',
     isEmbedPic: true,
     isEmbedLyric: false,
     isUseOtherSource: false,

@@ -39,6 +39,7 @@ export default {
         y: -1,
         theme: 0,
         style: {
+          font: '',
           fontSize: 125,
           opacity: 80,
           isZoomActiveLrc: true,

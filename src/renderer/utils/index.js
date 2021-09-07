@@ -3,6 +3,7 @@ import path from 'path'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
+import iconv from 'iconv-lite'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -276,11 +277,22 @@ export const setMeta = (filePath, meta) => {
  * 保存歌词文件
  * @param {*} filePath
  * @param {*} lrc
+ * @param {*} format
  */
-export const saveLrc = (filePath, lrc) => {
-  fs.writeFile(filePath, lrc, 'utf8', err => {
-    if (err) console.log(err)
-  })
+export const saveLrc = (filePath, lrc, format) => {
+  switch (format) {
+    case 'gbk':
+      fs.writeFile(filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), err => {
+        if (err) console.log(err)
+      })
+      break
+    case 'utf8':
+    default:
+      fs.writeFile(filePath, lrc, 'utf8', err => {
+        if (err) console.log(err)
+      })
+      break
+  }
 }
 
 /**

@@ -91,6 +91,10 @@ div(:class="$style.main")
           material-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="current_setting.desktopLyric.isAlwaysOnTop" :label="$t('view.setting.desktop_lyric_always_on_top')")
         div(:class="$style.gapTop")
           material-checkbox(id="setting_desktop_lyric_lockScreen" v-model="current_setting.desktopLyric.isLockScreen" :label="$t('view.setting.desktop_lyric_lock_screen')")
+      dd
+        h3#desktop_lyric_font {{$t('view.setting.desktop_lyric_font')}}
+        div
+          material-selection(:list="fontList" :class="$style.gapLeft" v-model="current_setting.desktopLyric.style.font" item-key="id" item-name="label")
 
       dt#search {{$t('view.setting.search')}}
       dd
@@ -130,7 +134,7 @@ div(:class="$style.main")
           p
             material-btn(:class="$style.btn" min @click="handleChangeSavePath") {{$t('view.setting.download_path_change_btn')}}
       dd
-        h3#download_name {{$t('view.setting.download_use_other_source')}}
+        h3#download_use_other_source {{$t('view.setting.download_use_other_source')}}
         div
           material-checkbox(id="setting_download_isUseOtherSource" v-model="current_setting.download.isUseOtherSource" :label="$t('view.setting.is_enable')")
         div
@@ -149,6 +153,11 @@ div(:class="$style.main")
         h3#download_lyric {{$t('view.setting.download_lyric')}}
         div
           material-checkbox(id="setting_download_isDownloadLrc" v-model="current_setting.download.isDownloadLrc" :label="$t('view.setting.is_enable')")
+      dd
+        h3#download_lyric {{$t('view.setting.download_lyric_format')}}
+        div
+          material-checkbox(v-for="item in lrcFormatList" :key="item.id" :class="$style.gapLeft" :id="`setting_download_lrcFormat_${item.id}`"
+            name="setting_basic_control_btn_position" need v-model="current_setting.download.lrcFormat" :value="item.id" :label="item.name")
 
       dt#sync {{$t('view.setting.sync')}}
       dd
@@ -277,6 +286,17 @@ div(:class="$style.main")
           strong (为免满人，无事勿加，入群先看群公告)
           | ，或到 GitHub 提交&nbsp;
           span.hover.underline(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
+
+        br
+        p.small
+          | 如果你喜欢并经常使用洛雪音乐，并想要第一时间尝鲜洛雪的新功能&nbsp;
+          span(style="text-decoration: line-through;") （当小白鼠）
+          | ，
+        p
+          | 可以加入测试企鹅群&nbsp;
+          span.hover(:tips="$t('view.setting.click_open')" @click="handleOpenUrl('https://qm.qq.com/cgi-bin/qm/qr?k=zR6aYosQoKb07g4FGFZdO9n9zL1dhFpE&jump_from=webapi')") 768786588
+          | &nbsp;，注意：测试版的功可能会不稳定，
+          strong 打算潜水的勿加
 
         br
         p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
@@ -413,6 +433,18 @@ export default {
         },
       ]
     },
+    lrcFormatList() {
+      return [
+        {
+          name: this.$t('view.setting.download_lyric_format_utf8'),
+          id: 'utf8',
+        },
+        {
+          name: this.$t('view.setting.download_lyric_format_gbk'),
+          id: 'gbk',
+        },
+      ]
+    },
     trayThemeList() {
       return [
         {
@@ -440,6 +472,9 @@ export default {
         ? this.sync.status.devices.map(d => `${d.deviceName} (${d.clientId.substring(0, 5)})`).join(', ')
         : ''
     },
+    fontList() {
+      return [{ id: '', label: this.$t('view.setting.desktop_lyric_font_default') }, ...this.systemFontList]
+    },
   },
   data() {
     return {
@@ -461,6 +496,7 @@ export default {
           y: -1,
           theme: '',
           style: {
+            font: '',
             fontSize: 125,
             opacity: 80,
             isZoomActiveLrc: true,
@@ -483,6 +519,7 @@ export default {
           savePath: '',
           fileName: '歌名 - 歌手',
           isDownloadLrc: false,
+          lrcFormat: 'utf8',
           isEmbedPic: true,
           isEmbedLyric: true,
         },
@@ -651,6 +688,7 @@ export default {
           devices: [],
         },
       },
+      systemFontList: [],
     }
   },
   watch: {
@@ -724,6 +762,7 @@ export default {
       if (!window.currentWindowSizeId) window.currentWindowSizeId = this.setting.windowSizeId
       // this.initTOC()
       this.getCacheSize()
+      this.getSystemFonts()
       this.getMediaDevice()
       this.current_hot_key = window.appHotKeyConfig
       this.initHotKeyConfig()
@@ -1231,6 +1270,13 @@ export default {
     },
     handleRefreshSyncCode() {
       rendererInvoke(NAMES.mainWindow.sync_generate_code)
+    },
+    getSystemFonts() {
+      rendererInvoke(NAMES.mainWindow.get_system_fonts).then(fonts => {
+        this.systemFontList = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
+      }).catch(() => {
+        this.systemFontList = []
+      })
     },
   },
 }

@@ -307,7 +307,7 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
  * @param {*} downloadInfo
  * @param {*} filePath
  */
-const downloadLyric = (downloadInfo, filePath) => {
+const downloadLyric = (downloadInfo, filePath, lrcFormat) => {
   const promise = getLyric(downloadInfo.musicInfo).then(lrcInfo => {
     return lrcInfo.lyric
       ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
@@ -319,7 +319,7 @@ const downloadLyric = (downloadInfo, filePath) => {
   promise.then(lrcs => {
     if (lrcs.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
-      saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric)
+      saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric, lrcFormat)
     }
   })
 }
@@ -436,7 +436,7 @@ const actions = {
         dispatch('startTask')
 
         saveMeta.call(_this, downloadInfo, downloadInfo.filePath, rootState.setting.download.isUseOtherSource, rootState.setting.download.isEmbedPic, rootState.setting.download.isEmbedLyric)
-        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, downloadInfo.filePath)
+        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, downloadInfo.filePath, rootState.setting.download.lrcFormat)
         console.log('on complate')
       },
       onError(err) {

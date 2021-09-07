@@ -45,6 +45,10 @@ module.exports = {
         enforce: 'pre',
       },
       {
+        test: /\.node$/,
+        use: 'node-loader',
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig,
@@ -69,15 +73,6 @@ module.exports = {
                 new CleanCSSPlugin({ advanced: true }),
               ],
             },
-          },
-        }),
-      },
-      {
-        test: /\.styl(:?us)?$/,
-        oneOf: mergeCSSLoader({
-          loader: 'stylus-loader',
-          options: {
-            sourceMap: true,
           },
         }),
       },
