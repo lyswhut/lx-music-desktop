@@ -45,7 +45,7 @@ export default {
       ids.add(item.id)
       const types = []
       const _types = {}
-      item.rateFormats && item.rateFormats.forEach(type => {
+      item.newRateFormats && item.newRateFormats.forEach(type => {
         let size
         switch (type.formatType) {
           case 'PQ':
