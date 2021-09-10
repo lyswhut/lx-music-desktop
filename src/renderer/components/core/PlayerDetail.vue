@@ -282,7 +282,7 @@ export default {
     setProgress(event) {
       this.$emit('action', {
         type: 'progress',
-        data: event,
+        data: event.offsetX / this.pregessWidth,
       })
     },
     setProgressWidth() {

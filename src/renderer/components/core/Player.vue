@@ -849,7 +849,7 @@ export default {
           this.playNext()
           break
         case 'progress':
-          this.handleSetProgress(data)
+          this.setProgress(data * this.maxPlayTime)
           break
         case 'volume':
           break
