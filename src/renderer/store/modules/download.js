@@ -12,6 +12,7 @@ import {
   setMusicUrl,
   assertApiSupport,
 } from '../../utils'
+import { NAMES, rendererInvoke } from '@common/ipc'
 
 window.downloadList = []
 // state
@@ -224,7 +225,8 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
     })
   })
 }
-const getLyric = function(musicInfo, retryedSource = [], originMusic) {
+
+const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
   let reqPromise
   try {
@@ -244,6 +246,33 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
         }
       }
       return Promise.reject(err)
+    })
+  })
+}
+
+const getLyric = function(musicInfo, isUseOtherSource) {
+  return getLyricFromStorage(musicInfo).then(lrcInfo => {
+    return (
+      lrcInfo.lyric
+        ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
+        : (
+            isUseOtherSource
+              ? handleGetLyric.call(this, musicInfo)
+              : music[musicInfo.source].getLyric(musicInfo).promise
+          ).then(({ lyric, tlyric, lxlyric }) => {
+            setLyric(musicInfo, { lyric, tlyric, lxlyric })
+            return { lyric, tlyric, lxlyric }
+          }).catch(err => {
+            console.log(err)
+            return null
+          })
+    ).then(lrcs => {
+      if (!lrcs) return lrcs
+      if (global.i18n.locale != 'zh-tw') return lrcs
+      return rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(lrcs.lyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString()).then(lyric => {
+        lrcs.lyric = lyric
+        return lrcs
+      })
     })
   })
 }
@@ -273,21 +302,7 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
           })
       : Promise.resolve(),
     isEmbedLyric
-      ? getLyricFromStorage(downloadInfo.musicInfo).then(lrcInfo => {
-        return lrcInfo.lyric
-          ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
-          : (
-              isUseOtherSource
-                ? getLyric.call(this, downloadInfo.musicInfo)
-                : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise
-            ).then(({ lyric, tlyric, lxlyric }) => {
-              setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
-              return { lyric, tlyric, lxlyric }
-            }).catch(err => {
-              console.log(err)
-              return null
-            })
-      })
+      ? getLyric.call(this, downloadInfo.musicInfo, isUseOtherSource)
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
@@ -307,17 +322,9 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
  * @param {*} downloadInfo
  * @param {*} filePath
  */
-const downloadLyric = (downloadInfo, filePath, lrcFormat) => {
-  const promise = getLyric(downloadInfo.musicInfo).then(lrcInfo => {
-    return lrcInfo.lyric
-      ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
-      : music[downloadInfo.musicInfo.source].getLyric(downloadInfo.musicInfo).promise.then(({ lyric, tlyric, lxlyric }) => {
-        setLyric(downloadInfo.musicInfo, { lyric, tlyric, lxlyric })
-        return { lyric, tlyric, lxlyric }
-      })
-  })
-  promise.then(lrcs => {
-    if (lrcs.lyric) {
+const downloadLyric = function(downloadInfo, isUseOtherSource, filePath, lrcFormat) {
+  getLyric.call(this, downloadInfo.musicInfo, isUseOtherSource).then(lrcs => {
+    if (lrcs?.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
       saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric, lrcFormat)
     }
@@ -436,7 +443,7 @@ const actions = {
         dispatch('startTask')
 
         saveMeta.call(_this, downloadInfo, downloadInfo.filePath, rootState.setting.download.isUseOtherSource, rootState.setting.download.isEmbedPic, rootState.setting.download.isEmbedLyric)
-        if (rootState.setting.download.isDownloadLrc) downloadLyric(downloadInfo, downloadInfo.filePath, rootState.setting.download.lrcFormat)
+        if (rootState.setting.download.isDownloadLrc) downloadLyric.call(_this, downloadInfo, rootState.setting.download.isUseOtherSource, downloadInfo.filePath, rootState.setting.download.lrcFormat)
         console.log('on complate')
       },
       onError(err) {

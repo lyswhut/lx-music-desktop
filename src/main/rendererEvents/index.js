@@ -25,3 +25,5 @@ require('./kw_decodeLyric')
 
 require('./userApi')
 require('./sync')
+require('./s2t')
+
