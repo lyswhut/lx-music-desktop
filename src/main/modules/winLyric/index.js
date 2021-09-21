@@ -66,6 +66,9 @@ const winEvent = lyricWindow => {
     if (global.appSetting.desktopLyric.isLock) {
       global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
     }
+    if (global.appSetting.desktopLyric.isAlwaysOnTop) {
+      global.modules.lyricWindow.setAlwaysOnTop(global.appSetting.desktopLyric.isAlwaysOnTop, 'screen-saver')
+    }
   })
 }
 
