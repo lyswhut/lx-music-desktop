@@ -1,7 +1,7 @@
 const path = require('path')
 const { BrowserWindow } = require('electron')
 const { winLyric: WIN_LYRIC_EVENT_NAME } = require('../../events/_name')
-const { debounce } = require('../../../common/utils')
+const { debounce, isLinux } = require('../../../common/utils')
 const { getLyricWindowBounds } = require('./utils')
 
 require('./event')
@@ -66,7 +66,8 @@ const winEvent = lyricWindow => {
     if (global.appSetting.desktopLyric.isLock) {
       global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
     }
-    if (global.appSetting.desktopLyric.isAlwaysOnTop) {
+    // linux下每次重开时貌似要重新设置置顶
+    if (isLinux && global.appSetting.desktopLyric.isAlwaysOnTop) {
       global.modules.lyricWindow.setAlwaysOnTop(global.appSetting.desktopLyric.isAlwaysOnTop, 'screen-saver')
     }
   })
