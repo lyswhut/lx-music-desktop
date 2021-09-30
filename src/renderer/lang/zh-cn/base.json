@@ -1,5 +1,7 @@
 {
-  "date_format_second": "{num}秒前",
+  "cancel_button_text": "我不",
+  "confirm_button_text": "好的",
+  "date_format_hour": "{num}小时前",
   "date_format_minute": "{num}分钟前",
-  "date_format_hour": "{num}小时前"
+  "date_format_second": "{num}秒前"
 }

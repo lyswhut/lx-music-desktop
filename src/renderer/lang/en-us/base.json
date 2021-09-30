@@ -1,5 +1,7 @@
 {
-  "date_format_second": "{num} seconds ago",
+  "cancel_button_text": "Cancel",
+  "confirm_button_text": "OK",
+  "date_format_hour": "{num} hours ago",
   "date_format_minute": "{num} minutes ago",
-  "date_format_hour": "{num} hours ago"
+  "date_format_second": "{num} seconds ago"
 }

@@ -11,6 +11,7 @@ import {
   getMusicUrl as getMusicUrlFormStorage,
   setMusicUrl,
   assertApiSupport,
+  filterFileName,
 } from '../../utils'
 import { NAMES, rendererInvoke } from '@common/ipc'
 
@@ -33,7 +34,6 @@ const dls = {}
 const tryNum = {}
 let isRuningActionTask = false
 
-const filterFileName = /[\\/:*?#"<>|]/g
 
 // getters
 const getters = {
@@ -378,9 +378,9 @@ const actions = {
       statusText: '待下载',
       url: null,
       // songmid: musicInfo.songmid,
-      fileName: `${rootState.setting.download.fileName
+      fileName: filterFileName(`${rootState.setting.download.fileName
         .replace('歌名', musicInfo.name)
-        .replace('歌手', musicInfo.singer)}.${ext}`.replace(filterFileName, ''),
+        .replace('歌手', musicInfo.singer)}.${ext}`),
       progress: {
         downloaded: 0,
         total: 0,
