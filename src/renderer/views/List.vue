@@ -197,6 +197,11 @@ export default {
           disabled: !this.listsData.itemMenuControl.rename,
         },
         {
+          name: this.$t('view.list.lists_sync'),
+          action: 'sync',
+          disabled: !this.listsData.itemMenuControl.sync,
+        },
+        {
           name: this.$t('view.list.lists_import'),
           action: 'import',
           disabled: !this.listsData.itemMenuControl.export,
@@ -205,11 +210,6 @@ export default {
           name: this.$t('view.list.lists_export'),
           action: 'export',
           disabled: !this.listsData.itemMenuControl.export,
-        },
-        {
-          name: this.$t('view.list.lists_sync'),
-          action: 'sync',
-          disabled: !this.listsData.itemMenuControl.sync,
         },
         {
           name: this.$t('view.list.lists_moveup'),
