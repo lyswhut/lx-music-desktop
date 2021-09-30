@@ -24,6 +24,8 @@
   "lists_new_list_btn": "新建列表",
   "lists_new_list_input": "新列表...",
   "lists_remove": "刪除",
+  "lists_remove_tip": "你真的想要移除 {name} 嗎？",
+  "lists_remove_tip_button": "是的 沒錯",
   "lists_rename": "重命名",
   "lists_sync": "更新",
   "loding_list": "加載中...",

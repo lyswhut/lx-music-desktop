@@ -24,6 +24,8 @@
   "lists_new_list_btn": "Create list",
   "lists_new_list_input": "New list...",
   "lists_remove": "Remove",
+  "lists_remove_tip": "Do you really want to remove {name}?",
+  "lists_remove_tip_button": "Yes, that's right",
   "lists_rename": "Rename",
   "lists_sync": "Update",
   "loding_list": "Loading...",

@@ -55,10 +55,11 @@ export default {
 
 .main {
   flex: auto;
-  min-height: 50px;
+  min-height: 40px;
   padding: 15px;
   font-size: 14px;
   max-width: 320px;
+  min-width: 220px;
   line-height: 1.5;
 }
 

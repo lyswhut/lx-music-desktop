@@ -41,7 +41,11 @@ const dialog = {
         }
       })
     }
-    dialog.confirm = options => dialog({ ...options, showCancel: true })
+    dialog.confirm = options => dialog(
+      typeof options == 'string'
+        ? { message: options, showCancel: true }
+        : { ...options, showCancel: true },
+    )
 
     Vue.prototype.$dialog = dialog
   },

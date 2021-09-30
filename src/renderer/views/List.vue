@@ -818,7 +818,13 @@ export default {
           this.movedownUserList({ id: this.userList[index].id })
           break
         case 'remove':
-          this.removeUserList({ id: this.userList[index].id })
+          this.$dialog.confirm({
+            message: this.$t('view.list.lists_remove_tip', { name: this.userList[index].name }),
+            confirmButtonText: this.$t('view.list.lists_remove_tip_button'),
+          }).then(isRemove => {
+            if (!isRemove) return
+            this.removeUserList({ id: this.userList[index].id })
+          })
           break
       }
     },
