@@ -27,17 +27,28 @@
             p(v-if="musicInfo.album") {{$t('core.player.album')}}{{musicInfo.album}}
 
       div(:class="$style.right")
-        div(:class="[$style.lyric, lyricEvent.isMsDown ? $style.draging : null]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
+        div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
           div(:class="$style.lyricSpace")
           div(:class="[$style.lyricText]" ref="dom_lyric_text")
           //- p(v-for="(info, index) in lyricLines" :key="index" :class="lyric.line == index ? $style.lrcActive : null") {{info.text}}
           div(:class="$style.lyricSpace")
+        transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
+          div(:class="[$style.lyricSelectContent, 'select', 'scroll']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText")
+            //- div(:class="$style.lyricSpace")
+            div(v-for="(info, index) in lyricLines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]")
+              span {{info.text}}
+              br(v-if="info.translation")
+              span(:class="$style.lyricSelectlineTransition") {{info.translation}}
+            //- div(:class="$style.lyricSpace")
 
       material-music-comment(:class="$style.comment" :titleFormat="this.setting.download.fileName" :musicInfo="musicInfo" v-model="isShowComment")
 
     div(:class="$style.footer")
       div(:class="$style.footerLeft")
         div(:class="$style.footerLeftControlBtns")
+          div(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="isShowLrcSelectContent = !isShowLrcSelectContent" :tips="$t('core.player.lyric_select')")
+            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
+              use(xlink:href='#icon-text')
           div(:class="[$style.footerLeftControlBtn, isShowComment ? $style.active : null]" @click="isShowComment = !isShowComment" :tips="$t('core.player.comment_show')")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
               use(xlink:href='#icon-comment')
@@ -87,7 +98,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { base as eventBaseName } from '../../event/names'
-import { scrollTo } from '../../utils'
+import { clipboardWriteText, scrollTo } from '../../utils'
 
 let cancelScrollFn = null
 
@@ -230,23 +241,22 @@ export default {
       lyricLines: [],
       isSetedLines: false,
       isShowComment: false,
+      isShowLrcSelectContent: false,
     }
   },
   mounted() {
     this.$nextTick(() => {
       this.setProgressWidth()
     })
-    document.addEventListener('mousemove', this.handleMouseMsMove)
-    document.addEventListener('mouseup', this.handleMouseMsUp)
-    window.addEventListener('resize', this.handleResize)
+    this.listenEvent()
+
     // console.log('object', this.$refs.dom_lyric_text)
     this.setLyric(this.lyricLines)
   },
   beforeDestroy() {
+    this.unlistenEvent()
+
     this.clearLyricScrollTimeout()
-    document.removeEventListener('mousemove', this.handleMouseMsMove)
-    document.removeEventListener('mouseup', this.handleMouseMsUp)
-    window.removeEventListener('resize', this.handleResize)
   },
   computed: {
     ...mapGetters(['setting']),
@@ -256,6 +266,16 @@ export default {
     ...mapMutations('player', [
       'visiblePlayerDetail',
     ]),
+    listenEvent() {
+      document.addEventListener('mousemove', this.handleMouseMsMove)
+      document.addEventListener('mouseup', this.handleMouseMsUp)
+      window.addEventListener('resize', this.handleResize)
+    },
+    unlistenEvent() {
+      document.removeEventListener('mousemove', this.handleMouseMsMove)
+      document.removeEventListener('mouseup', this.handleMouseMsUp)
+      window.removeEventListener('resize', this.handleResize)
+    },
     setLyric(lines) {
       const dom_lines = document.createDocumentFragment()
       for (const line of lines) {
@@ -358,6 +378,12 @@ export default {
     },
     close() {
       window.eventHub.$emit(eventBaseName.close)
+    },
+    handleCopySelectText() {
+      let str = window.getSelection().toString()
+      str = str.trim()
+      if (!str.length) return
+      clipboardWriteText(str)
     },
   },
 }
@@ -635,13 +661,40 @@ export default {
   //   transition: @transition-theme !important;
   //   transition-property: color, font-size;
   // }
+  // .lrc-active {
+  //   color: @color-theme;
+  //   font-size: 1.2em;
+  // }
 }
+.lyricSelectContent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  // text-align: center;
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+  background-color: @color-theme_2-background_1;
+  z-index: 10;
+  color: @color-player-detail-lyric;
+
+  .lyricSelectline {
+    padding: 8px 0;
+    overflow-wrap: break-word;
+    transition: @transition-theme !important;
+    transition-property: color, font-size;
+    line-height: 1.3;
+  }
+  .lyricSelectlineTransition {
+    font-size: 14px;
+  }
+  .lrc-active {
+    color: @color-theme;
+  }
+}
+
 .lyric-space {
   height: 70%;
-}
-.lrc-active {
-  color: @color-theme;
-  font-size: 1.2em;
 }
 
 .comment {
@@ -853,6 +906,13 @@ each(@themes, {
     // .lrc-active {
     //   color: ~'@{color-@{value}-theme}';
     // }
+    .lyricSelectContent {
+      background-color: ~'@{color-@{value}-theme_2-background_1}';
+      color: ~'@{color-@{value}-player-detail-lyric}';
+      .lrc-active {
+        color: ~'@{color-@{value}-theme}';
+      }
+    }
     .footerLeftControlBtns {
       color: ~'@{color-@{value}-theme_2-font}';
     }
