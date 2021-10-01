@@ -70,8 +70,9 @@ export default {
       const listMap = new Map()
       const duplicateList = []
       this.listInfo.list.forEach((musicInfo, index) => {
-        if (listMap.has(musicInfo.name)) {
-          const targetMusicInfo = listMap.get(musicInfo.name)
+        const musicInfoName = musicInfo.name.toLowerCase().trim()
+        if (listMap.has(musicInfoName)) {
+          const targetMusicInfo = listMap.get(musicInfoName)
           duplicateList.push({
             index: this.listInfo.list.indexOf(targetMusicInfo),
             musicInfo: targetMusicInfo,
@@ -80,7 +81,7 @@ export default {
             musicInfo,
           })
         } else {
-          listMap.set(musicInfo.name, musicInfo)
+          listMap.set(musicInfoName, musicInfo)
         }
       })
 
