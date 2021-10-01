@@ -74,6 +74,7 @@
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
     material-search-list(:list="list" @action="handleMusicSearchAction" :visible="isVisibleMusicSearch")
     material-list-sort-modal(:show="isShowListSortModal" :music-info="musicInfo" :selected-num="selectdListDetailData.length" @close="isShowListSortModal = false" @confirm="handleSortMusicInfo")
+    material-duplicate-music-modal(:visible.sync="isShowDuplicateMusicModal" :list-info="selectedListInfo")
 </template>
 
 <script>
@@ -97,6 +98,7 @@ export default {
       isShowListAdd: false,
       isShowListAddMultiple: false,
       isShowListSortModal: false,
+      isShowDuplicateMusicModal: false,
       delayTimeout: null,
       isToggleList: true,
       focusTarget: 'listDetail',
@@ -109,6 +111,7 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           rename: true,
+          duplicate: true,
           import: true,
           export: true,
           sync: false,
@@ -147,6 +150,7 @@ export default {
       isMoveMultiple: false,
       isVisibleMusicSearch: false,
       fetchingListStatus: {},
+      selectedListInfo: {},
     }
   },
   computed: {
@@ -200,6 +204,11 @@ export default {
           name: this.$t('view.list.lists_sync'),
           action: 'sync',
           disabled: !this.listsData.itemMenuControl.sync,
+        },
+        {
+          name: this.$t('view.list.lists_duplicate'),
+          action: 'duplicate',
+          disabled: !this.listsData.itemMenuControl.duplicate,
         },
         {
           name: this.$t('view.list.lists_import'),
@@ -802,6 +811,10 @@ export default {
             dom.querySelector('input').focus()
           })
           break
+        case 'duplicate':
+          this.selectedListInfo = this.getTargetListInfo(index)
+          this.isShowDuplicateMusicModal = true
+          break
         case 'import':
           this.handleImportList(index)
           break
@@ -989,7 +1002,7 @@ export default {
         },
       })
     },
-    handleExportList(index) {
+    getTargetListInfo(index) {
       let list
       switch (index) {
         case -2:
@@ -1002,6 +1015,10 @@ export default {
           list = this.userList[index]
           break
       }
+      return list
+    },
+    handleExportList(index) {
+      const list = this.getTargetListInfo(index)
       if (!list) return
       openSaveDir({
         title: this.$t('view.list.lists_export_part_desc'),
@@ -1020,19 +1037,7 @@ export default {
       })
     },
     handleImportList(index) {
-      let list
-      switch (index) {
-        case -2:
-          list = this.defaultList
-          break
-        case -1:
-          list = this.loveList
-          break
-        default:
-          list = this.userList[index]
-          break
-      }
-      if (!list) return
+      const list = this.getTargetListInfo(index)
 
       selectDir({
         title: this.$t('view.list.lists_import_part_desc'),
