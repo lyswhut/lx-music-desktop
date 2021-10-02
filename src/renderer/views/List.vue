@@ -7,9 +7,13 @@
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='70%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-list-add')
       ul.scroll(:class="$style.listsContent" ref="dom_lists_list")
-        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :tips="defaultList.name" @click="handleListToggle(defaultList.id)")
+        li(:class="[$style.listsItem, defaultList.id == listId ? $style.active : null]" :tips="defaultList.name"
+          @contextmenu="handleListsItemRigthClick($event, -2)"
+          @click="handleListToggle(defaultList.id)")
           span(:class="$style.listsLabel") {{defaultList.name}}
-        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :tips="loveList.name" @click="handleListToggle(loveList.id)")
+        li(:class="[$style.listsItem, loveList.id == listId ? $style.active : null]" :tips="loveList.name"
+          @contextmenu="handleListsItemRigthClick($event, -1)"
+          @click="handleListToggle(loveList.id)")
           span(:class="$style.listsLabel") {{loveList.name}}
         li.user-list(
           :class="[$style.listsItem, item.id == listId ? $style.active : null, listsData.rightClickItemIndex == index ? $style.clicked : null, fetchingListStatus[item.id] ? $style.fetching : null]"
@@ -70,11 +74,12 @@
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
     material-search-list(:list="list" @action="handleMusicSearchAction" :visible="isVisibleMusicSearch")
     material-list-sort-modal(:show="isShowListSortModal" :music-info="musicInfo" :selected-num="selectdListDetailData.length" @close="isShowListSortModal = false" @confirm="handleSortMusicInfo")
+    material-duplicate-music-modal(:visible.sync="isShowDuplicateMusicModal" :list-info="selectedListInfo")
 </template>
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, scrollTo, clipboardWriteText, assertApiSupport, openUrl } from '../utils'
+import { throttle, scrollTo, clipboardWriteText, assertApiSupport, openUrl, openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '../utils'
 import musicSdk from '../utils/music'
 export default {
   name: 'List',
@@ -93,6 +98,7 @@ export default {
       isShowListAdd: false,
       isShowListAddMultiple: false,
       isShowListSortModal: false,
+      isShowDuplicateMusicModal: false,
       delayTimeout: null,
       isToggleList: true,
       focusTarget: 'listDetail',
@@ -105,6 +111,9 @@ export default {
         isShowItemMenu: false,
         itemMenuControl: {
           rename: true,
+          duplicate: true,
+          import: true,
+          export: true,
           sync: false,
           moveup: true,
           movedown: true,
@@ -141,6 +150,7 @@ export default {
       isMoveMultiple: false,
       isVisibleMusicSearch: false,
       fetchingListStatus: {},
+      selectedListInfo: {},
     }
   },
   computed: {
@@ -194,6 +204,21 @@ export default {
           name: this.$t('view.list.lists_sync'),
           action: 'sync',
           disabled: !this.listsData.itemMenuControl.sync,
+        },
+        {
+          name: this.$t('view.list.lists_duplicate'),
+          action: 'duplicate',
+          disabled: !this.listsData.itemMenuControl.duplicate,
+        },
+        {
+          name: this.$t('view.list.lists_import'),
+          action: 'import',
+          disabled: !this.listsData.itemMenuControl.export,
+        },
+        {
+          name: this.$t('view.list.lists_export'),
+          action: 'export',
+          disabled: !this.listsData.itemMenuControl.export,
         },
         {
           name: this.$t('view.list.lists_moveup'),
@@ -722,10 +747,25 @@ export default {
       }).catch(_ => _)
     },
     handleListsItemRigthClick(event, index) {
-      const source = this.userList[index].source
-      this.listsData.itemMenuControl.sync = !!source && !!musicSdk[source].songList
-      this.listsData.itemMenuControl.moveup = index > 0
-      this.listsData.itemMenuControl.movedown = index < this.userList.length - 1
+      let source
+      switch (index) {
+        case -1:
+        case -2:
+          this.listsData.itemMenuControl.rename = false
+          this.listsData.itemMenuControl.remove = false
+          this.listsData.itemMenuControl.sync = false
+          this.listsData.itemMenuControl.moveup = false
+          this.listsData.itemMenuControl.movedown = false
+          break
+        default:
+          this.listsData.itemMenuControl.rename = true
+          this.listsData.itemMenuControl.remove = true
+          source = this.userList[index].source
+          this.listsData.itemMenuControl.sync = !!source && !!musicSdk[source]?.songList
+          this.listsData.itemMenuControl.moveup = index > 0
+          this.listsData.itemMenuControl.movedown = index < this.userList.length - 1
+          break
+      }
       this.listsData.rightClickItemIndex = index
       this.listsData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
       this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
@@ -771,6 +811,16 @@ export default {
             dom.querySelector('input').focus()
           })
           break
+        case 'duplicate':
+          this.selectedListInfo = this.getTargetListInfo(index)
+          this.isShowDuplicateMusicModal = true
+          break
+        case 'import':
+          this.handleImportList(index)
+          break
+        case 'export':
+          this.handleExportList(index)
+          break
         case 'sync':
           this.handleSyncSourceList(index)
           break
@@ -781,7 +831,13 @@ export default {
           this.movedownUserList({ id: this.userList[index].id })
           break
         case 'remove':
-          this.removeUserList({ id: this.userList[index].id })
+          this.$dialog.confirm({
+            message: this.$t('view.list.lists_remove_tip', { name: this.userList[index].name }),
+            confirmButtonText: this.$t('view.list.lists_remove_tip_button'),
+          }).then(isRemove => {
+            if (!isRemove) return
+            this.removeUserList({ id: this.userList[index].id })
+          })
           break
       }
     },
@@ -944,6 +1000,89 @@ export default {
         query: {
           text: `${musicInfo.name} ${musicInfo.singer}`,
         },
+      })
+    },
+    getTargetListInfo(index) {
+      let list
+      switch (index) {
+        case -2:
+          list = this.defaultList
+          break
+        case -1:
+          list = this.loveList
+          break
+        default:
+          list = this.userList[index]
+          break
+      }
+      return list
+    },
+    handleExportList(index) {
+      const list = this.getTargetListInfo(index)
+      if (!list) return
+      openSaveDir({
+        title: this.$t('view.list.lists_export_part_desc'),
+        defaultPath: `lx_list_part_${filterFileName(list.name)}.lxmc`,
+      }).then(async result => {
+        if (result.canceled) return
+        const data = JSON.parse(JSON.stringify({
+          type: 'playListPart',
+          data: list,
+        }))
+        for await (const item of data.data.list) {
+          if (item.otherSource) delete item.otherSource
+          if (item.lrc) delete item.lrc
+        }
+        saveLxConfigFile(result.filePath, data)
+      })
+    },
+    handleImportList(index) {
+      const list = this.getTargetListInfo(index)
+
+      selectDir({
+        title: this.$t('view.list.lists_import_part_desc'),
+        properties: ['openFile'],
+        filters: [
+          { name: 'Play List Part', extensions: ['json', 'lxmc'] },
+          { name: 'All Files', extensions: ['*'] },
+        ],
+      }).then(async result => {
+        if (result.canceled) return
+        let listData
+        try {
+          listData = JSON.parse(await readLxConfigFile(result.filePaths[0]))
+        } catch (error) {
+          return
+        }
+        if (listData.type !== 'playListPart') return
+        const targetList = this.lists.find(l => l.id == listData.data.id)
+        if (targetList) {
+          const confirm = await this.$dialog.confirm({
+            message: this.$t('view.list.lists_import_part_confirm', { importName: listData.data.name, localName: targetList.name }),
+            cancelButtonText: this.$t('view.list.lists_import_part_button_cancel'),
+            confirmButtonText: this.$t('view.list.lists_import_part_button_confirm'),
+          })
+          if (confirm) {
+            listData.data.name = list.name
+            this.setList({
+              name: listData.data.name,
+              id: listData.data.id,
+              list: listData.data.list,
+              source: listData.data.source,
+              sourceListId: listData.data.sourceListId,
+            })
+            return
+          }
+          listData.data.id += `__${Date.now()}`
+        }
+        this.createUserList({
+          name: listData.data.name,
+          id: listData.data.id,
+          list: listData.data.list,
+          source: listData.data.source,
+          sourceListId: listData.data.sourceListId,
+          position: Math.max(index, -1),
+        })
       })
     },
   },

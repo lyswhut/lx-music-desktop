@@ -15,7 +15,7 @@ module.exports = {
         '*-height', '*-width',
         'flex', '::-webkit-scrollbar',
         'top', 'left', 'bottom', 'right',
-        'border-radius',
+        'border-radius', 'gap',
       ],
       selectorBlackList: ['html', 'ignore-to-rem'],
       replace: true,

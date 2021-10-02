@@ -3,7 +3,9 @@ transition(enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut")
   div(:class="$style.modal" v-show="show" @click="bgClose && close()")
     transition(:enter-active-class="inClass"
-      :leave-active-class="outClass")
+      :leave-active-class="outClass"
+      @after-leave="$emit('after-leave', $event)"
+    )
       div(:class="$style.content" v-show="show" @click.stop)
         header(:class="$style.header")
           button(type="button" @click="close" v-if="closeBtn")
@@ -141,6 +143,7 @@ export default {
   overflow: hidden;
   max-height: 80%;
   max-width: 76%;
+  min-width: 220px;
   position: relative;
   display: flex;
   flex-flow: column nowrap;

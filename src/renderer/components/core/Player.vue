@@ -87,7 +87,7 @@ div(:class="$style.player")
 
 <script>
 import Lyric from '@renderer/utils/lyric-font-player'
-import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
+import { rendererSend, rendererOn, NAMES, rendererInvoke } from '../../../common/ipc'
 import { formatPlayTime2, getRandom, checkPath, setTitle, clipboardWriteText, debounce, throttle, assertApiSupport } from '../../utils'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { requestMsg } from '../../utils/message'
@@ -655,10 +655,27 @@ export default {
     setLrc(targetSong) {
       this.getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
         if (targetSong.songmid !== this.musicInfo.songmid) return
-        this.musicInfo.lrc = lyric
-        this.musicInfo.tlrc = tlyric
-        this.musicInfo.lxlrc = lxlyric
-      }).catch(() => {
+        return (
+          global.i18n.locale == 'zh-tw'
+            ? Promise.all([
+              lyric
+                ? rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(lyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
+                : Promise.resolve(''),
+              tlyric
+                ? rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(tlyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
+                : Promise.resolve(''),
+              lxlyric
+                ? rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(lxlyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
+                : Promise.resolve(''),
+            ])
+            : Promise.resolve([lyric, tlyric, lxlyric])
+        ).then(([lyric, tlyric, lxlyric]) => {
+          this.musicInfo.lrc = lyric
+          this.musicInfo.tlrc = tlyric
+          this.musicInfo.lxlrc = lxlyric
+        })
+      }).catch((err) => {
+        console.log(err)
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
         this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc, lxlrc: this.musicInfo.lxlrc })
@@ -849,7 +866,7 @@ export default {
           this.playNext()
           break
         case 'progress':
-          this.handleSetProgress(data)
+          this.setProgress(data * this.maxPlayTime)
           break
         case 'volume':
           break

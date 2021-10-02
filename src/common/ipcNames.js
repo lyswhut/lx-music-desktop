@@ -33,6 +33,8 @@ const names = {
 
     restart_window: 'restart_window',
 
+    lang_s2t: 'lang_s2t',
+
     handle_kw_decode_lyric: 'handle_kw_decode_lyric',
     get_lyric_info: 'get_lyric_info',
     set_lyric_info: 'set_lyric_info',
@@ -74,6 +76,7 @@ const names = {
     sync_generate_code: 'sync_generate_code',
     sync_action_list: 'sync_action_list',
     sync_list: 'sync_list',
+
   },
   winLyric: {
     close: 'close',

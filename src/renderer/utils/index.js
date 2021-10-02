@@ -4,6 +4,7 @@ import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
 import iconv from 'iconv-lite'
+import { gzip, gunzip } from 'zlib'
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -433,3 +434,39 @@ export const setMusicUrl = (musicInfo, type, url) => rendererSend(NAMES.mainWind
   url,
 })
 export const clearMusicUrl = () => rendererSend(NAMES.mainWindow.clear_music_url)
+
+export const gzipData = str => {
+  return new Promise((resolve, reject) => {
+    gzip(str, (err, result) => {
+      if (err) return reject(err)
+      resolve(result)
+    })
+  })
+}
+export const gunzipData = buf => {
+  return new Promise((resolve, reject) => {
+    gunzip(buf, (err, result) => {
+      if (err) return reject(err)
+      resolve(result.toString())
+    })
+  })
+}
+
+export const saveLxConfigFile = async(path, data) => {
+  if (!path.endsWith('.lxmc')) path += '.lxmc'
+  fs.writeFile(path, await gzipData(JSON.stringify(data)), 'binary', err => {
+    console.log(err)
+  })
+}
+
+export const readLxConfigFile = async path => {
+  let isJSON = path.endsWith('.json')
+  let data = await fs.promises.readFile(path, isJSON ? 'utf8' : 'binary')
+  if (!data || isJSON) return data
+  data = await gunzipData(Buffer.from(data, 'binary'))
+  return data.toString('utf8')
+}
+
+
+const fileNameRxp = /[\\/:*?#"<>|]/g
+export const filterFileName = name => name.replace(fileNameRxp, '')

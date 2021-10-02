@@ -293,11 +293,11 @@ const mutations = {
     const targetMusicInfo = targetList.list.find(item => item.songmid == id)
     if (targetMusicInfo) Object.assign(targetMusicInfo, data)
   },
-  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, isSync }) {
+  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, position, isSync }) {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
         action: 'create_user_list',
-        data: { name, id, list, source, sourceListId },
+        data: { name, id, list, source, sourceListId, position },
       })
     }
 
@@ -311,7 +311,11 @@ const mutations = {
         source,
         sourceListId,
       }
-      state.userList.push(newList)
+      if (position == null) {
+        state.userList.push(newList)
+      } else {
+        state.userList.splice(position + 1, 0, newList)
+      }
       allListUpdate(newList)
     }
     this.commit('list/listAddMultiple', { id, list, isSync: true })

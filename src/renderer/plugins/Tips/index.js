@@ -3,6 +3,8 @@ import { debounce } from '../../utils'
 
 let instance
 let prevTips
+let prevX = 0
+let prevY = 0
 
 const getTips = el =>
   el
@@ -53,6 +55,9 @@ const updateTips = event => {
 }
 
 document.body.addEventListener('mousemove', event => {
+  if (event.x == prevX && event.y == prevY) return
+  prevX = event.x
+  prevY = event.y
   hideTips()
   showTips(event)
 })
