@@ -6,6 +6,24 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.14.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.13.0...v1.14.0) - 2021-10-02
+
+### 新增
+
+- 新增歌词简体中文转繁体中文，当软件语言被设置为繁体中文后，播放歌曲的歌词也将自动转成繁体中文显示
+- 新增单个列表导入/导出功能，可以方便分享歌曲列表，可在右击“我的列表”里的列表名后弹出的菜单中使用
+- 新增删除列表前的确认弹窗，防止误删列表
+- 新增歌词文本选择复制功能，可在详情页进度条上方的歌词文本选择按钮进入歌词文本选择模式，选择完成后可鼠标右击或者使用系统快捷键复制
+- 新增重复歌曲列表，可以方便移除我的列表中的重复歌曲，此列表会列出目标列表里歌曲名相同的歌曲，可在右击“我的列表”里的列表名后弹出的菜单中使用
+
+### 修复
+
+- 修复mg排行榜无法加载的问题
+- 修复点击播放详情页的进度条跳进度时会出现偏移的问题
+- 修复在有提示信息的地方长按鼠标按键时提示信息会闪烁的问题
+- 修复下载歌曲时的歌词下载不尝试获取缓存歌词的问题
+- 修复GNOME等桌面下每次打开应用时需重新设置歌词窗口置顶的问题
+
 ## [1.13.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.12.2...v1.13.0) - 2021-09-05
 
 如果你喜欢并经常使用洛雪音乐，并想要第一时间尝鲜洛雪的新功能，可以加入测试企鹅群768786588，
