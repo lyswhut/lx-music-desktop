@@ -1050,7 +1050,7 @@ export default {
         if (result.canceled) return
         let listData
         try {
-          listData = JSON.parse(await readLxConfigFile(result.filePaths[0]))
+          listData = await readLxConfigFile(result.filePaths[0])
         } catch (error) {
           return
         }

@@ -815,7 +815,7 @@ export default {
     async importSetting(path) {
       let settingData
       try {
-        settingData = JSON.parse(await readLxConfigFile(path))
+        settingData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
@@ -830,12 +830,12 @@ export default {
         type: 'setting',
         data: Object.assign({ version: this.settingVersion }, this.setting),
       }
-      saveLxConfigFile(path, JSON.stringify(data))
+      saveLxConfigFile(path, data)
     },
     async importPlayList(path) {
       let listData
       try {
-        listData = JSON.parse(await readLxConfigFile(path))
+        listData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
@@ -867,12 +867,12 @@ export default {
           if (item.otherSource) delete item.otherSource
         }
       }
-      saveLxConfigFile(path, JSON.stringify(data))
+      saveLxConfigFile(path, data)
     },
     async importAllData(path) {
       let allData
       try {
-        allData = JSON.parse(await readLxConfigFile(path))
+        allData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
@@ -906,7 +906,7 @@ export default {
           if (item.otherSource) delete item.otherSource
         }
       }
-      saveLxConfigFile(path, JSON.stringify(allData))
+      saveLxConfigFile(path, allData)
     },
     handleImportAllData() {
       selectDir({
