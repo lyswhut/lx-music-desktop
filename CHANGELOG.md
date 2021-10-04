@@ -6,6 +6,13 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.14.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.14.0...v1.14.1) - 2021-10-04
+
+### 修复
+
+- 修复我的列表搜索无法搜索小括号、中括号等字符的问题
+- 修复v1.14.0出现的备份与恢复功能备份的数据无法恢复的问题，同时兼容使用v1.14.0导出的存在问题的数据
+
 ## [1.14.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.13.0...v1.14.0) - 2021-10-02
 
 ### 新增
