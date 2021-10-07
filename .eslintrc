@@ -22,5 +22,6 @@
   },
   "settings": {
     "html/html-extensions": [".html", ".vue"]
-  }
+  },
+  "ignorePatterns": ["vendors", "*.min.js"]
 }
