@@ -66,6 +66,7 @@ const handleRequest = (context, { requestKey, data }) => {
  *
  * @param {*} context
  * @param {*} info {
+ *                    openDevTools: false,
  *                    status: true,
  *                    message: 'xxx',
  *                    sources: {
