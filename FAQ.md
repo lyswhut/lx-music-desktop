@@ -344,8 +344,8 @@ send(EVENT_NAMES.inited, {
 
 ```
 
-- `@name `：源的名字，建议不要过长，10个字符以内
-- `@description `：源的描述，建议不要过长，20个字符以内，可不填，不填时必须保留 @description
+- `@name `：源的名字，建议不要过长，24个字符以内
+- `@description `：源的描述，建议不要过长，36个字符以内，可不填，不填时必须保留 @description
 - `@version`：源的版本号，可不填，不填时可以删除 @version
 - `@author `：脚本作者名字，可不填，不填时可以删除 @author
 - `@homepage `：脚本主页，可不填，不填时可以删除 @homepage
@@ -353,6 +353,10 @@ send(EVENT_NAMES.inited, {
 ### `window.lx`
 
 应用为脚本暴露的API对象。
+
+#### `window.lx.version`
+
+自定义源API版本，API变更时此版本号将会更改（新增于v1.14.0之后）
 
 #### `window.lx.EVENT_NAMES`
 
@@ -409,6 +413,7 @@ const cancelHttp = window.lx.request(url, options, callback)
 应用提供给脚本的工具方法：
 
 - `window.lx.utils.buffer.from`：对应Node.js的 `Buffer.from`
+- `window.lx.utils.buffer.bufToString`：Buffer转字符串 `bufToString(buffer, format)`，`format`对应Node.js `Buffer.toString`的参数（v1.14.0之后新增）
 - `window.lx.utils.crypto.aesEncrypt`：AES加密 `aesEncrypt(buffer, mode, key, iv)`
 - `window.lx.utils.crypto.md5`：MD5加密 `md5(str)`
 - `window.lx.utils.crypto.randomBytes`：生成随机字符串 `randomBytes(size)`
