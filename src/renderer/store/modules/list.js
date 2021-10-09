@@ -53,13 +53,21 @@ const getters = {
   allList: () => allList,
 }
 
+const getOtherSourcePromises = new Map()
+
 // actions
 const actions = {
   getOtherSource({ state, commit }, musicInfo) {
-    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+    if (musicInfo.otherSource?.length) return Promise.resolve(musicInfo.otherSource)
+    let key = `${musicInfo.source}_${musicInfo.songmid}`
+    if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
+    const promise = musicSdk.findMusic(musicInfo).then(otherSource => {
       commit('setOtherSource', { musicInfo, otherSource })
+      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
       return otherSource
     })
+    getOtherSourcePromises.set(key, promise)
+    return promise
   },
 }
 
