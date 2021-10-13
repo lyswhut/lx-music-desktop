@@ -104,7 +104,8 @@ export default {
     const { body, statusCode } = await _requestObj2.promise
     if (statusCode != 200 || body.code !== 200) throw new Error('获取热门评论失败')
     // console.log(body)
-    return { source: 'wy', comments: this.filterComment(body.data.hotComments) }
+    const total = body.data.hotComments?.length ?? 0
+    return { source: 'wy', comments: this.filterComment(body.data.hotComments), total, page, limit, maxPage: 1 }
   },
   filterComment(rawList) {
     return rawList.map(item => {
