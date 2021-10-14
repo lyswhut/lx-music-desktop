@@ -61,6 +61,7 @@ export default {
   max-width: 320px;
   min-width: 220px;
   line-height: 1.5;
+  white-space: pre-line;
 }
 
 .footer {
