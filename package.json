@@ -234,7 +234,7 @@
     "electron-log": "^4.4.1",
     "electron-store": "^8.0.1",
     "electron-updater": "^4.3.9",
-    "font-list": "git+https://github.com/lyswhut/node-font-list.git#c6caf4060e471afe143a4aca30d554644522966d",
+    "font-list": "git+https://github.com/lyswhut/node-font-list.git#2ed3b4ee42e8a43373e8a30d87760c840725843e",
     "http-terminator": "^3.0.3",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.0",
