@@ -511,7 +511,8 @@ export default {
   min-height: 0;
   overflow: hidden;
   display: flex;
-  padding: 0 30px;
+  margin: 0 30px;
+  position: relative;
 
   &.showComment {
     .left {
@@ -527,13 +528,13 @@ export default {
       }
     }
     .comment {
-      flex-basis: 50%;
       opacity: 1;
+      transform: scaleX(1);
     }
   }
 }
 .left {
-  flex: 40%;
+  flex: 0 0 40%;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -698,9 +699,14 @@ export default {
 }
 
 .comment {
-  flex: 0 0 0;
-  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  opacity: 1;
   margin-left: 10px;
+  transform: scaleX(0);
 }
 
 .footer {
