@@ -3,6 +3,7 @@ module.exports = {
   reject: [
     'vue-loader',
     'webpack-dev-server',
+    'eslint',
     // 'eslint-config-standard'
   ]
 }
