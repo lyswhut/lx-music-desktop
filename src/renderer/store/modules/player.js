@@ -18,7 +18,6 @@ const state = {
   },
   playIndex: -1,
   changePlay: false,
-  isShowPlayerDetail: false,
   playedList: [],
 
   playMusicInfo: null,
@@ -197,7 +196,6 @@ const getters = {
       musicInfo: state.playMusicInfo.musicInfo,
     }
   },
-  isShowPlayerDetail: state => state.isShowPlayerDetail,
   playMusicInfo: state => state.playMusicInfo,
   playedList: state => state.playedList,
   tempPlayList: state => state.tempPlayList,
@@ -456,9 +454,6 @@ const mutations = {
   },
   clearPlayedList(state) {
     state.playedList.splice(0, state.playedList.length)
-  },
-  visiblePlayerDetail(state, visible) {
-    state.isShowPlayerDetail = visible
   },
   setTempPlayList(state, list) {
     state.tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
