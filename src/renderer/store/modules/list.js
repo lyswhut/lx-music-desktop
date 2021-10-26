@@ -1,6 +1,7 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
 import { sync as eventSyncName } from '@renderer/event/names'
+import { removeListPosition, setListPrevSelectId } from '@renderer/utils/data'
 
 let allList = {}
 window.allList = allList
@@ -340,6 +341,7 @@ const mutations = {
     if (index < 0) return
     let list = state.userList.splice(index, 1)[0]
     allListRemove(list)
+    removeListPosition(id)
   },
   setUserListName(state, { id, name, isSync }) {
     if (!isSync) {
@@ -380,9 +382,6 @@ const mutations = {
     state.userList.splice(index, 1)
     state.userList.splice(index + 1, 0, targetList)
   },
-  setListScroll(state, { id, location }) {
-    if (allList[id]) allList[id].location = location
-  },
   setMusicPosition(state, { id, position, list, isSync }) {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
@@ -417,6 +416,9 @@ const mutations = {
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource
+  },
+  setPrevSelectListId(state, val) {
+    setListPrevSelectId(val)
   },
 }
 

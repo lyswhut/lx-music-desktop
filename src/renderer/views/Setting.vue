@@ -842,12 +842,11 @@ export default {
       console.log(listData.type)
 
       // 兼容0.6.2及以前版本的列表数据
-      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list, name: '试听列表', location: 0 })
+      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list, name: '试听列表' })
 
       if (listData.type !== 'playList') return
 
       for (const list of listData.data) {
-        if (list.location == null) list.location = 0
         this.setList(list)
       }
 
@@ -879,10 +878,9 @@ export default {
       if (allData.type !== 'allData') return
 
       // 兼容0.6.2及以前版本的列表数据
-      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
+      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表' })
 
       for (const list of allData.playList) {
-        if (list.location == null) list.location = 0
         this.setList(list)
       }
 

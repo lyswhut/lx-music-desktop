@@ -29,6 +29,7 @@ import music from './utils/music'
 import { throttle, openUrl, compareVer, getPlayList, parseUrlParams, saveSetting } from './utils'
 import { base as eventBaseName, sync as eventSyncName } from './event/names'
 import apiSourceInfo from './utils/music/api-source-info'
+import { initListPosition, initListPrevSelectId } from '@renderer/utils/data'
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
 
@@ -338,6 +339,8 @@ export default {
       return Promise.all([
         this.initMyList(), // 初始化播放列表
         this.initSearchHistoryList(), // 初始化搜索历史列表
+        initListPosition(), // 列表位置记录
+        initListPrevSelectId(), // 上次选中的列表记录
       ])
       // this.initDownloadList() // 初始化下载列表
     },

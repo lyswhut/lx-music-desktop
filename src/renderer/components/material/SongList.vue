@@ -13,7 +13,31 @@ div(:class="$style.songList")
               th.nobreak(:style="{ width: rowWidth.r5 }") {{$t('material.song_list.time')}}
               th.nobreak(:style="{ width: rowWidth.r6 }") {{$t('material.song_list.action')}}
       div(:class="$style.content")
-        div.scroll(v-show="list.length" :class="$style.tbody" ref="dom_scrollContent")
+        div(v-if="list.length" :class="$style.content" ref="dom_listContent")
+          material-virtualized-list(:list="list" key-name="songmid" ref="list" :item-height="37"
+            containerClass="scroll" contentClass="list" @contextmenu.native.capture="handleContextMenu")
+            template(#default="{ item, index }")
+              div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
+                :class="[{ selected: selectedIndex == index }, { active: selectdList.includes(item) }]")
+                div.list-item-cell.nobreak.center(:style="{ width: rowWidth.r1 }" style="padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
+                div.list-item-cell.auto(:style="{ width: rowWidth.r2 }" :tips="item.name + ((item._types.ape || item._types.flac || item._types.wav) ? ` - ${$t('material.song_list.lossless')}` : item._types['320k'] ? ` - ${$t('material.song_list.high_quality')}` : '')")
+                  span.select {{item.name}}
+                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
+                  span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
+                div.list-item-cell(:style="{ width: rowWidth.r3 }")
+                  span.select {{item.singer}}
+                div.list-item-cell(:style="{ width: rowWidth.r4 }")
+                  span.select {{item.albumName}}
+                div.list-item-cell(:style="{ width: rowWidth.r5 }")
+                  span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
+                div.list-item-cell(:style="{ width: rowWidth.r6 }" style="padding-left: 0; padding-right: 0;")
+                  material-list-buttons(:index="index" :class="$style.btns"
+                      :remove-btn="false" @btn-click="handleListBtnClick"
+                      :download-btn="assertApiSupport(item.source)")
+            template(#footer)
+              div(:class="$style.pagination")
+                material-pagination(:count="total" :limit="limit" :page="page" @btn-click="handleTogglePage")
+        //- div.scroll(v-show="list.length" :class="$style.tbody" ref="dom_scrollContent")
           table
             tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
               tr(v-for='(item, index) in list' :key='item.songmid' @contextmenu="handleListItemRigthClick($event, index)" @click="handleDoubleClick($event, index)")
@@ -175,7 +199,9 @@ export default {
         isModDown: false,
       },
       lastSelectIndex: 0,
+      selectedIndex: -1,
       listMenu: {
+        rightClickItemIndex: -1,
         isShowItemMenu: false,
         itemMenuControl: {
           play: true,
@@ -233,7 +259,7 @@ export default {
       this.handleSelectAllData()
     },
     handleDoubleClick(event, index) {
-      if (event.target.classList.contains('select')) return
+      if (this.listMenu.rightClickItemIndex > -1) return
 
       this.handleSelectData(event, index)
 
@@ -264,14 +290,8 @@ export default {
             }
             this.selectdList = this.list.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectdList.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
-            do {
-              nodes[lastSelectIndex].classList.add('active')
-              lastSelectIndex++
-            } while (lastSelectIndex <= clickIndex)
           }
         } else {
-          event.currentTarget.classList.add('active')
           this.selectdList.push(this.list[clickIndex])
           this.lastSelectIndex = clickIndex
         }
@@ -281,10 +301,8 @@ export default {
         let index = this.selectdList.indexOf(item)
         if (index < 0) {
           this.selectdList.push(item)
-          event.currentTarget.classList.add('active')
         } else {
           this.selectdList.splice(index, 1)
-          event.currentTarget.classList.remove('active')
         }
       } else if (this.selectdList.length) {
         this.removeAllSelect()
@@ -293,12 +311,6 @@ export default {
     },
     removeAllSelect() {
       this.selectdList = []
-      let dom_tbody = this.$refs.dom_tbody
-      if (!dom_tbody) return
-      let nodes = dom_tbody.querySelectorAll('.active')
-      for (const node of nodes) {
-        if (node.parentNode == dom_tbody) node.classList.remove('active')
-      }
     },
     handleListBtnClick(info) {
       this.emitEvent('listBtnClick', info)
@@ -306,10 +318,6 @@ export default {
     handleSelectAllData() {
       this.removeAllSelect()
       this.selectdList = [...this.list]
-      let nodes = this.$refs.dom_tbody.childNodes
-      for (const node of nodes) {
-        node.classList.add('active')
-      }
       this.$emit('input', [...this.selectdList])
     },
     handleTogglePage(page) {
@@ -327,12 +335,12 @@ export default {
     handleContextMenu(event) {
       if (!event.target.classList.contains('select')) return
       event.stopImmediatePropagation()
-      let classList = this.$refs.dom_scrollContent.classList
+      let classList = this.$refs.dom_listContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
         let str = window.getSelection().toString()
         classList.remove(this.$style.copying)
-        str = str.trim()
+        str = str.split(/\n\n/).map(s => s.replace(/\n/g, '  ')).join('\n').trim()
         if (!str.length) return
         clipboardWriteText(str)
       })
@@ -344,23 +352,27 @@ export default {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       // this.listMenu.itemMenuControl.play =
       //   this.listMenu.itemMenuControl.playLater =
-      this.listMenu.itemMenuControl.download =
-        this.assertApiSupport(this.list[index].source)
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = event.target.closest('td')
+      this.listMenu.itemMenuControl.download = this.assertApiSupport(this.list[index].source)
+      let dom_container = event.target.closest('.' + this.$style.songList)
+      const getOffsetValue = (target, x = 0, y = 0) => {
+        if (target === dom_container) return { x, y }
+        if (!target) return { x: 0, y: 0 }
+        x += target.offsetLeft
+        y += target.offsetTop
+        return getOffsetValue(target.offsetParent, x, y)
+      }
       this.listMenu.rightClickItemIndex = index
-      this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetParent.offsetTop + dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.selectedIndex = index
+      let { x, y } = getOffsetValue(event.target)
+      this.listMenu.menuLocation.x = x + event.offsetX
+      this.listMenu.menuLocation.y = y + event.offsetY - this.$refs.list.getScrollTop()
       this.hideListsMenu()
       this.$nextTick(() => {
         this.listMenu.isShowItemMenu = true
       })
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
+      this.selectedIndex = -1
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
@@ -406,29 +418,30 @@ export default {
   flex: auto;
   min-height: 0;
   position: relative;
-}
-.tbody {
   height: 100%;
-  overflow-y: auto;
-  td {
-    font-size: 12px;
-    :global(.badge) {
-      margin-left: 3px;
-    }
-    &:first-child {
-      // padding-left: 10px;
-      font-size: 11px;
-      color: @color-theme_2-font-label;
-    }
-  }
-  :global(.badge) {
-    opacity: .85;
-  }
 
   &.copying {
     .no-select {
       display: none;
     }
+  }
+}
+:global(.list) {
+  height: 100%;
+  overflow-y: auto;
+  :global(.list-item-cell) {
+    font-size: 12px !important;
+    :global(.badge) {
+      margin-left: 3px;
+    }
+    &:first-child {
+      // padding-left: 10px;
+      font-size: 11px !important;
+      color: @color-theme_2-font-label !important;
+    }
+  }
+  :global(.badge) {
+    opacity: .85;
   }
 }
 .pagination {
@@ -456,10 +469,10 @@ export default {
 
 each(@themes, {
   :global(#container.@{value}) {
-    .tbody {
-      td {
+    :global(.list) {
+      :global(.list-item-cell) {
         &:first-child {
-          color: ~'@{color-@{value}-theme_2-font-label}';
+          color: ~'@{color-@{value}-theme_2-font-label}' !important;
         }
       }
     }

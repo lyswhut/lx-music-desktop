@@ -16,7 +16,7 @@
             @contextmenu="handleListsItemRigthClick($event, index)")
           span(:class="$style.listsLabel") {{item.name}}
     div(:class="$style.list")
-      material-song-list(v-model="selectedData" ref="songList" :hideListsMenu="hideListsMenu" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="info.limit" :total="info.total" :noItem="$t('material.song_list.loding_list')" :list="list")
+      material-song-list(v-model="selectedData" ref="songList" :hideListsMenu="hideListsMenu" :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}" @action="handleSongListAction" :source="source" :page="page" :limit="listInfo.limit" :total="listInfo.total" :noItem="$t('material.song_list.loding_list')" :list="list")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectedData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     material-list-add-modal(:show="isShowListAdd" :musicInfo="musicInfo" @close="isShowListAdd = false")
@@ -56,11 +56,18 @@ export default {
           y: 0,
         },
       },
+      listInfo: {
+        list: [],
+        total: 0,
+        page: 1,
+        limit: 30,
+        key: null,
+      },
     }
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('leaderboard', ['sources', 'boards', 'list', 'info']),
+    ...mapGetters('leaderboard', ['sources', 'boards', 'info']),
     ...mapGetters('list', ['defaultList']),
     boardList() {
       return this.source && this.boards[this.source] ? this.boards[this.source] : []
@@ -79,13 +86,22 @@ export default {
         },
       ]
     },
+    list() {
+      return this.listInfo.list
+    },
   },
   watch: {
     tabId(n, o) {
       this.setLeaderboard({ tabId: n })
       if (!n || (!o && this.page !== 1)) return
-      this.getList(1).then(() => {
-        this.page = this.info.page
+      this.listInfo.list = []
+      this.getList(1).then(listInfo => {
+        this.listInfo.list = listInfo.list
+        this.listInfo.total = listInfo.total
+        this.listInfo.limit = listInfo.limit
+        this.listInfo.page = listInfo.page
+        this.listInfo.key = listInfo.key
+        this.page = listInfo.page
       })
     },
     source(n, o) {
@@ -102,7 +118,7 @@ export default {
   mounted() {
     this.source = this.setting.leaderboard.source
     this.tabId = this.setting.leaderboard.tabId
-    this.page = this.info.page
+    this.page = this.listInfo.page
   },
   methods: {
     ...mapMutations(['setLeaderboard']),
@@ -206,8 +222,14 @@ export default {
       })
     },
     handleTogglePage(page) {
-      this.getList(page).then(() => {
-        this.page = this.info.page
+      this.listInfo.list = []
+      this.getList(page).then(listInfo => {
+        this.listInfo.list = listInfo.list
+        this.listInfo.total = listInfo.total
+        this.listInfo.limit = listInfo.limit
+        this.listInfo.page = listInfo.page
+        this.listInfo.key = listInfo.key
+        this.page = listInfo.page
       })
     },
     handleAddDownload(type) {
@@ -381,7 +403,7 @@ export default {
     transition: opacity .3s ease;
   }
 
-  :global(.list) {
+  :global(.selection-list) {
     max-height: 500px;
     box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
     li {
@@ -465,7 +487,7 @@ each(@themes, {
       :global(.label) {
         color: ~'@{color-@{value}-theme_2-font}' !important;
       }
-      :global(.list) {
+      :global(.selection-list) {
         li {
           background-color: ~'@{color-@{value}-theme_2-background_2}';
           &:hover {

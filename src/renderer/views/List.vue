@@ -36,35 +36,26 @@
               th.nobreak(style="width: 22%;") {{$t('view.list.album')}}
               th.nobreak(style="width: 9%;") {{$t('view.list.time')}}
               th.nobreak(style="width: 15%;") {{$t('view.list.action')}}
-      div(v-if="delayShow && list.length" :class="$style.content")
-        div.scroll(:class="$style.tbody" @scroll="handleScroll" ref="dom_scrollContent")
-          table
-            tbody(@contextmenu.capture="handleContextMenu" ref="dom_tbody")
-              tr(v-for='(item, index) in list' :key='item.songmid' :id="'mid_' + item.songmid"  @contextmenu="handleListItemRigthClick($event, index)"
-                @click="handleDoubleClick($event, index)" :class="[isPlayList && playInfo.playIndex === index ? $style.active : '', assertApiSupport(item.source) ? null : $style.disabled]")
-                td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-                td.break
-                  span.select {{item.name}}
-                  span(:class="[$style.labelSource, $style.noSelect]" v-if="isShowSource") {{item.source}}
-                  //- span.badge.badge-light(v-if="item._types['128k']") 128K
-                  //- span.badge.badge-light(v-if="item._types['192k']") 192K
-                  //- span.badge.badge-secondary(v-if="item._types['320k']") 320K
-                  //- span.badge.badge-theme-info(v-if="item._types.ape") APE
-                  //- span.badge.badge-theme-success(v-if="item._types.flac") FLAC
-                td.break(style="width: 22%;")
-                  span.select {{item.singer}}
-                td.break(style="width: 22%;")
-                  span.select {{item.albumName}}
-                td(style="width: 9%;")
-                  span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
-                td(style="width: 15%; padding-left: 0; padding-right: 0;")
-                  material-list-buttons(:index="index" @btn-click="handleListBtnClick" :download-btn="assertApiSupport(item.source)")
-                  //- button.btn-info(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k'] || item._types.flac" @click.stop='openDownloadModal(index)') 下载
-                  //- button.btn-secondary(type='button' v-if="item._types['128k'] || item._types['192k'] || item._types['320k']" @click.stop='testPlay(index)') 试听
-                  //- button.btn-secondary(type='button' @click.stop='handleRemove(index)') 删除
-                  //- button.btn-success(type='button' v-if="(item._types['128k'] || item._types['192k'] || item._types['320k']) && userInfo" @click.stop='showListModal(index)') ＋
+      div(v-if="list.length" :class="$style.content" ref="dom_listContent")
+        material-virtualized-list(:list="list" key-name="songmid" ref="list" #default="{ item, index }" :item-height="37"
+          @scroll="handleScroll" containerClass="scroll" contentClass="list" @contextmenu.native.capture="handleContextMenu")
+          div.list-item(@click="handleDoubleClick($event, index)"
+            :class="[{ [$style.active]: isPlayList && playInfo.playIndex === index }, { selected: selectedIndex == index }, { active: selectdListDetailData.includes(item) }, { [$style.disabled]: !assertApiSupport(item.source) }]"
+            @contextmenu="handleListItemRigthClick($event, index)")
+            div.list-item-cell.nobreak.center(style="flex: 0 0 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
+            div.list-item-cell.auto.break(:tips="item.name")
+              span.select {{item.name}}
+              span(:class="[$style.labelSource, $style.noSelect]" v-if="isShowSource") {{item.source}}
+            div.list-item-cell.break(style="flex: 0 0 22%;")
+              span.select {{item.singer}}
+            div.list-item-cell.break(style="flex: 0 0 22%;")
+              span.select {{item.albumName}}
+            div.list-item-cell(style="flex: 0 0 9%;")
+              span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
+            div.list-item-cell(style="flex: 0 0 15%; padding-left: 0; padding-right: 0;")
+              material-list-buttons(:index="index" @btn-click="handleListBtnClick" :download-btn="assertApiSupport(item.source)")
       div(:class="$style.noItem" v-else)
-        p(v-text="list.length ? $t('view.list.loding_list') : $t('view.list.no_item')")
+        p(v-text="$t('view.list.no_item')")
     material-download-modal(:show="isShowDownload" :musicInfo="musicInfo" @select="handleAddDownload" @close="isShowDownload = false")
     material-download-multiple-modal(:show="isShowDownloadMultiple" :list="selectdListDetailData" @select="handleAddDownloadMultiple" @close="isShowDownloadMultiple = false")
     //- material-flow-btn(:show="isShowEditBtn" :play-btn="false" @btn-click="handleFlowBtnClick")
@@ -79,8 +70,11 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import { throttle, scrollTo, clipboardWriteText, assertApiSupport, openUrl, openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '../utils'
+import { clipboardWriteText, assertApiSupport, openUrl, openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '../utils'
 import musicSdk from '../utils/music'
+import { setListPosition, getListPosition, getListPrevSelectId } from '@renderer/utils/data'
+
+
 export default {
   name: 'List',
   data() {
@@ -151,6 +145,7 @@ export default {
       isVisibleMusicSearch: false,
       fetchingListStatus: {},
       selectedListInfo: {},
+      selectedIndex: -1,
     }
   },
   computed: {
@@ -322,7 +317,7 @@ export default {
     this.$nextTick(() => {
       this.listId = to.query.id
       this.$nextTick(() => {
-        this.handleDelayShow()
+        this.restoreScroll(this.$route.query.scrollIndex, false)
       })
     })
     this.isShowDownload = false
@@ -348,28 +343,22 @@ export default {
   // }
   // },
   beforeRouteLeave(to, from, next) {
-    this.clearDelayTimeout()
-    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
+    setListPosition(this.listId, (this.list.length && this.$refs.list.getScrollTop()) || 0)
     next()
   },
   created() {
-    this.listId = this.$route.query.id || this.defaultList.id
+    this.listId = this.$route.query.id || getListPrevSelectId() || this.defaultList.id
     this.setPrevSelectListId(this.listId)
-    this.handleSaveScroll = throttle((listId, location) => {
-      this.setListScroll({ id: listId, location })
-    }, 1000)
     this.listenEvent()
   },
   mounted() {
-    this.handleDelayShow()
-    this.setListsScroll()
+    this.restoreScroll(this.$route.query.scrollIndex, false)
   },
   beforeDestroy() {
     this.unlistenEvent()
-    this.setListScroll({ id: this.listId, location: (this.list.length && this.$refs.dom_scrollContent.scrollTop) || 0 })
+    setListPosition(this.listId, (this.list.length && this.$refs.list.getScrollTop()) || 0)
   },
   methods: {
-    ...mapMutations(['setPrevSelectListId']),
     ...mapMutations('list', [
       'listRemove',
       'listRemoveMultiple',
@@ -378,9 +367,9 @@ export default {
       'moveupUserList',
       'movedownUserList',
       'removeUserList',
-      'setListScroll',
       'setList',
       'setMusicPosition',
+      'setPrevSelectListId',
     ]),
     ...mapActions('songList', ['getListDetailAll']),
     ...mapActions('leaderboard', {
@@ -429,21 +418,8 @@ export default {
       this.keyEvent.isModDown = false
       this.handleSelectAllData()
     },
-    handleDelayShow() {
-      this.clearDelayTimeout()
-      if (this.list.length > 150) {
-        this.delayTimeout = setTimeout(() => {
-          this.delayTimeout = null
-          this.delayShow = true
-          this.restoreScroll(this.$route.query.scrollIndex, false)
-        }, 200)
-      } else {
-        this.delayShow = true
-        this.restoreScroll(this.$route.query.scrollIndex, false)
-      }
-    },
-    handleScroll(e) {
-      this.handleSaveScroll(this.listId, e.target.scrollTop)
+    handleScroll() {
+      setListPosition(this.listId, this.$refs.list.getScrollTop())
     },
     clearDelayTimeout() {
       if (this.delayTimeout) {
@@ -452,22 +428,15 @@ export default {
       }
     },
     handleScrollList(index, isAnimation, callback = () => {}) {
-      let location = this.getMusicLocation(index) - 150
-      if (location < 0) location = 0
-      if (isAnimation) {
-        scrollTo(this.$refs.dom_scrollContent, location, 300, callback)
-      } else {
-        this.$refs.dom_scrollContent.scrollTo(0, location)
-        callback()
-      }
+      this.$refs.list.scrollToIndex(index, -150, isAnimation).then(callback)
     },
     restoreScroll(index, isAnimation) {
       if (!this.list.length) return
       if (index == null) {
-        let location = this.listData.location || 0
+        let location = getListPosition(this.listData.id) || 0
         if (this.setting.list.isSaveScrollLocation && location) {
           this.$nextTick(() => {
-            this.$refs.dom_scrollContent.scrollTo(0, location)
+            this.$refs.list.scrollTo(location)
           })
         }
         return
@@ -484,7 +453,7 @@ export default {
       })
     },
     handleDoubleClick(event, index) {
-      if (event.target.classList.contains('select')) return
+      if (this.listMenu.rightClickItemIndex > -1) return
 
       this.handleSelectListDetailData(event, index)
 
@@ -517,13 +486,7 @@ export default {
           }
           this.selectdListDetailData = this.list.slice(lastSelectIndex, clickIndex + 1)
           if (isNeedReverse) this.selectdListDetailData.reverse()
-          let nodes = this.$refs.dom_tbody.childNodes
-          do {
-            nodes[lastSelectIndex].classList.add('active')
-            lastSelectIndex++
-          } while (lastSelectIndex <= clickIndex)
         } else {
-          event.currentTarget.classList.add('active')
           this.selectdListDetailData.push(this.list[clickIndex])
           this.lastSelectIndex = clickIndex
         }
@@ -533,69 +496,67 @@ export default {
         let index = this.selectdListDetailData.indexOf(item)
         if (index < 0) {
           this.selectdListDetailData.push(item)
-          event.currentTarget.classList.add('active')
         } else {
           this.selectdListDetailData.splice(index, 1)
-          event.currentTarget.classList.remove('active')
         }
       } else if (this.selectdListDetailData.length) this.removeAllSelectListDetail()
     },
-    handleSelectListData(event, clickIndex) {
-      if (this.focusTarget != 'list' && this.selectdListData.length) this.removeAllSelectList()
+    // handleSelectListData(event, clickIndex) {
+    //   if (this.focusTarget != 'list' && this.selectdListData.length) this.removeAllSelectList()
 
-      if (this.keyEvent.isShiftDown) {
-        if (this.selectdListData.length) {
-          let lastSelectIndex = this.list.indexOf(this.selectdListData[this.selectdListData.length - 1])
-          if (lastSelectIndex == clickIndex) return this.removeAllSelectList()
-          this.removeAllSelectList()
-          let isNeedReverse = false
-          if (clickIndex < lastSelectIndex) {
-            let temp = lastSelectIndex
-            lastSelectIndex = clickIndex
-            clickIndex = temp
-            isNeedReverse = true
-          }
-          this.selectdListData = this.list.slice(lastSelectIndex, clickIndex + 1)
-          if (isNeedReverse) this.selectdListData.reverse()
-          let nodes = this.$refs.dom_tbody.childNodes
-          do {
-            nodes[lastSelectIndex].classList.add('active')
-            lastSelectIndex++
-          } while (lastSelectIndex <= clickIndex)
-        } else {
-          event.currentTarget.classList.add('active')
-          this.selectdListData.push(this.list[clickIndex])
-        }
-      } else if (this.keyEvent.isModDown) {
-        let item = this.list[clickIndex]
-        let index = this.selectdListData.indexOf(item)
-        if (index < 0) {
-          this.selectdListData.push(item)
-          event.currentTarget.classList.add('active')
-        } else {
-          this.selectdListData.splice(index, 1)
-          event.currentTarget.classList.remove('active')
-        }
-      } else if (this.selectdListData.length) this.removeAllSelectList()
-    },
+    //   if (this.keyEvent.isShiftDown) {
+    //     if (this.selectdListData.length) {
+    //       let lastSelectIndex = this.list.indexOf(this.selectdListData[this.selectdListData.length - 1])
+    //       if (lastSelectIndex == clickIndex) return this.removeAllSelectList()
+    //       this.removeAllSelectList()
+    //       let isNeedReverse = false
+    //       if (clickIndex < lastSelectIndex) {
+    //         let temp = lastSelectIndex
+    //         lastSelectIndex = clickIndex
+    //         clickIndex = temp
+    //         isNeedReverse = true
+    //       }
+    //       this.selectdListData = this.list.slice(lastSelectIndex, clickIndex + 1)
+    //       if (isNeedReverse) this.selectdListData.reverse()
+    //       // let nodes = this.$refs.dom_tbody.childNodes
+    //       // do {
+    //       //   nodes[lastSelectIndex].classList.add('active')
+    //       //   lastSelectIndex++
+    //       // } while (lastSelectIndex <= clickIndex)
+    //     } else {
+    //       // event.currentTarget.classList.add('active')
+    //       this.selectdListData.push(this.list[clickIndex])
+    //     }
+    //   } else if (this.keyEvent.isModDown) {
+    //     let item = this.list[clickIndex]
+    //     let index = this.selectdListData.indexOf(item)
+    //     if (index < 0) {
+    //       this.selectdListData.push(item)
+    //       // event.currentTarget.classList.add('active')
+    //     } else {
+    //       this.selectdListData.splice(index, 1)
+    //       // event.currentTarget.classList.remove('active')
+    //     }
+    //   } else if (this.selectdListData.length) this.removeAllSelectList()
+    // },
     removeAllSelectListDetail() {
       this.selectdListDetailData = []
-      let dom_tbody = this.$refs.dom_tbody
-      if (!dom_tbody) return
-      let nodes = dom_tbody.querySelectorAll('.active')
-      for (const node of nodes) {
-        if (node.parentNode == dom_tbody) node.classList.remove('active')
-      }
+      // let dom_tbody = this.$refs.dom_tbody
+      // if (!dom_tbody) return
+      // let nodes = dom_tbody.querySelectorAll('.active')
+      // for (const node of nodes) {
+      //   if (node.parentNode == dom_tbody) node.classList.remove('active')
+      // }
     },
-    removeAllSelectList() {
-      this.selectdListData = []
-      let dom_list = this.$refs.dom_lists_list
-      if (!dom_list) return
-      let nodes = dom_list.querySelectorAll('.selected')
-      for (const node of nodes) {
-        if (node.parentNode == dom_list) node.classList.remove('selected')
-      }
-    },
+    // removeAllSelectList() {
+    //   this.selectdListData = []
+    //   let dom_list = this.$refs.dom_lists_list
+    //   if (!dom_list) return
+    //   let nodes = dom_list.querySelectorAll('.selected')
+    //   for (const node of nodes) {
+    //     if (node.parentNode == dom_list) node.classList.remove('selected')
+    //   }
+    // },
     testPlay(index) {
       // if (!this.assertApiSupport(this.list[index].source)) return
       this.setPlayList({ list: this.listData, index })
@@ -635,10 +596,10 @@ export default {
     handleSelectAllData() {
       this.removeAllSelectListDetail()
       this.selectdListDetailData = [...this.list]
-      let nodes = this.$refs.dom_tbody.childNodes
-      for (const node of nodes) {
-        node.classList.add('active')
-      }
+      // let nodes = this.$refs.dom_tbody.childNodes
+      // for (const node of nodes) {
+      //   node.classList.add('active')
+      // }
       // asyncSetArray(this.selectdListDetailData, isSelect ? [...this.list] : [])
     },
     handleAddDownloadMultiple(type) {
@@ -680,12 +641,12 @@ export default {
     handleContextMenu(event) {
       if (!event.target.classList.contains('select')) return
       event.stopImmediatePropagation()
-      let classList = this.$refs.dom_scrollContent.classList
+      let classList = this.$refs.dom_listContent.classList
       classList.add(this.$style.copying)
       window.requestAnimationFrame(() => {
         let str = window.getSelection().toString()
         classList.remove(this.$style.copying)
-        str = str.trim()
+        str = str.split(/\n\n/).map(s => s.replace(/\n/g, '  ')).join('\n').trim()
         if (!str.length) return
         clipboardWriteText(str)
       })
@@ -732,13 +693,6 @@ export default {
     handleListsNewAfterLeave() {
       this.listsData.isNewLeave = false
     },
-    setListsScroll() {
-      let target = this.$refs.dom_lists_list.querySelector('.' + this.$style.active)
-      if (!target) return
-      let offsetTop = target.offsetTop
-      let location = offsetTop - 150
-      if (location > 0) this.$refs.dom_lists_list.scrollTop = location
-    },
     handleListToggle(id) {
       if (id == this.listId) return
       this.$router.push({
@@ -778,16 +732,21 @@ export default {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.list[index].source].getMusicDetailPageUrl
       // this.listMenu.itemMenuControl.play =
       //   this.listMenu.itemMenuControl.playLater =
-      this.listMenu.itemMenuControl.download =
-        this.assertApiSupport(this.list[index].source)
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = event.target.closest('td')
-
+      this.listMenu.itemMenuControl.download = this.assertApiSupport(this.list[index].source)
+      let dom_container = event.target.closest('.' + this.$style.container)
+      // let dom_listItemCell = event.target.closest('.list-item-cell')
+      const getOffsetValue = (target, x = 0, y = 0) => {
+        if (target === dom_container) return { x, y }
+        if (!target) return { x: 0, y: 0 }
+        x += target.offsetLeft
+        y += target.offsetTop
+        return getOffsetValue(target.offsetParent, x, y)
+      }
       this.listMenu.rightClickItemIndex = index
-      this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.selectedIndex = index
+      let { x, y } = getOffsetValue(event.target)
+      this.listMenu.menuLocation.x = x + event.offsetX
+      this.listMenu.menuLocation.y = y + event.offsetY - this.$refs.list.getScrollTop()
       this.hideListsMenu()
       this.$nextTick(() => {
         this.listMenu.isShowItemMenu = true
@@ -842,8 +801,7 @@ export default {
       }
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
+      this.selectedIndex = -1
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
@@ -946,10 +904,9 @@ export default {
         case 'listClick':
           if (index < 0) return
           this.handleScrollList(index, true, () => {
-            let dom = document.getElementById('mid_' + this.list[index].songmid)
-            dom.classList.add('selected')
+            this.selectedIndex = index
             setTimeout(() => {
-              dom.classList.remove('selected')
+              this.selectedIndex = -1
               if (isPlay) this.testPlay(index)
             }, 600)
           })
@@ -1240,6 +1197,11 @@ export default {
   //     }
   //   }
   // }
+  &.copying {
+    .no-select {
+      display: none;
+    }
+  }
 }
 .thead {
   flex: none;
@@ -1248,28 +1210,20 @@ export default {
     // padding-left: 10px;
   }
 }
-.tbody {
+:global(.list) {
   flex: auto;
-  overflow-y: auto;
-
-  tr {
+  :global(.list-item) {
     &.active {
       color: @color-btn;
     }
   }
-  td {
-    font-size: 12px;
+  :global(.list-item-cell) {
+    font-size: 12px !important;
 
     &:first-child {
       // padding-left: 10px;
-      font-size: 11px;
-      color: @color-theme_2-font-label;
-    }
-  }
-
-  &.copying {
-    .no-select {
-      display: none;
+      font-size: 11px !important;
+      color: @color-theme_2-font-label !important;
     }
   }
 }
@@ -1280,6 +1234,7 @@ export default {
   font-size: .8em;
   line-height: 1;
   opacity: .75;
+  display: inline-block;
 }
 
 .disabled {
@@ -1325,15 +1280,15 @@ each(@themes, {
     .listsNew {
       background-color: ~'@{color-@{value}-theme_2-hover}';
     }
-    .tbody {
-      tr {
+    :global(.list) {
+      :global(.list-item) {
         &.active {
           color: ~'@{color-@{value}-btn}';
         }
       }
-      td {
+      :global(.list-item-cell) {
         &:first-child {
-          color: ~'@{color-@{value}-theme_2-font-label}';
+          color: ~'@{color-@{value}-theme_2-font-label}' !important;
         }
       }
     }

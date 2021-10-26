@@ -14,21 +14,22 @@ div(:class="$style.download")
             th.nobreak(style="width: 22%;") {{$t('view.download.status')}}
             th.nobreak(style="width: 10%;") {{$t('view.download.quality')}}
             th.nobreak(style="width: 13%;") {{$t('view.download.action')}}
-    div.scroll(v-if="list.length" :class="$style.tbody" ref="dom_scrollContent")
-      table
-        tbody(ref="dom_tbody")
-          tr(v-for='(item, index) in showList' :key='item.key' @contextmenu="handleListItemRigthClick($event, index)" @click="handleDoubleClick($event, index)" :class="playListIndex === index ? $style.active : ''")
-            td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" @click.stop) {{index + 1}}
-            td.break
-              span.select {{item.musicInfo.name}} - {{item.musicInfo.singer}}
-            td.break(style="width: 20%;") {{item.progress.progress}}%
-            td.break(style="width: 22%;") {{item.statusText}}
-            td.break(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
-            td(style="width: 13%; padding-left: 0; padding-right: 0;")
-              material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR" remove-btn
-                :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
-                :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)" :list-add-btn="false"
-                :play-btn="item.status == downloadStatus.COMPLETED" :search-btn="item.status == downloadStatus.ERROR" @btn-click="handleListBtnClick")
+    div(v-if="list.length" :class="$style.content" ref="dom_listContent")
+      material-virtualized-list(:list="showList" key-name="key" ref="list" :item-height="37" #default="{ item, index }"
+        containerClass="scroll" contentClass="list")
+        div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
+          :class="[{[$style.active]: playListIndex == index }, { selected: selectedIndex == index }, { active: selectedData.includes(item) }]")
+          div.list-item-cell.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" @click.stop) {{index + 1}}
+          div.list-item-cell.auto
+            span.select {{item.musicInfo.name}} - {{item.musicInfo.singer}}
+          div.list-item-cell(style="width: 20%;") {{item.progress.progress}}%
+          div.list-item-cell(style="width: 22%;") {{item.statusText}}
+          div.list-item-cell(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
+          div.list-item-cell(style="width: 13%; padding-left: 0; padding-right: 0;")
+            material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR" remove-btn
+              :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
+              :pause-btn="!item.isComplate && (item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING)" :list-add-btn="false"
+              :play-btn="item.status == downloadStatus.COMPLETED" :search-btn="item.status == downloadStatus.ERROR" @btn-click="handleListBtnClick")
     material-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
   div(:class="$style.noItem" v-else)
 </template>
@@ -52,8 +53,10 @@ export default {
         isShiftDown: false,
         isModDown: false,
       },
+      selectedIndex: -1,
       lastSelectIndex: 0,
       listMenu: {
+        rightClickItemIndex: -1,
         isShowItemMenu: false,
         itemMenuControl: {
           play: true,
@@ -217,7 +220,7 @@ export default {
       this.handleSelectAllData()
     },
     handleDoubleClick(event, index) {
-      if (event.target.classList.contains('select')) return
+      if (this.listMenu.rightClickItemIndex > -1) return
 
       this.handleSelectData(event, index)
 
@@ -248,14 +251,8 @@ export default {
             }
             this.selectedData = this.showList.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectedData.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
-            do {
-              nodes[lastSelectIndex].classList.add('active')
-              lastSelectIndex++
-            } while (lastSelectIndex <= clickIndex)
           }
         } else {
-          event.currentTarget.classList.add('active')
           this.selectedData.push(this.showList[clickIndex])
           this.lastSelectIndex = clickIndex
         }
@@ -265,21 +262,13 @@ export default {
         let index = this.selectedData.indexOf(item)
         if (index < 0) {
           this.selectedData.push(item)
-          event.currentTarget.classList.add('active')
         } else {
           this.selectedData.splice(index, 1)
-          event.currentTarget.classList.remove('active')
         }
       } else if (this.selectedData.length) this.removeAllSelect()
     },
     removeAllSelect() {
       this.selectedData = []
-      let dom_tbody = this.$refs.dom_tbody
-      if (!dom_tbody) return
-      let nodes = dom_tbody.querySelectorAll('.active')
-      for (const node of nodes) {
-        if (node.parentNode == dom_tbody) node.classList.remove('active')
-      }
     },
     handleClick(index) {
       const key = this.showList[index].key
@@ -323,11 +312,6 @@ export default {
     handleSelectAllData() {
       this.removeAllSelect()
       this.selectedData = [...this.showList]
-
-      let nodes = this.$refs.dom_tbody.childNodes
-      for (const node of nodes) {
-        node.classList.add('active')
-      }
     },
     // async handleFlowBtnClick(action) {
     //   let selectedData = [...this.selectedData]
@@ -363,13 +347,19 @@ export default {
     },
     handleListItemRigthClick(event, index) {
       this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.showList[index].musicInfo.source].getMusicDetailPageUrl
-      let dom_selected = this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
-      this.$refs.dom_tbody.querySelectorAll('tr')[index].classList.add('selected')
-      let dom_td = event.target.closest('td')
+      let dom_container = event.target.closest('.' + this.$style.download)
+      const getOffsetValue = (target, x = 0, y = 0) => {
+        if (target === dom_container) return { x, y }
+        if (!target) return { x: 0, y: 0 }
+        x += target.offsetLeft
+        y += target.offsetTop
+        return getOffsetValue(target.offsetParent, x, y)
+      }
       this.listMenu.rightClickItemIndex = index
-      this.listMenu.menuLocation.x = dom_td.offsetLeft + event.offsetX
-      this.listMenu.menuLocation.y = dom_td.offsetTop + event.offsetY - this.$refs.dom_scrollContent.scrollTop
+      this.selectedIndex = index
+      let { x, y } = getOffsetValue(event.target)
+      this.listMenu.menuLocation.x = x + event.offsetX
+      this.listMenu.menuLocation.y = y + event.offsetY - this.$refs.list.getScrollTop()
 
       let item = this.showList[index]
       if (item.isComplate) {
@@ -397,8 +387,7 @@ export default {
       })
     },
     hideListMenu() {
-      let dom_selected = this.$refs.dom_tbody && this.$refs.dom_tbody.querySelector('tr.selected')
-      if (dom_selected) dom_selected.classList.remove('selected')
+      this.selectedIndex = -1
       this.listMenu.isShowItemMenu = false
       this.listMenu.rightClickItemIndex = -1
     },
@@ -524,18 +513,18 @@ export default {
     // padding-left: 10px;
   }
 }
-.tbody {
+:global(.list) {
   flex: auto;
   overflow-y: auto;
-  td {
-    font-size: 12px;
+  :global(.list-item-cell) {
+    font-size: 12px !important;
     &:first-child {
       // padding-left: 10px;
-      font-size: 11px;
-      color: @color-theme_2-font-label;
+      font-size: 11px !important;
+      color: @color-theme_2-font-label !important;
     }
   }
-  tr {
+  :global(.list-item) {
     &.active {
       color: @color-btn;
     }
@@ -544,15 +533,15 @@ export default {
 
 each(@themes, {
   :global(#container.@{value}) {
-    .tbody {
-      tr {
-        &.active {
-          color: ~'@{color-@{value}-btn}';
-        }
-      }
-      td {
+    :global(.list) {
+      :global(.list-item-cell) {
         &:first-child {
           color: ~'@{color-@{value}-theme_2-font-label}';
+        }
+      }
+      :global(.list-item) {
+        &.active {
+          color: ~'@{color-@{value}-btn}' !important;
         }
       }
     }
