@@ -455,6 +455,10 @@ export default {
           id: 1,
           name: 'origin',
         },
+        {
+          id: 2,
+          name: 'black',
+        },
       ]
     },
     syncEnableTitle() {
