@@ -78,6 +78,7 @@
   "build": {
     "appId": "cn.toside.music.desktop",
     "directories": {
+      "buildResources": "./resources",
       "output": "./build"
     },
     "files": [
@@ -90,12 +91,12 @@
       "./licenses"
     ],
     "win": {
-      "icon": "./resources/icons",
+      "icon": "./resources/icons/icon.ico",
       "legalTrademarks": "lyswhut",
       "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
     "mac": {
-      "icon": "./resources/icons",
+      "icon": "./resources/icons/icon.icns",
       "category": "public.app-category.music"
     },
     "linux": {
