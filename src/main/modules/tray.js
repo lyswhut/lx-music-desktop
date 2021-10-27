@@ -1,5 +1,5 @@
-const { app, Tray, Menu } = require('electron')
-const { isWin } = require('../../common/utils')
+const { app, Tray, Menu, nativeImage } = require('electron')
+// const { isWin } = require('../../common/utils')
 const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME, mainWindow: MAIN_WINDOW_NAME } = require('../events/_name')
 const path = require('path')
 let isEnableTray = null
@@ -44,10 +44,10 @@ const createTray = () => {
 
   themeId = global.appSetting.tray.themeId
   let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
+  const iconPath = path.join(global.__static, 'images/tray', themeName + '.png')
 
   // 托盘
-  global.modules.tray = new Tray(iconPath)
+  global.modules.tray = new Tray(nativeImage.createFromPath(iconPath))
 
   global.modules.tray.setToolTip('洛雪音乐助手')
   createMenu(global.modules.tray)
@@ -141,6 +141,6 @@ const createMenu = tray => {
 const setTrayImage = themeId => {
   if (!global.modules.tray) return
   let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
-  global.modules.tray.setImage(iconPath)
+  const iconPath = path.join(global.__static, 'images/tray', themeName + '.png')
+  global.modules.tray.setImage(nativeImage.createFromPath(iconPath))
 }

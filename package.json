@@ -90,12 +90,12 @@
       "./licenses"
     ],
     "win": {
-      "icon": "./resources/icons/256x256.ico",
+      "icon": "./resources/icons",
       "legalTrademarks": "lyswhut",
       "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
     },
     "mac": {
-      "icon": "./resources/icons/512x512.icns",
+      "icon": "./resources/icons",
       "category": "public.app-category.music"
     },
     "linux": {
