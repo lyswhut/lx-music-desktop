@@ -634,6 +634,7 @@ export default {
         audio.src = this.musicInfo.url = url
       }).catch(err => {
         // console.log('err', err.message)
+        if (targetSong !== this.targetSong || this.isPlay) return
         if (err.message == requestMsg.cancelRequest) return
         if (!isRetryed) return this.setUrl(targetSong, isRefresh, true)
         this.status = this.statusText = err.message
@@ -676,8 +677,10 @@ export default {
         })
       }).catch((err) => {
         console.log(err)
+        if (targetSong.songmid !== this.musicInfo.songmid) return
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
+        if (targetSong.songmid !== this.musicInfo.songmid) return
         this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc, lxlrc: this.musicInfo.lxlrc })
         this.setLyric()
       })
