@@ -3,6 +3,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HTMLPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanCSSPlugin = require('less-plugin-clean-css')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 const vueLoaderConfig = require('../vue-loader.config')
 const { mergeCSSLoader } = require('../utils')
@@ -32,18 +33,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.(vue|js)$/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-formatter-friendly'),
-            emitWarning: isDev,
-          },
-        },
-        exclude: /node_modules/,
-        enforce: 'pre',
-      },
       {
         test: /\.node$/,
         use: 'node-loader',
@@ -146,6 +135,9 @@ module.exports = {
       // both options are optional
       filename: isDev ? '[name].css' : '[name].[contenthash:8].css',
       chunkFilename: isDev ? '[id].css' : '[id].[contenthash:8].css',
+    }),
+    new ESLintPlugin({
+      extensions: ['js', 'vue'],
     }),
   ],
 }

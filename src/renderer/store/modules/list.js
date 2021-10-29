@@ -1,6 +1,7 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
 import { sync as eventSyncName } from '@renderer/event/names'
+import { removeListPosition, setListPrevSelectId } from '@renderer/utils/data'
 
 let allList = {}
 window.allList = allList
@@ -53,13 +54,21 @@ const getters = {
   allList: () => allList,
 }
 
+const getOtherSourcePromises = new Map()
+
 // actions
 const actions = {
   getOtherSource({ state, commit }, musicInfo) {
-    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+    if (musicInfo.otherSource?.length) return Promise.resolve(musicInfo.otherSource)
+    let key = `${musicInfo.source}_${musicInfo.songmid}`
+    if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
+    const promise = musicSdk.findMusic(musicInfo).then(otherSource => {
       commit('setOtherSource', { musicInfo, otherSource })
+      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
       return otherSource
     })
+    getOtherSourcePromises.set(key, promise)
+    return promise
   },
 }
 
@@ -332,6 +341,7 @@ const mutations = {
     if (index < 0) return
     let list = state.userList.splice(index, 1)[0]
     allListRemove(list)
+    removeListPosition(id)
   },
   setUserListName(state, { id, name, isSync }) {
     if (!isSync) {
@@ -372,9 +382,6 @@ const mutations = {
     state.userList.splice(index, 1)
     state.userList.splice(index + 1, 0, targetList)
   },
-  setListScroll(state, { id, location }) {
-    if (allList[id]) allList[id].location = location
-  },
   setMusicPosition(state, { id, position, list, isSync }) {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
@@ -409,6 +416,9 @@ const mutations = {
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource
+  },
+  setPrevSelectListId(state, val) {
+    setListPrevSelectId(val)
   },
 }
 

@@ -9,14 +9,17 @@ for (const source of music.sources) {
   sources.push(source)
 }
 
-// state
-const state = {
-  boards: sourceList,
+const listInfo = {
   list: [],
   total: 0,
   page: 1,
   limit: 30,
   key: null,
+}
+
+// state
+const state = {
+  boards: sourceList,
 }
 
 // getters
@@ -26,16 +29,6 @@ const getters = {
   },
   boards(state) {
     return state.boards
-  },
-  list(state) {
-    return state.list
-  },
-  info(state) {
-    return {
-      total: state.total,
-      limit: state.limit,
-      page: state.page,
-    }
   },
 }
 
@@ -47,7 +40,6 @@ const actions = {
     // let tabId = rootState.setting.leaderboard.tabId
     // let key = `${source}${tabId}${page}`
     // if (state.list.length && state.key == key) return true
-    // commit('clearList')
     if (state.boards[source].length) return
     return music[source].leaderboard.getBoards().then(result => commit('setBoardsList', { boards: result, source }))
   },
@@ -56,14 +48,22 @@ const actions = {
     let tabId = rootState.setting.leaderboard.tabId
     let [source, bangId] = tabId.split('__')
     let key = `${source}${tabId}${page}`
-    if (state.list.length && state.key == key) return Promise.resolve()
-    commit('clearList')
+    if (listInfo.list.length && listInfo.key == key) return Promise.resolve(listInfo)
+    // commit('clearList')
     // return (
     //   cache.has(key)
     //     ? Promise.resolve(cache.get(key))
     //     : music[source].leaderboard.getList(bangId, page)
     // ).then(result => commit('setList', { result, key }))
-    return music[source].leaderboard.getList(bangId, page).then(result => commit('setList', { result, key }))
+    return music[source].leaderboard.getList(bangId, page).then(result => {
+      cache.set(key, result)
+      listInfo.list = result.list
+      listInfo.total = result.total
+      listInfo.limit = result.limit
+      listInfo.page = result.page
+      listInfo.key = key
+      return listInfo
+    })
   },
   getListAll({ state, rootState }, id) {
     // console.log(source, id)
@@ -95,18 +95,6 @@ const actions = {
 const mutations = {
   setBoardsList(state, { boards, source }) {
     state.boards[source] = boards.list
-  },
-  setList(state, { result, key }) {
-    state.list = result.list
-    state.total = result.total
-    state.limit = result.limit
-    state.page = result.page
-    state.key = key
-    cache.set(key, result)
-  },
-  clearList(state) {
-    state.list = []
-    state.total = 0
   },
 }
 

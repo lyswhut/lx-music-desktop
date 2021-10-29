@@ -4,7 +4,7 @@
     //- div(:class="$style.bg2")
     div(:class="$style.header")
       div(:class="$style.controBtn")
-        button(type="button" :class="$style.hide" :tips="$t('core.player.hide_detail')" @click="visiblePlayerDetail(false)")
+        button(type="button" :class="$style.hide" :tips="$t('core.player.hide_detail')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='80%' viewBox='0 0 30.727 30.727' space='preserve')
             use(xlink:href='#icon-window-hide')
         button(type="button" :class="$style.min" :tips="$t('core.toolbar.min')" @click="min")
@@ -96,7 +96,7 @@
 
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters } from 'vuex'
 import { base as eventBaseName } from '../../event/names'
 import { clipboardWriteText, scrollTo } from '../../utils'
 
@@ -104,6 +104,10 @@ let cancelScrollFn = null
 
 export default {
   props: {
+    visible: {
+      type: Boolean,
+      required: true,
+    },
     musicInfo: {
       type: Object,
       default() {
@@ -260,12 +264,11 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('player', ['isShowPlayerDetail']),
   },
   methods: {
-    ...mapMutations('player', [
-      'visiblePlayerDetail',
-    ]),
+    hide() {
+      this.$emit('update:visible', false)
+    },
     listenEvent() {
       document.addEventListener('mousemove', this.handleMouseMsMove)
       document.addEventListener('mouseup', this.handleMouseMsUp)
@@ -316,7 +319,7 @@ export default {
         return
       }
       this.clickTime = 0
-      this.visiblePlayerDetail(false)
+      this.hide()
     },
     handleLyricMouseDown(e) {
       // console.log(e)
@@ -511,7 +514,8 @@ export default {
   min-height: 0;
   overflow: hidden;
   display: flex;
-  padding: 0 30px;
+  margin: 0 30px;
+  position: relative;
 
   &.showComment {
     .left {
@@ -527,13 +531,13 @@ export default {
       }
     }
     .comment {
-      flex-basis: 50%;
       opacity: 1;
+      transform: scaleX(1);
     }
   }
 }
 .left {
-  flex: 40%;
+  flex: 0 0 40%;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -698,9 +702,14 @@ export default {
 }
 
 .comment {
-  flex: 0 0 0;
-  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  opacity: 1;
   margin-left: 10px;
+  transform: scaleX(0);
 }
 
 .footer {

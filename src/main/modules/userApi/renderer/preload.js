@@ -66,6 +66,7 @@ const handleRequest = (context, { requestKey, data }) => {
  *
  * @param {*} context
  * @param {*} info {
+ *                    openDevTools: false,
  *                    status: true,
  *                    message: 'xxx',
  *                    sources: {
@@ -184,7 +185,7 @@ contextBridge.exposeInMainWorld('lx', {
   utils: {
     crypto: {
       aesEncrypt(buffer, mode, key, iv) {
-        const cipher = createCipheriv('aes-128-' + mode, key, iv)
+        const cipher = createCipheriv(mode, key, iv)
         return Buffer.concat([cipher.update(buffer), cipher.final()])
       },
       rsaEncrypt(buffer, key) {
@@ -202,8 +203,12 @@ contextBridge.exposeInMainWorld('lx', {
       from(...args) {
         return Buffer.from(...args)
       },
+      bufToString(buf, format) {
+        return Buffer.from(buf, 'binary').toString(format)
+      },
     },
   },
+  version: '1.1.0',
   // removeEvent(eventName, handler) {
   //   if (!eventNames.includes(eventName)) return Promise.reject(new Error('The event is not supported: ' + eventName))
   //   let handlers

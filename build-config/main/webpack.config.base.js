@@ -1,4 +1,5 @@
 const path = require('path')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   target: 'electron-main',
@@ -19,17 +20,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-formatter-friendly'),
-          },
-        },
-        exclude: /node_modules/,
-        enforce: 'pre',
-      },
-      {
         test: /\.node$/,
         use: 'node-loader',
       },
@@ -38,4 +28,7 @@ module.exports = {
   performance: {
     maxEntrypointSize: 300000,
   },
+  plugins: [
+    new ESLintPlugin(),
+  ],
 }

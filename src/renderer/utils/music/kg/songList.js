@@ -1,6 +1,17 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { toMD5 } from '../utils'
+import infSign from './vendors/infSign.min'
+
+const handleSignature = (id, page, limit) => new Promise((resolve, reject) => {
+  infSign({ appid: 1058, type: 0, module: 'playlist', page, pagesize: limit, specialid: id }, null, {
+    useH5: !0,
+    isCDN: !0,
+    callback(i) {
+      resolve(i.signature)
+    },
+  })
+})
 
 export default {
   _requestObj_tags: null,
@@ -35,6 +46,7 @@ export default {
       id: '8',
     },
   ],
+  cache: new Map(),
   regExps: {
     listData: /global\.data = (\[.+\]);/,
     listInfo: /global = {[\s\S]+?name: "(.+)"[\s\S]+?pic: "(.+)"[\s\S]+?};/,
@@ -249,7 +261,7 @@ export default {
     })
     if (!songInfo.list) {
       if (songInfo.global_collection_id) return this.getUserListDetail2(songInfo.global_collection_id)
-      else throw new Error('fail')
+      else return this.getUserListDetail4(songInfo, chain, page).catch(() => this.getUserListDetail5(chain))
     }
     let result = await Promise.all(this.createTask(songInfo.list.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
     // console.log(info, songInfo)
@@ -360,6 +372,94 @@ export default {
         // play_count: this.formatPlayCount(info.count),
       },
     }
+  },
+
+  async getListInfoByChain(chain) {
+    if (this.cache.has(chain)) return this.cache.get(chain)
+    const { body } = await httpFetch(`https://m.kugou.com/share/?chain=${chain}&id=${chain}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+      },
+    }).promise
+    let result = body.match(/var\sphpParam\s=\s({.+?});/)
+    if (result) result = JSON.parse(result[1])
+    this.cache.set(chain, result)
+    return result
+  },
+
+  async getUserListDetailByPcChain(chain) {
+    let key = `${chain}_pc_list`
+    if (this.cache.has(key)) return this.cache.get(key)
+    const { body } = await httpFetch(`http://www.kugou.com/share/${chain}.html`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
+      },
+    }).promise
+    let result = body.match(/var\sdataFromSmarty\s=\s(\[.+?\])/)
+    if (result) result = JSON.parse(result[1])
+    this.cache.set(chain, result)
+    result = await Promise.all(this.createTask(result.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    // console.log(info, songInfo)
+    return this.filterData2(result)
+  },
+
+  async getUserListDetail4(songInfo, chain, page) {
+    const limit = 100
+    const [listInfo, list] = await Promise.all([
+      this.getListInfoByChain(chain),
+      this.getUserListDetailById(songInfo.id, page, limit),
+    ])
+    return {
+      list: list || [],
+      page,
+      limit,
+      total: listInfo.songcount,
+      source: 'kg',
+      info: {
+        name: listInfo.specialname,
+        img: listInfo.imgurl && listInfo.imgurl.replace('{size}', 240),
+        // desc: body.result.info.list_desc,
+        author: listInfo.nickname,
+        // play_count: this.formatPlayCount(info.count),
+      },
+    }
+  },
+
+  async getUserListDetail5(chain) {
+    const [listInfo, list] = await Promise.all([
+      this.getListInfoByChain(chain),
+      this.getUserListDetailByPcChain(chain),
+    ])
+    return {
+      list: list || [],
+      page: 1,
+      limit: this.listDetailLimit,
+      total: listInfo.songcount,
+      source: 'kg',
+      info: {
+        name: listInfo.specialname,
+        img: listInfo.imgurl && listInfo.imgurl.replace('{size}', 240),
+        // desc: body.result.info.list_desc,
+        author: listInfo.nickname,
+        // play_count: this.formatPlayCount(info.count),
+      },
+    }
+  },
+
+  async getUserListDetailById(id, page, limit) {
+    const signature = await handleSignature(id, page, limit)
+    let info = await this.createHttp(`https://pubsongscdn.kugou.com/v2/get_other_list_file?srcappid=2919&clientver=20000&appid=1058&type=0&module=playlist&page=${page}&pagesize=${limit}&specialid=${id}&signature=${signature}`, {
+      headers: {
+        Referer: 'https://m3ws.kugou.com/share/index.php',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+        dfid: '-',
+      },
+    })
+
+    // console.log(info)
+    let result = await Promise.all(this.createTask(info.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    // console.log(info, songInfo)
+    return this.filterData2(result)
   },
 
   async getUserListDetail(link, page, retryNum = 0) {

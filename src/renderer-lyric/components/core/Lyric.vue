@@ -1,5 +1,6 @@
 <template lang="pug">
-div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }, { [$style.lrcActiveZoom]: lrcConfig.style.isZoomActiveLrc } ]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric")
+div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }, { [$style.lrcActiveZoom]: lrcConfig.style.isZoomActiveLrc } ]"
+  :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart" ref="dom_lyric")
   div(:class="$style.lyricSpace")
   div(:class="[$style.lyricText]" ref="dom_lyric_text")
   //- div(v-for="(info, index) in lyricLines" :key="index" :class="[$style.lineContent, lyric.line == index ? (lrcConfig.style.isZoomActiveLrc ? $style.lrcActiveZoom : $style.lrcActive) : null]")
@@ -167,12 +168,16 @@ export default {
   mounted() {
     document.addEventListener('mousemove', this.handleMouseMsMove)
     document.addEventListener('mouseup', this.handleMouseMsUp)
+    document.addEventListener('touchmove', this.handleTouchMove)
+    document.addEventListener('touchend', this.handleMouseMsUp)
     rendererSend(NAMES.winLyric.get_lyric_info, 'info')
   },
   beforeDestroy() {
     this.clearLyricScrollTimeout()
     document.removeEventListener('mousemove', this.handleMouseMsMove)
     document.removeEventListener('mouseup', this.handleMouseMsUp)
+    document.removeEventListener('touchmove', this.handleTouchMove)
+    document.removeEventListener('touchend', this.handleMouseMsUp)
   },
   methods: {
     handleSetInfo({ type, data }) {
@@ -234,49 +239,59 @@ export default {
       let dom_p = this.dom_lines[this.lyric.line]
       cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
     },
-    handleLyricMouseDown(e) {
-      if (e.target.classList.contains('font') ||
-        e.target.parentNode.classList.contains('font') ||
-        e.target.classList.contains('translation') ||
-        e.target.parentNode.classList.contains('translation')) {
+    handleLyricDown(target, x, y) {
+      if (target.classList.contains('font') ||
+        target.parentNode.classList.contains('font') ||
+        target.classList.contains('translation') ||
+        target.parentNode.classList.contains('translation')) {
         this.lyricEvent.isMsDown = true
-        this.lyricEvent.msDownY = e.clientY
+        this.lyricEvent.msDownY = y
         this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
       } else {
         this.winEvent.isMsDown = true
-        this.winEvent.msDownX = e.clientX
-        this.winEvent.msDownY = e.clientY
+        this.winEvent.msDownX = x
+        this.winEvent.msDownY = y
+      }
+    },
+    handleLyricMouseDown(e) {
+      this.handleLyricDown(e.target, e.clientX, e.clientY)
+    },
+    handleLyricTouchStart(e) {
+      if (e.changedTouches.length) {
+        const touch = e.changedTouches[0]
+        this.handleLyricDown(e.target, touch.clientX, touch.clientY)
       }
     },
     handleMouseMsUp(e) {
       this.lyricEvent.isMsDown = false
       this.winEvent.isMsDown = false
     },
-    handleMouseMsMove(e) {
+    handleMove(x, y) {
       if (this.lyricEvent.isMsDown) {
         if (!this.lyricEvent.isStopScroll) this.lyricEvent.isStopScroll = true
         if (cancelScrollFn) {
           cancelScrollFn()
           cancelScrollFn = null
         }
-        this.$refs.dom_lyric.scrollTop = this.lyricEvent.msDownScrollY + this.lyricEvent.msDownY - e.clientY
+        this.$refs.dom_lyric.scrollTop = this.lyricEvent.msDownScrollY + this.lyricEvent.msDownY - y
         this.startLyricScrollTimeout()
       } else if (this.winEvent.isMsDown) {
         rendererSend(NAMES.winLyric.set_win_bounds, {
-          x: e.clientX - this.winEvent.msDownX,
-          y: e.clientY - this.winEvent.msDownY,
+          x: x - this.winEvent.msDownX,
+          y: y - this.winEvent.msDownY,
           w: window.innerWidth,
           h: window.innerHeight,
         })
       }
-
-      // if (this.volumeEvent.isMsDown) {
-      //   let val = this.volumeEvent.msDownValue + (e.clientX - this.volumeEvent.msDownX) / 70
-      //   this.volume = val < 0 ? 0 : val > 1 ? 1 : val
-      //   if (this.audio) this.audio.volume = this.volume
-      // }
-
-      // console.log(val)
+    },
+    handleTouchMove(e) {
+      if (e.changedTouches.length) {
+        const touch = e.changedTouches[0]
+        this.handleMove(touch.clientX, touch.clientY)
+      }
+    },
+    handleMouseMsMove(e) {
+      this.handleMove(e.clientX, e.clientY)
     },
     startLyricScrollTimeout() {
       this.clearLyricScrollTimeout()

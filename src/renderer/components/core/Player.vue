@@ -5,7 +5,7 @@ div(:class="$style.player")
     svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='102%' width='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
   div(:class="$style.middle")
-    div(:class="$style.middleContainer" v-if="!isShowPlayerDetail")
+    div(:class="$style.middleContainer")
       div(:class="$style.column1")
         div(:class="$style.container")
           div(:class="$style.title" @click="handleCopy(title)" :tips="title + $t('core.player.copy_title')") {{title}}
@@ -64,7 +64,7 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
+    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction"
@@ -141,11 +141,12 @@ export default {
         playTime: 0,
       },
       isShowAddMusicTo: false,
+      isShowPlayerDetail: false,
     }
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('player', ['list', 'changePlay', 'playMusicInfo', 'isShowPlayerDetail', 'playInfo', 'playedList']),
+    ...mapGetters('player', ['list', 'changePlay', 'playMusicInfo', 'playInfo', 'playedList']),
     // pic() {
     //   return this.musicInfo.img ? this.musicInfo.img : ''
     // },
@@ -340,7 +341,6 @@ export default {
       'setPlayMusicInfo',
       'setPlayIndex',
       'resetChangePlay',
-      'visiblePlayerDetail',
       'clearPlayedList',
       'setPlayedList',
     ]),
@@ -769,7 +769,7 @@ export default {
     },
     showPlayerDetail() {
       if (!this.targetSong) return
-      this.visiblePlayerDetail(true)
+      this.isShowPlayerDetail = true
     },
     handleTransitionEnd(e) {
       // console.log(e)

@@ -260,10 +260,7 @@ const mergeListDataFromSnapshot = (sourceList, targetList, snapshotList, addMusi
   for (const m of sourceList.list) sourceListItemIds.add(m.songmid)
   for (const m of targetList.list) targetListItemIds.add(m.songmid)
   for (const m of snapshotList.list) {
-    if (!sourceListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
-  }
-  for (const m of snapshotList.list) {
-    if (!targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
+    if (!sourceListItemIds.has(m.songmid) || !targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
   }
 
   let newList
@@ -311,10 +308,7 @@ const handleMergeListDataFromSnapshot = async(socket, snapshot) => {
   for (const l of remoteListData.userList) remoteUserListIds.add(l.id)
 
   for (const l of snapshot.userList) {
-    if (!localUserListIds.has(l.id)) removedListIds.add(l.id)
-  }
-  for (const l of snapshot.userList) {
-    if (!remoteUserListIds.has(l.id)) removedListIds.add(l.id)
+    if (!localUserListIds.has(l.id) || !remoteUserListIds.has(l.id)) removedListIds.add(l.id)
   }
 
   let newUserList = []
@@ -353,7 +347,7 @@ const registerUpdateSnapshotTask = (socket, snapshot) => {
     if (loveList != null) snapshot.loveList = loveList
     if (userList != null) snapshot.userList = userList
     updateSnapshot(socket.data.snapshotFilePath, JSON.stringify(snapshot))
-  }, 10000)
+  }, 2000)
   global.lx_event.common.on(COMMON_EVENT_NAME.saveMyList, handleUpdateSnapshot)
   socket.on('disconnect', () => {
     global.lx_event.common.off(COMMON_EVENT_NAME.saveMyList, handleUpdateSnapshot)

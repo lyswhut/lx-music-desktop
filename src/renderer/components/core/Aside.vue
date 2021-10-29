@@ -35,7 +35,7 @@ div(:class="$style.aside")
     dl
       //- dt {{$t('core.aside.my_music')}}
       dd
-        router-link(:active-class="$style.active" :tips="$t('core.aside.my_list')" :to="`list?id=${setting.list.prevSelectListId || defaultList.id}`")
+        router-link(:active-class="$style.active" to="list" :tips="$t('core.aside.my_list')")
           div(:class="$style.icon")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 444.87 391.18' space='preserve')
               use(xlink:href='#icon-love')

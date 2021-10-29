@@ -35,7 +35,6 @@ const defaultSetting = {
   list: {
     isShowAlbumName: true,
     isShowSource: true,
-    prevSelectListId: 'default',
     isSaveScrollLocation: true,
     addMusicLocationType: 'top',
   },

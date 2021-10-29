@@ -6,6 +6,31 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.15.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.14.1...v1.15.0) - 2021-10-29
+
+### 新增
+
+- 添加黑色托盘图标
+- 自定义源新增`version`字段，新增`utils.buffer.bufToString`方法
+
+### 优化
+
+- 大幅优化我的列表、下载、歌单、排行榜列表性能，现在即使同一列表内的歌曲很多时也不会卡顿了
+- 优化列表同步代码逻辑
+- 优化开关评论时的动画性能
+- 优化进入、离开播放详情页的性能
+- 兼容桌面歌词以触摸的方式移动、调整大小
+- 调整图标尺寸
+
+### 修复
+
+- 修复kg源的歌单链接无法打开的问题
+- 修复同一首歌的URL、歌词等同时需要换源时的处理问题
+
+### 其他
+
+- 更新 Electron 到 v15.3.0
+
 ## [1.14.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.14.0...v1.14.1) - 2021-10-04
 
 ### 修复

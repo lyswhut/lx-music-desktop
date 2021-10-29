@@ -5,6 +5,7 @@ const modules = require('../modules')
 const { authCode, authConnect } = require('./auth')
 const { getAddress, getServerId, generateCode, getClientKeyInfo } = require('./utils')
 const syncList = require('./syncList')
+const { log } = require('@common/utils')
 
 
 let status = {
@@ -88,7 +89,8 @@ const handleStartServer = (port = 9527) => new Promise((resolve, reject) => {
     try {
       await syncList(io, socket)
     } catch (err) {
-      console.log(err)
+      // console.log(err)
+      log.warn(err)
       return
     }
     status.devices.push(keyInfo)
