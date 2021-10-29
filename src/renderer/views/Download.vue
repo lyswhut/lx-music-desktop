@@ -15,7 +15,7 @@ div(:class="$style.download")
             th.nobreak(style="width: 10%;") {{$t('view.download.quality')}}
             th.nobreak(style="width: 13%;") {{$t('view.download.action')}}
     div(v-if="list.length" :class="$style.content" ref="dom_listContent")
-      material-virtualized-list(:list="showList" key-name="key" ref="list" :item-height="37" #default="{ item, index }"
+      material-virtualized-list(:list="showList" key-name="key" ref="list" :item-height="listItemHeight" #default="{ item, index }"
         containerClass="scroll" contentClass="list")
         div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
           :class="[{[$style.active]: playListIndex == index }, { selected: selectedIndex == index }, { active: selectedData.includes(item) }]")
@@ -39,6 +39,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { checkPath, openDirInExplorer, openUrl } from '../utils'
 import musicSdk from '../utils/music'
 import path from 'path'
+import { windowSizeList } from '@common/config'
 
 export default {
   name: 'Download',
@@ -170,6 +171,9 @@ export default {
           hide: !this.listMenu.itemMenuControl.remove,
         },
       ]
+    },
+    listItemHeight() {
+      return parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize) / 16 * 37
     },
   },
   watch: {

@@ -178,7 +178,7 @@ export default {
       // console.log(continuous)
       // debugger
       if (continuous) {
-        if (Math.abs(currentScrollTop - this.scrollTop) < this.itemHeight * 5) return
+        if (Math.abs(currentScrollTop - this.scrollTop) < this.itemHeight * this.outsideNum * 0.6) return
         // console.log('update')
         if (currentScrollTop > this.scrollTop) { // scroll down
           // console.log('scroll down')

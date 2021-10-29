@@ -14,7 +14,7 @@ div(:class="$style.songList")
               th.nobreak(:style="{ width: rowWidth.r6 }") {{$t('material.song_list.action')}}
       div(:class="$style.content")
         div(v-if="list.length" :class="$style.content" ref="dom_listContent")
-          material-virtualized-list(:list="list" key-name="songmid" ref="list" :item-height="37"
+          material-virtualized-list(:list="list" key-name="songmid" ref="list" :item-height="listItemHeight"
             containerClass="scroll" contentClass="list" @contextmenu.native.capture="handleContextMenu")
             template(#default="{ item, index }")
               div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
@@ -72,6 +72,7 @@ div(:class="$style.songList")
 import { mapGetters } from 'vuex'
 import { scrollTo, clipboardWriteText, assertApiSupport } from '../../utils'
 import musicSdk from '../../utils/music'
+import { windowSizeList } from '@common/config'
 export default {
   name: 'MaterialSongList',
   model: {
@@ -161,6 +162,9 @@ export default {
           disabled: !this.listMenu.itemMenuControl.sourceDetail,
         },
       ]
+    },
+    listItemHeight() {
+      return parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize) / 16 * 37
     },
   },
   watch: {

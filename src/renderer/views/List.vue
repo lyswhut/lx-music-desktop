@@ -37,7 +37,7 @@
               th.nobreak(style="width: 9%;") {{$t('view.list.time')}}
               th.nobreak(style="width: 15%;") {{$t('view.list.action')}}
       div(v-if="list.length" :class="$style.content" ref="dom_listContent")
-        material-virtualized-list(:list="list" key-name="songmid" ref="list" #default="{ item, index }" :item-height="37"
+        material-virtualized-list(:list="list" key-name="songmid" ref="list" #default="{ item, index }" :item-height="listItemHeight"
           @scroll="handleScroll" containerClass="scroll" contentClass="list" @contextmenu.native.capture="handleContextMenu")
           div.list-item(@click="handleDoubleClick($event, index)"
             :class="[{ [$style.active]: isPlayList && playInfo.playIndex === index }, { selected: selectedIndex == index }, { active: selectdListDetailData.includes(item) }, { [$style.disabled]: !assertApiSupport(item.source) }]"
@@ -73,6 +73,7 @@ import { mapMutations, mapGetters, mapActions } from 'vuex'
 import { clipboardWriteText, assertApiSupport, openUrl, openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '../utils'
 import musicSdk from '../utils/music'
 import { setListPosition, getListPosition, getListPrevSelectId } from '@renderer/utils/data'
+import { windowSizeList } from '@common/config'
 
 
 export default {
@@ -88,7 +89,6 @@ export default {
       selectdListData: [],
       // isShowEditBtn: false,
       isShowDownloadMultiple: false,
-      delayShow: false,
       isShowListAdd: false,
       isShowListAddMultiple: false,
       isShowListSortModal: false,
@@ -286,6 +286,9 @@ export default {
         },
       ]
     },
+    listItemHeight() {
+      return parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize) / 16 * 37
+    },
   },
   watch: {
     // selectdListDetailData(n) {
@@ -313,7 +316,6 @@ export default {
       if (to.query.scrollIndex != null) this.isToggleList = false
       return next()
     }
-    this.delayShow = false
     this.$nextTick(() => {
       this.listId = to.query.id
       this.$nextTick(() => {
@@ -434,7 +436,7 @@ export default {
       if (!this.list.length) return
       if (index == null) {
         let location = getListPosition(this.listData.id) || 0
-        if (this.setting.list.isSaveScrollLocation && location) {
+        if (this.setting.list.isSaveScrollLocation && location != null) {
           this.$nextTick(() => {
             this.$refs.list.scrollTo(location)
           })
