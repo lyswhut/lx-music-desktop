@@ -229,8 +229,8 @@ export default {
       })
     },
 
-    scrollToIndex(index, offset = 0, animate = false, callback = () => {}) {
-      return this.scrollTo(Math.max(index * this.itemHeight + offset, 0), animate, callback)
+    scrollToIndex(index, offset = 0, animate = false) {
+      return this.scrollTo(Math.max(index * this.itemHeight + offset, 0), animate)
     },
 
     getScrollTop() {
