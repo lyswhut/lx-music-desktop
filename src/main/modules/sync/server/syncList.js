@@ -259,8 +259,10 @@ const mergeListDataFromSnapshot = (sourceList, targetList, snapshotList, addMusi
   const targetListItemIds = new Set()
   for (const m of sourceList.list) sourceListItemIds.add(m.songmid)
   for (const m of targetList.list) targetListItemIds.add(m.songmid)
-  for (const m of snapshotList.list) {
-    if (!sourceListItemIds.has(m.songmid) || !targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
+  if (snapshotList) {
+    for (const m of snapshotList.list) {
+      if (!sourceListItemIds.has(m.songmid) || !targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
+    }
   }
 
   let newList
@@ -294,7 +296,6 @@ const mergeListDataFromSnapshot = (sourceList, targetList, snapshotList, addMusi
 const handleMergeListDataFromSnapshot = async(socket, snapshot) => {
   const addMusicLocationType = global.appSetting.list.addMusicLocationType
   const [remoteListData, localListData] = await Promise.all([getRemoteListData(socket), getLocalListData()])
-  console.log('handleMergeListDataFromSnapshot', 'remoteListData, localListData')
   const newListData = {}
   newListData.defaultList = mergeListDataFromSnapshot(localListData.defaultList, remoteListData.defaultList, snapshot.defaultList, addMusicLocationType)
   newListData.loveList = mergeListDataFromSnapshot(localListData.loveList, remoteListData.loveList, snapshot.loveList, addMusicLocationType)
