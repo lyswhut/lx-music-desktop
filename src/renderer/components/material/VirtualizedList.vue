@@ -82,7 +82,7 @@ export default {
     },
     outsideNum: {
       type: Number,
-      default: 10,
+      default: 1,
     },
     itemHeight: {
       type: Number,
@@ -101,7 +101,6 @@ export default {
   data() {
     return {
       views: [],
-      isWaitingUpdate: false,
       startIndex: -1,
       endIndex: -1,
       scrollTop: 0,
@@ -138,16 +137,15 @@ export default {
     this.updateView()
   },
   beforeDestroy() {
+    this.$refs.dom_scrollContainer.removeEventListener('scroll', this.onScroll)
     if (this.cancelScroll) this.cancelScroll()
   },
   methods: {
     onScroll(event) {
-      if (this.isWaitingUpdate) return
-      this.isWaitingUpdate = true
-      window.requestAnimationFrame(() => {
-        this.updateView()
-        this.isWaitingUpdate = false
-      })
+      const currentScrollTop = this.$refs.dom_scrollContainer.scrollTop
+      if (Math.abs(currentScrollTop - this.scrollTop) > this.itemHeight * this.outsideNum * 0.6) {
+        this.updateView(currentScrollTop)
+      }
       this.$emit('scroll', event)
     },
 
@@ -168,17 +166,18 @@ export default {
       return list
     },
 
-    updateView() {
-      const currentScrollTop = this.$refs.dom_scrollContainer.scrollTop
+    updateView(currentScrollTop = this.$refs.dom_scrollContainer.scrollTop) {
+      // const currentScrollTop = this.$refs.dom_scrollContainer.scrollTop
       const currentStartIndex = Math.floor(currentScrollTop / this.itemHeight)
-      const currentEndIndex = currentStartIndex + Math.ceil(this.$refs.dom_scrollContainer.clientHeight / this.itemHeight)
+      const scrollContainerHeight = this.$refs.dom_scrollContainer.clientHeight
+      const currentEndIndex = currentStartIndex + Math.ceil(scrollContainerHeight / this.itemHeight)
       const continuous = currentStartIndex <= this.endIndex && currentEndIndex >= this.startIndex
       const currentStartRenderIndex = Math.max(Math.floor(currentScrollTop / this.itemHeight) - this.outsideNum, 0)
-      const currentEndRenderIndex = currentStartIndex + Math.ceil(this.$refs.dom_scrollContainer.clientHeight / this.itemHeight) + this.outsideNum
+      const currentEndRenderIndex = currentStartIndex + Math.ceil(scrollContainerHeight / this.itemHeight) + this.outsideNum
       // console.log(continuous)
       // debugger
       if (continuous) {
-        if (Math.abs(currentScrollTop - this.scrollTop) < this.itemHeight * this.outsideNum * 0.6) return
+        // if (Math.abs(currentScrollTop - this.scrollTop) < this.itemHeight * this.outsideNum * 0.6) return
         // console.log('update')
         if (currentScrollTop > this.scrollTop) { // scroll down
           // console.log('scroll down')
