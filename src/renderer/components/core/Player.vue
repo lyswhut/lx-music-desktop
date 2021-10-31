@@ -64,14 +64,14 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
+    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction"
                       :nextTogglePlayName="nextTogglePlayName"
                       @toggle-next-play-mode="toggleNextPlayMode" @add-music-to="addMusicTo")
 
-  material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong" @close="isShowAddMusicTo = false")
+  material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="currentMusicInfo" @close="isShowAddMusicTo = false")
   svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
     defs
       g(:id="$style.iconPic")
@@ -121,6 +121,7 @@ export default {
         singer: '',
         album: '',
       },
+      currentMusicInfo: {},
       pregessWidth: 0,
       lyric: {
         lines: [],
@@ -395,7 +396,7 @@ export default {
           // console.log(this.retryNum)
           if (!this.restorePlayTime) this.restorePlayTime = audio.currentTime // 记录出错的播放时间
           this.retryNum++
-          this.setUrl(this.targetSong, true)
+          this.setUrl(this.currentMusicInfo, true)
           this.status = this.statusText = this.$t('core.player.refresh_url')
           return
         }
@@ -485,7 +486,7 @@ export default {
       this.clearDelayNextTimeout()
       this.updateMediaSessionInfo()
 
-      const targetSong = this.targetSong
+      let targetSong = this.targetSong
 
       if (this.setting.player.togglePlayMethod == 'random' && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
       this.retryNum = 0
@@ -497,16 +498,18 @@ export default {
         if (!await checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
           return this.list.length == 1 ? null : this.playNext()
         }
-        this.musicInfo.songmid = targetSong.musicInfo.songmid
-        this.musicInfo.singer = targetSong.musicInfo.singer
-        this.musicInfo.name = targetSong.musicInfo.name
+        this.currentMusicInfo = targetSong = window.downloadListFullMap.get(targetSong.key).musicInfo
+        this.musicInfo.songmid = targetSong.songmid
+        this.musicInfo.singer = targetSong.singer
+        this.musicInfo.name = targetSong.name
         this.musicInfo.album = targetSong.albumName
         audio.src = filePath
         // console.log(filePath)
-        this.setImg(targetSong.musicInfo)
-        this.setLrc(targetSong.musicInfo)
+        this.setImg(targetSong)
+        this.setLrc(targetSong)
       } else {
         // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
+        this.currentMusicInfo = targetSong
         this.musicInfo.songmid = targetSong.songmid
         this.musicInfo.singer = targetSong.singer
         this.musicInfo.name = targetSong.name
@@ -771,7 +774,7 @@ export default {
       })
     },
     showPlayerDetail() {
-      if (!this.targetSong) return
+      if (!this.currentMusicInfo) return
       this.isShowPlayerDetail = true
     },
     handleTransitionEnd(e) {
@@ -939,11 +942,11 @@ export default {
     },
     updateMediaSessionInfo() {
       const mediaMetadata = {
-        title: this.targetSong.name,
-        artist: this.targetSong.singer,
-        album: this.targetSong.albumName,
+        title: this.currentMusicInfo.name,
+        artist: this.currentMusicInfo.singer,
+        album: this.currentMusicInfo.albumName,
       }
-      if (this.targetSong.img) mediaMetadata.artwork = [{ src: this.targetSong.img }]
+      if (this.currentMusicInfo.img) mediaMetadata.artwork = [{ src: this.currentMusicInfo.img }]
       navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
     },
     registerMediaSessionHandler() {

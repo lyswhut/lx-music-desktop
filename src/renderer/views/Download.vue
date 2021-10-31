@@ -20,10 +20,10 @@ div(:class="$style.download")
         div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
           :class="[{[$style.active]: playListIndex == index }, { selected: selectedIndex == index }, { active: selectedData.includes(item) }]")
           div.list-item-cell.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" @click.stop) {{index + 1}}
-          div.list-item-cell.auto
-            span.select {{item.musicInfo.name}} - {{item.musicInfo.singer}}
+          div.list-item-cell.auto(:tips="item.name")
+            span.select {{item.name}}
           div.list-item-cell(style="width: 20%;") {{item.progress.progress}}%
-          div.list-item-cell(style="width: 22%;") {{item.statusText}}
+          div.list-item-cell(style="width: 22%;" :tips="item.statusText") {{item.statusText}}
           div.list-item-cell(style="width: 10%;") {{item.type && item.type.toUpperCase()}}
           div.list-item-cell(style="width: 13%; padding-left: 0; padding-right: 0;")
             material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR" remove-btn
@@ -309,7 +309,7 @@ export default {
           this.handleOpenFolder(item.filePath)
           break
         case 'search':
-          this.handleSearch(item.musicInfo)
+          this.handleSearch(window.downloadListFullMap.get(item.key).musicInfo)
           break
       }
     },
@@ -350,7 +350,8 @@ export default {
       this.selectedData = []
     },
     handleListItemRigthClick(event, index) {
-      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[this.showList[index].musicInfo.source].getMusicDetailPageUrl
+      const downloadInfo = window.downloadListFullMap.get(this.showList[index].key)
+      this.listMenu.itemMenuControl.sourceDetail = !!musicSdk[downloadInfo.musicInfo.source].getMusicDetailPageUrl
       let dom_container = event.target.closest('.' + this.$style.download)
       const getOffsetValue = (target, x = 0, y = 0) => {
         if (target === dom_container) return { x, y }
@@ -442,7 +443,7 @@ export default {
           break
         case 'search':
           item = this.showList[index]
-          if (item) this.handleSearch(item.musicInfo)
+          if (item) this.handleSearch(window.downloadListFullMap.get(item.key).musicInfo)
           break
         case 'remove':
           if (this.selectedData.length) {
@@ -466,7 +467,7 @@ export default {
           }
           break
         case 'sourceDetail':
-          item = this.showList[index].musicInfo
+          item = window.downloadListFullMap.get(this.showList[index].key).musicInfo
           url = musicSdk[item.source].getMusicDetailPageUrl(item)
           if (!url) return
           openUrl(url)

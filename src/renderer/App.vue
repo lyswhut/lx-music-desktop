@@ -148,7 +148,7 @@ export default {
     },
     downloadList: {
       handler(n) {
-        this.saveDownloadList(n)
+        this.saveDownloadList(window.downloadListFull)
       },
       deep: true,
     },
@@ -373,12 +373,17 @@ export default {
     },
     initDownloadList(downloadList) {
       if (downloadList) {
-        downloadList.forEach(item => {
+        downloadList = downloadList.filter(item => item && item.key && item.musicInfo)
+        for (const item of downloadList) {
+          if (item.name == null) {
+            item.name = `${item.musicInfo.name} - ${item.musicInfo.singer}`
+            item.songmid = item.musicInfo.songmid
+          }
           if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
             item.status = this.downloadStatus.PAUSE
             item.statusText = '暂停下载'
           }
-        })
+        }
         this.updateDownloadList(downloadList)
       }
     },

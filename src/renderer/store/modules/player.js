@@ -155,15 +155,23 @@ const getters = {
     let listPlayIndex = Math.min(state.playIndex, state.listInfo.list.length - 1)
 
     if (listId != '__temp__') {
-      const currentSongmid = state.playMusicInfo.musicInfo.songmid || state.playMusicInfo.musicInfo.musicInfo.songmid
-      if (isPlayList) {
-        playIndex = state.listInfo.list.findIndex(m => (m.songmid || m.musicInfo.songmid) == currentSongmid)
-        if (!isTempPlay) listPlayIndex = playIndex
-      } else if (listId == 'download') {
-        playIndex = window.downloadList.findIndex(m => m.musicInfo.songmid == currentSongmid)
+      if (state.playMusicInfo.musicInfo.key) {
+        const currentKey = state.playMusicInfo.musicInfo.key
+        if (isPlayList) {
+          playIndex = state.listInfo.list.findIndex(m => m.key == currentKey)
+          if (!isTempPlay) listPlayIndex = playIndex
+        } else if (listId == 'download') {
+          playIndex = window.downloadList.findIndex(m => m.key == currentKey)
+        }
       } else {
-        let list = window.allList[listId]
-        if (list) playIndex = list.list.findIndex(m => m.songmid == currentSongmid)
+        const currentSongmid = state.playMusicInfo.musicInfo.songmid || state.playMusicInfo.musicInfo.musicInfo.songmid
+        if (isPlayList) {
+          playIndex = state.listInfo.list.findIndex(m => m.songmid == currentSongmid)
+          if (!isTempPlay) listPlayIndex = playIndex
+        } else {
+          let list = window.allList[listId]
+          if (list) playIndex = list.list.findIndex(m => m.songmid == currentSongmid)
+        }
       }
     }
     if (listPlayIndex >= 0) prevListPlayIndex = listPlayIndex
@@ -186,6 +194,8 @@ const getters = {
     //   isTempPlay,
     //   // musicInfo: state.playMusicInfo.musicInfo,
     // })
+
+    console.log(state.playMusicInfo)
     return {
       listId,
       playIndex,
