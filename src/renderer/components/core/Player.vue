@@ -707,6 +707,7 @@ export default {
       this.lyric.text = 0
       this.handleUpdateWinLyricInfo('lines', [])
       this.handleUpdateWinLyricInfo('line', 0)
+      this.currentMusicInfo = {}
     },
     sendProgressEvent(status, mode) {
       // console.log(status)
