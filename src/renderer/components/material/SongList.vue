@@ -24,9 +24,9 @@ div(:class="$style.songList")
                   span.select {{item.name}}
                   span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('material.song_list.lossless')}}
                   span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('material.song_list.high_quality')}}
-                div.list-item-cell(:style="{ width: rowWidth.r3 }")
+                div.list-item-cell(:style="{ width: rowWidth.r3 }" :tips="item.singer")
                   span.select {{item.singer}}
-                div.list-item-cell(:style="{ width: rowWidth.r4 }")
+                div.list-item-cell(:style="{ width: rowWidth.r4 }" :tips="item.albumName")
                   span.select {{item.albumName}}
                 div.list-item-cell(:style="{ width: rowWidth.r5 }")
                   span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
