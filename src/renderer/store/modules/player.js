@@ -195,7 +195,7 @@ const getters = {
     //   // musicInfo: state.playMusicInfo.musicInfo,
     // })
 
-    console.log(state.playMusicInfo)
+    // console.log(state.playMusicInfo)
     return {
       listId,
       playIndex,

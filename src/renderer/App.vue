@@ -404,10 +404,17 @@ export default {
         if (!info) return
         if (info.index < 0) return
         if (info.listId) {
-          const list = window.allList[info.listId]
-          // console.log(list)
-          if (!list || !list.list[info.index]) return
-          info.list = list.list
+          if (info.listId == 'download') {
+            const list = this.downloadList
+            // console.log(list)
+            if (!list || !list[info.index]) return
+            info.list = list
+          } else {
+            const list = window.allList[info.listId]
+            // console.log(list)
+            if (!list || !list.list[info.index]) return
+            info.list = list.list
+          }
         }
         if (!info.list || !info.list[info.index]) return
         window.restorePlayInfo = info

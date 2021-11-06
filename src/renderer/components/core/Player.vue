@@ -64,7 +64,7 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-show="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
+    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction"
@@ -505,8 +505,6 @@ export default {
         this.musicInfo.album = targetSong.albumName
         audio.src = filePath
         // console.log(filePath)
-        this.setImg(targetSong)
-        this.setLrc(targetSong)
       } else {
         // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
         this.currentMusicInfo = targetSong
@@ -515,9 +513,9 @@ export default {
         this.musicInfo.name = targetSong.name
         this.musicInfo.album = targetSong.albumName
         this.setUrl(targetSong)
-        this.setImg(targetSong)
-        this.setLrc(targetSong)
       }
+      this.setImg(targetSong)
+      this.setLrc(targetSong)
       this.handleUpdateWinLyricInfo('music_info', {
         songmid: this.musicInfo.songmid,
         singer: this.musicInfo.singer,
@@ -595,11 +593,25 @@ export default {
         window.getComputedStyle(this.$refs.dom_progress, null).width,
       )
     },
-    togglePlay() {
+    async togglePlay() {
       if (!audio.src) {
         if (this.restorePlayTime != null) {
-          // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
-          this.setUrl(this.targetSong)
+          if (this.listId == 'download') {
+            const filePath = path.join(this.setting.download.savePath, this.targetSong.fileName)
+            // console.log(filePath)
+            if (!await checkPath(filePath) || !this.targetSong.isComplate || /\.ape$/.test(filePath)) {
+              if (this.list.length == 1) {
+                this.handleRemoveMusic()
+              } else {
+                this.playNext()
+              }
+              return
+            }
+            audio.src = filePath
+          } else {
+            // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
+            this.setUrl(this.targetSong)
+          }
         }
         return
       }
@@ -919,8 +931,18 @@ export default {
       if (!this.musicInfo.songmid) return
       this.isShowAddMusicTo = true
     },
-    handleRestorePlay(restorePlayInfo) {
-      let musicInfo = this.list[restorePlayInfo.index]
+    async handleRestorePlay(restorePlayInfo) {
+      let musicInfo
+
+      if (this.listId == 'download') {
+        this.currentMusicInfo = musicInfo = window.downloadListFullMap.get(this.list[restorePlayInfo.index].key).musicInfo
+        // console.log(filePath)
+      } else {
+        // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
+        musicInfo = this.list[restorePlayInfo.index]
+        this.currentMusicInfo = musicInfo
+      }
+
       this.musicInfo.songmid = musicInfo.songmid
       this.musicInfo.singer = musicInfo.singer
       this.musicInfo.name = musicInfo.name
