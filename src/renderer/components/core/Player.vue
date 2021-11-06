@@ -64,7 +64,7 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
+    core-player-detail(v-show="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction"
@@ -764,7 +764,7 @@ export default {
       this.setProgressWidth()
     },
     handleToMusicLocation() {
-      if (!this.listId || this.listId == '__temp__' || this.listId == 'download') return
+      if (!this.listId || this.listId == '__temp__' || this.listId == 'download' || !this.currentMusicInfo.songmid) return
       if (this.playIndex == -1) return
       this.$router.push({
         path: 'list',
@@ -775,7 +775,7 @@ export default {
       })
     },
     showPlayerDetail() {
-      if (!this.currentMusicInfo) return
+      if (!this.currentMusicInfo.songmid) return
       this.isShowPlayerDetail = true
     },
     handleTransitionEnd(e) {
