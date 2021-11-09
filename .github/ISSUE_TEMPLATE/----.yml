@@ -22,14 +22,14 @@ body:
 - type: textarea
   id: proposed-solution
   attributes:
-    label: 描述您想要的解决方案
+    label: 描述你想要的解决方案
     description: 简洁明了地描述你要发生的事情
   validations:
     required: true
 - type: textarea
   id: alternatives-considered
   attributes:
-    label: 描述您考虑过的替代方案
+    label: 描述你考虑过的替代方案
     description: 对你考虑过的所有替代解决方案或功能的简洁明了的描述
   validations:
     required: false
