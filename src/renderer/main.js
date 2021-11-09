@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { sync } from 'vuex-router-sync'
+// import { sync } from 'vuex-router-sync'
 
 import './event'
 
@@ -20,7 +20,7 @@ import { getSetting } from './utils'
 import languageList from '@renderer/lang/languages.json'
 import { rendererSend, NAMES } from '../common/ipc'
 
-sync(store, router)
+// sync(store, router)
 
 Vue.config.productionTip = false
 Vue.config.devtools = process.env.NODE_ENV === 'development'

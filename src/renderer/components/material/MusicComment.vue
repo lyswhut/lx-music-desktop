@@ -185,7 +185,8 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   transition: @transition-theme;
-  transition-property: flex-basis opacity;
+  transition-property: transform,opacity;
+  transform-origin: 100%;
   overflow: hidden;
 }
 .commentHeader {

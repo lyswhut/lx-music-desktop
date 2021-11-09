@@ -329,16 +329,16 @@ import {
   setWindowSize,
   getSetting,
   saveSetting,
+  saveLxConfigFile,
+  readLxConfigFile,
 } from '../utils'
 import { rendererSend, rendererInvoke, rendererOn, NAMES, rendererOff } from '@common/ipc'
 import { mergeSetting, isMac } from '../../common/utils'
 import apiSourceInfo from '../utils/music/api-source-info'
-import fs from 'fs'
 import languageList from '@renderer/lang/languages.json'
 import { base as eventBaseName } from '../event/names'
 import * as hotKeys from '../../common/hotKey'
 import { mainWindow as eventsNameMainWindow, winLyric as eventsNameWinLyric } from '../../main/events/_name'
-import { gzip, gunzip } from 'zlib'
 import music from '../utils/music'
 
 let hotKeyTargetInput
@@ -454,6 +454,10 @@ export default {
         {
           id: 1,
           name: 'origin',
+        },
+        {
+          id: 2,
+          name: 'black',
         },
       ]
     },
@@ -815,7 +819,7 @@ export default {
     async importSetting(path) {
       let settingData
       try {
-        settingData = JSON.parse(await this.handleReadFile(path))
+        settingData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
@@ -830,24 +834,23 @@ export default {
         type: 'setting',
         data: Object.assign({ version: this.settingVersion }, this.setting),
       }
-      this.handleSaveFile(path, JSON.stringify(data))
+      saveLxConfigFile(path, data)
     },
     async importPlayList(path) {
       let listData
       try {
-        listData = JSON.parse(await this.handleReadFile(path))
+        listData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
       console.log(listData.type)
 
       // 兼容0.6.2及以前版本的列表数据
-      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list, name: '试听列表', location: 0 })
+      if (listData.type === 'defautlList') return this.setList({ id: 'default', list: listData.data.list, name: '试听列表' })
 
       if (listData.type !== 'playList') return
 
       for (const list of listData.data) {
-        if (list.location == null) list.location = 0
         this.setList(list)
       }
 
@@ -867,22 +870,21 @@ export default {
           if (item.otherSource) delete item.otherSource
         }
       }
-      this.handleSaveFile(path, JSON.stringify(data))
+      saveLxConfigFile(path, data)
     },
     async importAllData(path) {
       let allData
       try {
-        allData = JSON.parse(await this.handleReadFile(path))
+        allData = await readLxConfigFile(path)
       } catch (error) {
         return
       }
       if (allData.type !== 'allData') return
 
       // 兼容0.6.2及以前版本的列表数据
-      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表', location: 0 })
+      if (allData.defaultList) return this.setList({ id: 'default', list: allData.defaultList.list, name: '试听列表' })
 
       for (const list of allData.playList) {
-        if (list.location == null) list.location = 0
         this.setList(list)
       }
 
@@ -906,7 +908,7 @@ export default {
           if (item.otherSource) delete item.otherSource
         }
       }
-      this.handleSaveFile(path, JSON.stringify(allData))
+      saveLxConfigFile(path, allData)
     },
     handleImportAllData() {
       selectDir({
@@ -1197,35 +1199,6 @@ export default {
     },
     handleTrayShowChange(isShow) {
       this.current_setting.tray.isToTray = isShow
-    },
-    async handleSaveFile(path, data) {
-      if (!path.endsWith('.lxmc')) path += '.lxmc'
-      fs.writeFile(path, await this.gzip(data), 'binary', err => {
-        console.log(err)
-      })
-    },
-    async handleReadFile(path) {
-      let isJSON = path.endsWith('.json')
-      let data = await fs.promises.readFile(path, isJSON ? 'utf8' : 'binary')
-      if (!data || isJSON) return data
-      data = await this.gunzip(Buffer.from(data, 'binary'))
-      return data.toString('utf8')
-    },
-    gzip(str) {
-      return new Promise((resolve, reject) => {
-        gzip(str, (err, result) => {
-          if (err) return reject(err)
-          resolve(result)
-        })
-      })
-    },
-    gunzip(buf) {
-      return new Promise((resolve, reject) => {
-        gunzip(buf, (err, result) => {
-          if (err) return reject(err)
-          resolve(result.toString())
-        })
-      })
     },
     getApiStatus() {
       let status

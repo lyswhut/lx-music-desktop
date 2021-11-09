@@ -239,7 +239,7 @@ export default {
     handleSearch() {
       if (!this.text.length) return this.resultList = []
       let list = []
-      let rxp = new RegExp(this.text.split('').join('.*') + '.*', 'i')
+      let rxp = new RegExp(this.text.split('').map(s => s.replace(/[.*+?^${}()|[\]\\]/, '\\$&')).join('.*') + '.*', 'i')
       for (const item of this.list) {
         if (rxp.test(`${item.name}${item.singer}${item.albumName ? item.albumName : ''}`)) list.push(item)
       }
@@ -374,6 +374,7 @@ export default {
 .albumName {
   font-size: 12px;
   opacity: 0.6;
+  .mixin-ellipsis-1;
 }
 .source {
   flex: none;

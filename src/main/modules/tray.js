@@ -1,5 +1,5 @@
-const { app, Tray, Menu } = require('electron')
-const { isWin } = require('../../common/utils')
+const { app, Tray, Menu, nativeImage } = require('electron')
+// const { isWin } = require('../../common/utils')
 const { tray: TRAY_EVENT_NAME, common: COMMON_EVENT_NAME, mainWindow: MAIN_WINDOW_NAME } = require('../events/_name')
 const path = require('path')
 let isEnableTray = null
@@ -7,12 +7,17 @@ let themeId = null
 const themeList = [
   {
     id: 0,
-    fileName: 'tray0Template',
+    fileName: 'trayTemplate',
     isNative: true,
   },
   {
     id: 1,
-    fileName: 'tray1Template',
+    fileName: 'tray_origin',
+    isNative: false,
+  },
+  {
+    id: 2,
+    fileName: 'tray_black',
     isNative: false,
   },
 ]
@@ -43,11 +48,11 @@ const createTray = () => {
   if ((global.modules.tray && !global.modules.tray.isDestroyed()) || !global.appSetting.tray || !global.appSetting.tray.isShow) return
 
   themeId = global.appSetting.tray.themeId
-  let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
+  let theme = themeList.find(item => item.id === themeId) || themeList[0]
+  const iconPath = path.join(global.__static, 'images/tray', theme.fileName + '.png')
 
   // 托盘
-  global.modules.tray = new Tray(iconPath)
+  global.modules.tray = new Tray(nativeImage.createFromPath(iconPath))
 
   global.modules.tray.setToolTip('洛雪音乐助手')
   createMenu(global.modules.tray)
@@ -140,7 +145,7 @@ const createMenu = tray => {
 
 const setTrayImage = themeId => {
   if (!global.modules.tray) return
-  let themeName = (themeList.find(item => item.id === themeId) || themeList[0]).fileName
-  const iconPath = path.join(global.__static, 'images/tray', isWin ? themeName + '@2x.ico' : themeName + '.png')
-  global.modules.tray.setImage(iconPath)
+  let theme = themeList.find(item => item.id === themeId) || themeList[0]
+  const iconPath = path.join(global.__static, 'images/tray', theme.fileName + '.png')
+  global.modules.tray.setImage(nativeImage.createFromPath(iconPath))
 }

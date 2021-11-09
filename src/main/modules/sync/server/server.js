@@ -5,6 +5,7 @@ const modules = require('../modules')
 const { authCode, authConnect } = require('./auth')
 const { getAddress, getServerId, generateCode, getClientKeyInfo } = require('./utils')
 const syncList = require('./syncList')
+const { log } = require('@common/utils')
 
 
 let status = {
@@ -71,7 +72,7 @@ const handleStartServer = (port = 9527) => new Promise((resolve, reject) => {
     serveClient: false,
     connectTimeout: 10000,
     pingTimeout: 30000,
-    maxHttpBufferSize: 3e6,
+    maxHttpBufferSize: 1e9, // 1G
     allowRequest: authConnection,
     transports: ['websocket'],
   })
@@ -88,7 +89,8 @@ const handleStartServer = (port = 9527) => new Promise((resolve, reject) => {
     try {
       await syncList(io, socket)
     } catch (err) {
-      console.log(err)
+      // console.log(err)
+      log.warn(err)
       return
     }
     status.devices.push(keyInfo)

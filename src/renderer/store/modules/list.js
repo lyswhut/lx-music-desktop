@@ -1,6 +1,7 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
 import { sync as eventSyncName } from '@renderer/event/names'
+import { removeListPosition, setListPrevSelectId } from '@renderer/utils/data'
 
 let allList = {}
 window.allList = allList
@@ -27,19 +28,16 @@ const state = {
     id: 'default',
     name: '试听列表',
     list: [],
-    location: 0,
   },
   loveList: {
     id: 'love',
     name: '我的收藏',
     list: [],
-    location: 0,
   },
   tempList: {
     id: 'temp',
     name: '临时列表',
     list: [],
-    location: 0,
   },
   userList: [],
 }
@@ -53,21 +51,29 @@ const getters = {
   allList: () => allList,
 }
 
+const getOtherSourcePromises = new Map()
+
 // actions
 const actions = {
   getOtherSource({ state, commit }, musicInfo) {
-    return (musicInfo.otherSource && musicInfo.otherSource.length ? Promise.resolve(musicInfo.otherSource) : musicSdk.findMusic(musicInfo)).then(otherSource => {
+    if (musicInfo.otherSource?.length) return Promise.resolve(musicInfo.otherSource)
+    let key = `${musicInfo.source}_${musicInfo.songmid}`
+    if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
+    const promise = musicSdk.findMusic(musicInfo).then(otherSource => {
       commit('setOtherSource', { musicInfo, otherSource })
+      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
       return otherSource
     })
+    getOtherSourcePromises.set(key, promise)
+    return promise
   },
 }
 
 // mitations
 const mutations = {
   initList(state, { defaultList, loveList, userList }) {
-    if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list, location: defaultList.location })
-    if (loveList != null) Object.assign(state.loveList, { list: loveList.list, location: loveList.location })
+    if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list })
+    if (loveList != null) Object.assign(state.loveList, { list: loveList.list })
     if (userList != null) state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
@@ -95,18 +101,17 @@ const mutations = {
     state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
   },
-  setList(state, { id, list, name, location, source, sourceListId, isSync }) {
+  setList(state, { id, list, name, source, sourceListId, isSync }) {
     const targetList = allList[id]
     if (targetList) {
       if (name && targetList.name === name) {
         if (!isSync) {
           window.eventHub.$emit(eventSyncName.send_action_list, {
             action: 'set_list',
-            data: { id, list, name, location, source, sourceListId },
+            data: { id, list, name, source, sourceListId },
           })
         }
         targetList.list.splice(0, targetList.list.length, ...list)
-        targetList.location = location
         return
       }
 
@@ -115,14 +120,13 @@ const mutations = {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
         action: 'set_list',
-        data: { id, list, name, location, source, sourceListId },
+        data: { id, list, name, source, sourceListId },
       })
     }
     let newList = {
       name,
       id,
       list,
-      location,
       source,
       sourceListId,
     }
@@ -293,11 +297,11 @@ const mutations = {
     const targetMusicInfo = targetList.list.find(item => item.songmid == id)
     if (targetMusicInfo) Object.assign(targetMusicInfo, data)
   },
-  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, isSync }) {
+  createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, position, isSync }) {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
         action: 'create_user_list',
-        data: { name, id, list, source, sourceListId },
+        data: { name, id, list, source, sourceListId, position },
       })
     }
 
@@ -307,11 +311,14 @@ const mutations = {
         name,
         id,
         list: [],
-        location: 0,
         source,
         sourceListId,
       }
-      state.userList.push(newList)
+      if (position == null) {
+        state.userList.push(newList)
+      } else {
+        state.userList.splice(position + 1, 0, newList)
+      }
       allListUpdate(newList)
     }
     this.commit('list/listAddMultiple', { id, list, isSync: true })
@@ -328,6 +335,7 @@ const mutations = {
     if (index < 0) return
     let list = state.userList.splice(index, 1)[0]
     allListRemove(list)
+    removeListPosition(id)
   },
   setUserListName(state, { id, name, isSync }) {
     if (!isSync) {
@@ -368,9 +376,6 @@ const mutations = {
     state.userList.splice(index, 1)
     state.userList.splice(index + 1, 0, targetList)
   },
-  setListScroll(state, { id, location }) {
-    if (allList[id]) allList[id].location = location
-  },
   setMusicPosition(state, { id, position, list, isSync }) {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
@@ -405,6 +410,9 @@ const mutations = {
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource
+  },
+  setPrevSelectListId(state, val) {
+    setListPrevSelectId(val)
   },
 }
 

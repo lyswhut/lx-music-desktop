@@ -77,6 +77,7 @@ export default {
     if (this._requestObj) this._requestObj.cancelHttp()
 
     const _requestObj = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
+      method: 'POST',
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
       },
@@ -110,6 +111,7 @@ export default {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     const _requestObj2 = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
+      method: 'POST',
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
       },
@@ -134,6 +136,9 @@ export default {
       source: 'tx',
       comments: this.filterComment(comment.commentlist),
       total: comment.commenttotal,
+      page,
+      limit,
+      maxPage: Math.ceil(comment.commenttotal / limit) || 1,
     }
   },
   replaceEmoji(msg) {
@@ -149,7 +154,8 @@ export default {
   },
   filterComment(rawList) {
     return rawList.map(item => {
-      let time = item.rootcommentid ? parseInt(item.rootcommentid.substring(item.rootcommentid.lastIndexOf('_') + 1) + '000') : null
+      let time = parseInt(item.time + '000')
+      let timeStr = dateFormat2(time)
       if (item.middlecommentcontent) {
         let firstItem = item.middlecommentcontent[0]
         firstItem.avatarurl = item.avatarurl
@@ -159,23 +165,23 @@ export default {
         item.middlecommentcontent.reverse()
       }
       return {
-        id: item.subcommentid,
+        id: `${item.rootcommentid}_${item.commentid}`,
         rootId: item.rootcommentid,
         text: item.rootcommentcontent ? this.replaceEmoji(item.rootcommentcontent).replace(/\\n/g, '\n').split('\n') : [],
-        time,
-        timeStr: time ? dateFormat2(time) : null,
+        time: item.rootcommentid == item.commentid ? time : null,
+        timeStr: item.rootcommentid == item.commentid ? timeStr : null,
         userName: item.rootcommentnick ? item.rootcommentnick.substring(1) : '',
         avatar: item.avatarurl,
         userId: item.encrypt_rootcommentuin,
         likedCount: item.praisenum,
         reply: item.middlecommentcontent
           ? item.middlecommentcontent.map(c => {
-            let index = c.subcommentid.lastIndexOf('_')
+            // let index = c.subcommentid.lastIndexOf('_')
             return {
-              id: c.subcommentid,
+              id: `sub_${item.rootcommentid}_${c.subcommentid}`,
               text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n').split('\n'),
-              time: parseInt(c.subcommentid.substring(index + 1) + '000'),
-              timeStr: dateFormat2(parseInt(c.subcommentid.substring(index + 1) + '000')),
+              time: c.subcommentid == item.commentid ? time : null,
+              timeStr: c.subcommentid == item.commentid ? timeStr : null,
               userName: c.replynick.substring(1),
               avatar: c.avatarurl,
               userId: c.encrypt_replyuin,

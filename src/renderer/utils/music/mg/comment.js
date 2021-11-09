@@ -53,7 +53,7 @@ export default {
     const { body, statusCode } = await _requestObj2.promise
     // console.log(body)
     if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取热门评论失败')
-    return { source: 'mg', comments: this.filterComment(body.data.items) }
+    return { source: 'mg', comments: this.filterComment(body.data.items), total: body.data.itemTotal, page, limit, maxPage: Math.ceil(body.data.itemTotal / limit) || 1 }
   },
   async getReplyComment(musicInfo, replyId, page = 1, limit = 10) {
     if (this._requestObj2) this._requestObj2.cancelHttp()

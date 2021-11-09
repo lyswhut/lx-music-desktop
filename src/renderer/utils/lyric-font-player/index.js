@@ -120,6 +120,7 @@ module.exports = class Lyric {
         return {
           text: line.text,
           time: line.time,
+          translation: line.translation,
           dom_line: fontPlayer.lineContent,
         }
       })

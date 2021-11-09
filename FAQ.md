@@ -56,9 +56,11 @@
 
 播放在线列表内的歌曲需要将它们都添加到我的列表才能播放，你可以全选列表内的歌曲然后添加到现有列表或者新创建的列表，然后去播放该列表内的歌曲。
 
+从v1.10.0起，你可以右击排行榜名字的弹出菜单中直接播放或收藏整个排行榜的歌曲。
+
 ## 无法打开外部歌单
 
-不支持垮源打开歌单，请**确认**你需要打开的歌单平台是否与软件标签所写的**歌单源**对应（不一样的话请通过右上角切换歌单源）；<br>
+不支持跨源打开歌单，请**确认**你需要打开的歌单平台是否与软件标签所写的**歌单源**对应（不一样的话请通过右上角切换歌单源）；<br>
 对于分享出来的歌单，若打开失败，可尝试先在浏览器中打开后，再从浏览器地址栏复制URL地址到软件打开；<br>
 或者如果你知道歌单 id 也可以直接输入歌单 id 打开。<br>
 
@@ -128,12 +130,12 @@
 由于软件默认使用了透明窗口，根据Electron官方文档的[说明](https://electronjs.org/docs/api/frameless-window#%E5%B1%80%E9%99%90%E6%80%A7)：
 > 在 windows 操作系统上, 当 DWM 被禁用时, 透明窗口将无法工作。
 
-因此，当 win7 没有使用**AERO**主题时界面将会显示异常，开启AERO的方法请自行百度：`win7开启aero效果`（开启后可看到任务栏变透明）。<br>
+因此，当 win7 没有使用**Aero**主题时界面将会显示异常，开启AERO的方法请自行百度：`win7开启Aero效果`（开启后可看到任务栏变透明）。<br>
 从`0.14.0`版本起不再强制要求开启透明效果，若你实在不想开启（若非电脑配置太低，墙裂建议开启！），可通过添加运行参数`-dt`来运行程序即可，例如：`.\lx-music-desktop.exe -dt`，添加方法可自行百度“给快捷方式加参数”，该参数的作用是用来控制程序是否使用非透明窗口运行。
 
-注：启用**AERO**主题后，若软件出现黑边框，则重启软件即可恢复正常。
+注：启用**Aero**主题后，若软件出现黑边框，则重启软件即可恢复正常。
 
-对于一些完全无法正常显示界面、开启了AERO后问题仍未解决的情况，请阅读下面的 **软件启动后，界面无法显示** 解决。
+对于一些完全无法正常显示界面、开启了AERO后问题仍未解决的情况，请阅读下面的 **Window 7 下软件启动后，界面无法显示** 解决。
 
 ### Linux 下界面异常
 
@@ -142,19 +144,17 @@
 
 注：v1.6.0及之后的版本才支持`-dha`参数
 
-## 软件启动后，界面无法显示
+## Windows 7 下软件启动后，界面无法显示
 
 对于软件启动后，可以在任务栏看到软件，但软件界面在桌面上无任何显示，或者整个界面偶尔闪烁的情况。<br>
 原始问题看：<https://github.com/electron/electron/issues/19569#issuecomment-522231083><br>
 解决办法：下载`.NET Framework 4.7.1`或**更高**版本安装即可(建议安装最新版，若安装过程中遇到问题可尝试自行百度解决)。<br>
 微软官方下载地址：<https://dotnet.microsoft.com/download/dotnet-framework><br>
-下载`Runtime(运行时)`版即可，安装完成后可能需要重启才生效。
+下载`Runtime(运行时)`版即可，安装完成后可能需要重启才生效，**若出现闪烁的情况**，可阅读下面的**Windows 7 下整个界面闪烁**解决。
 
-若还是不行可尝试以下操作：
+## Windows 7 下整个界面闪烁（消失又出现）
 
-- 更新显卡驱动
-- 添加启动参数`-dha`运行（添加的方法请自行百度“给快捷方式加参数”）
-- 尝试将绿色版的软件放在**桌面**或**我的文档**运行
+可尝试在关掉软件后，在桌面空白处鼠标右击，在弹出的菜单中选择**个性化**，在弹出的窗口中**切换到系统内置的Aero主题**，然后再启动软件看是否解决。
 
 ## Windows 7 下桌面歌词字体列表为空
 
@@ -344,8 +344,8 @@ send(EVENT_NAMES.inited, {
 
 ```
 
-- `@name `：源的名字，建议不要过长，10个字符以内
-- `@description `：源的描述，建议不要过长，20个字符以内，可不填，不填时必须保留 @description
+- `@name `：源的名字，建议不要过长，24个字符以内
+- `@description `：源的描述，建议不要过长，36个字符以内，可不填，不填时必须保留 @description
 - `@version`：源的版本号，可不填，不填时可以删除 @version
 - `@author `：脚本作者名字，可不填，不填时可以删除 @author
 - `@homepage `：脚本主页，可不填，不填时可以删除 @homepage
@@ -353,6 +353,10 @@ send(EVENT_NAMES.inited, {
 ### `window.lx`
 
 应用为脚本暴露的API对象。
+
+#### `window.lx.version`
+
+自定义源API版本，API变更时此版本号将会更改（新增于v1.14.0之后）
 
 #### `window.lx.EVENT_NAMES`
 
@@ -409,6 +413,7 @@ const cancelHttp = window.lx.request(url, options, callback)
 应用提供给脚本的工具方法：
 
 - `window.lx.utils.buffer.from`：对应Node.js的 `Buffer.from`
+- `window.lx.utils.buffer.bufToString`：Buffer转字符串 `bufToString(buffer, format)`，`format`对应Node.js `Buffer.toString`的参数（v1.14.0之后新增）
 - `window.lx.utils.crypto.aesEncrypt`：AES加密 `aesEncrypt(buffer, mode, key, iv)`
 - `window.lx.utils.crypto.md5`：MD5加密 `md5(str)`
 - `window.lx.utils.crypto.randomBytes`：生成随机字符串 `randomBytes(size)`
