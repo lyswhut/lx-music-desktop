@@ -417,6 +417,8 @@ export default {
         if (!this.targetSong.interval && this.listId != 'download') {
           this.updateMusicInfo({ listId: this.listId, id: this.targetSong.songmid, musicInfo: this.targetSong, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         }
+
+        this.updatePositionState()
       })
       audio.addEventListener('loadstart', () => {
         console.log('loadstart')
@@ -431,6 +433,7 @@ export default {
           audio.currentTime = playTime
         }
         this.clearBufferTimeout()
+        this.updatePositionState()
 
         // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
         this.status = this.statusText = ''
@@ -484,7 +487,6 @@ export default {
     },
     async play() {
       this.clearDelayNextTimeout()
-      this.updateMediaSessionInfo()
 
       let targetSong = this.targetSong
 
@@ -514,6 +516,8 @@ export default {
         this.musicInfo.album = targetSong.albumName
         this.setUrl(targetSong)
       }
+
+      this.updateMediaSessionInfo()
       this.setImg(targetSong)
       this.setLrc(targetSong)
       this.handleUpdateWinLyricInfo('music_info', {
@@ -971,6 +975,13 @@ export default {
       }
       if (this.currentMusicInfo.img) mediaMetadata.artwork = [{ src: this.currentMusicInfo.img }]
       navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
+    },
+    updatePositionState() {
+      navigator.mediaSession.setPositionState({
+        duration: audio.duration,
+        playbackRate: audio.playbackRate,
+        position: audio.currentTime,
+      })
     },
     registerMediaSessionHandler() {
       // navigator.mediaSession.setActionHandler('play', () => {
