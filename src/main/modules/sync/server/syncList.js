@@ -11,6 +11,22 @@ let io
 let syncingId = null
 const wait = (time = 1000) => new Promise((resolve, reject) => setTimeout(resolve, time))
 
+const patchListData = listData => {
+  return Object.assign({}, {
+    defaultList: {
+      id: 'default',
+      name: '试听列表',
+      list: [],
+    },
+    loveList: {
+      id: 'love',
+      name: '我的收藏',
+      list: [],
+    },
+    userList: [],
+  }, listData)
+}
+
 const getRemoteListData = socket => new Promise((resolve, reject) => {
   console.log('getRemoteListData')
   const handleError = reason => {
@@ -23,7 +39,7 @@ const getRemoteListData = socket => new Promise((resolve, reject) => {
     const data = JSON.parse(decryptMsg(socket.data.keyInfo, enData))
     if (!data) return reject(new Error('Get remote list data failed'))
     if (data.action != 'getData') return
-    resolve(data.data)
+    resolve(patchListData(data.data))
   }
 
   socket.on('disconnect', handleError)
@@ -35,7 +51,7 @@ const getLocalListData = () => new Promise((resolve, reject) => {
   const handleSuccess = ({ action, data }) => {
     if (action !== 'getData') return
     global.lx_event.sync.off(SYNC_EVENT_NAMES.sync_handle_list, handleSuccess)
-    resolve(data)
+    resolve(patchListData(data))
   }
   global.lx_event.sync.on(SYNC_EVENT_NAMES.sync_handle_list, handleSuccess)
   global.lx_event.sync.sync_list({
@@ -87,10 +103,10 @@ const updateSnapshot = (path, data) => {
 }
 
 
-const createListDataObj = listData => {
-  const listDataObj = {}
-  for (const list of listData.userList) listDataObj[list.id] = list
-  return listDataObj
+const createUserListDataObj = listData => {
+  const userListDataObj = {}
+  for (const list of listData.userList) userListDataObj[list.id] = list
+  return userListDataObj
 }
 
 const handleMergeList = (sourceList, targetList, addMusicLocationType) => {
@@ -137,11 +153,11 @@ const mergeList = (sourceListData, targetListData) => {
   newListData.defaultList = handleMergeList(sourceListData.defaultList, targetListData.defaultList, addMusicLocationType)
   newListData.loveList = handleMergeList(sourceListData.loveList, targetListData.loveList, addMusicLocationType)
 
-  const listDataObj = createListDataObj(sourceListData)
+  const userListDataObj = createUserListDataObj(sourceListData)
   newListData.userList = [...sourceListData.userList]
 
   for (const list of targetListData.userList) {
-    const targetList = listDataObj[list.id]
+    const targetList = userListDataObj[list.id]
     if (targetList) {
       targetList.list = handleMergeList(targetList, list, addMusicLocationType).list
     } else {
@@ -156,11 +172,11 @@ const overwriteList = (sourceListData, targetListData) => {
   newListData.defaultList = sourceListData.defaultList
   newListData.loveList = sourceListData.loveList
 
-  const listDataObj = createListDataObj(sourceListData)
+  const userListDataObj = createUserListDataObj(sourceListData)
   newListData.userList = [...sourceListData.userList]
 
   for (const list of targetListData.userList) {
-    const targetList = listDataObj[list.id]
+    const targetList = userListDataObj[list.id]
     if (targetList) continue
     newListData.userList.push(list)
   }
@@ -259,8 +275,10 @@ const mergeListDataFromSnapshot = (sourceList, targetList, snapshotList, addMusi
   const targetListItemIds = new Set()
   for (const m of sourceList.list) sourceListItemIds.add(m.songmid)
   for (const m of targetList.list) targetListItemIds.add(m.songmid)
-  for (const m of snapshotList.list) {
-    if (!sourceListItemIds.has(m.songmid) || !targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
+  if (snapshotList) {
+    for (const m of snapshotList.list) {
+      if (!sourceListItemIds.has(m.songmid) || !targetListItemIds.has(m.songmid)) removedListIds.add(m.songmid)
+    }
   }
 
   let newList
@@ -294,13 +312,12 @@ const mergeListDataFromSnapshot = (sourceList, targetList, snapshotList, addMusi
 const handleMergeListDataFromSnapshot = async(socket, snapshot) => {
   const addMusicLocationType = global.appSetting.list.addMusicLocationType
   const [remoteListData, localListData] = await Promise.all([getRemoteListData(socket), getLocalListData()])
-  console.log('handleMergeListDataFromSnapshot', 'remoteListData, localListData')
   const newListData = {}
   newListData.defaultList = mergeListDataFromSnapshot(localListData.defaultList, remoteListData.defaultList, snapshot.defaultList, addMusicLocationType)
   newListData.loveList = mergeListDataFromSnapshot(localListData.loveList, remoteListData.loveList, snapshot.loveList, addMusicLocationType)
-  const localUserListData = createListDataObj(localListData)
-  const remoteUserListData = createListDataObj(remoteListData)
-  const snapshotUserListData = createListDataObj(snapshot)
+  const localUserListData = createUserListDataObj(localListData)
+  const remoteUserListData = createUserListDataObj(remoteListData)
+  const snapshotUserListData = createUserListDataObj(snapshot)
   const removedListIds = new Set()
   const localUserListIds = new Set()
   const remoteUserListIds = new Set()
@@ -367,7 +384,7 @@ const syncList = async socket => {
   }
   console.log('isSyncRequired', isSyncRequired)
   if (isSyncRequired) return handleSyncList(socket)
-  return handleMergeListDataFromSnapshot(socket, fileData)
+  return handleMergeListDataFromSnapshot(socket, patchListData(fileData))
 }
 
 const checkSyncQueue = async() => {

@@ -72,7 +72,7 @@ const handleStartServer = (port = 9527) => new Promise((resolve, reject) => {
     serveClient: false,
     connectTimeout: 10000,
     pingTimeout: 30000,
-    maxHttpBufferSize: 3e6,
+    maxHttpBufferSize: 1e9, // 1G
     allowRequest: authConnection,
     transports: ['websocket'],
   })

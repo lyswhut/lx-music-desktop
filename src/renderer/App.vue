@@ -148,7 +148,7 @@ export default {
     },
     downloadList: {
       handler(n) {
-        this.saveDownloadList(n)
+        this.saveDownloadList(window.downloadListFull)
       },
       deep: true,
     },
@@ -373,12 +373,17 @@ export default {
     },
     initDownloadList(downloadList) {
       if (downloadList) {
-        downloadList.forEach(item => {
+        downloadList = downloadList.filter(item => item && item.key && item.musicInfo)
+        for (const item of downloadList) {
+          if (item.name == null) {
+            item.name = `${item.musicInfo.name} - ${item.musicInfo.singer}`
+            item.songmid = item.musicInfo.songmid
+          }
           if (item.status == this.downloadStatus.RUN || item.status == this.downloadStatus.WAITING) {
             item.status = this.downloadStatus.PAUSE
             item.statusText = '暂停下载'
           }
-        })
+        }
         this.updateDownloadList(downloadList)
       }
     },
@@ -399,10 +404,17 @@ export default {
         if (!info) return
         if (info.index < 0) return
         if (info.listId) {
-          const list = window.allList[info.listId]
-          // console.log(list)
-          if (!list || !list.list[info.index]) return
-          info.list = list.list
+          if (info.listId == 'download') {
+            const list = this.downloadList
+            // console.log(list)
+            if (!list || !list[info.index]) return
+            info.list = list
+          } else {
+            const list = window.allList[info.listId]
+            // console.log(list)
+            if (!list || !list.list[info.index]) return
+            info.list = list.list
+          }
         }
         if (!info.list || !info.list[info.index]) return
         window.restorePlayInfo = info

@@ -28,19 +28,16 @@ const state = {
     id: 'default',
     name: '试听列表',
     list: [],
-    location: 0,
   },
   loveList: {
     id: 'love',
     name: '我的收藏',
     list: [],
-    location: 0,
   },
   tempList: {
     id: 'temp',
     name: '临时列表',
     list: [],
-    location: 0,
   },
   userList: [],
 }
@@ -75,8 +72,8 @@ const actions = {
 // mitations
 const mutations = {
   initList(state, { defaultList, loveList, userList }) {
-    if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list, location: defaultList.location })
-    if (loveList != null) Object.assign(state.loveList, { list: loveList.list, location: loveList.location })
+    if (defaultList != null) Object.assign(state.defaultList, { list: defaultList.list })
+    if (loveList != null) Object.assign(state.loveList, { list: loveList.list })
     if (userList != null) state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
     state.isInitedList = true
@@ -104,18 +101,17 @@ const mutations = {
     state.userList = userList
     allListInit(state.defaultList, state.loveList, state.userList)
   },
-  setList(state, { id, list, name, location, source, sourceListId, isSync }) {
+  setList(state, { id, list, name, source, sourceListId, isSync }) {
     const targetList = allList[id]
     if (targetList) {
       if (name && targetList.name === name) {
         if (!isSync) {
           window.eventHub.$emit(eventSyncName.send_action_list, {
             action: 'set_list',
-            data: { id, list, name, location, source, sourceListId },
+            data: { id, list, name, source, sourceListId },
           })
         }
         targetList.list.splice(0, targetList.list.length, ...list)
-        targetList.location = location
         return
       }
 
@@ -124,14 +120,13 @@ const mutations = {
     if (!isSync) {
       window.eventHub.$emit(eventSyncName.send_action_list, {
         action: 'set_list',
-        data: { id, list, name, location, source, sourceListId },
+        data: { id, list, name, source, sourceListId },
       })
     }
     let newList = {
       name,
       id,
       list,
-      location,
       source,
       sourceListId,
     }
@@ -316,7 +311,6 @@ const mutations = {
         name,
         id,
         list: [],
-        location: 0,
         source,
         sourceListId,
       }

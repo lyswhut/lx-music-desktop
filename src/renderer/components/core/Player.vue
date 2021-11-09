@@ -64,14 +64,14 @@ div(:class="$style.player")
   //- transition(enter-active-class="animated lightSpeedIn"
   transition(enter-active-class="animated lightSpeedIn"
       leave-active-class="animated slideOutDown")
-    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong"
+    core-player-detail(v-if="isShowPlayerDetail" :visible.sync="isShowPlayerDetail" :musicInfo="currentMusicInfo"
                       :lyric="lyric" :list="list" :listId="listId"
                       :playInfo="{ nowPlayTimeStr, maxPlayTimeStr, progress, nowPlayTime, status }"
                       :isPlay="isPlay" @action="handlePlayDetailAction"
                       :nextTogglePlayName="nextTogglePlayName"
                       @toggle-next-play-mode="toggleNextPlayMode" @add-music-to="addMusicTo")
 
-  material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="listId == 'download' ? targetSong.musicInfo : targetSong" @close="isShowAddMusicTo = false")
+  material-list-add-modal(:show="isShowAddMusicTo" :musicInfo="currentMusicInfo" @close="isShowAddMusicTo = false")
   svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
     defs
       g(:id="$style.iconPic")
@@ -121,6 +121,7 @@ export default {
         singer: '',
         album: '',
       },
+      currentMusicInfo: {},
       pregessWidth: 0,
       lyric: {
         lines: [],
@@ -395,7 +396,7 @@ export default {
           // console.log(this.retryNum)
           if (!this.restorePlayTime) this.restorePlayTime = audio.currentTime // 记录出错的播放时间
           this.retryNum++
-          this.setUrl(this.targetSong, true)
+          this.setUrl(this.currentMusicInfo, true)
           this.status = this.statusText = this.$t('core.player.refresh_url')
           return
         }
@@ -416,6 +417,8 @@ export default {
         if (!this.targetSong.interval && this.listId != 'download') {
           this.updateMusicInfo({ listId: this.listId, id: this.targetSong.songmid, musicInfo: this.targetSong, data: { interval: formatPlayTime2(this.maxPlayTime) } })
         }
+
+        this.updatePositionState()
       })
       audio.addEventListener('loadstart', () => {
         console.log('loadstart')
@@ -430,6 +433,7 @@ export default {
           audio.currentTime = playTime
         }
         this.clearBufferTimeout()
+        this.updatePositionState()
 
         // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
         this.status = this.statusText = ''
@@ -483,9 +487,8 @@ export default {
     },
     async play() {
       this.clearDelayNextTimeout()
-      this.updateMediaSessionInfo()
 
-      const targetSong = this.targetSong
+      let targetSong = this.targetSong
 
       if (this.setting.player.togglePlayMethod == 'random' && !this.playMusicInfo.isTempPlay) this.setPlayedList(this.playMusicInfo)
       this.retryNum = 0
@@ -497,24 +500,26 @@ export default {
         if (!await checkPath(filePath) || !targetSong.isComplate || /\.ape$/.test(filePath)) {
           return this.list.length == 1 ? null : this.playNext()
         }
-        this.musicInfo.songmid = targetSong.musicInfo.songmid
-        this.musicInfo.singer = targetSong.musicInfo.singer
-        this.musicInfo.name = targetSong.musicInfo.name
+        this.currentMusicInfo = targetSong = window.downloadListFullMap.get(targetSong.key).musicInfo
+        this.musicInfo.songmid = targetSong.songmid
+        this.musicInfo.singer = targetSong.singer
+        this.musicInfo.name = targetSong.name
         this.musicInfo.album = targetSong.albumName
         audio.src = filePath
         // console.log(filePath)
-        this.setImg(targetSong.musicInfo)
-        this.setLrc(targetSong.musicInfo)
       } else {
         // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
+        this.currentMusicInfo = targetSong
         this.musicInfo.songmid = targetSong.songmid
         this.musicInfo.singer = targetSong.singer
         this.musicInfo.name = targetSong.name
         this.musicInfo.album = targetSong.albumName
         this.setUrl(targetSong)
-        this.setImg(targetSong)
-        this.setLrc(targetSong)
       }
+
+      this.updateMediaSessionInfo()
+      this.setImg(targetSong)
+      this.setLrc(targetSong)
       this.handleUpdateWinLyricInfo('music_info', {
         songmid: this.musicInfo.songmid,
         singer: this.musicInfo.singer,
@@ -592,11 +597,25 @@ export default {
         window.getComputedStyle(this.$refs.dom_progress, null).width,
       )
     },
-    togglePlay() {
+    async togglePlay() {
       if (!audio.src) {
         if (this.restorePlayTime != null) {
-          // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
-          this.setUrl(this.targetSong)
+          if (this.listId == 'download') {
+            const filePath = path.join(this.setting.download.savePath, this.targetSong.fileName)
+            // console.log(filePath)
+            if (!await checkPath(filePath) || !this.targetSong.isComplate || /\.ape$/.test(filePath)) {
+              if (this.list.length == 1) {
+                this.handleRemoveMusic()
+              } else {
+                this.playNext()
+              }
+              return
+            }
+            audio.src = filePath
+          } else {
+            // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
+            this.setUrl(this.targetSong)
+          }
         }
         return
       }
@@ -634,6 +653,7 @@ export default {
         audio.src = this.musicInfo.url = url
       }).catch(err => {
         // console.log('err', err.message)
+        if (targetSong !== this.targetSong || this.isPlay) return
         if (err.message == requestMsg.cancelRequest) return
         if (!isRetryed) return this.setUrl(targetSong, isRefresh, true)
         this.status = this.statusText = err.message
@@ -676,8 +696,10 @@ export default {
         })
       }).catch((err) => {
         console.log(err)
+        if (targetSong.songmid !== this.musicInfo.songmid) return
         this.status = this.statusText = this.$t('core.player.lyric_error')
       }).finally(() => {
+        if (targetSong.songmid !== this.musicInfo.songmid) return
         this.handleUpdateWinLyricInfo('lyric', { lrc: this.musicInfo.lrc, tlrc: this.musicInfo.tlrc, lxlrc: this.musicInfo.lxlrc })
         this.setLyric()
       })
@@ -701,6 +723,7 @@ export default {
       this.lyric.text = 0
       this.handleUpdateWinLyricInfo('lines', [])
       this.handleUpdateWinLyricInfo('line', 0)
+      this.currentMusicInfo = {}
     },
     sendProgressEvent(status, mode) {
       // console.log(status)
@@ -757,7 +780,7 @@ export default {
       this.setProgressWidth()
     },
     handleToMusicLocation() {
-      if (!this.listId || this.listId == '__temp__' || this.listId == 'download') return
+      if (!this.listId || this.listId == '__temp__' || this.listId == 'download' || !this.currentMusicInfo.songmid) return
       if (this.playIndex == -1) return
       this.$router.push({
         path: 'list',
@@ -768,7 +791,7 @@ export default {
       })
     },
     showPlayerDetail() {
-      if (!this.targetSong) return
+      if (!this.currentMusicInfo.songmid) return
       this.isShowPlayerDetail = true
     },
     handleTransitionEnd(e) {
@@ -912,8 +935,18 @@ export default {
       if (!this.musicInfo.songmid) return
       this.isShowAddMusicTo = true
     },
-    handleRestorePlay(restorePlayInfo) {
-      let musicInfo = this.list[restorePlayInfo.index]
+    async handleRestorePlay(restorePlayInfo) {
+      let musicInfo
+
+      if (this.listId == 'download') {
+        this.currentMusicInfo = musicInfo = window.downloadListFullMap.get(this.list[restorePlayInfo.index].key).musicInfo
+        // console.log(filePath)
+      } else {
+        // if (!this.assertApiSupport(targetSong.source)) return this.playNext()
+        musicInfo = this.list[restorePlayInfo.index]
+        this.currentMusicInfo = musicInfo
+      }
+
       this.musicInfo.songmid = musicInfo.songmid
       this.musicInfo.singer = musicInfo.singer
       this.musicInfo.name = musicInfo.name
@@ -936,12 +969,19 @@ export default {
     },
     updateMediaSessionInfo() {
       const mediaMetadata = {
-        title: this.targetSong.name,
-        artist: this.targetSong.singer,
-        album: this.targetSong.albumName,
+        title: this.currentMusicInfo.name,
+        artist: this.currentMusicInfo.singer,
+        album: this.currentMusicInfo.albumName,
       }
-      if (this.targetSong.img) mediaMetadata.artwork = [{ src: this.targetSong.img }]
+      if (this.currentMusicInfo.img) mediaMetadata.artwork = [{ src: this.currentMusicInfo.img }]
       navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
+    },
+    updatePositionState() {
+      navigator.mediaSession.setPositionState({
+        duration: audio.duration,
+        playbackRate: audio.playbackRate,
+        position: audio.currentTime,
+      })
     },
     registerMediaSessionHandler() {
       // navigator.mediaSession.setActionHandler('play', () => {
