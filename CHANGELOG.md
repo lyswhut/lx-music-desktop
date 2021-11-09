@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.15.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.3...v1.15.2) - 2021-11-09
+
+### 其他
+
+- 降级electron到v13.4.0（这修复了windows 7下播放歌曲时软件会崩溃的问题）
+
+## [1.15.3](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.1...v1.15.3) - 2021-11-09
+
+### 其他
+
+- 降级electron到v13.4.0（这修复了windows 7下播放歌曲时软件会崩溃的问题）
+
 ## [1.15.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.0...v1.15.1) - 2021-11-09
 
 ### 优化
