@@ -157,7 +157,7 @@ div(:class="$style.main")
         h3#download_lyric {{$t('view.setting.download_lyric_format')}}
         div
           material-checkbox(v-for="item in lrcFormatList" :key="item.id" :class="$style.gapLeft" :id="`setting_download_lrcFormat_${item.id}`"
-            name="setting_basic_control_btn_position" need v-model="current_setting.download.lrcFormat" :value="item.id" :label="item.name")
+            name="setting_download_lrcFormat" need v-model="current_setting.download.lrcFormat" :value="item.id" :label="item.name")
 
       dt#sync {{$t('view.setting.sync')}}
       dd
