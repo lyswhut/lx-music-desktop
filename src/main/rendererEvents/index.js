@@ -21,7 +21,7 @@ require('./lyric')
 require('./musicUrl')
 require('./systemFonts')
 
-require('./kw_decodeLyric')
+// require('./kw_decodeLyric')
 
 require('./userApi')
 require('./sync')
