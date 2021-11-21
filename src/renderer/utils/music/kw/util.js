@@ -1,5 +1,5 @@
 import { httpGet, httpFetch } from '../../request'
-import { rendererInvoke, NAMES } from '../../../../common/ipc'
+// import { rendererInvoke, NAMES } from '../../../../common/ipc'
 
 const kw_token = {
   token: null,
@@ -54,7 +54,7 @@ export const getToken = (retryNum = 0) => new Promise((resolve, reject) => {
   })
 })
 
-export const decodeLyric = base64Data => rendererInvoke(NAMES.mainWindow.handle_kw_decode_lyric, base64Data)
+// export const decodeLyric = base64Data => rendererInvoke(NAMES.mainWindow.handle_kw_decode_lyric, base64Data)
 
 export const tokenRequest = async(url, options = {}) => {
   let token = kw_token.token

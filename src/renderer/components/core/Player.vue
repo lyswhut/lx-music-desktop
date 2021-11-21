@@ -370,6 +370,7 @@ export default {
 
       audio.addEventListener('playing', () => {
         console.log('开始播放')
+        this.clearBufferTimeout()
         this.statusText = this.$t('core.player.playing')
         this.status = ''
         this.startPlay()
@@ -432,7 +433,6 @@ export default {
           this.mediaBuffer.playTime = 0
           audio.currentTime = playTime
         }
-        this.clearBufferTimeout()
         this.updatePositionState()
 
         // if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)

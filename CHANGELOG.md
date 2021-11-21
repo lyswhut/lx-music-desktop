@@ -6,6 +6,15 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.15.3](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.2...v1.15.3) - 2021-11-21
+
+### 修复
+
+- 修复设置-控制按钮位置选项与下载歌词编码格式选项命名冲突导致选项显示异常的问题
+- 修复播放下载列表时存在失效的歌曲会导致切歌不准确的问题
+- 修复潜在的音乐加载超时不会切歌的问题
+- 修复因kw源歌词接口停用导致该源歌词获取失败的问题
+
 ## [1.15.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.3...v1.15.2) - 2021-11-09
 
 ### 其他

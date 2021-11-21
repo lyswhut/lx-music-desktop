@@ -70,7 +70,7 @@ div(:class="$style.songList")
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo, clipboardWriteText, assertApiSupport } from '../../utils'
+import { clipboardWriteText, assertApiSupport } from '../../utils'
 import musicSdk from '../../utils/music'
 import { windowSizeList } from '@common/config'
 export default {
@@ -189,7 +189,7 @@ export default {
     list(n) {
       this.removeAllSelect()
       if (!this.list.length) return
-      this.$nextTick(() => scrollTo(this.$refs.dom_scrollContent, 0))
+      this.$nextTick(() => this.$refs.list.scrollTo(0))
     },
   },
   data() {

@@ -192,7 +192,7 @@ const getters = {
     //   listPlayIndex,
     //   isPlayList,
     //   isTempPlay,
-    //   // musicInfo: state.playMusicInfo.musicInfo,
+    //   musicInfo: state.playMusicInfo.musicInfo,
     // })
 
     // console.log(state.playMusicInfo)
@@ -305,7 +305,7 @@ const actions = {
     })
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
 
-    let listPlayIndex = playInfo.listPlayIndex
+    let listPlayIndex = filteredList.indexOf(state.listInfo.list[playInfo.listPlayIndex])
     const currentListLength = state.listInfo.list.length - 1
     if (listPlayIndex == -1 && currentListLength) {
       listPlayIndex = prevListPlayIndex >= currentListLength ? 0 : prevListPlayIndex + 1
@@ -380,7 +380,7 @@ const actions = {
     })
 
     if (!filteredList.length) return commit('setPlayMusicInfo', null)
-    let listPlayIndex = playInfo.listPlayIndex
+    let listPlayIndex = filteredList.indexOf(state.listInfo.list[playInfo.listPlayIndex])
     const currentListLength = state.listInfo.list.length - 1
     if (listPlayIndex == -1 && currentListLength) {
       listPlayIndex = prevListPlayIndex > currentListLength ? currentListLength : prevListPlayIndex - 1

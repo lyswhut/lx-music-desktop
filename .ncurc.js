@@ -4,6 +4,8 @@ module.exports = {
     'vue-loader',
     'webpack-dev-server',
     'eslint',
+    'electron',
+    'electron-builder'
     // 'eslint-config-standard'
   ]
 }
