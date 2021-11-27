@@ -25,8 +25,8 @@ export default {
         },
       })
       requestObj.promise = requestObj.promise.then(({ body }) => {
-        if (body.returnCode !== '000000') {
-          if (tryNum > 5) return Promise.reject('歌词获取失败')
+        if (body.returnCode !== '000000' || !body.lyric) {
+          if (tryNum > 5) return Promise.reject(new Error('Get lyric failed'))
           let tryRequestObj = this.getLyric(songInfo, ++tryNum)
           requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
           return tryRequestObj.promise

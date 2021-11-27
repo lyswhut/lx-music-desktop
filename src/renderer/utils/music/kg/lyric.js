@@ -125,7 +125,7 @@ export default {
     let requestObj = this.searchLyric(songInfo.name, songInfo.hash, songInfo._interval || this.getIntv(songInfo.interval))
 
     requestObj.promise = requestObj.promise.then(result => {
-      if (!result) return { lyric: null, tlyric: null, lxlyric: null }
+      if (!result) return Promise.reject(new Error('Get lyric failed'))
 
       let requestObj2 = this.getLyricDownload(result.id, result.accessKey)
 
