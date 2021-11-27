@@ -13,8 +13,8 @@ div(:class="$style.player")
 
             div(:class="$style.volumeContent")
               div(:class="[$style.volume, setting.player.isMute ? $style.muted : null]")
-                div(:class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
-              div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" ref="dom_volumeMask" :tips="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
+                div(:class="$style.volumeBar" ref="com_volumeBar" :style="{ transform: `scaleX(${volume || 0})` }")
+              div(:class="$style.volumeMask" @mousedown="handleVolumeMsDown" :tips="`${$t('core.player.volume')}${parseInt(volume * 100)}%`")
             div(:class="$style.titleBtn" @click='toggleDesktopLyric' @contextmenu="handleToggleLockDesktopLyric" :tips="toggleDesktopLyricBtnTitle")
               svg(v-if="setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-desktop-lyric-on')
@@ -122,7 +122,6 @@ export default {
         album: '',
       },
       currentMusicInfo: {},
-      pregessWidth: 0,
       lyric: {
         lines: [],
         text: '',
@@ -197,9 +196,6 @@ export default {
   },
   mounted() {
     this.init()
-    this.$nextTick(() => {
-      this.setProgressWidth()
-    })
     this.handleSaveVolume = debounce(volume => {
       this.setVolume(volume)
     }, 300)
@@ -242,13 +238,11 @@ export default {
     navigator.mediaDevices.addEventListener('devicechange', this.handleMediaListChange)
     document.addEventListener('mousemove', this.handleVolumeMsMove)
     document.addEventListener('mouseup', this.handleVolumeMsUp)
-    window.addEventListener('resize', this.handleResize)
   },
   beforeDestroy() {
     navigator.mediaDevices.removeEventListener('devicechange', this.handleMediaListChange)
     document.removeEventListener('mousemove', this.handleVolumeMsMove)
     document.removeEventListener('mouseup', this.handleVolumeMsUp)
-    window.removeEventListener('resize', this.handleResize)
     this.handleRegisterEvent('off')
   },
   watch: {
@@ -445,6 +439,7 @@ export default {
       // })
       audio.addEventListener('emptied', () => {
         this.mediaBuffer.playTime = 0
+        this.clearDelayNextTimeout()
         this.clearLoadingTimeout()
         this.clearBufferTimeout()
 
@@ -550,10 +545,6 @@ export default {
         this.playNext()
       }, 5000)
     },
-
-    hanldeListRandom(list, index) {
-      return getRandom(0, list.length)
-    },
     startPlay() {
       this.isPlay = true
       if (this.musicInfo.lrc) window.lrc.play(audio.currentTime * 1000)
@@ -578,7 +569,7 @@ export default {
       })
     },
     handleSetProgress(event) {
-      this.setProgress(event.offsetX / this.pregessWidth * this.maxPlayTime)
+      this.setProgress(event.offsetX / this.$refs.dom_progress.clientWidth * this.maxPlayTime)
     },
     setProgress(time) {
       if (!audio.src) return
@@ -592,11 +583,7 @@ export default {
 
       if (!this.isPlay) audio.play()
     },
-    setProgressWidth() {
-      this.pregessWidth = parseInt(
-        window.getComputedStyle(this.$refs.dom_progress, null).width,
-      )
-    },
+
     async togglePlay() {
       if (!audio.src) {
         if (this.restorePlayTime != null) {
@@ -761,7 +748,7 @@ export default {
     },
     handleVolumeMsMove(e) {
       if (!this.volumeEvent.isMsDown) return
-      this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / 80)
+      this.handleSetVolume(this.volumeEvent.msDownVolume + (e.clientX - this.volumeEvent.msDownX) / this.$refs.com_volumeBar.clientWidth)
     },
     handleSetVolumeUp(step = 0.02) {
       this.handleSetVolume(this.volume + step)
@@ -775,9 +762,6 @@ export default {
     },
     handleCopy(text) {
       clipboardWriteText(text)
-    },
-    handleResize() {
-      this.setProgressWidth()
     },
     handleToMusicLocation() {
       if (!this.listId || this.listId == '__temp__' || this.listId == 'download' || !this.currentMusicInfo.songmid) return

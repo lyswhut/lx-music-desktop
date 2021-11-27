@@ -125,6 +125,7 @@ module.exports = class LinePlayer {
           this.isOffseted = true
         }
         timeoutTools.start(() => {
+          if (!this.isPlay) return
           this._refresh()
         }, this.delay)
         this.onPlay(this.curLineNum, curLine.text, currentTime)
