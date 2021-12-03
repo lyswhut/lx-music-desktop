@@ -361,7 +361,7 @@ const mutations = {
 
     const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
-    let targetList = userLists[id]
+    let targetList = userLists[index]
     userLists.splice(index, 1)
     userLists.splice(index - 1, 0, targetList)
     window.eventHub.emit(eventListNames.listChange, [id])
@@ -375,7 +375,7 @@ const mutations = {
     }
     const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
-    let targetList = userLists[id]
+    let targetList = userLists[index]
     userLists.splice(index, 1)
     userLists.splice(index + 1, 0, targetList)
     window.eventHub.emit(eventListNames.listChange, [id])
