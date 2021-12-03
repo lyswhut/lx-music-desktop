@@ -365,7 +365,7 @@ const actions = {
   },
   createDownloadMultiple({ state, rootState, commit, dispatch }, { list, type }) {
     if (!list.length) return
-    const downloadList = list.map(musicInfo => {
+    const taskList = list.map(musicInfo => {
       return createDownloadInfo({
         musicInfo,
         type,
@@ -373,8 +373,8 @@ const actions = {
         savePath: rootState.setting.download.savePath,
         list: downloadList,
       })
-    })
-    commit('addTasks', { list: downloadList, addMusicLocationType: rootState.setting.list.addMusicLocationType })
+    }).filter(task => task)
+    commit('addTasks', { list: taskList, addMusicLocationType: rootState.setting.list.addMusicLocationType })
     let result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     while (result) {
       dispatch('startTask', result)

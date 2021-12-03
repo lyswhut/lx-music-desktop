@@ -47,7 +47,7 @@ export default {
       if (!body.data?.lrclist?.length) return Promise.reject(new Error('Get lyric failed'))
       const { lrc, lrcT } = this.sortLrcArr(body.data.lrclist)
       // console.log(body.data.lrclist)
-      console.log(lrc, lrcT)
+      // console.log(lrc, lrcT)
       // console.log({
       //   lyric: decodeName(this.transformLrc(body.data.songinfo, lrc)),
       //   tlyric: decodeName(this.transformLrc(body.data.songinfo, lrcT)),
