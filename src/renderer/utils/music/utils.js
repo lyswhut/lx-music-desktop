@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import dns from 'dns'
+import { qualityList } from '@renderer/core/share'
 
 
 /**
@@ -10,7 +11,7 @@ import dns from 'dns'
 
 const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
-  let list = window.globalObj.qualityList[info.source]
+  let list = qualityList.value[info.source]
   if (!list) return '128k'
   if (!list.includes(type)) type = list[list.length - 1]
   const rangeType = types.slice(types.indexOf(type))

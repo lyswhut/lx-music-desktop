@@ -1,5 +1,5 @@
 const path = require('path')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require('vue-loader')
 const HTMLPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanCSSPlugin = require('less-plugin-clean-css')
@@ -23,6 +23,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '@': path.join(__dirname, '../../src'),
       '@main': path.join(__dirname, '../../src/main'),
       '@renderer': path.join(__dirname, '../../src/renderer'),
       '@lyric': path.join(__dirname, '../../src/renderer-lyric'),
@@ -123,10 +124,9 @@ module.exports = {
   plugins: [
     new HTMLPlugin({
       filename: 'index.html',
-      template: path.join(__dirname, '../../src/renderer/index.pug'),
+      template: path.join(__dirname, '../../src/renderer/index.html'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
-      scriptLoading: 'blocking',
       __dirname,
     }),
     new VueLoaderPlugin(),

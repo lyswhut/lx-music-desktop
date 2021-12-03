@@ -1,29 +1,29 @@
-import Vue from 'vue'
+import '../common/error'
+import { createApp } from 'vue'
 // import { sync } from 'vuex-router-sync'
 
 import './event'
 
 // Components
-import './components'
+import mountComponents from './components'
 
 // Plugins
-import './plugins'
+import initPlugins from './plugins'
 import i18n from './plugins/i18n'
 
 import App from './App'
 import router from './route'
 import store from './store'
 
-import '../common/error'
 
 import { getSetting } from './utils'
-import languageList from '@renderer/lang/languages.json'
+import { langList } from '@/lang'
 import { rendererSend, NAMES } from '../common/ipc'
 
 // sync(store, router)
 
-Vue.config.productionTip = false
-Vue.config.devtools = process.env.NODE_ENV === 'development'
+window.ELECTRON_DISABLE_SECURITY_WARNINGS = process.env.ELECTRON_DISABLE_SECURITY_WARNINGS
+
 
 getSetting().then(({ setting, version }) => {
   global.appSetting = setting
@@ -34,7 +34,7 @@ getSetting().then(({ setting, version }) => {
     if (window.i18n.availableLocales.includes(locale)) {
       langId = locale
     } else {
-      for (const lang of languageList) {
+      for (const lang of langList) {
         if (lang.alternate == locale) {
           langId = lang.locale
           break
@@ -50,14 +50,12 @@ getSetting().then(({ setting, version }) => {
   store.commit('setSetting', setting)
   store.commit('setSettingVersion', version)
 
-  new Vue({
-    router,
-    store,
-    i18n,
-    el: '#root',
-    render: h => h(App),
-  })
-
-  // window.__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue = app.constructor
+  const app = createApp(App)
+  app.use(router)
+    .use(store)
+    .use(i18n)
+  initPlugins(app)
+  mountComponents(app)
+  app.mount('#root')
 })
 

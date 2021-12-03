@@ -9,8 +9,8 @@ div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }, { [$style.
 </template>
 
 <script>
-import { rendererOn, rendererSend, NAMES } from '../../../common/ipc'
-import { scrollTo } from '../../../renderer/utils'
+import { rendererOn, rendererSend, NAMES } from '@common/ipc'
+import { scrollTo } from '@renderer/utils'
 import Lyric from '@renderer/utils/lyric-font-player'
 
 let cancelScrollFn = null
@@ -172,7 +172,7 @@ export default {
     document.addEventListener('touchend', this.handleMouseMsUp)
     rendererSend(NAMES.winLyric.get_lyric_info, 'info')
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.clearLyricScrollTimeout()
     document.removeEventListener('mousemove', this.handleMouseMsMove)
     document.removeEventListener('mouseup', this.handleMouseMsUp)
@@ -332,7 +332,7 @@ export default {
 </script>
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@lyric/assets/styles/layout.less';
 
 .lyric {
   text-align: center;

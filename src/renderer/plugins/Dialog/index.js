@@ -1,7 +1,8 @@
 import Dialog from './Dialog'
 import i18n from '../i18n'
 import store from '@renderer/store'
-import Vue from 'vue'
+import { createApp } from 'vue'
+
 
 const defaultOptions = {
   message: '',
@@ -12,13 +13,18 @@ const defaultOptions = {
 
 const dialog = {
   install(Vue, options) {
-    const DialogConstructor = Vue.extend(Dialog)
-
-    const dialog = function Dialog(options) {
+    const dialog = function(options) {
       const { message, showCancel, cancelButtonText, confirmButtonText } =
         Object.assign({}, defaultOptions, typeof options == 'string' ? { message: options } : options || {})
       return new Promise((resolve, reject) => {
-        let instance = new DialogConstructor({ i18n, store }).$mount(document.createElement('div'))
+        let app = createApp(Dialog, {
+          afterLeave() {
+            app?.unmount()
+            app = null
+          },
+        }).use(i18n).use(store)
+
+        let instance = app.mount(document.createElement('div'))
 
         // 属性设置
         instance.visible = true
@@ -47,8 +53,8 @@ const dialog = {
         : { ...options, showCancel: true },
     )
 
-    Vue.prototype.$dialog = dialog
+    Vue.config.globalProperties.$dialog = dialog
   },
 }
 
-Vue.use(dialog)
+export default dialog

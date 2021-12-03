@@ -150,7 +150,6 @@ const mutations = {
     cache.set(key, result)
   },
   setVisibleListDetail(state, bool) {
-    if (!bool) state.listDetail.list = []
     state.isVisibleListDetail = bool
   },
   setSelectListInfo(state, info) {

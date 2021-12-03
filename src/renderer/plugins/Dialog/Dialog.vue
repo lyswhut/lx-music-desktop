@@ -10,8 +10,14 @@
 
 <script>
 import Modal from '@renderer/components/material/Modal'
-import Btn from '@renderer/components/material/Btn'
+import Btn from '@renderer/components/base/Btn'
 export default {
+  props: {
+    afterLeave: {
+      type: Function,
+      default: () => {},
+    },
+  },
   components: {
     Modal,
     Btn,
@@ -27,10 +33,10 @@ export default {
   },
   computed: {
     cancelBtnText() {
-      return this.cancelButtonText || this.$t('base.cancel_button_text')
+      return this.cancelButtonText || this.$t('cancel_button_text')
     },
     confirmBtnText() {
-      return this.confirmButtonText || this.$t('base.confirm_button_text')
+      return this.confirmButtonText || this.$t('confirm_button_text')
     },
   },
   beforeDestroy() {
@@ -38,14 +44,9 @@ export default {
     el.parentNode.removeChild(el)
   },
   methods: {
-    afterLeave(el, done) {
-      this.$destroy()
-    },
     handleCancel() {
-
     },
     handleComfirm() {
-
     },
   },
 }

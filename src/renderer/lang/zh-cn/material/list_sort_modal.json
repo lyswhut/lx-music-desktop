@@ -1,6 +1,0 @@
-{
-  "title": "将 {name} 的位置调整到：",
-  "title_multiple": "将已选的 {num} 首歌曲的位置调整到：",
-  "input_tip": "请输入要调整到第几个位置",
-  "btn_confirm": "确定"
-}

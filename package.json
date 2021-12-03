@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.15.3",
+  "version": "1.16.0-beta",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 15.2.0"
+    "Electron 13.4.0"
   ],
   "engines": {
     "node": ">= 14"
@@ -221,7 +221,7 @@
     "spinnies": "^0.5.1",
     "terser-webpack-plugin": "^5.2.5",
     "url-loader": "^4.1.1",
-    "vue-loader": "^15.9.8",
+    "vue-loader": "^16.8.3",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1",
@@ -241,14 +241,15 @@
     "image-size": "^1.0.0",
     "koa": "^2.13.4",
     "long": "^5.2.0",
+    "mitt": "^3.0.0",
     "needle": "^3.0.0",
     "node-id3": "^0.2.3",
     "request": "^2.88.2",
     "socket.io": "^4.4.0",
     "utf-8-validate": "^5.0.7",
-    "vue": "^2.6.14",
-    "vue-i18n": "^8.26.7",
-    "vue-router": "^3.5.3",
-    "vuex": "^3.6.2"
+    "vue": "^3.2.23",
+    "vue-i18n": "^9.2.0-beta.22",
+    "vue-router": "^4.0.12",
+    "vuex": "^4.0.2"
   }
 }

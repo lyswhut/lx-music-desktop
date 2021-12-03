@@ -1,37 +1,47 @@
-<template lang="pug">
-div(:class="$style.pagination" v-if="allPage > 1")
-  ul
-    li(v-if="page===1" :class="$style.disabled")
-      span
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-left')
-    li(v-else)
-      button(type="button" @click="handleClick(page - 1)" :tips="$t('material.pagination.prev')")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-left')
-    li(v-if="allPage > btnLength && page > pageEvg+1" :class="$style.first")
-      button(type="button" @click="handleClick(1)" :tips="$t('material.pagination.page', { num: 1 })")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-first')
-
-    li(v-for="(p, index) in pages" :key="index" :class="{[$style.active] : p == page}")
-      span(v-if="p === page" v-text="page")
-      button(v-else type="button" @click="handleClick(p)" v-text="p" :tips="$t('material.pagination.page', { num: p })")
-
-    li(v-if="allPage > btnLength && allPage - page > pageEvg" :class="$style.last")
-      button(type="button" @click="handleClick(allPage)" :tips="$t('material.pagination.page', { num: allPage })")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-last')
-
-
-    li(v-if="page===allPage" :class="$style.disabled")
-      span
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-right')
-    li(v-else)
-      button(type="button" @click="handleClick(page + 1)" :tips="$t('material.pagination.next')")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 451.846 451.847' space='preserve')
-          use(xlink:href='#icon-right')
+<template>
+<div :class="$style.pagination" v-if="allPage &gt; 1">
+  <ul>
+    <li v-if="page===1" :class="$style.disabled"><span>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-left"></use>
+        </svg></span></li>
+    <li v-else>
+      <button type="button" @click="handleClick(page - 1)" :tips="$t('pagination__prev')">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-left"></use>
+        </svg>
+      </button>
+    </li>
+    <li v-if="allPage &gt; btnLength &amp;&amp; page &gt; pageEvg+1" :class="$style.first">
+      <button type="button" @click="handleClick(1)" :tips="$t('pagination__page', { num: 1 })">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-first"></use>
+        </svg>
+      </button>
+    </li>
+    <li v-for="(p, index) in pages" :key="index" :class="{[$style.active] : p == page}"><span v-if="p === page" v-text="page"></span>
+      <button v-else type="button" @click="handleClick(p)" v-text="p" :tips="$t('pagination__page', { num: p })"></button>
+    </li>
+    <li v-if="allPage &gt; btnLength &amp;&amp; allPage - page &gt; pageEvg" :class="$style.last">
+      <button type="button" @click="handleClick(allPage)" :tips="$t('pagination__page', { num: allPage })">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-last"></use>
+        </svg>
+      </button>
+    </li>
+    <li v-if="page===allPage" :class="$style.disabled"><span>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-right"></use>
+        </svg></span></li>
+    <li v-else>
+      <button type="button" @click="handleClick(page + 1)" :tips="$t('pagination__next')">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+          <use xlink:href="#icon-right"></use>
+        </svg>
+      </button>
+    </li>
+  </ul>
+</div>
 
 </template>
 
@@ -116,7 +126,7 @@ export default {
 
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@renderer/assets/styles/layout.less';
 
 .pagination {
   display: inline-block;
@@ -198,7 +208,7 @@ export default {
 
 
 each(@themes, {
-  :global(#container.@{value}) {
+  :global(#root.@{value}) {
 
     .pagination {
       background-color: ~'@{color-@{value}-pagination-background}';

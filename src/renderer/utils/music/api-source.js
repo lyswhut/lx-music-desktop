@@ -1,4 +1,5 @@
 import apiSourceInfo from './api-source-info'
+import { apiSource, userApi } from '@renderer/core/share'
 
 const apiList = {}
 const supportQuality = {}
@@ -10,10 +11,10 @@ for (const api of apiSourceInfo) {
   }
 }
 
-const getAPI = source => apiList[`${window.globalObj.apiSource}_api_${source}`]
+const getAPI = source => apiList[`${apiSource.value}_api_${source}`]
 
 const apis = source => {
-  if (/^user_api/.test(window.globalObj.apiSource)) return window.globalObj.userApi.apis[source]
+  if (/^user_api/.test(apiSource.value)) return userApi.apis[source]
   let api = getAPI(source)
   if (api) return api
   throw new Error('Api is not found')

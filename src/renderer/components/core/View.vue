@@ -1,15 +1,31 @@
-<template lang="pug">
-div(:class="$style.view")
-  transition(enter-active-class="animated-fast fadeIn"
-      leave-active-class="animated-fast fadeOut")
-    router-view
-  //- core-title-bar
-  //- router-view
+<template>
+<div :class="$style.view">
+  <router-view v-slot="{ Component }" v-if="mounted">
+    <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
+      <component :is="Component" />
+    </transition>
+  </router-view>
+</div>
 </template>
+<script>
+import { ref, onMounted } from '@renderer/utils/vueTools'
+export default {
+  setup() {
+    const mounted = ref(false)
 
+    onMounted(() => {
+      mounted.value = true
+    })
+
+    return {
+      mounted,
+    }
+  },
+}
+</script>
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@renderer/assets/styles/layout.less';
 
 .view {
   position: relative;

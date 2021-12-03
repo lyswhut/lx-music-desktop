@@ -1,4 +1,4 @@
-const { mainOn, mainSend, NAMES: { mainWindow: ipcMainWindowNames } } = require('../../common/ipc')
+const { mainOn, mainSend, NAMES: { mainWindow: ipcMainWindowNames } } = require('@common/ipc')
 
 
 mainOn(ipcMainWindowNames.set_lyric_info, (event, info) => {

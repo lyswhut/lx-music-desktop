@@ -250,6 +250,13 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 - 以管理员权限打开`cmd`，输入`sfc /scannow`回车等待检查完成重启电脑
 - 若上面的方法**修复、重启**电脑后仍然不行，就自行百度弹出的**错误信息**看下别人是怎么解决的
 
+## MAC OS无法启动软件，提示 lx-music-desktop 已损坏
+
+这是因为软件没有签名，被系统阻止运行，<br>
+在终端里输入 `sudo xattr -rd com.apple.quarantine /Applications/lx-music-desktop.app`，然后输入你的电脑密码即可
+
+还可以参考：<https://blog.csdn.net/for641/article/details/104811538>
+
 ## 杀毒软件提示有病毒或恶意行为
 
 本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)<br>

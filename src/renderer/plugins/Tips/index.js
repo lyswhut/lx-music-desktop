@@ -26,11 +26,12 @@ const showTips = debounce(event => {
       top: event.y + 12,
       left: event.x + 8,
     },
-  })
-  instance.$on('beforeClose', closeInstance => {
-    if (instance !== closeInstance) return
-    prevTips = null
-    instance = null
+  }, {
+    beforeClose(closeInstance) {
+      if (instance !== closeInstance) return
+      prevTips = null
+      instance = null
+    },
   })
 }, 400)
 

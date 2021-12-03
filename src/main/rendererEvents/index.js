@@ -20,6 +20,7 @@ require('./data')
 require('./lyric')
 require('./musicUrl')
 require('./systemFonts')
+require('./wait')
 
 // require('./kw_decodeLyric')
 

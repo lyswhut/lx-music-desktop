@@ -1,7 +1,5 @@
 import Tips from './Tips.vue'
-import Vue from 'vue'
-
-const TipsConstructor = Vue.extend(Tips)
+import { createApp } from 'vue'
 
 const addAutoCloseTimer = (instance, time) => {
   if (!time) return
@@ -16,9 +14,16 @@ const clearAutoCloseTimer = instance => {
   instance.autoCloseTimer = null
 }
 
-export default ({ position, message, autoCloseTime } = {}) => {
+export default ({ position, message, autoCloseTime } = {}, props) => {
   if (!position) return
-  let instance = new TipsConstructor().$mount(document.createElement('div'))
+  let app = createApp(Tips, {
+    afterLeave() {
+      app.unmount()
+      app = null
+    },
+  })
+
+  let instance = app.mount(document.createElement('div'))
 
   // Tips实例挂载到刚创建的div
   // 属性设置
@@ -31,7 +36,7 @@ export default ({ position, message, autoCloseTime } = {}) => {
   document.body.appendChild(instance.$el)
 
   instance.cancel = () => {
-    instance.$emit('beforeClose', instance)
+    props.beforeClose(instance)
     clearAutoCloseTimer(instance)
     instance.visible = false
     instance = null

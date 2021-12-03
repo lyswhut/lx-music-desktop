@@ -38,7 +38,7 @@ if (process.platform == 'linux') app.commandLine.appendSwitch('use-gl', 'desktop
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
 
-const { navigationUrlWhiteList } = require('../common/config')
+const { navigationUrlWhiteList, themes } = require('../common/config')
 const { getWindowSizeInfo, initSetting, updateSetting } = require('./utils')
 const { isMac, isLinux, initHotKey } = require('../common/utils')
 
@@ -121,7 +121,7 @@ function createWindow() {
     },
   })
 
-  global.modules.mainWindow.loadURL(winURL)
+  global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&theme=${themes.find(t => t.id == global.appSetting.themeId)?.className ?? themes[0].className}`)
 
   winEvent(global.modules.mainWindow)
   // global.modules.mainWindow.webContents.openDevTools()

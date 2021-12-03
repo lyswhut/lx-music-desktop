@@ -105,7 +105,7 @@ export default {
     document.addEventListener('mousemove', this.handleMouseMove)
     document.addEventListener('mouseup', this.handleMouseUp)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener('mousemove', this.handleMouseMove)
     document.removeEventListener('mouseup', this.handleMouseUp)
   },
@@ -222,6 +222,15 @@ body {
   box-sizing: border-box;
   color: #fff;
   opacity: .8;
+}
+
+body {
+  user-select: none;
+  height: 100vh;
+  box-sizing: border-box;
+}
+#root {
+  height: 100%;
 }
 
 #container {

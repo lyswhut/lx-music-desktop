@@ -9,7 +9,8 @@ const baseConfig = require('./webpack.config.base')
 
 const { dependencies } = require('../../package.json')
 
-let whiteListedModules = ['vue']
+// let whiteListedModules = ['vue']
+let whiteListedModules = ['vue', 'vue-router', 'vuex', 'vue-i18n']
 
 
 module.exports = merge(baseConfig, {
