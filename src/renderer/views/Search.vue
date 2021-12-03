@@ -318,7 +318,10 @@ export default {
             if (isNeedReverse) this.selectedData.reverse()
             let nodes = this.$refs.dom_tbody.childNodes
             do {
-              nodes[lastSelectIndex].classList.add('active')
+              const node = nodes[lastSelectIndex]
+              if (node.tagName == 'TR') {
+                node.classList.add('active')
+              }
               lastSelectIndex++
             } while (lastSelectIndex <= clickIndex)
           }
@@ -353,12 +356,12 @@ export default {
       let targetSong = this.listInfo.list[index]
       // if (!targetSong || !this.assertApiSupport(targetSong.source)) return
       this.listAdd({ id: 'default', musicInfo: targetSong })
-      let targetIndex = getList(defaultList.id).list.findIndex(
+      let targetIndex = getList(defaultList.id).findIndex(
         s => s.songmid === targetSong.songmid,
       )
       if (targetIndex > -1) {
         this.setList({
-          list: defaultList.id,
+          listId: defaultList.id,
           index: targetIndex,
         })
       }
@@ -370,7 +373,9 @@ export default {
       this.removeAllSelect()
       this.selectedData = [...this.listInfo.list]
       let nodes = this.$refs.dom_tbody.childNodes
+      console.log(nodes)
       for (const node of nodes) {
+        if (node.tagName != 'TR') continue
         node.classList.add('active')
       }
     },

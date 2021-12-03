@@ -92,7 +92,7 @@ export default {
           handleSearch()
           break
         case 'listClick':
-          searchText.value = tipList[data]
+          searchText.value = tipList.value[data]
           nextTick(handleSearch)
       }
     }
