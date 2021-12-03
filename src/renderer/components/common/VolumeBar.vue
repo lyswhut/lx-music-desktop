@@ -34,7 +34,7 @@ export default {
       volumeEvent.isMsDown = true
       volumeEvent.msDownX = event.clientX
 
-      let val = event.offsetX / 80
+      let val = event.offsetX / dom_volumeBar.value.clientWidth
       if (val < 0) val = 0
       if (val > 1) val = 1
 
