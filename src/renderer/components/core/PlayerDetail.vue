@@ -229,11 +229,6 @@ export default {
       isActiveTransition: false,
       pregessWidth: 0,
       clickTime: 0,
-      volumeEvent: {
-        isMsDown: false,
-        msDownX: 0,
-        msDownValue: 0,
-      },
       lyricEvent: {
         isMsDown: false,
         msDownY: 0,
@@ -328,7 +323,7 @@ export default {
       this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
     },
     handleMouseMsUp(e) {
-      this.lyricEvent.isMsDown = this.volumeEvent.isMsDown = false
+      this.lyricEvent.isMsDown = false
     },
     handleMouseMsMove(e) {
       if (this.lyricEvent.isMsDown) {

@@ -235,7 +235,7 @@ const actions = {
     // picRequest = music[musicInfo.source].getPic(musicInfo)
     return getPic.call(this, musicInfo).then(url => {
       // picRequest = null
-      commit('getPic', { musicInfo, url })
+      commit('setPic', { musicInfo, url })
     }).catch(err => {
       // picRequest = null
       return Promise.reject(err)
@@ -419,7 +419,7 @@ const mutations = {
   setUrl(state, { musicInfo, type, url }) {
     setMusicUrl(musicInfo, type, url)
   },
-  getPic(state, datas) {
+  setPic(state, datas) {
     datas.musicInfo.img = datas.url
   },
   setLrc(state, datas) {
