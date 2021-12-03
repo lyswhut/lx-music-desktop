@@ -44,7 +44,7 @@ import { openDirInExplorer, selectDir } from '@renderer/utils'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Download',
+  name: 'SettingDownload',
   setup() {
     const { t } = useI18n()
 

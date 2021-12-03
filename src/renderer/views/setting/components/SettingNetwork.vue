@@ -22,7 +22,7 @@ import { debounce } from '@renderer/utils'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Network',
+  name: 'SettingNetwork',
   setup() {
     watch(() => currentStting.value.network.proxy.enable, enable => {
       proxy.enable = enable

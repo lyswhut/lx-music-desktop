@@ -12,7 +12,7 @@ dd
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Odc',
+  name: 'SettingOdc',
   setup() {
     return {
       currentStting,

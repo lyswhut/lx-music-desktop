@@ -15,7 +15,7 @@ dd
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Search',
+  name: 'SettingSearch',
   setup() {
     return {
       currentStting,

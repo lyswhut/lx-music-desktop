@@ -22,7 +22,7 @@ import { sizeFormate } from '@renderer/utils/tools'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Update',
+  name: 'SettingUpdate',
   setup() {
     const { t } = useI18n()
 

@@ -120,7 +120,7 @@ export default {
   created() {
     this.listenEvent()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.unlistenEvent()
   },
   mounted() {

@@ -28,7 +28,7 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
             p(v-if="musicInfo.album") {{$t('player__music_album')}}{{musicInfo.album}}
 
       transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
-        Lyric(v-if="visibleLrc")
+        LyricPlayer(v-if="visibleLrc")
       core-music-comment(:class="$style.comment" :musicInfo="musicInfoItem" :show="isShowPlayComment" @close="hideComment")
     play-bar
 </template>
@@ -46,12 +46,12 @@ import {
   musicInfoItem,
   musicInfo,
 } from '@renderer/core/share/player'
-import Lyric from './Lyric'
+import LyricPlayer from './LyricPlayer'
 import PlayBar from './PlayBar'
 
 export default {
   components: {
-    Lyric,
+    LyricPlayer,
     PlayBar,
   },
   setup() {

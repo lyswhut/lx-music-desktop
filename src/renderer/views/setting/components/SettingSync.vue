@@ -23,7 +23,7 @@ import { debounce } from '@renderer/utils'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Update',
+  name: 'SettingSync',
   setup() {
     const { t } = useI18n()
 

@@ -391,8 +391,8 @@ const mutations = {
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   clearCache() {
-    const [listIds, lists] = Object.entries(allList)
-    for (const { list } of lists) {
+    const lists = Object.values(allList)
+    for (const list of lists) {
       for (const item of list) {
         if (item.otherSource) item.otherSource = null
         if (item.typeUrl['128k']) delete item.typeUrl['128k']
@@ -408,7 +408,7 @@ const mutations = {
     }
     clearMusicUrl()
     clearLyric()
-    window.eventHub.emit(eventListNames.listChange, listIds)
+    window.eventHub.emit(eventListNames.listChange, Object.keys(allList))
   },
   setOtherSource(state, { musicInfo, otherSource }) {
     musicInfo.otherSource = otherSource

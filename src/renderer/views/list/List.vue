@@ -1,6 +1,6 @@
 <template>
 <div id="my-list" :class="$style.container" @click="handleContainerClick" v-if="isInitedList">
-  <Lists :list-id="listId" @show-menu="$refs.musicList.hideMenu()" ref="lists" />
+  <MyLists :list-id="listId" @show-menu="$refs.musicList.hideMenu()" ref="lists" />
   <MusicList :list-id="listId" @show-menu="$refs.lists.hideListsMenu()" ref="musicList" />
 </div>
 
@@ -11,13 +11,13 @@ import { getListPrevSelectId } from '@renderer/utils/data'
 import { isInitedList } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
 
-import Lists from './components/Lists'
+import MyLists from './components/MyLists'
 import MusicList from './components/MusicList'
 
 export default {
   name: 'List',
   components: {
-    Lists,
+    MyLists,
     MusicList,
   },
   setup() {

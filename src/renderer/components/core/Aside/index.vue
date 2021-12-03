@@ -2,7 +2,7 @@
 <div :class="$style.aside">
   <ControlBtns v-if="setting.controlBtnPosition == 'left'" />
   <div :class="$style.logo" v-else>L X</div>
-  <Nav />
+  <NavBar />
 </div>
 </template>
 
@@ -10,10 +10,10 @@
 import { mapGetters } from 'vuex'
 
 import ControlBtns from './ControlBtns'
-import Nav from './Nav'
+import NavBar from './NavBar'
 
 export default {
-  components: { ControlBtns, Nav },
+  components: { ControlBtns, NavBar },
   computed: {
     ...mapGetters(['setting']),
   },

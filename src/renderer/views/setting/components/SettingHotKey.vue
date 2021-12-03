@@ -51,7 +51,7 @@ const formatHotKeyName = (name) => {
 }
 
 export default {
-  name: 'HotKey',
+  name: 'SettingHotKey',
   setup() {
     const { t } = useI18n()
     const current_hot_key = ref({

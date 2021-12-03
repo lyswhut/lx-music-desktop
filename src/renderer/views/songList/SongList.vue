@@ -169,7 +169,7 @@ export default {
     if (!this.isVisibleListDetail) this.setTagListWidth()
     this.listenEvent()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.unlistenEvent()
   },
   methods: {

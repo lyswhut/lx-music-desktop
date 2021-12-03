@@ -39,7 +39,7 @@ export default {
       return this.confirmButtonText || this.$t('confirm_button_text')
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     const el = this.$el
     el.parentNode.removeChild(el)
   },

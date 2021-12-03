@@ -20,7 +20,7 @@ dd(:tips="$t('setting__basic_sourcename_title')")
 import { currentStting } from '../setting'
 
 export default {
-  name: 'List',
+  name: 'SettingList',
   setup() {
     return {
       currentStting,

@@ -97,22 +97,9 @@ const usePlayInfoInit = () => {
   return downloadList => {
     return getPlayInfo().then(info => {
       window.restorePlayInfo = null
-      if (!info) return
-      if (info.index < 0) return
-      if (info.listId) {
-        if (info.listId == 'download') {
-          const list = downloadList
-          // console.log(list)
-          if (!list || !list[info.index]) return
-          info.list = list
-        } else {
-          const list = getList(info.listId)
-          // console.log(list)
-          if (!list[info.index]) return
-          info.list = list
-        }
-      }
-      if (!info.list || !info.list[info.index]) return
+      if (!info?.listId || info.index < 0) return
+      const list = getList(info.listId)
+      if (!list || !list[info.index]) return
       window.restorePlayInfo = info
       setPlayList({
         listId: info.listId,

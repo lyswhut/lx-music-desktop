@@ -26,7 +26,7 @@ import { sizeFormate, clearCache, getCacheSize } from '@renderer/utils'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Other',
+  name: 'SettingOther',
   setup() {
     const { t } = useI18n()
 

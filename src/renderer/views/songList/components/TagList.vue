@@ -28,15 +28,16 @@ export default {
     },
     modelValue: {
       type: Object,
+      required: true,
     },
-  },
-  computed: {
-    ...mapGetters(['setting']),
   },
   data() {
     return {
       show: false,
     }
+  },
+  computed: {
+    ...mapGetters(['setting']),
   },
   mounted() {
     document.addEventListener('click', this.handleHide)

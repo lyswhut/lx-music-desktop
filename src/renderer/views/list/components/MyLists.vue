@@ -48,7 +48,7 @@ import { computed } from '@renderer/utils/vueTools'
 import { getList } from '@renderer/core/share/utils'
 
 export default {
-  name: 'ListLists',
+  name: 'MyLists',
   props: {
     listId: {
       type: [String, Number],

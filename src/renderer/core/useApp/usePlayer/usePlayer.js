@@ -182,7 +182,7 @@ export default ({ setting }) => {
       },
     })
 
-    setImg(playMusicInfo)
+    setImg({ musicInfo: musicInfoItem.value, listId: playMusicInfo.listId })
     setLrc(musicInfoItem.value)
     if (setting.value.player.togglePlayMethod == 'random') setPlayedList({ ...playMusicInfo })
   }

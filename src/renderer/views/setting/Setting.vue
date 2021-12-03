@@ -1,5 +1,4 @@
 <template>
-
 <div :class="$style.main">
   <!-- <div class="scroll" :class="$style.toc">
     <ul :class="$style.tocList">
@@ -19,20 +18,20 @@
   </div> -->
   <div class="scroll" :class="$style.setting" ref="dom_setting">
     <dl ref="dom_setting_list">
-      <Basic />
-      <Play />
-      <DesktopLyric />
-      <Search />
-      <List />
-      <Download />
-      <Sync />
-      <HotKey />
-      <Network />
-      <Odc />
-      <Backup />
-      <Other />
-      <Update />
-      <About />
+      <SettingBasic />
+      <SettingPlay />
+      <SettingDesktopLyric />
+      <SettingSearch />
+      <SettingList />
+      <SettingDownload />
+      <SettingSync />
+      <SettingHotKey />
+      <SettingNetwork />
+      <SettingOdc />
+      <SettingBackup />
+      <SettingOther />
+      <SettingUpdate />
+      <SettingAbout />
     </dl>
   </div>
 </div>
@@ -42,38 +41,38 @@
 import { useRefGetter, watch, useCommit } from '@renderer/utils/vueTools'
 import { currentStting } from './setting'
 
-import Basic from './components/Basic'
-import Play from './components/Play'
-import DesktopLyric from './components/DesktopLyric'
-import Search from './components/Search'
-import List from './components/List'
-import Download from './components/Download'
-import Sync from './components/Sync'
-import HotKey from './components/HotKey'
-import Network from './components/Network'
-import Odc from './components/Odc'
-import Backup from './components/Backup'
-import Other from './components/Other'
-import Update from './components/Update'
-import About from './components/About'
+import SettingBasic from './components/SettingBasic'
+import SettingPlay from './components/SettingPlay'
+import SettingDesktopLyric from './components/SettingDesktopLyric'
+import SettingSearch from './components/SettingSearch'
+import SettingList from './components/SettingList'
+import SettingDownload from './components/SettingDownload'
+import SettingSync from './components/SettingSync'
+import SettingHotKey from './components/SettingHotKey'
+import SettingNetwork from './components/SettingNetwork'
+import SettingOdc from './components/SettingOdc'
+import SettingBackup from './components/SettingBackup'
+import SettingOther from './components/SettingOther'
+import SettingUpdate from './components/SettingUpdate'
+import SettingAbout from './components/SettingAbout'
 
 export default {
   name: 'Setting',
   components: {
-    Basic,
-    Play,
-    DesktopLyric,
-    Search,
-    List,
-    Download,
-    Sync,
-    HotKey,
-    Network,
-    Odc,
-    Backup,
-    Other,
-    Update,
-    About,
+    SettingBasic,
+    SettingPlay,
+    SettingDesktopLyric,
+    SettingSearch,
+    SettingList,
+    SettingDownload,
+    SettingSync,
+    SettingHotKey,
+    SettingNetwork,
+    SettingOdc,
+    SettingBackup,
+    SettingOther,
+    SettingUpdate,
+    SettingAbout,
   },
   setup() {
     const setting = useRefGetter('setting')

@@ -26,7 +26,7 @@ import { setTaskBarProgress } from '@renderer/utils/tools'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'Play',
+  name: 'SettingPlay',
   setup() {
     const mediaDevices = ref([])
     const getMediaDevice = async() => {

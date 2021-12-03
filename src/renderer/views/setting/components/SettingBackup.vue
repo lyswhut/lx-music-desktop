@@ -31,7 +31,7 @@ import { currentStting } from '../setting'
 import { getList } from '@renderer/core/share/utils'
 
 export default {
-  name: 'Update',
+  name: 'SettingUpdate',
   setup() {
     const { t } = useI18n()
     const setting = useGetter('setting')

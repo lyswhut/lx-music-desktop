@@ -59,7 +59,7 @@ import { openUrl, clipboardWriteText } from '@renderer/utils'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'About',
+  name: 'SettingAbout',
   setup() {
     const handleShowPact = () => {
       isShowPact.value = true

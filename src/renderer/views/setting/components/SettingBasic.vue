@@ -63,7 +63,7 @@ import apiSourceInfo from '@renderer/utils/music/api-source-info'
 import UserApiModal from './UserApiModal'
 
 export default {
-  name: 'Basic',
+  name: 'SettingBasic',
   components: {
     UserApiModal,
   },

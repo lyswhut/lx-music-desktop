@@ -21,7 +21,7 @@ import { getSystemFonts } from '@renderer/utils/tools'
 import { currentStting } from '../setting'
 
 export default {
-  name: 'DesktopLyric',
+  name: 'SettingDesktopLyric',
   setup() {
     const { t } = useI18n()
     const systemFontList = ref([])
