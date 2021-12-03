@@ -1,25 +1,26 @@
-import { useCommit, useGetter, onBeforeUnmount } from '@renderer/utils/vueTools'
+import { useCommit, useGetter, onBeforeUnmount, toRaw } from '@renderer/utils/vueTools'
 import { sync as eventSyncName } from '@renderer/event/names'
 import { syncEnable, onSyncStatus } from '@renderer/utils/tools'
 import { sync } from '@renderer/core/share'
+import { allList, defaultList, loveList, userLists } from '@renderer/core/share/list'
 
 export default () => {
-  const setList = useCommit('setList')
-  const listAdd = useCommit('listAdd')
-  const listMove = useCommit('listMove')
-  const listAddMultiple = useCommit('listAddMultiple')
-  const listMoveMultiple = useCommit('listMoveMultiple')
-  const listRemove = useCommit('listRemove')
-  const listRemoveMultiple = useCommit('listRemoveMultiple')
-  const listClear = useCommit('listClear')
-  const updateMusicInfo = useCommit('updateMusicInfo')
-  const createUserList = useCommit('createUserList')
-  const removeUserList = useCommit('removeUserList')
-  const setUserListName = useCommit('setUserListName')
-  const moveupUserList = useCommit('moveupUserList')
-  const movedownUserList = useCommit('movedownUserList')
-  const setMusicPosition = useCommit('setMusicPosition')
-  const setSyncListData = useCommit('setSyncListData')
+  const setList = useCommit('list', 'setList')
+  const listAdd = useCommit('list', 'listAdd')
+  const listMove = useCommit('list', 'listMove')
+  const listAddMultiple = useCommit('list', 'listAddMultiple')
+  const listMoveMultiple = useCommit('list', 'listMoveMultiple')
+  const listRemove = useCommit('list', 'listRemove')
+  const listRemoveMultiple = useCommit('list', 'listRemoveMultiple')
+  const listClear = useCommit('list', 'listClear')
+  const updateMusicInfo = useCommit('list', 'updateMusicInfo')
+  const createUserList = useCommit('list', 'createUserList')
+  const removeUserList = useCommit('list', 'removeUserList')
+  const setUserListName = useCommit('list', 'setUserListName')
+  const moveupUserList = useCommit('list', 'moveupUserList')
+  const movedownUserList = useCommit('list', 'movedownUserList')
+  const setMusicPosition = useCommit('list', 'setMusicPosition')
+  const setSyncListData = useCommit('list', 'setSyncListData')
 
   const setting = useGetter('setting')
 
@@ -84,9 +85,9 @@ export default () => {
         global.eventHub.emit(eventSyncName.send_sync_list, {
           action: 'getData',
           data: {
-            defaultList: this.defaultList,
-            loveList: this.loveList,
-            userList: this.userList,
+            defaultList: { ...toRaw(defaultList), list: toRaw(allList[defaultList.id]) },
+            loveList: { ...toRaw(loveList), list: toRaw(allList[loveList.id]) },
+            userList: userLists.map(l => ({ ...toRaw(l), list: toRaw(allList[l.id]) })),
           },
         })
         break

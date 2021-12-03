@@ -124,7 +124,7 @@ function createWindow() {
   global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&theme=${themes.find(t => t.id == global.appSetting.themeId)?.className ?? themes[0].className}`)
 
   winEvent(global.modules.mainWindow)
-  // global.modules.mainWindow.webContents.openDevTools()
+  global.modules.mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()
 }

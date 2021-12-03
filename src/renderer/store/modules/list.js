@@ -54,7 +54,7 @@ const mutations = {
     if (userList != null) {
       for (const list of userList) if (list.list) markRawList(list.list)
     }
-    allListInit(defaultList, loveList, tempList, userList)
+    allListInit({ defaultList, loveList, tempList, userList })
     window.eventHub.emit(eventListNames.listChange, [defaultList.id, loveList.id, tempList.id, ...userList.map(l => l.id)])
     // state.isInitedList = true
     setInited()
@@ -70,7 +70,7 @@ const mutations = {
     if (defaultList != null) markRawList(defaultList.list)
     if (loveList != null) markRawList(loveList.list)
     if (userList != null) for (const list of userList) markRawList(list.list)
-    allListInit(defaultList, loveList, userList)
+    allListInit({ defaultList, loveList, userList })
     window.eventHub.emit(eventListNames.listChange, [defaultList.id, loveList.id, ...userList.map(l => l.id)])
   },
   setList(state, { id, list, name, source, sourceListId, isSync }) {
@@ -357,11 +357,11 @@ const mutations = {
       })
     }
 
-    const index = state.userList.findIndex(l => l.id == id)
+    const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
     let targetList = allList[id]
-    state.userList.splice(index, 1)
-    state.userList.splice(index - 1, 0, targetList)
+    userLists.splice(index, 1)
+    userLists.splice(index - 1, 0, targetList)
   },
   movedownUserList(state, { id, isSync }) {
     if (!isSync) {
@@ -370,11 +370,11 @@ const mutations = {
         data: { id },
       })
     }
-    const index = state.userList.findIndex(l => l.id == id)
+    const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
     let targetList = allList[id]
-    state.userList.splice(index, 1)
-    state.userList.splice(index + 1, 0, targetList)
+    userLists.splice(index, 1)
+    userLists.splice(index + 1, 0, targetList)
   },
   setMusicPosition(state, { id, position, list, isSync }) {
     if (!isSync) {

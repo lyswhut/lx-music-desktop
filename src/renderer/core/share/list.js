@@ -8,18 +8,20 @@ export const setInited = () => {
   isInitedList.value = true
 }
 
-export const allList = markRaw({})
+export const allList = window.allList = markRaw({})
 
-export const allListInit = (defaultList, loveList, tempList, userList) => {
+export const allListInit = (newLists) => {
+  const newIds = [defaultList.id, loveList.id, tempList.id, ...newLists.userList.map(l => l.id)]
   for (const id of Object.keys(allList)) {
+    if (newIds.includes(id)) continue
     delete allList[id]
   }
-  allList[defaultList.id] = reactive(defaultList.list)
-  allList[loveList.id] = reactive(loveList.list)
-  allList[tempList.id] = reactive(tempList.list)
+  allListUpdate(defaultList.id, newLists.defaultList.list)
+  allListUpdate(loveList.id, newLists.loveList.list)
+  if (newLists.tempList) allListUpdate(tempList.id, newLists.tempList.list)
   userLists.splice(0, userLists.length)
-  for (const { list, ...listInfo } of userList) {
-    allList[listInfo.id] = reactive(list)
+  for (const { list, ...listInfo } of newLists.userList) {
+    allListUpdate(listInfo.id, list)
     userLists.push(listInfo)
   }
 }
@@ -27,7 +29,7 @@ export const allListUpdate = (id, list) => {
   if (allList[id]) {
     allList[id].splice(0, allList[id].length, ...list)
   } else {
-    allList[id] = list
+    allList[id] = reactive(list)
   }
 }
 export const allListRemove = id => {
