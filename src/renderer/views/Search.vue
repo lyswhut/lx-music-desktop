@@ -373,7 +373,7 @@ export default {
       this.removeAllSelect()
       this.selectedData = [...this.listInfo.list]
       let nodes = this.$refs.dom_tbody.childNodes
-      console.log(nodes)
+      // console.log(nodes)
       for (const node of nodes) {
         if (node.tagName != 'TR') continue
         node.classList.add('active')
