@@ -317,6 +317,7 @@ const mutations = {
         id,
         list: [],
         source,
+        position,
         sourceListId,
       }
       addUserList(newList)

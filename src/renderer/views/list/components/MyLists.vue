@@ -318,13 +318,13 @@ export default {
       let list
       switch (index) {
         case -2:
-          list = { ...defaultList, list: getList(defaultList.id) }
+          list = { ...this.defaultList, list: getList(this.defaultList.id) }
           break
         case -1:
-          list = { ...loveList, list: getList(loveList.id) }
+          list = { ...this.loveList, list: getList(this.loveList.id) }
           break
         default:
-          list = userLists[index]
+          list = this.userLists[index]
           if (!list) return null
           list = { ...list, list: getList(list.id) }
           break
@@ -377,7 +377,7 @@ export default {
             confirmButtonText: this.$t('lists__import_part_button_confirm'),
           })
           if (confirm) {
-            listData.data.name = list.name
+            listData.data.name = targetList.name
             this.setList({
               name: listData.data.name,
               id: listData.data.id,
