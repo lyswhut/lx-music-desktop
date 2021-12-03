@@ -21,7 +21,12 @@ export default {
       }
     }
     if (lrc.length) {
-      lrc.unshift(lrcT.shift())
+      if ((lrcT.length - lrc.length) > (lrcT.length * 0.1)) { // 翻译比正文多则证明翻译可能有问题，直接将其丢弃
+        lrc = lrcT
+        lrcT = []
+      } else {
+        lrc.unshift(lrcT.shift())
+      }
     } else {
       lrc = lrcT
       lrcT = []
@@ -42,7 +47,7 @@ export default {
       if (!body.data?.lrclist?.length) return Promise.reject(new Error('Get lyric failed'))
       const { lrc, lrcT } = this.sortLrcArr(body.data.lrclist)
       // console.log(body.data.lrclist)
-      // console.log(lrc, lrcT)
+      console.log(lrc, lrcT)
       // console.log({
       //   lyric: decodeName(this.transformLrc(body.data.songinfo, lrc)),
       //   tlyric: decodeName(this.transformLrc(body.data.songinfo, lrcT)),
