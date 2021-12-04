@@ -90,15 +90,16 @@ export default {
       hotKeyConfig.value = config
     }
 
-    const handleHotKeyFocus = async(event, info, type) => {
-      console.log('object')
-      await hotKeySetEnable(false)
-      window.isEditingHotKey = true
-      isEditHotKey = true
-      let config = hotKeyConfig.value[type][info.name]
-      newHotKey = config?.key
-      hotKeyTargetInput = event.target
-      event.target.value = t('setting__hot_key_tip_input')
+    const handleHotKeyFocus = (event, info, type) => {
+      setTimeout(async() => {
+        await hotKeySetEnable(false)
+        window.isEditingHotKey = true
+        isEditHotKey = true
+        let config = hotKeyConfig.value[type][info.name]
+        newHotKey = config?.key
+        hotKeyTargetInput = event.target
+        event.target.value = t('setting__hot_key_tip_input')
+      })
     }
 
     const handleHotKeyBlur = async(event, info, type) => {

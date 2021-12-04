@@ -40,7 +40,7 @@ export default {
         })
         dom_mask.classList.add('hide')
       } */
-      document.getElementById('root').style.display = 'block'
+      dom_root.style.display = 'block'
     })
   },
 }
