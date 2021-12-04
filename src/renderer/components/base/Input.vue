@@ -32,7 +32,7 @@ export default {
       default: 'text',
     },
   },
-  emits: ['update:modelValue', 'keydown', 'blur', 'submit', 'change', 'focus'],
+  emits: ['update:modelValue', 'submit', 'change'],
   methods: {
     handleInput(event) {
       let value = event.target.value.trim()

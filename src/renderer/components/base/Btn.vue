@@ -1,9 +1,7 @@
 <template>
 <button
   :class="[$style.btn, {[$style.min]: min}, {[$style.outline]: outline}]"
-  :disabled="disabled"
-  @click="$emit('click', $event)"
->
+  :disabled="disabled">
   <slot />
 </button>
 </template>
@@ -23,7 +21,6 @@ export default {
       default: false,
     },
   },
-  emits: ['click'],
 }
 </script>
 

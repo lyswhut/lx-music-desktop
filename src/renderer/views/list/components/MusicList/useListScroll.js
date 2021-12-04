@@ -1,4 +1,4 @@
-import { useRoute, useRouter, onMounted, onBeforeUnmount, nextTick, watch } from '@renderer/utils/vueTools'
+import { useRoute, useRouter, onMounted, onBeforeUnmount } from '@renderer/utils/vueTools'
 import { setListPosition, getListPosition } from '@renderer/utils/data'
 
 export default ({ props, listRef, list, setting }) => {
@@ -27,21 +27,6 @@ export default ({ props, listRef, list, setting }) => {
     handleScrollList(index, isAnimation)
   }
 
-  watch(() => route.query.id, (id, oId) => {
-    if (!oId || route.path != '/list') return
-    const scrollIndex = route.query.scrollIndex
-    nextTick(() => {
-      restoreScroll(scrollIndex, false)
-      if (scrollIndex != null) {
-        router.replace({
-          path: 'list',
-          query: {
-            id: props.listId,
-          },
-        })
-      }
-    })
-  })
   onMounted(() => {
     restoreScroll(route.query.scrollIndex, false)
     if (route.query.scrollIndex != null) {
@@ -49,6 +34,7 @@ export default ({ props, listRef, list, setting }) => {
         path: 'list',
         query: {
           id: props.listId,
+          updated: true,
         },
       })
     }

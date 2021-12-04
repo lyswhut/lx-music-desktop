@@ -91,6 +91,7 @@ export default {
     }
 
     const handleHotKeyFocus = async(event, info, type) => {
+      console.log('object')
       await hotKeySetEnable(false)
       window.isEditingHotKey = true
       isEditHotKey = true

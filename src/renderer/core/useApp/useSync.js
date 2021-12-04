@@ -1,4 +1,4 @@
-import { useCommit, useGetter, onBeforeUnmount, toRaw } from '@renderer/utils/vueTools'
+import { useCommit, useRefGetter, onBeforeUnmount, toRaw } from '@renderer/utils/vueTools'
 import { sync as eventSyncName } from '@renderer/event/names'
 import { syncEnable, onSyncStatus } from '@renderer/utils/tools'
 import { sync } from '@renderer/core/share'
@@ -22,7 +22,7 @@ export default () => {
   const setMusicPosition = useCommit('list', 'setMusicPosition')
   const setSyncListData = useCommit('list', 'setSyncListData')
 
-  const setting = useGetter('setting')
+  const setting = useRefGetter('setting')
 
   const handleSyncAction = ({ action, data }) => {
     if (typeof data == 'object') data.isSync = true
@@ -115,10 +115,10 @@ export default () => {
     sync.status.devices = status.devices
   })
 
-  if (setting.sync.enable && setting.sync.port) {
+  if (setting.value.sync.enable && setting.value.sync.port) {
     syncEnable({
-      enable: setting.sync.enable,
-      port: setting.sync.port,
+      enable: setting.value.sync.enable,
+      port: setting.value.sync.port,
     })
   }
 

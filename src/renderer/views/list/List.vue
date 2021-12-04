@@ -8,7 +8,7 @@
 
 <script>
 import { getListPrevSelectId } from '@renderer/utils/data'
-import { isInitedList } from '@renderer/core/share/list'
+import { isInitedList, defaultList } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
 
 import MyLists from './components/MyLists'
@@ -31,51 +31,41 @@ export default {
       focusTarget: 'listDetail',
     }
   },
+  beforeRouteEnter(to, from) {
+    let id = to.query.id
+    if (!id) {
+      id = getListPrevSelectId() || defaultList.id
+      return {
+        path: '/list',
+        query: { id },
+      }
+    }
+  },
   beforeRouteUpdate(to, from) {
     // console.log(to, from)
+    if (to.query.updated) return
     let id = to.query.id
-    if (id == null) return
-    if (!getList(id)) {
-      id = this.$store.state.list.defaultList.id
-      this.handleListToggle(id)
+    if (id == null) {
+      id = defaultList.id
+    } else if (!getList(id)) {
+      id = defaultList.id
     }
     this.listId = id
     const scrollIndex = to.query.scrollIndex
-    if (from.query.id == to.query.id) {
-      if (!scrollIndex) return
-      this.$nextTick(() => {
-        this.$refs.musicList.restoreScroll(scrollIndex, true)
-
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: 'list',
-            query: {
-              id,
-            },
-          })
-        })
-      })
+    const isAnimation = from.query.id == to.query.id
+    this.$nextTick(() => {
+      this.$refs.musicList.restoreScroll(scrollIndex, isAnimation)
+    })
+    return {
+      path: '/list',
+      query: { id, updated: true },
     }
   },
   beforeRouteLeave(to, from) {
     this.$refs.musicList.saveListPosition()
   },
   created() {
-    let id = this.$route.query.id
-    if (!id) {
-      id = getListPrevSelectId() || this.$store.state.list.defaultList.id
-      this.handleListToggle(id)
-    }
-    this.listId = id
-  },
-  methods: {
-    handleListToggle(id) {
-      if (id == this.listId) return
-      this.$router.replace({
-        path: 'list',
-        query: { id },
-      }).catch(_ => _)
-    },
+    this.listId = this.$route.query.id
   },
 }
 </script>

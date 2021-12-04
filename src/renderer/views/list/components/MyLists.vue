@@ -160,6 +160,9 @@ export default {
   created() {
     this.setPrevSelectListId(this.listId)
   },
+  mounted() {
+    this.setListsScroll()
+  },
   methods: {
     ...mapMutations('list', [
       'setUserListName',
@@ -174,6 +177,13 @@ export default {
     ...mapActions('leaderboard', {
       getBoardListAll: 'getListAll',
     }),
+    setListsScroll() {
+      let target = this.$refs.dom_lists_list.querySelector('.' + this.$style.active)
+      if (!target) return
+      let offsetTop = target.offsetTop
+      let location = offsetTop - 150
+      if (location > 0) this.$refs.dom_lists_list.scrollTop = location
+    },
     handleListsSave(index, event) {
       let dom_target = this.$refs.dom_lists_list.querySelector('.' + this.$style.editing)
       if (dom_target) dom_target.classList.remove(this.$style.editing)
@@ -351,8 +361,6 @@ export default {
       })
     },
     handleImportList(index) {
-      const list = this.getTargetListInfo(index)
-
       selectDir({
         title: this.$t('lists__import_part_desc'),
         properties: ['openFile'],

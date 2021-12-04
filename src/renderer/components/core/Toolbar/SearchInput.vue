@@ -8,7 +8,6 @@ import { debounce } from '@renderer/utils'
 import {
   ref,
   useRoute,
-  useGetter,
   watch,
   useRefGetter,
   useRouter,
@@ -26,14 +25,14 @@ export default {
     const route = useRoute()
     const router = useRouter()
 
-    const setting = useGetter('setting')
+    const setting = useRefGetter('setting')
 
     const clearSearchList = useCommit('search', 'clearList')
 
     watch(() => route.name, (newValue, oldValue) => {
       if (newValue.name != 'search') {
-        if (setting.odc.isAutoClearSearchInput && searchText.value) searchText.value = ''
-        if (setting.odc.isAutoClearSearchList) clearSearchList()
+        if (setting.value.odc.isAutoClearSearchInput && searchText.value) searchText.value = ''
+        if (setting.value.odc.isAutoClearSearchList) clearSearchList()
       }
     })
 
@@ -50,10 +49,10 @@ export default {
     const tipSearch = debounce(() => {
       if (searchText.value === '') {
         tipList.value = []
-        music[setting.search.tempSearchSource].tempSearch.cancelTempSearch()
+        music[setting.value.search.tempSearchSource].tempSearch.cancelTempSearch()
         return
       }
-      music[setting.search.tempSearchSource].tempSearch.search(searchText.value).then(list => {
+      music[setting.value.search.tempSearchSource].tempSearch.search(searchText.value).then(list => {
         tipList.value = list
       }).catch(() => {})
     }, 50)

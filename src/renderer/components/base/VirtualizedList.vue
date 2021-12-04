@@ -105,7 +105,7 @@ export default {
       require: true,
     },
   },
-  emits: ['contextmenu', 'scroll'],
+  emits: ['scroll'],
   setup(props, { emit }) {
     const views = ref([])
     const dom_scrollContainer = ref(null)

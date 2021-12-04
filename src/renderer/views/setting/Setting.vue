@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { useRefGetter, watch, useCommit } from '@renderer/utils/vueTools'
+import { useRefGetter, watch, useCommit, toRaw } from '@renderer/utils/vueTools'
 import { currentStting } from './setting'
 
 import SettingBasic from './components/SettingBasic'
@@ -78,10 +78,11 @@ export default {
     const setting = useRefGetter('setting')
 
     const setSetting = useCommit('setSetting')
-    currentStting.value = JSON.parse(JSON.stringify(setting.value))
+    currentStting.value = JSON.parse(JSON.stringify(toRaw(setting.value)))
     watch(currentStting, newSetting => {
       const newSettingStr = JSON.stringify(newSetting)
       if (newSettingStr === JSON.stringify(setting.value)) return
+      console.log(newSetting)
       setSetting(JSON.parse(newSettingStr))
     }, {
       deep: true,

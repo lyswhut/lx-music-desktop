@@ -15,7 +15,7 @@ dd
 </template>
 
 <script>
-import { useCommit, useI18n, onBeforeUnmount, useGetter, toRaw } from '@renderer/utils/vueTools'
+import { useCommit, useI18n, onBeforeUnmount, toRaw, useRefGetter } from '@renderer/utils/vueTools'
 import { mergeSetting } from '@common/utils'
 import { base as eventBaseName } from '@renderer/event/names'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
@@ -34,9 +34,8 @@ export default {
   name: 'SettingUpdate',
   setup() {
     const { t } = useI18n()
-    const setting = useGetter('setting')
-    const settingVersion = useGetter('settingVersion')
-    const setSetting = useCommit('setSetting')
+    const setting = useRefGetter('setting')
+    const settingVersion = useRefGetter('settingVersion')
     const setSettingVersion = useCommit('setSettingVersion')
     const setList = useCommit('list', 'setList')
 
@@ -44,9 +43,9 @@ export default {
       currentStting.value = JSON.parse(JSON.stringify(config))
     }
     const refreshSetting = async(newSetting, newVersion) => {
-      await saveSetting(newSetting)
+      await saveSetting(toRaw(newSetting))
       const { setting, version } = await getSetting()
-      setSetting(setting)
+      currentStting.value = setting
       setSettingVersion(version)
     }
 
@@ -112,13 +111,13 @@ export default {
       })
     }
 
-
     const exportSetting = (path) => {
       console.log(path)
       const data = {
         type: 'setting',
         data: Object.assign({ version: settingVersion.value }, toRaw(setting.value)),
       }
+      console.log(data)
       saveLxConfigFile(path, data)
     }
     const handleExportSetting = () => {
