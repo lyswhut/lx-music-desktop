@@ -112,12 +112,10 @@ export default {
     }
 
     const exportSetting = (path) => {
-      console.log(path)
       const data = {
         type: 'setting',
         data: Object.assign({ version: settingVersion.value }, toRaw(setting.value)),
       }
-      console.log(data)
       saveLxConfigFile(path, data)
     }
     const handleExportSetting = () => {

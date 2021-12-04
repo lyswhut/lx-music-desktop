@@ -45,9 +45,7 @@ export default {
     // console.log(to, from)
     if (to.query.updated) return
     let id = to.query.id
-    if (id == null) {
-      id = defaultList.id
-    } else if (!getList(id)) {
+    if (id == null || !getList(id)) {
       id = defaultList.id
     }
     this.listId = id
