@@ -82,7 +82,7 @@ export default {
     watch(currentStting, newSetting => {
       const newSettingStr = JSON.stringify(newSetting)
       if (newSettingStr === JSON.stringify(setting.value)) return
-      console.log(newSetting)
+      // console.log(newSetting)
       setSetting(JSON.parse(newSettingStr))
     }, {
       deep: true,

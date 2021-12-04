@@ -49,7 +49,7 @@ export default ({
   })
 
   const rSetConfig = onSetConfig((event, config) => {
-    console.log(config)
+    // console.log(config)
     setSetting(Object.assign({}, toRaw(setting.value), config))
     window.eventHub.emit(eventBaseName.set_config, config)
   })
