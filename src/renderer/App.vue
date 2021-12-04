@@ -3,7 +3,8 @@
   core-aside#left
   #right
     core-toolbar#toolbar
-    core-view#view
+    #view
+      core-view#view-container
     core-play-bar#player
   core-icons
   core-version-modal
@@ -133,8 +134,13 @@ body {
   flex: none;
 }
 #view {
+  position: relative;
   flex: auto;
+  display: flex;
   min-height: 0;
+}
+#view-container {
+  flex: auto;
 }
 
 each(@themes, {

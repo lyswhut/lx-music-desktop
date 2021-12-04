@@ -489,6 +489,7 @@ export default {
 @import '../assets/styles/layout.less';
 
 .download {
+  position: relative;
   overflow: hidden;
   height: 100%;
   display: flex;

@@ -1,7 +1,8 @@
 <template lang="pug">
 div(:class="$style.container")
+  //- 歌曲列表页放在底层，在隐藏列表页时不会出现列表项的间隔线突兀感
   transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-    div(:class="$style.songListDetailContent" v-show="isVisibleListDetail")
+    div(:class="$style.songListDetailContent" v-if="isVisibleListDetail")
       div(:class="$style.songListHeader")
         div(:class="$style.songListHeaderLeft" :style="{ backgroundImage: 'url('+(selectListInfo.img || listDetail.info.img)+')' }")
           //- img(:src="listDetail.info.img || selectListInfo.img")
@@ -319,7 +320,6 @@ export default {
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-
 }
 .tab {
   flex: auto;
