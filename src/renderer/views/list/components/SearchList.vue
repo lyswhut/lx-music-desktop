@@ -6,9 +6,9 @@ div(:class="$style.container" ref="dom_container" v-show="isShow")
         input.key-bind.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
               @input="handleDelaySearch"
               @keyup.enter="handleTemplistClick(selectIndex)"
-              @keyup.40.prevent="handleKeyDown"
-              @keyup.38.prevent="handleKeyUp"
-              @keyup.27.prevent="handleKeyEsc"
+              @keyup.arrow-down.prevent="handleKeyDown"
+              @keyup.arrow-up.prevent="handleKeyUp"
+              @keyup.escape.prevent="handleKeyEsc"
               @contextmenu="handleContextMenu")
         button(type="button" @click="handleHide")
           slot
