@@ -2,27 +2,27 @@
 <div :class="$style.controlBtn">
   <common-volume-bar :setting="setting" />
   <div :class="$style.titleBtn" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :tips="toggleDesktopLyricBtnTitle">
-    <svg v-if="setting.desktopLyric.enable" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
+    <svg v-show="setting.desktopLyric.enable" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
       <use xlink:href="#icon-desktop-lyric-on"></use>
     </svg>
-    <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
+    <svg v-show="!setting.desktopLyric.enable" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
       <use xlink:href="#icon-desktop-lyric-off"></use>
     </svg>
   </div>
   <div :class="$style.titleBtn" @click="toggleNextPlayMode" :tips="nextTogglePlayName">
-    <svg v-if="setting.player.togglePlayMethod == 'listLoop'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="80%" viewBox="0 0 24 24" space="preserve">
+    <svg v-show="setting.player.togglePlayMethod == 'listLoop'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="80%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-list-loop"></use>
     </svg>
-    <svg v-else-if="setting.player.togglePlayMethod == 'random'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
+    <svg v-show="setting.player.togglePlayMethod == 'random'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-list-random"></use>
     </svg>
-    <svg v-else-if="setting.player.togglePlayMethod == 'list'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="120%" viewBox="0 0 24 24" space="preserve">
+    <svg v-show="setting.player.togglePlayMethod == 'list'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="120%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-list-order"></use>
     </svg>
-    <svg v-else-if="setting.player.togglePlayMethod == 'singleLoop'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
+    <svg v-show="setting.player.togglePlayMethod == 'singleLoop'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-single-loop"></use>
     </svg>
-    <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="120%" viewBox="0 0 24 24" space="preserve">
+    <svg v-show="!setting.player.togglePlayMethod" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="120%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-single"></use>
     </svg>
   </div>
