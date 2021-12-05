@@ -3,6 +3,7 @@ import path from 'path'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
+import { log } from '@common/utils'
 import iconv from 'iconv-lite'
 import { gzip, gunzip } from 'zlib'
 import { proxy, qualityList } from '@renderer/core/share'
@@ -480,6 +481,16 @@ export const readLxConfigFile = async path => {
   return data
 }
 
+export const saveStrToFile = (path, str) => new Promise((resolve, reject) => {
+  fs.writeFile(path, str, err => {
+    if (err) {
+      log.error(err)
+      reject(err)
+      return
+    }
+    resolve()
+  })
+})
 
 const fileNameRxp = /[\\/:*?#"<>|]/g
 export const filterFileName = name => name.replace(fileNameRxp, '')

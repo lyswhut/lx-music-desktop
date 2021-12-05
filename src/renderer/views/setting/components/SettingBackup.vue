@@ -12,6 +12,11 @@ dd
   div
     base-btn.btn.gap-left(min @click="handleImportAllData") {{$t('setting__backup_all_import')}}
     base-btn.btn.gap-left(min @click="handleExportAllData") {{$t('setting__backup_all_export')}}
+dd
+  h3#backup_other {{$t('setting__backup_other')}}
+  div
+    base-btn.btn.gap-left(min @click="handleExportPlayListToText") {{$t('setting__backup_other_export_list_text')}}
+    base-btn.btn.gap-left(min @click="handleExportPlayListToCsv") {{$t('setting__backup_other_export_list_csv')}}
 </template>
 
 <script>
@@ -26,9 +31,14 @@ import {
   readLxConfigFile,
   selectDir,
   openSaveDir,
+  filterFileName,
+  saveStrToFile,
 } from '@renderer/utils'
 import { currentStting } from '../setting'
 import { getList } from '@renderer/core/share/utils'
+import path from 'path'
+import { dialog } from '@renderer/plugins/Dialog'
+import iconv from 'iconv-lite'
 
 export default {
   name: 'SettingUpdate',
@@ -214,6 +224,106 @@ export default {
       })
     }
 
+    const exportPlayListToText = async(savePath, isMerge) => {
+      const lists = JSON.parse(JSON.stringify([
+        { ...toRaw(defaultList), list: toRaw(getList(defaultList.id)) },
+        { ...toRaw(loveList), list: toRaw(getList(loveList.id)) },
+        ...userLists.map(l => ({ ...toRaw(l), list: toRaw(getList(l.id)) })),
+      ]))
+      for await (const list of lists) {
+        for await (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
+      }
+      if (isMerge) {
+        saveStrToFile(savePath, iconv.encode(lists.map(l => l.list.map(m => `${m.name}  ${m.singer}  ${m.albumName}`).join('\n')).join('\n\n'), 'utf8', { addBOM: true }))
+      } else {
+        for await (const list of lists) {
+          await saveStrToFile(path.join(savePath, `lx_list_${filterFileName(list.name)}.txt`), iconv.encode(list.list.map(m => `${m.name}  ${m.singer}  ${m.albumName}`).join('\n'), 'utf8', { addBOM: true }))
+        }
+      }
+    }
+    const handleExportPlayListToText = async() => {
+      const confirm = await dialog.confirm({
+        message: t('setting__backup_other_export_list_text_confirm'),
+        cancelButtonText: t('cancel_button_text'),
+        confirmButtonText: t('confirm_button_text'),
+      })
+      if (confirm) {
+        openSaveDir({
+          title: t('setting__backup_other_export_dir'),
+          defaultPath: 'lx_list_all.txt',
+        }).then(result => {
+          if (result.canceled) return
+          let path = result.filePath
+          if (!path.endsWith('.txt')) path += '.txt'
+          exportPlayListToText(path, true)
+        })
+      } else {
+        selectDir({
+          title: t('setting__backup_other_export_dir'),
+          defaultPath: currentStting.value.download.savePath,
+          properties: ['openDirectory'],
+        }).then(result => {
+          if (result.canceled) return
+          exportPlayListToText(result.filePaths[0], false)
+        })
+      }
+    }
+
+    const exportPlayListToCsv = async(savePath, isMerge) => {
+      const lists = JSON.parse(JSON.stringify([
+        { ...toRaw(defaultList), list: toRaw(getList(defaultList.id)) },
+        { ...toRaw(loveList), list: toRaw(getList(loveList.id)) },
+        ...userLists.map(l => ({ ...toRaw(l), list: toRaw(getList(l.id)) })),
+      ]))
+      for await (const list of lists) {
+        for await (const item of list.list) {
+          if (item.otherSource) delete item.otherSource
+        }
+      }
+      const filterStr = str => {
+        if (!str) return ''
+        str = str.replace(/"/g, '""')
+        if (/,/.test(str)) str = `"${str}"`
+        return str
+      }
+      if (isMerge) {
+        saveStrToFile(savePath, iconv.encode(lists.map(l => l.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n')).join('\n'), 'utf8', { addBOM: true }))
+      } else {
+        for await (const list of lists) {
+          await saveStrToFile(path.join(savePath, `lx_list_${filterFileName(list.name)}.csv`), iconv.encode(list.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n'), 'utf8', { addBOM: true }))
+        }
+      }
+    }
+    const handleExportPlayListToCsv = async() => {
+      const confirm = await dialog.confirm({
+        message: t('setting__backup_other_export_list_text_confirm'),
+        cancelButtonText: t('cancel_button_text'),
+        confirmButtonText: t('confirm_button_text'),
+      })
+      if (confirm) {
+        openSaveDir({
+          title: t('setting__backup_other_export_dir'),
+          defaultPath: 'lx_list_all.csv',
+        }).then(result => {
+          if (result.canceled) return
+          let path = result.filePath
+          if (!path.endsWith('.csv')) path += '.csv'
+          exportPlayListToCsv(path, true)
+        })
+      } else {
+        selectDir({
+          title: t('setting__backup_other_export_dir'),
+          defaultPath: currentStting.value.download.savePath,
+          properties: ['openDirectory'],
+        }).then(result => {
+          if (result.canceled) return
+          exportPlayListToCsv(result.filePaths[0], false)
+        })
+      }
+    }
+
     window.eventHub.on(eventBaseName.set_config, handleUpdateSetting)
 
     onBeforeUnmount(() => {
@@ -228,6 +338,8 @@ export default {
       handleImportSetting,
       handleExportAllData,
       handleImportAllData,
+      handleExportPlayListToText,
+      handleExportPlayListToCsv,
     }
   },
 }
