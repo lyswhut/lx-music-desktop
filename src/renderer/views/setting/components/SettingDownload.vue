@@ -31,7 +31,7 @@ dd(:tips="$t('setting__download_lyric_title')")
   div
     base-checkbox(id="setting_download_isDownloadLrc" v-model="currentStting.download.isDownloadLrc" :label="$t('setting__is_enable')")
 dd
-  h3#download_lyric {{$t('setting__download_lyric_format')}}
+  h3#download_lyric_format {{$t('setting__download_lyric_format')}}
   div
     base-checkbox.gap-left(v-for="item in lrcFormatList" :key="item.id" :id="`setting_download_lrcFormat_${item.id}`"
       name="setting_download_lrcFormat" need v-model="currentStting.download.lrcFormat" :value="item.id" :label="item.name")

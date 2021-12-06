@@ -11,7 +11,7 @@ dd
         :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
         @focus="handleHotKeyFocus($event, item, 'local')"
         @blur="handleHotKeyBlur($event, item, 'local')")
-
+dd
   h3#hot_key_global_title {{$t('setting__hot_key_global_title')}}
   div
     base-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('setting__is_enable')" @change="handleEnableHotKey")
