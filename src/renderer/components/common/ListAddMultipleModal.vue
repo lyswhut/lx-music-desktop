@@ -55,6 +55,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    teleport: String,
   },
   emits: ['update:show', 'confirm'],
   setup(props) {

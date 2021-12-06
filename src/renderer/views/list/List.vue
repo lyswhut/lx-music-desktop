@@ -1,6 +1,6 @@
 <template>
 <div id="my-list" :class="$style.container" @click="handleContainerClick" v-if="isInitedList">
-  <MyLists :list-id="listId" @show-menu="$refs.musicList.hideMenu()" ref="lists" />
+  <MyLists :list-id="listId" @show-menu="$refs.musicList.handleMenuClick()" ref="lists" />
   <MusicList :list-id="listId" @show-menu="$refs.lists.hideListsMenu()" ref="musicList" />
 </div>
 

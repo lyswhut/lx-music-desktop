@@ -48,8 +48,7 @@ dd
   div
     base-checkbox.gap-left(v-for="item in controlBtnPositionList" :key="item.id" :id="`setting_basic_control_btn_position_${item.id}`"
       name="setting_basic_control_btn_position" need v-model="currentStting.controlBtnPosition" :value="item.id" :label="item.name")
-teleport(to="#view")
-  user-api-modal(v-model="isShowUserApiModal")
+user-api-modal(v-model="isShowUserApiModal")
 </template>
 
 <script>

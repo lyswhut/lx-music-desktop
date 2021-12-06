@@ -1,5 +1,5 @@
 <template>
-<material-modal :show="show" :bg-close="bgClose" @close="handleClose">
+<material-modal :show="show" :bg-close="bgClose" @close="handleClose" :teleport="teleport">
   <main :class="$style.main">
     <h2>{{ info.name }}<br/>{{ info.singer }}</h2>
     <base-btn :class="$style.btn" :key="type.type" @click="handleClick(type.type)" v-for="type in types"
@@ -25,6 +25,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    teleport: String,
   },
   emits: ['update:show'],
   setup() {

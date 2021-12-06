@@ -247,20 +247,6 @@ export default {
         }
       }
     }
-    .gap-left {
-      + .gap-left {
-        margin-left: 20px;
-      }
-    }
-    .gap-top {
-      &.top {
-        margin-top: 25px;
-      }
-
-      + .gap-top {
-        margin-top: 10px;
-      }
-    }
   }
 }
 

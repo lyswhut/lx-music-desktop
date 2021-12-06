@@ -6,13 +6,14 @@ import { createApp } from 'vue'
 
 const defaultOptions = {
   message: '',
+  teleport: '#root',
   showCancel: false,
   cancelButtonText: '',
   confirmButtonText: '',
 }
 
 export const dialog = function(options) {
-  const { message, showCancel, cancelButtonText, confirmButtonText } =
+  const { message, showCancel, cancelButtonText, confirmButtonText, teleport } =
     Object.assign({}, defaultOptions, typeof options == 'string' ? { message: options } : options || {})
   return new Promise((resolve, reject) => {
     let app = createApp(Dialog, {
@@ -30,6 +31,7 @@ export const dialog = function(options) {
     instance.showCancel = showCancel
     instance.cancelButtonText = cancelButtonText
     instance.confirmButtonText = confirmButtonText
+    instance.teleport = teleport
 
     // 挂载
     document.getElementById('container').appendChild(instance.$el)
@@ -45,6 +47,7 @@ export const dialog = function(options) {
     }
   })
 }
+
 dialog.confirm = options => dialog(
   typeof options == 'string'
     ? { message: options, showCancel: true }

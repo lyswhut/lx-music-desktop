@@ -1,7 +1,7 @@
 import { ref, nextTick, useCommit } from '@renderer/utils/vueTools'
 
 export default ({ props, list, selectedList, removeAllSelect }) => {
-  const isShowListSortModal = ref(false)
+  const isShowMusicSortModal = ref(false)
   const selectedNum = ref(0)
   const musicInfo = ref(null)
 
@@ -14,7 +14,7 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
       selectedNum.value = 0
       musicInfo.value = list.value[index]
       nextTick(() => {
-        isShowListSortModal.value = true
+        isShowMusicSortModal.value = true
       })
     }
   }
@@ -27,11 +27,11 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
       list: selectedNum.value ? [...selectedList.value] : [musicInfo.value],
     })
     removeAllSelect()
-    isShowListSortModal.value = false
+    isShowMusicSortModal.value = false
   }
 
   return {
-    isShowListSortModal,
+    isShowMusicSortModal,
     selectedNum,
     selectedSortMusicInfo: musicInfo,
     handleShowSortModal,

@@ -1,5 +1,5 @@
 <template>
-<material-modal :show="show" :bg-close="bgClose" @close="handleClose">
+<material-modal :show="show" :bg-close="bgClose" @close="handleClose" :teleport="teleport">
   <main :class="$style.main">
     <h2>{{$t('download__multiple_tip', { len: list.length })}}<br/>{{$t('download__multiple_tip2')}}</h2>
     <base-btn :class="$style.btn" @click="handleClick('128k')">{{$t('download__normal')}} - 128K</base-btn>
@@ -28,6 +28,7 @@ export default {
         return []
       },
     },
+    teleport: String,
   },
   emits: ['update:show', 'confirm'],
   methods: {

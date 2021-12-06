@@ -57,11 +57,10 @@ div(:class="$style.search")
         div(v-else :class="$style.noitem_list")
           p {{$t('search__welcome')}}
   //- common-flow-btn(:show="isShowEditBtn && (searchSourceId == 'all' || assertApiSupport(searchSourceId))" :remove-btn="false" @btn-click="handleFlowBtnClick")
-  teleport(to="#view")
-    common-download-modal(v-model:show="isShowDownload" :musicInfo="musicInfo")
-    common-download-multiple-modal(v-model:show="isShowDownloadMultiple" :list="selectedData" @confirm="removeAllSelect")
-    common-list-add-modal(v-model:show="isShowListAdd" :musicInfo="musicInfo")
-    common-list-add-multiple-modal(v-model:show="isShowListAddMultiple" :musicList="selectedData" @confirm="removeAllSelect")
+  common-download-modal(v-model:show="isShowDownload" :musicInfo="musicInfo" teleport="#view")
+  common-download-multiple-modal(v-model:show="isShowDownloadMultiple" :list="selectedData" @confirm="removeAllSelect" teleport="#view")
+  common-list-add-modal(v-model:show="isShowListAdd" :musicInfo="musicInfo" teleport="#view")
+  common-list-add-multiple-modal(v-model:show="isShowListAddMultiple" :musicList="selectedData" @confirm="removeAllSelect" teleport="#view")
   base-menu(:menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :isShow="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick")
 </template>
 

@@ -158,6 +158,5 @@ export default ({
     isShowItemMenu,
     showMenu,
     menuClick,
-    hideMenu,
   }
 }

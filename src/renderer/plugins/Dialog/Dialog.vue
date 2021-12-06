@@ -1,11 +1,11 @@
 <template>
-  <Modal :show="visible" @close="handleCancel" @after-leave="afterLeave" :closeBtn="false">
-    <main :class="$style.main">{{message}}</main>
-    <footer :class="$style.footer">
-      <Btn :class="$style.btn" v-if="showCancel" @click="handleCancel">{{cancelBtnText}}</Btn>
-      <Btn :class="$style.btn" @click="handleComfirm">{{confirmBtnText}}</Btn>
-    </footer>
-  </Modal>
+<Modal :show="visible" @close="handleCancel" @after-leave="afterLeave" :closeBtn="false" :teleport="teleport">
+  <main :class="$style.main">{{message}}</main>
+  <footer :class="$style.footer">
+    <Btn :class="$style.btn" v-if="showCancel" @click="handleCancel">{{cancelBtnText}}</Btn>
+    <Btn :class="$style.btn" @click="handleComfirm">{{confirmBtnText}}</Btn>
+  </footer>
+</Modal>
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
       showCancel: false,
       cancelButtonText: '',
       confirmButtonText: '',
+      teleport: '#root',
     }
   },
   computed: {

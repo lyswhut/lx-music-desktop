@@ -1,5 +1,5 @@
 <template lang="pug">
-material-modal(:show="modelValue" bg-close @close="handleClose")
+material-modal(:show="modelValue" bg-close @close="handleClose" teleport="#view")
   main(:class="$style.main")
     h2 {{$t('user_api__title')}}
     ul.scroll(v-if="apiList.length" :class="$style.content")

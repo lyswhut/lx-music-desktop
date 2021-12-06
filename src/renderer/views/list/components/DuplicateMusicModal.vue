@@ -1,5 +1,5 @@
 <template>
-<material-modal :show="visible" @close="$emit('update:visible', false)" bg-close="bg-close">
+<material-modal :show="visible" @close="$emit('update:visible', false)" bg-close  teleport="#view">
   <div :class="$style.header">
     <h2>{{listInfo.name}}</h2>
   </div>
@@ -121,6 +121,9 @@ export default {
   flex: none;
   padding: 15px;
   text-align: center;
+  h2 {
+    word-break: break-all;
+  }
 }
 .main {
   min-height: 200px;

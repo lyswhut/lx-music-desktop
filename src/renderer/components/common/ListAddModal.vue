@@ -1,5 +1,5 @@
 <template>
-<material-modal :show="show" :bg-close="bgClose" @close="handleClose">
+<material-modal :show="show" :bg-close="bgClose" @close="handleClose" :teleport="teleport">
   <main :class="$style.main">
     <h2>{{$t('list_add__' + (isMove ? 'title_first_move' : 'title_first_add'))}}&nbsp;<span :class="$style.name">{{this.musicInfo && `${musicInfo.name}`}}</span>&nbsp;{{$t('list_add__title_last')}}</h2>
     <div class="scroll" :class="$style.btnContent">
@@ -53,6 +53,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    teleport: String,
   },
   emits: ['update:show'],
   setup(props) {

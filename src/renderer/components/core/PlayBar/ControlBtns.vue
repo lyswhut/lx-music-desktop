@@ -31,9 +31,7 @@
       <use xlink:href="#icon-add-2"></use>
     </svg>
   </div>
-  <teleport to="#root">
-    <common-list-add-modal :show="isShowAddMusicTo" :musicInfo="musicInfoItem" @close="isShowAddMusicTo = false" />
-  </teleport>
+  <common-list-add-modal :show="isShowAddMusicTo" :musicInfo="musicInfoItem" @close="isShowAddMusicTo = false" />
 </div>
 </template>
 

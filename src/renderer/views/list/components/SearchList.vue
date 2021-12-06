@@ -1,27 +1,28 @@
 <template lang="pug">
-div(:class="$style.container" ref="dom_container" v-show="isShow")
-  transition(enter-active-class="animated-fast zoomIn" leave-active-class="animated zoomOut" @after-leave="handleAnimated")
-    div(:class="$style.search" v-show="visible")
-      div(:class="$style.form")
-        input.key-bind.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
-              @input="handleDelaySearch"
-              @keyup.enter="handleTemplistClick(selectIndex)"
-              @keyup.arrow-down.prevent="handleKeyDown"
-              @keyup.arrow-up.prevent="handleKeyUp"
-              @keyup.escape.prevent="handleKeyEsc"
-              @contextmenu="handleContextMenu")
-        button(type="button" @click="handleHide")
-          slot
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
-              use(xlink:href='#icon-delete')
-      div.scroll(v-if="resultList" :class="$style.list" :style="listStyle" ref="dom_scrollContainer")
-        ul(ref="dom_list")
-          li(v-for="(item, index) in resultList" :key="item.songmid" :class="selectIndex === index ? $style.select : null" @mouseenter="selectIndex = index" @click="handleTemplistClick(index)")
-            div(:class="$style.img")
-            div(:class="$style.text")
-              h3(:class="$style.text") {{item.name}} - {{item.singer}}
-              h3(v-if="item.albumName" :class="[$style.text, $style.albumName]") {{item.albumName}}
-            div(:class="$style.source") {{item.source}}
+teleport(to="#view")
+  div(:class="$style.container" ref="dom_container" v-show="isShow")
+    transition(enter-active-class="animated-fast zoomIn" leave-active-class="animated zoomOut" @after-leave="handleAnimated")
+      div(:class="$style.search" v-show="visible")
+        div(:class="$style.form")
+          input.key-bind.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
+                @input="handleDelaySearch"
+                @keyup.enter="handleTemplistClick(selectIndex)"
+                @keyup.arrow-down.prevent="handleKeyDown"
+                @keyup.arrow-up.prevent="handleKeyUp"
+                @keyup.escape.prevent="handleKeyEsc"
+                @contextmenu="handleContextMenu")
+          button(type="button" @click="handleHide")
+            slot
+              svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
+                use(xlink:href='#icon-delete')
+        div.scroll(v-if="resultList" :class="$style.list" :style="listStyle" ref="dom_scrollContainer")
+          ul(ref="dom_list")
+            li(v-for="(item, index) in resultList" :key="item.songmid" :class="selectIndex === index ? $style.select : null" @mouseenter="selectIndex = index" @click="handleTemplistClick(index)")
+              div(:class="$style.img")
+              div(:class="$style.text")
+                h3(:class="$style.text") {{item.name}} - {{item.singer}}
+                h3(v-if="item.albumName" :class="[$style.text, $style.albumName]") {{item.albumName}}
+              div(:class="$style.source") {{item.source}}
 </template>
 
 <script>
@@ -107,6 +108,7 @@ export default {
       default: false,
     },
   },
+  emits: ['action'],
   data() {
     return {
       text: '',

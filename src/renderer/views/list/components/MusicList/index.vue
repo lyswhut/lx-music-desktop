@@ -32,13 +32,12 @@ div(:class="$style.list")
   div(:class="$style.noItem" v-show="!list.length")
     p(v-text="$t('no_item')")
   //- material-flow-btn(:show="isShowEditBtn && assertApiSupport(source)" :remove-btn="false" @btn-click="handleFlowBtnClick")
-  teleport(to="#view")
-    common-download-modal(v-model:show="isShowDownload" :musicInfo="selectedDownloadMusicInfo")
-    common-download-multiple-modal(v-model:show="isShowDownloadMultiple" :list="selectedList" @confirm="removeAllSelect")
-    common-list-add-modal(v-model:show="isShowListAdd" :is-move="isMove" :musicInfo="selectedAddMusicInfo" :exclude-list-id="excludeListIds")
-    common-list-add-multiple-modal(v-model:show="isShowListAddMultiple" :is-move="isMoveMultiple" :musicList="selectedList" @confirm="removeAllSelect" :exclude-list-id="excludeListIds")
-    search-list(:list="list" @action="handleMusicSearchAction" :visible="isShowSearchBar")
-    list-sort-modal(v-model:show="isShowListSortModal" :music-info="selectedSortMusicInfo" :selected-num="selectedNum" @confirm="sortMusic")
+  common-download-modal(v-model:show="isShowDownload" :musicInfo="selectedDownloadMusicInfo" teleport="#view")
+  common-download-multiple-modal(v-model:show="isShowDownloadMultiple" :list="selectedList" @confirm="removeAllSelect" teleport="#view")
+  common-list-add-modal(v-model:show="isShowListAdd" :is-move="isMove" :musicInfo="selectedAddMusicInfo" :exclude-list-id="excludeListIds" teleport="#view")
+  common-list-add-multiple-modal(v-model:show="isShowListAddMultiple" :is-move="isMoveMultiple" :musicList="selectedList" @confirm="removeAllSelect" :exclude-list-id="excludeListIds" teleport="#view")
+  search-list(:list="list" @action="handleMusicSearchAction" :visible="isShowSearchBar")
+  music-sort-modal(v-model:show="isShowMusicSortModal" :music-info="selectedSortMusicInfo" :selected-num="selectedNum" @confirm="sortMusic")
   base-menu(:menus="menus" :location="menuLocation" item-name="name" :isShow="isShowItemMenu" @menu-click="handleMenuClick")
 </template>
 
@@ -46,7 +45,7 @@ div(:class="$style.list")
 import { clipboardWriteText, assertApiSupport } from '@renderer/utils'
 import { useCssModule } from '@renderer/utils/vueTools'
 import SearchList from '../SearchList'
-import ListSortModal from '../ListSortModal'
+import MusicSortModal from '../MusicSortModal'
 import useListInfo from './useListInfo'
 import useList from './useList'
 import useMenu from './useMenu'
@@ -68,7 +67,7 @@ export default {
   emits: ['show-menu'],
   components: {
     SearchList,
-    ListSortModal,
+    MusicSortModal,
   },
   setup(props, { emit }) {
     const styles = useCssModule()
@@ -117,7 +116,7 @@ export default {
     } = useMusicDownload({ selectedList, list })
 
     const {
-      isShowListSortModal,
+      isShowMusicSortModal,
       selectedNum,
       selectedSortMusicInfo,
       handleShowSortModal,
@@ -136,7 +135,6 @@ export default {
       menuLocation,
       isShowItemMenu,
       showMenu,
-      hideMenu,
       menuClick,
     } = useMenu({
       listRef,
@@ -231,7 +229,6 @@ export default {
       isShowItemMenu,
       menuLocation,
       handleMenuClick,
-      hideMenu,
 
       handleListRightClick,
       assertApiSupport,
@@ -242,7 +239,7 @@ export default {
       isMoveMultiple,
       selectedAddMusicInfo,
 
-      isShowListSortModal,
+      isShowMusicSortModal,
       selectedNum,
       selectedSortMusicInfo,
       sortMusic,

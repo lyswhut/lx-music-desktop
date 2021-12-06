@@ -34,7 +34,8 @@
     </transition>
   </ul>
   <base-menu :menus="listsItemMenu" :location="listsData.menuLocation" item-name="name" :isShow="listsData.isShowItemMenu" @menu-click="handleListsItemMenuClick" />
-  <DuplicateMusicModal v-model:visible="isShowDuplicateMusicModal" :list-info="selectedListInfo" />
+  <DuplicateMusicModal v-model:visible="isShowDuplicateMusicModal" :list-info="selectedDuplicateListInfo" />
+  <ListSortModal v-model:visible="isShowListSortModal" :list-info="selectedSortListInfo" />
 </div>
 </template>
 
@@ -43,6 +44,7 @@ import { mapMutations, mapActions } from 'vuex'
 import { openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import DuplicateMusicModal from './DuplicateMusicModal'
+import ListSortModal from './ListSortModal'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
 import { computed } from '@renderer/utils/vueTools'
 import { getList } from '@renderer/core/share/utils'
@@ -57,6 +59,7 @@ export default {
   },
   components: {
     DuplicateMusicModal,
+    ListSortModal,
   },
   setup() {
     const lists = computed(() => [defaultList, loveList, ...userLists])
@@ -70,13 +73,14 @@ export default {
   emits: ['show-menu'],
   data() {
     return {
-      isShowListSortModal: false,
       isShowDuplicateMusicModal: false,
+      isShowListSortModal: false,
       listsData: {
         isShowItemMenu: false,
         itemMenuControl: {
           rename: true,
           duplicate: true,
+          sort: true,
           import: true,
           export: true,
           sync: false,
@@ -93,7 +97,8 @@ export default {
         isNewLeave: false,
       },
       fetchingListStatus: {},
-      selectedListInfo: {},
+      selectedDuplicateListInfo: {},
+      selectedSortListInfo: {},
     }
   },
   computed: {
@@ -113,6 +118,11 @@ export default {
           name: this.$t('lists__duplicate'),
           action: 'duplicate',
           disabled: !this.listsData.itemMenuControl.duplicate,
+        },
+        {
+          name: this.$t('lists__sort_list'),
+          action: 'sort',
+          disabled: !this.listsData.itemMenuControl.sort,
         },
         {
           name: this.$t('lists__import'),
@@ -145,7 +155,6 @@ export default {
   watch: {
     listId(id) {
       this.setPrevSelectListId(id)
-      this.isShowListSortModal = false
     },
     lists(lists) {
       if (lists.some(l => l.id == this.listId)) return
@@ -245,6 +254,7 @@ export default {
           this.listsData.itemMenuControl.movedown = index < userLists.length - 1
           break
       }
+      this.listsData.itemMenuControl.sort = !!getList(this.getTargetListInfo(index)?.id).length
       this.listsData.rightClickItemIndex = index
       this.listsData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
       this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
@@ -272,8 +282,12 @@ export default {
           })
           break
         case 'duplicate':
-          this.selectedListInfo = this.getTargetListInfo(index)
+          this.selectedDuplicateListInfo = this.getTargetListInfo(index)
           this.isShowDuplicateMusicModal = true
+          break
+        case 'sort':
+          this.selectedSortListInfo = this.getTargetListInfo(index)
+          this.isShowListSortModal = true
           break
         case 'import':
           this.handleImportList(index)
