@@ -305,6 +305,7 @@
   "setting__other_tray_theme_origin": "原色",
   "setting__play": "播放設置",
   "setting__play_lyric_lxlrc": "使用卡拉OK式歌詞播放（如果支持）",
+  "setting__play_lyric_s2t": "將播放與下載的歌詞轉換為繁體中文",
   "setting__play_lyric_transition": "顯示歌詞翻譯",
   "setting__play_mediaDevice": "音頻輸出",
   "setting__play_mediaDevice_remove_stop_play": "當前的聲音輸出設備被改變時暫停播放歌曲",

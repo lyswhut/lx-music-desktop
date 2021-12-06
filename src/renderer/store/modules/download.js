@@ -177,7 +177,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
-const getLyric = function(musicInfo, isUseOtherSource) {
+const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
       lrcInfo.lyric
@@ -194,8 +194,7 @@ const getLyric = function(musicInfo, isUseOtherSource) {
             return null
           })
     ).then(lrcs => {
-      if (!lrcs) return lrcs
-      if (global.i18n.locale != 'zh-tw') return lrcs
+      if (!lrcs || !isS2t) return lrcs
       return rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(lrcs.lyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString()).then(lyric => {
         lrcs.lyric = lyric
         return lrcs
@@ -213,7 +212,7 @@ const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[0
  * @param {*} filePath
  * @param {*} isEmbedPic // 是否嵌入图片
  */
-const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric) {
+const saveMeta = function({ downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric, isS2t }) {
   if (downloadInfo.metadata.type === 'ape') return
   const tasks = [
     isEmbedPic
@@ -229,7 +228,7 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
           })
       : Promise.resolve(),
     isEmbedLyric
-      ? getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource)
+      ? getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource, isS2t)
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
@@ -249,8 +248,8 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
  * @param {*} downloadInfo
  * @param {*} filePath
  */
-const downloadLyric = function(downloadInfo, isUseOtherSource, filePath, lrcFormat) {
-  getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource).then(lrcs => {
+const downloadLyric = function({ downloadInfo, isUseOtherSource, filePath, lrcFormat, isS2t }) {
+  getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource, isS2t).then(lrcs => {
     if (lrcs?.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
       saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric, lrcFormat)
@@ -408,8 +407,23 @@ const actions = {
         commit('onCompleted', downloadInfo)
         dispatch('startTask')
 
-        saveMeta.call(_this, downloadInfo, downloadInfo.metadata.filePath, rootState.setting.download.isUseOtherSource, rootState.setting.download.isEmbedPic, rootState.setting.download.isEmbedLyric)
-        if (rootState.setting.download.isDownloadLrc) downloadLyric.call(_this, downloadInfo, rootState.setting.download.isUseOtherSource, downloadInfo.metadata.filePath, rootState.setting.download.lrcFormat)
+        saveMeta.call(_this, {
+          downloadInfo,
+          filePath: downloadInfo.metadata.filePath,
+          isUseOtherSource: rootState.setting.download.isUseOtherSource,
+          isEmbedPic: rootState.setting.download.isEmbedPic,
+          isEmbedLyric: rootState.setting.download.isEmbedLyric,
+          isS2t: rootState.setting.player.isS2t,
+        })
+        if (rootState.setting.download.isDownloadLrc) {
+          downloadLyric.call(_this, {
+            downloadInfo,
+            isUseOtherSource: rootState.setting.download.isUseOtherSource,
+            filePath: downloadInfo.metadata.filePath,
+            lrcFormat: rootState.setting.download.lrcFormat,
+            isS2t: rootState.setting.player.isS2t,
+          })
+        }
         console.log('on complate')
       },
       onError(err) {

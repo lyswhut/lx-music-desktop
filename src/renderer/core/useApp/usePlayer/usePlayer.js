@@ -130,7 +130,7 @@ export default ({ setting }) => {
     getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
       if (targetSong.songmid !== musicInfo.songmid) return
       return (
-        global.i18n.locale == 'zh-tw'
+        setting.value.player.isS2t
           ? Promise.all([
             lyric ? langS2T(lyric) : Promise.resolve(''),
             tlyric ? langS2T(tlyric) : Promise.resolve(''),

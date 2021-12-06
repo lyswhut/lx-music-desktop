@@ -305,6 +305,7 @@
   "setting__other_tray_theme_origin": "Primary Color",
   "setting__play": "Play",
   "setting__play_lyric_lxlrc": "Use Karaoke-style lyrics playback (if supported)",
+  "setting__play_lyric_s2t": "Convert the playing and downloading lyrics to Traditional Chinese",
   "setting__play_lyric_transition": "Show lyrics translation",
   "setting__play_mediaDevice": "Audio output",
   "setting__play_mediaDevice_remove_stop_play": "Pause the song when the current sound output device is changed",
