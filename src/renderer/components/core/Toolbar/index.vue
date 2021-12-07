@@ -13,6 +13,7 @@ import ControlBtns from './ControlBtns'
 import SearchInput from './SearchInput'
 
 export default {
+  name: 'CoreToolBar',
   components: { SearchInput, ControlBtns },
   computed: {
     ...mapGetters(['setting']),

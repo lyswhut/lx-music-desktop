@@ -51,6 +51,7 @@ import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 import { statusText, musicInfo, setShowPlayerDetail, isPlay, musicInfoItem, playInfo, playMusicInfo } from '@renderer/core/share/player'
 
 export default {
+  name: 'CorePlayBar',
   components: {
     ControlBtns,
   },

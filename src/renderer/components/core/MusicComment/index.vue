@@ -34,6 +34,7 @@ import music from '@renderer/utils/music'
 import CommentFloor from './CommentFloor'
 
 export default {
+  name: 'MusicComment',
   props: {
     show: Boolean,
     musicInfo: {

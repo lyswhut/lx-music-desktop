@@ -13,6 +13,7 @@ import ControlBtns from './ControlBtns'
 import NavBar from './NavBar'
 
 export default {
+  name: 'CoreAside',
   components: { ControlBtns, NavBar },
   computed: {
     ...mapGetters(['setting']),

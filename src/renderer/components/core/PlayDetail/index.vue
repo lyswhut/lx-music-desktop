@@ -50,6 +50,7 @@ import LyricPlayer from './LyricPlayer'
 import PlayBar from './PlayBar'
 
 export default {
+  name: 'CorePlayDetail',
   components: {
     LyricPlayer,
     PlayBar,

@@ -6,16 +6,16 @@
  */
 const electron = require('electron')
 const electronDebug = require('electron-debug')
-const { default: installExtension, VUEJS_DEVTOOLS } = require('electron-devtools-installer')
+const { default: installExtension, VUEJS3_DEVTOOLS } = require('electron-devtools-installer')
 // Install `electron-debug` with `devtron`
 electronDebug({
   showDevTools: true,
   devToolsMode: 'undocked',
 })
-
+console.log(VUEJS3_DEVTOOLS)
 // Install `vue-devtools`
 electron.app.on('ready', () => {
-  installExtension(VUEJS_DEVTOOLS)
+  installExtension(VUEJS3_DEVTOOLS)
     .then(name => console.log(`Added Extension:  ${name}`))
     .catch(err => console.log('An error occurred: ', err))
 })
