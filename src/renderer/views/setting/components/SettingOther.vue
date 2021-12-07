@@ -33,8 +33,8 @@ export default {
     const trayThemeList = computed(() => {
       return [
         { id: 0, name: 'native', label: t('setting__other_tray_theme_native') },
-        { id: 1, name: 'origin', label: t('setting__other_tray_theme_origin') },
         { id: 2, name: 'black', label: t('setting__other_tray_theme_black') },
+        { id: 1, name: 'origin', label: t('setting__other_tray_theme_origin') },
       ]
     })
 

@@ -301,7 +301,7 @@
   "setting__other_resource_cache_label": "The software has used cache size: ",
   "setting__other_tray_theme": "Tray Icon Style",
   "setting__other_tray_theme_black": "Black Color",
-  "setting__other_tray_theme_native": "Solid Color",
+  "setting__other_tray_theme_native": "White",
   "setting__other_tray_theme_origin": "Primary Color",
   "setting__play": "Play",
   "setting__play_lyric_lxlrc": "Use Karaoke-style lyrics playback (if supported)",
