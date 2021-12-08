@@ -48,7 +48,7 @@ import { player as eventPlayerNames } from '@renderer/event/names'
 import ControlBtns from './ControlBtns'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
-import { statusText, musicInfo, setShowPlayerDetail, isPlay, musicInfoItem, playInfo, playMusicInfo } from '@renderer/core/share/player'
+import { statusText, musicInfo, setMusicInfo, setShowPlayerDetail, isPlay, musicInfoItem, playInfo, playMusicInfo } from '@renderer/core/share/player'
 
 export default {
   name: 'CorePlayBar',
@@ -83,7 +83,7 @@ export default {
 
     const imgError = () => {
       // console.log(e)
-      // musicInfo.img = null
+      setMusicInfo({ img: null })
     }
 
     const handleToMusicLocation = () => {
