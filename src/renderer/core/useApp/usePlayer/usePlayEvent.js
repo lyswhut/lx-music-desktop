@@ -10,6 +10,7 @@ export default ({
 }) => {
   const { t } = useI18n()
   let retryNum = 0
+  let prevTimeoutId = null
 
   let loadingTimeout
   let delayNextTimeout
@@ -17,7 +18,16 @@ export default ({
     // console.log('start load timeout')
     clearLoadingTimeout()
     loadingTimeout = Math.random()
-    wait(30000, loadingTimeout).then(playNext).catch(_ => _)
+    wait(25000, loadingTimeout).then(() => {
+      // 如果加载超时，则尝试刷新URL
+      if (prevTimeoutId == musicInfo.songmid) {
+        prevTimeoutId = null
+        playNext()
+      } else {
+        prevTimeoutId = musicInfo.songmid
+        setUrl(musicInfoItem.value, true)
+      }
+    }).catch(_ => _)
   }
   const clearLoadingTimeout = () => {
     if (!loadingTimeout) return
@@ -87,6 +97,7 @@ export default ({
 
   const handleSetPlayInfo = () => {
     retryNum = 0
+    prevTimeoutId = null
     clearDelayNextTimeout()
     clearLoadingTimeout()
   }
