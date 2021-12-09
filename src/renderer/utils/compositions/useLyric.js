@@ -15,7 +15,7 @@ export default ({ isPlay, lyric }) => {
   let isSetedLines = false
 
   const handleScrollLrc = () => {
-    if (!dom_lines?.length) return
+    if (!dom_lines?.length || !dom_lyric.value) return
     if (cancelScrollFn) {
       cancelScrollFn()
       cancelScrollFn = null
