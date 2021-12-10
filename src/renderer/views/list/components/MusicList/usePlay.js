@@ -15,7 +15,7 @@ export default ({ props, selectedList, list, removeAllSelect }) => {
   }
 
   const handlePlayMusicLater = (index, single) => {
-    if (selectedList.length && !single) {
+    if (selectedList.value.length && !single) {
       setTempPlayList(selectedList.value.map(s => ({ listId: props.listId, musicInfo: s })))
       removeAllSelect()
     } else {
