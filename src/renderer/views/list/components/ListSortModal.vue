@@ -33,12 +33,12 @@
       <h3 :class="$style.title">{{$t('list_sort_modal_by_type')}}</h3>
       <ul :class="$style.list">
         <li :class="$style.listItem">
-          <base-checkbox id="list_sort_modal_type_down" name="list_sort_modal_type" need="need"
-            v-model="sortType" value="down" :label="$t('list_sort_modal_by_down')" />
-        </li>
-        <li :class="$style.listItem">
           <base-checkbox id="list_sort_modal_type_up" name="list_sort_modal_type" need="need"
             v-model="sortType" value="up" :label="$t('list_sort_modal_by_up')" />
+        </li>
+        <li :class="$style.listItem">
+          <base-checkbox id="list_sort_modal_type_down" name="list_sort_modal_type" need="need"
+            v-model="sortType" value="down" :label="$t('list_sort_modal_by_down')" />
         </li>
       </ul>
     </section>
@@ -122,12 +122,12 @@ export default {
           break
       }
       console.log(sortType.value, sortField.value)
-      if (sortType.value == 'down') {
+      if (sortType.value == 'up') {
         if (fieldName == 'interval') {
           list.sort((a, b) => {
             if (a.interval == null) {
-              return b.interval == null ? 0 : 1
-            } else return b.interval == null ? -1 : getIntv(b) - getIntv(a)
+              return b.interval == null ? 0 : -1
+            } else return b.interval == null ? 1 : getIntv(a) - getIntv(b)
           })
         } else {
           list.sort((a, b) => {
@@ -140,8 +140,8 @@ export default {
         if (fieldName == 'interval') {
           list.sort((a, b) => {
             if (a.interval == null) {
-              return b.interval == null ? 0 : -1
-            } else return b.interval == null ? 1 : getIntv(a) - getIntv(b)
+              return b.interval == null ? 0 : 1
+            } else return b.interval == null ? -1 : getIntv(b) - getIntv(a)
           })
         } else {
           list.sort((a, b) => {
