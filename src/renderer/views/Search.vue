@@ -315,7 +315,7 @@ export default {
             }
             this.selectedData = this.listInfo.list.slice(lastSelectIndex, clickIndex + 1)
             if (isNeedReverse) this.selectedData.reverse()
-            let nodes = this.$refs.dom_tbody.childNodes
+            let nodes = Array.from(this.$refs.dom_tbody.childNodes).filter(n => n.nodeType === 1)
             do {
               const node = nodes[lastSelectIndex]
               if (node.tagName == 'TR') {

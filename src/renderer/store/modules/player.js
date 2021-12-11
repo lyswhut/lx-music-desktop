@@ -285,7 +285,7 @@ const actions = {
       return
     }
 
-    console.log(playInfo.playListId)
+    // console.log(playInfo.playListId)
     const currentListId = playInfo.playListId
     const currentList = getList(currentListId)
 
