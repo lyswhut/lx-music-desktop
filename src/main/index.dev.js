@@ -12,7 +12,7 @@ electronDebug({
   showDevTools: true,
   devToolsMode: 'undocked',
 })
-console.log(VUEJS3_DEVTOOLS)
+
 // Install `vue-devtools`
 electron.app.on('ready', () => {
   installExtension(VUEJS3_DEVTOOLS)

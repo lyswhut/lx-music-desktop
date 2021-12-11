@@ -153,16 +153,16 @@ const mutations = {
     const fromList = allList[fromId]
     const toList = allList[toId]
     if (!fromList || !toList) return
-    fromList.list.splice(fromList.list.findIndex(s => s.songmid === musicInfo.songmid), 1)
-    let index = toList.list.findIndex(s => s.songmid === musicInfo.songmid)
+    fromList.splice(fromList.findIndex(s => s.songmid === musicInfo.songmid), 1)
+    let index = toList.findIndex(s => s.songmid === musicInfo.songmid)
     if (index < 0) {
       switch (this.state.setting.list.addMusicLocationType) {
         case 'top':
-          toList.list.unshift(musicInfo)
+          toList.unshift(musicInfo)
           break
         case 'bottom':
         default:
-          toList.list.push(musicInfo)
+          toList.push(musicInfo)
           break
       }
     }

@@ -41,10 +41,10 @@ export default {
         return []
       },
     },
-    listName: {
-      type: String,
-      default: '',
-    },
+    // listName: {
+    //   type: String,
+    //   default: '',
+    // },
     fromListId: {
       type: String,
       default: null,
@@ -96,7 +96,7 @@ export default {
     },
     handleEditing(event) {
       if (this.isEditing) return
-      if (!this.newListName) this.newListName = this.listName
+      // if (!this.newListName) this.newListName = this.listName
       this.isEditing = true
       this.$nextTick(() => event.currentTarget.querySelector('.' + this.$style.newListInput).focus())
     },
