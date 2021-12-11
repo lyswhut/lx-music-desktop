@@ -53,9 +53,6 @@ export default {
   windowSizeActive(state) {
     return windowSizeList.find(i => i.id === state.setting.windowSizeId) || windowSizeList[0]
   },
-  versionModalVisible(state) {
-    return state.version.showModal
-  },
   pactModalVisible(state) {
     return !state.setting.isAgreePact
   },

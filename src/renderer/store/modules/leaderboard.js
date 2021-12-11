@@ -1,4 +1,5 @@
 import music from '../../utils/music'
+import { markRawList } from '@renderer/utils/vueTools'
 const sourceList = {}
 const sources = []
 const cache = new Map()
@@ -57,7 +58,7 @@ const actions = {
     // ).then(result => commit('setList', { result, key }))
     return music[source].leaderboard.getList(bangId, page).then(result => {
       cache.set(key, result)
-      listInfo.list = result.list
+      listInfo.list = markRawList(result.list)
       listInfo.total = result.total
       listInfo.limit = result.limit
       listInfo.page = result.page
