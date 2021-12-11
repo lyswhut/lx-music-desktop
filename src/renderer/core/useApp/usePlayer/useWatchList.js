@@ -3,10 +3,16 @@ import { onBeforeUnmount } from '@renderer/utils/vueTools'
 import { player as eventPlayerNames, list as eventListNames } from '@renderer/event/names'
 import { playInfo, playMusicInfo, updatePlayIndex } from '@renderer/core/share/player'
 import { getList } from '@renderer/core/share/utils'
+import { throttle } from '@renderer/utils'
+
+const changedListIds = new Set()
 
 export default ({ playNext }) => {
-  const handleListChange = listIds => {
-    if (!listIds.includes(playInfo.playListId) && !listIds.includes(playMusicInfo.listId)) return
+  const throttleListChange = throttle(() => {
+    const isSkip = !changedListIds.has(playInfo.playListId) && !changedListIds.has(playMusicInfo.listId)
+    changedListIds.clear()
+    if (isSkip) return
+
     const { playIndex } = updatePlayIndex()
     if (playIndex < 0 && !playMusicInfo.isTempPlay) { // 歌曲被移除
       if (getList(playMusicInfo.listId).length) {
@@ -15,6 +21,13 @@ export default ({ playNext }) => {
         window.eventHub.emit(eventPlayerNames.setStop)
       }
     }
+  })
+
+  const handleListChange = listIds => {
+    for (const id of listIds) {
+      changedListIds.add(id)
+    }
+    throttleListChange()
   }
 
   window.eventHub.on(eventListNames.listChange, handleListChange)

@@ -402,8 +402,8 @@ export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).c
     let filePath = path.join(dataPath, 'playList.json.bak')
     rendererInvoke(NAMES.mainWindow.show_dialog, {
       type: 'error',
-      message: window.i18n.t('store.state.load_list_file_error_title'),
-      detail: window.i18n.t('store.state.load_list_file_error_detail', {
+      message: window.i18n.t('load_list_file_error_title'),
+      detail: window.i18n.t('load_list_file_error_detail', {
         path: filePath,
         detail: error.message,
       }),
