@@ -98,10 +98,11 @@ export default ({ setting }) => {
       type,
       isRefresh,
       onToggleSource() {
+        if (targetSong !== musicInfoItem.value || isPlay.value || type != getPlayType(setting.value.player.highQuality, musicInfoItem.value)) return
         setAllStatus('Try toggle source...')
       },
     }).then(url => {
-      if (targetSong !== musicInfoItem.value || isPlay.value) return
+      if (targetSong !== musicInfoItem.value || isPlay.value || type != getPlayType(setting.value.player.highQuality, musicInfoItem.value)) return
       setMusicInfo({ url })
       setResource(url)
     }).catch(err => {
