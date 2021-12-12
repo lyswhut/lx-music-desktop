@@ -18,9 +18,9 @@ import { initDownloadList, downloadList, downloadListMap, downloadStatus } from 
 import { markRaw } from '@renderer/utils/vueTools'
 import { download as eventDownloadNames } from '@renderer/event/names'
 
-window.downloadList = []
-window.downloadListFull = []
-window.downloadListFullMap = new Map()
+// window.downloadList = []
+// window.downloadListFull = []
+// window.downloadListFullMap = new Map()
 // state
 const state = {
   // list: window.downloadList,
