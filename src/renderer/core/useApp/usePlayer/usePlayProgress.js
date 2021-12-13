@@ -62,13 +62,17 @@ export default ({ setting, playNext }) => {
     // if (!isPlay) audio.play()
   }
 
+  const handleSetTaskBarState = (progress, status) => {
+    if (setting.value.player.isShowTaskProgess) setTaskBarProgress(progress, status)
+  }
+
   const handlePlay = () => {
     prevProgressStatus = 'normal'
-    setTaskBarProgress(playProgress.progress, prevProgressStatus)
+    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
   }
   const handlePause = () => {
     prevProgressStatus = 'paused'
-    setTaskBarProgress(playProgress.progress, prevProgressStatus)
+    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
     clearBufferTimeout()
   }
 
@@ -76,13 +80,13 @@ export default ({ setting, playNext }) => {
     setNowPlayTime(0)
     setMaxplayTime(0)
     prevProgressStatus = 'none'
-    setTaskBarProgress(playProgress.progress, prevProgressStatus)
+    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
   }
 
   const handleError = () => {
     if (!restorePlayTime) restorePlayTime = getCurrentTime() // 记录出错的播放时间
     prevProgressStatus = 'error'
-    setTaskBarProgress(playProgress.progress, prevProgressStatus)
+    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
   }
 
   const handleLoadeddata = () => {
@@ -135,7 +139,7 @@ export default ({ setting, playNext }) => {
 
   watch(() => playProgress.progress, (newValue, oldValue) => {
     if (newValue.toFixed(2) === oldValue.toFixed(2)) return
-    setTaskBarProgress(newValue, prevProgressStatus)
+    handleSetTaskBarState(newValue, prevProgressStatus)
   })
   watch(() => playProgress.nowPlayTime, (newValue, oldValue) => {
     if (Math.abs(newValue - oldValue) > 2) window.eventHub.emit(eventPlayerNames.activeTransition)

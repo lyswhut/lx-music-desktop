@@ -47,10 +47,7 @@ export default {
     watch(() => currentStting.value.player.isShowTaskProgess, val => {
       if (val) return
       nextTick(() => {
-        setTaskBarProgress({
-          status: -1,
-          mode: 'normal',
-        })
+        setTaskBarProgress(-1, 'normal')
       })
     })
 

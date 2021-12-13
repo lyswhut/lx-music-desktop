@@ -137,7 +137,7 @@ export const onGetDesktopLyricInfo = callback => {
 
 export const setTaskBarProgress = (status, mode) => {
   rendererSend(NAMES.mainWindow.progress, {
-    status: status < 0.01 ? 0.01 : status,
+    status: status < 0 ? status : Math.max(0.01, status),
     mode: mode || 'normal',
   })
 }
