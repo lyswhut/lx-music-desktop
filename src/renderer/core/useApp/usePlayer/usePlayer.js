@@ -178,7 +178,7 @@ export default ({ setting }) => {
     window.eventHub.emit(eventPlayerNames.setPlayInfo, {
       musicInfo: musicInfoItem.value,
       progress: {
-        time: restorePlayInfo.time || 0,
+        time: setting.value.player.isSavePlayTime ? (restorePlayInfo.time || 0) : 0,
         maxTime: restorePlayInfo.maxTime || 0,
       },
     })
