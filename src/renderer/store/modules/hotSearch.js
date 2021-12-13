@@ -40,7 +40,7 @@ const actions = {
         task.push(
           state.list[source.id].length
             ? Promise.resolve({ source: source.id, list: state.list[source.id] })
-            : music[source.id].hotSearch.getList(),
+            : music[source.id].hotSearch.getList().catch(() => ({ source: source.id, list: [] })),
         )
       }
       Promise.all(task).then(results => commit('setLists', results))
