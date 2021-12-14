@@ -5,7 +5,7 @@ global.isTrafficLightClose = false // 是否点击软件上的关闭按钮关闭
 
 module.exports = mainWindow => {
   mainWindow.on('close', event => {
-    if (global.isQuitting || !global.appSetting.tray.isToTray || (!isWin && !global.isTrafficLightClose)) {
+    if (global.isQuitting || !global.appSetting.tray.isShow || (!isWin && !global.isTrafficLightClose)) {
       mainWindow.setProgressBar(-1)
       global.lx_event.winLyric.close()
       return
