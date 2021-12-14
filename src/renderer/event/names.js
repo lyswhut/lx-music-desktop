@@ -11,28 +11,31 @@ const names = {
     set_hot_key_config: 'set_hot_key_config',
   },
   player: {
-    playMusic: 'playMusic',
-    setTogglePlay: 'setTogglePlay',
-    setProgress: 'setProgress',
-    play: 'play',
-    pause: 'pause',
-    setPause: 'setPause',
-    stop: 'stop',
-    setStop: 'setStop',
-    error: 'error',
-    setPlayPrev: 'setPlayPrev',
-    setPlayNext: 'setPlayNext',
+    setTogglePlay: 'setTogglePlay', // 播放/暂停切换
+    setPause: 'setPause', // 暂停
+    setStop: 'setStop', // 停止
+    setPlayPrev: 'setPlayPrev', // 上一曲
+    setPlayNext: 'setPlayNext', // 下一曲
+    setProgress: 'setProgress', // 设置播放进度
+    setVolume: 'setVolume', // 设置音量
+    toggleMute: 'toggleMute', // 静音切换
 
+
+    playMusic: 'playMusic',
+
+    setPlayInfo: 'setPlayInfo',
     updatePic: 'updatePic',
     updateLyric: 'updateLyric',
-    setPlayInfo: 'setPlayInfo',
 
-    activeTransition: 'activeTransition',
+    activeTransition: 'activeTransition', // 激活进度条动画事件
 
-    setVolume: 'setVolume',
-    toggleMute: 'toggleMute',
-    volume: 'volume',
+    // 播放器事件
+    play: 'play',
+    pause: 'pause',
+    stop: 'stop',
+    error: 'error',
 
+    // 播放器原始事件
     player_playing: 'player_playing',
     player_pause: 'player_pause',
     player_stop: 'player_stop',
@@ -45,12 +48,12 @@ const names = {
     player_waiting: 'player_waiting',
   },
   list: {
-    saveMyList: 'saveMyList',
-    listChange: 'listChange',
-    musicInfoChange: 'musicInfoChange',
+    saveMyList: 'saveMyList', // 列表保存事件
+    listChange: 'listChange', // 列表改变事件
+    musicInfoChange: 'musicInfoChange', // 列表里的音乐信息改变事件
   },
   download: {
-    listChange: 'listChange',
+    listChange: 'listChange', // 列表改变事件
   },
   sync: {
     send_action_list: 'send_action_list',
