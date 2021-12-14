@@ -26,7 +26,7 @@ export default ({ setting }) => {
   })
 
 
-  const setPlayInfo = musicInfo => {
+  const setPlayInfo = ({ musicInfo }) => {
     setDesktopLyricInfo('music_info', {
       songmid: musicInfo.songmid,
       singer: musicInfo.singer,
@@ -48,10 +48,6 @@ export default ({ setting }) => {
       setDesktopLyricInfo('play', time)
       lrc.play(time)
     }
-  }
-
-  const handleSetPlayInfo = ({ musicInfo }) => {
-    setPlayInfo(musicInfo)
   }
 
   const handlePlay = () => {
@@ -104,22 +100,20 @@ export default ({ setting }) => {
   })
 
 
-  window.eventHub.on(player.setPlay, setPlayInfo)
   window.eventHub.on(player.play, handlePlay)
   window.eventHub.on(player.pause, handlePause)
   window.eventHub.on(player.stop, handleStop)
   window.eventHub.on(player.error, handlePause)
-  window.eventHub.on(player.setPlayInfo, handleSetPlayInfo)
+  window.eventHub.on(player.setPlayInfo, setPlayInfo)
   window.eventHub.on(player.updateLyric, setLyric)
 
   onBeforeUnmount(() => {
     rGetDesktopLyricInfo()
-    window.eventHub.off(player.setPlay, setPlayInfo)
     window.eventHub.off(player.play, handlePlay)
     window.eventHub.off(player.pause, handlePause)
     window.eventHub.off(player.stop, handleStop)
     window.eventHub.off(player.error, handlePause)
-    window.eventHub.off(player.setPlayInfo, handleSetPlayInfo)
+    window.eventHub.off(player.setPlayInfo, setPlayInfo)
     window.eventHub.off(player.updateLyric, setLyric)
   })
 }

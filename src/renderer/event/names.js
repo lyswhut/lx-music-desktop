@@ -15,7 +15,6 @@ const names = {
     setTogglePlay: 'setTogglePlay',
     setProgress: 'setProgress',
     play: 'play',
-    setPlay: 'setPlay',
     pause: 'pause',
     setPause: 'setPause',
     stop: 'stop',
