@@ -51,7 +51,7 @@ const getPlayType = (highQuality, songInfo) => {
   return type
 }
 
-const useDelayNextTimeout = ({ playNext }) => {
+const useDelayNextTimeout = ({ playNext, timeout }) => {
   let delayNextTimeout
   const clearDelayNextTimeout = () => {
     // console.log(this.delayNextTimeout)
@@ -64,7 +64,7 @@ const useDelayNextTimeout = ({ playNext }) => {
   const addDelayNextTimeout = () => {
     clearDelayNextTimeout()
     delayNextTimeout = Math.random()
-    wait(5000, delayNextTimeout).then(() => {
+    wait(timeout, delayNextTimeout).then(() => {
       delayNextTimeout = null
       playNext()
     }).catch(_ => _)
@@ -87,11 +87,14 @@ export default ({ setting }) => {
 
   const clearPlayedList = useCommit('player', 'clearPlayedList')
   const setPlayedList = useCommit('player', 'setPlayedList')
+  const { addDelayNextTimeout, clearDelayNextTimeout } = useDelayNextTimeout({ playNext, timeout: 5000 })
+  const { addDelayNextTimeout: addLoadTimeout, clearDelayNextTimeout: clearLoadTimeout } = useDelayNextTimeout({ playNext, timeout: 123000 })
 
   const setUrl = (targetSong, isRefresh, isRetryed = false) => {
     let type = getPlayType(setting.value.player.highQuality, targetSong)
     // this.musicInfo.url = await getMusicUrl(targetSong, type)
     setAllStatus(t('player__geting_url'))
+    addLoadTimeout()
 
     return getUrl({
       musicInfo: targetSong,
@@ -113,6 +116,8 @@ export default ({ setting }) => {
       setAllStatus(err.message)
       addDelayNextTimeout()
       return Promise.reject(err)
+    }).finally(() => {
+      clearLoadTimeout()
     })
   }
   const setImg = ({ listId, musicInfo: targetSong }) => {
@@ -154,7 +159,7 @@ export default ({ setting }) => {
       window.eventHub.emit(eventPlayerNames.updateLyric, musicInfo)
     })
   }
-  const { addDelayNextTimeout, clearDelayNextTimeout } = useDelayNextTimeout({ playNext })
+
   usePlayProgress({ setting, playNext })
   useMediaSessionInfo({ playPrev, playNext })
   usePlayEvent({
