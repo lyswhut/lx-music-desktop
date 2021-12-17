@@ -156,14 +156,26 @@ const mergeList = (sourceListData, targetListData) => {
   const userListDataObj = createUserListDataObj(sourceListData)
   newListData.userList = [...sourceListData.userList]
 
-  for (const list of targetListData.userList) {
-    const targetList = userListDataObj[list.id]
-    if (targetList) {
-      targetList.list = handleMergeList(targetList, list, addMusicLocationType).list
+  targetListData.userList.forEach((list, index) => {
+    const targetUpdateTime = list?.locationUpdateTime ?? 0
+    const sourceList = userListDataObj[list.id]
+    if (sourceList) {
+      sourceList.list = handleMergeList(sourceList, list, addMusicLocationType).list
+
+      const sourceUpdateTime = sourceList?.locationUpdateTime ?? 0
+      if (targetUpdateTime >= sourceUpdateTime) return
+      // 调整位置
+      const [newList] = newListData.userList.splice(newListData.userList.findIndex(l => l.id == list.id), 1)
+      newList.locationUpdateTime = targetUpdateTime
+      newListData.userList.splice(index, 0, newList)
     } else {
-      newListData.userList.push(list)
+      if (targetUpdateTime) {
+        newListData.userList.splice(index, 0, list)
+      } else {
+        newListData.userList.push(list)
+      }
     }
-  }
+  })
 
   return newListData
 }
@@ -175,11 +187,14 @@ const overwriteList = (sourceListData, targetListData) => {
   const userListDataObj = createUserListDataObj(sourceListData)
   newListData.userList = [...sourceListData.userList]
 
-  for (const list of targetListData.userList) {
-    const targetList = userListDataObj[list.id]
-    if (targetList) continue
-    newListData.userList.push(list)
-  }
+  targetListData.userList.forEach((list, index) => {
+    if (userListDataObj[list.id]) return
+    if (list?.locationUpdateTime) {
+      newListData.userList.splice(index, 0, list)
+    } else {
+      newListData.userList.push(list)
+    }
+  })
 
   return newListData
 }
@@ -340,10 +355,26 @@ const handleMergeListDataFromSnapshot = async(socket, snapshot) => {
     }
     newUserList.push(newList)
   }
-  for (const list of remoteListData.userList) {
-    if (removedListIds.has(list.id) || localUserListData[list.id]) continue
-    newUserList.push({ ...list })
-  }
+
+  remoteListData.userList.forEach((list, index) => {
+    if (removedListIds.has(list.id)) return
+    const remoteUpdateTime = list?.locationUpdateTime ?? 0
+    if (localUserListData[list.id]) {
+      const localUpdateTime = localUserListData[list.id]?.locationUpdateTime ?? 0
+      if (localUpdateTime >= remoteUpdateTime) return
+      // 调整位置
+      const [newList] = newUserList.splice(newUserList.findIndex(l => l.id == list.id), 1)
+      newList.locationUpdateTime = localUpdateTime
+      newUserList.splice(index, 0, newList)
+    } else {
+      if (remoteUpdateTime) {
+        newUserList.splice(index, 0, { ...list })
+      } else {
+        newUserList.push({ ...list })
+      }
+    }
+  })
+
   newListData.userList = newUserList
   setLocalList(newListData)
   setRemotelList(socket, newListData)

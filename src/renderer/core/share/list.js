@@ -51,7 +51,7 @@ export const tempList = reactive({
   name: '临时列表',
 })
 
-export const userLists = reactive([])
+export const userLists = window.userLists = reactive([])
 
 export const addUserList = ({
   name,
@@ -60,6 +60,7 @@ export const addUserList = ({
   source,
   sourceListId,
   position,
+  locationUpdateTime,
 }) => {
   if (position == null) {
     userLists.push({
@@ -67,6 +68,7 @@ export const addUserList = ({
       id,
       source,
       sourceListId,
+      locationUpdateTime,
     })
   } else {
     userLists.splice(position + 1, 0, {
@@ -74,6 +76,7 @@ export const addUserList = ({
       id,
       source,
       sourceListId,
+      locationUpdateTime,
     })
   }
   allListUpdate(id, list)
@@ -85,6 +88,7 @@ export const updateList = ({
   list,
   source,
   sourceListId,
+  locationUpdateTime,
 }) => {
   let targetList
   switch (id) {
@@ -97,6 +101,7 @@ export const updateList = ({
       targetList.name = name
       targetList.source = source
       targetList.sourceListId = sourceListId
+      if (locationUpdateTime) targetList.locationUpdateTime = locationUpdateTime
       break
   }
   allListUpdate(id, list)

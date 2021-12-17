@@ -320,6 +320,7 @@ const mutations = {
         position,
         sourceListId,
       }
+      if (position) newList.locationUpdateTime = Date.now()
       addUserList(newList)
     }
     this.commit('list/listAddMultiple', { id, list, isSync: true })
@@ -364,6 +365,7 @@ const mutations = {
     let targetList = userLists[index]
     userLists.splice(index, 1)
     userLists.splice(index - 1, 0, targetList)
+    targetList.locationUpdateTime = Date.now()
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   movedownUserList(state, { id, isSync }) {
@@ -378,6 +380,7 @@ const mutations = {
     let targetList = userLists[index]
     userLists.splice(index, 1)
     userLists.splice(index + 1, 0, targetList)
+    targetList.locationUpdateTime = Date.now()
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   setMusicPosition(state, { id, position, list, isSync }) {
