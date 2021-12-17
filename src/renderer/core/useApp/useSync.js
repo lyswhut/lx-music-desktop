@@ -17,10 +17,9 @@ export default () => {
   const createUserList = useCommit('list', 'createUserList')
   const removeUserList = useCommit('list', 'removeUserList')
   const setUserListName = useCommit('list', 'setUserListName')
-  const moveupUserList = useCommit('list', 'moveupUserList')
-  const movedownUserList = useCommit('list', 'movedownUserList')
   const setMusicPosition = useCommit('list', 'setMusicPosition')
   const setSyncListData = useCommit('list', 'setSyncListData')
+  const setUserListPosition = useCommit('list', 'setUserListPosition')
 
   const setting = useRefGetter('setting')
 
@@ -65,11 +64,8 @@ export default () => {
       case 'set_user_list_name':
         setUserListName(data)
         break
-      case 'moveup_user_list':
-        moveupUserList(data)
-        break
-      case 'movedown_user_list':
-        movedownUserList(data)
+      case 'set_user_list_position':
+        setUserListPosition(data)
         break
       case 'set_music_position':
         setMusicPosition(data)
