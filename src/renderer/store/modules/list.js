@@ -353,24 +353,11 @@ const mutations = {
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   moveupUserList(state, { id, isSync }) {
-    if (!isSync) {
-      window.eventHub.emit(eventSyncName.send_action_list, {
-        action: 'moveup_user_list',
-        data: { id },
-      })
-    }
-
     const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
     this.commit('list/setUserListPosition', { id, position: index - 1 })
   },
   movedownUserList(state, { id, isSync }) {
-    if (!isSync) {
-      window.eventHub.emit(eventSyncName.send_action_list, {
-        action: 'movedown_user_list',
-        data: { id },
-      })
-    }
     const index = userLists.findIndex(l => l.id == id)
     if (index < 0) return
     this.commit('list/setUserListPosition', { id, position: index + 1 })
@@ -386,7 +373,7 @@ const mutations = {
     if (index < 0) return
     let targetList = userLists[index]
     userLists.splice(index, 1)
-    userLists.splice(Math.max(Math.min(position, userLists.length - 1), 0), 0, targetList)
+    userLists.splice(Math.max(Math.min(position, userLists.length), 0), 0, targetList)
     targetList.locationUpdateTime = Date.now()
     window.eventHub.emit(eventListNames.listChange, [id])
   },
