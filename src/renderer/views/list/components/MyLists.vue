@@ -473,8 +473,7 @@ export default {
 .listsContent {
   flex: auto;
   min-width: 0;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: scroll !important;
   // border-right: 1px solid rgba(0, 0, 0, 0.12);
 }
 .listsItem {

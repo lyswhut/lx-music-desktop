@@ -288,11 +288,12 @@ export default {
         if (/,/.test(str)) str = `"${str}"`
         return str
       }
+      const header = '歌曲名,艺术家,专辑名\n'
       if (isMerge) {
-        saveStrToFile(savePath, iconv.encode(lists.map(l => l.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n')).join('\n'), 'utf8', { addBOM: true }))
+        saveStrToFile(savePath, iconv.encode(header + lists.map(l => l.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n')).join('\n'), 'utf8', { addBOM: true }))
       } else {
         for await (const list of lists) {
-          await saveStrToFile(path.join(savePath, `lx_list_${filterFileName(list.name)}.csv`), iconv.encode(list.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n'), 'utf8', { addBOM: true }))
+          await saveStrToFile(path.join(savePath, `lx_list_${filterFileName(list.name)}.csv`), iconv.encode(header + list.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n'), 'utf8', { addBOM: true }))
         }
       }
     }
