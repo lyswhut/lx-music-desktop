@@ -288,7 +288,7 @@ export default {
         if (/,/.test(str)) str = `"${str}"`
         return str
       }
-      const header = '歌曲名,艺术家,专辑名\n'
+      const header = `${t('music_name')},${t('music_singer')},${t('music_album')}\n`
       if (isMerge) {
         saveStrToFile(savePath, iconv.encode(header + lists.map(l => l.list.map(m => `${filterStr(m.name)},${filterStr(m.singer)},${filterStr(m.albumName)}`).join('\n')).join('\n'), 'utf8', { addBOM: true }))
       } else {
