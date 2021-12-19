@@ -26,7 +26,7 @@ div(:class="$style.footerLeftControlBtns")
   div(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :tips="$t('player__add_music_to')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-add-2')
-  common-list-add-modal(:show="isShowAddMusicTo" :musicInfo="musicInfoItem" @close="isShowAddMusicTo = false")
+  common-list-add-modal(v-model:show="isShowAddMusicTo" :musicInfo="musicInfoItem")
 
 </template>
 

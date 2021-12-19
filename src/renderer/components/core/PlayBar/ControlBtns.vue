@@ -31,7 +31,7 @@
       <use xlink:href="#icon-add-2"></use>
     </svg>
   </div>
-  <common-list-add-modal :show="isShowAddMusicTo" :musicInfo="musicInfoItem" @close="isShowAddMusicTo = false" />
+  <common-list-add-modal v-model:show="isShowAddMusicTo" :musicInfo="musicInfoItem" />
 </div>
 </template>
 
