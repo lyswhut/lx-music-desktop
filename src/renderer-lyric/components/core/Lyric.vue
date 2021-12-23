@@ -340,6 +340,7 @@ export default {
   overflow: hidden;
   font-size: 16px;
   color: @color-theme-lyric;
+  contain: strict;
   cursor: move;
 
   :global {
