@@ -388,12 +388,16 @@ const mutations = {
     if (tempPlayList.length) this.commit('player/clearTempPlayeList')
     playMusic()
   },
-  setTempList(state, { list, index }) {
-    updateList({ id: tempList.id, list })
+  setTempList(state, { list, id, index }) {
+    updateList({ id: tempList.id, meta: { id }, list })
     this.commit('player/setList', {
       listId: tempList.id,
       index,
     })
+    window.eventHub.emit(eventListNames.listChange, [tempList.id])
+  },
+  updateTempList(state, { id, list }) {
+    updateList({ id: tempList.id, meta: { id }, list })
     window.eventHub.emit(eventListNames.listChange, [tempList.id])
   },
   // setPlayIndex(state, index) {

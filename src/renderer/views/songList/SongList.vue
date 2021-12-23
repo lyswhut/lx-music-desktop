@@ -58,6 +58,7 @@ div(:class="$style.container")
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { scrollTo } from '@renderer/utils'
 import TagList from './components/TagList'
+import { tempList } from '@renderer/core/share/list'
 export default {
   name: 'SongList',
   components: {
@@ -181,6 +182,7 @@ export default {
     ...mapMutations('list', ['listAdd', 'listAddMultiple', 'createUserList']),
     ...mapMutations('player', {
       setTempList: 'setTempList',
+      updateTempList: 'updateTempList',
       setTempPlayList: 'setTempPlayList',
     }),
     listenEvent() {
@@ -295,12 +297,32 @@ export default {
     },
     async playSongListDetail() {
       if (!this.listDetail.info.name) return
+      const id = `${this.listDetail.source}__${this.listDetail.id}`
+      let isPlayingList = false
+      if (this.listDetail.list?.length) {
+        this.setTempList({
+          list: [...this.listDetail.list],
+          index: 0,
+          id,
+        })
+        isPlayingList = true
+      }
       const list = await this.fetchList()
       if (!list.length) return
-      this.setTempList({
-        list,
-        index: 0,
-      })
+      if (isPlayingList) {
+        if (tempList.meta.id == id) {
+          this.updateTempList({
+            list,
+            id,
+          })
+        }
+      } else {
+        this.setTempList({
+          list,
+          index: 0,
+          id,
+        })
+      }
     },
   },
 }

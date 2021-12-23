@@ -49,6 +49,7 @@ export const loveList = reactive({
 export const tempList = reactive({
   id: 'temp',
   name: '临时列表',
+  meta: {},
 })
 
 export const userLists = window.userLists = reactive([])
@@ -88,13 +89,16 @@ export const updateList = ({
   list,
   source,
   sourceListId,
+  meta,
   locationUpdateTime,
 }) => {
   let targetList
   switch (id) {
     case defaultList.id:
     case loveList.id:
+      break
     case tempList.id:
+      tempList.meta = meta || {}
       break
     default:
       targetList = userLists.find(l => l.id == id)

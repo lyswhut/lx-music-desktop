@@ -39,14 +39,17 @@ const useInitEnvParamPlay = () => {
   const playSongListDetail = async(source, link, playIndex) => {
     if (link == null) return
     let list
+    let id
     try {
-      list = await getListDetailAll({ source, id: decodeURIComponent(link) })
+      id = decodeURIComponent(link)
+      list = await getListDetailAll({ source, id })
     } catch (err) {
       console.log(err)
     }
     setTempList({
       list,
       index: getListPlayIndex(list, playIndex),
+      id: `${source}__${id}`,
     })
   }
 

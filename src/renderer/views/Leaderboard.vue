@@ -36,6 +36,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { nextTick } from '@renderer/utils/vueTools'
+import { tempList } from '@renderer/core/share/list'
 export default {
   name: 'Leaderboard',
   data() {
@@ -134,7 +135,7 @@ export default {
     ...mapMutations(['setLeaderboard']),
     ...mapActions('leaderboard', ['getBoardsList', 'getList', 'getListAll']),
     ...mapMutations('list', ['createUserList']),
-    ...mapMutations('player', ['setTempList']),
+    ...mapMutations('player', ['setTempList', 'updateTempList']),
     handleGetList(page) {
       const loadId = `${this.source}${this.tabId}${page}`
       this.loadError = false
@@ -187,25 +188,63 @@ export default {
 
       if (action) {
         const board = this.boardList[index]
-        const list = await this.getListAll(board.id)
-        if (!list.length) return
+        const id = `board__${this.source}__${board.id}`
         switch (action && action.action) {
           case 'play':
-            this.setTempList({
-              list,
-              index: 0,
+            this.playSongListDetail({
+              boardId: board.id,
+              list: [...this.list],
+              id,
             })
             break
           case 'collect':
-            this.createUserList({
-              name: board.name,
-              id: `board__${this.source}__${board.id}`,
-              list,
+            this.addSongListDetail({
+              boardId: board.id,
+              boardName: board.name,
               source: this.source,
-              sourceListId: `board__${board.id}`,
+              id,
             })
             break
         }
+      }
+    },
+    async addSongListDetail({ boardId, boardName, source, id }) {
+      // console.log(this.listDetail.info)
+      // if (!this.listDetail.info.name) return
+      const list = await this.getListAll(boardId)
+      this.createUserList({
+        name: boardName,
+        id,
+        list,
+        source,
+        sourceListId: `board__${boardId}`,
+      })
+    },
+    async playSongListDetail({ boardId, id, list }) {
+      let isPlayingList = false
+      if (list?.length) {
+        this.setTempList({
+          list,
+          index: 0,
+          id,
+        })
+        isPlayingList = true
+      }
+      const fullList = await this.getListAll(boardId)
+      if (!fullList.length) return
+      if (isPlayingList) {
+        if (tempList.meta.id == id) {
+          this.updateTempList({
+            list: fullList,
+            id,
+          })
+        }
+      } else {
+        this.setTempList({
+          list: fullList,
+          index: 0,
+          id,
+        })
       }
     },
   },
