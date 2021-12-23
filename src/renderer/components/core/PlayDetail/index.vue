@@ -28,9 +28,10 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
             p(v-if="musicInfo.album") {{$t('player__music_album')}}{{musicInfo.album}}
 
       transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
-        LyricPlayer(v-if="visibleLrc")
-      music-comment(:class="$style.comment" :musicInfo="musicInfoItem" :show="isShowPlayComment" @close="hideComment")
-    play-bar
+        LyricPlayer(v-if="visibled")
+      music-comment(:class="$style.comment" :musicInfo="musicInfoItem" :show="isShowPlayComment" @close="hideComment" v-if="visibled")
+    transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
+      play-bar(v-if="visibled")
 </template>
 
 
@@ -59,7 +60,7 @@ export default {
   },
   setup() {
     const setting = useRefGetter('setting')
-    const visibleLrc = ref(false)
+    const visibled = ref(false)
 
     let clickTime = 0
 
@@ -80,13 +81,13 @@ export default {
     }
 
     const handleAfterEnter = () => {
-      visibleLrc.value = true
+      visibled.value = true
     }
 
     const handleAfterLeave = () => {
       setShowPlayLrcSelectContentLrc(false)
       hideComment(false)
-      visibleLrc.value = false
+      visibled.value = false
     }
 
     return {
@@ -100,7 +101,7 @@ export default {
       hideComment,
       handleAfterEnter,
       handleAfterLeave,
-      visibleLrc,
+      visibled,
       min() {
         window.eventHub.emit(eventBaseName.min)
       },
@@ -137,6 +138,7 @@ export default {
   color: @color-theme_2-font;
   border-left: 12px solid @color-theme;
   -webkit-app-region: no-drag;
+  contain: strict;
 
   box-sizing: border-box;
 

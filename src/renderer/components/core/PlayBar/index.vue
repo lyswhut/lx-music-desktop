@@ -155,6 +155,7 @@ export default {
   border-top: 2px solid @color-theme;
   box-sizing: border-box;
   display: flex;
+  contain: strict;
   z-index: 2;
   * {
     box-sizing: border-box;

@@ -281,6 +281,7 @@ export default {
   font-size: 14px;
   display: flex;
   flex-flow: column nowrap;
+  flex: auto;
   &.copying {
     .no-select {
       display: none;

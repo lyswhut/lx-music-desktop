@@ -204,7 +204,7 @@ export default ({ setting }) => {
   const setStopStatus = () => {
     setPlay(false)
     setTitle()
-    setStatus('^-^')
+    setStatus('')
     setStatusText('')
     setMusicInfo({
       songmid: null,
