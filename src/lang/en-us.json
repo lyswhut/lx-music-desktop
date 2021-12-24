@@ -1,6 +1,7 @@
 {
   "action": "Manage",
   "agree": "Accept",
+  "audio_visualization": "Audio visualization (experimental)",
   "back": "Back",
   "cancel_button_text": "Cancel",
   "close": "Close",

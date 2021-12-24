@@ -55,4 +55,7 @@ export default {
   setProxyEnable(state, val) {
     state.setting.network.proxy.enable = val
   },
+  setAudioVisualization(state, val) {
+    state.setting.player.audioVisualization = val
+  },
 }

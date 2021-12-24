@@ -32,6 +32,8 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
       music-comment(:class="$style.comment" :musicInfo="musicInfoItem" :show="isShowPlayComment" @close="hideComment" v-if="visibled")
     transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
       play-bar(v-if="visibled")
+    transition(enter-active-class="animated-slow fadeIn" leave-active-class="animated-slow fadeOut")
+      common-audio-visualizer(v-if="setting.player.audioVisualization && visibled")
 </template>
 
 

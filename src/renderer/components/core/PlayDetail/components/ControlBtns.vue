@@ -6,6 +6,9 @@ div(:class="$style.footerLeftControlBtns")
       use(xlink:href='#icon-desktop-lyric-on')
     svg(v-show="!setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='125%' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-desktop-lyric-off')
+  div(:class="[$style.footerLeftControlBtn, { [$style.active]: setting.player.audioVisualization }]" @click="toggleAudioVisualization" :tips="$t('audio_visualization')")
+    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
+      use(xlink:href='#icon-audio-wave')
   div(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="toggleVisibleLrc" :tips="$t('lyric__select')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-text')
@@ -31,7 +34,7 @@ div(:class="$style.footerLeftControlBtns")
 </template>
 
 <script>
-import { useI18n, useRefGetter, ref } from '@renderer/utils/vueTools'
+import { useI18n, useRefGetter, ref, useCommit } from '@renderer/utils/vueTools'
 
 import {
   isShowLrcSelectContent,
@@ -48,6 +51,7 @@ export default {
   setup() {
     const { t } = useI18n()
     const setting = useRefGetter('setting')
+    const setAudioVisualization = useCommit('setAudioVisualization')
 
     const toggleVisibleLrc = () => {
       setShowPlayLrcSelectContentLrc(!isShowLrcSelectContent.value)
@@ -68,6 +72,10 @@ export default {
 
     const isShowAddMusicTo = ref(false)
 
+    const toggleAudioVisualization = () => {
+      setAudioVisualization(!setting.value.player.audioVisualization)
+    }
+
     return {
       setting,
       isShowLrcSelectContent,
@@ -79,6 +87,7 @@ export default {
       toggleDesktopLyricBtnTitle,
       toggleDesktopLyric,
       toggleLockDesktopLyric,
+      toggleAudioVisualization,
       isShowAddMusicTo,
       musicInfoItem,
     }

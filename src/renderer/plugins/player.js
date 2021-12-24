@@ -1,11 +1,24 @@
 let audio
-
+let audioContext
+let mediaSource
+let analyser
 export const createAudio = () => {
   if (audio) return
   window.audio = audio = new window.Audio()
   audio.controls = false
   audio.autoplay = true
   audio.preload = 'auto'
+}
+
+export const getAnalyser = () => {
+  if (audioContext == null) {
+    audioContext = new window.AudioContext()
+    mediaSource = audioContext.createMediaElementSource(audio)
+    analyser = audioContext.createAnalyser()
+    mediaSource.connect(analyser)
+    analyser.connect(audioContext.destination)
+  }
+  return analyser
 }
 
 export const setResource = src => {
