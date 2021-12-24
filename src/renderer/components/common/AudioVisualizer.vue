@@ -40,6 +40,7 @@ export default {
     let barHeight
     let x = 0
     let isPlaying = false
+    let animationFrameId
 
     const theme = useRefGetter('theme')
     // const setting = useRefGetter('setting')
@@ -50,7 +51,8 @@ export default {
 
     // https://codepen.io/nfj525/pen/rVBaab
     const renderFrame = () => {
-      if (isPlaying) window.requestAnimationFrame(renderFrame)
+      animationFrameId = null
+      if (isPlaying) animationFrameId = window.requestAnimationFrame(renderFrame)
 
       x = 0
 
@@ -84,6 +86,7 @@ export default {
       renderFrame()
     }
     const handlePause = () => {
+      if (animationFrameId) window.cancelAnimationFrame(animationFrameId)
       isPlaying = false
     }
 
