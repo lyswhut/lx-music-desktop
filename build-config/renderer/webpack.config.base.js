@@ -2,7 +2,6 @@ const path = require('path')
 const { VueLoaderPlugin } = require('vue-loader')
 const HTMLPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CleanCSSPlugin = require('less-plugin-clean-css')
 const ESLintPlugin = require('eslint-webpack-plugin')
 
 const vueLoaderConfig = require('../vue-loader.config')
@@ -58,11 +57,6 @@ module.exports = {
           loader: 'less-loader',
           options: {
             sourceMap: true,
-            lessOptions: {
-              plugins: [
-                new CleanCSSPlugin({ advanced: true }),
-              ],
-            },
           },
         }),
       },
