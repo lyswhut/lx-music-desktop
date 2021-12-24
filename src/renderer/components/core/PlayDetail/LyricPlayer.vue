@@ -119,12 +119,12 @@ export default {
           color: @color-theme;
         }
         .translation {
-          font-size: 1em;
+          font-size: .94em;
           color: @color-theme;
         }
         span {
           // color: @color-theme;
-          font-size: 1.2em;
+          font-size: 1.1em;
         }
       }
 

@@ -14,7 +14,7 @@ export default ({ isPlay, lyric }) => {
   let dom_lines
   let isSetedLines = false
 
-  const handleScrollLrc = () => {
+  const handleScrollLrc = (duration = 300) => {
     if (!dom_lines?.length || !dom_lyric.value) return
     if (cancelScrollFn) {
       cancelScrollFn()
@@ -22,7 +22,7 @@ export default ({ isPlay, lyric }) => {
     }
     if (isStopScroll) return
     let dom_p = dom_lines[lyric.line]
-    cancelScrollFn = scrollTo(dom_lyric.value, dom_p ? (dom_p.offsetTop - dom_lyric.value.clientHeight * 0.38) : 0)
+    cancelScrollFn = scrollTo(dom_lyric.value, dom_p ? (dom_p.offsetTop - dom_lyric.value.clientHeight * 0.38) : 0, duration)
   }
   const clearLyricScrollTimeout = () => {
     if (!timeout) return
@@ -103,10 +103,14 @@ export default ({ isPlay, lyric }) => {
     }
   }
 
-  const scrollLine = line => {
+  const scrollLine = (line, oldLine) => {
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
-    handleScrollLrc()
+    if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
+
+    setTimeout(() => {
+      handleScrollLrc(600)
+    }, 600)
   }
 
   watch(() => lyric.lines, initLrc)

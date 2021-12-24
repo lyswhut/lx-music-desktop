@@ -122,10 +122,13 @@ export default {
       immediate: true,
     },
     'lyric.line': {
-      handler(n) {
+      handler(n, o) {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
-        this.handleScrollLrc()
+        if (o == null || n - o != 1) return this.handleScrollLrc()
+        setTimeout(() => {
+          this.handleScrollLrc(600)
+        }, 600)
       },
       immediate: true,
     },
@@ -229,7 +232,7 @@ export default {
     handleResize() {
       this.setProgressWidth()
     },
-    handleScrollLrc() {
+    handleScrollLrc(duration = 300) {
       if (!this.dom_lines.length) return
       if (cancelScrollFn) {
         cancelScrollFn()
@@ -237,7 +240,7 @@ export default {
       }
       if (this.lyricEvent.isStopScroll) return
       let dom_p = this.dom_lines[this.lyric.line]
-      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
+      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0, duration)
     },
     handleLyricDown(target, x, y) {
       if (target.classList.contains('font') ||
@@ -454,7 +457,7 @@ export default {
     .lrc-content {
       &.active {
         .translation {
-          font-size: 1em;
+          font-size: .94em;
         }
         span {
           font-size: 1.2em;
