@@ -255,7 +255,10 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 这是因为软件没有签名，被系统阻止运行，<br>
 在终端里输入 `sudo xattr -rd com.apple.quarantine /Applications/lx-music-desktop.app`，然后输入你的电脑密码即可
 
-还可以参考：<https://blog.csdn.net/for641/article/details/104811538>
+还可以参考：
+
+- <http://www.pc6.com/edu/168719.html>
+- <https://blog.csdn.net/for641/article/details/104811538>
 
 ## 杀毒软件提示有病毒或恶意行为
 
