@@ -14,6 +14,7 @@ import { scrollTo } from '@renderer/utils'
 import Lyric from '@renderer/utils/lyric-font-player'
 
 let cancelScrollFn = null
+let delayScrollTimeout
 
 export default {
   props: {
@@ -126,7 +127,8 @@ export default {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
         if (o == null || n - o != 1) return this.handleScrollLrc()
-        setTimeout(() => {
+        delayScrollTimeout = setTimeout(() => {
+          delayScrollTimeout = null
           this.handleScrollLrc(600)
         }, 600)
       },
@@ -251,6 +253,10 @@ export default {
         this.lyricEvent.msDownY = y
         this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
       } else {
+        if (delayScrollTimeout) {
+          clearTimeout(delayScrollTimeout)
+          delayScrollTimeout = null
+        }
         this.winEvent.isMsDown = true
         this.winEvent.msDownX = x
         this.winEvent.msDownY = y

@@ -40,6 +40,10 @@ export default ({ isPlay, lyric }) => {
   }
   const handleLyricMouseDown = event => {
     // console.log(event)
+    if (delayScrollTimeout) {
+      clearTimeout(delayScrollTimeout)
+      delayScrollTimeout = null
+    }
     isMsDown.value = true
     msDownY = event.clientY
     msDownScrollY = dom_lyric.value.scrollTop
@@ -103,12 +107,14 @@ export default ({ isPlay, lyric }) => {
     }
   }
 
+  let delayScrollTimeout
   const scrollLine = (line, oldLine) => {
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
     if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
 
-    setTimeout(() => {
+    delayScrollTimeout = setTimeout(() => {
+      delayScrollTimeout = null
       handleScrollLrc(600)
     }, 600)
   }
