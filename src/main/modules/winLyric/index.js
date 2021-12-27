@@ -116,6 +116,7 @@ const createWindow = () => {
       contextIsolation: false,
       webSecurity: !global.isDev,
       nodeIntegration: true,
+      spellcheck: false, // 禁用拼写检查器
     },
   })
 

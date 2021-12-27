@@ -118,6 +118,7 @@ function createWindow() {
       contextIsolation: false,
       webSecurity: !isDev,
       nodeIntegration: true,
+      spellcheck: false, // 禁用拼写检查器
     },
   })
 
