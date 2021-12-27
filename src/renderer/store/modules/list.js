@@ -347,7 +347,7 @@ const mutations = {
       })
     }
 
-    let list = userLists[id]
+    let list = userLists.find(l => l.id === id)
     if (!list) return
     list.name = name
     window.eventHub.emit(eventListNames.listChange, [id])
