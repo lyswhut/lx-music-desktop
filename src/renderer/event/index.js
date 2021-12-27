@@ -50,9 +50,13 @@ const registerMin = () => rendererSend(NAMES.mainWindow.min)
 const registerMinToggle = () => rendererSend(NAMES.mainWindow.min_toggle)
 const registerHideToggle = () => rendererSend(NAMES.mainWindow.hide_toggle)
 
+const setClearDownKeys = () => keyBind.clearDownKeys()
+
 eventHub.on(baseName.min, registerMin)
 eventHub.on(baseName.max, () => rendererSend(NAMES.mainWindow.max))
 eventHub.on(baseName.close, () => rendererSend(NAMES.mainWindow.close))
+
+eventHub.on(baseName.setClearDownKeys, setClearDownKeys)
 
 const registerCommonEvents = () => {
   eventHub.on(hotKeyNamesCommon.close.action, registerQuit)

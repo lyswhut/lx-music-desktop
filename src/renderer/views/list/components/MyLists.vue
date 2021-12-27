@@ -8,18 +8,18 @@
       </svg>
     </button>
   </div>
-  <ul class="scroll" :class="$style.listsContent" ref="dom_lists_list">
-    <li :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}]" :tips="defaultList.name"
+  <ul class="scroll" :class="[$style.listsContent, { [$style.sortable]: keyEvent.isModDown }]" ref="dom_lists_list">
+    <li class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}]" :tips="defaultList.name"
       @contextmenu="handleListsItemRigthClick($event, -2)" @click="handleListToggle(defaultList.id)"
     >
       <span :class="$style.listsLabel">{{defaultList.name}}</span>
     </li>
-    <li :class="[$style.listsItem, {[$style.active]: loveList.id == listId}]" :tips="loveList.name"
+    <li class="default-list" :class="[$style.listsItem, {[$style.active]: loveList.id == listId}]" :tips="loveList.name"
       @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)">
       <span :class="$style.listsLabel">{{loveList.name}}</span>
     </li>
     <li class="user-list"
-      :class="[$style.listsItem, {[$style.active]:item.id == listId}, {[$style.clicked]: listsData.rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]"
+      :class="[$style.listsItem, {[$style.active]:item.id == listId}, {[$style.clicked]: listsData.rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]" :data-index="index"
       @contextmenu="handleListsItemRigthClick($event, index)" :tips="item.name" v-for="(item, index) in userLists" :key="item.id"
     >
       <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">{{item.name}}</span>
@@ -46,8 +46,9 @@ import musicSdk from '@renderer/utils/music'
 import DuplicateMusicModal from './DuplicateMusicModal'
 import ListSortModal from './ListSortModal'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
-import { computed } from '@renderer/utils/vueTools'
+import { ref, computed, useCommit, useCssModule } from '@renderer/utils/vueTools'
 import { getList } from '@renderer/core/share/utils'
+import useDarg from '@renderer/utils/compositions/useDrag'
 
 export default {
   name: 'MyLists',
@@ -62,12 +63,27 @@ export default {
     ListSortModal,
   },
   setup() {
+    const dom_lists_list = ref(null)
     const lists = computed(() => [defaultList, loveList, ...userLists])
+    const setUserListPosition = useCommit('list', 'setUserListPosition')
+
+    const styles = useCssModule()
+    const { setDisabled } = useDarg({
+      dom_list: dom_lists_list,
+      dragingItemClassName: styles.dragingItem,
+      filter: 'default-list',
+      onUpdate(newIndex, oldIndex) {
+        setUserListPosition({ id: lists.value[oldIndex].id, position: newIndex - 2 })
+      },
+    })
+
     return {
       defaultList,
       loveList,
       userLists,
       lists,
+      dom_lists_list,
+      setDisabledSort: setDisabled,
     }
   },
   emits: ['show-menu'],
@@ -84,8 +100,6 @@ export default {
           import: true,
           export: true,
           sync: false,
-          moveup: true,
-          movedown: true,
           remove: true,
         },
         rightClickItemIndex: -1,
@@ -99,6 +113,9 @@ export default {
       fetchingListStatus: {},
       selectedDuplicateListInfo: {},
       selectedSortListInfo: {},
+      keyEvent: {
+        isModDown: false,
+      },
     }
   },
   computed: {
@@ -115,14 +132,14 @@ export default {
           disabled: !this.listsData.itemMenuControl.sync,
         },
         {
-          name: this.$t('lists__duplicate'),
-          action: 'duplicate',
-          disabled: !this.listsData.itemMenuControl.duplicate,
-        },
-        {
           name: this.$t('lists__sort_list'),
           action: 'sort',
           disabled: !this.listsData.itemMenuControl.sort,
+        },
+        {
+          name: this.$t('lists__duplicate'),
+          action: 'duplicate',
+          disabled: !this.listsData.itemMenuControl.duplicate,
         },
         {
           name: this.$t('lists__import'),
@@ -133,16 +150,6 @@ export default {
           name: this.$t('lists__export'),
           action: 'export',
           disabled: !this.listsData.itemMenuControl.export,
-        },
-        {
-          name: this.$t('lists__moveup'),
-          action: 'moveup',
-          disabled: !this.listsData.itemMenuControl.moveup,
-        },
-        {
-          name: this.$t('lists__movedown'),
-          action: 'movedown',
-          disabled: !this.listsData.itemMenuControl.movedown,
         },
         {
           name: this.$t('lists__remove'),
@@ -171,13 +178,17 @@ export default {
   },
   mounted() {
     this.setListsScroll()
+    window.eventHub.on('key_mod_down', this.handle_key_mod_down)
+    window.eventHub.on('key_mod_up', this.handle_key_mod_up)
+  },
+  beforeUnmount() {
+    window.eventHub.off('key_mod_down', this.handle_key_mod_down)
+    window.eventHub.off('key_mod_up', this.handle_key_mod_up)
   },
   methods: {
     ...mapMutations('list', [
       'setUserListName',
       'createUserList',
-      'moveupUserList',
-      'movedownUserList',
       'removeUserList',
       'setPrevSelectListId',
       'setList',
@@ -186,20 +197,37 @@ export default {
     ...mapActions('leaderboard', {
       getBoardListAll: 'getListAll',
     }),
+    handle_key_mod_down() {
+      if (!this.keyEvent.isModDown) {
+        this.keyEvent.isModDown = true
+        this.setDisabledSort(false)
+        const dom_target = this.dom_lists_list.querySelector('.' + this.$style.editing)
+        if (dom_target) this.handleListsSave(dom_target.dataset.index)
+      }
+      if (this.listsData.isShowItemMenu) this.hideListsMenu()
+    },
+    handle_key_mod_up() {
+      if (this.keyEvent.isModDown) {
+        this.keyEvent.isModDown = false
+        this.setDisabledSort(true)
+      }
+    },
     setListsScroll() {
-      let target = this.$refs.dom_lists_list.querySelector('.' + this.$style.active)
+      let target = this.dom_lists_list.querySelector('.' + this.$style.active)
       if (!target) return
       let offsetTop = target.offsetTop
       let location = offsetTop - 150
-      if (location > 0) this.$refs.dom_lists_list.scrollTop = location
+      if (location > 0) this.dom_lists_list.scrollTop = location
     },
-    handleListsSave(index, event) {
-      let dom_target = this.$refs.dom_lists_list.querySelector('.' + this.$style.editing)
-      if (dom_target) dom_target.classList.remove(this.$style.editing)
-      let name = event.target.value.trim()
+    handleListsSave(index) {
+      let dom_target = this.dom_lists_list.querySelector('.' + this.$style.editing)
+      if (!dom_target) return
+      dom_target.classList.remove(this.$style.editing)
+      const dom_input = dom_target.querySelector('.' + this.$style.listsInput)
+      let name = dom_input.value.trim()
       const targetList = userLists[index]
       if (name.length) return this.setUserListName({ id: targetList.id, name })
-      event.target.value = targetList.name
+      dom_input.value = targetList.name
     },
     handleListsCreate(event) {
       if (event.target.readonly) return
@@ -242,22 +270,18 @@ export default {
           this.listsData.itemMenuControl.rename = false
           this.listsData.itemMenuControl.remove = false
           this.listsData.itemMenuControl.sync = false
-          this.listsData.itemMenuControl.moveup = false
-          this.listsData.itemMenuControl.movedown = false
           break
         default:
           this.listsData.itemMenuControl.rename = true
           this.listsData.itemMenuControl.remove = true
           source = userLists[index].source
           this.listsData.itemMenuControl.sync = !!source && !!musicSdk[source]?.songList
-          this.listsData.itemMenuControl.moveup = index > 0
-          this.listsData.itemMenuControl.movedown = index < userLists.length - 1
           break
       }
       this.listsData.itemMenuControl.sort = !!getList(this.getTargetListInfo(index)?.id).length
       this.listsData.rightClickItemIndex = index
       this.listsData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
-      this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.$refs.dom_lists_list.scrollTop
+      this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.dom_lists_list.scrollTop
       this.$emit('show-menu')
       this.$nextTick(() => {
         this.listsData.isShowItemMenu = true
@@ -275,7 +299,7 @@ export default {
       let dom
       switch (action && action.action) {
         case 'rename':
-          dom = this.$refs.dom_lists_list.querySelectorAll('.user-list')[index]
+          dom = this.dom_lists_list.querySelectorAll('.user-list')[index]
           this.$nextTick(() => {
             dom.classList.add(this.$style.editing)
             dom.querySelector('input').focus()
@@ -297,12 +321,6 @@ export default {
           break
         case 'sync':
           this.handleSyncSourceList(index)
-          break
-        case 'moveup':
-          this.moveupUserList({ id: userLists[index].id })
-          break
-        case 'movedown':
-          this.movedownUserList({ id: userLists[index].id })
           break
         case 'remove':
           this.$dialog.confirm({
@@ -475,6 +493,22 @@ export default {
   min-width: 0;
   overflow-y: scroll !important;
   // border-right: 1px solid rgba(0, 0, 0, 0.12);
+
+  &.sortable {
+    * {
+      -webkit-user-drag: element;
+    }
+
+    .listsItem {
+      &:hover, &.active, &.selected, &.clicked {
+        background-color: transparent !important;
+      }
+
+      &.dragingItem {
+        background-color: @color-theme_2-hover !important;
+      }
+    }
+  }
 }
 .listsItem {
   position: relative;
@@ -563,6 +597,15 @@ each(@themes, {
       }
       &.editing {
         background-color: ~'@{color-@{value}-theme_2-hover}';
+      }
+    }
+    .listsContent {
+      &.sortable {
+        .listsItem {
+          &.dragingItem {
+            background-color: ~'@{color-@{value}-theme_2-hover}' !important;
+          }
+        }
       }
     }
     .listsNew {

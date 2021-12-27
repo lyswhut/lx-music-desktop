@@ -352,16 +352,6 @@ const mutations = {
     list.name = name
     window.eventHub.emit(eventListNames.listChange, [id])
   },
-  moveupUserList(state, { id, isSync }) {
-    const index = userLists.findIndex(l => l.id == id)
-    if (index < 0) return
-    this.commit('list/setUserListPosition', { id, position: index - 1 })
-  },
-  movedownUserList(state, { id, isSync }) {
-    const index = userLists.findIndex(l => l.id == id)
-    if (index < 0) return
-    this.commit('list/setUserListPosition', { id, position: index + 1 })
-  },
   setUserListPosition(state, { id, position, isSync }) {
     if (!isSync) {
       window.eventHub.emit(eventSyncName.send_action_list, {

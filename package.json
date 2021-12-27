@@ -245,6 +245,7 @@
     "node-id3": "^0.2.3",
     "request": "^2.88.2",
     "socket.io": "^4.4.0",
+    "sortablejs": "^1.14.0",
     "utf-8-validate": "^5.0.7",
     "vue": "^3.2.23",
     "vue-i18n": "^9.2.0-beta.22",
