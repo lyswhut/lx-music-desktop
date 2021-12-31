@@ -162,9 +162,17 @@ svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/19
       //- 0 0 24 24
       path(d="M20,14H4V10H20")
 
+    g#icon-window-minimize-2(fill='currentColor')
+      //- 0 0 24 24
+      path(d="M19,13H5V11H19V13Z")
+
     g#icon-window-close(fill='currentColor')
       //- 0 0 24 24
       path(d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z")
+
+    g#icon-window-close-2(fill='currentColor')
+      //- 0 0 24 24
+      path(d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z")
 
 
     g#icon-list-loop(fill='currentColor')

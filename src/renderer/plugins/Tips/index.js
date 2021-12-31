@@ -71,11 +71,13 @@ document.body.addEventListener('click', updateTips)
 
 document.body.addEventListener('contextmenu', updateTips)
 
+window.eventHub.on(eventBaseName.focus, () => {
+  hideTips()
+})
 window.eventHub.on(eventBaseName.dragStart, () => {
   isDraging = true
   hideTips()
 })
-
 window.eventHub.on(eventBaseName.dragEnd, () => {
   isDraging = false
 })

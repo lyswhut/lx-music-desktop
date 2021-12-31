@@ -1,9 +1,9 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="[$style.container, setting.controlBtnPosition == 'left' ? $style.controlBtnLeft : $style.controlBtnRight]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+  div(:class="$style.container" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
-    div(:class="$style.header")
+    div(:class="[$style.header, $style.controlBtnLeft]" v-if="setting.controlBtnPosition == 'left'")
       div(:class="$style.controBtn")
         button(type="button" :class="$style.hide" :tips="$t('player__hide_detail_tip')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='80%' viewBox='0 0 30.727 30.727' space='preserve')
@@ -16,6 +16,19 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
         button(type="button" :class="$style.close" :tips="$t('close')" @click="close")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-close')
+    div(:class="[$style.header, $style.controlBtnRight]" v-else)
+      div(:class="$style.controBtn")
+        button(type="button" :class="$style.hide" :tips="$t('player__hide_detail_tip')" @click="hide")
+          svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='35%' viewBox='0 0 30.727 30.727' space='preserve')
+            use(xlink:href='#icon-window-hide')
+        button(type="button" :class="$style.min" :tips="$t('min')" @click="min")
+          svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
+            use(xlink:href='#icon-window-minimize-2')
+
+        //- button(type="button" :class="$style.max" @click="max")
+        button(type="button" :class="$style.close" :tips="$t('close')" @click="close")
+          svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
+            use(xlink:href='#icon-window-close-2')
 
     div(:class="[$style.main, {[$style.showComment]: isShowPlayComment}]")
       div.left(:class="$style.left")
@@ -148,26 +161,6 @@ export default {
     box-sizing: border-box;
   }
 
-  &.controlBtnLeft {
-    .controBtn {
-      left: 0;
-      flex-direction: row-reverse;
-      height: @height-toolbar * .7;
-      button + button {
-        margin-right: @control-btn-width / 2;
-      }
-    }
-  }
-  &.controlBtnRight {
-    .controBtn {
-      right: @control-btn-width * .5;
-      button + button {
-        margin-left: @control-btn-width * 1.2;
-      }
-    }
-  }
-
-
 }
 .bg {
   position: absolute;
@@ -193,55 +186,96 @@ export default {
   position: relative;
   flex: 0 0 @height-toolbar;
   -webkit-app-region: drag;
-}
+  width: 100%;
 
-.controBtn {
-  position: absolute;
-  top: 0;
-  display: flex;
-  align-items: center;
-  height: @height-toolbar;
-  -webkit-app-region: no-drag;
-  padding: 0 @control-btn-width;
-  &:hover {
-    .controBtnIcon {
-      opacity: 1;
-    }
-  }
-
-  button {
-    position: relative;
-    width: @control-btn-width;
-    height: @control-btn-width;
-    background: none;
-    border: none;
-    outline: none;
-    padding: 1px;
-    cursor: pointer;
-    border-radius: 50%;
-    color: @color-theme_2;
+  .controBtn {
+    position: absolute;
+    top: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    -webkit-app-region: no-drag;
+  }
 
-    &.hide {
-      background-color: @color-hideBtn;
+  &.controlBtnLeft {
+    .controBtn {
+      align-items: center;
+      padding: 0 @control-btn-width;
+      left: 0;
+      flex-direction: row-reverse;
+      height: @height-toolbar * .7;
+      &:hover {
+        .controBtnIcon {
+          opacity: 1;
+        }
+      }
+
+      button {
+        position: relative;
+        width: @control-btn-width;
+        height: @control-btn-width;
+        background: none;
+        border: none;
+        outline: none;
+        padding: 1px;
+        cursor: pointer;
+        border-radius: 50%;
+        color: @color-theme_2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        + button {
+          margin-right: (@control-btn-width / 2);
+        }
+
+        &.hide {
+          background-color: @color-hideBtn;
+        }
+        &.min {
+          background-color: @color-minBtn;
+        }
+        &.max {
+          background-color: @color-maxBtn;
+        }
+        &.close {
+          background-color: @color-closeBtn;
+        }
+      }
     }
-    &.min {
-      background-color: @color-minBtn;
-    }
-    &.max {
-      background-color: @color-maxBtn;
-    }
-    &.close {
-      background-color: @color-closeBtn;
+
+    .controBtnIcon {
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
     }
   }
-}
+  &.controlBtnRight {
+    align-self: flex-start;
+    .controBtn {
+      right: 0;
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: 46px;
+        height: 30px;
+        background: none;
+        border: none;
+        outline: none;
+        padding: 1px;
+        cursor: pointer;
+        color: @color-theme;
+        transition: background-color 0.2s ease-in-out;
 
-.controBtnIcon {
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+        &:hover {
+          &.hide, &.min, &.max {
+            background-color: @color-btn-hover;
+          }
+          &.close {
+            background-color: @color-closeBtn;
+          }
+        }
+      }
+    }
+  }
 }
 
 .main {
@@ -465,23 +499,42 @@ each(@themes, {
         background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
       }
     }
-    .controBtn {
-      button {
-        color: ~'@{color-@{value}-theme_2}';
-        // &.hide:after {
-        //   background-color: ~'@{color-@{value}-hideBtn}';
-        // }
-        &.hide {
-          background-color: ~'@{color-@{value}-hideBtn}';
+    .header {
+      &.controlBtnLeft {
+        .controBtn {
+          button {
+            color: ~'@{color-@{value}-theme_2}';
+            // &.hide:after {
+            //   background-color: ~'@{color-@{value}-hideBtn}';
+            // }
+            &.hide {
+              background-color: ~'@{color-@{value}-hideBtn}';
+            }
+            &.min {
+              background-color: ~'@{color-@{value}-minBtn}';
+            }
+            &.max {
+              background-color: ~'@{color-@{value}-maxBtn}';
+            }
+            &.close {
+              background-color: ~'@{color-@{value}-closeBtn}';
+            }
+          }
         }
-        &.min {
-          background-color: ~'@{color-@{value}-minBtn}';
-        }
-        &.max {
-          background-color: ~'@{color-@{value}-maxBtn}';
-        }
-        &.close {
-          background-color: ~'@{color-@{value}-closeBtn}';
+      }
+      &.controlBtnRight {
+        .controBtn {
+          button {
+            color: ~'@{color-@{value}-theme_2-font-label}';
+            &:hover {
+              &.hide, &.min, &.max {
+                background-color: ~'@{color-@{value}-btn-hover}';
+              }
+              &.close {
+                background-color: ~'@{color-@{value}-closeBtn}';
+              }
+            }
+          }
         }
       }
     }
