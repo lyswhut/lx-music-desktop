@@ -119,7 +119,7 @@ export default {
 
 .main {
   // padding: 15px 0;
-  max-width: 530px;
+  max-width: 620px;
   min-width: 200px;
   display: flex;
   flex-flow: column nowrap;
@@ -152,7 +152,7 @@ export default {
   height: 36px;
   line-height: 36px;
   padding: 0 10px !important;
-  width: 150px;
+  width: 180px;
   .mixin-ellipsis-1;
 }
 
