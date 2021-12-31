@@ -247,6 +247,22 @@ export default {
         }
       }
     }
+
+    .help-btn {
+      padding: 0;
+      margin: 0 0.4em;
+      border: none;
+      background: none;
+      color: @color-theme;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    .help-icon {
+      margin: 0 0.4em;
+    }
   }
 }
 
@@ -291,6 +307,12 @@ each(@themes, {
     .setting {
       dt {
         border-left-color: ~'@{color-@{value}-theme}';
+      }
+
+      :global {
+        .help-btn {
+          color: ~'@{color-@{value}-theme}';
+        }
       }
     }
   }

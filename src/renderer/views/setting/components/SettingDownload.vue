@@ -11,7 +11,9 @@ dd(:tips="$t('setting__download_path_title')")
     p
       base-btn.btn(min @click="handleChangeSavePath") {{$t('setting__download_path_change_btn')}}
 dd
-  h3#download_use_other_source {{$t('setting__download_use_other_source')}}
+  h3#download_use_other_source
+    | {{$t('setting__download_use_other_source')}}
+    svg-icon(class="help-icon" name="help-circle-outline" :tips="$t('setting__download_use_other_source_tip')")
   div
     base-checkbox(id="setting_download_isUseOtherSource" v-model="currentStting.download.isUseOtherSource" :label="$t('setting__is_enable')")
   div
