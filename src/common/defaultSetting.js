@@ -110,7 +110,10 @@ const overwriteSetting = {
 }
 
 // 使用新年皮肤
-if (new Date().getMonth() < 2) defaultSetting.themeId = 9
+if (new Date().getMonth() < 2) {
+  defaultSetting.themeId = 9
+  defaultSetting.desktopLyric.theme = 3
+}
 
 
 exports.defaultSetting = defaultSetting

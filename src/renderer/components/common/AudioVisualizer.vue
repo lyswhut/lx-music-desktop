@@ -24,7 +24,7 @@ const themes = {
   black: 'rgba(39,39,39,.26)',
   mid_autumn: 'rgba(74,55,82,.05)',
   naruto: 'rgba(87,144,167,.1)',
-  happy_new_year: 'rgba(252,57,57,.1)',
+  happy_new_year: 'rgba(192,57,43,.1)',
 }
 export default {
   setup() {
