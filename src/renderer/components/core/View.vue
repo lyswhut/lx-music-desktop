@@ -14,10 +14,13 @@
 .view {
   position: relative;
   z-index: 1;
-  // > * {
-  //   position: absolute;
-  //   width: 100%;
-  // }
+  > * {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+  }
   // background: #fff;
   // overflow: hidden;
 }
