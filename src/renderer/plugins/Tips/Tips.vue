@@ -6,6 +6,12 @@
 
 <script>
 export default {
+  props: {
+    afterLeave: {
+      type: Function,
+      default: () => {},
+    },
+  },
   data() {
     return {
       visible: false,
@@ -27,14 +33,11 @@ export default {
       })
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     const el = this.$el
     el.parentNode.removeChild(el)
   },
   methods: {
-    afterLeave(el, done) {
-      this.$destroy()
-    },
     handleGetOffsetXY(left, top) {
       const tipsWidth = this.$refs.dom_tips.clientWidth
       const tipsHeight = this.$refs.dom_tips.clientHeight
@@ -58,7 +61,7 @@ export default {
 </script>
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@renderer/assets/styles/layout.less';
 
 .tips {
   position: fixed;
@@ -86,7 +89,7 @@ export default {
 }
 
 each(@themes, {
-  :global(#container.@{value}) {
+  :global(#root.@{value}) {
     ~.tips {
       color: ~'@{color-@{value}-theme_2-font}';
       background: ~'@{color-@{value}-theme_2-background_1}';

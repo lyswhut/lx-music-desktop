@@ -21,7 +21,12 @@ export default {
       }
     }
     if (lrc.length) {
-      lrc.unshift(lrcT.shift())
+      if ((lrcT.length - lrc.length) > (lrcT.length * 0.1)) { // 翻译比正文多则证明翻译可能有问题，直接将其丢弃
+        lrc = lrcT
+        lrcT = []
+      } else {
+        lrc.unshift(lrcT.shift())
+      }
     } else {
       lrc = lrcT
       lrcT = []

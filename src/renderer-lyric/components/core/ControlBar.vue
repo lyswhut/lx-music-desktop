@@ -2,38 +2,38 @@
 div(:class="$style.container")
   transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated fadeOut")
     div(:class="$style.btns" v-show="!isShowThemeList")
-      button(:class="$style.btn" @click="handleClose" :title="$t('desktopLyric.close')")
+      button(:class="$style.btn" @click="handleClose" :title="$t('desktop_lyric__close')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-close')
-      button(:class="$style.btn" @click="handleLock" :title="$t('desktopLyric.' + (lrcConfig.isLock ? 'unlock' : 'lock'))")
+      button(:class="$style.btn" @click="handleLock" :title="$t('desktop_lyric__' + (lrcConfig.isLock ? 'unlock' : 'lock'))")
         svg(v-if="config.isLock" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-unlock')
         svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-lock')
-      button(:class="$style.btn" :title="$t('desktopLyric.theme')" @click="isShowThemeList = true")
+      button(:class="$style.btn" :title="$t('desktop_lyric__theme')" @click="isShowThemeList = true")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-theme')
-      button(:class="$style.btn" @click="handleFontChange('increase', 10)" @contextmenu="handleFontChange('increase', 1)" :title="$t('desktopLyric.font_increase')")
+      button(:class="$style.btn" @click="handleFontChange('increase', 10)" @contextmenu="handleFontChange('increase', 1)" :title="$t('desktop_lyric__font_increase')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-font-increase')
-      button(:class="$style.btn" @click="handleFontChange('decrease', 10)" @contextmenu="handleFontChange('decrease', 1)" :title="$t('desktopLyric.font_decrease')")
+      button(:class="$style.btn" @click="handleFontChange('decrease', 10)" @contextmenu="handleFontChange('decrease', 1)" :title="$t('desktop_lyric__font_decrease')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-font-decrease')
-      button(:class="$style.btn" @click="handleOpactiyChange('increase', 10)" @contextmenu="handleOpactiyChange('increase', 2)" :title="$t('desktopLyric.opactiy_increase')")
+      button(:class="$style.btn" @click="handleOpactiyChange('increase', 10)" @contextmenu="handleOpactiyChange('increase', 2)" :title="$t('desktop_lyric__opactiy_increase')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-opactiy-increase')
-      button(:class="$style.btn" @click="handleOpactiyChange('decrease', 10)" @contextmenu="handleOpactiyChange('decrease', 2)" :title="$t('desktopLyric.opactiy_decrease')")
+      button(:class="$style.btn" @click="handleOpactiyChange('decrease', 10)" @contextmenu="handleOpactiyChange('decrease', 2)" :title="$t('desktop_lyric__opactiy_decrease')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-opactiy-decrease')
 
       //- button(:class="$style.btn" v-text="lrcConfig.style.isZoomActiveLrc ? '取消缩放' : '缩放歌词'" @click="handleZoomLrc")
-      button(:class="$style.btn" @click="handleZoomLrc" :title="$t('desktopLyric.' + (lrcConfig.style.isZoomActiveLrc ? 'lrc_active_zoom_off' : 'lrc_active_zoom_on'))")
+      button(:class="$style.btn" @click="handleZoomLrc" :title="$t('desktop_lyric__' + (lrcConfig.style.isZoomActiveLrc ? 'lrc_active_zoom_off' : 'lrc_active_zoom_on'))")
         svg(v-if="config.style.isZoomActiveLrc" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-vibrate-off')
         svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-vibrate')
 
-      button(:class="$style.btn" @click="handleAlwaysOnTop" :title="$t('desktopLyric.' + (lrcConfig.isAlwaysOnTop ? 'win_top_off' : 'win_top_on'))")
+      button(:class="$style.btn" @click="handleAlwaysOnTop" :title="$t('desktop_lyric__' + (lrcConfig.isAlwaysOnTop ? 'win_top_off' : 'win_top_on'))")
         svg(v-if="config.isAlwaysOnTop" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-top-off')
         svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 24 24' space='preserve')
@@ -44,7 +44,7 @@ div(:class="$style.container")
     div(:class="$style.themes" v-show="isShowThemeList")
       ul(:class="$style.themeList")
         li(:class="$style.btnBack")
-          button(:class="$style.btn" @click="isShowThemeList = false" :title="$t('desktopLyric.back')")
+          button(:class="$style.btn" @click="isShowThemeList = false" :title="$t('desktop_lyric__back')")
             svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='20px' viewBox='0 0 512 512' space='preserve')
               use(xlink:href='#icon-back')
         li(:class="[$style.themeItem, theme.className, lrcConfig.theme == theme.id ? $style.active : null]" v-for="theme in themes" @click="handleToggleTheme(theme)")
@@ -52,6 +52,7 @@ div(:class="$style.container")
 
 <script>
 import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
+import { toRaw } from 'vue'
 
 export default {
   props: {
@@ -113,7 +114,7 @@ export default {
   },
   methods: {
     sendEvent() {
-      rendererSend(NAMES.winLyric.set_lyric_config, this.config)
+      rendererSend(NAMES.winLyric.set_lyric_config, toRaw(this.config))
     },
     handleClose() {
       this.config.enable = false

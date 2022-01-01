@@ -8,22 +8,32 @@ import {
   setMusicUrl,
   getMusicUrl as getStoreMusicUrl,
   assertApiSupport,
-} from '../../utils'
+} from '@renderer/utils'
+import { player as eventPlayerNames, list as eventListNames } from '@renderer/event/names'
+import {
+  setPlayList,
+  setPlayMusicInfo,
+  playedList,
+  addPlayedList,
+  removePlayedList,
+  clearPlayedList,
+  tempPlayList,
+  addTempPlayList,
+  removeTempPlayList,
+  clearTempPlayeList,
+  playInfo,
+  playMusicInfo,
+} from '@renderer/core/share/player'
+import { tempList, updateList } from '@renderer/core/share/list'
+import { getList } from '@renderer/core/share/utils'
 
 // state
 const state = {
-  listInfo: {
-    list: [],
-    id: null,
-  },
-  playIndex: -1,
-  changePlay: false,
-  playedList: [],
-
-  playMusicInfo: null,
-  tempPlayList: [],
 }
 
+const playMusic = () => {
+  window.eventHub.emit(eventPlayerNames.playMusic)
+}
 
 const filterList = async({ playedList, listInfo, savePath, commit }) => {
   // if (this.list.listName === null) return
@@ -33,7 +43,7 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
   if (listInfo.id == 'download') {
     list = []
     for (const item of listInfo.list) {
-      const filePath = path.join(savePath, item.fileName)
+      const filePath = path.join(savePath, item.metadata.fileName)
       if (!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath)) continue
 
       canPlayList.push(item)
@@ -140,75 +150,9 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
-let prevListPlayIndex
 // getters
 const getters = {
-  list: state => state.listInfo.list,
-  changePlay: satte => satte.changePlay,
-  playInfo(state) {
-    if (state.playMusicInfo == null) return { listId: null, playIndex: -1, playListId: null, listPlayIndex: -1, isPlayList: false, musicInfo: null }
-    const playListId = state.listInfo.id
-    let listId = state.playMusicInfo.listId
-    const isTempPlay = !!state.playMusicInfo.isTempPlay
-    const isPlayList = listId === playListId
-    let playIndex = -1
-    let listPlayIndex = Math.min(state.playIndex, state.listInfo.list.length - 1)
 
-    if (listId != '__temp__') {
-      if (state.playMusicInfo.musicInfo.key) {
-        const currentKey = state.playMusicInfo.musicInfo.key
-        if (isPlayList) {
-          playIndex = state.listInfo.list.findIndex(m => m.key == currentKey)
-          if (!isTempPlay) listPlayIndex = playIndex
-        } else if (listId == 'download') {
-          playIndex = window.downloadList.findIndex(m => m.key == currentKey)
-        }
-      } else {
-        const currentSongmid = state.playMusicInfo.musicInfo.songmid
-        if (isPlayList) {
-          playIndex = state.listInfo.list.findIndex(m => m.songmid == currentSongmid)
-          if (!isTempPlay) listPlayIndex = playIndex
-        } else {
-          let list = window.allList[listId]
-          if (list) playIndex = list.list.findIndex(m => m.songmid == currentSongmid)
-        }
-      }
-    }
-    if (listPlayIndex >= 0) prevListPlayIndex = listPlayIndex
-    // if (listPlayIndex < 0) {
-    //   let length = state.listInfo.list.length
-    //   if (length) {
-    //     let index = Math.min(prevListPlayIndex, 0)
-    //     if (index > length - 1) index = length - 1
-    //     listPlayIndex = prevListPlayIndex = index
-    //   }
-    // } else {
-    //   prevListPlayIndex = listPlayIndex
-    // }
-    // console.log({
-    //   listId,
-    //   playIndex,
-    //   playListId,
-    //   listPlayIndex,
-    //   isPlayList,
-    //   isTempPlay,
-    //   musicInfo: state.playMusicInfo.musicInfo,
-    // })
-
-    // console.log(state.playMusicInfo)
-    return {
-      listId,
-      playIndex,
-      playListId,
-      listPlayIndex,
-      isPlayList,
-      isTempPlay,
-      musicInfo: state.playMusicInfo.musicInfo,
-    }
-  },
-  playMusicInfo: state => state.playMusicInfo,
-  playedList: state => state.playedList,
-  tempPlayList: state => state.tempPlayList,
 }
 
 // actions
@@ -230,12 +174,12 @@ const actions = {
       return Promise.reject(err)
     })
   },
-  getPic({ commit, state }, musicInfo) {
+  getPic({ commit, state }, { musicInfo, listId }) {
     // if (picRequest && picRequest.cancelHttp) picRequest.cancelHttp()
     // picRequest = music[musicInfo.source].getPic(musicInfo)
     return getPic.call(this, musicInfo).then(url => {
       // picRequest = null
-      commit('getPic', { musicInfo, url })
+      commit('setPic', { musicInfo, url, listId })
     }).catch(err => {
       // picRequest = null
       return Promise.reject(err)
@@ -268,21 +212,20 @@ const actions = {
   },
 
   async playPrev({ state, rootState, commit, getters }) {
-    const currentListId = state.listInfo.id
-    const currentList = state.listInfo.list
-    const playInfo = getters.playInfo
-    if (state.playedList.length) {
+    const currentListId = playInfo.playListId
+    const currentList = getList(currentListId)
+    if (playedList.length) {
       let currentSongmid
-      if (state.playMusicInfo.isTempPlay) {
+      if (playMusicInfo.isTempPlay) {
         const musicInfo = currentList[playInfo.listPlayIndex]
         if (musicInfo) currentSongmid = musicInfo.songmid
       } else {
-        currentSongmid = state.playMusicInfo.musicInfo.songmid
+        currentSongmid = playMusicInfo.musicInfo.songmid
       }
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.findIndex(m => m.musicInfo.songmid === currentSongmid) - 1; index > -1; index--) {
-        const playMusicInfo = state.playedList[index]
+      for (index = playedList.findIndex(m => m.musicInfo.songmid === currentSongmid) - 1; index > -1; index--) {
+        const playMusicInfo = playedList[index]
         const currentSongmid = playMusicInfo.musicInfo.songmid
         if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === currentSongmid)) {
           commit('removePlayedList', index)
@@ -292,28 +235,24 @@ const actions = {
       }
 
       if (index > -1) {
-        commit('setPlayMusicInfo', state.playedList[index])
+        commit('setPlayMusicInfo', playedList[index])
+        playMusic()
         return
       }
     }
 
     let filteredList = await filterList({
-      listInfo: state.listInfo,
-      playedList: state.playedList,
+      listInfo: { id: currentListId, list: currentList },
+      playedList,
       savePath: rootState.setting.download.savePath,
       commit,
     })
-    if (!filteredList.length) return commit('setPlayMusicInfo', null)
+    if (!filteredList.length) return commit('setPlayMusicInfo', { listId: null, musicInfo: null })
 
-    let listPlayIndex = filteredList.indexOf(state.listInfo.list[playInfo.listPlayIndex])
-    const currentListLength = state.listInfo.list.length - 1
-    if (listPlayIndex == -1 && currentListLength) {
-      listPlayIndex = prevListPlayIndex >= currentListLength ? 0 : prevListPlayIndex + 1
-    }
-    let currentIndex = listPlayIndex
-    if (currentIndex < 0) currentIndex = 0
+    let currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    if (currentIndex == -1 && filteredList.length) currentIndex = 0
     let nextIndex = currentIndex
-    if (!playInfo.isTempPlay) {
+    if (!playMusicInfo.isTempPlay) {
       switch (rootState.setting.player.togglePlayMethod) {
         case 'random':
           nextIndex = getRandom(0, filteredList.length)
@@ -335,30 +274,33 @@ const actions = {
       musicInfo: filteredList[nextIndex],
       listId: currentListId,
     })
+    playMusic()
   },
   async playNext({ state, rootState, commit, getters }) {
-    if (state.tempPlayList.length) {
-      const playMusicInfo = state.tempPlayList[0]
+    if (tempPlayList.length) {
+      const playMusicInfo = tempPlayList[0]
       commit('removeTempPlayList', 0)
       commit('setPlayMusicInfo', playMusicInfo)
+      playMusic()
       return
     }
-    const currentListId = state.listInfo.id
-    const currentList = state.listInfo.list
-    const playInfo = getters.playInfo
 
-    if (state.playedList.length) {
+    // console.log(playInfo.playListId)
+    const currentListId = playInfo.playListId
+    const currentList = getList(currentListId)
+
+    if (playedList.length) {
       let currentSongmid
-      if (state.playMusicInfo.isTempPlay) {
+      if (playMusicInfo.isTempPlay) {
         const musicInfo = currentList[playInfo.listPlayIndex]
         if (musicInfo) currentSongmid = musicInfo.songmid
       } else {
-        currentSongmid = state.playMusicInfo.musicInfo.songmid
+        currentSongmid = playMusicInfo.musicInfo.songmid
       }
       // 从已播放列表移除播放列表已删除的歌曲
       let index
-      for (index = state.playedList.findIndex(m => m.musicInfo.songmid === currentSongmid) + 1; index < state.playedList.length; index++) {
-        const playMusicInfo = state.playedList[index]
+      for (index = playedList.findIndex(m => m.musicInfo.songmid === currentSongmid) + 1; index < playedList.length; index++) {
+        const playMusicInfo = playedList[index]
         const currentSongmid = playMusicInfo.musicInfo.songmid
         if (playMusicInfo.listId == currentListId && !currentList.some(m => m.songmid === currentSongmid)) {
           commit('removePlayedList', index)
@@ -367,25 +309,22 @@ const actions = {
         break
       }
 
-      if (index < state.playedList.length) {
-        commit('setPlayMusicInfo', state.playedList[index])
+      if (index < playedList.length) {
+        commit('setPlayMusicInfo', playedList[index])
+        playMusic()
         return
       }
     }
     let filteredList = await filterList({
-      listInfo: state.listInfo,
-      playedList: state.playedList,
+      listInfo: { id: currentListId, list: currentList },
+      playedList,
       savePath: rootState.setting.download.savePath,
       commit,
     })
 
-    if (!filteredList.length) return commit('setPlayMusicInfo', null)
-    let listPlayIndex = filteredList.indexOf(state.listInfo.list[playInfo.listPlayIndex])
-    const currentListLength = state.listInfo.list.length - 1
-    if (listPlayIndex == -1 && currentListLength) {
-      listPlayIndex = prevListPlayIndex > currentListLength ? currentListLength : prevListPlayIndex - 1
-    }
-    const currentIndex = listPlayIndex
+    if (!filteredList.length) return commit('setPlayMusicInfo', { listId: null, musicInfo: null })
+    let currentIndex = filteredList.indexOf(currentList[playInfo.listPlayIndex])
+    if (currentIndex == -1 && filteredList.length) currentIndex = 0
     let nextIndex = currentIndex
 
     switch (rootState.setting.player.togglePlayMethod) {
@@ -410,6 +349,7 @@ const actions = {
       musicInfo: filteredList[nextIndex],
       listId: currentListId,
     })
+    playMusic()
   },
 }
 
@@ -419,8 +359,14 @@ const mutations = {
   setUrl(state, { musicInfo, type, url }) {
     setMusicUrl(musicInfo, type, url)
   },
-  getPic(state, datas) {
+  setPic(state, datas) {
     datas.musicInfo.img = datas.url
+    this.commit('list/updateMusicInfo', {
+      listId: datas.listId,
+      id: datas.musicInfo.songmid,
+      data: { img: datas.url },
+      musicInfo: datas.musicInfo,
+    })
   },
   setLrc(state, datas) {
     // datas.musicInfo.lrc = datas.lyric
@@ -432,65 +378,54 @@ const mutations = {
       lxlyric: datas.lxlyric,
     })
   },
-  setList(state, { list, index }) {
-    if (!(list && list.list && list.list[index])) return
-    state.playMusicInfo = {
-      musicInfo: list.list[index],
-      listId: list.id,
-    }
-    state.listInfo = list
-    state.playIndex = index
-    state.changePlay = true
-    // console.log(state.playMusicInfo)
-    if (state.playedList.length) this.commit('player/clearPlayedList')
-    if (state.tempPlayList.length) this.commit('player/clearTempPlayeList')
+  setList(state, { listId, index }) {
+    const list = getList(listId)
+    const musicInfo = list[index]
+    if (!musicInfo) return
+    setPlayList(listId)
+    setPlayMusicInfo(listId, musicInfo)
+    if (playedList.length) this.commit('player/clearPlayedList')
+    if (tempPlayList.length) this.commit('player/clearTempPlayeList')
+    playMusic()
   },
-  setPlayIndex(state, index) {
-    state.playIndex = index
+  setTempList(state, { list, id, index }) {
+    updateList({ id: tempList.id, meta: { id }, list })
+    this.commit('player/setList', {
+      listId: tempList.id,
+      index,
+    })
+    window.eventHub.emit(eventListNames.listChange, [tempList.id])
   },
-  setChangePlay(state) {
-    state.changePlay = true
+  updateTempList(state, { id, list }) {
+    updateList({ id: tempList.id, meta: { id }, list })
+    window.eventHub.emit(eventListNames.listChange, [tempList.id])
   },
-  resetChangePlay(state) {
-    state.changePlay = false
-  },
+  // setPlayIndex(state, index) {
+  //   state.playIndex = index
+  // },
   setPlayedList(state, item) {
     // console.log(item)
-    if (state.playedList.includes(item)) return
-    state.playedList.push(item)
+    addPlayedList(item)
   },
   removePlayedList(state, index) {
-    state.playedList.splice(index, 1)
+    removePlayedList(index)
   },
   clearPlayedList(state) {
-    state.playedList.splice(0, state.playedList.length)
+    clearPlayedList()
   },
   setTempPlayList(state, list) {
-    state.tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
-    if (!state.playMusicInfo) this.commit('player/playNext')
+    addTempPlayList(list)
+    if (!playMusicInfo.musicInfo) this.commit('player/playNext')
   },
   removeTempPlayList(state, index) {
-    state.tempPlayList.splice(index, 1)
+    removeTempPlayList(index)
   },
   clearTempPlayeList(state) {
-    state.tempPlayList.splice(0, state.tempPlayList.length)
+    clearTempPlayeList()
   },
 
-  setPlayMusicInfo(state, playMusicInfo) {
-    let playIndex = state.playIndex
-    if (playMusicInfo == null) {
-      playIndex = -1
-    } else {
-      let listId = playMusicInfo.listId
-      if (listId != '__temp__' && !playMusicInfo.isTempPlay && listId === state.listInfo.id) {
-        const currentSongmid = playMusicInfo.musicInfo.songmid
-        playIndex = state.listInfo.list.findIndex(m => m.songmid == currentSongmid)
-      }
-    }
-
-    state.playMusicInfo = playMusicInfo
-    state.playIndex = playIndex
-    state.changePlay = true
+  setPlayMusicInfo(state, { listId, musicInfo, isTempPlay }) {
+    setPlayMusicInfo(listId, musicInfo, isTempPlay)
   },
 }
 

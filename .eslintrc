@@ -1,5 +1,8 @@
 {
-  "extends": "standard",
+  "extends": [
+    // "plugin:vue/vue3-recommended",
+    "standard"
+  ],
   "plugins": [
     "html"
   ],
@@ -18,7 +21,8 @@
     "standard/no-callback-literal": "off",
     "prefer-const": "off",
     "no-labels": "off",
-    "node/no-callback-literal": "off"
+    "node/no-callback-literal": "off",
+    "vue/multi-word-component-names": "off"
   },
   "settings": {
     "html/html-extensions": [".html", ".vue"]

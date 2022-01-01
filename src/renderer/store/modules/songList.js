@@ -1,4 +1,6 @@
 import music from '../../utils/music'
+import { markRawList } from '@renderer/utils/vueTools'
+
 const sortList = {}
 const sources = []
 const cache = new Map()
@@ -125,7 +127,7 @@ const mutations = {
     state.list.total = 0
   },
   setList(state, { result, key, page }) {
-    state.list.list = result.list
+    state.list.list = markRawList(result.list)
     state.list.total = result.total
     state.list.limit = result.limit
     state.list.page = page
@@ -133,7 +135,7 @@ const mutations = {
     cache.set(key, result)
   },
   setListDetail(state, { result, key, source, id, page }) {
-    state.listDetail.list = result.list
+    state.listDetail.list = markRawList(result.list)
     state.listDetail.id = id
     state.listDetail.source = source
     state.listDetail.total = result.total
@@ -150,7 +152,6 @@ const mutations = {
     cache.set(key, result)
   },
   setVisibleListDetail(state, bool) {
-    if (!bool) state.listDetail.list = []
     state.isVisibleListDetail = bool
   },
   setSelectListInfo(state, info) {

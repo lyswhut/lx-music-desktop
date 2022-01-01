@@ -13,20 +13,19 @@ export default [
     view: 'Search',
   },
   {
+    path: '/songList',
+    name: 'songList',
+    view: 'songList/SongList',
+  },
+  {
     path: '/leaderboard',
     name: 'leaderboard',
     view: 'Leaderboard',
   },
   {
-    path: '/songList',
-    name: 'songList',
-    view: 'SongList',
-  },
-  {
     path: '/list',
     name: 'list',
-    view: 'List',
-    // props: true,
+    view: 'list/List',
   },
   {
     path: '/download',
@@ -36,6 +35,6 @@ export default [
   {
     path: '/setting',
     name: 'setting',
-    view: 'Setting',
+    view: 'setting/Setting',
   },
 ]

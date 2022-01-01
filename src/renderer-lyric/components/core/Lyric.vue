@@ -9,11 +9,12 @@ div(:class="[$style.lyric, { [$style.draging]: lyricEvent.isMsDown }, { [$style.
 </template>
 
 <script>
-import { rendererOn, rendererSend, NAMES } from '../../../common/ipc'
-import { scrollTo } from '../../../renderer/utils'
+import { rendererOn, rendererSend, NAMES } from '@common/ipc'
+import { scrollTo } from '@renderer/utils'
 import Lyric from '@renderer/utils/lyric-font-player'
 
 let cancelScrollFn = null
+let delayScrollTimeout
 
 export default {
   props: {
@@ -122,10 +123,14 @@ export default {
       immediate: true,
     },
     'lyric.line': {
-      handler(n) {
+      handler(n, o) {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
-        this.handleScrollLrc()
+        if (o == null || n - o != 1) return this.handleScrollLrc()
+        delayScrollTimeout = setTimeout(() => {
+          delayScrollTimeout = null
+          this.handleScrollLrc(600)
+        }, 600)
       },
       immediate: true,
     },
@@ -172,7 +177,7 @@ export default {
     document.addEventListener('touchend', this.handleMouseMsUp)
     rendererSend(NAMES.winLyric.get_lyric_info, 'info')
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.clearLyricScrollTimeout()
     document.removeEventListener('mousemove', this.handleMouseMsMove)
     document.removeEventListener('mouseup', this.handleMouseMsUp)
@@ -229,7 +234,7 @@ export default {
     handleResize() {
       this.setProgressWidth()
     },
-    handleScrollLrc() {
+    handleScrollLrc(duration = 300) {
       if (!this.dom_lines.length) return
       if (cancelScrollFn) {
         cancelScrollFn()
@@ -237,7 +242,7 @@ export default {
       }
       if (this.lyricEvent.isStopScroll) return
       let dom_p = this.dom_lines[this.lyric.line]
-      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0)
+      cancelScrollFn = scrollTo(this.$refs.dom_lyric, dom_p ? (dom_p.offsetTop - this.$refs.dom_lyric.clientHeight * 0.5 + dom_p.clientHeight / 2) : 0, duration)
     },
     handleLyricDown(target, x, y) {
       if (target.classList.contains('font') ||
@@ -248,6 +253,10 @@ export default {
         this.lyricEvent.msDownY = y
         this.lyricEvent.msDownScrollY = this.$refs.dom_lyric.scrollTop
       } else {
+        if (delayScrollTimeout) {
+          clearTimeout(delayScrollTimeout)
+          delayScrollTimeout = null
+        }
         this.winEvent.isMsDown = true
         this.winEvent.msDownX = x
         this.winEvent.msDownY = y
@@ -332,7 +341,7 @@ export default {
 </script>
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@lyric/assets/styles/layout.less';
 
 .lyric {
   text-align: center;
@@ -340,6 +349,7 @@ export default {
   overflow: hidden;
   font-size: 16px;
   color: @color-theme-lyric;
+  contain: strict;
   cursor: move;
 
   :global {
@@ -453,7 +463,7 @@ export default {
     .lrc-content {
       &.active {
         .translation {
-          font-size: 1em;
+          font-size: .94em;
         }
         span {
           font-size: 1.2em;

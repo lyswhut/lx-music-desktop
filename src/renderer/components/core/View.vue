@@ -1,21 +1,24 @@
-<template lang="pug">
-div(:class="$style.view")
-  transition(enter-active-class="animated-fast fadeIn"
-      leave-active-class="animated-fast fadeOut")
-    router-view
-  //- core-title-bar
-  //- router-view
+<template>
+<div :class="$style.view">
+  <router-view v-slot="{ Component }">
+    <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
+      <component :is="Component" />
+    </transition>
+  </router-view>
+</div>
 </template>
 
-
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@renderer/assets/styles/layout.less';
 
 .view {
   position: relative;
   z-index: 1;
   > * {
-    position: absolute;
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    height: 100%;
     width: 100%;
   }
   // background: #fff;

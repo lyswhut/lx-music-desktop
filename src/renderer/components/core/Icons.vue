@@ -162,9 +162,17 @@ svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/19
       //- 0 0 24 24
       path(d="M20,14H4V10H20")
 
+    g#icon-window-minimize-2(fill='currentColor')
+      //- 0 0 24 24
+      path(d="M19,13H5V11H19V13Z")
+
     g#icon-window-close(fill='currentColor')
       //- 0 0 24 24
       path(d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z")
+
+    g#icon-window-close-2(fill='currentColor')
+      //- 0 0 24 24
+      path(d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z")
 
 
     g#icon-list-loop(fill='currentColor')
@@ -221,6 +229,10 @@ svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/19
     g#icon-text(fill='currentColor')
       // 0 0 24 24
       path(fill='currentColor', d='M21,6V8H3V6H21M3,18H12V16H3V18M3,13H21V11H3V13Z')
+
+    g#icon-audio-wave(fill='currentColor')
+      // 0 0 24 24
+      path(fill='currentColor', d='M22 12L20 13L19 14L18 13L17 16L16 13L15 21L14 13L13 15L12 13L11 17L10 13L9 22L8 13L7 19L6 13L5 14L4 13L2 12L4 11L5 10L6 11L7 5L8 11L9 2L10 11L11 7L12 11L13 9L14 11L15 3L16 11L17 8L18 11L19 10L20 11L22 12Z')
 
 </template>
 

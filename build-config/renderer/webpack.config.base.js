@@ -1,8 +1,7 @@
 const path = require('path')
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require('vue-loader')
 const HTMLPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CleanCSSPlugin = require('less-plugin-clean-css')
 const ESLintPlugin = require('eslint-webpack-plugin')
 
 const vueLoaderConfig = require('../vue-loader.config')
@@ -23,6 +22,7 @@ module.exports = {
   },
   resolve: {
     alias: {
+      '@': path.join(__dirname, '../../src'),
       '@main': path.join(__dirname, '../../src/main'),
       '@renderer': path.join(__dirname, '../../src/renderer'),
       '@lyric': path.join(__dirname, '../../src/renderer-lyric'),
@@ -57,11 +57,6 @@ module.exports = {
           loader: 'less-loader',
           options: {
             sourceMap: true,
-            lessOptions: {
-              plugins: [
-                new CleanCSSPlugin({ advanced: true }),
-              ],
-            },
           },
         }),
       },
@@ -81,6 +76,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        exclude: path.join(__dirname, '../../src/renderer/assets/svgs'),
         type: 'asset',
         parser: {
           dataUrlCondition: {
@@ -90,6 +86,20 @@ module.exports = {
         generator: {
           filename: 'imgs/[name]-[contenthash:8][ext]',
         },
+      },
+      {
+        test: /\.svg$/,
+        include: path.join(__dirname, '../../src/renderer/assets/svgs'),
+        use: [
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              symbolId: 'icon-[name]',
+            },
+          },
+          'svg-transform-loader',
+          'svgo-loader',
+        ],
       },
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
@@ -123,10 +133,9 @@ module.exports = {
   plugins: [
     new HTMLPlugin({
       filename: 'index.html',
-      template: path.join(__dirname, '../../src/renderer/index.pug'),
+      template: path.join(__dirname, '../../src/renderer/index.html'),
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
-      scriptLoading: 'blocking',
       __dirname,
     }),
     new VueLoaderPlugin(),

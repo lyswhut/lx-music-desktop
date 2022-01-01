@@ -14,21 +14,23 @@ import {
   filterFileName,
 } from '../../utils'
 import { NAMES, rendererInvoke } from '@common/ipc'
+import { initDownloadList, downloadList, downloadListMap, downloadStatus } from '@renderer/core/share/download'
+import { markRaw } from '@renderer/utils/vueTools'
+import { download as eventDownloadNames } from '@renderer/event/names'
 
-window.downloadList = []
-window.downloadListFull = []
-window.downloadListFullMap = new Map()
+// window.downloadList = []
+// window.downloadListFull = []
+// window.downloadListFullMap = new Map()
 // state
 const state = {
-  list: window.downloadList,
-  waitingList: [],
-  downloadStatus: {
-    RUN: 'run',
-    WAITING: 'waiting',
-    PAUSE: 'pause',
-    ERROR: 'error',
-    COMPLETED: 'completed',
-  },
+  // list: window.downloadList,
+  // downloadStatus: {
+  //   RUN: 'run',
+  //   WAITING: 'waiting',
+  //   PAUSE: 'pause',
+  //   ERROR: 'error',
+  //   COMPLETED: 'completed',
+  // },
 }
 
 
@@ -38,8 +40,8 @@ const tryNum = {}
 
 // getters
 const getters = {
-  list: state => state.list || [],
-  downloadStatus: state => state.downloadStatus,
+  // list: state => downloadList || [],
+  // downloadStatus: state => downloadStatus,
 }
 
 const checkPath = path => new Promise((resolve, reject) => {
@@ -73,7 +75,7 @@ const getExt = type => {
   }
 }
 
-const checkList = (list, musicInfo, type, ext) => list.some(s => s.songmid === musicInfo.songmid && (s.type === type || s.ext === ext))
+const checkList = (list, musicInfo, type, ext) => list.some(s => s.songmid === musicInfo.songmid && (s.metadata.type === type || s.metadata.ext === ext))
 
 const getStartTask = (list, downloadStatus, maxDownloadNum) => {
   let downloadCount = 0
@@ -108,11 +110,10 @@ const handleGetMusicUrl = function(musicInfo, type, retryedSource = [], originMu
 }
 
 const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
-  downloadInfo = window.downloadListFullMap.get(downloadInfo.key)
-  const cachedUrl = await getMusicUrlFormStorage(downloadInfo.musicInfo, downloadInfo.type)
-  if (!downloadInfo.musicInfo._types[downloadInfo.type]) {
+  const cachedUrl = await getMusicUrlFormStorage(downloadInfo.metadata.musicInfo, downloadInfo.metadata.type)
+  if (!downloadInfo.metadata.musicInfo._types[downloadInfo.metadata.type]) {
     // 兼容旧版酷我源搜索列表过滤128k音质的bug
-    if (!(downloadInfo.musicInfo.source == 'kw' && downloadInfo.type == '128k')) throw new Error('该歌曲没有可下载的音频')
+    if (!(downloadInfo.metadata.musicInfo.source == 'kw' && downloadInfo.metadata.type == '128k')) throw new Error('该歌曲没有可下载的音频')
 
     // return Promise.reject(new Error('该歌曲没有可下载的音频'))
   }
@@ -120,10 +121,10 @@ const getMusicUrl = async function(downloadInfo, isUseOtherSource, isRefresh) {
     ? cachedUrl
     : (
         isUseOtherSource
-          ? handleGetMusicUrl.call(this, downloadInfo.musicInfo, downloadInfo.type)
-          : music[downloadInfo.musicInfo.source].getMusicUrl(downloadInfo.musicInfo, downloadInfo.type).promise
+          ? handleGetMusicUrl.call(this, downloadInfo.metadata.musicInfo, downloadInfo.metadata.type)
+          : music[downloadInfo.metadata.musicInfo.source].getMusicUrl(downloadInfo.metadata.musicInfo, downloadInfo.metadata.type).promise
       ).then(({ url }) => {
-        setMusicUrl(downloadInfo.musicInfo, downloadInfo.type, url)
+        setMusicUrl(downloadInfo.metadata.musicInfo, downloadInfo.metadata.type, url)
         return url
       })
 }
@@ -176,7 +177,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
-const getLyric = function(musicInfo, isUseOtherSource) {
+const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
       lrcInfo.lyric
@@ -193,8 +194,7 @@ const getLyric = function(musicInfo, isUseOtherSource) {
             return null
           })
     ).then(lrcs => {
-      if (!lrcs) return lrcs
-      if (global.i18n.locale != 'zh-tw') return lrcs
+      if (!lrcs || !isS2t) return lrcs
       return rendererInvoke(NAMES.mainWindow.lang_s2t, Buffer.from(lrcs.lyric).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString()).then(lyric => {
         lrcs.lyric = lyric
         return lrcs
@@ -212,32 +212,31 @@ const fixKgLyric = lrc => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[0
  * @param {*} filePath
  * @param {*} isEmbedPic // 是否嵌入图片
  */
-const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric) {
-  if (downloadInfo.type === 'ape') return
-  downloadInfo = window.downloadListFullMap.get(downloadInfo.key)
+const saveMeta = function({ downloadInfo, filePath, isUseOtherSource, isEmbedPic, isEmbedLyric, isS2t }) {
+  if (downloadInfo.metadata.type === 'ape') return
   const tasks = [
     isEmbedPic
-      ? downloadInfo.musicInfo.img
-        ? Promise.resolve(downloadInfo.musicInfo.img)
+      ? downloadInfo.metadata.musicInfo.img
+        ? Promise.resolve(downloadInfo.metadata.musicInfo.img)
         : (
             isUseOtherSource
-              ? getPic.call(this, downloadInfo.musicInfo)
-              : music[downloadInfo.musicInfo.source].getPic(downloadInfo.musicInfo).promise
+              ? getPic.call(this, downloadInfo.metadata.musicInfo)
+              : music[downloadInfo.metadata.musicInfo.source].getPic(downloadInfo.metadata.musicInfo).promise
           ).catch(err => {
             console.log(err)
             return null
           })
       : Promise.resolve(),
     isEmbedLyric
-      ? getLyric.call(this, downloadInfo.musicInfo, isUseOtherSource)
+      ? getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource, isS2t)
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
     if (lyrics.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
     setMeta(filePath, {
-      title: downloadInfo.musicInfo.name,
-      artist: downloadInfo.musicInfo.singer,
-      album: downloadInfo.musicInfo.albumName,
+      title: downloadInfo.metadata.musicInfo.name,
+      artist: downloadInfo.metadata.musicInfo.singer,
+      album: downloadInfo.metadata.musicInfo.albumName,
       APIC: imgUrl,
       lyrics: lyrics.lyric,
     })
@@ -249,9 +248,8 @@ const saveMeta = function(downloadInfo, filePath, isUseOtherSource, isEmbedPic, 
  * @param {*} downloadInfo
  * @param {*} filePath
  */
-const downloadLyric = function(downloadInfo, isUseOtherSource, filePath, lrcFormat) {
-  downloadInfo = window.downloadListFullMap.get(downloadInfo.key)
-  getLyric.call(this, downloadInfo.musicInfo, isUseOtherSource).then(lrcs => {
+const downloadLyric = function({ downloadInfo, isUseOtherSource, filePath, lrcFormat, isS2t }) {
+  getLyric.call(this, downloadInfo.metadata.musicInfo, isUseOtherSource, isS2t).then(lrcs => {
     if (lrcs?.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
       saveLrc(filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'), lrcs.lyric, lrcFormat)
@@ -301,28 +299,31 @@ const createDownloadInfo = ({ musicInfo, type, list, fileName, savePath }) => {
   if (checkList(list, musicInfo, type, ext)) return null
   const downloadInfo = {
     isComplate: false,
-    status: state.downloadStatus.WAITING,
+    status: downloadStatus.WAITING,
     statusText: '待下载',
-    url: null,
     songmid: musicInfo.songmid,
-    fileName: filterFileName(`${fileName
-      .replace('歌名', musicInfo.name)
-      .replace('歌手', musicInfo.singer)}.${ext}`),
     progress: {
       downloaded: 0,
       total: 0,
       progress: 0,
     },
-    type,
-    ext,
     name: `${musicInfo.name} - ${musicInfo.singer}`,
     key,
+    metadata: {
+      musicInfo,
+      url: null,
+      type,
+      ext,
+      fileName: filterFileName(`${fileName
+        .replace('歌名', musicInfo.name)
+        .replace('歌手', musicInfo.singer)}.${ext}`),
+    },
   }
-  downloadInfo.filePath = path.join(savePath, downloadInfo.fileName)
+  downloadInfo.metadata.filePath = path.join(savePath, downloadInfo.metadata.fileName)
   // commit('addTask', downloadInfo)
 
   // 删除同路径下的同名文件
-  deleteFile(downloadInfo.filePath)
+  deleteFile(downloadInfo.metadata.filePath)
   // .catch(err => {
   //   if (err.code !== 'ENOENT') return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
   // })
@@ -350,34 +351,33 @@ const actions = {
       type,
       fileName: rootState.setting.download.fileName,
       savePath: rootState.setting.download.savePath,
-      list: state.list,
+      list: downloadList,
     })
     if (!downloadInfo) return
-    commit('addTask', { downloadInfo, musicInfo, addMusicLocationType: rootState.setting.list.addMusicLocationType })
-    let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+    commit('addTask', { downloadInfo, addMusicLocationType: rootState.setting.list.addMusicLocationType })
+    let result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
+    console.log(result)
     while (result) {
       dispatch('startTask', result)
-      result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+      result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     }
   },
   createDownloadMultiple({ state, rootState, commit, dispatch }, { list, type }) {
     if (!list.length) return
-    const downloadList = []
-    for (const musicInfo of list) {
-      const downloadInfo = createDownloadInfo({
+    const taskList = list.map(musicInfo => {
+      return createDownloadInfo({
         musicInfo,
         type,
         fileName: rootState.setting.download.fileName,
         savePath: rootState.setting.download.savePath,
-        list: state.list,
+        list: downloadList,
       })
-      if (downloadInfo) downloadList.push({ downloadInfo, musicInfo })
-    }
-    commit('addTasks', { list: downloadList, addMusicLocationType: rootState.setting.list.addMusicLocationType })
-    let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+    }).filter(task => task)
+    commit('addTasks', { list: taskList, addMusicLocationType: rootState.setting.list.addMusicLocationType })
+    let result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     while (result) {
       dispatch('startTask', result)
-      result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+      result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     }
   },
   async handleStartTask({ commit, dispatch, rootState }, downloadInfo) {
@@ -394,9 +394,9 @@ const actions = {
     }
     const _this = this
     const options = {
-      url: downloadInfo.url,
+      url: downloadInfo.metadata.url,
       path: rootState.setting.download.savePath,
-      fileName: downloadInfo.fileName,
+      fileName: downloadInfo.metadata.fileName,
       method: 'get',
       override: true,
       onCompleted() {
@@ -407,8 +407,23 @@ const actions = {
         commit('onCompleted', downloadInfo)
         dispatch('startTask')
 
-        saveMeta.call(_this, downloadInfo, downloadInfo.filePath, rootState.setting.download.isUseOtherSource, rootState.setting.download.isEmbedPic, rootState.setting.download.isEmbedLyric)
-        if (rootState.setting.download.isDownloadLrc) downloadLyric.call(_this, downloadInfo, rootState.setting.download.isUseOtherSource, downloadInfo.filePath, rootState.setting.download.lrcFormat)
+        saveMeta.call(_this, {
+          downloadInfo,
+          filePath: downloadInfo.metadata.filePath,
+          isUseOtherSource: rootState.setting.download.isUseOtherSource,
+          isEmbedPic: rootState.setting.download.isEmbedPic,
+          isEmbedLyric: rootState.setting.download.isEmbedLyric,
+          isS2t: rootState.setting.player.isS2t,
+        })
+        if (rootState.setting.download.isDownloadLrc) {
+          downloadLyric.call(_this, {
+            downloadInfo,
+            isUseOtherSource: rootState.setting.download.isUseOtherSource,
+            filePath: downloadInfo.metadata.filePath,
+            lrcFormat: rootState.setting.download.lrcFormat,
+            isS2t: rootState.setting.player.isS2t,
+          })
+        }
         console.log('on complate')
       },
       onError(err) {
@@ -484,7 +499,7 @@ const actions = {
   },
   async removeTask({ commit, state, dispatch }, item) {
     if (dls[item.key]) {
-      if (item.status == state.downloadStatus.RUN) {
+      if (item.status == downloadStatus.RUN) {
         try {
           await dls[item.key].stop()
         } catch (_) {}
@@ -492,21 +507,21 @@ const actions = {
       delete dls[item.key]
     }
     commit('removeTask', item)
-    if (item.status != state.downloadStatus.COMPLETED) {
+    if (item.status != downloadStatus.COMPLETED) {
       try {
-        await deleteFile(item.filePath)
+        await deleteFile(item.metadata.filePath)
       } catch (_) {}
     }
     switch (item.status) {
-      case state.downloadStatus.RUN:
-      case state.downloadStatus.WAITING:
+      case downloadStatus.RUN:
+      case downloadStatus.WAITING:
         await dispatch('startTask')
     }
   },
   removeTasks({ rootState, commit, dispatch }, list) {
     for (const item of list) {
       if (dls[item.key]) {
-        if (item.status == state.downloadStatus.RUN) {
+        if (item.status == downloadStatus.RUN) {
           dls[item.key].stop().finally(() => {
             delete dls[item.key]
           })
@@ -514,27 +529,27 @@ const actions = {
           delete dls[item.key]
         }
       }
-      if (item.status != state.downloadStatus.COMPLETED) {
-        deleteFile(item.filePath).catch(_ => _)
+      if (item.status != downloadStatus.COMPLETED) {
+        deleteFile(item.metadata.filePath).catch(_ => _)
       }
     }
     commit('removeTasks', list)
-    let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+    let result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     while (result) {
       dispatch('startTask', result)
-      result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+      result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     }
   },
   async startTask({ state, rootState, commit, dispatch }, downloadInfo) {
     // 检查是否可以开始任务
-    if (downloadInfo && !downloadInfo.isComplate && downloadInfo.status != state.downloadStatus.RUN) {
-      const result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+    if (downloadInfo && !downloadInfo.isComplate && downloadInfo.status != downloadStatus.RUN) {
+      const result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
       if (result === false) {
-        commit('setStatus', { downloadInfo, status: state.downloadStatus.WAITING })
+        commit('setStatus', { downloadInfo, status: downloadStatus.WAITING })
         return
       }
     } else {
-      const result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+      const result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
       if (!result) return
       downloadInfo = result
     }
@@ -543,9 +558,9 @@ const actions = {
     if (dl) {
       commit('updateFilePath', {
         downloadInfo,
-        filePath: path.join(rootState.setting.download.savePath, downloadInfo.fileName),
+        filePath: path.join(rootState.setting.download.savePath, downloadInfo.metadata.fileName),
       })
-      dl.updateSaveInfo(rootState.setting.download.savePath, downloadInfo.fileName)
+      dl.updateSaveInfo(rootState.setting.download.savePath, downloadInfo.metadata.fileName)
       try {
         await dl.start()
       } catch (error) {
@@ -558,271 +573,214 @@ const actions = {
     }
   },
   startTasks({ commit, rootState, dispatch }, list) {
-    list = list.filter(item => !(item.isComplate || item.status == state.downloadStatus.RUN || item.status == state.downloadStatus.WAITING))
-    commit('setStatus', { list, status: state.downloadStatus.WAITING })
-    let result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+    list = list.filter(item => !(item.isComplate || item.status == downloadStatus.RUN || item.status == downloadStatus.WAITING))
+    commit('setStatus', { list, status: downloadStatus.WAITING })
+    let result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     while (result) {
       dispatch('startTask', result)
-      result = getStartTask(state.list, state.downloadStatus, rootState.setting.download.maxDownloadNum)
+      result = getStartTask(downloadList, downloadStatus, rootState.setting.download.maxDownloadNum)
     }
   },
   async pauseTask({ commit }, item) {
     if (item.isComplate) return
     let dl = dls[item.key]
     if (dl) dl.stop()
-    commit('setStatus', { downloadInfo: item, status: state.downloadStatus.PAUSE })
+    commit('setStatus', { downloadInfo: item, status: downloadStatus.PAUSE })
   },
   pauseTasks({ commit, rootState, dispatch }, list) {
-    const waitingTasks = list.filter(item => item.status == state.downloadStatus.WAITING)
-    commit('setStatus', { list: waitingTasks, status: state.downloadStatus.PAUSE })
-    const runningTasks = list.filter(item => item.status == state.downloadStatus.RUN)
+    const waitingTasks = list.filter(item => item.status == downloadStatus.WAITING)
+    commit('setStatus', { list: waitingTasks, status: downloadStatus.PAUSE })
+    const runningTasks = list.filter(item => item.status == downloadStatus.RUN)
     for (const item of runningTasks) {
       if (item.isComplate) return
       let dl = dls[item.key]
       if (dl) dl.stop()
     }
-    commit('setStatus', { list: runningTasks, status: state.downloadStatus.PAUSE })
+    commit('setStatus', { list: runningTasks, status: downloadStatus.PAUSE })
   },
 }
 
 // mitations
 const mutations = {
-  addTask(state, { downloadInfo, musicInfo, addMusicLocationType }) {
-    const downloadInfoFull = { ...downloadInfo, musicInfo }
-    window.downloadListFullMap.set(downloadInfo.key, downloadInfoFull)
+  addTask(state, { downloadInfo, addMusicLocationType }) {
+    downloadListMap.set(downloadInfo.key, downloadInfo)
     switch (addMusicLocationType) {
       case 'top':
-        window.downloadListFull.unshift(downloadInfoFull)
-        state.list.unshift(downloadInfo)
+        downloadList.unshift(downloadInfo)
         break
       case 'bottom':
       default:
-        window.downloadListFull.push(downloadInfoFull)
-        state.list.push(downloadInfo)
+        downloadList.push(downloadInfo)
         break
     }
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   addTasks(state, { list, addMusicLocationType }) {
-    const downloadInfoList = []
-    const curDownloadListFull = []
-    for (const { downloadInfo, musicInfo } of list) {
-      downloadInfoList.push(downloadInfo)
-      curDownloadListFull.push({ ...downloadInfo, musicInfo })
-    }
     let newList
-    let newListFull
     const map = {}
     const fullMap = {}
     const ids = []
     switch (addMusicLocationType) {
       case 'top':
-        newList = [...downloadInfoList, ...state.list]
-        newListFull = [...curDownloadListFull, ...window.downloadListFull]
+        newList = [...list, ...downloadList]
         for (let i = newList.length - 1; i > -1; i--) {
           const item = newList[i]
           if (map[item.key]) continue
           ids.unshift(item.key)
           map[item.key] = item
-          fullMap[item.key] = newListFull[i]
+          fullMap[item.key] = newList[i]
         }
         break
       case 'bottom':
       default:
-        newList = [...state.list, ...downloadInfoList]
-        newListFull = [...window.downloadListFull, ...curDownloadListFull]
+        newList = [...downloadList, ...list]
         newList.forEach((item, index) => {
           if (map[item.key]) return
           ids.push(item.key)
           map[item.key] = item
-          fullMap[item.key] = newListFull[index]
+          fullMap[item.key] = newList[index]
         })
         break
     }
-    window.downloadListFullMap.clear()
-    window.downloadListFull = ids.map(id => {
-      const info = fullMap[id]
-      window.downloadListFullMap.set(info.key, info)
-      return info
-    })
-    state.list.splice(0, state.list.length, ...ids.map(id => map[id]))
+    initDownloadList(ids.map(id => map[id]))
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
-  removeTask({ list }, downloadInfo) {
-    const index = list.findIndex(m => m.key == downloadInfo.key)
+  removeTask(state, downloadInfo) {
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    window.downloadListFull.splice(index, 1)
-    window.downloadListFullMap.delete(downloadInfo.key)
-    list.splice(index, 1)
+    downloadListMap.delete(downloadInfo.key)
+    downloadList.splice(index, 1)
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   removeTasks(state, list) {
-    let map = {}
+    let set = new Set()
     let ids = []
-    for (const item of state.list) {
+    for (const item of downloadList) {
       ids.push(item.key)
-      map[item.key] = item
+      set.add(item.key)
     }
     for (const { key } of list) {
-      if (map[key]) delete map[key]
+      if (set.has(key)) delete set.delete(key)
     }
     let newList = []
-    let newListFull = []
     for (const id of ids) {
-      if (map[id]) {
-        newList.push(map[id])
-        newListFull.push(window.downloadListFullMap.get(id))
+      if (set.has(id)) {
+        newList.push(downloadListMap.get(id))
       }
     }
-
-    window.downloadListFull = newListFull
-    window.downloadListFullMap.clear()
-    for (const item of newListFull) {
-      window.downloadListFullMap.set(item.key, item)
-    }
-    state.list.splice(0, state.list.length, ...newList)
+    initDownloadList(newList)
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   pauseTask(state, downloadInfo) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.status = state.downloadStatus.PAUSE
-    downloadInfoFull.statusText = '暂停下载'
-
-    downloadInfo.status = state.downloadStatus.PAUSE
+    downloadInfo = downloadList[index]
+    downloadInfo.status = downloadStatus.PAUSE
     downloadInfo.statusText = '暂停下载'
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   setStatusText(state, { downloadInfo, index, text }) { // 设置状态文本
     if (downloadInfo) {
-      const index = state.list.findIndex(m => m.key == downloadInfo.key)
-      if (index < 0) return
-      const downloadInfoFull = window.downloadListFull[index]
-      if (downloadInfoFull) downloadInfoFull.statusText = text
-      downloadInfo.statusText = text
-    } else {
-      state.list[index].statusText = text
-      const downloadInfoFull = window.downloadListFull[index]
-      if (downloadInfoFull) downloadInfoFull.statusText = text
+      index = downloadList.findIndex(m => m.key == downloadInfo.key)
     }
+    if (index < 0) return
+    downloadInfo = downloadList[index]
+    downloadInfo.statusText = text
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   setStatus(state, { downloadInfo, index, status, list }) { // 设置状态及状态文本
     let text
     switch (status) {
-      case state.downloadStatus.RUN:
+      case downloadStatus.RUN:
         text = '正在下载'
         break
-      case state.downloadStatus.WAITING:
+      case downloadStatus.WAITING:
         text = '等待下载'
         break
-      case state.downloadStatus.PAUSE:
+      case downloadStatus.PAUSE:
         text = '暂停下载'
         break
-      case state.downloadStatus.ERROR:
+      case downloadStatus.ERROR:
         text = '任务出错'
         break
-      case state.downloadStatus.COMPLETED:
+      case downloadStatus.COMPLETED:
         text = '下载完成'
         break
     }
     if (list) {
-      for (const downloadInfo of list) {
-        const index = state.list.findIndex(m => m.key == downloadInfo.key)
+      for (let downloadInfo of list) {
+        const index = downloadList.findIndex(m => m.key == downloadInfo.key)
         if (index < 0) return
-        const downloadInfoFull = window.downloadListFull[index]
-        downloadInfoFull.statusText = text
-        downloadInfoFull.status = status
-
+        downloadInfo = downloadList[index]
         downloadInfo.statusText = text
         downloadInfo.status = status
       }
     } else {
       if (downloadInfo) {
-        const index = state.list.findIndex(m => m.key == downloadInfo.key)
-        if (index < 0) return
-        const downloadInfoFull = window.downloadListFull[index]
-        downloadInfoFull.statusText = text
-        downloadInfoFull.status = status
-
-        downloadInfo.statusText = text
-        downloadInfo.status = status
-      } else {
-        const downloadInfoFull = window.downloadListFull[index]
-        downloadInfoFull.statusText = text
-        downloadInfoFull.status = status
-
-        state.list[index].statusText = text
-        state.list[index].status = status
+        index = downloadList.findIndex(m => m.key == downloadInfo.key)
       }
+      if (index < 0) return
+      downloadInfo = downloadList[index]
+      downloadInfo.statusText = text
+      downloadInfo.status = status
     }
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   onCompleted(state, downloadInfo) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
-    console.log(index)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
+    // console.log(index)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.isComplate = true
-    downloadInfoFull.status = state.downloadStatus.COMPLETED
-    downloadInfoFull.statusText = '下载完成'
-
-
+    downloadInfo = downloadList[index]
     downloadInfo.isComplate = true
-    downloadInfo.status = state.downloadStatus.COMPLETED
+    downloadInfo.status = downloadStatus.COMPLETED
     downloadInfo.statusText = '下载完成'
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   onError(state, { downloadInfo, errorMsg }) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.status = state.downloadStatus.ERROR
-    downloadInfoFull.statusText = errorMsg || '任务出错'
-
-    downloadInfo.status = state.downloadStatus.ERROR
+    downloadInfo = downloadList[index]
+    downloadInfo.status = downloadStatus.ERROR
     downloadInfo.statusText = errorMsg || '任务出错'
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   onStart(state, downloadInfo) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.status = state.downloadStatus.RUN
-    downloadInfoFull.statusText = '正在下载'
-
-    downloadInfo.status = state.downloadStatus.RUN
+    downloadInfo = downloadList[index]
+    downloadInfo.status = downloadStatus.RUN
     downloadInfo.statusText = '正在下载'
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   onProgress(state, { downloadInfo, status }) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.progress.progress = status.progress
-    downloadInfoFull.progress.downloaded = status.downloaded
-    downloadInfoFull.progress.total = status.total
-
+    downloadInfo = downloadList[index]
     downloadInfo.progress.progress = status.progress
     downloadInfo.progress.downloaded = status.downloaded
     downloadInfo.progress.total = status.total
   },
-  updateDownloadList(state, list) {
-    window.downloadListFullMap.clear()
-    const stateList = list.map(downloadInfoFull => {
-      window.downloadListFullMap.set(downloadInfoFull.key, downloadInfoFull)
-      const downloadInfo = { ...downloadInfoFull }
-      delete downloadInfo.musicInfo
-      return downloadInfo
-    })
-    window.downloadListFull = list
-    state.list = window.downloadList = stateList
+  initDownloadList(state, list) {
+    for (const task of list) {
+      markRaw(task.metadata)
+    }
+    initDownloadList(list)
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   updateUrl(state, { downloadInfo, url }) {
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.url = url
-    downloadInfo.url = url
+    downloadInfo = downloadList[index]
+    downloadInfo.metadata.url = url
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
   updateFilePath(state, { downloadInfo, filePath }) {
-    if (downloadInfo.filePath === filePath) return
-    const index = state.list.findIndex(m => m.key == downloadInfo.key)
+    if (downloadInfo.metadata.filePath === filePath) return
+    const index = downloadList.findIndex(m => m.key == downloadInfo.key)
     if (index < 0) return
-    const downloadInfoFull = window.downloadListFull[index]
-    downloadInfoFull.filePath = filePath
-    downloadInfo.filePath = filePath
+    downloadInfo = downloadList[index]
+    downloadInfo.metadata.filePath = filePath
+    window.eventHub.emit(eventDownloadNames.listChange)
   },
 }
 

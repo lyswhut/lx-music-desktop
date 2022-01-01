@@ -208,6 +208,7 @@ module.exports = class FontPlayer {
       if (this.delay > 0) {
         this._handlePlayFont(curFont, driftTime)
         this.timeoutTools.start(() => {
+          if (!this.isPlay) return
           this._refresh()
         }, this.delay)
         return
@@ -215,6 +216,7 @@ module.exports = class FontPlayer {
     } else if (this.curFontNum == 0) {
       this.curFontNum--
       this.waitPlayTimeout.start(() => {
+        if (!this.isPlay) return
         this._refresh()
       }, -driftTime)
       return

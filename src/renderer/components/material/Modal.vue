@@ -1,22 +1,21 @@
 <template lang="pug">
-transition(enter-active-class="animated fadeIn"
-      leave-active-class="animated fadeOut")
-  div(:class="$style.modal" v-show="show" @click="bgClose && close()")
-    transition(:enter-active-class="inClass"
-      :leave-active-class="outClass"
-      @after-leave="$emit('after-leave', $event)"
-    )
-      div(:class="$style.content" v-show="show" @click.stop)
-        header(:class="$style.header")
-          button(type="button" @click="close" v-if="closeBtn")
-            svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
-              use(xlink:href='#icon-delete')
-        slot
+teleport(:to="teleport")
+  div(:class="$style.container" v-if="showModal")
+    transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
+      div(:class="$style.modal" v-show="showContent" @click="bgClose && close()")
+        transition(:enter-active-class="inClass" :leave-active-class="outClass" @after-enter="$emit('after-enter', $event)" @after-leave="handleAfterLeave")
+          div(:class="$style.content" v-show="showContent" @click.stop)
+            header(:class="$style.header")
+              button(type="button" @click="close" v-if="closeBtn")
+                svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
+                  use(xlink:href='#icon-delete')
+            slot
 </template>
 
 <script>
-import { getRandom } from '../../utils'
+import { getRandom } from '@renderer/utils'
 import { mapGetters } from 'vuex'
+import { nextTick } from '@renderer/utils/vueTools'
 export default {
   props: {
     show: {
@@ -31,7 +30,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    teleport: {
+      type: String,
+      default: '#root',
+    },
   },
+  emits: ['after-enter', 'after-leave', 'close'],
   data() {
     return {
       animateIn: [
@@ -81,6 +85,8 @@ export default {
       inClass: 'animated jackInTheBox',
       outClass: 'animated flipOutX',
       unwatchFn: null,
+      showModal: false,
+      showContent: false,
     }
   },
   computed: {
@@ -90,17 +96,41 @@ export default {
     'setting.randomAnimate'(n) {
       n ? this.createWatch() : this.removeWatch()
     },
+    show: {
+      handler(val) {
+        if (val) {
+          this.showModal = true
+          nextTick(() => {
+            this.showContent = true
+          })
+        } else {
+          this.showContent = false
+        }
+      },
+      immediate: true,
+    },
   },
   mounted() {
     if (this.setting.randomAnimate) this.createWatch()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.removeWatch()
   },
   methods: {
+    check(isShow) {
+      if (isShow) {
+        this.showModal = true
+        nextTick(() => {
+          this.showContent = true
+        })
+      } else {
+        this.showContent = false
+      }
+    },
     createWatch() {
       this.removeWatch()
       this.unwatchFn = this.$watch('show', function(n) {
+        if (!n) return
         this.inClass = 'animated ' + this.animateIn[getRandom(0, this.animateIn.length)]
         this.outClass = 'animated ' + this.animateOut[getRandom(0, this.animateOut.length)]
       })
@@ -115,29 +145,39 @@ export default {
     close() {
       this.$emit('close')
     },
+    handleAfterLeave(event) {
+      this.$emit('after-leave', event)
+      this.showModal = false
+    },
   },
 }
 </script>
 
 
 <style lang="less" module>
-@import '../../assets/styles/layout.less';
+@import '@renderer/assets/styles/layout.less';
 
-.modal {
+.container {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+}
+
+.modal {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, .3);
   display: grid;
   align-items: center;
   justify-items: center;
-  z-index: 99;
   // will-change: transform;
 }
 
 .content {
+  position: relative;
   border-radius: 5px;
   box-shadow: 0 0 3px rgba(0, 0, 0, .3);
   overflow: hidden;
@@ -147,6 +187,7 @@ export default {
   position: relative;
   display: flex;
   flex-flow: column nowrap;
+  z-index: 100;
 
   > * {
     background-color: @color-theme_2-background_2;
@@ -185,7 +226,7 @@ export default {
 }
 
 each(@themes, {
-  :global(#container.@{value}) {
+  :global(#root.@{value}) {
     .modal {
       background-color: rgba(0, 0, 0, .3);
     }

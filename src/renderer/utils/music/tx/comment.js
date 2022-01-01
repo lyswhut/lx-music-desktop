@@ -154,8 +154,8 @@ export default {
   },
   filterComment(rawList) {
     return rawList.map(item => {
-      let time = parseInt(item.time + '000')
-      let timeStr = dateFormat2(time)
+      let time = String(item.time).length < 10 ? null : parseInt(item.time + '000')
+      let timeStr = time ? dateFormat2(time) : null
       if (item.middlecommentcontent) {
         let firstItem = item.middlecommentcontent[0]
         firstItem.avatarurl = item.avatarurl

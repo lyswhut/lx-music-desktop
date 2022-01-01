@@ -2,9 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { shell, clipboard } from 'electron'
 import crypto from 'crypto'
-import { rendererSend, rendererInvoke, NAMES } from '../../common/ipc'
+import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
+import { log } from '@common/utils'
 import iconv from 'iconv-lite'
 import { gzip, gunzip } from 'zlib'
+import { proxy, qualityList } from '@renderer/core/share'
+
 
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
@@ -45,11 +48,11 @@ export const dateFormat = (date = new Date(), format = 'YYYY-MM-DD hh:mm:ss') =>
 export const dateFormat2 = time => {
   let differ = parseInt((Date.now() - time) / 1000)
   if (differ < 60) {
-    return window.i18n.t('base.date_format_second', { num: differ })
+    return window.i18n.t('date_format_second', { num: differ })
   } else if (differ < 3600) {
-    return window.i18n.t('base.date_format_minute', { num: parseInt(differ / 60) })
+    return window.i18n.t('date_format_minute', { num: parseInt(differ / 60) })
   } else if (differ < 86400) {
-    return window.i18n.t('base.date_format_hour', { num: parseInt(differ / 3600) })
+    return window.i18n.t('date_format_hour', { num: parseInt(differ / 3600) })
   } else {
     return dateFormat(time)
   }
@@ -384,12 +387,12 @@ export const clearCache = () => rendererInvoke(NAMES.mainWindow.clear_cache)
 export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.set_window_size, { width, height })
 
 
-export const getProxyInfo = () => window.globalObj.proxy.enable && window.globalObj.proxy.host
-  ? `http://${window.globalObj.proxy.username}:${window.globalObj.proxy.password}@${window.globalObj.proxy.host}:${window.globalObj.proxy.port};`
+export const getProxyInfo = () => proxy.enable && proxy.host
+  ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port};`
   : undefined
 
 
-export const assertApiSupport = source => window.globalObj.qualityList[source] != undefined
+export const assertApiSupport = source => qualityList.value[source] != undefined
 
 export const getSetting = () => rendererInvoke(NAMES.mainWindow.get_setting)
 export const saveSetting = setting => rendererInvoke(NAMES.mainWindow.set_app_setting, setting)
@@ -399,8 +402,8 @@ export const getPlayList = () => rendererInvoke(NAMES.mainWindow.get_playlist).c
     let filePath = path.join(dataPath, 'playList.json.bak')
     rendererInvoke(NAMES.mainWindow.show_dialog, {
       type: 'error',
-      message: window.i18n.t('store.state.load_list_file_error_title'),
-      detail: window.i18n.t('store.state.load_list_file_error_detail', {
+      message: window.i18n.t('load_list_file_error_title'),
+      detail: window.i18n.t('load_list_file_error_detail', {
         path: filePath,
         detail: error.message,
       }),
@@ -478,6 +481,16 @@ export const readLxConfigFile = async path => {
   return data
 }
 
+export const saveStrToFile = (path, str) => new Promise((resolve, reject) => {
+  fs.writeFile(path, str, err => {
+    if (err) {
+      log.error(err)
+      reject(err)
+      return
+    }
+    resolve()
+  })
+})
 
 const fileNameRxp = /[\\/:*?#"<>|]/g
 export const filterFileName = name => name.replace(fileNameRxp, '')

@@ -27,7 +27,7 @@ const setLyricsConfig = debounce(config => {
 const winEvent = lyricWindow => {
   // let bounds
   // lyricWindow.on('close', event => {
-  //   if (global.isQuitting || !global.appSetting.tray.isToTray || (!isWin && !global.isTrafficLightClose)) {
+  //   if (global.isQuitting || !global.appSetting.tray.isShow || (!isWin && !global.isTrafficLightClose)) {
   //     lyricWindow.setProgressBar(-1)
   //     return
   //   }
@@ -116,6 +116,7 @@ const createWindow = () => {
       contextIsolation: false,
       webSecurity: !global.isDev,
       nodeIntegration: true,
+      spellcheck: false, // 禁用拼写检查器
     },
   })
 

@@ -12,7 +12,7 @@ export default {
       },
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      if (body.code != 0) return Promise.reject(new Error('获取歌词失败'))
+      if (body.code != 0 || !body.lyric) return Promise.reject(new Error('Get lyric failed'))
       return {
         lyric: decodeName(b64DecodeUnicode(body.lyric)),
         tlyric: decodeName(b64DecodeUnicode(body.trans)),
