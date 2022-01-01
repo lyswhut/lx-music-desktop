@@ -296,6 +296,7 @@ export default ({ setting }) => {
 
   // 播放、暂停播放切换
   const handleTogglePlay = async() => {
+    if (playMusicInfo.musicInfo == null) return
     if (isPlayerEmpty()) {
       if (playMusicInfo.listId == 'download') {
         const musicInfo = playMusicInfo.musicInfo
