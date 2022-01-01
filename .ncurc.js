@@ -1,5 +1,6 @@
 module.exports = {
-  upgrade: true,
+  // upgrade: true,
+  // target: 'newest',
   reject: [
     'webpack-dev-server',
     'eslint',
