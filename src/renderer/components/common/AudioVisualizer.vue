@@ -42,6 +42,11 @@ export default {
     let isPlaying = false
     let animationFrameId
 
+    let num
+    let mult
+    const maxNum = 255
+    let frequencyAvg = 0
+
     const theme = useRefGetter('theme')
     // const setting = useRefGetter('setting')
     let themeColor = themes[theme.value || 'green']
@@ -49,7 +54,7 @@ export default {
       themeColor = themes[theme || 'green']
     })
 
-    // https://codepen.io/nfj525/pen/rVBaab
+    // https://developer.mozilla.org/zh-CN/docs/Web/API/AnalyserNode/smoothingTimeConstant
     const renderFrame = () => {
       animationFrameId = null
       if (isPlaying) animationFrameId = window.requestAnimationFrame(renderFrame)
@@ -60,6 +65,19 @@ export default {
 
       ctx.clearRect(0, 0, WIDTH, HEIGHT)
       // ctx.fillRect(0, 0, WIDTH, HEIGHT)
+      ctx.fillStyle = themeColor
+
+      for (let i = 0; i < bufferLength; i++) {
+        mult = Math.floor(i / maxNum)
+        num = mult % 2 === 0 ? (i - maxNum * mult) : (maxNum - (i - maxNum * mult))
+        let spectrum = num > 36 ? 0 : dataArray[num + 20]
+        frequencyAvg += spectrum * 1.2
+      }
+      frequencyAvg /= bufferLength
+      frequencyAvg *= 1.7
+
+      frequencyAvg = frequencyAvg / maxNum
+      // ctx.scale(1, 1 + frequencyAvg)
 
       for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i]
@@ -69,7 +87,7 @@ export default {
         // let b = 50
 
         // ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')'
-        ctx.fillStyle = themeColor
+        barHeight = barHeight * frequencyAvg + barHeight * 0.6
         ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight)
 
         x += barWidth
