@@ -19,7 +19,7 @@ export default () => {
 
   sync.enable = setting.value.sync.enable
   apiSource.value = setting.value.apiSource
-  proxy.value = Object.assign({}, setting.value.network.proxy)
+  Object.assign(proxy, setting.value.network.proxy)
 
   const dieableIgnoreMouseEvents = () => {
     if (window.dt) return
