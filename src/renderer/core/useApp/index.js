@@ -47,6 +47,15 @@ export default () => {
 
 
   getEnvParams().then(envParams => {
+    const envProxy = envParams['proxy-server']
+    if (envProxy && typeof envProxy == 'string') {
+      const [host, port = ''] = envProxy.split(':')
+      proxy.envProxy = {
+        host,
+        port,
+      }
+    }
+
     // 初始化我的列表、下载列表等数据
     initData().then(() => {
       handleEnvParams(envParams) // 处理传入的启动参数

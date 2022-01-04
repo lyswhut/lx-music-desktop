@@ -6,8 +6,8 @@ dd
     p
       base-checkbox(id="setting_network_proxy_enable" v-model="currentStting.network.proxy.enable" :label="$t('setting__is_enable')")
     p
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.host" :placeholder="$t('setting__network_proxy_host')")
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.port" :placeholder="$t('setting__network_proxy_port')")
+      base-input.gap-left(v-model.trim="currentStting.network.proxy.host" :placeholder="proxy.envProxy ? proxy.envProxy.host : $t('setting__network_proxy_host')")
+      base-input.gap-left(v-model.trim="currentStting.network.proxy.port" :placeholder="proxy.envProxy ? proxy.envProxy.port : $t('setting__network_proxy_port')")
     p
       base-input.gap-left(v-model.trim="currentStting.network.proxy.username" :placeholder="$t('setting__network_proxy_username')")
       base-input.gap-left(v-model.trim="currentStting.network.proxy.password" type="password" :placeholder="$t('setting__network_proxy_password')")
@@ -51,6 +51,7 @@ export default {
 
     return {
       currentStting,
+      proxy,
     }
   },
 }

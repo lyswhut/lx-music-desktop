@@ -37,6 +37,12 @@ if (process.platform == 'linux') app.commandLine.appendSwitch('use-gl', 'desktop
 // https://github.com/electron/electron/issues/22691
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
+// proxy
+if (global.envParams.cmdParams['proxy-server']) {
+  app.commandLine.appendSwitch('proxy-server', global.envParams.cmdParams['proxy-server'])
+  app.commandLine.appendSwitch('proxy-bypass-list', global.envParams.cmdParams['proxy-bypass-list'] ?? '<local>')
+}
+// if (global.envParams.cmdParams['proxy-pac-url']) app.commandLine.appendSwitch('proxy-pac-url', global.envParams.cmdParams['proxy-pac-url'])
 
 const { navigationUrlWhiteList, themes } = require('../common/config')
 const { getWindowSizeInfo, initSetting, updateSetting } = require('./utils')

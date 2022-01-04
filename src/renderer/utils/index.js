@@ -387,9 +387,13 @@ export const clearCache = () => rendererInvoke(NAMES.mainWindow.clear_cache)
 export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.set_window_size, { width, height })
 
 
-export const getProxyInfo = () => proxy.enable && proxy.host
-  ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port};`
-  : undefined
+export const getProxyInfo = () => {
+  return proxy.enable && proxy.host
+    ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port};`
+    : proxy.envProxy
+      ? `http://${proxy.envProxy.host}:${proxy.envProxy.port};`
+      : undefined
+}
 
 
 export const assertApiSupport = source => qualityList.value[source] != undefined
