@@ -70,7 +70,7 @@ export default {
       for (let i = 0; i < bufferLength; i++) {
         mult = Math.floor(i / maxNum)
         num = mult % 2 === 0 ? (i - maxNum * mult) : (maxNum - (i - maxNum * mult))
-        let spectrum = num > 80 ? 0 : dataArray[num + 20]
+        let spectrum = num > 90 ? 0 : dataArray[num + 20]
         frequencyAvg += spectrum * 1.2
       }
       frequencyAvg /= bufferLength
@@ -89,7 +89,7 @@ export default {
         // let b = 50
 
         // ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')'
-        barHeight = barHeight * frequencyAvg + barHeight * 0.4
+        barHeight = barHeight * frequencyAvg + barHeight * 0.42
         ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight)
 
         x += barWidth
