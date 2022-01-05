@@ -32,7 +32,9 @@ const handleResponse = (event, { status, data: { requestKey, result }, message }
 }
 const handleOpenDevTools = () => {
   if (global.modules.userApiWindow) {
-    global.modules.userApiWindow.webContents.openDevTools()
+    global.modules.userApiWindow.webContents.openDevTools({
+      mode: 'undocked',
+    })
   }
 }
 mainOn(USER_API_RENDERER_EVENT_NAME.init, handleInit)
