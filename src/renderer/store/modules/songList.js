@@ -81,8 +81,7 @@ const actions = {
     commit('clearList')
     return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
-  getListDetail({ state, rootState, commit }, { id, page }) {
-    let source = rootState.setting.songList.source
+  getListDetail({ state, commit }, { id, source, page }) {
     let key = `sdetail__${source}__${id}__${page}`
     if (state.listDetail.list.length && state.listDetail.key == key) return Promise.resolve()
     commit('clearListDetail')

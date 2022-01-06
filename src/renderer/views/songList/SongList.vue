@@ -209,7 +209,7 @@ export default {
       })
     },
     handleToggleListDetailPage(page) {
-      this.handleGetListDetail(this.selectListInfo.id, page).then(() => {
+      this.handleGetListDetail(this.selectListInfo.id, this.selectListInfo.source, page).then(() => {
         this.$nextTick(() => {
           this.$refs.songList.scrollToTop()
         })
@@ -220,7 +220,7 @@ export default {
       this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
       this.$nextTick(() => {
-        this.handleGetListDetail(this.selectListInfo.id, 1)
+        this.handleGetListDetail(this.selectListInfo.id, this.source, 1)
       })
     },
     // handleFlowBtnClick(action) {
@@ -246,17 +246,18 @@ export default {
     handleImportSongListEvent({ action }) {
       switch (action) {
         case 'submit':
-          this.handleGetSongListDetail()
+          this.handleGetSongListDetail(this.importSongListText, this.source)
           break
         // case 'blur':
         //   break
       }
     },
-    handleGetSongListDetail() {
-      if (!this.importSongListText.length) return
+    handleGetSongListDetail(id, source) {
+      if (!id.length) return
+      console.log(id, source)
       this.setSelectListInfo({
         play_count: null,
-        id: this.importSongListText,
+        id,
         author: '',
         name: '',
         img: null,
@@ -264,15 +265,15 @@ export default {
         source: this.source,
       })
       this.setVisibleListDetail(true)
-      this.handleGetListDetail(this.importSongListText, 1)
+      this.handleGetListDetail(id, source, 1)
     },
     setTagListWidth() {
       this.isInitedTagListWidth = true
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
-    handleGetListDetail(id, page) {
+    handleGetListDetail(id, source, page) {
       this.isGetDetailFailed = false
-      return this.getListDetail({ id, page }).catch(err => {
+      return this.getListDetail({ id, source, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
       })
