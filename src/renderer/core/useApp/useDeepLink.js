@@ -1,4 +1,4 @@
-import { useCommit, useAction, onBeforeUnmount, useRouter, useI18n } from '@renderer/utils/vueTools'
+import { useCommit, useAction, onBeforeUnmount, useRouter, useI18n, markRaw } from '@renderer/utils/vueTools'
 import { base as eventBaseName } from '@renderer/event/names'
 import { getEnvParams, clearEnvParamsDeeplink } from '@renderer/utils/tools'
 import { decodeName } from '@renderer/utils'
@@ -78,7 +78,7 @@ export default () => {
     }
   }
 
-  const handleOpenMusic = _musicInfo => {
+  const handlePlayMusic = _musicInfo => {
     const musicInfo = {
       ..._musicInfo,
       singer: decodeName(_musicInfo.singer),
@@ -91,6 +91,7 @@ export default () => {
     for (const type of musicInfo.types) {
       musicInfo._types[type.type] = { size: type.size }
     }
+    markRaw(musicInfo)
     const isPlaying = !!playMusicInfo.musicInfo
     setTempPlayList([{ listId: '__temp__', musicInfo, isTop: true }])
     if (isPlaying) playNext()
@@ -202,7 +203,7 @@ export default () => {
     musicInfo.types = qualityFilter(musicInfo.source, musicInfo.types)
     switch (action) {
       case 'play':
-        handleOpenMusic(musicInfo)
+        handlePlayMusic(musicInfo)
         break
       default: throw new Error('Unknown action: ' + action)
     }
