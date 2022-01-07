@@ -1,7 +1,8 @@
-import { useAction, useCommit, useRouter } from '@renderer/utils/vueTools'
+import { useCommit, useRouter } from '@renderer/utils/vueTools'
 import { parseUrlParams } from '@renderer/utils'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
+import usePlaySonglist from './compositions/usePlaySonglist'
 
 const getListPlayIndex = (list, index) => {
   if (index == null) {
@@ -32,26 +33,9 @@ const useInitEnvParamSearch = () => {
   }
 }
 const useInitEnvParamPlay = () => {
-  const getListDetailAll = useAction('songList', 'getListDetailAll')
   const setPlayList = useCommit('player', 'setList')
-  const setTempList = useCommit('player', 'setTempList')
 
-  const playSongListDetail = async(source, link, playIndex) => {
-    if (link == null) return
-    let list
-    let id
-    try {
-      id = decodeURIComponent(link)
-      list = await getListDetailAll({ source, id })
-    } catch (err) {
-      console.log(err)
-    }
-    setTempList({
-      list,
-      index: getListPlayIndex(list, playIndex),
-      id: `${source}__${id}`,
-    })
-  }
+  const playSongListDetail = usePlaySonglist()
 
   return (playStr) => {
     if (playStr == null || typeof playStr != 'string') return
@@ -98,7 +82,7 @@ export default () => {
   const initEnvParamPlay = useInitEnvParamPlay()
 
   return envParams => {
-    initEnvParamSearch(envParams.search)
-    initEnvParamPlay(envParams.play)
+    initEnvParamSearch(envParams.cmdParams.search)
+    initEnvParamPlay(envParams.cmdParams.play)
   }
 }

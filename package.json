@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.17.0-beta",
+  "version": "1.17.0-beta2",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -77,6 +77,12 @@
   },
   "build": {
     "appId": "cn.toside.music.desktop",
+    "protocols": {
+      "name": "lx-music-protocol",
+      "schemes": [
+        "lxmusic"
+      ]
+    },
     "directories": {
       "buildResources": "./resources",
       "output": "./build"

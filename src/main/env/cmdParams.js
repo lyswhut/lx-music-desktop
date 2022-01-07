@@ -1,7 +1,13 @@
+const urlSchemeRxp = /^lxmusic:\/\//
+
 const parseEnv = () => {
   const params = {}
   const rx = /^-\w+/
   for (let param of process.argv) {
+    if (urlSchemeRxp.test(param)) {
+      global.envParams.deeplink = param
+    }
+
     if (!rx.test(param)) continue
     param = param.substring(1)
     let index = param.indexOf('=')

@@ -162,7 +162,16 @@ export const clearPlayedList = () => {
 
 export const tempPlayList = reactive([])
 export const addTempPlayList = (list) => {
-  tempPlayList.push(...list.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
+  const topList = []
+  const bottomList = list.filter(({ isTop, ...musicInfo }) => {
+    if (isTop) {
+      topList.push(musicInfo)
+      return false
+    }
+    return true
+  })
+  if (topList.length) tempPlayList.unshift(...topList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
+  if (bottomList.length) tempPlayList.push(...bottomList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
 }
 export const removeTempPlayList = (index) => {
   tempPlayList.splice(index, 1)

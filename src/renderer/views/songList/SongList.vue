@@ -170,9 +170,24 @@ export default {
     this.sortId = this.setting.songList.sortId
     if (!this.isVisibleListDetail) this.setTagListWidth()
     this.listenEvent()
+
+    if (this.$route.query.source && (this.$route.query.id || this.$route.query.url)) {
+      this.handleRouteParams(this.$route.query.id, this.$route.query.url, this.$route.query.source)
+      this.$router.replace({
+        path: '/songList',
+      })
+    }
   },
   beforeUnmount() {
     this.unlistenEvent()
+  },
+  beforeRouteUpdate(to) {
+    if (to.query.source && (to.query.id || to.query.url)) {
+      this.handleRouteParams(to.query.id, to.query.url, to.query.source)
+      return {
+        path: '/songList',
+      }
+    }
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -200,6 +215,10 @@ export default {
         this.isShowListAddMultiple ||
         event.target.classList.contains('key-bind')) return
       this.hideListDetail()
+    },
+    handleRouteParams(id, url, source) {
+      if (!id) id = decodeURIComponent(url)
+      this.handleGetSongListDetail(id, source)
     },
     handleToggleListPage(page) {
       this.getList(page).then(() => {

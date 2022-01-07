@@ -9,6 +9,7 @@ import useUpdate from './useUpdate'
 import useDataInit from './useDataInit'
 import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
+import useDeepLink from './useDeepLink'
 import usePlayer from './usePlayer'
 
 
@@ -44,10 +45,11 @@ export default () => {
   const initData = useDataInit({
     setting,
   })
+  const initDeepLink = useDeepLink()
 
 
   getEnvParams().then(envParams => {
-    const envProxy = envParams['proxy-server']
+    const envProxy = envParams.cmdParams['proxy-server']
     if (envProxy && typeof envProxy == 'string') {
       const [host, port = ''] = envProxy.split(':')
       proxy.envProxy = {
@@ -59,6 +61,7 @@ export default () => {
     // 初始化我的列表、下载列表等数据
     initData().then(() => {
       handleEnvParams(envParams) // 处理传入的启动参数
+      initDeepLink(envParams)
     })
   })
 }
