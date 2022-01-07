@@ -194,7 +194,7 @@ export default () => {
           { key: 'types', types: ['object'], required: true },
 
           { key: 'copyrightId', types: ['string', 'number'], required: true, max: 64 },
-          { key: 'lrcUrl', types: ['string'], max: 64 },
+          { key: 'lrcUrl', types: ['string'], max: 1024 },
         ], musicInfo)
         break
       default: throw new Error('Unknown action: ' + action)
