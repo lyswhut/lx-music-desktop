@@ -106,9 +106,9 @@ npm run pack:linux
 
 | 描述 | URL | 参数
 | --- | --- | ---
-| 打开歌单 | `songlist/open` | `source<String>`（源，必须）<br>`id<String|Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中ID与URL必需传一个
-| 播放歌单 | `songlist/play` | `source<String>`（源，必须）<br>`id<String|Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中`id`与`url`必需传一个<br>`index<Number>`（播放第几首歌，可选，从0开始）
-| 播放歌曲 | `music/play` | `name<String>`（歌曲名，必传）<br>`singer<String>`（艺术家名，必传）<br>`source<String>`（源，必传）<br>`songmid<String|Number>`（歌曲ID，必传）<br>`img<String>`（歌曲图片链接，选传）<br>`albumId<String|Number>`（歌曲专辑ID，选传）<br>`interval<String>`（格式化后的歌曲时长，选传，例：`03:55`）<br>`albumName<String>`（歌曲专辑名称，选传）<br>`types<Sbject>`（歌曲可用音质数组，必传，数组格式：`[{"type": "<音质>", size: "<格式化后的文件大小，选传>", hash: "<kg源必传>"}]`，例：`[{"type": "128k", size: "3.56M"}, {"type": "320k", size: null}]`）<br><br>以下为平台特定参数：<br>`hash<String>`（歌曲hash，kg源必传）<br>`strMediaMid<String>`（歌曲strMediaMid，tx源必传）<br>`albumMid<String>`（歌曲albumMid，tx源专用，选传）<br>`copyrightId<String>`（歌曲copyrightId，mg源必传）<br>`lrcUrl<String>`（歌曲lrcUrl，mg源专用，选传）
+| 打开歌单 | `songlist/open` | `source<String>`（源，必须）<br>`id<String/Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中ID与URL必需传一个
+| 播放歌单 | `songlist/play` | `source<String>`（源，必须）<br>`id<String/Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中`id`与`url`必需传一个<br>`index<Number>`（播放第几首歌，可选，从0开始）
+| 播放歌曲 | `music/play` | `name<String>`（歌曲名，必传）<br>`singer<String>`（艺术家名，必传）<br>`source<String>`（源，必传）<br>`songmid<String/Number>`（歌曲ID，必传）<br>`img<String>`（歌曲图片链接，选传）<br>`albumId<String/Number>`（歌曲专辑ID，选传）<br>`interval<String>`（格式化后的歌曲时长，选传，例：`03:55`）<br>`albumName<String>`（歌曲专辑名称，选传）<br>`types<Object>`（歌曲可用音质数组，必传，<br>数组格式：`[{"type": "<音质>", size: "<格式化后的文件大小，选传>", hash: "<kg源必传>"}]`，<br>例：`[{"type": "128k", size: "3.56M"}, {"type": "320k", size: null}]`）<br><br>以下为平台特定参数：<br>`hash<String>`（歌曲hash，kg源必传）<br>`strMediaMid<String>`（歌曲strMediaMid，tx源必传）<br>`albumMid<String>`（歌曲albumMid，tx源专用，选传）<br>`copyrightId<String>`（歌曲copyrightId，mg源必传）<br>`lrcUrl<String>`（歌曲lrcUrl，mg源专用，选传）
 
 ### 常见问题
 
