@@ -40,4 +40,7 @@ module.exports = merge(baseConfig, {
       },
     }),
   ],
+  optimization: {
+    minimize: false,
+  },
 })

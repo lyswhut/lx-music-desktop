@@ -37,6 +37,7 @@ module.exports = merge(baseConfig, {
     }),
   ],
   optimization: {
+    minimize: false,
     minimizer: [
       new TerserPlugin(),
       new CssMinimizerPlugin(),
