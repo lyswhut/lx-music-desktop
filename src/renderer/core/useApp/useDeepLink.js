@@ -57,6 +57,7 @@ export default () => {
   const playNext = useAction('player', 'playNext')
   const playSongListDetail = usePlaySonglist()
   const { t } = useI18n()
+  let isInited = false
 
   const handleOpenSonglist = params => {
     if (params.id) {
@@ -232,6 +233,8 @@ export default () => {
   }
 
   const handleFocus = () => {
+    if (!isInited) return
+
     getEnvParams().then(envParams => {
       if (!envParams.deeplink) return
       clearEnvParamsDeeplink()
@@ -250,12 +253,14 @@ export default () => {
   })
 
   return envParams => {
-    if (!envParams.deeplink) return
-    clearEnvParamsDeeplink()
-    try {
-      handleLinkAction(envParams.deeplink)
-    } catch (err) {
-      dialog(`${t('deep_link__handle_error_tip', { message: err.message })}`)
+    if (envParams.deeplink) {
+      clearEnvParamsDeeplink()
+      try {
+        handleLinkAction(envParams.deeplink)
+      } catch (err) {
+        dialog(`${t('deep_link__handle_error_tip', { message: err.message })}`)
+      }
     }
+    isInited = true
   }
 }
