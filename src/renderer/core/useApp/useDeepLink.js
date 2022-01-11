@@ -28,9 +28,11 @@ const dataVerify = (rules, data) => {
   for (const rule of rules) {
     const val = data[rule.key]
     if (rule.required && val == null) throw new Error(rule.key + ' missing')
-    if (val == null ? false : rule.types && !rule.types.includes(typeof val)) throw new Error(rule.key + ' type no match')
-    if (val == null ? false : rule.max && String(val).length > rule.max) throw new Error(rule.key + ' max length no match')
-    if (val == null ? false : rule.min && String(val).length > rule.min) throw new Error(rule.key + ' min length no match')
+    if (val != null) {
+      if (rule.types && !rule.types.includes(typeof val)) throw new Error(rule.key + ' type no match')
+      if (rule.max && String(val).length > rule.max) throw new Error(rule.key + ' max length no match')
+      if (rule.min && String(val).length > rule.min) throw new Error(rule.key + ' min length no match')
+    }
     newData[rule.key] = val
   }
   return newData
