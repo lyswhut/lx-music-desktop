@@ -5,7 +5,7 @@ import { musicInfo, musicInfoItem, playMusicInfo } from '@renderer/core/share/pl
 
 export default ({
   playNext,
-  setStatus,
+  setAllStatus,
   setUrl,
 }) => {
   const { t } = useI18n()
@@ -50,18 +50,15 @@ export default ({
 
   const handleLoadstart = () => {
     startLoadingTimeout()
-    const status = t('player__loading')
-    setStatus(status, status)
+    setAllStatus(t('player__loading'))
   }
 
   const handleLoadeddata = () => {
-    const status = t('player__loading')
-    setStatus(status, status)
+    setAllStatus(t('player__loading'))
   }
 
   const handleCanplay = () => {
-    const status = ''
-    setStatus(status, status)
+    setAllStatus('')
   }
 
   const handlePlaying = () => {
@@ -74,8 +71,7 @@ export default ({
   }
 
   const handleWating = () => {
-    const status = t('player__buffering')
-    setStatus(status, status)
+    setAllStatus(t('player__buffering'))
   }
 
   const handleError = errCode => {
@@ -85,13 +81,11 @@ export default ({
       // console.log(this.retryNum)
       retryNum++
       setUrl(musicInfoItem.value, true)
-      const status = t('player__refresh_url')
-      setStatus(status, status)
+      setAllStatus(t('player__refresh_url'))
       return
     }
 
-    const status = t('player__error')
-    setStatus(status, status)
+    setAllStatus(t('player__error'))
     addDelayNextTimeout()
   }
 

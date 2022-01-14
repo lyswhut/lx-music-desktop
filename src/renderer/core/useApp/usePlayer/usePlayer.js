@@ -22,8 +22,6 @@ import { requestMsg } from '@renderer/utils/message'
 import {
   isPlay,
   setPlay,
-  setStatus,
-  setStatusText,
   setAllStatus,
   musicInfo,
   setMusicInfo,
@@ -164,7 +162,7 @@ export default ({ setting }) => {
   useMediaSessionInfo({ playPrev, playNext })
   usePlayEvent({
     playNext,
-    setStatus,
+    setAllStatus,
     setUrl,
   })
   useLyric({
@@ -204,8 +202,7 @@ export default ({ setting }) => {
   const setStopStatus = () => {
     setPlay(false)
     setTitle()
-    setStatus('')
-    setStatusText('')
+    setAllStatus('')
     setMusicInfo({
       songmid: null,
       img: null,
