@@ -234,7 +234,7 @@
     "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.7.3",
-    "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#2cdfe0d0111dab6432b8683112fd2d17a5e80572",
+    "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
