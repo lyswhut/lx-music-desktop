@@ -43,27 +43,26 @@ function startRenderer() {
     //   // logStats('Renderer', stats)
     // })
 
-    const server = new WebpackDevServer(
-      compiler,
-      {
-        contentBase: path.join(__dirname, '../'),
-        quiet: true,
-        hot: true,
-        historyApiFallback: true,
-        clientLogLevel: 'warning',
-        overlay: {
-          errors: true,
-        },
-        before(app, ctx) {
-          app.use(hotMiddlewareRenderer)
-          ctx.middleware.waitUntilValid(() => {
-            resolve()
-          })
-        },
+    const server = new WebpackDevServer({
+      port: 9080,
+      hot: true,
+      historyApiFallback: true,
+      // static: {
+      //   directory: path.join(__dirname, '../'),
+      // },
+      client: {
+        logging: 'warn',
+        overlay: true,
       },
-    )
+      setupMiddlewares(middlewares, devServer) {
+        devServer.app.use(hotMiddlewareRenderer)
+        devServer.middleware.waitUntilValid(resolve)
 
-    server.listen(9080)
+        return middlewares
+      },
+    }, compiler)
+
+    server.start()
   })
 }
 
@@ -90,27 +89,25 @@ function startRendererLyric() {
     //   // logStats('Renderer', stats)
     // })
 
-    const server = new WebpackDevServer(
-      compiler,
-      {
-        contentBase: path.join(__dirname, '../'),
-        quiet: true,
-        hot: true,
-        historyApiFallback: true,
-        clientLogLevel: 'warning',
-        overlay: {
-          errors: true,
-        },
-        before(app, ctx) {
-          app.use(hotMiddlewareRendererLyric)
-          ctx.middleware.waitUntilValid(() => {
-            resolve()
-          })
-        },
+    const server = new WebpackDevServer({
+      port: 9081,
+      hot: true,
+      historyApiFallback: true,
+      // static: {
+      //   directory: path.join(__dirname, '../'),
+      // },
+      client: {
+        logging: 'warn',
+        overlay: true,
       },
-    )
+      setupMiddlewares(middlewares, devServer) {
+        devServer.app.use(hotMiddlewareRenderer)
+        devServer.middleware.waitUntilValid(resolve)
+        return middlewares
+      },
+    }, compiler)
 
-    server.listen(9081)
+    server.start()
   })
 }
 
@@ -202,8 +199,14 @@ function init() {
   }
 
   Promise.all([
-    startRenderer().then(() => handleSuccess('renderer')).catch(() => handleFail('renderer')),
-    startRendererLyric().then(() => handleSuccess('renderer-lyric')).catch(() => handleFail('renderer-lyric')),
+    startRenderer().then(() => handleSuccess('renderer')).catch((err) => {
+      console.error(err.message)
+      return handleFail('renderer')
+    }),
+    startRendererLyric().then(() => handleSuccess('renderer-lyric')).catch((err) => {
+      console.error(err.message)
+      return handleFail('renderer-lyric')
+    }),
     startMain().then(() => handleSuccess('main')).catch(() => handleFail('main')),
   ]).then(startElectron).catch(err => {
     console.error(err)

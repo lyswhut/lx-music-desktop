@@ -147,6 +147,7 @@ module.exports = {
     }),
     new ESLintPlugin({
       extensions: ['js', 'vue'],
+      formatter: require('eslint-formatter-friendly'),
     }),
   ],
 }

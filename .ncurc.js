@@ -2,9 +2,8 @@ module.exports = {
   upgrade: true,
   // target: 'newest',
   reject: [
-    'webpack-dev-server',
     'electron',
+    'electron-builder',
     'chalk',
-    // 'eslint-config-standard'
   ]
 }
