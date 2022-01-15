@@ -31,6 +31,18 @@ app.on('second-instance', (event, argv, cwd) => {
   }
 })
 
+// windows平台下如果应用目录下存在 portable 文件夹则将数据存在此文件下
+if (process.platform === 'win32') {
+  const fs = require('fs')
+  const portablePath = path.join(path.dirname(app.getPath('exe')), '/portable')
+  if (fs.existsSync(portablePath)) {
+    app.setPath('appData', portablePath)
+    const appDataPath = path.join(portablePath, '/userData')
+    if (!fs.existsSync(appDataPath)) fs.mkdirSync(appDataPath)
+    app.setPath('userData', appDataPath)
+  }
+}
+
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
 // console.log(global.envParams.cmdParams)
