@@ -230,6 +230,7 @@
   "setting__click_open": "点击打开",
   "setting__desktop_lyric": "桌面歌词设置",
   "setting__desktop_lyric_always_on_top": "使歌词总是在其他窗口之上",
+  "setting__desktop_lyric_delay_scroll": "延迟歌词滚动",
   "setting__desktop_lyric_enable": "显示歌词",
   "setting__desktop_lyric_font": "歌词字体",
   "setting__desktop_lyric_font_default": "默认",

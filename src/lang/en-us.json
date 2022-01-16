@@ -230,6 +230,7 @@
   "setting__click_open": "Click to open",
   "setting__desktop_lyric": "Desktop Lyric Settings",
   "setting__desktop_lyric_always_on_top": "Make the lyrics always above other windows",
+  "setting__desktop_lyric_delay_scroll": "Delayed lyrics scroll",
   "setting__desktop_lyric_enable": "Display lyrics",
   "setting__desktop_lyric_font": "Lyric font",
   "setting__desktop_lyric_font_default": "Default",

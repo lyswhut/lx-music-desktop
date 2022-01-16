@@ -6,6 +6,8 @@ dd
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lock" v-model="currentStting.desktopLyric.isLock" :label="$t('setting__desktop_lyric_lock')")
   .gap-top
+    base-checkbox(id="setting_desktop_lyric_delayScroll" v-model="currentStting.desktopLyric.isDelayScroll" :label="$t('setting__desktop_lyric_delay_scroll')")
+  .gap-top
     base-checkbox(id="setting_desktop_lyric_alwaysOnTop" v-model="currentStting.desktopLyric.isAlwaysOnTop" :label="$t('setting__desktop_lyric_always_on_top')")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lockScreen" v-model="currentStting.desktopLyric.isLockScreen" :label="$t('setting__desktop_lyric_lock_screen')")

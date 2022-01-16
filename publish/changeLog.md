@@ -3,6 +3,7 @@
 - 新增“便携”功能，在Windows平台下，若程序目录下存在 portable 目录，则自动使用此目录作为数据存储目录
 - 新增 Scheme URL 支持，同时发布lx-music-script项目配合使用（一个油猴脚本，可以在浏览器中的官方平台网页直接调用LX Music），Scheme URL的调用说明看Readme.md文档的Scheme URL支持部分
 - 新增启动参数`-proxy-server`与`-proxy-bypass-list`，详细介绍看Readme.md文档的启动参数部分
+- 新增桌面歌词是否延迟滚动设置，默认开启，若你不想要桌面歌词延迟滚动可以去设置-桌面歌词设置关掉
 
 ### 优化
 
