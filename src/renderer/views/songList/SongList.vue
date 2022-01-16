@@ -281,7 +281,7 @@ export default {
         name: '',
         img: null,
         desc: '',
-        source: this.source,
+        source,
       })
       this.setVisibleListDetail(true)
       this.handleGetListDetail(id, source, 1)
@@ -299,7 +299,7 @@ export default {
     },
     async fetchList() {
       this.detailLoading = true
-      return this.getListDetailAll({ source: this.source, id: this.selectListInfo.id }).finally(() => {
+      return this.getListDetailAll({ source: this.listDetail.source, id: this.listDetail.id }).finally(() => {
         this.detailLoading = false
       })
     },
