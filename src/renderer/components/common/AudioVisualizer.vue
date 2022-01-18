@@ -11,19 +11,19 @@ import { isPlay } from '@renderer/core/share/player'
 import { player as eventPlayerNames } from '@renderer/event/names'
 
 const themes = {
-  green: 'rgba(77,175,124,.1)',
-  blue: 'rgba(52,152,219,.1)',
-  yellow: 'rgba(233,212,96,.16)',
-  orange: 'rgba(245,171,53,.1)',
-  red: 'rgba(214,69,65,.08)',
-  pink: 'rgba(241,130,141,.1)',
-  purple: 'rgba(155,89,182,.1)',
-  grey: 'rgba(108,122,137,.1)',
-  ming: 'rgba(51,110,123,.1)',
-  blue2: 'rgba(79,98,208,.1)',
-  black: 'rgba(39,39,39,.26)',
-  mid_autumn: 'rgba(74,55,82,.08)',
-  naruto: 'rgba(87,144,167,.1)',
+  green: 'rgba(77,175,124,.16)',
+  blue: 'rgba(52,152,219,.16)',
+  yellow: 'rgba(233,212,96,.22)',
+  orange: 'rgba(245,171,53,.16)',
+  red: 'rgba(214,69,65,.12)',
+  pink: 'rgba(241,130,141,.16)',
+  purple: 'rgba(155,89,182,.14)',
+  grey: 'rgba(108,122,137,.16)',
+  ming: 'rgba(51,110,123,.14)',
+  blue2: 'rgba(79,98,208,.14)',
+  black: 'rgba(39,39,39,.4)',
+  mid_autumn: 'rgba(74,55,82,.1)',
+  naruto: 'rgba(87,144,167,.14)',
   happy_new_year: 'rgba(192,57,43,.1)',
 }
 export default {
