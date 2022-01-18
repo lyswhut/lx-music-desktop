@@ -16,7 +16,7 @@ export default {
     if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
     if (retryNum > 5) return Promise.reject(new Error('搜索失败'))
     // searchRequest = httpFetch(`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=sizer.yqq.song_next&searchid=49252838123499591&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=${page}&n=${limit}&w=${encodeURIComponent(str)}&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0`)
-    searchRequest = httpFetch(`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.top&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=${page}&n=${limit}&w=${encodeURIComponent(str)}&cv=4747474&ct=24&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&uin=0&hostUin=0&loginUin=0`)
+    searchRequest = httpFetch(`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&remoteplace=txt.yqq.top&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&p=${page}&n=${limit}&w=${encodeURIComponent(str)}&cv=4747474&ct=24&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&uin=0&hostUin=0&loginUin=0`)
     // searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${this.limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.musicSearch(str, page, limit, ++retryNum)
@@ -31,33 +31,33 @@ export default {
     return arr.join('、')
   },
   handleResult(rawList) {
-    // console.log(rawData)
+    // console.log(rawList)
     return rawList.map(item => {
       let types = []
       let _types = {}
-      if (item.file.size_128mp3 !== 0) {
-        let size = sizeFormate(item.file.size_128mp3)
+      if (item.size128 !== 0) {
+        let size = sizeFormate(item.size128)
         types.push({ type: '128k', size })
         _types['128k'] = {
           size,
         }
       }
-      if (item.file.size_320mp3 !== 0) {
-        let size = sizeFormate(item.file.size_320mp3)
+      if (item.size320 !== 0) {
+        let size = sizeFormate(item.size320)
         types.push({ type: '320k', size })
         _types['320k'] = {
           size,
         }
       }
-      if (item.file.size_ape !== 0) {
-        let size = sizeFormate(item.file.size_ape)
+      if (item.sizeape !== 0) {
+        let size = sizeFormate(item.sizeape)
         types.push({ type: 'ape', size })
         _types.ape = {
           size,
         }
       }
-      if (item.file.size_flac !== 0) {
-        let size = sizeFormate(item.file.size_flac)
+      if (item.sizeflac !== 0) {
+        let size = sizeFormate(item.sizeflac)
         types.push({ type: 'flac', size })
         _types.flac = {
           size,
@@ -66,18 +66,18 @@ export default {
       // types.reverse()
       return {
         singer: this.getSinger(item.singer),
-        name: item.title,
-        albumName: item.album.title,
-        albumId: item.album.mid,
+        name: item.songname,
+        albumName: item.albumname,
+        albumId: item.albummid,
         source: 'tx',
         interval: formatPlayTime(item.interval),
-        songId: item.id,
-        albumMid: item.album.mid,
-        strMediaMid: item.file.strMediaMid,
-        songmid: item.mid,
-        img: (item.album.name === '' || item.album.name === '空')
-          ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0].mid}.jpg`
-          : `https://y.gtimg.cn/music/photo_new/T002R500x500M000${item.album.mid}.jpg`,
+        songId: item.songid,
+        albumMid: item.albummid,
+        strMediaMid: item.strMediaMid,
+        songmid: item.songmid,
+        img: (item.albummid === '' || item.albummid === '空')
+          ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0]?.mid}.jpg`
+          : `https://y.gtimg.cn/music/photo_new/T002R500x500M000${item.albummid}.jpg`,
         lrc: null,
         otherSource: null,
         types,
