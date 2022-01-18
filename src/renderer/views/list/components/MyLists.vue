@@ -339,9 +339,9 @@ export default {
       let promise
       if (/board__/.test(sourceListId)) {
         const id = sourceListId.replace(/board__/, '')
-        promise = this.getBoardListAll(id)
+        promise = this.getBoardListAll({ id, isRefresh: true })
       } else {
-        promise = this.getListDetailAll({ source, id: sourceListId })
+        promise = this.getListDetailAll({ source, id: sourceListId, isRefresh: true })
       }
       return promise.finally(() => {
         this.fetchingListStatus[id] = false
