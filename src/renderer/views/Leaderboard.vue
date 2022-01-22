@@ -211,7 +211,7 @@ export default {
     async addSongListDetail({ boardId, boardName, source, id }) {
       // console.log(this.listDetail.info)
       // if (!this.listDetail.info.name) return
-      const list = await this.getListAll(boardId)
+      const list = await this.getListAll({ id: boardId })
       this.createUserList({
         name: boardName,
         id,
@@ -230,7 +230,7 @@ export default {
         })
         isPlayingList = true
       }
-      const fullList = await this.getListAll(boardId)
+      const fullList = await this.getListAll({ id: boardId })
       if (!fullList.length) return
       if (isPlayingList) {
         if (tempList.meta.id == id) {

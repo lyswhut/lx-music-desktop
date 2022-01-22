@@ -6,6 +6,32 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.17.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.16.0...v1.17.0) - 2022-01-22
+
+### 新增
+
+- 新增“便携”功能，在Windows平台下，若程序目录下存在 portable 目录，则自动使用此目录作为数据存储目录
+- 新增 Scheme URL 支持，同时发布lx-music-script项目配合使用（一个油猴脚本，可以在浏览器中的官方平台网页直接调用LX Music），Scheme URL的调用说明看Readme.md文档的Scheme URL支持部分
+- 新增启动参数`-proxy-server`与`-proxy-bypass-list`，详细介绍看Readme.md文档的启动参数部分
+- 新增桌面歌词是否延迟滚动设置，默认开启，若你不想要桌面歌词延迟滚动可以去设置-桌面歌词设置关掉
+
+### 优化
+
+- 为可视化音频的频谱整体添加频谱均值加成，使频谱显示更有节奏感
+- 优化程序初始化逻辑，修复无网络的情况下的初始化问题
+- 我的列表-列表名的右击菜单更新已收藏的在线列表时，将始终重新加载，不再使用缓存，解决在原平台更新歌单后，在LX点击更新可能看到的还是在原平台更新前的歌单的问题
+
+### 修复
+
+- 修复代理不生效的问题
+- 修复`openDevTools`选项无效的问题
+- 修复播放状态的提示问题
+- 修复tx源无搜索结果的问题
+
+### 其他
+
+- 更新 Electron 到 v13.6.7
+
 ## [1.16.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.15.3...v1.16.0) - 2022-01-01
 
 这算是一个大版本，对主窗口部分的代码逻辑做了较大改动，但由于界面的改动不大，所以没有更新大版本号。

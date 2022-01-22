@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.47',
+  version: '1.0.48',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -27,6 +27,7 @@ const defaultSetting = {
     y: null,
     theme: 0,
     isLockScreen: true,
+    isDelayScroll: true,
     style: {
       font: '',
       fontSize: 120,

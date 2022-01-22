@@ -170,9 +170,24 @@ export default {
     this.sortId = this.setting.songList.sortId
     if (!this.isVisibleListDetail) this.setTagListWidth()
     this.listenEvent()
+
+    if (this.$route.query.source && (this.$route.query.id || this.$route.query.url)) {
+      this.handleRouteParams(this.$route.query.id, this.$route.query.url, this.$route.query.source)
+      this.$router.replace({
+        path: '/songList',
+      })
+    }
   },
   beforeUnmount() {
     this.unlistenEvent()
+  },
+  beforeRouteUpdate(to) {
+    if (to.query.source && (to.query.id || to.query.url)) {
+      this.handleRouteParams(to.query.id, to.query.url, to.query.source)
+      return {
+        path: '/songList',
+      }
+    }
   },
   methods: {
     ...mapMutations(['setSongList']),
@@ -201,6 +216,10 @@ export default {
         event.target.classList.contains('key-bind')) return
       this.hideListDetail()
     },
+    handleRouteParams(id, url, source) {
+      if (!id) id = decodeURIComponent(url)
+      this.handleGetSongListDetail(id, source)
+    },
     handleToggleListPage(page) {
       this.getList(page).then(() => {
         this.$nextTick(() => {
@@ -209,7 +228,7 @@ export default {
       })
     },
     handleToggleListDetailPage(page) {
-      this.handleGetListDetail(this.selectListInfo.id, page).then(() => {
+      this.handleGetListDetail(this.selectListInfo.id, this.selectListInfo.source, page).then(() => {
         this.$nextTick(() => {
           this.$refs.songList.scrollToTop()
         })
@@ -220,7 +239,7 @@ export default {
       this.setSelectListInfo(this.listData.list[index])
       this.setVisibleListDetail(true)
       this.$nextTick(() => {
-        this.handleGetListDetail(this.selectListInfo.id, 1)
+        this.handleGetListDetail(this.selectListInfo.id, this.source, 1)
       })
     },
     // handleFlowBtnClick(action) {
@@ -246,40 +265,41 @@ export default {
     handleImportSongListEvent({ action }) {
       switch (action) {
         case 'submit':
-          this.handleGetSongListDetail()
+          this.handleGetSongListDetail(this.importSongListText, this.source)
           break
         // case 'blur':
         //   break
       }
     },
-    handleGetSongListDetail() {
-      if (!this.importSongListText.length) return
+    handleGetSongListDetail(id, source) {
+      if (!id.length) return
+      console.log(id, source)
       this.setSelectListInfo({
         play_count: null,
-        id: this.importSongListText,
+        id,
         author: '',
         name: '',
         img: null,
         desc: '',
-        source: this.source,
+        source,
       })
       this.setVisibleListDetail(true)
-      this.handleGetListDetail(this.importSongListText, 1)
+      this.handleGetListDetail(id, source, 1)
     },
     setTagListWidth() {
       this.isInitedTagListWidth = true
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
-    handleGetListDetail(id, page) {
+    handleGetListDetail(id, source, page) {
       this.isGetDetailFailed = false
-      return this.getListDetail({ id, page }).catch(err => {
+      return this.getListDetail({ id, source, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
       })
     },
     async fetchList() {
       this.detailLoading = true
-      return this.getListDetailAll({ source: this.source, id: this.selectListInfo.id }).finally(() => {
+      return this.getListDetailAll({ source: this.listDetail.source, id: this.listDetail.id }).finally(() => {
         this.detailLoading = false
       })
     },

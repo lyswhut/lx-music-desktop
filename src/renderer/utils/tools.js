@@ -48,6 +48,10 @@ export const getEnvParams = () => {
   return rendererInvoke(NAMES.mainWindow.get_env_params)
 }
 
+export const clearEnvParamsDeeplink = () => {
+  return rendererSend(NAMES.mainWindow.clear_env_params_deeplink)
+}
+
 export const onUpdateAvailable = callback => {
   rendererOn(NAMES.mainWindow.update_available, callback)
   return () => {

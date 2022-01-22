@@ -105,3 +105,7 @@ eventHub.on(syncName.send_sync_list, ({ action, data }) => {
   if (!sync.enable) return
   rendererSend(NAMES.mainWindow.sync_list, { action, data })
 })
+eventHub.on('key_mod+f12_down', ({ action, data }) => {
+  if (!sync.enable) return
+  rendererSend(NAMES.mainWindow.open_dev_tools)
+})

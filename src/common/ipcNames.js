@@ -8,8 +8,10 @@ const names = {
     clear_cache: 'clear_cache',
     get_cache_size: 'get_cache_size',
     get_env_params: 'get_env_params',
+    clear_env_params_deeplink: 'clear_env_params_deeplink',
     wait: 'wait',
     wait_cancel: 'wait_cancel',
+    open_dev_tools: 'open_dev_tools',
 
     set_music_meta: 'set_music_meta',
     progress: 'progress',

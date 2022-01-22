@@ -6,7 +6,10 @@
   "plugins": [
     "html"
   ],
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false
+  },
   "rules": {
     "no-new": "off",
     "camelcase": "off",

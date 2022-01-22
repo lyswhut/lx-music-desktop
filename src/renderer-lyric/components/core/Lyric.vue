@@ -22,6 +22,7 @@ export default {
       type: Object,
       default() {
         return {
+          isDelayScroll: true,
           style: {
             font: '',
             fontSize: 125,
@@ -127,10 +128,14 @@ export default {
         if (n < 0) return
         if (n == 0 && this.isSetedLines) return this.isSetedLines = false
         if (o == null || n - o != 1) return this.handleScrollLrc()
-        delayScrollTimeout = setTimeout(() => {
-          delayScrollTimeout = null
-          this.handleScrollLrc(600)
-        }, 600)
+        if (this.lrcConfig.isDelayScroll) {
+          delayScrollTimeout = setTimeout(() => {
+            delayScrollTimeout = null
+            this.handleScrollLrc(600)
+          }, 600)
+        } else {
+          this.handleScrollLrc()
+        }
       },
       immediate: true,
     },

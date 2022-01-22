@@ -260,6 +260,16 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 - <http://www.pc6.com/edu/168719.html>
 - <https://blog.csdn.net/for641/article/details/104811538>
 
+## 数据存储路径
+
+默认情况下，软件的数据存储在：
+
+- Windows：`%APPDATA%/lx-music-desktop`
+- Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
+- macOS：`~/Library/Application/lx-music-desktop`
+
+在Windows平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0新增）。
+
 ## 杀毒软件提示有病毒或恶意行为
 
 本人只能保证我写的代码不包含任何**恶意代码**、**收集用户信息**的行为，并且软件代码已开源，请自行查阅，软件安装包也是由CI拉取源代码构建，构建日志：[GitHub Actions](https://github.com/lyswhut/lx-music-desktop/actions)<br>
@@ -269,6 +279,41 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 从`v0.17.0`起，由于加入了音频输出设备切换功能，该功能调用了 [MediaDevices.enumerateDevices()](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaDevices/enumerateDevices)，可能导致安全软件提示洛雪要访问摄像头（目前发现卡巴斯基会提示），但实际上没有用到摄像头，并且摄像头的提示灯也不会亮，你可以选择阻止访问。
 
 最后，若出现杀毒软件报毒、存在恶意行为，请自行判断选择是否继续使用本软件！
+
+## 启动参数
+
+目前软件已支持的启动参数如下：
+
+- `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
+- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动（v1.6.0起新增）
+- `-dt` 以非透明模式启动（Disable Transparent），对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示（注：该参数对桌面歌词无效），原来的`-nt`参数已重命名为`-dt`（v1.6.0起重命名）
+- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling），此选项将禁用Chromium的Hardware Media Key Handling特性（v1.9.0起新增）
+- `-proxy-server` 设置代理服务器，代理应用的所有流量，例：`-proxy-server="127.0.0.1:1081"`（不支持设置账号密码，v1.17.0起新增）。注：应用内“设置-网络-代理设置”仅代理接口请求的流量，优先级更高
+- `-proxy-bypass-list` 以分号分隔的主机列表绕过代理服务器，例：`-proxy-bypass-list="<local>;*.google.com;*foo.com;1.2.3.4:5678"`（与`-proxy-server`一起使用才有效，v1.17.0起新增）。注：此设置对应用内接口请求无效
+- `-play` 启动时播放指定列表的音乐，参数说明：
+  - `type`：播放类型，目前固定为`songList`
+  - `source`：播放源，可用值为`kw/kg/tx/wy/mg/myList`，其中`kw/kg/tx/wy/mg`对应各源的在线列表，`myList`为本地列表
+  - `link`：要播放的在线列表歌单链接、或ID，source为`kw/kg/tx/wy/mg`之一（在线列表）时必传，举例：`./lx-music-desktop -play="type=songList&source=kw&link=歌单URL or ID"`，注意：如果传入URL时必须对URL进行编码后再传入
+  - `name`：要播放的本地列表歌单名字，source为`myList`时必传，举例：`./lx-music-desktop -play="type=songList&source=myList&name=默认列表"`
+  - `index`：从列表的哪个位置开始播放，选传，若不传默认播放第一首歌曲，举例：`./lx-music-desktop -play="type=songList&source=myList&name=默认列表&index=2"`
+
+## Scheme URL支持
+
+从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用<br>
+脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148-lx-msuic-%E8%BE%85%E5%8A%A9%E8%84%9A%E6%9C%AC><br>
+以下是目前可用的Scheme URL调用方式：
+
+- URL统一以`lxmusic://`开头
+- 此技术目前只支持 Windows、Mac系统
+- URL传参以经过URL编码的JSON数据传参，例：`lxmusic://music/play?data=xxxx`，其中`xxxx`为经过URL编码后的JSON数据
+- 若无特别说明，源的可用值为：`kw/kg/tx/wy/mg`
+- 若无特别说明，音质的可用值为：`128k/320k/flac/flac32bit`
+
+| 描述 | URL | 参数
+| --- | --- | ---
+| 打开歌单 | `songlist/open` | `source<String>`（源，必须）<br>`id<String/Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中ID与URL必需传一个
+| 播放歌单 | `songlist/play` | `source<String>`（源，必须）<br>`id<String/Number>`（歌单ID，可选）<br>`url<String>`（歌单URL，可选）其中`id`与`url`必需传一个<br>`index<Number>`（播放第几首歌，可选，从0开始）
+| 播放歌曲 | `music/play` | `name<String>`（歌曲名，必传）<br>`singer<String>`（艺术家名，必传）<br>`source<String>`（源，必传）<br>`songmid<String/Number>`（歌曲ID，必传）<br>`img<String>`（歌曲图片链接，选传）<br>`albumId<String/Number>`（歌曲专辑ID，选传）<br>`interval<String>`（格式化后的歌曲时长，选传，例：`03:55`）<br>`albumName<String>`（歌曲专辑名称，选传）<br>`types<Object>`（歌曲可用音质数组，必传，<br>数组格式：`[{"type": "<音质>", size: "<格式化后的文件大小，选传>", hash: "<kg源必传>"}]`，<br>例：`[{"type": "128k", size: "3.56M"}, {"type": "320k", size: null}]`）<br><br>以下为平台特定参数：<br>`hash<String>`（歌曲hash，kg源必传）<br>`strMediaMid<String>`（歌曲strMediaMid，tx源必传）<br>`albumMid<String>`（歌曲albumMid，tx源专用，选传）<br>`copyrightId<String>`（歌曲copyrightId，mg源必传）<br>`lrcUrl<String>`（歌曲lrcUrl，mg源专用，选传）
 
 ## 自定义源脚本编写说明
 

@@ -33,6 +33,7 @@ export default {
         enable: false,
         isLock: true,
         isAlwaysOnTop: false,
+        isDelayScroll: true,
         width: 600,
         height: 700,
         x: -1,

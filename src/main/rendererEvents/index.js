@@ -21,6 +21,7 @@ require('./lyric')
 require('./musicUrl')
 require('./systemFonts')
 require('./wait')
+require('./openDevtools')
 
 // require('./kw_decodeLyric')
 

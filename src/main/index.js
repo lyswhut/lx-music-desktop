@@ -1,6 +1,8 @@
 const { app, BrowserWindow, shell } = require('electron')
 const path = require('path')
 
+const urlSchemeRxp = /^lxmusic:\/\//
+
 // 单例应用程序
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -8,6 +10,13 @@ if (!app.requestSingleInstanceLock()) {
 }
 if (!global.modules) global.modules = {}
 app.on('second-instance', (event, argv, cwd) => {
+  for (const param of argv) {
+    if (urlSchemeRxp.test(param)) {
+      global.envParams.deeplink = param
+      break
+    }
+  }
+
   if (global.modules.mainWindow) {
     if (global.modules.mainWindow.isMinimized()) {
       global.modules.mainWindow.restore()
@@ -21,6 +30,18 @@ app.on('second-instance', (event, argv, cwd) => {
     app.quit()
   }
 })
+
+// windows平台下如果应用目录下存在 portable 文件夹则将数据存在此文件下
+if (process.platform === 'win32') {
+  const fs = require('fs')
+  const portablePath = path.join(path.dirname(app.getPath('exe')), '/portable')
+  if (fs.existsSync(portablePath)) {
+    app.setPath('appData', portablePath)
+    const appDataPath = path.join(portablePath, '/userData')
+    if (!fs.existsSync(appDataPath)) fs.mkdirSync(appDataPath)
+    app.setPath('userData', appDataPath)
+  }
+}
 
 const isDev = global.isDev = process.env.NODE_ENV !== 'production'
 require('./env')
@@ -37,6 +58,39 @@ if (process.platform == 'linux') app.commandLine.appendSwitch('use-gl', 'desktop
 // https://github.com/electron/electron/issues/22691
 app.commandLine.appendSwitch('wm-window-animations-disabled')
 
+// proxy
+if (global.envParams.cmdParams['proxy-server']) {
+  app.commandLine.appendSwitch('proxy-server', global.envParams.cmdParams['proxy-server'])
+  app.commandLine.appendSwitch('proxy-bypass-list', global.envParams.cmdParams['proxy-bypass-list'] ?? '<local>')
+}
+// if (global.envParams.cmdParams['proxy-pac-url']) app.commandLine.appendSwitch('proxy-pac-url', global.envParams.cmdParams['proxy-pac-url'])
+
+// deep link
+app.on('open-url', (event, url) => {
+  if (!urlSchemeRxp.test(url)) return
+  event.preventDefault()
+  global.envParams.deeplink = url
+  if (global.modules.mainWindow) {
+    if (global.modules.mainWindow.isMinimized()) {
+      global.modules.mainWindow.restore()
+    }
+    if (global.modules.mainWindow.isVisible()) {
+      global.modules.mainWindow.focus()
+    } else {
+      global.modules.mainWindow.show()
+    }
+  } else if (global.modules.mainWindow === null) {
+    init()
+  }
+})
+if (isDev && process.platform === 'win32') {
+  // Set the path of electron.exe and your app.
+  // These two additional parameters are only available on windows.
+  // console.log(process.execPath, process.argv)
+  app.setAsDefaultProtocolClient('lxmusic', process.execPath, process.argv.slice(1))
+} else {
+  app.setAsDefaultProtocolClient('lxmusic')
+}
 
 const { navigationUrlWhiteList, themes } = require('../common/config')
 const { getWindowSizeInfo, initSetting, updateSetting } = require('./utils')

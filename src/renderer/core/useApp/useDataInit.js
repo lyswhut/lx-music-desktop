@@ -153,8 +153,8 @@ export default ({
       initListPosition(), // 列表位置记录
       initListPrevSelectId(), // 上次选中的列表记录
       initUserApi(), // 自定义API
-      music.init(), // 初始化音乐sdk
     ]).catch(err => log.error(err))
+    music.init() // 初始化音乐sdk
     await initList().catch(err => log.error(err)) // 初始化列表
     await initPlayInfo(downloadList.value).catch(err => log.error(err)) // 初始化上次的歌曲播放信息
     await initSearchHistory(saveSearchHistoryListThrottle).catch(err => log.error(err)) // 初始化搜索历史记录

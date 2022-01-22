@@ -17,6 +17,8 @@ export const currentStting = ref({
     x: -1,
     y: -1,
     theme: '',
+    isLockScreen: true,
+    isDelayScroll: true,
     style: {
       font: '',
       fontSize: 125,

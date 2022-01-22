@@ -9,6 +9,7 @@ import useUpdate from './useUpdate'
 import useDataInit from './useDataInit'
 import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
+import useDeepLink from './useDeepLink'
 import usePlayer from './usePlayer'
 
 
@@ -19,7 +20,7 @@ export default () => {
 
   sync.enable = setting.value.sync.enable
   apiSource.value = setting.value.apiSource
-  proxy.value = Object.assign({}, setting.value.network.proxy)
+  Object.assign(proxy, setting.value.network.proxy)
 
   const dieableIgnoreMouseEvents = () => {
     if (window.dt) return
@@ -44,12 +45,23 @@ export default () => {
   const initData = useDataInit({
     setting,
   })
+  const initDeepLink = useDeepLink()
 
 
   getEnvParams().then(envParams => {
+    const envProxy = envParams.cmdParams['proxy-server']
+    if (envProxy && typeof envProxy == 'string') {
+      const [host, port = ''] = envProxy.split(':')
+      proxy.envProxy = {
+        host,
+        port,
+      }
+    }
+
     // 初始化我的列表、下载列表等数据
     initData().then(() => {
       handleEnvParams(envParams) // 处理传入的启动参数
+      initDeepLink(envParams)
     })
   })
 }

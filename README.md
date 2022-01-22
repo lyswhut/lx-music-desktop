@@ -50,6 +50,35 @@
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
 使用常见问题请转至：[常见问题](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md)
 
+#### Scheme URL支持
+
+从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
+脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148-lx-msuic-%E8%BE%85%E5%8A%A9%E8%84%9A%E6%9C%AC><br>
+
+#### 启动参数
+
+目前软件已支持的启动参数如下：
+
+- `-proxy-server` 设置代理服务器，代理应用的所有流量
+- `-proxy-bypass-list` 以分号分隔的主机列表绕过代理服务器
+- `-play` 启动时播放指定列表的音乐
+- `-search`  启动软件时自动在搜索框搜索指定的内容
+- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration）
+- `-dt` 以非透明模式启动（Disable Transparent）
+- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
+
+启动参数的详细说明请看[常见问题](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0)
+
+#### 数据存储路径
+
+默认情况下，软件的数据存储在：
+
+- Windows：`%APPDATA%/lx-music-desktop`
+- Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
+- macOS：`~/Library/Application/lx-music-desktop`
+
+在Windows平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0新增）。
+
 ### 源码使用方法
 
 环境要求：Node.js 14+
@@ -75,22 +104,6 @@ npm run pack:linux
 ### UI界面
 
 <p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
-
-### 启动参数
-
-目前软件已支持的启动参数如下：
-
-- `-search`  启动软件时自动在搜索框搜索指定的内容，例如：`-search="突然的自我 - 伍佰"`
-- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration），窗口显示有问题时可以尝试添加此参数启动（v1.6.0起新增）
-- `-dt` 以非透明模式启动（Disable Transparent），对于未开启AERO效果的win7系统可加此参数启动以确保界面正常显示（注：该参数对桌面歌词无效），原来的`-nt`参数已重命名为`-dt`（v1.6.0起重命名）
-- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling），此选项将禁用Chromium的Hardware Media Key Handling特性（v1.9.0起新增）
-- `-play` 启动时播放指定列表的音乐，参数说明：
-  - `type`：播放类型，目前固定为`songList`
-  - `source`：播放源，可用值为`kw/kg/tx/wy/mg/myList`，其中`kw/kg/tx/wy/mg`对应各源的在线列表，`myList`为本地列表
-  - `link`：要播放的在线列表歌单链接、或ID，source为`kw/kg/tx/wy/mg`之一（在线列表）时必传，举例：`./lx-music-desktop -play="type=songList&source=kw&link=歌单URL or ID"`，注意：如果传入URL时必须对URL进行编码后再传入
-  - `name`：要播放的本地列表歌单名字，source为`myList`时必传，举例：`./lx-music-desktop -play="type=songList&source=myList&name=默认列表"`
-  - `index`：从列表的哪个位置开始播放，选传，若不传默认播放第一首歌曲，举例：`./lx-music-desktop -play="type=songList&source=myList&name=默认列表&index=2"`
-
 
 ### 常见问题
 

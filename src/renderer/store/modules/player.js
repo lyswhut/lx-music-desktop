@@ -415,7 +415,7 @@ const mutations = {
   },
   setTempPlayList(state, list) {
     addTempPlayList(list)
-    if (!playMusicInfo.musicInfo) this.commit('player/playNext')
+    if (!playMusicInfo.musicInfo) this.dispatch('player/playNext')
   },
   removeTempPlayList(state, index) {
     removeTempPlayList(index)

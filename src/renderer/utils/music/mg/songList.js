@@ -194,6 +194,13 @@ export default {
               size,
             }
             break
+          case 'ZQ':
+            size = sizeFormate(type.size)
+            types.push({ type: 'flac32bit', size })
+            _types.flac32bit = {
+              size,
+            }
+            break
         }
       })
 

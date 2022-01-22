@@ -66,11 +66,12 @@ const actions = {
       return listInfo
     })
   },
-  getListAll({ state, rootState }, id) {
+  getListAll({ state, rootState }, { id, isRefresh = false }) {
     // console.log(source, id)
     let [source, bangId] = id.split('__')
     const loadData = (id, page) => {
       let key = `${source}${id}${page}`
+      if (isRefresh && cache.has(key)) cache.delete(key)
       return cache.has(key)
         ? Promise.resolve(cache.get(key))
         : music[source].leaderboard.getList(bangId, page).then(result => {

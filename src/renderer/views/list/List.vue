@@ -45,14 +45,15 @@ export default {
     // console.log(to, from)
     if (to.query.updated) return
     let id = to.query.id
-    if (id == null || !getList(id)) {
+    if (id == null) return
+    if (!getList(id)) {
       id = defaultList.id
     }
     this.listId = id
     const scrollIndex = to.query.scrollIndex
     const isAnimation = from.query.id == to.query.id
     this.$nextTick(() => {
-      this.$refs.musicList.restoreScroll(scrollIndex, isAnimation)
+      this.$refs.musicList?.restoreScroll(scrollIndex, isAnimation)
     })
     return {
       path: '/list',
@@ -60,7 +61,7 @@ export default {
     }
   },
   beforeRouteLeave(to, from) {
-    this.$refs.musicList.saveListPosition()
+    this.$refs.musicList?.saveListPosition()
   },
   created() {
     this.listId = this.$route.query.id
