@@ -1,5 +1,5 @@
 <template>
-  <component :is="containerEl" :class="containerClass" ref="dom_scrollContainer" style="height: 100%; overflow: auto; position: relative; display: block; contain: strict;">
+  <component :is="containerEl" :class="containerClass" tabindex="0" ref="dom_scrollContainer" style="outline: none; height: 100%; overflow: auto; position: relative; display: block; contain: strict;">
     <component :is="contentEl" :class="contentClass" :style="contentStyle">
       <div v-for="item in views" :key="item.key" :style="item.style">
         <slot name="default" v-bind="{ item: item.item, index: item.index }" />
