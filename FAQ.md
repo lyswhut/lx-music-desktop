@@ -300,7 +300,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 ## Scheme URL支持
 
 从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用<br>
-脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148-lx-msuic-%E8%BE%85%E5%8A%A9%E8%84%9A%E6%9C%AC><br>
+脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 以下是目前可用的Scheme URL调用方式：
 
 - URL统一以`lxmusic://`开头

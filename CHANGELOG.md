@@ -6,6 +6,21 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.17.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.17.0...v1.17.1) - 2022-01-28
+
+### 优化
+
+- 优化kw源英文与翻译歌词的匹配
+
+### 修复
+
+- 修复快捷键与默认按键行为冲突的问题，现在若将某些有默认行为的按键（如在列表中上、下箭头、Home、End等键可以使列表滚动）设置为快捷键时，将禁用其默认行为
+- 修复列表的聚焦问题，现在在列表中使用上、下箭头、空格等键滚动列表时不会导致滚动到一定距离后丢失焦点的问题
+
+### 其他
+
+- 更新electron到v13.6.8
+
 ## [1.17.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.16.0...v1.17.0) - 2022-01-22
 
 ### 新增

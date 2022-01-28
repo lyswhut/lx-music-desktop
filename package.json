@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 13.6.7"
+    "Electron 13.6.8"
   ],
   "engines": {
     "node": ">= 14"
@@ -173,7 +173,7 @@
   },
   "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
   "devDependencies": {
-    "@babel/core": "^7.16.10",
+    "@babel/core": "^7.16.12",
     "@babel/eslint-parser": "^7.16.5",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -193,11 +193,11 @@
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "del": "^6.0.0",
-    "electron": "^13.6.7",
+    "electron": "^13.6.8",
     "electron-builder": "^22.11.7",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.51",
+    "electron-to-chromium": "^1.4.56",
     "eslint": "^8.7.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-formatter-friendly": "^7.0.0",
@@ -206,14 +206,14 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
-    "eslint-plugin-vue": "^8.3.0",
+    "eslint-plugin-vue": "^8.4.0",
     "eslint-webpack-plugin": "^3.1.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "markdown-it": "^12.3.2",
-    "mini-css-extract-plugin": "^2.5.2",
+    "mini-css-extract-plugin": "^2.5.3",
     "node-loader": "^2.0.0",
     "postcss": "^8.4.5",
     "postcss-loader": "^6.2.1",
@@ -232,7 +232,7 @@
     "vue-loader": "^17.0.0",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^5.67.0",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.3",
     "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^5.8.0"
@@ -256,8 +256,8 @@
     "socket.io": "^4.4.1",
     "sortablejs": "^1.14.0",
     "utf-8-validate": "^5.0.8",
-    "vue": "^3.2.26",
-    "vue-i18n": "^9.2.0-beta.26",
+    "vue": "^3.2.29",
+    "vue-i18n": "^9.2.0-beta.29",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   }
