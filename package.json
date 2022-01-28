@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 13.6.7"
+    "Electron 13.6.8"
   ],
   "engines": {
     "node": ">= 14"
@@ -193,11 +193,11 @@
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "del": "^6.0.0",
-    "electron": "^13.6.7",
+    "electron": "^13.6.8",
     "electron-builder": "^22.11.7",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.53",
+    "electron-to-chromium": "^1.4.56",
     "eslint": "^8.7.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-formatter-friendly": "^7.0.0",
@@ -206,7 +206,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
-    "eslint-plugin-vue": "^8.3.0",
+    "eslint-plugin-vue": "^8.4.0",
     "eslint-webpack-plugin": "^3.1.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
