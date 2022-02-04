@@ -4,4 +4,4 @@
 
 ### 其他
 
-- 更新electron到v13.6.8
+- 更新electron到v13.6.9
