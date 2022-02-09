@@ -193,7 +193,6 @@ export default {
           case 'play':
             this.playSongListDetail({
               boardId: board.id,
-              list: [...this.list],
               id,
             })
             break
@@ -220,8 +219,9 @@ export default {
         sourceListId: `board__${boardId}`,
       })
     },
-    async playSongListDetail({ boardId, id, list }) {
+    async playSongListDetail({ boardId, id }) {
       let isPlayingList = false
+      const list = this.tabId == boardId ? [...this.list] : null
       if (list?.length) {
         this.setTempList({
           list,
