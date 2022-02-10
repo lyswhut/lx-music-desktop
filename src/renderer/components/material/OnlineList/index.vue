@@ -50,7 +50,7 @@ div(:class="$style.songList")
 
 <script>
 import { clipboardWriteText, assertApiSupport } from '@renderer/utils'
-import { ref, useCssModule } from '@renderer/utils/vueTools'
+import { ref, useCssModule, useRefGetter } from '@renderer/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
@@ -95,7 +95,7 @@ export default {
       type: String,
     },
   },
-  emits: ['show-menu', 'togglePage'],
+  emits: ['show-menu', 'play-list', 'togglePage'],
   setup(props, { emit }) {
     const rightClickSelectedIndex = ref(-1)
     const dom_listContent = ref(null)
@@ -103,18 +103,20 @@ export default {
 
     const styles = useCssModule()
 
+    const setting = useRefGetter('setting')
+
     const {
       selectedList,
       listItemHeight,
       handleSelectData,
       removeAllSelect,
-    } = useList({ props, emit })
+    } = useList({ props })
 
     const {
       handlePlayMusic,
       handlePlayMusicLater,
       doubleClickPlay,
-    } = usePlay({ selectedList, props, removeAllSelect })
+    } = usePlay({ selectedList, props, removeAllSelect, setting, emit })
 
     const {
       isShowListAdd,

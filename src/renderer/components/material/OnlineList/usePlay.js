@@ -2,7 +2,7 @@ import { useCommit } from '@renderer/utils/vueTools'
 import { defaultList } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
 
-export default ({ selectedList, props, removeAllSelect }) => {
+export default ({ selectedList, props, removeAllSelect, setting, emit }) => {
   let clickTime = 0
   let clickIndex = -1
 
@@ -47,7 +47,11 @@ export default ({ selectedList, props, removeAllSelect }) => {
       clickIndex = index
       return
     }
-    handlePlayMusic(index, true)
+    if (setting.value.list.isClickPlayList) {
+      emit('play-list', index)
+    } else {
+      handlePlayMusic(index, true)
+    }
     clickTime = 0
     clickIndex = -1
   }

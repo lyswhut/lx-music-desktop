@@ -284,6 +284,7 @@
   "setting__list_add_music_location_type": "添加歌曲到列表時的位置",
   "setting__list_add_music_location_type_bottom": "底部",
   "setting__list_add_music_location_type_top": "頂部",
+  "setting__list_click_action": "雙擊列表裡的歌曲時自動切換到當前列表播放（僅對歌單、排行榜有效）",
   "setting__list_scroll": "記住播放列表滾動條位置（僅對我的音樂分類有效）",
   "setting__list_source": "顯示歌曲源（僅對我的音樂分類有效）",
   "setting__network": "網絡設置",

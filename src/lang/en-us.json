@@ -284,6 +284,7 @@
   "setting__list_add_music_location_type": "Position when adding a song to the list",
   "setting__list_add_music_location_type_bottom": "Bottom",
   "setting__list_add_music_location_type_top": "Top",
+  "setting__list_click_action": "Automatically switch to the current list when double-clicking a song in the list (only valid for playlists and rankings)",
   "setting__list_scroll": "Remember the position of the scroll bar of the playlist (only valid for my music classification)",
   "setting__list_source": "Show song source (only valid for my music category)",
   "setting__network": "Network",

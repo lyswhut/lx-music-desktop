@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.48',
+  version: '1.0.49',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -36,6 +36,7 @@ const defaultSetting = {
     },
   },
   list: {
+    isClickPlayList: false,
     isShowAlbumName: true,
     isShowSource: true,
     isSaveScrollLocation: true,

@@ -16,6 +16,7 @@
     <material-online-list
       ref="songList"
       @show-menu="hideListsMenu"
+      @play-list="handlePlayList"
       @toggle-page="handleGetList"
       :rowWidth="{r1: '5%', r2: 'auto', r3: '22%', r4: '22%', r5: '9%', r6: '15%'}"
       :page="page"
@@ -219,13 +220,13 @@ export default {
         sourceListId: `board__${boardId}`,
       })
     },
-    async playSongListDetail({ boardId, id }) {
+    async playSongListDetail({ boardId, id, index = 0 }) {
       let isPlayingList = false
       const list = this.tabId == boardId ? [...this.list] : null
       if (list?.length) {
         this.setTempList({
           list,
-          index: 0,
+          index,
           id,
         })
         isPlayingList = true
@@ -242,10 +243,17 @@ export default {
       } else {
         this.setTempList({
           list: fullList,
-          index: 0,
+          index,
           id,
         })
       }
+    },
+    handlePlayList(index) {
+      this.playSongListDetail({
+        boardId: this.tabId,
+        id: `board__${this.source}__${this.tabId}`,
+        index,
+      })
     },
   },
 }
