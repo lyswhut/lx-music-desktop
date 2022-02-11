@@ -197,8 +197,17 @@ export default {
     ...mapActions('leaderboard', {
       getBoardListAll: 'getListAll',
     }),
-    handle_key_mod_down() {
+    handle_key_mod_down(event) {
       if (!this.keyEvent.isModDown) {
+        // console.log(event)
+        switch (event.event.target.tagName) {
+          case 'INPUT':
+          case 'SELECT':
+          case 'TEXTAREA':
+            return
+          default: if (event.event.target.isContentEditable) return
+        }
+
         this.keyEvent.isModDown = true
         this.setDisabledSort(false)
         const dom_target = this.dom_lists_list.querySelector('.' + this.$style.editing)
