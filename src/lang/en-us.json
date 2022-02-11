@@ -118,6 +118,7 @@
   "lists__remove_tip_button": "Yes, that's right",
   "lists__rename": "Rename",
   "lists__sort_list": "Sort songs",
+  "lists__source_detail": "Playlist Page",
   "lists__sync": "Update",
   "load_list_file_error_detail": "We have helped you back up the old list file to {path}\nIt is stored in JSON format, you can try to repair and restore it manually\n\nError details: {detail}",
   "load_list_file_error_title": "Error loading playlist data",

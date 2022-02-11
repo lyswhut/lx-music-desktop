@@ -355,6 +355,10 @@ export default {
   getTags() {
     return this.getTag()
   },
+
+  getDetailPageUrl(id) {
+    return `https://music.migu.cn/v3/music/playlist/${id}`
+  },
 }
 
 // getList

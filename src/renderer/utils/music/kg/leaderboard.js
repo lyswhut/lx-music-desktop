@@ -193,4 +193,8 @@ export default {
       }
     })
   },
+  getDetailPageUrl(id) {
+    if (typeof id == 'string') id = id.replace('kg__', '')
+    return `https://www.kugou.com/yy/rank/home/1-${id}.html`
+  },
 }

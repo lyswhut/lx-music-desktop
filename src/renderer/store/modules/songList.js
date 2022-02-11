@@ -68,7 +68,7 @@ const getters = {
 const actions = {
   getTags({ state, rootState, commit }) {
     let source = rootState.setting.songList.source
-    return music[source].songList.getTags().then(result => commit('setTags', { tags: result, source }))
+    return music[source]?.songList.getTags().then(result => commit('setTags', { tags: result, source }))
   },
   getList({ state, rootState, commit }, page) {
     let source = rootState.setting.songList.source
@@ -79,7 +79,7 @@ const actions = {
     if (state.list.list.length && state.list.key == key) return
     if (cache.has(key)) return Promise.resolve(cache.get(key)).then(result => commit('setList', { result, key, page }))
     commit('clearList')
-    return music[source].songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
+    return music[source]?.songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
   },
   getListDetail({ state, commit }, { id, source, page, isRefresh = false }) {
     let key = `sdetail__${source}__${id}__${page}`
@@ -89,7 +89,7 @@ const actions = {
     return (
       cache.has(key)
         ? Promise.resolve(cache.get(key))
-        : music[source].songList.getListDetail(id, page).then(result => ({ ...result, list: filterList(result.list) }))
+        : music[source]?.songList.getListDetail(id, page).then(result => ({ ...result, list: filterList(result.list) }))
     ).then(result => {
       commit('setListDetail', { result, key, source, id, page })
       return result.list
@@ -102,7 +102,7 @@ const actions = {
       if (isRefresh && cache.has(key)) cache.delete(key)
       return cache.has(key)
         ? Promise.resolve(cache.get(key))
-        : music[source].songList.getListDetail(id, page).then(result => {
+        : music[source]?.songList.getListDetail(id, page).then(result => {
           cache.set(key, result)
           return result
         })

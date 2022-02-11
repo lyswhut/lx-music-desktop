@@ -718,6 +718,11 @@ export default {
       }
     })
   },
+
+  getDetailPageUrl(id) {
+    if (typeof id == 'string') id = id.replace('id_', '')
+    return `https://www.kugou.com/yy/special/single/${id}.html`
+  },
 }
 
 // getList

@@ -289,6 +289,10 @@ export default {
   getTags() {
     return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'wy' }))
   },
+
+  getDetailPageUrl(id) {
+    return `https://music.163.com/#/playlist?id=${id}`
+  },
 }
 
 // getList

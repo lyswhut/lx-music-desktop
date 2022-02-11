@@ -292,6 +292,10 @@ export default {
   getTags() {
     return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'tx' }))
   },
+
+  getDetailPageUrl(id) {
+    return `https://y.qq.com/n/ryqq/playlist/${id}`
+  },
 }
 
 // getList
