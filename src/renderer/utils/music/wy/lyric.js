@@ -53,7 +53,7 @@ export default songmid => {
     if (body.code !== 200 || !body?.lrc?.lyric) return Promise.reject(new Error('Get lyric failed'))
     return {
       lyric: body.lrc.lyric,
-      tlyric: body.tlyric.lyric,
+      tlyric: body.tlyric?.lyric ?? '',
       // lxlyric: parseLyric(body.klyric.lyric),
     }
   })
