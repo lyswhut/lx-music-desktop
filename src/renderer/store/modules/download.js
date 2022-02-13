@@ -162,6 +162,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
     reqPromise = Promise.reject(err)
   }
   return reqPromise.catch(err => {
+    // console.log(err)
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
@@ -169,7 +170,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
         for (const item of otherSource) {
           if (retryedSource.includes(item.source)) continue
           console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
-          return getLyric.call(this, item, retryedSource, originMusic)
+          return handleGetLyric.call(this, item, retryedSource, originMusic)
         }
       }
       return Promise.reject(err)
