@@ -439,6 +439,14 @@ const actions = {
           dispatch('startTask')
           return
         }
+        if (err.message?.startsWith('Resume failed')) {
+          fs.unlink(downloadInfo.metadata.filePath, err => {
+            if (err) return commit('onError', { downloadInfo, errorMsg: '删除不匹配的文件失败：' + err.message })
+            dls[downloadInfo.key].start()
+            commit('setStatusText', { downloadInfo, text: '正在重试' })
+          })
+          return
+        }
         if (err.code == 'ENOTFOUND') {
           commit('onError', { downloadInfo, errorMsg: '链接失效' })
           refreshUrl.call(_this, commit, downloadInfo, rootState.setting.download.isUseOtherSource)
@@ -562,6 +570,7 @@ const actions = {
         filePath: path.join(rootState.setting.download.savePath, downloadInfo.metadata.fileName),
       })
       dl.updateSaveInfo(rootState.setting.download.savePath, downloadInfo.metadata.fileName)
+      if (tryNum[downloadInfo.key]) tryNum[downloadInfo.key] = 0
       try {
         await dl.start()
       } catch (error) {

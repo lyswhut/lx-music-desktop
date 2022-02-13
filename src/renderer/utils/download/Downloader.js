@@ -153,7 +153,7 @@ class Task extends EventEmitter {
   __initDownload(response) {
     this.progress.total = parseInt(response.headers['content-length'] || 0)
     let options = {}
-    let isResumable = this.options.forceResume || response.headers['accept-ranges'] !== 'none'
+    let isResumable = this.options.forceResume || response.headers['accept-ranges'] !== 'none' || (typeof response.headers['accept-ranges'] == 'string' && parseInt(response.headers['accept-ranges'].replace(/^bytes=(\d+)/, '$1')) > 0)
     if (isResumable) {
       options.flags = 'a'
       if (this.progress.downloaded) this.progress.total -= 10
@@ -227,8 +227,9 @@ class Task extends EventEmitter {
     if (this.resumeLastChunk) {
       chunk = this.__handleDiffChunk(chunk)
       if (!chunk) {
-        this.__handleError(new Error('Resume failed, response chunk does not match.'))
-        this.stop()
+        this.__handleStop().finally(() => {
+          this.__handleError(new Error('Resume failed, response chunk does not match.'))
+        })
         return
       }
     }
