@@ -15,6 +15,7 @@ const names = {
   },
   player: {
     setTogglePlay: 'setTogglePlay', // 播放/暂停切换
+    setPlay: 'setPlay', // 播放
     setPause: 'setPause', // 暂停
     setStop: 'setStop', // 停止
     setPlayPrev: 'setPlayPrev', // 上一曲
@@ -31,6 +32,7 @@ const names = {
     updateLyric: 'updateLyric',
 
     activeTransition: 'activeTransition', // 激活进度条动画事件
+    playedStop: 'playedStop', // 定时停止事件
 
     // 播放器事件
     play: 'play',

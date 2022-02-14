@@ -15,7 +15,7 @@ export default ({ playNext }) => {
 
     const { playIndex } = updatePlayIndex()
     if (playIndex < 0 && !playMusicInfo.isTempPlay) { // 歌曲被移除
-      if (getList(playMusicInfo.listId).length) {
+      if (getList(playMusicInfo.listId).length && !global.isPlayedStop) {
         playNext()
       } else {
         window.eventHub.emit(eventPlayerNames.setStop)

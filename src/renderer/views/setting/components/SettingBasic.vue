@@ -9,12 +9,15 @@ dd
         label {{$t('theme_' + theme.className)}}
 
 dd
-  .gap-top.top
-    base-checkbox(id="setting_show_animate" v-model="currentStting.isShowAnimation" :label="$t('setting__basic_show_animation')")
-  .gap-top
-    base-checkbox(id="setting_animate" v-model="currentStting.randomAnimate" :label="$t('setting__basic_animation')")
-  .gap-top
-    base-checkbox(id="setting_to_tray" v-model="currentStting.tray.isShow" :label="$t('setting__basic_to_tray')")
+  div
+    .gap-top.top
+      base-checkbox(id="setting_show_animate" v-model="currentStting.isShowAnimation" :label="$t('setting__basic_show_animation')")
+    .gap-top
+      base-checkbox(id="setting_animate" v-model="currentStting.randomAnimate" :label="$t('setting__basic_animation')")
+    .gap-top
+      base-checkbox(id="setting_to_tray" v-model="currentStting.tray.isShow" :label="$t('setting__basic_to_tray')")
+    p.gap-top
+      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
 dd(:tips="$t('setting__basic_source_title')")
   h3#basic_source {{$t('setting__basic_source')}}
@@ -48,6 +51,7 @@ dd
   div
     base-checkbox.gap-left(v-for="item in controlBtnPositionList" :key="item.id" :id="`setting_basic_control_btn_position_${item.id}`"
       name="setting_basic_control_btn_position" need v-model="currentStting.controlBtnPosition" :value="item.id" :label="item.name")
+play-timeout-modal(v-model="isShowPlayTimeoutModal")
 user-api-modal(v-model="isShowUserApiModal")
 </template>
 
@@ -58,12 +62,15 @@ import { langList } from '@/lang'
 import { currentStting } from '../setting'
 import { setWindowSize } from '@renderer/utils'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
+import { useTimeout } from '@renderer/utils/timeoutStop'
 
+import PlayTimeoutModal from './PlayTimeoutModal'
 import UserApiModal from './UserApiModal'
 
 export default {
   name: 'SettingBasic',
   components: {
+    PlayTimeoutModal,
     UserApiModal,
   },
   setup() {
@@ -80,6 +87,9 @@ export default {
     watch(() => currentStting.value.apiSource, visible => {
       apiSource.value = visible
     })
+
+    const isShowPlayTimeoutModal = ref(false)
+    const { timeLabel } = useTimeout()
 
     const isShowUserApiModal = ref(false)
     const getApiStatus = () => {
@@ -138,6 +148,8 @@ export default {
     return {
       currentStting,
       themes,
+      isShowPlayTimeoutModal,
+      timeLabel,
       apiSources,
       isShowUserApiModal,
       windowSizeList,

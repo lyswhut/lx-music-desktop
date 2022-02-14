@@ -11,6 +11,9 @@ const names = {
     clear_env_params_deeplink: 'clear_env_params_deeplink',
     wait: 'wait',
     wait_cancel: 'wait_cancel',
+    interval: 'interval',
+    interval_callback: 'interval_callback',
+    interval_cancel: 'interval_cancel',
     open_dev_tools: 'open_dev_tools',
 
     set_music_meta: 'set_music_meta',

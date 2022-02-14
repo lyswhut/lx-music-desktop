@@ -8,6 +8,8 @@ export const currentStting = ref({
     volume: 1,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
+    waitPlayEndStop: true,
+    waitPlayEndStopTime: 0,
   },
   desktopLyric: {
     enable: false,

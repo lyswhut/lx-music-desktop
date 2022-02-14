@@ -49,6 +49,7 @@ export default ({
   }
 
   const handleLoadstart = () => {
+    if (global.isPlayedStop) return
     startLoadingTimeout()
     setAllStatus(t('player__loading'))
   }
@@ -77,6 +78,7 @@ export default ({
   const handleError = errCode => {
     if (!musicInfo.songmid) return
     clearLoadingTimeout()
+    if (global.isPlayedStop) return
     if (playMusicInfo.listId != 'download' && errCode !== 1 && retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
       // console.log(this.retryNum)
       retryNum++
@@ -96,6 +98,11 @@ export default ({
     clearLoadingTimeout()
   }
 
+  const handlePlayedStop = () => {
+    clearDelayNextTimeout()
+    clearLoadingTimeout()
+  }
+
 
   window.eventHub.on(eventPlayerNames.player_loadstart, handleLoadstart)
   window.eventHub.on(eventPlayerNames.player_loadeddata, handleLoadeddata)
@@ -105,6 +112,7 @@ export default ({
   window.eventHub.on(eventPlayerNames.player_emptied, handleEmpied)
   window.eventHub.on(eventPlayerNames.error, handleError)
   window.eventHub.on(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
+  window.eventHub.on(eventPlayerNames.playedStop, handlePlayedStop)
 
   onBeforeUnmount(() => {
     window.eventHub.off(eventPlayerNames.player_loadstart, handleLoadstart)
@@ -115,5 +123,6 @@ export default ({
     window.eventHub.off(eventPlayerNames.player_emptied, handleEmpied)
     window.eventHub.off(eventPlayerNames.error, handleError)
     window.eventHub.off(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
+    window.eventHub.off(eventPlayerNames.playedStop, handlePlayedStop)
   })
 }
