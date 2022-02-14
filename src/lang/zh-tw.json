@@ -147,6 +147,8 @@
   "play_timeout_close": "關閉",
   "play_timeout_confirm": "確認",
   "play_timeout_end": "等待歌曲播放完畢再暫停",
+  "play_timeout_stop": "取消定時",
+  "play_timeout_tip": "{time} 後暫停播放",
   "play_timeout_unit": "分鐘",
   "play_timeout_update": "更新定時",
   "player__add_music_to": "添加當前歌曲到...",

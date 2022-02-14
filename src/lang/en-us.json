@@ -147,6 +147,8 @@
   "play_timeout_close": "Close",
   "play_timeout_confirm": "Confirm",
   "play_timeout_end": "Wait for the song to finish before pausing",
+  "play_timeout_stop": "Cancel timer",
+  "play_timeout_tip": "Pause after {time}",
   "play_timeout_unit": "minute",
   "play_timeout_update": "Update timing",
   "player__add_music_to": "Add the current song to...",
