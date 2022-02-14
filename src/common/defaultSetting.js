@@ -17,7 +17,7 @@ const defaultSetting = {
     isSavePlayTime: false,
     audioVisualization: false,
     waitPlayEndStop: true,
-    waitPlayEndStopTime: 0,
+    waitPlayEndStopTime: '',
   },
   desktopLyric: {
     enable: false,

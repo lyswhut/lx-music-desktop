@@ -57,7 +57,7 @@ export default {
         text = ''
       }
       time.value = text
-      return orgText == text ? parseInt(text) : ''
+      return text && orgText == text ? parseInt(text) : ''
     }
     const handleConfirm = () => {
       let time = verify()
