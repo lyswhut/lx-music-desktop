@@ -140,6 +140,7 @@
   "my_list": "Your Library",
   "no_item": "Nothing's here...",
   "not_agree": "Not accept",
+  "ok": "Ok",
   "pagination__next": "Next page",
   "pagination__page": "Page {num}",
   "pagination__prev": "Previous page",

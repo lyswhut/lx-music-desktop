@@ -7,6 +7,18 @@ import { isShowPlayerDetail, setShowPlayerDetail, playMusicInfo } from '@rendere
 import usePlaySonglist from './compositions/usePlaySonglist'
 import { dialog } from '@renderer/plugins/Dialog'
 
+const useDialog = () => {
+  const { t } = useI18n()
+  const errorDialog = message => {
+    dialog({
+      message: `${t('deep_link__handle_error_tip', { message })}`,
+      confirmButtonText: t('ok'),
+    })
+  }
+
+  return errorDialog
+}
+
 const sources = ['kw', 'kg', 'tx', 'wy', 'mg']
 const sourceVerify = source => {
   if (!sources.includes(source)) throw new Error('Source no match')
@@ -58,8 +70,9 @@ export default () => {
   const setTempPlayList = useCommit('player', 'setTempPlayList')
   const playNext = useAction('player', 'playNext')
   const playSongListDetail = usePlaySonglist()
-  const { t } = useI18n()
   let isInited = false
+
+  const showErrorDialog = useDialog()
 
   const handleOpenSonglist = params => {
     if (params.id) {
@@ -243,7 +256,7 @@ export default () => {
       try {
         handleLinkAction(envParams.deeplink)
       } catch (err) {
-        dialog(`${t('deep_link__handle_error_tip', { message: err.message })}`)
+        showErrorDialog(err.message)
       }
     })
   }
@@ -260,7 +273,7 @@ export default () => {
       try {
         handleLinkAction(envParams.deeplink)
       } catch (err) {
-        dialog(`${t('deep_link__handle_error_tip', { message: err.message })}`)
+        showErrorDialog(err.message)
       }
     }
     isInited = true

@@ -140,6 +140,7 @@
   "my_list": "我的列表",
   "no_item": "列表竟然是空的...",
   "not_agree": "不接受",
+  "ok": "好吧",
   "pagination__next": "下一頁",
   "pagination__page": "第 {num} 頁",
   "pagination__prev": "上一頁",
