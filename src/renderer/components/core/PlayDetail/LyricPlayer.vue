@@ -2,7 +2,7 @@
 <div :class="['right', $style.right]">
   <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
     <div :class="$style.lyricSpace"></div>
-    <div :class="[$style.lyricText]" ref="dom_lyric_text"></div>
+    <div ref="dom_lyric_text"></div>
     <div :class="$style.lyricSpace"></div>
   </div>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
