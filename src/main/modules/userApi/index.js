@@ -1,8 +1,8 @@
 const Event = require('./event/event')
 const eventNames = require('./event/name')
 const { closeWindow } = require('./main')
-const { getUserApis, importApi, removeApi } = require('./utils')
-const { request, cancelRequest, getStatus, loadApi } = require('./rendererEvent/rendererEvent')
+const { getUserApis, importApi, removeApi, setAllowShowUpdateAlert: saveAllowShowUpdateAlert } = require('./utils')
+const { request, cancelRequest, getStatus, loadApi, setAllowShowUpdateAlert } = require('./rendererEvent/rendererEvent')
 
 // const { getApiList, importApi, removeApi, setApi, getStatus, request, eventNames }
 let userApiId
@@ -41,4 +41,7 @@ exports.setApi = async id => {
   await loadApi(id)
 }
 
-
+exports.setAllowShowUpdateAlert = (id, enable) => {
+  saveAllowShowUpdateAlert(id, enable)
+  setAllowShowUpdateAlert(id, enable)
+}

@@ -410,6 +410,7 @@
   "theme_purple": "Purple",
   "theme_red": "Red",
   "theme_yellow": "Yellow",
+  "user_api__allow_show_update_alert": "Allow update popup to show",
   "user_api__btn_export": "Export",
   "user_api__btn_import": "Import",
   "user_api__btn_remove": "Remove",
@@ -417,5 +418,6 @@
   "user_api__noitem": "There is nothing here...😲",
   "user_api__note": "Tip: Although we have isolated the script's running environment as much as possible, importing scripts containing malicious behaviors may still affect your system. Please import them carefully.",
   "user_api__readme": "Source writing instructions: ",
-  "user_api__title": "Custom Source Management"
+  "user_api__title": "Custom Source Management",
+  "user_api__update_alert": "Custom source [{name}] found new version:"
 }

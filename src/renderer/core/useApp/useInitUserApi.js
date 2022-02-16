@@ -1,18 +1,21 @@
-import { onBeforeUnmount } from '@renderer/utils/vueTools'
-import { onUserApiStatus, setUserApi, getUserApiList, userApiRequest, userApiRequestCancel } from '@renderer/utils/tools'
+import { onBeforeUnmount, useI18n } from '@renderer/utils/vueTools'
+import { onUserApiStatus, setUserApi, getUserApiList, userApiRequest, userApiRequestCancel, onShowUserApiUpdateAlert } from '@renderer/utils/tools'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
 import music from '@renderer/utils/music'
 import { apiSource, qualityList, userApi } from '@renderer/core/share'
+import { dialog } from '@renderer/plugins/Dialog'
 
 
 export default ({ setting }) => {
+  const { t } = useI18n()
+
   if (/^user_api/.test(setting.value.apiSource)) {
     setUserApi(setting.value.apiSource)
   } else {
     qualityList.value = music.supportQuality[setting.value.apiSource]
   }
 
-  const rUserApiStatus = onUserApiStatus(({ status, message, apiInfo }) => {
+  const rUserApiStatus = onUserApiStatus((event, { status, message, apiInfo }) => {
     userApi.status = status
     userApi.message = message
 
@@ -66,8 +69,16 @@ export default ({ setting }) => {
     }
   })
 
+  const rUserApiShowUpdateAlert = onShowUserApiUpdateAlert((event, { name, message }) => {
+    dialog({
+      message: `${t('user_api__update_alert', { name })}\n${message}`,
+      confirmButtonText: t('ok'),
+    })
+  })
+
   onBeforeUnmount(() => {
     rUserApiStatus()
+    rUserApiShowUpdateAlert()
   })
 
   return () => {

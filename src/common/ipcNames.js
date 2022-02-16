@@ -69,6 +69,8 @@ const names = {
     request_user_api_cancel: 'request_user_api_cancel',
     get_user_api_status: 'get_user_api_status',
     user_api_status: 'user_api_status',
+    user_api_show_update_alert: 'user_api_show_update_alert',
+    user_api_set_allow_update_alert: 'user_api_set_allow_update_alert',
 
     get_lyric: 'get_lyric',
     save_lyric: 'save_lyric',

@@ -13,6 +13,17 @@ export const setUserApi = source => {
   })
 }
 
+export const onShowUserApiUpdateAlert = callback => {
+  rendererOn(NAMES.mainWindow.user_api_show_update_alert, callback)
+  return () => {
+    rendererOff(callback)
+  }
+}
+
+export const setAllowShowUserApiUpdateAlert = (id, enable) => {
+  return rendererInvoke(NAMES.mainWindow.user_api_set_allow_update_alert, { id, enable })
+}
+
 export const saveMyList = data => {
   rendererSend(NAMES.mainWindow.save_playlist, {
     type: 'myList',
@@ -105,7 +116,7 @@ export const getSearchHistoryList = () => {
 }
 
 export const onUserApiStatus = callback => {
-  rendererOn(NAMES.mainWindow.user_api_status, (event, { status, message, apiInfo }) => callback({ status, message, apiInfo }))
+  rendererOn(NAMES.mainWindow.user_api_status, callback)
   return () => {
     rendererOff(callback)
   }
@@ -133,7 +144,7 @@ export const setDesktopLyricInfo = (type, data, info) => {
   })
 }
 export const onGetDesktopLyricInfo = callback => {
-  rendererOn(NAMES.mainWindow.get_lyric_info, (event, info) => callback(event, info))
+  rendererOn(NAMES.mainWindow.get_lyric_info, callback)
   return () => {
     rendererOff(callback)
   }
