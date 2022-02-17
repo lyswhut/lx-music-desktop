@@ -1,5 +1,5 @@
 <template lang="pug">
-div.comment(:class="$style.comment")
+div.comment(:class="$style.comment" ref="dom_container")
   div(:class="$style.commentHeader")
     h3 {{$t('comment__title', { name: title })}}
     div(:class="$style.commentHeaderBtns")
@@ -117,12 +117,22 @@ export default {
         : '^-^'
     },
   },
+  mounted() {
+    this.setWidth()
+    window.addEventListener('resize', this.setWidth)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.setWidth)
+  },
   watch: {
     show(n) {
       if (n) this.handleShowComment()
     },
   },
   methods: {
+    setWidth() {
+      this.$refs.dom_container.style.width = this.$refs.dom_container.clientWidth + 'px'
+    },
     async getComment(musicInfo, page, limit, retryNum = 0) {
       let resp
       try {
