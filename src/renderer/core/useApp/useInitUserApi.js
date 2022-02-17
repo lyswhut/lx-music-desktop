@@ -1,5 +1,6 @@
 import { onBeforeUnmount, useI18n } from '@renderer/utils/vueTools'
 import { onUserApiStatus, setUserApi, getUserApiList, userApiRequest, userApiRequestCancel, onShowUserApiUpdateAlert } from '@renderer/utils/tools'
+import { openUrl } from '@renderer/utils'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
 import music from '@renderer/utils/music'
 import { apiSource, qualityList, userApi } from '@renderer/core/share'
@@ -69,11 +70,27 @@ export default ({ setting }) => {
     }
   })
 
-  const rUserApiShowUpdateAlert = onShowUserApiUpdateAlert((event, { name, message }) => {
-    dialog({
-      message: `${t('user_api__update_alert', { name })}\n${message}`,
-      confirmButtonText: t('ok'),
-    })
+  const rUserApiShowUpdateAlert = onShowUserApiUpdateAlert((event, { name, log, updateUrl }) => {
+    if (updateUrl) {
+      dialog({
+        message: `${t('user_api__update_alert', { name })}\n${log}`,
+        selection: true,
+        showCancel: true,
+        confirmButtonText: t('user_api__update_alert_open_url'),
+        cancelButtonText: t('close'),
+      }).then(confirm => {
+        if (!confirm) return
+        setTimeout(() => {
+          openUrl(updateUrl)
+        }, 300)
+      })
+    } else {
+      dialog({
+        message: `${t('user_api__update_alert', { name })}\n${log}`,
+        selection: true,
+        confirmButtonText: t('ok'),
+      })
+    }
   })
 
   onBeforeUnmount(() => {

@@ -42,7 +42,8 @@ const handleShowUpdateAlert = (event, { data }) => {
   global.lx_event.userApi.showUpdateAlert({
     name: userApi.name,
     description: userApi.description,
-    message: data,
+    log: data.log,
+    updateUrl: data.updateUrl,
   })
 }
 mainOn(USER_API_RENDERER_EVENT_NAME.init, handleInit)

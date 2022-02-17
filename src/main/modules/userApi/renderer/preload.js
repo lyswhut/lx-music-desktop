@@ -121,10 +121,16 @@ const handleInit = (context, info) => {
   })
 }
 
-const handleShowUpdateAlert = (message) => {
-  if (!message || typeof message != 'string') return
-  if (message.length > 1024) message = message.substring(0, 1024) + '...'
-  sendMessage(USER_API_RENDERER_EVENT_NAME.showUpdateAlert, message)
+const handleShowUpdateAlert = (data, resolve, reject) => {
+  if (!data || typeof data != 'object') return reject(new Error('parameter format error.'))
+  if (!data.log || typeof data.log != 'string') return reject(new Error('log is required.'))
+  if (data.updateUrl && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(data.updateUrl) && data.updateUrl.length > 1024) delete data.updateUrl
+  if (data.log.length > 1024) data.log = data.log.substring(0, 1024) + '...'
+  sendMessage(USER_API_RENDERER_EVENT_NAME.showUpdateAlert, {
+    log: data.log,
+    updateUrl: data.updateUrl,
+  })
+  resolve()
 }
 
 contextBridge.exposeInMainWorld('lx', {
@@ -179,10 +185,9 @@ contextBridge.exposeInMainWorld('lx', {
           resolve()
           break
         case EVENT_NAMES.updateAlert:
-          if (isShowedUpdateAlert) return reject(new Error('The update alert can only be called once'))
+          if (isShowedUpdateAlert) return reject(new Error('The update alert can only be called once.'))
           isShowedUpdateAlert = true
-          handleShowUpdateAlert(data)
-          resolve()
+          handleShowUpdateAlert(data, resolve, reject)
           break
         default:
           reject(new Error('Unknown event name: ' + eventName))

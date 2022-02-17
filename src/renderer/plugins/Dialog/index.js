@@ -10,10 +10,11 @@ const defaultOptions = {
   showCancel: false,
   cancelButtonText: '',
   confirmButtonText: '',
+  selection: false,
 }
 
 export const dialog = function(options) {
-  const { message, showCancel, cancelButtonText, confirmButtonText, teleport } =
+  const { message, showCancel, cancelButtonText, confirmButtonText, teleport, selection } =
     Object.assign({}, defaultOptions, typeof options == 'string' ? { message: options } : options || {})
   return new Promise((resolve, reject) => {
     let app = createApp(Dialog, {
@@ -32,6 +33,7 @@ export const dialog = function(options) {
     instance.cancelButtonText = cancelButtonText
     instance.confirmButtonText = confirmButtonText
     instance.teleport = teleport
+    instance.selection = selection
 
     // 挂载
     document.getElementById('container').appendChild(instance.$el)

@@ -140,7 +140,7 @@
   "my_list": "Your Library",
   "no_item": "Nothing's here...",
   "not_agree": "Not accept",
-  "ok": "Ok",
+  "ok": "OK",
   "pagination__next": "Next page",
   "pagination__page": "Page {num}",
   "pagination__prev": "Previous page",
@@ -419,5 +419,6 @@
   "user_api__note": "Tip: Although we have isolated the script's running environment as much as possible, importing scripts containing malicious behaviors may still affect your system. Please import them carefully.",
   "user_api__readme": "Source writing instructions: ",
   "user_api__title": "Custom Source Management",
-  "user_api__update_alert": "Custom source [{name}] found new version:"
+  "user_api__update_alert": "Custom source [{name}] found new version:",
+  "user_api__update_alert_open_url": "Open update address"
 }
