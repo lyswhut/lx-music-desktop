@@ -33,7 +33,9 @@ const useOpenSonglist = () => {
       id: null,
       url: null,
     }
-    if (!data) {
+    if (data) {
+      songlistInfo = data
+    } else {
       songlistInfo.source = paths[0]
       songlistInfo.url = paths[1]
     }
@@ -61,7 +63,9 @@ const usePlaySonglistDetail = () => {
       url: null,
       index: null,
     }
-    if (!data) {
+    if (data) {
+      songlistInfo = data
+    } else {
       songlistInfo.source = paths[0]
       songlistInfo.url = paths[1]
       songlistInfo.index = paths[2]
