@@ -415,6 +415,7 @@
   "user_api__btn_import": "导入",
   "user_api__btn_remove": "移除",
   "user_api__import_file": "选择音乐API脚本文件",
+  "user_api__max_tip": "最多只能同时存在20个源哦🤪\n想要继续导入的话，请先移除一些旧的源腾出位置吧",
   "user_api__noitem": "这里竟然是空的 😲",
   "user_api__note": "提示：虽然我们已经尽可能地隔离了脚本的运行环境，但导入包含恶意行为的脚本仍可能会影响你的系统，请谨慎导入。",
   "user_api__readme": "源编写说明：",

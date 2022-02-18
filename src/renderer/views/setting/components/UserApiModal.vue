@@ -53,6 +53,13 @@ export default {
   },
   methods: {
     handleImport() {
+      if (this.userApi.list.length > 20) {
+        this.$dialog({
+          message: this.$t('user_api__max_tip'),
+          confirmButtonText: this.$t('ok'),
+        })
+        return
+      }
       selectDir({
         title: this.$t('user_api__import_file'),
         properties: ['openFile'],
