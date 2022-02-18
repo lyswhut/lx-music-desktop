@@ -6,7 +6,7 @@
     <div :class="$style.lyricSpace"></div>
   </div>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div :class="[$style.lyricSelectContent, 'select', 'scroll']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText">
+    <div :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText">
       <div v-for="(info, index) in lyric.lines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]">
         <span>{{info.text}}</span>
         <br v-if="info.translation"/>
