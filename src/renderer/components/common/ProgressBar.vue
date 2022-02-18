@@ -125,7 +125,7 @@ export default {
 
 .progress-bar2 {
   background-color: @color-player-progress-bar2;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  // box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   opacity: 0.8;
   will-change: transform;
 }

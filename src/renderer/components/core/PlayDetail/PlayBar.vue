@@ -90,7 +90,7 @@ export default {
 
 .progress-content {
   position: relative;
-  height: 15px;
+  height: 16px;
   padding: 5px 0;
   width: 100%;
 }
