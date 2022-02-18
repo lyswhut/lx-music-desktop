@@ -11,7 +11,7 @@ div(:class="$style.container")
           h3(:title="listDetail.info.name || selectListInfo.name") {{listDetail.info.name || selectListInfo.name}}
           p(:title="listDetail.info.desc || selectListInfo.desc") {{listDetail.info.desc || selectListInfo.desc}}
         div(:class="$style.songListHeaderRight")
-          base-btn(:class="$style.headerRightBtn" :disabled="detailLoading" @click="playSongListDetail") {{$t('list__play')}}
+          base-btn(:class="$style.headerRightBtn" :disabled="detailLoading" @click="playSongListDetail()") {{$t('list__play')}}
           base-btn(:class="$style.headerRightBtn" :disabled="detailLoading" @click="addSongListDetail") {{$t('list__collect')}}
           base-btn(:class="$style.headerRightBtn" @click="hideListDetail") {{$t('back')}}
       material-online-list(ref="songList" @play-list="playSongListDetail" @toggle-page="handleToggleListDetailPage" :page="listDetail.page" :limit="listDetail.limit" :total="listDetail.total"
