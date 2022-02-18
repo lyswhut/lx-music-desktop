@@ -3,6 +3,7 @@ module.exports = {
   reject: [
     'electron',
     'electron-builder',
+    'electron-updater',
     'chalk',
   ],
   // target: 'newest',
