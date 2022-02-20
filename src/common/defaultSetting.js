@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.50',
+  version: '1.0.51',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -102,6 +102,7 @@ const defaultSetting = {
   sourceId: 'kw',
   apiSource: 'temp',
   sourceNameType: 'alias',
+  font: '',
   isShowAnimation: true,
   randomAnimate: true,
   ignoreVersion: null,

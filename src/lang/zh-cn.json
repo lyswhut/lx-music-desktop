@@ -210,6 +210,7 @@
   "setting__basic_control_btn_position": "控制按钮位置",
   "setting__basic_control_btn_position_left": "左边",
   "setting__basic_control_btn_position_right": "右边",
+  "setting__basic_font": "字体",
   "setting__basic_lang": "语言",
   "setting__basic_lang_title": "软件显示的语言",
   "setting__basic_show_animation": "显示切换动画",

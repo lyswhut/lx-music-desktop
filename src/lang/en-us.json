@@ -210,6 +210,7 @@
   "setting__basic_control_btn_position": "Control Button Position",
   "setting__basic_control_btn_position_left": "Left",
   "setting__basic_control_btn_position_right": "Right",
+  "setting__basic_font": "Font",
   "setting__basic_lang": "Language",
   "setting__basic_lang_title": "The language displayed in the software",
   "setting__basic_show_animation": "Show switching animation",

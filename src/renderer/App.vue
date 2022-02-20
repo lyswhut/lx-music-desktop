@@ -20,13 +20,20 @@ import useApp from '@renderer/core/useApp'
 export default {
   setup() {
     const theme = useRefGetter('theme')
+    const font = useRefGetter('font')
 
     const dom_root = document.getElementById('root')
 
     watch(theme, (val) => {
       dom_root.className = val
+    }, {
+      immediate: true,
     })
-    dom_root.className = theme.value
+    watch(font, (val) => {
+      document.documentElement.style.fontFamily = val
+    }, {
+      immediate: true,
+    })
 
     useApp()
 

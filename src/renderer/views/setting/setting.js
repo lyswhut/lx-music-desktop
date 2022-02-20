@@ -75,6 +75,7 @@ export const currentStting = ref({
   langId: 'cns',
   themeId: 0,
   sourceId: 0,
+  font: '',
   isShowAnimation: true,
   randomAnimate: true,
   isAgreePact: false,
