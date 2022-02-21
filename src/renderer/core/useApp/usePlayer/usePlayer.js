@@ -195,11 +195,9 @@ export default ({ setting }) => {
 
   const setPlayStatus = () => {
     setPlay(true)
-    setTitle(`${musicInfo.name} - ${musicInfo.singer}`)
   }
   const setPauseStatus = () => {
     setPlay(false)
-    setTitle()
     if (global.isPlayedStop) handlePause()
   }
   const setStopStatus = () => {
@@ -282,6 +280,7 @@ export default ({ setting }) => {
       name: musicInfo.name,
       album: musicInfo.albumName,
     })
+    setTitle(`${musicInfo.name} - ${musicInfo.singer}`)
   }
 
   const handelStop = () => {

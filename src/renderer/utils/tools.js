@@ -310,3 +310,16 @@ export const hotKeySetConfig = (config) => {
 export const hotKeyGetStatus = () => {
   return rendererInvoke(NAMES.hotKey.status)
 }
+
+export const onTaskbarThumbarClick = callback => {
+  rendererOn(NAMES.mainWindow.taskbar_on_thumbar_button_click, callback)
+  return () => {
+    rendererOff(callback)
+  }
+}
+export const setTaskbarThumbnailClip = (clip) => {
+  return rendererInvoke(NAMES.mainWindow.taskbar_set_thumbnail_clip, clip)
+}
+export const setTaskbarThumbarButtons = (buttons) => {
+  rendererSend(NAMES.mainWindow.taskbar_set_thumbar_buttons, buttons)
+}

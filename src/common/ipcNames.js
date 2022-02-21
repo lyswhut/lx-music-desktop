@@ -86,6 +86,9 @@ const names = {
     sync_action_list: 'sync_action_list',
     sync_list: 'sync_list',
 
+    taskbar_set_thumbar_buttons: 'taskbar_set_thumbar_buttons',
+    taskbar_set_thumbnail_clip: 'taskbar_set_thumbnail_clip',
+    taskbar_on_thumbar_button_click: 'taskbar_on_thumbar_button_click',
   },
   winLyric: {
     close: 'close',
