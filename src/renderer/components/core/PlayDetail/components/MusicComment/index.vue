@@ -15,15 +15,16 @@ div.comment(:class="$style.comment" ref="dom_container")
       button(type="button" @click="handleToggleTab('hot')" :class="[$style.commentType, { [$style.active]: tabActiveId == 'hot' }]") {{$t('comment__hot_title')}} ({{hotComment.total}})
       button(type="button" @click="handleToggleTab('new')" :class="[$style.commentType, { [$style.active]: tabActiveId == 'new' }]") {{$t('comment__new_title')}} ({{newComment.total}})
     main(:class="$style.tab_main" ref="dom_tabMain")
-      div(:class="$style.tab_container")
-        div.scroll(:class="$style.tab_content" ref="dom_commentHot")
+      div(:class="$style.tab_content")
+        div.scroll(:class="$style.tab_content_scroll" ref="dom_commentHot")
           p(:class="$style.commentLabel" style="cursor: pointer;" v-if="hotComment.isLoadError" @click="handleGetHotComment(currentMusicInfo, hotComment.nextPage, hotComment.limit)") {{$t('comment__hot_load_error')}}
           p(:class="$style.commentLabel" v-else-if="hotComment.isLoading && !hotComment.list.length") {{$t('comment__hot_loading')}}
           comment-floor(v-if="!hotComment.isLoadError && hotComment.list.length" :class="[$style.commentFloor, hotComment.isLoading ? $style.loading : null]" :comments="hotComment.list")
           p(:class="$style.commentLabel" v-else-if="!hotComment.isLoadError && !hotComment.isLoading") {{$t('comment__no_content')}}
           div(:class="$style.pagination")
             material-pagination(:count="hotComment.total" :btnLength="5" :limit="hotComment.limit" :page="hotComment.page" @btn-click="handleToggleHotCommentPage")
-        div.scroll(:class="$style.tab_content" ref="dom_commentNew")
+      div(:class="$style.tab_content")
+        div.scroll(:class="$style.tab_content_scroll" ref="dom_commentNew")
           p(:class="$style.commentLabel" style="cursor: pointer;" v-if="newComment.isLoadError" @click="handleGetNewComment(currentMusicInfo, newComment.nextPage, newComment.limit)") {{$t('comment__new_load_error')}}
           p(:class="$style.commentLabel" v-else-if="newComment.isLoading && !newComment.list.length") {{$t('comment__new_loading')}}
           comment-floor(v-if="!newComment.isLoadError && newComment.list.length" :class="[$style.commentFloor, newComment.isLoading ? $style.loading : null]" :comments="newComment.list")
@@ -34,7 +35,7 @@ div.comment(:class="$style.comment" ref="dom_container")
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo, scrollXTo } from '@renderer/utils'
+import { scrollTo } from '@renderer/utils'
 import music from '@renderer/utils/music'
 import CommentFloor from './CommentFloor'
 
@@ -222,10 +223,10 @@ export default {
       if (this.tabActiveId == id) return
       switch (id) {
         case 'hot':
-          scrollXTo(this.$refs.dom_tabMain, 0)
+          this.$refs.dom_tabMain.scrollLeft = 0
           break
         case 'new':
-          scrollXTo(this.$refs.dom_tabMain, this.$refs.dom_tabMain.clientWidth)
+          this.$refs.dom_tabMain.scrollLeft = this.$refs.dom_tabMain.clientWidth
           break
       }
       this.tabActiveId = id
@@ -295,22 +296,23 @@ export default {
 }
 .tab_main {
   flex: auto;
-  // display: flex;
-  // flex-flow: row nowrap;
-  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
   overflow: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 }
-.tab_container {
+.tab_content {
+  flex-shrink: 0;
+  width: 100%;
+  position: relative;
+}
+.tab_content_scroll {
   position: absolute;
   left: 0;
   top: 0;
-  width: 200%;
-  height: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-}
-.tab_content {
   width: 100%;
+  height: 100%;
   padding-left: 15px;
   padding-right: 10px;
 }
