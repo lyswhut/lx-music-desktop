@@ -15,7 +15,7 @@ const getIconPath = name => {
 }
 
 const buttonsFlags = {
-  empty: false,
+  empty: true,
   collect: false,
   play: false,
   next: true,

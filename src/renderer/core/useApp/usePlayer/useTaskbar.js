@@ -13,7 +13,7 @@ export default () => {
   // const setLockDesktopLyric = useCommit('setLockDesktopLyric')
 
   const buttons = {
-    empty: false,
+    empty: true,
     collect: false,
     play: false,
     prev: true,
@@ -25,7 +25,7 @@ export default () => {
     setTaskbarThumbarButtons(buttons)
   }
   const updateCollectStatus = () => {
-    let status = getList(loveList.id).some(musicInfo => playMusicInfo.musicInfo.songmid == musicInfo.songmid)
+    let status = !!playMusicInfo.musicInfo && getList(loveList.id).some(musicInfo => playMusicInfo.musicInfo.songmid == musicInfo.songmid)
     if (buttons.collect == status) return false
     buttons.collect = status
     return true
@@ -41,8 +41,9 @@ export default () => {
     buttons.play = false
     setButtons()
   }
-  const handleStop = () => {
+  const handleStop = async() => {
     if (playMusicInfo.musicInfo != null) return
+    if (buttons.collect) buttons.collect = false
     buttons.empty = true
     setButtons()
   }
@@ -120,6 +121,8 @@ export default () => {
     // const setting = store.getters.setting
     // buttons.lrc = setting.desktopLyric.enable
     // buttons.lockLrc = setting.desktopLyric.isLock
+    updateCollectStatus()
+    if (playMusicInfo.musicInfo != null) buttons.empty = false
     setButtons()
   }
 }
