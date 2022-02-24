@@ -22,6 +22,7 @@
 - 修复下载功能的歌词换源时会进入死循环的问题
 - 修复某些歌曲无法下载的问题
 - 修复windows平台下软件目录存在`portable`文件夹时，仍会创建`C:\Users\<user>\AppData\Roaming\lx-music-desktop\Dictionaries\en-US-9-0.bdic`文件的问题，现在不会再创建文件，但仍会创建空目录（Electron的问题，目前暂无解决方法）
+- 修复播放器的停止逻辑问题
 
 ### 其他
 

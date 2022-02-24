@@ -27,7 +27,6 @@ import {
   setMusicInfo,
   musicInfoItem,
   playMusicInfo,
-  playInfo,
   setPlayList,
   setPlayMusicInfo,
   playedList,
@@ -227,7 +226,7 @@ export default ({ setting }) => {
       return
     }
 
-    if (playInfo.musicInfo) {
+    if (playMusicInfo.musicInfo) {
       setPlayerStop()
       window.eventHub.emit(eventPlayerNames.pause)
       setStopStatus()
@@ -285,6 +284,7 @@ export default ({ setting }) => {
 
   const handelStop = () => {
     setPlayerStop()
+    setPlayMusicInfo(playMusicInfo.listId, null)
     window.eventHub.emit(eventPlayerNames.stop)
   }
 
