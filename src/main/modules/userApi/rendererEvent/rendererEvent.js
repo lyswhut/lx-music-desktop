@@ -3,6 +3,7 @@ const { mainOn, mainSend } = require('@common/ipc')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 const { createWindow } = require('../main')
 const { getUserApis } = require('../utils')
+const { openDevTools } = require('@main/utils')
 
 let userApi
 let status = { status: true }
@@ -32,9 +33,7 @@ const handleResponse = (event, { status, data: { requestKey, result }, message }
 }
 const handleOpenDevTools = () => {
   if (global.modules.userApiWindow) {
-    global.modules.userApiWindow.webContents.openDevTools({
-      mode: 'undocked',
-    })
+    openDevTools(global.modules.userApiWindow.webContents)
   }
 }
 const handleShowUpdateAlert = (event, { data }) => {

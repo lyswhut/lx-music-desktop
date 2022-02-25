@@ -41,3 +41,9 @@ exports.initSetting = (isShowErrorAlert = true) => {
   global.appSetting = info.setting
   global.appSettingVersion = info.version
 }
+
+exports.openDevTools = webContents => {
+  webContents.openDevTools({
+    mode: 'undocked',
+  })
+}
