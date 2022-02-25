@@ -30,6 +30,7 @@ module.exports = mainWindow => {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
     global.lx_event.mainWindow.readyToShow()
+    if (global.envParams.cmdParams.debug) global.modules.mainWindow.webContents.openDevTools()
   })
 
   mainWindow.on('show', () => {
