@@ -6,6 +6,38 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.18.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.17.1...v1.18.0) - 2022-02-26
+
+### 新增
+
+- 新增“双击列表里的歌曲时自动切换到当前列表播放”设置，此功能仅对歌单、排行榜有效，默认关闭
+- 新增打开收藏的在线列表的对应平台详情页功能，可以在我的列表-列表右键菜单中使用
+- 新增定时暂停播放功能，由于此功能大多数人可能不常用，所以将其放在设置-基本设置中
+- 新增任务栏缩略图工具栏控制按钮（此功能仅在Windows平台可用），按钮分别为收藏/取消收藏（将歌曲添加到“我的收藏”列表）、上一曲、播放/暂停、下一曲
+- 新增设置-基本设置-软件字体设置，此设置可用于设置主界面的字体（已知的问题：Windows 7 下可能会出现字体列表为空的情况，这是当前系统的 Powershell 版本小于5.1导致的，请自行尝试看常见解决）
+- 新增Scheme URL对音乐搜索的调用支持，详情看常见问题-Scheme URL支持
+- 新增Scheme URL以url传参的方式调用，详情看常见问题-Scheme URL支持
+- 自定义源新增更新弹窗方法，同时自定义源管理新增是否允许源显示更新弹窗设置（出于防止滥用考虑），当源作者想要通知用户源已更新时，可以调用此方法弹窗告诉用户，调用说明看常见问题-自定义源部分
+
+### 优化
+
+- 过滤tx源某些不支持播放的歌曲，解决播放此类内容会导致意外的问题
+- 把歌曲的热门评论与最新评论拆分成两个列表显示
+
+### 修复
+
+- 修复排行榜名字右击菜单的播放功能在播放非激活的列表时的列表获取问题
+- 修复修改列表名时无法使用`Ctrl`键的问题
+- 修复wy源某些歌曲获取歌词翻译的问题处理
+- 修复下载功能的歌词换源时会进入死循环的问题
+- 修复某些歌曲无法下载的问题
+- 修复windows平台下软件目录存在`portable`文件夹时，仍会创建`C:\Users\<user>\AppData\Roaming\lx-music-desktop\Dictionaries\en-US-9-0.bdic`文件的问题，现在不会再创建文件，但仍会创建空目录（Electron的问题，目前暂无解决方法）
+- 修复播放器的停止逻辑问题
+
+### 其他
+
+- 更新electron到v13.6.9
+
 ## [1.17.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.17.0...v1.17.1) - 2022-01-28
 
 ### 优化
