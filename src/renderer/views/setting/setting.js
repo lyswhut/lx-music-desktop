@@ -8,6 +8,8 @@ export const currentStting = ref({
     volume: 1,
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
+    waitPlayEndStop: true,
+    waitPlayEndStopTime: 0,
   },
   desktopLyric: {
     enable: false,
@@ -73,6 +75,7 @@ export const currentStting = ref({
   langId: 'cns',
   themeId: 0,
   sourceId: 0,
+  font: '',
   isShowAnimation: true,
   randomAnimate: true,
   isAgreePact: false,

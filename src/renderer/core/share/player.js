@@ -104,7 +104,7 @@ export const getPlayIndex = (listId, musicInfo, isTempPlay) => {
   }
 
   const list = getList(listId)
-  if (list?.length) {
+  if (list?.length && musicInfo) {
     if (musicInfo.key) { // 已下载的歌曲
       const currentKey = musicInfo.key
       playIndex = list.findIndex(m => m.key == currentKey)

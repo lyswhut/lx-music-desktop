@@ -93,7 +93,7 @@ const easeInOutQuad = (t, b, c, d) => {
   t--
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
-const handleScroll = (element, to, duration = 300, fn = () => {}) => {
+const handleScrollY = (element, to, duration = 300, fn = () => {}) => {
   if (!element) return fn()
   const start = element.scrollTop || element.scrollY || 0
   let cancel = false
@@ -148,10 +148,72 @@ export const scrollTo = (element, to, duration = 300, fn = () => {}, delay = 0) 
     }
     timeout = setTimeout(() => {
       timeout = null
-      scrollCancelFn = handleScroll(element, to, duration, fn, delay)
+      scrollCancelFn = handleScrollY(element, to, duration, fn, delay)
     }, delay)
   } else {
-    cancelFn = handleScroll(element, to, duration, fn, delay)
+    cancelFn = handleScrollY(element, to, duration, fn, delay)
+  }
+  return cancelFn
+}
+const handleScrollX = (element, to, duration = 300, fn = () => {}) => {
+  if (!element) return fn()
+  const start = element.scrollLeft || element.scrollX || 0
+  let cancel = false
+  if (to > start) {
+    let maxScrollLeft = element.scrollWidth - element.clientWidth
+    if (to > maxScrollLeft) to = maxScrollLeft
+  } else if (to < start) {
+    if (to < 0) to = 0
+  } else return fn()
+  const change = to - start
+  const increment = 10
+  if (!change) return fn()
+
+  let currentTime = 0
+  let val
+
+  const animateScroll = () => {
+    currentTime += increment
+    val = parseInt(easeInOutQuad(currentTime, start, change, duration))
+    if (element.scrollTo) {
+      element.scrollTo(val, 0)
+    } else {
+      element.scrollLeft = val
+    }
+    if (currentTime < duration) {
+      if (cancel) return fn()
+      setTimeout(animateScroll, increment)
+    } else {
+      fn()
+    }
+  }
+  animateScroll()
+  return () => {
+    cancel = true
+  }
+}
+/**
+ * 设置滚动条位置
+ * @param {*} element 要设置滚动的容器 dom
+ * @param {*} to 滚动的目标位置
+ * @param {*} duration 滚动完成时间 ms
+ * @param {*} fn 滚动完成后的回调
+ * @param {*} delay 延迟执行时间
+ */
+export const scrollXTo = (element, to, duration = 300, fn = () => {}, delay = 0) => {
+  let cancelFn
+  let timeout
+  if (delay) {
+    let scrollCancelFn
+    cancelFn = () => {
+      timeout == null ? scrollCancelFn && scrollCancelFn() : clearTimeout(timeout)
+    }
+    timeout = setTimeout(() => {
+      timeout = null
+      scrollCancelFn = handleScrollX(element, to, duration, fn, delay)
+    }, delay)
+  } else {
+    cancelFn = handleScrollX(element, to, duration, fn, delay)
   }
   return cancelFn
 }

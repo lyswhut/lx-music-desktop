@@ -6,6 +6,9 @@ export default {
     let theme = themes.find(theme => theme.id == state.setting.themeId)
     return (theme && theme.className) || ''
   },
+  font(state) {
+    return state.setting.font
+  },
   themes(state) {
     return {
       active: state.setting.themeId,

@@ -1,4 +1,4 @@
-
+const { isWin } = require('@common/utils')
 // require('./request')
 // require('./appName')
 require('./progressBar')
@@ -22,6 +22,8 @@ require('./musicUrl')
 require('./systemFonts')
 require('./wait')
 require('./openDevtools')
+
+if (isWin) require('./taskbar')
 
 // require('./kw_decodeLyric')
 

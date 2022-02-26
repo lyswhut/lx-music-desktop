@@ -32,6 +32,7 @@ const state = {
 }
 
 const playMusic = () => {
+  if (global.isPlayedStop) global.isPlayedStop = false
   window.eventHub.emit(eventPlayerNames.playMusic)
 }
 

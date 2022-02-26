@@ -19,7 +19,7 @@
       <span :class="$style.listsLabel">{{loveList.name}}</span>
     </li>
     <li class="user-list"
-      :class="[$style.listsItem, {[$style.active]:item.id == listId}, {[$style.clicked]: listsData.rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]" :data-index="index"
+      :class="[$style.listsItem, {[$style.active]: item.id == listId}, {[$style.clicked]: listsData.rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]" :data-index="index"
       @contextmenu="handleListsItemRigthClick($event, index)" :tips="item.name" v-for="(item, index) in userLists" :key="item.id"
     >
       <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">{{item.name}}</span>
@@ -41,7 +41,7 @@
 
 <script>
 import { mapMutations, mapActions } from 'vuex'
-import { openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName } from '@renderer/utils'
+import { openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName, openUrl } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import DuplicateMusicModal from './DuplicateMusicModal'
 import ListSortModal from './ListSortModal'
@@ -97,6 +97,7 @@ export default {
           rename: true,
           duplicate: true,
           sort: true,
+          sourceDetail: true,
           import: true,
           export: true,
           sync: false,
@@ -140,6 +141,11 @@ export default {
           name: this.$t('lists__duplicate'),
           action: 'duplicate',
           disabled: !this.listsData.itemMenuControl.duplicate,
+        },
+        {
+          name: this.$t('lists__source_detail'),
+          action: 'sourceDetail',
+          disabled: !this.listsData.itemMenuControl.sourceDetail,
         },
         {
           name: this.$t('lists__import'),
@@ -197,8 +203,17 @@ export default {
     ...mapActions('leaderboard', {
       getBoardListAll: 'getListAll',
     }),
-    handle_key_mod_down() {
+    handle_key_mod_down(event) {
       if (!this.keyEvent.isModDown) {
+        // console.log(event)
+        switch (event.event.target.tagName) {
+          case 'INPUT':
+          case 'SELECT':
+          case 'TEXTAREA':
+            return
+          default: if (event.event.target.isContentEditable) return
+        }
+
         this.keyEvent.isModDown = true
         this.setDisabledSort(false)
         const dom_target = this.dom_lists_list.querySelector('.' + this.$style.editing)
@@ -279,6 +294,7 @@ export default {
           break
       }
       this.listsData.itemMenuControl.sort = !!getList(this.getTargetListInfo(index)?.id).length
+      this.listsData.itemMenuControl.sourceDetail = this.assertSupportDetail(source, index)
       this.listsData.rightClickItemIndex = index
       this.listsData.menuLocation.x = event.currentTarget.offsetLeft + event.offsetX
       this.listsData.menuLocation.y = event.currentTarget.offsetTop + event.offsetY - this.dom_lists_list.scrollTop
@@ -312,6 +328,9 @@ export default {
         case 'sort':
           this.selectedSortListInfo = this.getTargetListInfo(index)
           this.isShowListSortModal = true
+          break
+        case 'sourceDetail':
+          this.openSourceDetailPage(index)
           break
         case 'import':
           this.handleImportList(index)
@@ -372,6 +391,33 @@ export default {
           break
       }
       return list
+    },
+    assertSupportDetail(source, index) {
+      if (source) {
+        const { sourceListId } = this.userLists[index]
+        if (sourceListId) {
+          if (/board__/.test(sourceListId)) {
+            // const id = sourceListId.replace(/board__/, '')
+            return !!musicSdk[source]?.leaderboard?.getDetailPageUrl
+          } else {
+            return !!musicSdk[source]?.songList?.getDetailPageUrl
+          }
+        }
+      }
+      return false
+    },
+    openSourceDetailPage(index) {
+      const { source, sourceListId } = this.userLists[index]
+      if (!sourceListId) return
+      let url
+      if (/board__/.test(sourceListId)) {
+        const id = sourceListId.replace(/board__/, '')
+        url = musicSdk[source].leaderboard.getDetailPageUrl(id)
+      } else {
+        url = musicSdk[source].songList.getDetailPageUrl(sourceListId)
+      }
+      if (!url) return
+      openUrl(url)
     },
     handleExportList(index) {
       const list = this.getTargetListInfo(index)

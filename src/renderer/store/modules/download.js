@@ -162,6 +162,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
     reqPromise = Promise.reject(err)
   }
   return reqPromise.catch(err => {
+    // console.log(err)
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
@@ -169,7 +170,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
         for (const item of otherSource) {
           if (retryedSource.includes(item.source)) continue
           console.log('try toggle to: ', item.source, item.name, item.singer, item.interval)
-          return getLyric.call(this, item, retryedSource, originMusic)
+          return handleGetLyric.call(this, item, retryedSource, originMusic)
         }
       }
       return Promise.reject(err)
@@ -438,6 +439,14 @@ const actions = {
           dispatch('startTask')
           return
         }
+        if (err.message?.startsWith('Resume failed')) {
+          fs.unlink(downloadInfo.metadata.filePath, err => {
+            if (err) return commit('onError', { downloadInfo, errorMsg: '删除不匹配的文件失败：' + err.message })
+            dls[downloadInfo.key].start()
+            commit('setStatusText', { downloadInfo, text: '正在重试' })
+          })
+          return
+        }
         if (err.code == 'ENOTFOUND') {
           commit('onError', { downloadInfo, errorMsg: '链接失效' })
           refreshUrl.call(_this, commit, downloadInfo, rootState.setting.download.isUseOtherSource)
@@ -561,6 +570,7 @@ const actions = {
         filePath: path.join(rootState.setting.download.savePath, downloadInfo.metadata.fileName),
       })
       dl.updateSaveInfo(rootState.setting.download.savePath, downloadInfo.metadata.fileName)
+      if (tryNum[downloadInfo.key]) tryNum[downloadInfo.key] = 0
       try {
         await dl.start()
       } catch (error) {

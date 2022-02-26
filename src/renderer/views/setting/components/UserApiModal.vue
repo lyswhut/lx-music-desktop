@@ -7,6 +7,8 @@ material-modal(:show="modelValue" bg-close @close="handleClose" teleport="#view"
         div(:class="$style.listLeft")
           h3 {{api.name}}
           p {{api.description}}
+          div
+            base-checkbox(:class="$style.checkbox" :id="`user_api_${api.id}`" v-model="api.allowShowUpdateAlert" @change="handleChangeAllowUpdateAlert(api, $event)" :label="$t('user_api__allow_show_update_alert')")
         base-btn(:class="$style.listBtn" outline :tips="$t('user_api__btn_remove')" @click.stop="handleRemove(index)")
           svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 212.982 212.982' space='preserve' v-once)
             use(xlink:href='#icon-delete')
@@ -29,6 +31,7 @@ import { promises as fsPromises } from 'fs'
 import { selectDir, openUrl } from '@renderer/utils'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
 import { userApi, apiSource } from '@renderer/core/share'
+import { setAllowShowUserApiUpdateAlert } from '@renderer/utils/tools'
 
 export default {
   props: {
@@ -50,6 +53,13 @@ export default {
   },
   methods: {
     handleImport() {
+      if (this.userApi.list.length > 20) {
+        this.$dialog({
+          message: this.$t('user_api__max_tip'),
+          confirmButtonText: this.$t('ok'),
+        })
+        return
+      }
       selectDir({
         title: this.$t('user_api__import_file'),
         properties: ['openFile'],
@@ -84,6 +94,9 @@ export default {
     handleOpenUrl(url) {
       openUrl(url)
     },
+    handleChangeAllowUpdateAlert(api, enable) {
+      setAllowShowUserApiUpdateAlert(api.id, enable)
+    },
   },
 }
 </script>
@@ -112,6 +125,12 @@ export default {
 
 .name {
   color: @color-theme;
+}
+
+.checkbox {
+  margin-top: 3px;
+  font-size: 14px;
+  opacity: .86;
 }
 
 .content {

@@ -3,6 +3,7 @@ export default {
     state.setting.themeId = val
   },
   setSearchSource(state, { searchSource, tempSearchSource }) {
+    console.log(searchSource, tempSearchSource)
     if (searchSource != null) state.setting.search.searchSource = searchSource
     if (tempSearchSource != null) state.setting.search.tempSearchSource = tempSearchSource
   },

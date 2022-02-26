@@ -3,6 +3,7 @@ const { mainOn, mainSend } = require('@common/ipc')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 const { createWindow } = require('../main')
 const { getUserApis } = require('../utils')
+const { openDevTools } = require('@main/utils')
 
 let userApi
 let status = { status: true }
@@ -32,14 +33,22 @@ const handleResponse = (event, { status, data: { requestKey, result }, message }
 }
 const handleOpenDevTools = () => {
   if (global.modules.userApiWindow) {
-    global.modules.userApiWindow.webContents.openDevTools({
-      mode: 'undocked',
-    })
+    openDevTools(global.modules.userApiWindow.webContents)
   }
+}
+const handleShowUpdateAlert = (event, { data }) => {
+  if (!userApi.allowShowUpdateAlert) return
+  global.lx_event.userApi.showUpdateAlert({
+    name: userApi.name,
+    description: userApi.description,
+    log: data.log,
+    updateUrl: data.updateUrl,
+  })
 }
 mainOn(USER_API_RENDERER_EVENT_NAME.init, handleInit)
 mainOn(USER_API_RENDERER_EVENT_NAME.response, handleResponse)
 mainOn(USER_API_RENDERER_EVENT_NAME.openDevTools, handleOpenDevTools)
+mainOn(USER_API_RENDERER_EVENT_NAME.showUpdateAlert, handleShowUpdateAlert)
 
 exports.loadApi = async apiId => {
   if (!apiId) return global.lx_event.userApi.status(status = { status: false, message: 'api id is null' })
@@ -82,3 +91,8 @@ exports.request = ({ requestKey, data }) => new Promise((resolve, reject) => {
 })
 
 exports.getStatus = () => status
+
+exports.setAllowShowUpdateAlert = (id, enable) => {
+  if (!userApi || userApi.id != id) return
+  userApi.allowShowUpdateAlert = enable
+}

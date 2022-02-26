@@ -27,7 +27,6 @@ import {
   setMusicInfo,
   musicInfoItem,
   playMusicInfo,
-  playInfo,
   setPlayList,
   setPlayMusicInfo,
   playedList,
@@ -103,11 +102,13 @@ export default ({ setting }) => {
         setAllStatus('Try toggle source...')
       },
     }).then(url => {
+      if (global.isPlayedStop) return
       if (targetSong !== musicInfoItem.value || isPlay.value || type != getPlayType(setting.value.player.highQuality, musicInfoItem.value)) return
       setMusicInfo({ url })
       setResource(url)
     }).catch(err => {
       // console.log('err', err.message)
+      if (global.isPlayedStop) return
       if (targetSong !== musicInfoItem.value || isPlay.value) return
       if (err.message == requestMsg.cancelRequest) return
       if (!isRetryed) return setUrl(targetSong, isRefresh, true)
@@ -193,11 +194,10 @@ export default ({ setting }) => {
 
   const setPlayStatus = () => {
     setPlay(true)
-    setTitle(`${musicInfo.name} - ${musicInfo.singer}`)
   }
   const setPauseStatus = () => {
     setPlay(false)
-    setTitle()
+    if (global.isPlayedStop) handlePause()
   }
   const setStopStatus = () => {
     setPlay(false)
@@ -226,7 +226,7 @@ export default ({ setting }) => {
       return
     }
 
-    if (playInfo.musicInfo) {
+    if (playMusicInfo.musicInfo) {
       setPlayerStop()
       window.eventHub.emit(eventPlayerNames.pause)
       setStopStatus()
@@ -279,20 +279,27 @@ export default ({ setting }) => {
       name: musicInfo.name,
       album: musicInfo.albumName,
     })
+    setTitle(`${musicInfo.name} - ${musicInfo.singer}`)
   }
 
   const handelStop = () => {
     setPlayerStop()
+    setPlayMusicInfo(playMusicInfo.listId, null)
     window.eventHub.emit(eventPlayerNames.stop)
   }
 
   const handleEnded = () => {
     setAllStatus(t('player__end'))
+
+    if (global.isPlayedStop) return
     playNext()
   }
 
-  // 播放、暂停播放切换
-  const handleTogglePlay = async() => {
+  const handlePause = () => {
+    setPlayerPause()
+  }
+
+  const handlePlay = async() => {
     if (playMusicInfo.musicInfo == null) return
     if (isPlayerEmpty()) {
       if (playMusicInfo.listId == 'download') {
@@ -313,11 +320,22 @@ export default ({ setting }) => {
       }
       return
     }
+    setPlayerPlay()
+  }
+
+  // 播放、暂停播放切换
+  const handleTogglePlay = () => {
+    if (global.isPlayedStop) global.isPlayedStop = false
     if (isPlay.value) {
-      setPlayerPause()
+      handlePause()
     } else {
-      setPlayerPlay()
+      handlePlay()
     }
+  }
+
+  const handlePlayedStop = () => {
+    clearDelayNextTimeout()
+    clearLoadTimeout()
   }
 
   watch(() => setting.value.player.togglePlayMethod, newValue => {
@@ -339,13 +357,16 @@ export default ({ setting }) => {
   window.eventHub.on(eventPlayerNames.stop, setStopStatus)
 
   window.eventHub.on(eventPlayerNames.playMusic, playMusic)
+  window.eventHub.on(eventPlayerNames.setPlay, handlePlay)
+  window.eventHub.on(eventPlayerNames.setPause, handlePause)
+  window.eventHub.on(eventPlayerNames.setStop, handelStop)
   window.eventHub.on(eventPlayerNames.setTogglePlay, handleTogglePlay)
   window.eventHub.on(eventPlayerNames.setPlayPrev, playPrev)
   window.eventHub.on(eventPlayerNames.setPlayNext, playNext)
   window.eventHub.on(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
-  window.eventHub.on(eventPlayerNames.setStop, handelStop)
 
   window.eventHub.on(eventPlayerNames.player_ended, handleEnded)
+  window.eventHub.on(eventPlayerNames.playedStop, handlePlayedStop)
 
 
   onBeforeUnmount(() => {
@@ -360,11 +381,14 @@ export default ({ setting }) => {
 
     window.eventHub.off(eventPlayerNames.playMusic, playMusic)
     window.eventHub.off(eventPlayerNames.setTogglePlay, handleTogglePlay)
+    window.eventHub.off(eventPlayerNames.setPlay, handlePlay)
+    window.eventHub.off(eventPlayerNames.setPause, handlePause)
+    window.eventHub.off(eventPlayerNames.setStop, handelStop)
     window.eventHub.off(eventPlayerNames.setPlayPrev, playPrev)
     window.eventHub.off(eventPlayerNames.setPlayNext, playNext)
     window.eventHub.off(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
-    window.eventHub.off(eventPlayerNames.setStop, handelStop)
 
     window.eventHub.off(eventPlayerNames.player_ended, handleEnded)
+    window.eventHub.off(eventPlayerNames.playedStop, handlePlayedStop)
   })
 }

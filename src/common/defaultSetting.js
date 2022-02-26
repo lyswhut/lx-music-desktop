@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.48',
+  version: '1.0.51',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -16,6 +16,8 @@ const defaultSetting = {
     isPlayLxlrc: true,
     isSavePlayTime: false,
     audioVisualization: false,
+    waitPlayEndStop: true,
+    waitPlayEndStopTime: '',
   },
   desktopLyric: {
     enable: false,
@@ -36,6 +38,7 @@ const defaultSetting = {
     },
   },
   list: {
+    isClickPlayList: false,
     isShowAlbumName: true,
     isShowSource: true,
     isSaveScrollLocation: true,
@@ -99,6 +102,7 @@ const defaultSetting = {
   sourceId: 'kw',
   apiSource: 'temp',
   sourceNameType: 'alias',
+  font: '',
   isShowAnimation: true,
   randomAnimate: true,
   ignoreVersion: null,

@@ -191,4 +191,8 @@ export default {
       }
     })
   },
+
+  // getDetailPageUrl(id) {
+  //   return `http://www.kuwo.cn/rankList/${id}`
+  // },
 }

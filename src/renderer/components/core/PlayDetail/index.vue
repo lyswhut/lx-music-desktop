@@ -162,25 +162,25 @@ export default {
   }
 
 }
-.bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-size: 110% 110%;
-  filter: blur(60px);
-  z-index: -1;
-}
-.bg2 {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-color: rgba(255, 255, 255, .8);
-}
+// .bg {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   top: 0;
+//   left: 0;
+//   background-size: 110% 110%;
+//   filter: blur(60px);
+//   z-index: -1;
+// }
+// .bg2 {
+//   position: absolute;
+//   width: 100%;
+//   height: 100%;
+//   top: 0;
+//   left: 0;
+//   z-index: -1;
+//   background-color: rgba(255, 255, 255, .8);
+// }
 
 .header {
   position: relative;
@@ -299,6 +299,9 @@ export default {
         .lyric {
           font-size: 13px;
         }
+        .lyricSelectContent {
+          font-size: 14px;
+        }
       }
       .comment {
         opacity: 1;
@@ -346,131 +349,6 @@ export default {
   }
 }
 
-.right {
-  flex: 0 0 60%;
-  // padding: 0 30px;
-  position: relative;
-  transition: flex-basis @transition-theme;
-
-  &:before {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    content: ' ';
-    height: 100px;
-    width: 100%;
-    background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
-    pointer-events: none;
-  }
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    content: ' ';
-    height: 100px;
-    width: 100%;
-    background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
-    pointer-events: none;
-  }
-}
-.lyric {
-  text-align: center;
-  height: 100%;
-  overflow: hidden;
-  font-size: 16px;
-  cursor: grab;
-  &.draging {
-    cursor: grabbing;
-  }
-  :global {
-    .lrc-content {
-      line-height: 1.2;
-      margin: 16px 0;
-      overflow-wrap: break-word;
-      color: @color-player-detail-lyric;
-
-      .translation {
-        transition: @transition-theme !important;
-        transition-property: font-size, color;
-        font-size: .9em;
-        margin-top: 5px;
-      }
-      .line {
-        transition-property: font-size, color !important;
-        background: none !important;
-        -webkit-text-fill-color: unset;
-        // -webkit-text-fill-color: none !important;
-      }
-      &.active {
-        .line {
-          color: @color-theme;
-        }
-        .translation {
-          font-size: 1em;
-          color: @color-theme;
-        }
-        span {
-          // color: @color-theme;
-          font-size: 1.2em;
-        }
-      }
-
-      span {
-        transition: @transition-theme !important;
-        transition-property: font-size !important;
-        font-size: 1em;
-        background-repeat: no-repeat;
-        background-color: rgba(77, 77, 77, 0.9);
-        background-image: -webkit-linear-gradient(top, @color-theme, @color-theme);
-        -webkit-text-fill-color: transparent;
-        -webkit-background-clip: text;
-        background-size: 0 100%;
-      }
-    }
-  }
-  // p {
-  //   padding: 8px 0;
-  //   line-height: 1.2;
-  //   overflow-wrap: break-word;
-  //   transition: @transition-theme !important;
-  //   transition-property: color, font-size;
-  // }
-  // .lrc-active {
-  //   color: @color-theme;
-  //   font-size: 1.2em;
-  // }
-}
-.lyricSelectContent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  // text-align: center;
-  height: 100%;
-  width: 100%;
-  font-size: 16px;
-  background-color: @color-theme_2-background_1;
-  z-index: 10;
-  color: @color-player-detail-lyric;
-
-  .lyricSelectline {
-    padding: 8px 0;
-    overflow-wrap: break-word;
-    transition: @transition-theme !important;
-    transition-property: color, font-size;
-    line-height: 1.3;
-  }
-  .lyricSelectlineTransition {
-    font-size: 14px;
-  }
-  .lrc-active {
-    color: @color-theme;
-  }
-}
-
-.lyric-space {
-  height: 70%;
-}
 
 .comment {
   position: absolute;
@@ -490,14 +368,6 @@ each(@themes, {
       border-left-color: ~'@{color-@{value}-theme}';
       background-color: ~'@{color-@{value}-theme_2-background_1}';
       // color: ~'@{color-@{value}-theme_2-font}';
-    }
-    .right {
-      &:before {
-        background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
-      }
-      &:after {
-        background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
-      }
     }
     .header {
       &.controlBtnLeft {
@@ -541,56 +411,6 @@ each(@themes, {
     .img {
       box-shadow: 0 0 4px ~'@{color-@{value}-theme-hover}';
       // border-color: ~'@{color-@{value}-theme-hover}';
-    }
-    .lyric {
-      :global {
-        .lrc-content {
-          color: ~'@{color-@{value}-player-detail-lyric}';
-
-          &.active {
-            .translation {
-              color: ~'@{color-@{value}-player-detail-lyric-active}';
-            }
-            .line {
-              color: ~'@{color-@{value}-player-detail-lyric-active}';
-            }
-          }
-          span {
-            background-color: ~'@{color-@{value}-player-detail-lyric}';
-            background-image: -webkit-linear-gradient(top, ~'@{color-@{value}-player-detail-lyric-active}', ~'@{color-@{value}-player-detail-lyric-active}');
-          }
-        }
-      }
-    }
-    // .lrc-active {
-    //   color: ~'@{color-@{value}-theme}';
-    // }
-    .lyricSelectContent {
-      background-color: ~'@{color-@{value}-theme_2-background_1}';
-      color: ~'@{color-@{value}-player-detail-lyric}';
-      .lrc-active {
-        color: ~'@{color-@{value}-theme}';
-      }
-    }
-    .footerLeftControlBtns {
-      color: ~'@{color-@{value}-theme_2-font}';
-    }
-    .footerLeftControlBtn {
-      &.active {
-        color: ~'@{color-@{value}-theme}';
-      }
-    }
-    .progress {
-      background-color: ~'@{color-@{value}-player-progress}';
-    }
-    .progress-bar1 {
-      background-color: ~'@{color-@{value}-player-progress-bar1}';
-    }
-    .progress-bar2 {
-      background-color: ~'@{color-@{value}-player-progress-bar2}';
-    }
-    .play-btn {
-      color: ~'@{color-@{value}-player-detail-play-btn}';
     }
   }
 })

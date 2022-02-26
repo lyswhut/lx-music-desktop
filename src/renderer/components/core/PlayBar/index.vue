@@ -10,12 +10,13 @@ div(:class="$style.player")
         div(:class="$style.title" @click="handleCopy(title)" :tips="title + $t('copy_tip')") {{title}}
         control-btns
     div(:class="$style.column2")
-      common-progress-bar(:progress="progress" :handleTransitionEnd="handleTransitionEnd" :isActiveTransition="isActiveTransition")
+      common-progress-bar(:progress="progress" :handleTransitionEnd="handleTransitionEnd" :isActiveTransition="isActiveTransition" v-if="!isShowPlayerDetail")
     div(:class="$style.column3")
-      span(:class="$style.statusText") {{statusText}}
-      span {{nowPlayTimeStr}}
-      span(style="margin: 0 5px;") /
-      span {{maxPlayTimeStr}}
+      template(v-if="!isShowPlayerDetail")
+        span(:class="$style.statusText") {{statusText}}
+        span {{nowPlayTimeStr}}
+        span(style="margin: 0 5px;") /
+        span {{maxPlayTimeStr}}
   div(:class="$style.right")
     div(:class="$style.playBtn" @click='playPrev' :tips="$t('player__prev')" style="transform: rotate(180deg);")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
@@ -48,7 +49,17 @@ import { player as eventPlayerNames } from '@renderer/event/names'
 import ControlBtns from './ControlBtns'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
-import { statusText, musicInfo, setMusicInfo, setShowPlayerDetail, isPlay, musicInfoItem, playInfo, playMusicInfo } from '@renderer/core/share/player'
+import {
+  statusText,
+  musicInfo,
+  setMusicInfo,
+  isShowPlayerDetail,
+  setShowPlayerDetail,
+  isPlay,
+  musicInfoItem,
+  playInfo,
+  playMusicInfo,
+} from '@renderer/core/share/player'
 
 export default {
   name: 'CorePlayBar',
@@ -138,6 +149,7 @@ export default {
       playNext,
       playPrev,
       handleToMusicLocation,
+      isShowPlayerDetail,
     }
   },
 }

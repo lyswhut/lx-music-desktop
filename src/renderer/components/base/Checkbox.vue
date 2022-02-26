@@ -41,6 +41,7 @@ export default {
       default: false,
     },
   },
+  emits: ['update:modelValue', 'change'],
   data() {
     return {
       bool: false,

@@ -11,6 +11,9 @@ exports.getUserApis = () => {
     userApis = defaultUserApis
     electronStore_userApi.set('userApis', userApis)
   }
+  for (const api of userApis) {
+    if (api.allowShowUpdateAlert == null) api.allowShowUpdateAlert = false
+  }
   return userApis
 }
 
@@ -27,6 +30,7 @@ exports.importApi = script => {
     name,
     description,
     script,
+    allowShowUpdateAlert: true,
   }
   userApis.push(apiInfo)
   getStore('userApi').set('userApis', userApis)
@@ -40,5 +44,12 @@ exports.removeApi = ids => {
       ids.splice(index, 1)
     }
   }
+  getStore('userApi').set('userApis', userApis)
+}
+
+exports.setAllowShowUpdateAlert = (id, enable) => {
+  const targetApi = userApis.find(api => api.id == id)
+  if (!targetApi) return
+  targetApi.allowShowUpdateAlert = enable
   getStore('userApi').set('userApis', userApis)
 }

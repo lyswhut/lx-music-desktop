@@ -32,7 +32,10 @@ export default {
   },
   handleResult(rawList) {
     // console.log(rawList)
-    return rawList.map(item => {
+    const list = []
+    rawList.forEach(item => {
+      if (!item.strMediaMid) return
+
       let types = []
       let _types = {}
       if (item.size128 !== 0) {
@@ -64,7 +67,7 @@ export default {
         }
       }
       // types.reverse()
-      return {
+      list.push({
         singer: this.getSinger(item.singer),
         name: item.songname,
         albumName: item.albumname,
@@ -83,8 +86,9 @@ export default {
         types,
         _types,
         typeUrl: {},
-      }
+      })
     })
+    return list
   },
   search(str, page = 1, { limit } = {}) {
     if (limit == null) limit = this.limit

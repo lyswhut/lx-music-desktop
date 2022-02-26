@@ -40,7 +40,7 @@ export default () => {
     isProd,
     isLinux,
   })
-  usePlayer({ setting })
+  const initPlayer = usePlayer({ setting })
   const handleEnvParams = useHandleEnvParams()
   const initData = useDataInit({
     setting,
@@ -60,6 +60,7 @@ export default () => {
 
     // 初始化我的列表、下载列表等数据
     initData().then(() => {
+      initPlayer()
       handleEnvParams(envParams) // 处理传入的启动参数
       initDeepLink(envParams)
     })

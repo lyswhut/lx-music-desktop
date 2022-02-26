@@ -237,4 +237,9 @@ export default {
       })
     })
   },
+
+  getDetailPageUrl(id) {
+    if (typeof id == 'string') id = id.replace('tx__', '')
+    return `https://y.qq.com/n/ryqq/toplist/${id}`
+  },
 }

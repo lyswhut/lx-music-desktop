@@ -199,4 +199,9 @@ export default {
       source: 'wy',
     }
   },
+
+  getDetailPageUrl(id) {
+    if (typeof id == 'string') id = id.replace('wy__', '')
+    return `https://music.163.com/#/discover/toplist?id=${id}`
+  },
 }

@@ -6,11 +6,10 @@ div(:class="$style.footer")
       div(:class="$style.progressContent")
         common-progress-bar(:class-name="$style.progress" :progress="progress" :handleTransitionEnd="handleTransitionEnd" :isActiveTransition="isActiveTransition")
     div(:class="$style.timeLabel")
-      span(style="margin-left: 15px") {{status}}
-      div
-        span {{nowPlayTimeStr}}
-        span(style="margin: 0 5px;") /
-        span {{maxPlayTimeStr}}
+      span(:class="$style.status" style="margin-left: 15px") {{status}}
+      span {{nowPlayTimeStr}}
+      span(style="margin: 0 5px;") /
+      span {{maxPlayTimeStr}}
   div(:class="$style.playControl")
     div(:class="$style.playBtn" @click="playPrev" style="transform: rotate(180deg);" :tips="$t('player__prev')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
@@ -91,7 +90,7 @@ export default {
 
 .progress-content {
   position: relative;
-  height: 15px;
+  height: 16px;
   padding: 5px 0;
   width: 100%;
 }
@@ -108,10 +107,12 @@ export default {
   width: 100%;
   height: 18px;
   display: flex;
-  justify-content: space-between;
   span {
     font-size: 13px;
   }
+}
+.status {
+  flex: auto;
 }
 
 .play-control {

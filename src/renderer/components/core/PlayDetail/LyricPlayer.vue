@@ -2,11 +2,11 @@
 <div :class="['right', $style.right]">
   <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
     <div :class="$style.lyricSpace"></div>
-    <div :class="[$style.lyricText]" ref="dom_lyric_text"></div>
+    <div ref="dom_lyric_text"></div>
     <div :class="$style.lyricSpace"></div>
   </div>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div :class="[$style.lyricSelectContent, 'select', 'scroll']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText">
+    <div :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText">
       <div v-for="(info, index) in lyric.lines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]">
         <span>{{info.text}}</span>
         <br v-if="info.translation"/>

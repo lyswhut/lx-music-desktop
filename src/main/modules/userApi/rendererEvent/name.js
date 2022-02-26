@@ -3,6 +3,7 @@ const names = {
   request: '',
   response: '',
   openDevTools: '',
+  showUpdateAlert: '',
 }
 
 

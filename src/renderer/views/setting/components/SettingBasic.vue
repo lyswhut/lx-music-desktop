@@ -9,12 +9,15 @@ dd
         label {{$t('theme_' + theme.className)}}
 
 dd
-  .gap-top.top
-    base-checkbox(id="setting_show_animate" v-model="currentStting.isShowAnimation" :label="$t('setting__basic_show_animation')")
-  .gap-top
-    base-checkbox(id="setting_animate" v-model="currentStting.randomAnimate" :label="$t('setting__basic_animation')")
-  .gap-top
-    base-checkbox(id="setting_to_tray" v-model="currentStting.tray.isShow" :label="$t('setting__basic_to_tray')")
+  div
+    .gap-top.top
+      base-checkbox(id="setting_show_animate" v-model="currentStting.isShowAnimation" :label="$t('setting__basic_show_animation')")
+    .gap-top
+      base-checkbox(id="setting_animate" v-model="currentStting.randomAnimate" :label="$t('setting__basic_animation')")
+    .gap-top
+      base-checkbox(id="setting_to_tray" v-model="currentStting.tray.isShow" :label="$t('setting__basic_to_tray')")
+    p.gap-top
+      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
 dd(:tips="$t('setting__basic_source_title')")
   h3#basic_source {{$t('setting__basic_source')}}
@@ -42,12 +45,17 @@ dd(:tips="$t('setting__basic_sourcename_title')")
   div
     base-checkbox.gap-left(v-for="item in sourceNameTypes" :key="item.id" :id="`setting_abasic_sourcename_${item.id}`"
       name="setting_basic_sourcename" need v-model="currentStting.sourceNameType" :value="item.id" :label="item.label")
-
 dd
   h3#basic_control_btn_position {{$t('setting__basic_control_btn_position')}}
   div
     base-checkbox.gap-left(v-for="item in controlBtnPositionList" :key="item.id" :id="`setting_basic_control_btn_position_${item.id}`"
       name="setting_basic_control_btn_position" need v-model="currentStting.controlBtnPosition" :value="item.id" :label="item.name")
+dd
+  h3#basic_font {{$t('setting__basic_font')}}
+  div
+    base-selection.gap-teft(:list="fontList" v-model="currentStting.font" item-key="id" item-name="label")
+
+play-timeout-modal(v-model="isShowPlayTimeoutModal")
 user-api-modal(v-model="isShowUserApiModal")
 </template>
 
@@ -58,12 +66,17 @@ import { langList } from '@/lang'
 import { currentStting } from '../setting'
 import { setWindowSize } from '@renderer/utils'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
+import { useTimeout } from '@renderer/utils/timeoutStop'
+import { getSystemFonts } from '@renderer/utils/tools'
 
+import PlayTimeoutModal from './PlayTimeoutModal'
 import UserApiModal from './UserApiModal'
+
 
 export default {
   name: 'SettingBasic',
   components: {
+    PlayTimeoutModal,
     UserApiModal,
   },
   setup() {
@@ -80,6 +93,9 @@ export default {
     watch(() => currentStting.value.apiSource, visible => {
       apiSource.value = visible
     })
+
+    const isShowPlayTimeoutModal = ref(false)
+    const { timeLabel } = useTimeout()
 
     const isShowUserApiModal = ref(false)
     const getApiStatus = () => {
@@ -134,16 +150,26 @@ export default {
       ]
     })
 
+    const systemFontList = ref([])
+    const fontList = computed(() => {
+      return [{ id: '', label: t('setting__desktop_lyric_font_default') }, ...systemFontList.value]
+    })
+    getSystemFonts().then(fonts => {
+      systemFontList.value = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
+    })
 
     return {
       currentStting,
       themes,
+      isShowPlayTimeoutModal,
+      timeLabel,
       apiSources,
       isShowUserApiModal,
       windowSizeList,
       langList,
       sourceNameTypes,
       controlBtnPositionList,
+      fontList,
     }
   },
 }
