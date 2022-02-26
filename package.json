@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.18.0-beta4",
+  "version": "1.18.0",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -198,6 +198,7 @@
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
     "electron-to-chromium": "^1.4.73",
+    "electron-updater": "^5.0.0",
     "eslint": "^8.10.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-formatter-friendly": "^7.0.0",
@@ -242,7 +243,6 @@
     "crypto-js": "^4.1.1",
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",
-    "electron-updater": "^5.0.0",
     "font-list": "github:lyswhut/node-font-list#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
     "http-terminator": "^3.0.4",
     "iconv-lite": "^0.6.3",
