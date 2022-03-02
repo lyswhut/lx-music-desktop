@@ -197,7 +197,7 @@
     "electron-builder": "^23.0.1",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.73",
+    "electron-to-chromium": "^1.4.75",
     "electron-updater": "^5.0.0",
     "eslint": "^8.10.0",
     "eslint-config-standard": "^16.0.3",
@@ -244,7 +244,7 @@
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",
     "font-list": "github:lyswhut/node-font-list#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
-    "http-terminator": "^3.0.4",
+    "http-terminator": "^3.1.0",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.1",
     "koa": "^2.13.4",
@@ -258,7 +258,7 @@
     "utf-8-validate": "^5.0.8",
     "vue": "^3.2.31",
     "vue-i18n": "^9.2.0-beta.30",
-    "vue-router": "^4.0.12",
+    "vue-router": "^4.0.13",
     "vuex": "^4.0.2"
   }
 }
