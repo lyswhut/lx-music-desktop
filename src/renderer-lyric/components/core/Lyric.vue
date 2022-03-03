@@ -207,6 +207,13 @@ export default {
           this.isPlay = false
           window.lrc.pause()
           break
+        case 'stop':
+          this.isPlay = false
+          this.lyrics.lyric = ''
+          this.lyrics.tlyric = ''
+          this.lyrics.lxlyric = ''
+          this.setLyric()
+          break
         case 'info':
           // console.log('info', data)
           this.lyrics.lyric = data.lrc
