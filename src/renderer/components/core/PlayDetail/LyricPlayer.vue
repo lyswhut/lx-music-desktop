@@ -1,6 +1,6 @@
 <template>
 <div :class="['right', $style.right]">
-  <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }]" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
+  <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
     <div :class="$style.lyricSpace"></div>
     <div ref="dom_lyric_text"></div>
     <div :class="$style.lyricSpace"></div>
@@ -21,11 +21,13 @@
 import { clipboardWriteText } from '@renderer/utils'
 import { lyric } from '@renderer/core/share/lyric'
 import { isPlay, isShowLrcSelectContent } from '@renderer/core/share/player'
-// import { ref } from '@renderer/utils/vueTools'
+import { onMounted, onBeforeUnmount, useCommit, useRefGetter, computed } from '@renderer/utils/vueTools'
 import useLyric from '@renderer/utils/compositions/useLyric'
 
 export default {
   setup() {
+    const setting = useRefGetter('setting')
+    const setPlayDetailLyricFont = useCommit('setPlayDetailLyricFont')
     const {
       dom_lyric,
       dom_lyric_text,
@@ -33,6 +35,37 @@ export default {
       handleLyricMouseDown,
       handleWheel,
     } = useLyric({ isPlay, lyric })
+
+    const fontSizeUp = () => {
+      if (setting.value.playDetail.style.fontSize >= 200) return
+      setPlayDetailLyricFont(setting.value.playDetail.style.fontSize + 1)
+    }
+    const fontSizeDown = () => {
+      if (setting.value.playDetail.style.fontSize <= 70) return
+      setPlayDetailLyricFont(setting.value.playDetail.style.fontSize - 1)
+    }
+
+    const lrcStyles = computed(() => {
+      return {
+        fontSize: setting.value.playDetail.style.fontSize / 100 + 'rem',
+        textAlign: setting.value.playDetail.style.align,
+      }
+    })
+    const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
+
+    onMounted(() => {
+      window.eventHub.on('key_shift++_down', fontSizeUp)
+      window.eventHub.on('key_numadd_down', fontSizeUp)
+      window.eventHub.on('key_-_down', fontSizeDown)
+      window.eventHub.on('key_numsub_down', fontSizeDown)
+    })
+    onBeforeUnmount(() => {
+      window.eventHub.off('key_shift++_down', fontSizeUp)
+      window.eventHub.off('key_numadd_down', fontSizeUp)
+      window.eventHub.off('key_-_down', fontSizeDown)
+      window.eventHub.off('key_numsub_down', fontSizeDown)
+    })
+
     return {
       dom_lyric,
       dom_lyric_text,
@@ -41,6 +74,8 @@ export default {
       handleWheel,
       lyric,
       isShowLrcSelectContent,
+      lrcStyles,
+      isZoomActiveLrc,
     }
   },
   methods: {
@@ -119,13 +154,12 @@ export default {
           color: @color-theme;
         }
         .translation {
-          font-size: .94em;
           color: @color-theme;
         }
-        span {
-          // color: @color-theme;
-          font-size: 1.1em;
-        }
+        // span {
+        //   // color: @color-theme;
+        //   font-size: 1.1em;
+        // }
       }
 
       span {
@@ -152,6 +186,20 @@ export default {
   //   color: @color-theme;
   //   font-size: 1.2em;
   // }
+}
+.lrcActiveZoom {
+  :global {
+    .lrc-content {
+      &.active {
+        .translation {
+          font-size: .94em;
+        }
+        span {
+          font-size: 1.1em;
+        }
+      }
+    }
+  }
 }
 .lyricSelectContent {
   position: absolute;

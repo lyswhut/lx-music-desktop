@@ -20,6 +20,7 @@
     <dl ref="dom_setting_list">
       <SettingBasic />
       <SettingPlay />
+      <SettingPlayDetail />
       <SettingDesktopLyric />
       <SettingSearch />
       <SettingList />
@@ -43,6 +44,7 @@ import { currentStting } from './setting'
 
 import SettingBasic from './components/SettingBasic'
 import SettingPlay from './components/SettingPlay'
+import SettingPlayDetail from './components/SettingPlayDetail'
 import SettingDesktopLyric from './components/SettingDesktopLyric'
 import SettingSearch from './components/SettingSearch'
 import SettingList from './components/SettingList'
@@ -61,6 +63,7 @@ export default {
   components: {
     SettingBasic,
     SettingPlay,
+    SettingPlayDetail,
     SettingDesktopLyric,
     SettingSearch,
     SettingList,
@@ -93,6 +96,9 @@ export default {
     })
     watch(() => setting.value.player.mediaDeviceId, val => {
       currentStting.value.player.mediaDeviceId = val
+    })
+    watch(() => setting.value.playDetail.style.fontSize, val => {
+      currentStting.value.playDetail.style.fontSize = val
     })
     watch(() => setting.value.player.isMute, val => {
       currentStting.value.player.isMute = val

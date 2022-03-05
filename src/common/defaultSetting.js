@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.51',
+  version: '1.0.52',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -18,6 +18,13 @@ const defaultSetting = {
     audioVisualization: false,
     waitPlayEndStop: true,
     waitPlayEndStopTime: '',
+  },
+  playDetail: {
+    isZoomActiveLrc: true,
+    style: {
+      fontSize: 100,
+      align: 'center',
+    },
   },
   desktopLyric: {
     enable: false,

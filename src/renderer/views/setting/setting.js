@@ -11,6 +11,13 @@ export const currentStting = ref({
     waitPlayEndStop: true,
     waitPlayEndStopTime: 0,
   },
+  playDetail: {
+    isZoomActiveLrc: true,
+    style: {
+      fontSize: 100,
+      align: 'center',
+    },
+  },
   desktopLyric: {
     enable: false,
     isLock: false,

@@ -35,6 +35,9 @@ export default {
       state.setting.player.volume = val
     }
   },
+  setPlayDetailLyricFont(state, val) {
+    state.setting.playDetail.style.fontSize = val
+  },
   setPlayNextMode(state, val) {
     state.setting.player.togglePlayMethod = val
   },
