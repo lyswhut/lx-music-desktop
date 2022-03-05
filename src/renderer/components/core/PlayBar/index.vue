@@ -276,6 +276,7 @@ export default {
 .column2 {
   flex: none;
   padding: 3px 0;
+  height: 10px;
   position: relative;
 }
 
