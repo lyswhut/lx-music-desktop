@@ -45,7 +45,10 @@ export default ({ setting }) => {
       setting.value.player.isMediaDeviceRemovedStopPlay &&
       isPlay.value &&
       device.label != prevDeviceLabel
-    ) window.eventHub.emit(eventPlayerNames.setPause)
+    ) {
+      global.isPlayedStop = true
+      window.eventHub.emit(eventPlayerNames.setPause)
+    }
   }
 
   const handleMediaListChange = async() => {
