@@ -136,6 +136,8 @@ export default {
       margin: var(--playDetail-lrc-font-size, 16px) 0;
       overflow-wrap: break-word;
       color: @color-player-detail-lyric;
+      transition: @transition-theme;
+      transition-property: margin;
 
       .translation {
         transition: @transition-theme !important;

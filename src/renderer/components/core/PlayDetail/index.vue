@@ -299,6 +299,9 @@ export default {
         .lyric {
           font-size: 13px !important;
         }
+        .lrc-content {
+          margin: 13px 0 !important;
+        }
         .lyricSelectContent {
           font-size: 14px;
         }
