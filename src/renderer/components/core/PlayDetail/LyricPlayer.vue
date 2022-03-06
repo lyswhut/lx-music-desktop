@@ -47,8 +47,8 @@ export default {
 
     const lrcStyles = computed(() => {
       return {
-        fontSize: setting.value.playDetail.style.fontSize / 100 + 'rem',
         textAlign: setting.value.playDetail.style.align,
+        '--playDetail-lrc-font-size': setting.value.playDetail.style.fontSize / 100 + 'rem',
       }
     })
     const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
@@ -125,7 +125,7 @@ export default {
   text-align: center;
   height: 100%;
   overflow: hidden;
-  font-size: 16px;
+  font-size: var(--playDetail-lrc-font-size, 16px);
   cursor: grab;
   &.draging {
     cursor: grabbing;
@@ -133,7 +133,7 @@ export default {
   :global {
     .lrc-content {
       line-height: 1.2;
-      margin: 16px 0;
+      margin: var(--playDetail-lrc-font-size, 16px) 0;
       overflow-wrap: break-word;
       color: @color-player-detail-lyric;
 

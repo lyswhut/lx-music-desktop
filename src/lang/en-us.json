@@ -328,7 +328,7 @@
   "setting__play_detail_align_center": "Centered",
   "setting__play_detail_align_left": "Left",
   "setting__play_detail_align_right": "Right",
-  "setting__play_detail_font_size": "Lyrics font size (you can use the keyboard - adjust the font size on the playback details page)",
+  "setting__play_detail_font_size": "Lyrics font size (you can use the keyboard + - adjust the font size on the playback details page)",
   "setting__play_detail_font_size_current": "Current font size: {size}",
   "setting__play_detail_font_size_reset": "Reset",
   "setting__play_detail_font_zoom": "Zoom the currently playing lyrics",

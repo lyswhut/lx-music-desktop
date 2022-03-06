@@ -328,7 +328,7 @@
   "setting__play_detail_align_center": "居中",
   "setting__play_detail_align_left": "居左",
   "setting__play_detail_align_right": "居右",
-  "setting__play_detail_font_size": "歌詞字體大小（可以在播放詳情頁使用鍵盤的 -調整字體大小）",
+  "setting__play_detail_font_size": "歌詞字體大小（可以在播放詳情頁使用鍵盤的 + - 調整字體大小）",
   "setting__play_detail_font_size_current": "當前字體大小：{size}",
   "setting__play_detail_font_size_reset": "重置",
   "setting__play_detail_font_zoom": "縮放當前正在播放的歌詞",
