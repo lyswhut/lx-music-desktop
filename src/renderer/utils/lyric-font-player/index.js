@@ -106,6 +106,7 @@ module.exports = class Lyric {
     if (this.isLineMode) {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
+          time: line.time,
           lyric: line.text,
           translationLyric: line.translation,
           lineClassName: this.lineClassName,
@@ -127,6 +128,7 @@ module.exports = class Lyric {
     } else {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
+          time: line.time,
           lyric: line.text,
           translationLyric: line.translation,
           lineClassName: this.lineClassName,

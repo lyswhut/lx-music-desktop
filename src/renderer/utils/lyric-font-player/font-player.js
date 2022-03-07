@@ -20,7 +20,8 @@ const createAnimation = (dom, duration) => new window.Animation(new window.Keyfr
 // https://jsfiddle.net/ceqpnbky/1/
 
 module.exports = class FontPlayer {
-  constructor({ lyric = '', translationLyric = '', lineClassName = '', fontClassName = '', translationClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
+  constructor({ time = 0, lyric = '', translationLyric = '', lineClassName = '', fontClassName = '', translationClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
+    this.time = time
     this.lyric = lyric
     this.translationLyric = translationLyric
 
@@ -51,6 +52,7 @@ module.exports = class FontPlayer {
     this.isLineMode = false
 
     this.lineContent = document.createElement('div')
+    this.lineContent.time = this.time
     if (this.lineClassName) this.lineContent.classList.add(this.lineClassName)
     this.fontContent = document.createElement('div')
     this.fontContent.style = 'position:relative;display:inline-block;'
