@@ -6,7 +6,7 @@
     <div :class="$style.lyricSpace"></div>
   </div>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div :class="$style.skip" v-show="isStopScroll">
+    <div :class="$style.skip" v-if="isShowLyricProgressSetting" v-show="isStopScroll">
       <div :class="$style.line" ref="dom_skip_line"></div>
       <span :class="$style.label">{{timeStr}}</span>
       <base-btn :class="$style.skipBtn" @mouseenter="handleSkipMouseEnter" @mouseleave="handleSkipMouseLeave" @click="handleSkipPlay">
@@ -73,6 +73,7 @@ export default {
       }
     })
     const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
+    const isShowLyricProgressSetting = computed(() => setting.value.playDetail.isShowLyricProgressSetting)
 
     onMounted(() => {
       window.eventHub.on('key_shift++_down', fontSizeUp)
@@ -99,9 +100,10 @@ export default {
       handleSkipMouseEnter,
       handleSkipMouseLeave,
       lyric,
-      isShowLrcSelectContent,
       lrcStyles,
       lrcFontSize,
+      isShowLrcSelectContent,
+      isShowLyricProgressSetting,
       isZoomActiveLrc,
       isStopScroll,
     }

@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.52',
+  version: '1.0.53',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -21,6 +21,7 @@ const defaultSetting = {
   },
   playDetail: {
     isZoomActiveLrc: true,
+    isShowLyricProgressSetting: false,
     style: {
       fontSize: 100,
       align: 'center',

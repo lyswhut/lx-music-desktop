@@ -42,6 +42,7 @@ export default ({ isPlay, lyric }) => {
 
   const setTime = throttle(() => {
     if (point.x == null) {
+      if (!dom_skip_line.value) return
       const rect = dom_skip_line.value.getBoundingClientRect()
       point.x = rect.x
       point.y = rect.y

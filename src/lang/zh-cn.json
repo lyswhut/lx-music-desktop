@@ -328,6 +328,7 @@
   "setting__play_detail_align_center": "居中",
   "setting__play_detail_align_left": "居左",
   "setting__play_detail_align_right": "居右",
+  "setting__play_detail_detail_lyric_progress": "允许通过歌词调整播放进度",
   "setting__play_detail_font_size": "歌词字体大小（可以在播放详情页使用键盘的 + - 调整字体大小）",
   "setting__play_detail_font_size_current": "当前字体大小：{size}",
   "setting__play_detail_font_size_reset": "重置",

@@ -3,6 +3,8 @@ dt#play_detail {{$t('setting__play_detail')}}
 dd
   .gap-top
     base-checkbox(id="setting_play_detail_font_zoom_enable" v-model="currentStting.playDetail.isZoomActiveLrc" :label="$t('setting__play_detail_font_zoom')")
+  .gap-top
+    base-checkbox(id="setting_play_detail_lyric_progress_enable" v-model="currentStting.playDetail.isShowLyricProgressSetting" :label="$t('setting__play_detail_detail_lyric_progress')")
 
 dd
   h3#play_detail_align {{$t('setting__play_detail_align')}}
