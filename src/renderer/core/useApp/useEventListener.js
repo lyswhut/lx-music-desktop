@@ -28,6 +28,7 @@ const handle_open_devtools = event => {
   rendererSend(NAMES.mainWindow.open_dev_tools)
 }
 const handle_fullscreen = event => {
+  if (event.event.repeat) return
   rendererInvoke(NAMES.mainWindow.fullscreen, !isFullscreen.value).then(fullscreen => {
     isFullscreen.value = fullscreen
   })
