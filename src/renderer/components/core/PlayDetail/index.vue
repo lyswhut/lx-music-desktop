@@ -166,7 +166,7 @@ export default {
   &.fullscreen {
     .header {
       -webkit-app-region: no-drag;
-      .close, .min {
+      > * {
         display: none;
       }
     }

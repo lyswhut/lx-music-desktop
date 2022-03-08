@@ -59,4 +59,7 @@ export default {
   pactModalVisible(state) {
     return !state.setting.isAgreePact
   },
+  isShowAnimation(state) {
+    return state.setting.isShowAnimation
+  },
 }

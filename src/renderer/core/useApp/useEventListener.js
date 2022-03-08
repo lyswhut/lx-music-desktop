@@ -8,7 +8,7 @@ import {
   toRaw,
   useCommit,
   onBeforeUnmount,
-  watchEffect,
+  watch,
   useRefGetter,
 } from '@renderer/utils/vueTools'
 
@@ -43,12 +43,13 @@ export default ({
 }) => {
   const setSetting = useCommit('setSetting')
   const windowSizeActive = useRefGetter('windowSizeActive')
+  const isShowAnimation = useRefGetter('isShowAnimation')
 
-  watchEffect(() => {
-    document.documentElement.style.fontSize = windowSizeActive.value.fontSize
+  watch(windowSizeActive, ({ fontSize }) => {
+    document.documentElement.style.fontSize = fontSize
   })
-  watchEffect(() => {
-    if (setting.value.isShowAnimation) {
+  watch(isShowAnimation, val => {
+    if (val) {
       if (document.body.classList.contains('disableAnimation')) {
         document.body.classList.remove('disableAnimation')
       }

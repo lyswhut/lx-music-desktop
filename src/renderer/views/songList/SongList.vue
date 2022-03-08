@@ -208,7 +208,8 @@ export default {
       window.removeEventListener('resize', this.handleSetTagWidth)
     },
     handleSetTagWidth() {
-      setTimeout(this.setTagListWidth)
+      this.setTagListWidth()
+      setTimeout(this.setTagListWidth, 100)
     },
     handle_key_backspace_down({ event }) {
       if (!this.isVisibleListDetail ||
