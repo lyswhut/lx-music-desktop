@@ -46,12 +46,15 @@ import {
 
 import useNextTogglePlay from '@renderer/utils/compositions/useNextTogglePlay'
 import useToggleDesktopLyric from '@renderer/utils/compositions/useToggleDesktopLyric'
+import { dialog } from '@renderer/plugins/Dialog'
+import { setMediaDeviceId } from '@renderer/plugins/player'
 
 export default {
   setup() {
     const { t } = useI18n()
     const setting = useRefGetter('setting')
     const setAudioVisualization = useCommit('setAudioVisualization')
+    const saveMediaDeviceId = useCommit('setMediaDeviceId')
 
     const toggleVisibleLrc = () => {
       setShowPlayLrcSelectContentLrc(!isShowLrcSelectContent.value)
@@ -72,8 +75,19 @@ export default {
 
     const isShowAddMusicTo = ref(false)
 
-    const toggleAudioVisualization = () => {
-      setAudioVisualization(!setting.value.player.audioVisualization)
+    const toggleAudioVisualization = async() => {
+      const newSetting = !setting.value.player.audioVisualization
+      if (newSetting && setting.value.player.mediaDeviceId != 'default') {
+        const confirm = await dialog.confirm({
+          message: t('setting__player_audio_visualization_tip'),
+          cancelButtonText: t('cancel_button_text'),
+          confirmButtonText: t('confirm_button_text'),
+        })
+        if (!confirm) return
+        saveMediaDeviceId('default')
+        await setMediaDeviceId('default').catch(_ => _)
+      }
+      setAudioVisualization(newSetting)
     }
 
     return {

@@ -115,6 +115,9 @@ export default {
     watch(() => setting.value.player.togglePlayMethod, val => {
       currentStting.value.player.togglePlayMethod = val
     })
+    watch(() => setting.value.player.audioVisualization, val => {
+      currentStting.value.player.audioVisualization = val
+    })
   },
   data() {
     return {

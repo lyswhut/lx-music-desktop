@@ -18,18 +18,21 @@ dd
 dd(:tips="$t('setting__play_mediaDevice_title')")
   h3#play_mediaDevice {{$t('setting__play_mediaDevice')}}
   div
-    base-selection.gap-left(:list="mediaDevices" v-model="currentStting.player.mediaDeviceId" item-key="deviceId" item-name="label")
+    base-selection.gap-left(:list="mediaDevices" v-model="mediaDeviceId" @change="handleMediaDeviceIdChnage" item-key="deviceId" item-name="label")
 </template>
 
 <script>
-import { ref, onBeforeUnmount, watch, nextTick } from '@renderer/utils/vueTools'
+import { ref, onBeforeUnmount, watch, nextTick, useI18n } from '@renderer/utils/vueTools'
 import { setTaskBarProgress } from '@renderer/utils/tools'
+import { dialog } from '@renderer/plugins/Dialog'
 
 import { currentStting } from '../setting'
 
 export default {
   name: 'SettingPlay',
   setup() {
+    const { t } = useI18n()
+
     const mediaDevices = ref([])
     const getMediaDevice = async() => {
       const devices = await navigator.mediaDevices.enumerateDevices()
@@ -51,10 +54,28 @@ export default {
       })
     })
 
+    const mediaDeviceId = ref(currentStting.value.player.mediaDeviceId)
+    const handleMediaDeviceIdChnage = async() => {
+      if (currentStting.value.player.audioVisualization) {
+        await dialog({
+          message: t('setting__play_media_device_tip'),
+          confirmButtonText: t('alert_button_text'),
+        })
+        mediaDeviceId.value = currentStting.value.player.mediaDeviceId
+      } else {
+        currentStting.value.player.mediaDeviceId = mediaDeviceId.value
+      }
+    }
+    watch(() => currentStting.value.player.mediaDeviceId, val => {
+      mediaDeviceId.value = val
+    })
+
 
     return {
       currentStting,
       mediaDevices,
+      mediaDeviceId,
+      handleMediaDeviceIdChnage,
     }
   },
 }
