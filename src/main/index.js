@@ -170,7 +170,7 @@ function createWindow() {
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
     maximizable: false,
-    fullscreenable: false,
+    fullscreenable: true,
     show: false,
     webPreferences: {
       contextIsolation: false,

@@ -36,6 +36,7 @@ export const sync = window.sync = reactive({
     devices: [],
   },
 })
+export const isFullscreen = ref(false)
 
 export const windowSizeList = markRaw(configWindowSizeList)
 export const themes = markRaw(configThemes)

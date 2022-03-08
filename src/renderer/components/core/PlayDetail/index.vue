@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="$style.container" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+  div(:class="[$style.container, , { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
     div(:class="[$style.header, $style.controlBtnLeft]" v-if="setting.controlBtnPosition == 'left'")
@@ -52,6 +52,7 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
 
 <script>
 import { useRefGetter, ref } from '@renderer/utils/vueTools'
+import { isFullscreen } from '@renderer/core/share'
 import { base as eventBaseName } from '@renderer/event/names'
 import {
   isShowPlayerDetail,
@@ -117,6 +118,7 @@ export default {
       handleAfterEnter,
       handleAfterLeave,
       visibled,
+      isFullscreen,
       min() {
         window.eventHub.emit(eventBaseName.min)
       },
@@ -159,6 +161,15 @@ export default {
 
   * {
     box-sizing: border-box;
+  }
+
+  &.fullscreen {
+    .header {
+      -webkit-app-region: no-drag;
+      .close, .min {
+        display: none;
+      }
+    }
   }
 
 }

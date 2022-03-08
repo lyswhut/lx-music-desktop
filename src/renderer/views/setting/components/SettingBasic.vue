@@ -32,7 +32,7 @@ dd(:tips="$t('setting__basic_window_size_title')")
   h3#basic_window_size {{$t('setting__basic_window_size')}}
   div
     base-checkbox.gap-left(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size"
-      need v-model="currentStting.windowSizeId" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" :key="item.id")
+      need v-model="currentStting.windowSizeId" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" :key="item.id")
 
 dd(:tips="$t('setting__basic_lang_title')")
   h3#basic_lang {{$t('setting__basic_lang')}}
@@ -61,7 +61,7 @@ user-api-modal(v-model="isShowUserApiModal")
 
 <script>
 import { computed, ref, useI18n, watch } from '@renderer/utils/vueTools'
-import { themes as themeList, windowSizeList, apiSource, userApi } from '@renderer/core/share'
+import { themes as themeList, windowSizeList, apiSource, userApi, isFullscreen } from '@renderer/core/share'
 import { langList } from '@/lang'
 import { currentStting } from '../setting'
 import { setWindowSize } from '@renderer/utils'
@@ -170,6 +170,7 @@ export default {
       sourceNameTypes,
       controlBtnPositionList,
       fontList,
+      isFullscreen,
     }
   },
 }

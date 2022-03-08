@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.menu">
   <ul :class="$style.list">
-    <li v-for="item in menus" :key="item.to">
+    <li v-for="item in menus" :key="item.to" :class="$style.navItem">
       <router-link :class="$style.link" :active-class="$style.active" :to="item.to" :tips="item.tips">
         <div :class="$style.icon">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" space="preserve">
@@ -98,13 +98,26 @@ export default {
   //   .mixin-ellipsis-1;
   // }
 }
+.navItem {
+  position: relative;
+  &:before {
+    content: '';
+    display: block;
+    width: 100%;
+    padding-bottom: 84%;
+  }
+}
 .link {
-  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  // display: block;
   box-sizing: border-box;
   text-decoration: none;
 
-  position: relative;
-  padding: 18px 3px;
+  // padding: 18px 3px;
   // margin: 5px 0;
   // border-left: 5px solid transparent;
   transition: @transition-theme;
@@ -114,6 +127,9 @@ export default {
   font-size: 11.5px;
   text-align: center;
   outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   transition: background-color 0.3s ease;
   // border-radius: @radius-border;
