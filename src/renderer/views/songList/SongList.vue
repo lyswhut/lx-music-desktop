@@ -81,7 +81,6 @@ export default {
       importSongListText: '',
       listWidth: 645,
       isGetDetailFailed: false,
-      isInitedTagListWidth: false,
       detailLoading: false,
     }
   },
@@ -202,9 +201,11 @@ export default {
     }),
     listenEvent() {
       window.eventHub.on('key_backspace_down', this.handle_key_backspace_down)
+      window.addEventListener('resize', this.setTagListWidth)
     },
     unlistenEvent() {
       window.eventHub.off('key_backspace_down', this.handle_key_backspace_down)
+      window.removeEventListener('resize', this.setTagListWidth)
     },
     handle_key_backspace_down({ event }) {
       if (!this.isVisibleListDetail ||
@@ -287,7 +288,7 @@ export default {
       this.handleGetListDetail(id, source, 1)
     },
     setTagListWidth() {
-      this.isInitedTagListWidth = true
+      if (this.isVisibleListDetail) return
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     handleGetListDetail(id, source, page) {
