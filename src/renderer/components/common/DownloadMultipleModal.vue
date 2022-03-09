@@ -51,7 +51,7 @@ export default {
 
 .main {
   padding: 15px;
-  max-width: 300px;
+  max-width: 400px;
   min-width: 200px;
   display: flex;
   flex-flow: column nowrap;

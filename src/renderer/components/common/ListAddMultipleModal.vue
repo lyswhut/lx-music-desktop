@@ -1,5 +1,5 @@
 <template>
-<material-modal :show="show" :bg-close="bgClose" @close="handleClose">
+<material-modal :show="show" :bg-close="bgClose" @close="handleClose" max-width="70%">
   <main :class="$style.main">
     <h2>{{$t('list_add__multiple_' + (isMove ? 'title_move' : 'title_add'), { num: musicList.length })}}</h2>
     <div class="scroll" :class="$style.btnContent">
@@ -74,16 +74,31 @@ export default {
     return {
       isEditing: false,
       newListName: '',
+      rowNum: 3,
     }
   },
   computed: {
 
     spaceNum() {
-      return this.lists.length < 2 ? 0 : (3 - this.lists.length % 3 - 1)
+      return this.lists.length < 2 ? 0 : (this.rowNum - this.lists.length % this.rowNum - 1)
     },
+  },
+  mounted() {
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     ...mapMutations('list', ['listAddMultiple', 'listMoveMultiple', 'createUserList']),
+    handleResize() {
+      const width = window.innerWidth
+      this.rowNum = width <= 1440
+        ? 3
+        : width <= 1920
+          ? 4
+          : width <= 2560 ? 5 : 6
+    },
     handleClick(index) {
       this.isMove
         ? this.listMoveMultiple({ fromId: this.fromListId, toId: this.lists[index].id, list: this.musicList })
@@ -119,7 +134,7 @@ export default {
 
 .main {
   // padding: 15px 0;
-  max-width: 620px;
+  // max-width: 620px;
   min-width: 200px;
   display: flex;
   flex-flow: column nowrap;
@@ -145,6 +160,7 @@ export default {
   justify-content: space-evenly;
 }
 
+@item-width: (100% / 3);
 .btn {
   box-sizing: border-box;
   margin-left: 15px;
@@ -152,7 +168,8 @@ export default {
   height: 36px;
   line-height: 36px;
   padding: 0 10px !important;
-  width: 180px;
+  width: calc(@item-width - 15px);
+  min-width: 160px;
   .mixin-ellipsis-1;
 }
 
@@ -191,6 +208,26 @@ export default {
   font-family: inherit;
   display: none;
 }
+
+@item-width2: (100% / 4);
+@media screen and (min-width: 1920px){
+  .btn {
+    width: calc(@item-width2 - 15px);
+  }
+}
+@item-width3: (100% / 5);
+@media screen and (min-width: 2048px){
+  .btn {
+    width: calc(@item-width3 - 15px);
+  }
+}
+@item-width4: (100% / 6);
+@media screen and (min-width: 2560px){
+  .btn {
+    width: calc(@item-width4 - 15px);
+  }
+}
+
 
 each(@themes, {
   :global(#root.@{value}) {

@@ -132,7 +132,9 @@ export default {
   },
   methods: {
     setWidth() {
-      this.$refs.dom_container.style.width = this.$refs.dom_container.clientWidth + 'px'
+      setTimeout(() => {
+        this.$refs.dom_container.style.width = Math.floor(this.$refs.dom_container.parentNode.clientWidth * 0.5) + 'px'
+      })
     },
     async getComment(musicInfo, page, limit, retryNum = 0) {
       let resp

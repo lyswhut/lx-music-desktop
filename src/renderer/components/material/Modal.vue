@@ -4,7 +4,7 @@ teleport(:to="teleport")
     transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
       div(:class="$style.modal" v-show="showContent" @click="bgClose && close()")
         transition(:enter-active-class="inClass" :leave-active-class="outClass" @after-enter="$emit('after-enter', $event)" @after-leave="handleAfterLeave")
-          div(:class="$style.content" v-show="showContent" @click.stop)
+          div(:class="$style.content" v-show="showContent" @click.stop :style="contentStyle")
             header(:class="$style.header")
               button(type="button" @click="close" v-if="closeBtn")
                 svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve')
@@ -33,6 +33,10 @@ export default {
     teleport: {
       type: String,
       default: '#root',
+    },
+    maxWidth: {
+      type: String,
+      default: '76%',
     },
   },
   emits: ['after-enter', 'after-leave', 'close'],
@@ -91,6 +95,11 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
+    contentStyle() {
+      return {
+        maxWidth: this.maxWidth,
+      }
+    },
   },
   watch: {
     'setting.randomAnimate'(n) {
@@ -182,7 +191,7 @@ export default {
   box-shadow: 0 0 3px rgba(0, 0, 0, .3);
   overflow: hidden;
   max-height: 80%;
-  max-width: 76%;
+  // max-width: 76%;
   min-width: 220px;
   position: relative;
   display: flex;
