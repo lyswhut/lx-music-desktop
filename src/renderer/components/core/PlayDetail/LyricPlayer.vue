@@ -31,7 +31,7 @@
 <script>
 import { clipboardWriteText } from '@renderer/utils'
 import { lyric } from '@renderer/core/share/lyric'
-import { isPlay, isShowLrcSelectContent } from '@renderer/core/share/player'
+import { isPlay, isShowLrcSelectContent, isShowPlayComment } from '@renderer/core/share/player'
 import { onMounted, onBeforeUnmount, useCommit, useRefGetter, computed } from '@renderer/utils/vueTools'
 import useLyric from '@renderer/utils/compositions/useLyric'
 
@@ -68,8 +68,9 @@ export default {
       }
     })
     const lrcFontSize = computed(() => {
+      const size = setting.value.playDetail.style.fontSize / 100
       return {
-        '--playDetail-lrc-font-size': setting.value.playDetail.style.fontSize / 100 + 'rem',
+        '--playDetail-lrc-font-size': (isShowPlayComment.value ? size * 0.82 : size) + 'rem',
       }
     })
     const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
