@@ -38,8 +38,6 @@ export default {
 
     watch(theme, (val) => {
       dom_root.className = val
-    }, {
-      immediate: true,
     })
     watch(font, (val) => {
       document.documentElement.style.fontFamily = val

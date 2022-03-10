@@ -158,7 +158,7 @@ export default {
         this.sortId = this.sorts[0] && this.sorts[0].id
       }
     },
-    'setting.themeId'() {
+    'setting.theme.id'() {
       this.setTagListWidth()
     },
   },

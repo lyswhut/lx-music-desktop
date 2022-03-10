@@ -22,6 +22,7 @@ require('./musicUrl')
 require('./systemFonts')
 require('./wait')
 require('./openDevtools')
+require('./nativeTheme')
 
 if (isWin) require('./taskbar')
 

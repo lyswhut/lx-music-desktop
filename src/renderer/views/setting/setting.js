@@ -86,7 +86,11 @@ export const currentStting = ref({
   },
   windowSizeId: 1,
   langId: 'cns',
-  themeId: 0,
+  theme: {
+    id: 0,
+    lightId: 0,
+    darkId: 13,
+  },
   sourceId: 0,
   font: '',
   isShowAnimation: true,

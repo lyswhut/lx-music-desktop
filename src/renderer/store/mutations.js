@@ -1,6 +1,6 @@
 export default {
   setTheme(state, val) {
-    state.setting.themeId = val
+    state.setting.theme.id = val
   },
   setSearchSource(state, { searchSource, tempSearchSource }) {
     console.log(searchSource, tempSearchSource)

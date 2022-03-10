@@ -16,6 +16,7 @@ const names = {
     interval_callback: 'interval_callback',
     interval_cancel: 'interval_cancel',
     open_dev_tools: 'open_dev_tools',
+    system_theme_change: 'system_theme_change',
 
     set_music_meta: 'set_music_meta',
     progress: 'progress',

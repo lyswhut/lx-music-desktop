@@ -323,3 +323,10 @@ export const setTaskbarThumbnailClip = (clip) => {
 export const setTaskbarThumbarButtons = (buttons) => {
   rendererSend(NAMES.mainWindow.taskbar_set_thumbar_buttons, buttons)
 }
+
+export const onSystemThemeChange = callback => {
+  rendererOn(NAMES.mainWindow.system_theme_change, callback)
+  return () => {
+    rendererOff(callback)
+  }
+}

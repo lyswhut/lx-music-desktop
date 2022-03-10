@@ -1,7 +1,7 @@
 import { openUrl } from '@renderer/utils'
 import { base as eventBaseName } from '@renderer/event/names'
-import { onSetConfig } from '@renderer/utils/tools'
-import { isFullscreen } from '@renderer/core/share'
+import { onSetConfig, onSystemThemeChange } from '@renderer/utils/tools'
+import { isFullscreen, themeShouldUseDarkColors } from '@renderer/core/share'
 import { rendererSend, NAMES, rendererInvoke } from '@common/ipc'
 
 import {
@@ -66,6 +66,11 @@ export default ({
     window.eventHub.emit(eventBaseName.set_config, config)
   })
 
+  const rSystemThemeChange = onSystemThemeChange((event, isDark) => {
+    // console.log(isDark)
+    themeShouldUseDarkColors.value = isDark
+  })
+
   window.eventHub.emit(eventBaseName.bindKey)
   window.eventHub.on('key_escape_down', handle_key_esc_down)
   window.eventHub.on('key_mod+f12_down', handle_open_devtools)
@@ -87,6 +92,7 @@ export default ({
     document.body.removeEventListener('click', handleBodyClick)
     window.eventHub.emit(eventBaseName.unbindKey)
     rSetConfig()
+    rSystemThemeChange()
 
     if (isProd && !window.dt && !isLinux) {
       document.body.removeEventListener('mouseenter', enableIgnoreMouseEvents)

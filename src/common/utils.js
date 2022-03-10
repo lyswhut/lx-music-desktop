@@ -162,6 +162,12 @@ exports.initSetting = isShowErrorAlert => {
       setting.player.isShowLyricTranslation = setting.player.isShowLyricTransition
       delete setting.player.isShowLyricTransition
     }
+
+    // 迁移v1.19.0之前的主题设置
+    if (setting.themeId) {
+      setting.theme.id = setting.themeId
+      delete setting.themeId
+    }
   }
 
   // 从我的列表分离下载列表 v1.7.0 后
