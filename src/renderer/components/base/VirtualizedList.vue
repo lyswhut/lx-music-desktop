@@ -215,6 +215,10 @@ export default {
       return isScrolling ? scrollToValue : dom_scrollContainer.value.scrollTop
     }
 
+    const handleResize = () => {
+      setTimeout(updateView)
+    }
+
     const contentStyle = computed(() => ({
       display: 'block',
       height: props.list.length * props.itemHeight + 'px',
@@ -238,9 +242,11 @@ export default {
       startIndex = -1
       endIndex = -1
       updateView()
+      window.addEventListener('resize', handleResize)
     })
     onBeforeUnmount(() => {
       dom_scrollContainer.value.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', handleResize)
       if (cancelScroll) cancelScroll()
     })
 
