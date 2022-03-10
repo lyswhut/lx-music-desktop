@@ -228,7 +228,7 @@
   "setting__basic_sourcename_real": "原名",
   "setting__basic_sourcename_title": "選擇音源名字類型",
   "setting__basic_theme": "主題顏色",
-  "setting__basic_theme_auto_tip": "此乃動態主題，你可以預先設置一個亮色主題及暗色主題，此後將自動根據系統的亮、暗主題色自動切換為你預先設置的相應主題。\n注：鼠標 右擊 此主題項即可打開亮、暗色主題設置窗口。",
+  "setting__basic_theme_auto_tip": "此乃動態主題，你可以預先設置一個亮色主題及暗色主題，此後將根據系統的亮、暗主題色自動切換為你預先設置的相應主題。\n注：鼠標 右擊 此主題項即可打開亮、暗色主題設置窗口。",
   "setting__basic_to_tray": "關閉軟件時不退出軟件將其最小化到系統托盤",
   "setting__basic_window_size": "窗口尺寸",
   "setting__basic_window_size_big": "大",

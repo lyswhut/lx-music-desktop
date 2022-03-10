@@ -228,7 +228,7 @@
   "setting__basic_sourcename_real": "Original",
   "setting__basic_sourcename_title": "Select the name of music source",
   "setting__basic_theme": "Theme",
-  "setting__basic_theme_auto_tip": "This is a dynamic theme, you can preset a light theme and a dark theme, and then it will automatically switch to the corresponding theme you preset according to the system's light and dark theme colors.\nNote: Right-click this theme item to open the light and dark theme settings window.",
+  "setting__basic_theme_auto_tip": "This is a dynamic theme, you can preset a light theme and a dark theme, and then it will automatically switch to the corresponding theme you preset according to the system's light and dark theme colors.\nNote: Right-click this theme item to open the light and dark theme setting window.",
   "setting__basic_to_tray": "Do not exit the software when closing the software and minimize it to the system tray",
   "setting__basic_window_size": "Window size",
   "setting__basic_window_size_big": "Large",
