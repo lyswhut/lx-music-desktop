@@ -31,6 +31,7 @@
 <script>
 import { clipboardWriteText } from '@renderer/utils'
 import { lyric } from '@renderer/core/share/lyric'
+import { isFullscreen } from '@renderer/core/share'
 import { isPlay, isShowLrcSelectContent, isShowPlayComment } from '@renderer/core/share/player'
 import { onMounted, onBeforeUnmount, useCommit, useRefGetter, computed } from '@renderer/utils/vueTools'
 import useLyric from '@renderer/utils/compositions/useLyric'
@@ -68,7 +69,8 @@ export default {
       }
     })
     const lrcFontSize = computed(() => {
-      const size = setting.value.playDetail.style.fontSize / 100
+      let size = setting.value.playDetail.style.fontSize / 100
+      if (isFullscreen.value) size = size *= 1.4
       return {
         '--playDetail-lrc-font-size': (isShowPlayComment.value ? size * 0.82 : size) + 'rem',
       }

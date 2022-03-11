@@ -29,11 +29,14 @@ const themes = {
 
 const getBarWidth = canvasWidth => {
   let barWidth = (canvasWidth / 128) * 2.5
-  const width = canvasWidth / 85
+  const width = canvasWidth / 86
+  const diffWidth = barWidth - width
   // console.log(barWidth - width)
   // if (barWidth - width > 20) newBarWidth = 20
   // barWidth = newBarWidth
-  return barWidth - width > 12 ? width : barWidth
+  return diffWidth > 32
+    ? canvasWidth / 128 // 4k屏、超宽屏直接显示所有频谱条
+    : diffWidth > 12 ? width : barWidth
 }
 export default {
   setup() {

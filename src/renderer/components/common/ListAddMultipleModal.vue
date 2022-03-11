@@ -93,11 +93,11 @@ export default {
     ...mapMutations('list', ['listAddMultiple', 'listMoveMultiple', 'createUserList']),
     handleResize() {
       const width = window.innerWidth
-      this.rowNum = width <= 1440
+      this.rowNum = width < 1920
         ? 3
-        : width <= 1920
+        : width < 2560
           ? 4
-          : width <= 2560 ? 5 : 6
+          : width < 3840 ? 5 : 6
     },
     handleClick(index) {
       this.isMove
@@ -210,19 +210,19 @@ export default {
 }
 
 @item-width2: (100% / 4);
-@media screen and (min-width: 1920px){
+@media (min-width: 1920px){
   .btn {
     width: calc(@item-width2 - 15px);
   }
 }
 @item-width3: (100% / 5);
-@media screen and (min-width: 2048px){
+@media (min-width: 2560px){
   .btn {
     width: calc(@item-width3 - 15px);
   }
 }
 @item-width4: (100% / 6);
-@media screen and (min-width: 2560px){
+@media (min-width: 3840px){
   .btn {
     width: calc(@item-width4 - 15px);
   }
