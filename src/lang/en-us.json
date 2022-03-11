@@ -429,6 +429,7 @@
   "theme_selector_modal__dark_title": "dark theme",
   "theme_selector_modal__light_title": "Bright theme",
   "theme_selector_modal__title": "Follow system theme settings",
+  "theme_selector_modal__title_tip": "Note: You can set a light theme and a dark theme in advance, and then it will automatically switch to the corresponding theme you set in advance according to the light and dark theme colors of the system.",
   "theme_yellow": "Yellow",
   "user_api__allow_show_update_alert": "Allow update popup to show",
   "user_api__btn_export": "Export",

@@ -247,6 +247,10 @@ each(@themes, {
     .noitem {
       color: ~'@{color-@{value}-theme_2-font-label}';
     }
+
+    .note {
+      color: ~'@{color-@{value}-theme_2-font}';
+    }
   }
 })
 

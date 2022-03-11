@@ -15,6 +15,8 @@ material-modal(:show="modelValue" bg-close @close="$emit('update:modelValue', fa
           li(v-for="theme in themeDarks" :key="theme.id" :tips="$t('theme_' + theme.className)" @click="currentStting.theme.darkId = theme.id" :class="[theme.className, {[$style.active]: darkId == theme.id}]")
             span
             label {{$t('theme_' + theme.className)}}
+    div(:class="$style.note")
+      p {{$t('theme_selector_modal__title_tip')}}
 </template>
 
 <script>
@@ -57,6 +59,10 @@ export default {
   min-height: 0;
   // max-height: 100%;
   // overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  min-height: 0;
   h2 {
     flex: none;
     font-size: 16px;
@@ -142,6 +148,18 @@ export default {
   }
 }
 
+.note {
+  padding: 8px 15px;
+  font-size: 13px;
+  line-height: 1.25;
+  color: @color-theme_2-font;
+  // p {
+  //   + p {
+  //     margin-top: 5px;
+  //   }
+  // }
+}
+
 each(@themes, {
   .theme {
     li {
@@ -154,6 +172,9 @@ each(@themes, {
         }
       }
     }
+  }
+  .note {
+    color: ~'@{color-@{value}-theme_2-font}';
   }
 })
 

@@ -429,6 +429,7 @@
   "theme_selector_modal__dark_title": "暗色主题",
   "theme_selector_modal__light_title": "亮色主题",
   "theme_selector_modal__title": "跟随系统主题设置",
+  "theme_selector_modal__title_tip": "注：你可以预先设置一个亮色主题及暗色主题，此后将根据系统的亮、暗主题色自动切换为你预先设置的相应主题。",
   "theme_yellow": "信口雌黄",
   "user_api__allow_show_update_alert": "允许显示更新弹窗",
   "user_api__btn_export": "导出",
