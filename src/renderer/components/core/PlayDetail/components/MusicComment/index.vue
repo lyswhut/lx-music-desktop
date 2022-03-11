@@ -134,6 +134,10 @@ export default {
     setWidth() {
       setTimeout(() => {
         this.$refs.dom_container.style.width = Math.floor(this.$refs.dom_container.parentNode.clientWidth * 0.5) + 'px'
+
+        setTimeout(() => {
+          this.handleToggleTab(this.tabActiveId, true)
+        })
       })
     },
     async getComment(musicInfo, page, limit, retryNum = 0) {
@@ -221,8 +225,8 @@ export default {
       this.newComment.nextPage = page
       this.handleGetNewComment(this.currentMusicInfo, page, this.newComment.limit)
     },
-    handleToggleTab(id) {
-      if (this.tabActiveId == id) return
+    handleToggleTab(id, force) {
+      if (!force && this.tabActiveId == id) return
       switch (id) {
         case 'hot':
           this.$refs.dom_tabMain.scrollLeft = 0
