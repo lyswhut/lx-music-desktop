@@ -84,6 +84,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.handleResize)
+    this.handleResize()
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.handleResize)
