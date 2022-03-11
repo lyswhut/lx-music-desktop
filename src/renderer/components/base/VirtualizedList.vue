@@ -141,8 +141,8 @@ export default {
       const scrollContainerHeight = dom_scrollContainer.value.clientHeight
       const currentEndIndex = currentStartIndex + Math.ceil(scrollContainerHeight / itemHeight)
       const continuous = currentStartIndex <= endIndex && currentEndIndex >= startIndex
-      const currentStartRenderIndex = Math.max(Math.floor(currentScrollTop / itemHeight) - props.outsideNum, 0)
-      const currentEndRenderIndex = currentStartIndex + Math.ceil(scrollContainerHeight / itemHeight) + props.outsideNum
+      const currentStartRenderIndex = Math.max(currentStartIndex - props.outsideNum, 0)
+      const currentEndRenderIndex = currentEndIndex + props.outsideNum + 1
       // console.log(continuous)
       // debugger
       if (continuous) {
@@ -161,7 +161,7 @@ export default {
         //   // console.log('scroll up')
         //   views.value = createList(currentStartRenderIndex, currentEndRenderIndex)
         // } else return
-        if (currentScrollTop == scrollTop) return
+        if (currentScrollTop == scrollTop && endIndex >= currentEndIndex) return
         views.value = createList(currentStartRenderIndex, currentEndRenderIndex)
       } else {
         views.value = createList(currentStartRenderIndex, currentEndRenderIndex)
