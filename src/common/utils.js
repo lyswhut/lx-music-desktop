@@ -164,7 +164,7 @@ exports.initSetting = isShowErrorAlert => {
     }
 
     // 迁移v1.19.0之前的主题设置
-    if (setting.themeId) {
+    if (setting.themeId != null) {
       setting.theme.id = setting.themeId
       delete setting.themeId
     }
