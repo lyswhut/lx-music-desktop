@@ -224,14 +224,19 @@ export default {
       height: props.list.length * props.itemHeight + 'px',
     }))
 
-    watch(() => props.itemHeight, updateView)
-    watch(() => props.list, (list) => {
+    const handleReset = list => {
       cachedList = Array(list.length)
       startIndex = -1
       endIndex = -1
       nextTick(() => {
         updateView()
       })
+    }
+    watch(() => props.itemHeight, () => {
+      handleReset(props.list)
+    })
+    watch(() => props.list, (list) => {
+      handleReset(list)
     }, {
       deep: true,
     })

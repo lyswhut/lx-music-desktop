@@ -17,16 +17,7 @@
 import { useRefGetter, watch, onMounted } from '@renderer/utils/vueTools'
 import useApp from '@renderer/core/useApp'
 import { isFullscreen } from '@renderer/core/share'
-
-const getFontSizeWithScreen = screenWidth => {
-  return screenWidth <= 1440
-    ? 16
-    : screenWidth <= 1920
-      ? 18
-      : screenWidth <= 2560
-        ? 20
-        : screenWidth <= 2560 ? 20 : 22
-}
+import { getFontSizeWithScreen } from '@renderer/utils'
 
 export default {
   setup() {

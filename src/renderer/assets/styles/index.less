@@ -102,7 +102,7 @@ table {
       flex: none;
       padding: 0 6px;
       position: relative;
-      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      // transition:  0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-size: 13px;
       line-height: 16px;
       vertical-align: middle;
@@ -223,13 +223,13 @@ input, textarea {
     border-radius: 3px;
     background-color: @color-scrollbar-thumb;
     // background-color: rgba(0, 0, 0, 0.2);
-    transition: all 0.4s ease;
+    transition: background-color 0.4s ease;
   }
   &::-webkit-scrollbar-thumb:hover {
     border-radius: 3px;
     background-color: @color-scrollbar-thumb-hover;
     // background-color: rgba(0, 0, 0, 0.4);
-    transition: all 0.4s ease;
+    transition: background-color 0.4s ease;
   }
 }
 

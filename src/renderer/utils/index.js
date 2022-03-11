@@ -560,3 +560,14 @@ export const saveStrToFile = (path, str) => new Promise((resolve, reject) => {
 
 const fileNameRxp = /[\\/:*?#"<>|]/g
 export const filterFileName = name => name.replace(fileNameRxp, '')
+
+
+export const getFontSizeWithScreen = (screenWidth = window.innerWidth) => {
+  return screenWidth <= 1440
+    ? 16
+    : screenWidth <= 1920
+      ? 18
+      : screenWidth <= 2560
+        ? 20
+        : screenWidth <= 2560 ? 20 : 22
+}

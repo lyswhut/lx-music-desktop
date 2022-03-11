@@ -36,10 +36,10 @@ div(:class="$style.download")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { checkPath, openDirInExplorer, openUrl } from '@renderer/utils'
+import { checkPath, openDirInExplorer, openUrl, getFontSizeWithScreen } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import path from 'path'
-import { windowSizeList } from '@renderer/core/share'
+import { windowSizeList, isFullscreen } from '@renderer/core/share'
 import { playInfo, playMusicInfo } from '@renderer/core/share/player'
 import { downloadList, downloadStatus } from '@renderer/core/share/download'
 
@@ -51,6 +51,7 @@ export default {
       playInfo,
       downloadList,
       downloadStatus,
+      isFullscreen,
     }
   },
   data() {
@@ -181,7 +182,7 @@ export default {
       ]
     },
     listItemHeight() {
-      return parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize) / 16 * 37
+      return Math.ceil((this.isFullscreen ? getFontSizeWithScreen() : parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize)) * 2.3)
     },
   },
   watch: {
