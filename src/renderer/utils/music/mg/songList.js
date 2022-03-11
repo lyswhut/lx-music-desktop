@@ -357,6 +357,11 @@ export default {
   },
 
   getDetailPageUrl(id) {
+    if (/playlist\/index\.html\?/.test(id)) {
+      id = id.replace(/.*(?:\?|&)id=(\d+)(?:&.*|$)/, '$1')
+    } else if (this.regExps.listDetailLink.test(id)) {
+      id = id.replace(this.regExps.listDetailLink, '$1')
+    }
     return `https://music.migu.cn/v3/music/playlist/${id}`
   },
 }

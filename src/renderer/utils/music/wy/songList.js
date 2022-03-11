@@ -51,23 +51,24 @@ export default {
 
   async handleParseId(link, retryNum = 0) {
     if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
-    if (retryNum > 2) return Promise.reject(new Error('link try max num'))
+    if (retryNum > 2) throw new Error('link try max num')
 
     this._requestObj_listDetailLink = httpFetch(link)
     const { headers: { location }, statusCode } = await this._requestObj_listDetailLink.promise
     // console.log(headers)
     if (statusCode > 400) return this.handleParseId(link, ++retryNum)
-    return location == null ? link : location
+    const url = location == null ? link : location
+    return this.regExps.listDetailLink.test(url)
+      ? url.replace(this.regExps.listDetailLink, '$1')
+      : url.replace(this.regExps.listDetailLink2, '$1')
   },
 
-  async getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
-    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
-    if (tryNum > 2) return Promise.reject(new Error('try max num'))
-
+  async getListId(id) {
+    let cookie
     if (/###/.test(id)) {
       const [url, token] = id.split('###')
       id = url
-      this.cookie = `MUSIC_U=${token}`
+      cookie = `MUSIC_U=${token}`
     }
     if ((/[?&:/]/.test(id))) {
       if (this.regExps.listDetailLink.test(id)) {
@@ -79,6 +80,14 @@ export default {
       }
       // console.log(id)
     }
+    return { id, cookie }
+  },
+  async getListDetail(rawId, page, tryNum = 0) { // 获取歌曲列表内的音乐
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    const { id, cookie } = await this.getListId(rawId)
+    if (cookie) this.cookie = cookie
 
     this._requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
       method: 'post',
@@ -290,7 +299,8 @@ export default {
     return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'wy' }))
   },
 
-  getDetailPageUrl(id) {
+  async getDetailPageUrl(rawId) {
+    const { id } = await this.getListId(rawId)
     return `https://music.163.com/#/playlist?id=${id}`
   },
 }

@@ -406,15 +406,15 @@ export default {
       }
       return false
     },
-    openSourceDetailPage(index) {
+    async openSourceDetailPage(index) {
       const { source, sourceListId } = this.userLists[index]
       if (!sourceListId) return
       let url
       if (/board__/.test(sourceListId)) {
         const id = sourceListId.replace(/board__/, '')
         url = musicSdk[source].leaderboard.getDetailPageUrl(id)
-      } else {
-        url = musicSdk[source].songList.getDetailPageUrl(sourceListId)
+      } else if (musicSdk[source].songList?.getDetailPageUrl) {
+        url = await musicSdk[source].songList.getDetailPageUrl(sourceListId)
       }
       if (!url) return
       openUrl(url)
