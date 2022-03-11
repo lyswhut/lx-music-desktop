@@ -165,6 +165,7 @@ export default {
 
 @item-width: (100% / 3);
 .btn {
+  position: relative;
   box-sizing: border-box;
   margin-left: 15px;
   margin-bottom: 15px;
@@ -199,6 +200,9 @@ export default {
   }
 }
 .newListInput {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 34px;
   border: none;
@@ -209,6 +213,8 @@ export default {
   font-size: 14px;
   text-align: center;
   font-family: inherit;
+  box-sizing: border-box;
+  padding: 0 10px;
   display: none;
 }
 
