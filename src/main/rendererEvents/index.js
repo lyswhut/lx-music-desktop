@@ -26,7 +26,7 @@ require('./nativeTheme')
 
 if (isWin) require('./taskbar')
 
-// require('./kw_decodeLyric')
+require('./kw_decodeLyric')
 
 require('./userApi')
 require('./sync')
