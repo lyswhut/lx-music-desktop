@@ -24,6 +24,7 @@ dd(:tips="$t('setting__play_mediaDevice_title')")
 <script>
 import { ref, onBeforeUnmount, watch, nextTick, useI18n } from '@renderer/utils/vueTools'
 import { setTaskBarProgress } from '@renderer/utils/tools'
+import { hasInitedAnalyser } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
 
 import { currentStting } from '../setting'
@@ -56,12 +57,24 @@ export default {
 
     const mediaDeviceId = ref(currentStting.value.player.mediaDeviceId)
     const handleMediaDeviceIdChnage = async() => {
-      if (currentStting.value.player.audioVisualization) {
+      if (hasInitedAnalyser()) {
         await dialog({
-          message: t('setting__play_media_device_tip'),
+          message: t('setting__play_media_device_error_tip'),
           confirmButtonText: t('alert_button_text'),
         })
         mediaDeviceId.value = currentStting.value.player.mediaDeviceId
+      } else if (currentStting.value.player.audioVisualization) {
+        const confirm = await dialog.confirm({
+          message: t('setting__play_media_device_tip'),
+          cancelButtonText: t('cancel_button_text'),
+          confirmButtonText: t('confirm_button_text'),
+        })
+        if (confirm) {
+          currentStting.value.player.audioVisualization = false
+          currentStting.value.player.mediaDeviceId = mediaDeviceId.value
+        } else {
+          mediaDeviceId.value = currentStting.value.player.mediaDeviceId
+        }
       } else {
         currentStting.value.player.mediaDeviceId = mediaDeviceId.value
       }

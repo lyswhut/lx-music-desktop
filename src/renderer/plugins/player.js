@@ -21,6 +21,8 @@ export const getAnalyser = () => {
   return analyser
 }
 
+export const hasInitedAnalyser = () => audioContext != null
+
 export const setResource = src => {
   if (audio) audio.src = src
 }
