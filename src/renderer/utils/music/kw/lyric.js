@@ -195,8 +195,8 @@ export default {
         } catch {
           lrcInfo.lxlyric = ''
         }
-        if (lrcInfo.lxlyric) lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
-        // console.log(lrcInfo.lxlyric)
+        lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
+        // console.log(lrcInfo)
         return lrcInfo
       })
     })

@@ -108,10 +108,7 @@ export const lrcTools = {
         words = ''
       }
       const wordTimes = words.match(this.rxps.wordTimeAll)
-      if (!wordTimes) {
-        this.isOK = false
-        return
-      }
+      if (!wordTimes) return
       // console.log(wordTimes)
       for (const timeStr of wordTimes) {
         const result = this.rxps.wordTime.exec(timeStr)
@@ -139,6 +136,7 @@ export const lrcTools = {
     }
   },
   parse(lrc) {
+    // console.log(lrc)
     const lines = lrc.split(/\r\n|\r|\n/)
     const tools = Object.create(this)
     tools.isOK = true
