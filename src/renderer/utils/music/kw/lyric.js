@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeLyric } from './util'
+import { decodeLyric, lrcTools } from './util'
 import { decodeName } from '../../index'
 
 /*
@@ -99,6 +99,7 @@ export default {
 
     for (const item of arr) {
       if (lrcSet.has(item.time)) {
+        if (lrc.length < 2) continue
         const tItem = lrc.pop()
         tItem.time = lrc[lrc.length - 1].time
         lrcT.push(tItem)
@@ -120,11 +121,12 @@ export default {
       lrcT,
     }
   },
-  transformLrc(songinfo, lrclist) {
-    return `[ti:${songinfo.name ?? ''}]\n[ar:${songinfo.singer ?? ''}]\n[al:${songinfo.albumName ?? ''}]\n[by:]\n[offset:0]\n${lrclist ? lrclist.map(l => `[${l.time}]${l.text}\n`).join('') : '暂无歌词'}`
+  transformLrc(tags, lrclist) {
+    return `${tags.join('\n')}\n${lrclist ? lrclist.map(l => `[${l.time}]${l.text}\n`).join('') : '暂无歌词'}`
   },
-  parseLrc(musicInfo, lrc) {
+  parseLrc(lrc) {
     const lines = lrc.split(/\r\n|\r|\n/)
+    let tags = []
     let lrcArr = []
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim()
@@ -135,26 +137,66 @@ export default {
           time: RegExp.$1,
           text,
         })
+      } else if (lrcTools.rxps.tagLine.test(line)) {
+        tags.push(line)
       }
     }
     const lrcInfo = this.sortLrcArr(lrcArr)
     return {
-      lyric: decodeName(this.transformLrc(musicInfo, lrcInfo.lrc)),
-      tlyric: lrcInfo.lrcT.length ? decodeName(this.transformLrc(musicInfo, lrcInfo.lrcT)) : '',
+      lyric: decodeName(this.transformLrc(tags, lrcInfo.lrc)),
+      tlyric: lrcInfo.lrcT.length ? decodeName(this.transformLrc(tags, lrcInfo.lrcT)) : '',
     }
   },
-  getLyric(musicInfo, isGetLyricx = false) {
+  // getLyric2(musicInfo, isGetLyricx = true) {
+  //   const requestObj = httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${buildParams(musicInfo.songmid, isGetLyricx)}`)
+  //   requestObj.promise = requestObj.promise.then(({ statusCode, body, raw }) => {
+  //     if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
+  //     return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
+  //       let lrcInfo
+  //       console.log(Buffer.from(base64Data, 'base64').toString())
+  //       try {
+  //         lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
+  //       } catch {
+  //         return Promise.reject(new Error('Get lyric failed'))
+  //       }
+  //       if (lrcInfo.tlyric) lrcInfo.tlyric = lrcInfo.tlyric.replace(lrcTools.rxps.wordTimeAll, '')
+  //       lrcInfo.lxlyric = lrcTools.parse(lrcInfo.lyric)
+  //       // console.log(lrcInfo.lyric)
+  //       // console.log(lrcInfo.tlyric)
+  //       // console.log(lrcInfo.lxlyric)
+  //       // console.log(JSON.stringify(lrcInfo))
+  //     })
+  //   })
+  //   return requestObj
+  // },
+  getLyric(musicInfo, isGetLyricx = true) {
+    // this.getLyric2(musicInfo)
     const requestObj = httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${buildParams(musicInfo.songmid, isGetLyricx)}`)
     requestObj.promise = requestObj.promise.then(({ statusCode, body, raw }) => {
       if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
       return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
+        // let lrcInfo
+        // try {
+        //   lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
+        // } catch {
+        //   return Promise.reject(new Error('Get lyric failed'))
+        // }
         let lrcInfo
+        // console.log(Buffer.from(base64Data, 'base64').toString())
         try {
-          lrcInfo = this.parseLrc(musicInfo, Buffer.from(base64Data, 'base64').toString())
-        } catch {
+          lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
+        } catch (err) {
           return Promise.reject(new Error('Get lyric failed'))
         }
         // console.log(lrcInfo)
+        if (lrcInfo.tlyric) lrcInfo.tlyric = lrcInfo.tlyric.replace(lrcTools.rxps.wordTimeAll, '')
+        try {
+          lrcInfo.lxlyric = lrcTools.parse(lrcInfo.lyric)
+        } catch {
+          lrcInfo.lxlyric = ''
+        }
+        if (lrcInfo.lxlyric) lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
+        // console.log(lrcInfo.lxlyric)
         return lrcInfo
       })
     })

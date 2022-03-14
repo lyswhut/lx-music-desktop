@@ -188,6 +188,7 @@ const actions = {
   },
   async getLrc({ commit, state }, musicInfo) {
     const lrcInfo = await getStoreLyric(musicInfo)
+    // lrcInfo = {}
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     if (lrcInfo.lyric && lrcInfo.tlyric != null) {
       // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
@@ -198,7 +199,15 @@ const actions = {
       //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
       // }
 
-      if ((lrcInfo.lxlyric == null && musicInfo.source != 'kg') || lrcInfo.lxlyric != null) return lrcInfo
+      if (lrcInfo.lxlyric == null) {
+        switch (musicInfo.source) {
+          case 'kg':
+          case 'kw':
+            break
+          default:
+            return lrcInfo
+        }
+      } else return lrcInfo
     }
 
     // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
