@@ -27,6 +27,7 @@ module.exports = class LinePlayer {
     this.isOffseted = false
     this._performanceTime = 0
     this._startTime = 0
+    this._offset = 0
     this._init()
   }
 
@@ -39,9 +40,16 @@ module.exports = class LinePlayer {
   }
 
   _initTag() {
+    this.tags = {
+      offset: 0,
+    }
     for (let tag in tagRegMap) {
       const matches = this.lyric.match(new RegExp(`\\[${tagRegMap[tag]}:([^\\]]*)]`, 'i'))
       this.tags[tag] = (matches && matches[1]) || ''
+    }
+    if (this.tags.offset) {
+      let offset = parseInt(this.tags.offset)
+      this.tags.offset = Number.isNaN(offset) ? 0 : offset
     }
   }
 
@@ -122,9 +130,9 @@ module.exports = class LinePlayer {
       this.delay = nextLine.time - curLine.time - driftTime
 
       if (this.delay > 0) {
-        if (!this.isOffseted && this.delay >= this.offset) {
-          this._startTime += this.offset
-          this.delay -= this.offset
+        if (!this.isOffseted && this.delay >= this._offset) {
+          this._startTime += this._offset
+          this.delay -= this._offset
           this.isOffseted = true
         }
         if (this.isPlay) {
@@ -154,6 +162,7 @@ module.exports = class LinePlayer {
 
     this._performanceTime = getNow()
     this._startTime = curTime
+    this._offset = this.tags.offset + this.offset
 
     this.curLineNum = this._findCurLineNum(curTime) - 1
 
