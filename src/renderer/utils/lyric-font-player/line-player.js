@@ -40,9 +40,7 @@ module.exports = class LinePlayer {
   }
 
   _initTag() {
-    this.tags = {
-      offset: 0,
-    }
+    this.tags = {}
     for (let tag in tagRegMap) {
       const matches = this.lyric.match(new RegExp(`\\[${tagRegMap[tag]}:([^\\]]*)]`, 'i'))
       this.tags[tag] = (matches && matches[1]) || ''
@@ -50,6 +48,8 @@ module.exports = class LinePlayer {
     if (this.tags.offset) {
       let offset = parseInt(this.tags.offset)
       this.tags.offset = Number.isNaN(offset) ? 0 : offset
+    } else {
+      this.tags.offset = 0
     }
   }
 
