@@ -36,7 +36,7 @@ module.exports = class FontPlayer {
     this.curFontNum = 0
     this.maxFontNum = 0
     this._performanceTime = 0
-    this._performanceOffsetTime = 0
+    this._startTime = 0
 
     this.fontContent = null
 
@@ -141,12 +141,12 @@ module.exports = class FontPlayer {
   }
 
   _currentTime() {
-    return getNow() - this._performanceTime + this._performanceOffsetTime
+    return getNow() - this._performanceTime + this._startTime
   }
 
-  _findcurFontNum(curTime) {
+  _findcurFontNum(curTime, startIndex = 0) {
     const length = this.fonts.length
-    for (let index = 0; index < length; index++) if (curTime <= this.fonts[index].startTime) return index === 0 ? 0 : index - 1
+    for (let index = startIndex; index < length; index++) if (curTime < this.fonts[index].startTime) return index == 0 ? 0 : index - 1
     return length - 1
   }
 
@@ -195,9 +195,8 @@ module.exports = class FontPlayer {
   _refresh() {
     this.curFontNum++
     // console.log('curFontNum time', this.fonts[this.curFontNum].time)
-    if (this.curFontNum === this.maxFontNum) return this._handlePlayMaxFontNum()
+    if (this.curFontNum >= this.maxFontNum) return this._handlePlayMaxFontNum()
     let curFont = this.fonts[this.curFontNum]
-    let nextFont = this.fonts[this.curFontNum + 1]
     // console.log(curFont, nextFont, this.curFontNum, this.maxFontNum)
     const currentTime = this._currentTime()
     // console.log(curFont.text)
@@ -206,27 +205,38 @@ module.exports = class FontPlayer {
     // console.log(currentTime, driftTime)
 
     if (driftTime >= 0 || this.curFontNum == 0) {
+      let nextFont = this.fonts[this.curFontNum + 1]
       this.delay = nextFont.startTime - curFont.startTime - driftTime
       if (this.delay > 0) {
+        if (this.isPlay) {
+          this.timeoutTools.start(() => {
+            if (!this.isPlay) return
+            this._refresh()
+          }, this.delay)
+        }
         this._handlePlayFont(curFont, driftTime)
-        this.timeoutTools.start(() => {
-          if (!this.isPlay) return
-          this._refresh()
-        }, this.delay)
+        return
+      } else {
+        let newCurLineNum = this._findcurFontNum(currentTime, this.curFontNum + 1)
+        if (newCurLineNum > this.curFontNum) this.curFontNum = newCurLineNum - 1
+        for (let i = 0; i <= this.curFontNum; i++) this._handlePlayFont(this.fonts[i], 0, true)
+        this._refresh()
         return
       }
     } else if (this.curFontNum == 0) {
       this.curFontNum--
-      this.waitPlayTimeout.start(() => {
-        if (!this.isPlay) return
-        this._refresh()
-      }, -driftTime)
+      if (this.isPlay) {
+        this.waitPlayTimeout.start(() => {
+          if (!this.isPlay) return
+          this._refresh()
+        }, -driftTime)
+      }
       return
     }
 
-    this.curFontNum = this._findcurFontNum(currentTime)
-    for (let i = 0; i < this.curFontNum; i++) this._handlePlayFont(this.fonts[i], 0, true)
-    this.curFontNum--
+    this.curFontNum = this._findcurFontNum(currentTime, this.curFontNum) - 1
+    for (let i = 0; i <= this.curFontNum; i++) this._handlePlayFont(this.fonts[i], 0, true)
+    // this.curFontNum--
     this._refresh()
   }
 
@@ -237,14 +247,11 @@ module.exports = class FontPlayer {
 
     if (this.isLineMode) return this._handlePlayLine(true)
     this.isPlay = true
-    this._performanceTime = getNow() - curTime
-    this._performanceOffsetTime = 0
-    if (this._performanceTime < 0) {
-      this._performanceOffsetTime = -this._performanceTime
-      this._performanceTime = 0
-    }
+    this._performanceTime = getNow()
+    this._startTime = curTime
 
     this.curFontNum = this._findcurFontNum(curTime)
+
     for (let i = this.curFontNum; i > -1; i--) {
       this._handlePlayFont(this.fonts[i], 0, true)
     }

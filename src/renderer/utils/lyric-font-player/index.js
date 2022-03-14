@@ -7,7 +7,7 @@ module.exports = class Lyric {
   constructor({
     lyric = '',
     translationLyric = '',
-    offset = 150,
+    offset = 0,
     lineClassName = '',
     fontClassName = 'font',
     translationClassName = 'translation',
@@ -166,5 +166,6 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.translationLyric = translationLyric
     this._init()
+    this.linePlayer.offset = this.isLineMode ? this.offset + 150 : this.offset
   }
 }
