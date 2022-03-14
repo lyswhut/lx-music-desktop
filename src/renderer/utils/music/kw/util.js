@@ -88,6 +88,7 @@ export const lrcTools = {
   offset2: 1,
   isOK: false,
   lines: [],
+  tags: [],
   getWordInfo(str, str2) {
     const offset = parseInt(str)
     const offset2 = parseInt(str2)
@@ -132,7 +133,7 @@ export const lrcTools = {
         this.isOK = false
       }
     } else {
-      this.lines.push(line)
+      this.tags.push(line)
     }
   },
   parse(lrc) {
@@ -143,12 +144,15 @@ export const lrcTools = {
     tools.offset = 1
     tools.offset2 = 1
     tools.lines = []
+    tools.tags = []
 
     for (const line of lines) {
       if (!tools.isOK) return ''
       tools.parseLine(line)
     }
-
-    return tools.lines.length ? tools.lines.join('\n') : ''
+    if (!tools.lines.length) return ''
+    let lrcs = tools.lines.join('\n')
+    if (tools.tags.length) lrcs = `${tools.tags.join('\n')}\n${lrcs}`
+    return lrcs
   },
 }
