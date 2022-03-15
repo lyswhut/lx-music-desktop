@@ -24,10 +24,8 @@ module.exports = class LinePlayer {
     this.curLineNum = 0
     this.maxLine = 0
     this.offset = offset
-    this.isOffseted = false
     this._performanceTime = 0
     this._startTime = 0
-    this._offset = 0
     this._init()
   }
 
@@ -105,6 +103,7 @@ module.exports = class LinePlayer {
   }
 
   _findCurLineNum(curTime, startIndex = 0) {
+    if (curTime <= 0) return 0
     const length = this.lines.length
     for (let index = startIndex; index < length; index++) if (curTime <= this.lines[index].time) return index === 0 ? 0 : index - 1
     return length - 1
@@ -130,11 +129,6 @@ module.exports = class LinePlayer {
       this.delay = nextLine.time - curLine.time - driftTime
 
       if (this.delay > 0) {
-        if (!this.isOffseted && this.delay >= this._offset) {
-          this._startTime += this._offset
-          this.delay -= this._offset
-          this.isOffseted = true
-        }
         if (this.isPlay) {
           timeoutTools.start(() => {
             if (!this.isPlay) return
@@ -160,11 +154,10 @@ module.exports = class LinePlayer {
     this.pause()
     this.isPlay = true
 
-    this._performanceTime = getNow()
+    this._performanceTime = getNow() - parseInt(this.tags.offset + this.offset)
     this._startTime = curTime
-    this._offset = this.tags.offset + this.offset
 
-    this.curLineNum = this._findCurLineNum(curTime) - 1
+    this.curLineNum = this._findCurLineNum(this._currentTime()) - 1
 
     this._refresh()
   }
@@ -172,7 +165,6 @@ module.exports = class LinePlayer {
   pause() {
     if (!this.isPlay) return
     this.isPlay = false
-    this.isOffseted = false
     timeoutTools.clear()
     if (this.curLineNum === this.maxLine) return
     const currentTime = this._currentTime()
