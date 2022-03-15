@@ -80,7 +80,7 @@ export const tokenRequest = async(url, options = {}) => {
 export const lrcTools = {
   rxps: {
     wordLine: /^(\[\d{1,2}:.*\d{1,4}\])\s*(\S+(?:\s+\S+)*)?\s*/,
-    tagLine: /\[(ver|ti|ar|al|by|kuwo):\s*(\S+(?:\s+\S+)*)\s*\]/,
+    tagLine: /\[(ver|ti|ar|al|offset|by|kuwo):\s*(\S+(?:\s+\S+)*)\s*\]/,
     wordTimeAll: /<(-?\d+),(-?\d+)(?:,-?\d+)?>/g,
     wordTime: /<(-?\d+),(-?\d+)(?:,-?\d+)?>/,
   },
