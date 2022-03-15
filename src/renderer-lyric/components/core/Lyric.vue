@@ -172,7 +172,6 @@ export default {
         this.lyric.lines = lines
         this.lyric.line = 0
       },
-      offset: 100,
     })
   },
   mounted() {
