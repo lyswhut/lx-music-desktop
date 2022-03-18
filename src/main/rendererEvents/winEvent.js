@@ -26,6 +26,11 @@ module.exports = mainWindow => {
   // })
   mainWindow.on('focus', () => {
     mainSend(mainWindow, ipcMainWindowNames.focus)
+    global.lx_event.mainWindow.focus()
+  })
+
+  mainWindow.on('blur', () => {
+    global.lx_event.mainWindow.blur()
   })
 
   mainWindow.once('ready-to-show', () => {
