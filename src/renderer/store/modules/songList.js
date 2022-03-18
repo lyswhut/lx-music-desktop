@@ -105,7 +105,7 @@ const actions = {
         : music[source]?.songList.getListDetail(id, page).then(result => {
           cache.set(key, result)
           return result
-        })
+        }) ?? Promise.reject(new Error('source not found'))
     }
     return loadData(id, 1).then(result => {
       if (result.total <= result.limit) return filterList(result.list)

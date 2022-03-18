@@ -298,10 +298,13 @@ export default {
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     handleGetListDetail(id, source, page) {
+      this.detailLoading = true
       this.isGetDetailFailed = false
       return this.getListDetail({ id, source, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
+      }).finally(() => {
+        this.detailLoading = false
       })
     },
     async fetchList() {
