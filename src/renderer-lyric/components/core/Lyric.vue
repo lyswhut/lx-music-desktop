@@ -221,7 +221,9 @@ export default {
           this.setLyric()
           this.$nextTick(() => {
             this.lyric.line = data.line
-            rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+            setTimeout(() => {
+              rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+            })
           })
         case 'music_info':
           this.musicInfo.name = data.name
