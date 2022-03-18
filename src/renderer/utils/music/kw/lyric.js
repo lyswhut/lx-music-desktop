@@ -110,10 +110,15 @@ export default {
       }
     }
 
-    if (lrcT.length && lrc.length > lrcT.length) {
-      const tItem = lrc.pop()
-      tItem.time = lrc[lrc.length - 1].time
-      lrcT.push(tItem)
+    if (lrcT.length) {
+      if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
+        const tItem = lrc.pop()
+        tItem.time = lrc[lrc.length - 1].time
+        lrcT.push(tItem)
+      } else {
+        lrc = arr
+        lrcT = []
+      }
     }
 
     return {
