@@ -61,7 +61,7 @@ module.exports = class Lyric {
           font.reset()
           font.lineContent.classList.remove(this.activeLineClassName)
         }
-      } else if (num > this.playingLineNum + 1) {
+      } else if (num > this.playingLineNum) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
           font.reset()
@@ -79,7 +79,7 @@ module.exports = class Lyric {
           font.lineContent.classList.remove(this.activeLineClassName)
           font.reset()
         }
-      } else if (num > this.playingLineNum + 1) {
+      } else if (num > this.playingLineNum) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
           font.lineContent.classList.remove(this.activeLineClassName)
