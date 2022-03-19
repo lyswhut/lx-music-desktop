@@ -1,6 +1,6 @@
 import { onBeforeUnmount } from '@renderer/utils/vueTools'
 
-import { player as eventPlayerNames, list as eventListNames } from '@renderer/event/names'
+import { player as eventPlayerNames, list as eventListNames, download as eventDownloadNames } from '@renderer/event/names'
 import { playInfo, playMusicInfo, updatePlayIndex } from '@renderer/core/share/player'
 import { getList } from '@renderer/core/share/utils'
 import { throttle } from '@renderer/utils'
@@ -30,9 +30,15 @@ export default ({ playNext }) => {
     throttleListChange()
   }
 
+  const handleDownloadListChange = () => {
+    handleListChange(['download'])
+  }
+
   window.eventHub.on(eventListNames.listChange, handleListChange)
+  window.eventHub.on(eventDownloadNames.listChange, handleDownloadListChange)
 
   onBeforeUnmount(() => {
     window.eventHub.off(eventListNames.listChange, handleListChange)
+    window.eventHub.off(eventDownloadNames.listChange, handleDownloadListChange)
   })
 }
