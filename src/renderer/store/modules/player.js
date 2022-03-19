@@ -36,29 +36,52 @@ const playMusic = () => {
   window.eventHub.emit(eventPlayerNames.playMusic)
 }
 
-const filterList = async({ playedList, listInfo, savePath, commit }) => {
+const filterList = async({ playedList, listInfo, savePath, commit, isCheckFile }) => {
   // if (this.list.listName === null) return
-  let list
-  let canPlayList = []
-  const filteredPlayedList = playedList.filter(({ listId, isTempPlay }) => listInfo.id === listId && !isTempPlay).map(({ musicInfo }) => musicInfo)
-  if (listInfo.id == 'download') {
-    list = []
-    for (const item of listInfo.list) {
-      const filePath = path.join(savePath, item.metadata.fileName)
-      if (!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath)) continue
+  // console.log(isCheckFile)
+  if (isCheckFile) {
+    let list
+    let canPlayList = []
+    const filteredPlayedList = playedList.filter(({ listId, isTempPlay }) => listInfo.id === listId && !isTempPlay).map(({ musicInfo }) => musicInfo)
+    if (listInfo.id == 'download') {
+      list = []
+      for (const item of listInfo.list) {
+        const filePath = path.join(savePath, item.metadata.fileName)
+        if (!await checkPath(filePath) || !item.isComplate || /\.ape$/.test(filePath)) continue
 
-      canPlayList.push(item)
+        canPlayList.push(item)
 
-      // 排除已播放音乐
-      let index = filteredPlayedList.findIndex(m => m.songmid == item.songmid)
-      if (index > -1) {
-        filteredPlayedList.splice(index, 1)
-        continue
+        // 排除已播放音乐
+        let index = filteredPlayedList.findIndex(m => m.songmid == item.songmid)
+        if (index > -1) {
+          filteredPlayedList.splice(index, 1)
+          continue
+        }
+        list.push(item)
       }
-      list.push(item)
+    } else {
+      list = listInfo.list.filter(s => {
+        // if (!assertApiSupport(s.source)) return false
+        canPlayList.push(s)
+
+        let index = filteredPlayedList.findIndex(m => m.songmid == s.songmid)
+        if (index > -1) {
+          filteredPlayedList.splice(index, 1)
+          return false
+        }
+        return true
+      })
     }
+    if (!list.length && playedList.length) {
+      commit('clearPlayedList')
+      return canPlayList
+    }
+    return list
   } else {
-    list = listInfo.list.filter(s => {
+    let canPlayList = []
+    const filteredPlayedList = playedList.filter(({ listId, isTempPlay }) => listInfo.id === listId && !isTempPlay).map(({ musicInfo }) => musicInfo)
+
+    const list = listInfo.list.filter(s => {
       // if (!assertApiSupport(s.source)) return false
       canPlayList.push(s)
 
@@ -69,12 +92,12 @@ const filterList = async({ playedList, listInfo, savePath, commit }) => {
       }
       return true
     })
+    if (!list.length && playedList.length) {
+      commit('clearPlayedList')
+      return canPlayList
+    }
+    return list
   }
-  if (!list.length && playedList.length) {
-    commit('clearPlayedList')
-    return canPlayList
-  }
-  return list
 }
 
 const getMusicUrl = function(musicInfo, type, onToggleSource, retryedSource = [], originMusic) {
@@ -221,7 +244,7 @@ const actions = {
     })
   },
 
-  async playPrev({ state, rootState, commit, getters }) {
+  async playPrev({ state, rootState, commit, getters }, { findNum = 0, excludeList = [] } = {}) {
     const currentListId = playInfo.playListId
     const currentList = getList(currentListId)
     if (playedList.length) {
@@ -251,11 +274,13 @@ const actions = {
       }
     }
 
+    const isCheckFile = findNum > 2
     let filteredList = await filterList({
       listInfo: { id: currentListId, list: currentList },
-      playedList,
+      playedList: excludeList.length ? [...playedList, ...excludeList] : playedList,
       savePath: rootState.setting.download.savePath,
       commit,
+      isCheckFile,
     })
     if (!filteredList.length) return commit('setPlayMusicInfo', { listId: null, musicInfo: null })
 
@@ -280,13 +305,23 @@ const actions = {
       if (nextIndex < 0) return
     }
 
-    commit('setPlayMusicInfo', {
+    const nextPlayMusicInfo = {
       musicInfo: filteredList[nextIndex],
       listId: currentListId,
-    })
+    }
+    if (currentListId == 'download' && !isCheckFile) {
+      if (!await checkPath(path.join(rootState.setting.download.savePath, nextPlayMusicInfo.musicInfo.metadata.fileName)) || !nextPlayMusicInfo.musicInfo.isComplate || /\.ape$/.test(nextPlayMusicInfo.musicInfo.metadata.fileName)) {
+        excludeList.push(nextPlayMusicInfo)
+        // console.log('findNum', findNum)
+        return this.dispatch('player/playPrev', { findNum: findNum + 1, excludeList })
+      }
+    }
+
+
+    commit('setPlayMusicInfo', nextPlayMusicInfo)
     playMusic()
   },
-  async playNext({ state, rootState, commit, getters }) {
+  async playNext({ state, rootState, commit, getters }, { findNum = 0, excludeList = [] } = {}) {
     if (tempPlayList.length) {
       const playMusicInfo = tempPlayList[0]
       commit('removeTempPlayList', 0)
@@ -325,11 +360,13 @@ const actions = {
         return
       }
     }
+    const isCheckFile = findNum > 2
     let filteredList = await filterList({
       listInfo: { id: currentListId, list: currentList },
-      playedList,
+      playedList: excludeList.length ? [...playedList, ...excludeList] : playedList,
       savePath: rootState.setting.download.savePath,
       commit,
+      isCheckFile,
     })
 
     if (!filteredList.length) return commit('setPlayMusicInfo', { listId: null, musicInfo: null })
@@ -355,10 +392,19 @@ const actions = {
     }
     if (nextIndex < 0) return
 
-    commit('setPlayMusicInfo', {
+    const nextPlayMusicInfo = {
       musicInfo: filteredList[nextIndex],
       listId: currentListId,
-    })
+    }
+    if (currentListId == 'download' && !isCheckFile) {
+      if (!await checkPath(path.join(rootState.setting.download.savePath, nextPlayMusicInfo.musicInfo.metadata.fileName)) || !nextPlayMusicInfo.musicInfo.isComplate || /\.ape$/.test(nextPlayMusicInfo.musicInfo.metadata.fileName)) {
+        excludeList.push(nextPlayMusicInfo)
+        // console.log('findNum', findNum)
+        return this.dispatch('player/playNext', { findNum: findNum + 1, excludeList })
+      }
+    }
+
+    commit('setPlayMusicInfo', nextPlayMusicInfo)
     playMusic()
   },
 }
