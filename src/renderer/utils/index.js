@@ -571,3 +571,13 @@ export const getFontSizeWithScreen = (screenWidth = window.innerWidth) => {
         ? 20
         : screenWidth <= 2560 ? 20 : 22
 }
+
+
+export const deduplicationList = list => {
+  const ids = new Set()
+  return list.filter(s => {
+    if (ids.has(s.songmid)) return false
+    ids.add(s.songmid)
+    return true
+  })
+}
