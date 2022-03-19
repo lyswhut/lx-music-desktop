@@ -149,9 +149,9 @@ jobs:
           path: build/*-arm64.dmg
 
       - name: Generate file MD5
-          run: |
-            cd build
-            md5 *.dmg
+        run: |
+          cd build
+          md5 *.dmg
 
   Linux:
     name: Linux

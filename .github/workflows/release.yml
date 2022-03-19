@@ -95,9 +95,9 @@ jobs:
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
 
       - name: Generate file MD5
-          run: |
-            cd build
-            md5 *.dmg
+        run: |
+          cd build
+          md5 *.dmg
 
   Linux:
     name: Linux
