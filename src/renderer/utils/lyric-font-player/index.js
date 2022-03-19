@@ -166,6 +166,6 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.translationLyric = translationLyric
     this._init()
-    this.linePlayer.offset = this.isLineMode ? this.offset + 90 : this.offset - 20
+    this.linePlayer.offset = this.isLineMode ? this.offset + 90 : this.offset
   }
 }
