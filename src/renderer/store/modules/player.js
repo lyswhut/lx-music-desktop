@@ -322,7 +322,7 @@ const actions = {
     playMusic()
   },
   async playNext({ state, rootState, commit, getters }, { findNum = 0, excludeList = [] } = {}) {
-    if (tempPlayList.length) {
+    if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
       const playMusicInfo = tempPlayList[0]
       commit('removeTempPlayList', 0)
       commit('setPlayMusicInfo', playMusicInfo)
@@ -334,7 +334,7 @@ const actions = {
     const currentListId = playInfo.playListId
     const currentList = getList(currentListId)
 
-    if (playedList.length) {
+    if (playedList.length) { // 移除已播放列表内不存在原列表的歌曲
       let currentSongmid
       if (playMusicInfo.isTempPlay) {
         const musicInfo = currentList[playInfo.listPlayIndex]
@@ -360,8 +360,8 @@ const actions = {
         return
       }
     }
-    const isCheckFile = findNum > 2
-    let filteredList = await filterList({
+    const isCheckFile = findNum > 2 // 针对下载列表，如果超过两次都碰到无效歌曲，则过滤整个列表内的无效歌曲
+    let filteredList = await filterList({ // 过滤已播放歌曲
       listInfo: { id: currentListId, list: currentList },
       playedList: excludeList.length ? [...playedList, ...excludeList] : playedList,
       savePath: rootState.setting.download.savePath,
@@ -396,7 +396,7 @@ const actions = {
       musicInfo: filteredList[nextIndex],
       listId: currentListId,
     }
-    if (currentListId == 'download' && !isCheckFile) {
+    if (currentListId == 'download' && !isCheckFile) { // 针对下载列表，检查文件是否可以播放
       if (!await checkPath(path.join(rootState.setting.download.savePath, nextPlayMusicInfo.musicInfo.metadata.fileName)) || !nextPlayMusicInfo.musicInfo.isComplate || /\.ape$/.test(nextPlayMusicInfo.musicInfo.metadata.fileName)) {
         excludeList.push(nextPlayMusicInfo)
         // console.log('findNum', findNum)
