@@ -3,7 +3,7 @@ div.comment(:class="$style.comment" ref="dom_container")
   div(:class="$style.commentHeader")
     h3 {{$t('comment__title', { name: title })}}
     div(:class="$style.commentHeaderBtns")
-      div(:class="$style.commentHeaderBtn" @click="handleShowComment" :tips="$t('comment__refresh')")
+      div(:class="$style.commentHeaderBtn" @click="handleShowComment" :aria-label="$t('comment__refresh')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style='transform: rotate(45deg);' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-refresh')
       div(:class="$style.commentHeaderBtn" @click="$emit('close')")

@@ -15,7 +15,7 @@ dd
     base-checkbox(id="setting_player_showTaskProgess" v-model="currentStting.player.isShowTaskProgess" :label="$t('setting__play_task_bar')")
   .gap-top
     base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="currentStting.player.isMediaDeviceRemovedStopPlay" :label="$t('setting__play_mediaDevice_remove_stop_play')")
-dd(:tips="$t('setting__play_mediaDevice_title')")
+dd(:aria-label="$t('setting__play_mediaDevice_title')")
   h3#play_mediaDevice {{$t('setting__play_mediaDevice')}}
   div
     base-selection.gap-left(:list="mediaDevices" v-model="mediaDeviceId" @change="handleMediaDeviceIdChnage" item-key="deviceId" item-name="label")

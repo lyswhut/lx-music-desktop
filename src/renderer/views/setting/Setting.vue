@@ -3,12 +3,12 @@
   <!-- <div class="scroll" :class="$style.toc">
     <ul :class="$style.tocList">
       <li :class="$style.tocListItem" v-for="h2 in toc.list" :key="h2.id">
-        <h2 :class="[$style.tocH2, toc.activeId == h2.id ? $style.active : null]" :tips="h2.title">
+        <h2 :class="[$style.tocH2, toc.activeId == h2.id ? $style.active : null]" :aria-label="h2.title">
           <a :href="'#' + h2.id" @click.stop="toc.activeId = h2.id">{{h2.title}}</a>
         </h2>
         <ul :class="$style.tocList" v-if="h2.children.length">
           <li :class="$style.tocSubListItem" v-for="h3 in h2.children" :key="h3.id">
-            <h3 :class="[$style.tocH3, toc.activeId == h3.id ? $style.active : null]" :tips="h3.title">
+            <h3 :class="[$style.tocH3, toc.activeId == h3.id ? $style.active : null]" :aria-label="h3.title">
               <a :href="'#' + h3.id" @click.stop="toc.activeId = h3.id">{{h3.title}}</a>
             </h3>
           </li>

@@ -1,6 +1,10 @@
 <template>
-<ul :class="$style.list" :style="listStyles" ref="dom_list">
+<ul :class="$style.list" :style="listStyles" ref="dom_list" role="toolbar" :aria-hidden="!show">
   <li v-for="item in menus"
+    role="tab"
+    tabindex="0"
+    :aria-label="item[itemName]"
+    ignore-tip
     :key="item.action"
     @click="handleClick(item)"
     v-show="!item.hide && (item.action == 'download' ? setting.download.enable : true)"

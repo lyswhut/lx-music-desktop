@@ -18,12 +18,12 @@ div(:class="$style.list")
         :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { [$style.disabled]: !assertApiSupport(item.source) }]"
         @contextmenu="handleListItemRightClick($event, index)")
         div.list-item-cell.nobreak.center(style="flex: 0 0 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-        div.list-item-cell.auto(:tips="item.name + (isShowSource ? ` - ${item.source}` : '')")
+        div.list-item-cell.auto(:aria-label="item.name + (isShowSource ? ` - ${item.source}` : '')")
           span.select {{item.name}}
           span(:class="[$style.labelSource, $style.noSelect]" v-if="isShowSource") {{item.source}}
-        div.list-item-cell(style="flex: 0 0 22%;" :tips="item.singer")
+        div.list-item-cell(style="flex: 0 0 22%;" :aria-label="item.singer")
           span.select {{item.singer}}
-        div.list-item-cell(style="flex: 0 0 22%;" :tips="item.albumName")
+        div.list-item-cell(style="flex: 0 0 22%;" :aria-label="item.albumName")
           span.select {{item.albumName}}
         div.list-item-cell(style="flex: 0 0 9%;")
           span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}

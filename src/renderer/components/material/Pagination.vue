@@ -6,24 +6,24 @@
           <use xlink:href="#icon-left"></use>
         </svg></span></li>
     <li v-else>
-      <button type="button" @click="handleClick(page - 1)" :tips="$t('pagination__prev')">
+      <button type="button" @click="handleClick(page - 1)" :aria-label="$t('pagination__prev')">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
           <use xlink:href="#icon-left"></use>
         </svg>
       </button>
     </li>
     <li v-if="allPage &gt; btnLength &amp;&amp; page &gt; pageEvg+1" :class="$style.first">
-      <button type="button" @click="handleClick(1)" :tips="$t('pagination__page', { num: 1 })">
+      <button type="button" @click="handleClick(1)" :aria-label="$t('pagination__page', { num: 1 })">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
           <use xlink:href="#icon-first"></use>
         </svg>
       </button>
     </li>
     <li v-for="(p, index) in pages" :key="index" :class="{[$style.active] : p == page}"><span v-if="p === page" v-text="page"></span>
-      <button v-else type="button" @click="handleClick(p)" v-text="p" :tips="$t('pagination__page', { num: p })"></button>
+      <button v-else type="button" @click="handleClick(p)" v-text="p" :aria-label="$t('pagination__page', { num: p })"></button>
     </li>
     <li v-if="allPage &gt; btnLength &amp;&amp; allPage - page &gt; pageEvg" :class="$style.last">
-      <button type="button" @click="handleClick(allPage)" :tips="$t('pagination__page', { num: allPage })">
+      <button type="button" @click="handleClick(allPage)" :aria-label="$t('pagination__page', { num: allPage })">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
           <use xlink:href="#icon-last"></use>
         </svg>
@@ -34,7 +34,7 @@
           <use xlink:href="#icon-right"></use>
         </svg></span></li>
     <li v-else>
-      <button type="button" @click="handleClick(page + 1)" :tips="$t('pagination__next')">
+      <button type="button" @click="handleClick(page + 1)" :aria-label="$t('pagination__next')">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
           <use xlink:href="#icon-right"></use>
         </svg>

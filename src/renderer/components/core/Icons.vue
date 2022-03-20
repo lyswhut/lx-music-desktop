@@ -1,5 +1,5 @@
 <template lang="pug">
-svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;")
+svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style="display: none;" aria-hidden="true")
   defs
     g#icon-search(fill='currentColor')
       // 30.239 30.239

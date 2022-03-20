@@ -6,13 +6,13 @@ material-modal(:show="modelValue" bg-close @close="$emit('update:modelValue', fa
       div
         h3 {{$t('theme_selector_modal__light_title')}}
         ul(:class="$style.theme")
-          li(v-for="theme in themeLights" :key="theme.id" :tips="$t('theme_' + theme.className)" @click="currentStting.theme.lightId = theme.id" :class="[theme.className, {[$style.active]: lightId == theme.id}]")
+          li(v-for="theme in themeLights" :key="theme.id" :aria-label="$t('theme_' + theme.className)" @click="currentStting.theme.lightId = theme.id" :class="[theme.className, {[$style.active]: lightId == theme.id}]")
             span
             label {{$t('theme_' + theme.className)}}
       div
         h3 {{$t('theme_selector_modal__dark_title')}}
         ul(:class="$style.theme")
-          li(v-for="theme in themeDarks" :key="theme.id" :tips="$t('theme_' + theme.className)" @click="currentStting.theme.darkId = theme.id" :class="[theme.className, {[$style.active]: darkId == theme.id}]")
+          li(v-for="theme in themeDarks" :key="theme.id" :aria-label="$t('theme_' + theme.className)" @click="currentStting.theme.darkId = theme.id" :class="[theme.className, {[$style.active]: darkId == theme.id}]")
             span
             label {{$t('theme_' + theme.className)}}
     div(:class="$style.note")

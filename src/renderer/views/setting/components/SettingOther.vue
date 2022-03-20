@@ -8,7 +8,7 @@ dd
 dd
   h3#other_resource_cache
     | {{$t('setting__other_resource_cache')}}
-    svg-icon(class="help-icon" name="help-circle-outline" :tips="$t('setting__other_resource_cache_tip')")
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_resource_cache_tip')")
   div
     p
       | {{$t('setting__other_resource_cache_label')}}
@@ -18,7 +18,7 @@ dd
 dd
   h3#other_play_list_cache
     | {{$t('setting__other_play_list_cache')}}
-    svg-icon(class="help-icon" name="help-circle-outline" :tips="$t('setting__other_play_list_cache_tip')")
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_play_list_cache_tip')")
 
   div
     base-btn.btn(min :disabled="isDisabledListCacheClear" @click="clearListCache") {{$t('setting__other_play_list_cache_clear_btn')}}

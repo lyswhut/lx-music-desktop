@@ -10,7 +10,7 @@
   </div>
   <ul class="selection-list scroll" :class="$style.list" :style="listStyles" ref="dom_list">
     <li v-for="(item, index) in list" :key="index" :class="(itemKey ? item[itemKey] : item) == modelValue ? $style.active : null"
-      @click="handleClick(item)" :tips="itemName ? item[itemName] : item">{{itemName ? item[itemName] : item}}</li>
+      @click="handleClick(item)" :aria-label="itemName ? item[itemName] : item">{{itemName ? item[itemName] : item}}</li>
   </ul>
 </div>
 </template>

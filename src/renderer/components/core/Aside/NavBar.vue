@@ -1,8 +1,8 @@
 <template>
 <div :class="$style.menu">
-  <ul :class="$style.list">
-    <li v-for="item in menus" :key="item.to" :class="$style.navItem">
-      <router-link :class="$style.link" :active-class="$style.active" :to="item.to" :tips="item.tips">
+  <ul :class="$style.list" role="toolbar">
+    <li v-for="item in menus" :key="item.to" :class="$style.navItem" role="presentation">
+      <router-link :class="$style.link" :active-class="$style.active" role="tab" :aria-selected="$route.name == item.to" :to="item.to" :aria-label="item.tips">
         <div :class="$style.icon">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" space="preserve">
             <use :xlink:href="item.icon"></use>

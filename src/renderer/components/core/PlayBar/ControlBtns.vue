@@ -1,7 +1,7 @@
 <template>
 <div :class="$style.controlBtn">
   <common-volume-bar :setting="setting" />
-  <div :class="$style.titleBtn" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :tips="toggleDesktopLyricBtnTitle">
+  <div :class="$style.titleBtn" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :aria-label="toggleDesktopLyricBtnTitle">
     <svg v-show="setting.desktopLyric.enable" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
       <use xlink:href="#icon-desktop-lyric-on"></use>
     </svg>
@@ -9,7 +9,7 @@
       <use xlink:href="#icon-desktop-lyric-off"></use>
     </svg>
   </div>
-  <div :class="$style.titleBtn" @click="toggleNextPlayMode" :tips="nextTogglePlayName">
+  <div :class="$style.titleBtn" @click="toggleNextPlayMode" :aria-label="nextTogglePlayName">
     <svg v-show="setting.player.togglePlayMethod == 'listLoop'" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="80%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-list-loop"></use>
     </svg>
@@ -26,7 +26,7 @@
       <use xlink:href="#icon-single"></use>
     </svg>
   </div>
-  <div :class="$style.titleBtn" @click="addMusicTo" :tips="$t('player__add_music_to')">
+  <div :class="$style.titleBtn" @click="addMusicTo" :aria-label="$t('player__add_music_to')">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="80%" viewBox="0 0 512 512" space="preserve">
       <use xlink:href="#icon-add-2"></use>
     </svg>

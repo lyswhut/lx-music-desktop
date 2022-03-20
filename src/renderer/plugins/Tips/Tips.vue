@@ -1,6 +1,6 @@
 <template>
   <transition name="tips-fade" @after-leave="afterLeave">
-    <div v-show="visible" :style="{ left: position.left + 'px' , top: position.top + 'px', transform: transform }" ref="dom_tips" :class="$style.tips">{{message}}</div>
+    <div v-show="visible" :style="{ left: position.left + 'px' , top: position.top + 'px', transform: transform }" ref="dom_tips" :class="$style.tips" role="presentation">{{message}}</div>
   </transition>
 </template>
 

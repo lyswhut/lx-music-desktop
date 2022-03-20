@@ -3,8 +3,8 @@
   <main :class="$style.main">
     <h2>{{$t('list_add__' + (isMove ? 'title_first_move' : 'title_first_add'))}}&nbsp;<span :class="$style.name">{{this.musicInfo && `${musicInfo.name}`}}</span>&nbsp;{{$t('list_add__title_last')}}</h2>
     <div class="scroll" :class="$style.btnContent">
-      <base-btn :class="$style.btn" :tips="$t('list_add__btn_title', { name: item.name })" :key="item.id" :disabled="item.isExist" @click="handleClick(index)" v-for="(item, index) in lists">{{item.name}}</base-btn>
-      <base-btn :class="[$style.btn, $style.newList, isEditing ? $style.editing : null]" @click="handleEditing($event)" :tips="$t('lists__new_list_btn')">
+      <base-btn :class="$style.btn" :aria-label="$t('list_add__btn_title', { name: item.name })" :key="item.id" :disabled="item.isExist" @click="handleClick(index)" v-for="(item, index) in lists">{{item.name}}</base-btn>
+      <base-btn :class="[$style.btn, $style.newList, isEditing ? $style.editing : null]" @click="handleEditing($event)" :aria-label="$t('lists__new_list_btn')">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42" space="preserve">
           <use xlink:href="#icon-addTo"></use>
         </svg>
