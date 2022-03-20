@@ -3,7 +3,7 @@
   <div :class="[$style.volume, {[$style.muted]: setting.player.isMute} ]">
     <div :class="$style.volumeBar" ref="dom_volumeBar" :style="{ transform: `scaleX(${volume || 0})` }"></div>
   </div>
-  <div :class="$style.volumeMask" @mousedown="handleVolumeMsDown" :tips="`${$t('player__volume')}${parseInt(volume * 100)}%`"></div>
+  <div :class="$style.volumeMask" @mousedown="handleVolumeMsDown" :aria-label="`${$t('player__volume')}${parseInt(volume * 100)}%`"></div>
 </div>
 </template>
 

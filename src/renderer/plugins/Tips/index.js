@@ -8,10 +8,14 @@ let prevX = 0
 let prevY = 0
 let isDraging = false
 
+const getTipText = el => {
+  return el.getAttribute('aria-label') && el.getAttribute('ignore-tip') == null ? el.getAttribute('aria-label') : null
+}
+
 const getTips = el =>
   el
-    ? el.getAttribute('tips')
-      ? el.getAttribute('tips')
+    ? getTipText(el)
+      ? getTipText(el)
       : el.parentNode === document.documentElement
         ? null
         : getTips(el.parentNode)

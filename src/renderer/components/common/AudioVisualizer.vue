@@ -26,16 +26,29 @@ const themes = {
   naruto: 'rgba(87,144,167,.14)',
   happy_new_year: 'rgba(192,57,43,.1)',
 }
+
+const getBarWidth = canvasWidth => {
+  let barWidth = (canvasWidth / 128) * 2.5
+  const width = canvasWidth / 86
+  const diffWidth = barWidth - width
+  // console.log(barWidth - width)
+  // if (barWidth - width > 20) newBarWidth = 20
+  // barWidth = newBarWidth
+  return diffWidth > 32
+    ? canvasWidth / 128 // 4k屏、超宽屏直接显示所有频谱条
+    : diffWidth > 12 ? width : barWidth
+}
 export default {
   setup() {
     const dom_canvas = ref(null)
     const analyser = getAnalyser()
 
     let ctx
-    let bufferLength
+    let bufferLength = 0
     let dataArray
     let WIDTH
     let HEIGHT
+    let MAX_HEIGHT
     let barWidth
     let barHeight
     let x = 0
@@ -89,7 +102,7 @@ export default {
         // let b = 50
 
         // ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')'
-        barHeight = barHeight * frequencyAvg + barHeight * 0.42
+        barHeight = (barHeight * frequencyAvg + barHeight * 0.42) * MAX_HEIGHT
         ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight)
 
         x += barWidth
@@ -101,7 +114,7 @@ export default {
       analyser.fftSize = 256
       bufferLength = analyser.frequencyBinCount
       // console.log(bufferLength)
-      barWidth = (WIDTH / bufferLength) * 2.5
+      barWidth = getBarWidth(WIDTH)
       dataArray = new Uint8Array(bufferLength)
       renderFrame()
     }
@@ -110,14 +123,27 @@ export default {
       isPlaying = false
     }
 
+    const handleResize = () => {
+      const canvas = dom_canvas.value
+      canvas.width = canvas.clientWidth
+      canvas.height = canvas.clientHeight
+      WIDTH = canvas.width
+      HEIGHT = canvas.height
+      MAX_HEIGHT = Math.round(HEIGHT * 0.4 / 255 * 10000) / 10000
+      // console.log(MAX_HEIGHT)
+      barWidth = getBarWidth(WIDTH)
+    }
+
     window.eventHub.on(eventPlayerNames.play, handlePlay)
     window.eventHub.on(eventPlayerNames.pause, handlePause)
     window.eventHub.on(eventPlayerNames.error, handlePause)
+    window.addEventListener('resize', handleResize)
     onBeforeUnmount(() => {
       handlePause()
       window.eventHub.off(eventPlayerNames.play, handlePlay)
       window.eventHub.off(eventPlayerNames.pause, handlePause)
       window.eventHub.off(eventPlayerNames.error, handlePause)
+      window.removeEventListener('resize', handleResize)
     })
 
     onMounted(() => {
@@ -127,6 +153,8 @@ export default {
       canvas.height = canvas.clientHeight
       WIDTH = canvas.width
       HEIGHT = canvas.height
+      MAX_HEIGHT = Math.round(HEIGHT * 0.4 / 255 * 10000) / 10000
+      // console.log(MAX_HEIGHT)
       if (isPlay.value) handlePlay()
     })
 

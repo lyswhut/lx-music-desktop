@@ -26,6 +26,14 @@ class MainWindow extends EventEmitter {
     this.emit(MAIN_WINDOW_EVENT_NAME.show)
   }
 
+  focus() {
+    this.emit(MAIN_WINDOW_EVENT_NAME.focus)
+  }
+
+  blur() {
+    this.emit(MAIN_WINDOW_EVENT_NAME.blur)
+  }
+
   hide() {
     this.emit(MAIN_WINDOW_EVENT_NAME.hide)
   }

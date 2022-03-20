@@ -1,32 +1,32 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="$style.container" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+  div(:class="[$style.container, , { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
     div(:class="[$style.header, $style.controlBtnLeft]" v-if="setting.controlBtnPosition == 'left'")
       div(:class="$style.controBtn")
-        button(type="button" :class="$style.hide" :tips="$t('player__hide_detail_tip')" @click="hide")
+        button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='80%' viewBox='0 0 30.727 30.727' space='preserve')
             use(xlink:href='#icon-window-hide')
-        button(type="button" :class="$style.min" :tips="$t('min')" @click="min")
+        button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-minimize')
 
         //- button(type="button" :class="$style.max" @click="max")
-        button(type="button" :class="$style.close" :tips="$t('close')" @click="close")
+        button(type="button" :class="$style.close" :aria-label="$t('close')" @click="close")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-close')
     div(:class="[$style.header, $style.controlBtnRight]" v-else)
       div(:class="$style.controBtn")
-        button(type="button" :class="$style.hide" :tips="$t('player__hide_detail_tip')" @click="hide")
+        button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='35%' viewBox='0 0 30.727 30.727' space='preserve')
             use(xlink:href='#icon-window-hide')
-        button(type="button" :class="$style.min" :tips="$t('min')" @click="min")
+        button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-minimize-2')
 
         //- button(type="button" :class="$style.max" @click="max")
-        button(type="button" :class="$style.close" :tips="$t('close')" @click="close")
+        button(type="button" :class="$style.close" :aria-label="$t('close')" @click="close")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-close-2')
 
@@ -52,6 +52,7 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
 
 <script>
 import { useRefGetter, ref } from '@renderer/utils/vueTools'
+import { isFullscreen } from '@renderer/core/share'
 import { base as eventBaseName } from '@renderer/event/names'
 import {
   isShowPlayerDetail,
@@ -117,6 +118,7 @@ export default {
       handleAfterEnter,
       handleAfterLeave,
       visibled,
+      isFullscreen,
       min() {
         window.eventHub.emit(eventBaseName.min)
       },
@@ -159,6 +161,15 @@ export default {
 
   * {
     box-sizing: border-box;
+  }
+
+  &.fullscreen {
+    .header {
+      -webkit-app-region: no-drag;
+      > * {
+        display: none;
+      }
+    }
   }
 
 }
@@ -296,9 +307,6 @@ export default {
       }
       .right {
         flex-basis: 30%;
-        .lyric {
-          font-size: 13px;
-        }
         .lyricSelectContent {
           font-size: 14px;
         }

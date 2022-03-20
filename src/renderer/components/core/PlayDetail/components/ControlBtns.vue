@@ -1,21 +1,21 @@
 <template lang="pug">
 div(:class="$style.footerLeftControlBtns")
   common-volume-bar(:setting="setting")
-  div(:class="[$style.footerLeftControlBtn, $style.lrcBtn]" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :tips="toggleDesktopLyricBtnTitle")
+  div(:class="[$style.footerLeftControlBtn, $style.lrcBtn]" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :aria-label="toggleDesktopLyricBtnTitle")
     svg(v-show="setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='125%' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-desktop-lyric-on')
     svg(v-show="!setting.desktopLyric.enable" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='125%' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-desktop-lyric-off')
-  div(:class="[$style.footerLeftControlBtn, { [$style.active]: setting.player.audioVisualization }]" @click="toggleAudioVisualization" :tips="$t('audio_visualization')")
+  div(:class="[$style.footerLeftControlBtn, { [$style.active]: setting.player.audioVisualization }]" @click="toggleAudioVisualization" :aria-label="$t('audio_visualization')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-audio-wave')
-  div(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="toggleVisibleLrc" :tips="$t('lyric__select')")
+  div(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="toggleVisibleLrc" :aria-label="$t('lyric__select')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-text')
-  div(:class="[$style.footerLeftControlBtn, {[$style.active]: isShowPlayComment}]" @click="toggleVisibleComment" :tips="$t('comment__show')")
+  div(:class="[$style.footerLeftControlBtn, {[$style.active]: isShowPlayComment}]" @click="toggleVisibleComment" :aria-label="$t('comment__show')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-comment')
-  div(:class="$style.footerLeftControlBtn" @click="toggleNextPlayMode" :tips="nextTogglePlayName")
+  div(:class="$style.footerLeftControlBtn" @click="toggleNextPlayMode" :aria-label="nextTogglePlayName")
     svg(v-show="setting.player.togglePlayMethod == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-list-loop')
     svg(v-show="setting.player.togglePlayMethod == 'random'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
@@ -26,7 +26,7 @@ div(:class="$style.footerLeftControlBtns")
       use(xlink:href='#icon-single-loop')
     svg(v-show="!setting.player.togglePlayMethod" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-single')
-  div(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :tips="$t('player__add_music_to')")
+  div(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :aria-label="$t('player__add_music_to')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-add-2')
   common-list-add-modal(v-model:show="isShowAddMusicTo" :musicInfo="musicInfoItem")
@@ -46,12 +46,15 @@ import {
 
 import useNextTogglePlay from '@renderer/utils/compositions/useNextTogglePlay'
 import useToggleDesktopLyric from '@renderer/utils/compositions/useToggleDesktopLyric'
+import { dialog } from '@renderer/plugins/Dialog'
+import { setMediaDeviceId } from '@renderer/plugins/player'
 
 export default {
   setup() {
     const { t } = useI18n()
     const setting = useRefGetter('setting')
     const setAudioVisualization = useCommit('setAudioVisualization')
+    const saveMediaDeviceId = useCommit('setMediaDeviceId')
 
     const toggleVisibleLrc = () => {
       setShowPlayLrcSelectContentLrc(!isShowLrcSelectContent.value)
@@ -72,8 +75,19 @@ export default {
 
     const isShowAddMusicTo = ref(false)
 
-    const toggleAudioVisualization = () => {
-      setAudioVisualization(!setting.value.player.audioVisualization)
+    const toggleAudioVisualization = async() => {
+      const newSetting = !setting.value.player.audioVisualization
+      if (newSetting && setting.value.player.mediaDeviceId != 'default') {
+        const confirm = await dialog.confirm({
+          message: t('setting__player_audio_visualization_tip'),
+          cancelButtonText: t('cancel_button_text'),
+          confirmButtonText: t('confirm_button_text'),
+        })
+        if (!confirm) return
+        saveMediaDeviceId('default')
+        await setMediaDeviceId('default').catch(_ => _)
+      }
+      setAudioVisualization(newSetting)
     }
 
     return {

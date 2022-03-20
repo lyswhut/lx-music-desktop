@@ -1,17 +1,24 @@
 import music from '../utils/music'
-import { themes, windowSizeList } from '@renderer/core/share'
+import { themes, windowSizeList, themeShouldUseDarkColors } from '@renderer/core/share'
 
 export default {
   theme(state) {
-    let theme = themes.find(theme => theme.id == state.setting.themeId)
-    return (theme && theme.className) || ''
+    const themeId = state.setting.theme.id == 'auto'
+      ? themeShouldUseDarkColors.value
+        ? state.setting.theme.darkId
+        : state.setting.theme.lightId
+      : state.setting.theme.id
+    let theme = themes.find(theme => theme.id == themeId) ?? themes[0]
+    return theme.className
   },
   font(state) {
     return state.setting.font
   },
   themes(state) {
     return {
-      active: state.setting.themeId,
+      active: state.setting.theme.id,
+      lightId: state.setting.theme.lightId,
+      darkId: state.setting.theme.darkId,
       list: themes,
     }
   },
@@ -58,5 +65,8 @@ export default {
   },
   pactModalVisible(state) {
     return !state.setting.isAgreePact
+  },
+  isShowAnimation(state) {
+    return state.setting.isShowAnimation
   },
 }

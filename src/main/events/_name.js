@@ -14,6 +14,8 @@ exports.mainWindow = {
   ready_to_show: 'ready_to_show',
   show: 'show',
   hide: 'hide',
+  focus: 'focus',
+  blur: 'blur',
 }
 
 exports.tray = {

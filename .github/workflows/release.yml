@@ -49,6 +49,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
 
+      - name: Generate file MD5
+        run: |
+          cd build
+          Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
+
   Mac:
     name: Mac
     runs-on: macos-latest
@@ -88,6 +93,11 @@ jobs:
           ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+      - name: Generate file MD5
+        run: |
+          cd build
+          md5 *.dmg
 
   Linux:
     name: Linux
@@ -134,3 +144,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+      - name: Generate file MD5
+        run: |
+          cd build
+          md5sum *.deb *.rpm *.pacman *.AppImage

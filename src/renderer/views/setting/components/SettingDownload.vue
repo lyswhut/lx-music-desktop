@@ -2,22 +2,22 @@
 dt#download {{$t('setting__download')}}
 dd
   base-checkbox(id="setting_download_enable" v-model="currentStting.download.enable" :label="$t('setting__download_enable')")
-dd(:tips="$t('setting__download_path_title')")
+dd(:aria-label="$t('setting__download_path_title')")
   h3#download_path {{$t('setting__download_path')}}
   div
     p
       | {{$t('setting__download_path_label')}}
-      span.auto-hidden.hover(:class="$style.savePath" @click="openDirInExplorer(currentStting.download.savePath)" :tips="$t('setting__download_path_open_label')") {{currentStting.download.savePath}}
+      span.auto-hidden.hover(:class="$style.savePath" @click="openDirInExplorer(currentStting.download.savePath)" :aria-label="$t('setting__download_path_open_label')") {{currentStting.download.savePath}}
     p
       base-btn.btn(min @click="handleChangeSavePath") {{$t('setting__download_path_change_btn')}}
 dd
   h3#download_use_other_source
     | {{$t('setting__download_use_other_source')}}
-    svg-icon(class="help-icon" name="help-circle-outline" :tips="$t('setting__download_use_other_source_tip')")
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__download_use_other_source_tip')")
   div
     base-checkbox(id="setting_download_isUseOtherSource" v-model="currentStting.download.isUseOtherSource" :label="$t('setting__is_enable')")
   div
-dd(:tips="$t('setting__download_name_title')")
+dd(:aria-label="$t('setting__download_name_title')")
   h3#download_name {{$t('setting__download_name')}}
   div
     base-checkbox.gap-left(:id="`setting_download_musicName_${item.value}`" name="setting_download_musicName" :value="item.value" :key="item.value" need
@@ -28,7 +28,7 @@ dd
     base-checkbox(id="setting_download_isEmbedPic" v-model="currentStting.download.isEmbedPic" :label="$t('setting__download_embed_pic')")
   .gap-top
     base-checkbox(id="setting_download_isEmbedLyric" v-model="currentStting.download.isEmbedLyric" :label="$t('setting__download_embed_lyric')")
-dd(:tips="$t('setting__download_lyric_title')")
+dd(:aria-label="$t('setting__download_lyric_title')")
   h3#download_lyric {{$t('setting__download_lyric')}}
   div
     base-checkbox(id="setting_download_isDownloadLrc" v-model="currentStting.download.isDownloadLrc" :label="$t('setting__is_enable')")

@@ -106,7 +106,7 @@ module.exports = {
     },
     {
       id: 13,
-      name: '黑纸白字',
+      name: '黑灯瞎火',
       className: 'black',
     },
     {
@@ -125,4 +125,6 @@ module.exports = {
       className: 'happy_new_year',
     },
   ],
+  themeLights: [0, 1, 2, 3, 4, 10, 5, 6, 11, 12, 7, 8, 9],
+  themeDarks: [13, 7],
 }

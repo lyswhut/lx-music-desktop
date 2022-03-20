@@ -92,6 +92,11 @@ jobs:
           name: lx-music-desktop-win_arm64-green
           path: build/*win_arm64 green.7z
 
+      - name: Generate file MD5
+        run: |
+          cd build
+          Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
+
   Mac:
     name: Mac
     runs-on: macos-latest
@@ -142,6 +147,11 @@ jobs:
         with:
           name: lx-music-desktop-mac-dmg-arm64
           path: build/*-arm64.dmg
+
+      - name: Generate file MD5
+        run: |
+          cd build
+          md5 *.dmg
 
   Linux:
     name: Linux
@@ -231,3 +241,8 @@ jobs:
         with:
           name: lx-music-desktop-x64-pacman
           path: build/* x64.pacman
+
+      - name: Generate file MD5
+        run: |
+          cd build
+          md5sum *.deb *.rpm *.pacman *.AppImage

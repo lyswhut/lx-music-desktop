@@ -24,9 +24,8 @@ module.exports = class LinePlayer {
     this.curLineNum = 0
     this.maxLine = 0
     this.offset = offset
-    this.isOffseted = false
     this._performanceTime = 0
-    this._performanceOffsetTime = 0
+    this._startTime = 0
     this._init()
   }
 
@@ -39,9 +38,16 @@ module.exports = class LinePlayer {
   }
 
   _initTag() {
+    this.tags = {}
     for (let tag in tagRegMap) {
       const matches = this.lyric.match(new RegExp(`\\[${tagRegMap[tag]}:([^\\]]*)]`, 'i'))
       this.tags[tag] = (matches && matches[1]) || ''
+    }
+    if (this.tags.offset) {
+      let offset = parseInt(this.tags.offset)
+      this.tags.offset = Number.isNaN(offset) ? 0 : offset
+    } else {
+      this.tags.offset = 0
     }
   }
 
@@ -93,12 +99,13 @@ module.exports = class LinePlayer {
   }
 
   _currentTime() {
-    return getNow() - this._performanceTime + this._performanceOffsetTime
+    return getNow() - this._performanceTime + this._startTime
   }
 
-  _findCurLineNum(curTime) {
+  _findCurLineNum(curTime, startIndex = 0) {
+    if (curTime <= 0) return 0
     const length = this.lines.length
-    for (let index = 0; index < length; index++) if (curTime <= this.lines[index].time) return index === 0 ? 0 : index - 1
+    for (let index = startIndex; index < length; index++) if (curTime <= this.lines[index].time) return index === 0 ? 0 : index - 1
     return length - 1
   }
 
@@ -110,30 +117,35 @@ module.exports = class LinePlayer {
   _refresh() {
     this.curLineNum++
     // console.log('curLineNum time', this.lines[this.curLineNum].time)
+    if (this.curLineNum >= this.maxLine) return this._handleMaxLine()
+
     let curLine = this.lines[this.curLineNum]
-    let nextLine = this.lines[this.curLineNum + 1]
+
     const currentTime = this._currentTime()
     const driftTime = currentTime - curLine.time
 
     if (driftTime >= 0 || this.curLineNum === 0) {
-      if (this.curLineNum === this.maxLine) return this._handleMaxLine()
+      let nextLine = this.lines[this.curLineNum + 1]
       this.delay = nextLine.time - curLine.time - driftTime
+
       if (this.delay > 0) {
-        if (!this.isOffseted && this.delay >= this.offset) {
-          this._performanceOffsetTime += this.offset
-          this.delay -= this.offset
-          this.isOffseted = true
+        if (this.isPlay) {
+          timeoutTools.start(() => {
+            if (!this.isPlay) return
+            this._refresh()
+          }, this.delay)
         }
-        timeoutTools.start(() => {
-          if (!this.isPlay) return
-          this._refresh()
-        }, this.delay)
         this.onPlay(this.curLineNum, curLine.text, currentTime)
+        return
+      } else {
+        let newCurLineNum = this._findCurLineNum(currentTime, this.curLineNum + 1)
+        if (newCurLineNum > this.curLineNum) this.curLineNum = newCurLineNum - 1
+        this._refresh()
         return
       }
     }
 
-    this.curLineNum = this._findCurLineNum(currentTime) - 1
+    this.curLineNum = this._findCurLineNum(currentTime, this.curLineNum) - 1
     this._refresh()
   }
 
@@ -142,14 +154,10 @@ module.exports = class LinePlayer {
     this.pause()
     this.isPlay = true
 
-    this._performanceOffsetTime = 0
-    this._performanceTime = getNow() - curTime
-    if (this._performanceTime < 0) {
-      this._performanceOffsetTime = -this._performanceTime
-      this._performanceTime = 0
-    }
+    this._performanceTime = getNow() - parseInt(this.tags.offset + this.offset)
+    this._startTime = curTime
 
-    this.curLineNum = this._findCurLineNum(curTime) - 1
+    this.curLineNum = this._findCurLineNum(this._currentTime()) - 1
 
     this._refresh()
   }
@@ -157,7 +165,6 @@ module.exports = class LinePlayer {
   pause() {
     if (!this.isPlay) return
     this.isPlay = false
-    this.isOffseted = false
     timeoutTools.clear()
     if (this.curLineNum === this.maxLine) return
     const currentTime = this._currentTime()

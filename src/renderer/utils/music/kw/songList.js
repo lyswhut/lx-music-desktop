@@ -308,7 +308,8 @@ export default {
     return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'kw' }))
   },
   getDetailPageUrl(id) {
-    if (/^digest-/.test(id)) {
+    if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
+    else if (/^digest-/.test(id)) {
       let result = id.split('__')
       id = result[1]
     }

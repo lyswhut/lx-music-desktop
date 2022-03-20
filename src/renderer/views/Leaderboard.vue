@@ -6,7 +6,7 @@
     </div>
     <ul class="scroll" :class="$style.listsContent" ref="dom_lists_list">
       <li :class="[$style.listsItem, { [$style.active]: item.id == tabId }, { [$style.clicked]: boardListData.rightClickItemIndex == index }]"
-      :tips="item.name" v-for="(item, index) in boardList" :key="item.id"
+      :aria-label="item.name" v-for="(item, index) in boardList" :key="item.id"
       @click="handleToggleList(item.id)" @contextmenu="handleListsItemRigthClick($event, index)">
         <span :class="$style.listsLabel">{{item.name}}</span>
       </li>

@@ -20,10 +20,10 @@ div(:class="$style.download")
         div.list-item(@click="handleDoubleClick($event, index)" @contextmenu="handleListItemRigthClick($event, index)"
           :class="[{[$style.active]: playListIndex == index }, { selected: selectedIndex == index }, { active: selectedData.includes(item) }]")
           div.list-item-cell.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" @click.stop) {{index + 1}}
-          div.list-item-cell.auto(:tips="item.name")
+          div.list-item-cell.auto(:aria-label="item.name")
             span.select {{item.name}}
           div.list-item-cell(style="width: 20%;") {{item.progress.progress}}%
-          div.list-item-cell(style="width: 22%;" :tips="item.statusText") {{item.statusText}}
+          div.list-item-cell(style="width: 22%;" :aria-label="item.statusText") {{item.statusText}}
           div.list-item-cell(style="width: 10%;") {{item.metadata.type && item.metadata.type.toUpperCase()}}
           div.list-item-cell(style="width: 13%; padding-left: 0; padding-right: 0;")
             material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR" remove-btn
@@ -36,10 +36,10 @@ div(:class="$style.download")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { checkPath, openDirInExplorer, openUrl } from '@renderer/utils'
+import { checkPath, openDirInExplorer, openUrl, getFontSizeWithScreen } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import path from 'path'
-import { windowSizeList } from '@renderer/core/share'
+import { windowSizeList, isFullscreen } from '@renderer/core/share'
 import { playInfo, playMusicInfo } from '@renderer/core/share/player'
 import { downloadList, downloadStatus } from '@renderer/core/share/download'
 
@@ -51,6 +51,7 @@ export default {
       playInfo,
       downloadList,
       downloadStatus,
+      isFullscreen,
     }
   },
   data() {
@@ -181,7 +182,7 @@ export default {
       ]
     },
     listItemHeight() {
-      return parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize) / 16 * 37
+      return Math.ceil((this.isFullscreen ? getFontSizeWithScreen() : parseInt(windowSizeList.find(item => item.id == this.setting.windowSizeId).fontSize)) * 2.3)
     },
   },
   watch: {

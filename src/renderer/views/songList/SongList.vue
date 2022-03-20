@@ -81,7 +81,6 @@ export default {
       importSongListText: '',
       listWidth: 645,
       isGetDetailFailed: false,
-      isInitedTagListWidth: false,
       detailLoading: false,
     }
   },
@@ -159,7 +158,7 @@ export default {
         this.sortId = this.sorts[0] && this.sorts[0].id
       }
     },
-    'setting.themeId'() {
+    'setting.theme.id'() {
       this.setTagListWidth()
     },
   },
@@ -202,9 +201,17 @@ export default {
     }),
     listenEvent() {
       window.eventHub.on('key_backspace_down', this.handle_key_backspace_down)
+      window.addEventListener('resize', this.handleSetTagWidth)
     },
     unlistenEvent() {
       window.eventHub.off('key_backspace_down', this.handle_key_backspace_down)
+      window.removeEventListener('resize', this.handleSetTagWidth)
+    },
+    handleSetTagWidth() {
+      setTimeout(() => {
+        this.setTagListWidth()
+        setTimeout(this.setTagListWidth, 100)
+      })
     },
     handle_key_backspace_down({ event }) {
       if (!this.isVisibleListDetail ||
@@ -287,14 +294,17 @@ export default {
       this.handleGetListDetail(id, source, 1)
     },
     setTagListWidth() {
-      this.isInitedTagListWidth = true
+      if (this.isVisibleListDetail) return
       this.listWidth = this.$refs.tagList.$el.clientWidth + this.$refs.tab.$el.clientWidth + 2
     },
     handleGetListDetail(id, source, page) {
+      this.detailLoading = true
       this.isGetDetailFailed = false
       return this.getListDetail({ id, source, page }).catch(err => {
         this.isGetDetailFailed = true
         return Promise.reject(err)
+      }).finally(() => {
+        this.detailLoading = false
       })
     },
     async fetchList() {

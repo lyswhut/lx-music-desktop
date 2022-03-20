@@ -1,5 +1,5 @@
 <template>
-<div :class="[$style.toolbar, setting.controlBtnPosition == 'left' ? $style.controlBtnLeft : $style.controlBtnRight]">
+<div :class="[$style.toolbar, { [$style.fullscreen]: isFullscreen }, setting.controlBtnPosition == 'left' ? $style.controlBtnLeft : $style.controlBtnRight]">
   <SearchInput />
   <div :class="$style.logo" v-if="setting.controlBtnPosition == 'left'">L X</div>
   <ControlBtns v-else />
@@ -11,10 +11,16 @@ import { mapGetters } from 'vuex'
 
 import ControlBtns from './ControlBtns'
 import SearchInput from './SearchInput'
+import { isFullscreen } from '@renderer/core/share'
 
 export default {
   name: 'CoreToolBar',
   components: { SearchInput, ControlBtns },
+  setup() {
+    return {
+      isFullscreen,
+    }
+  },
   computed: {
     ...mapGetters(['setting']),
   },
@@ -33,6 +39,13 @@ export default {
   padding-left: 15px;
   -webkit-app-region: drag;
   z-index: 2;
+
+  &.fullscreen {
+    -webkit-app-region: no-drag;
+    .logo {
+      display: none;
+    }
+  }
 
   &.controlBtnLeft {
     .control {

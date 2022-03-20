@@ -172,7 +172,6 @@ export default {
         this.lyric.lines = lines
         this.lyric.line = 0
       },
-      offset: 100,
     })
   },
   mounted() {
@@ -207,6 +206,13 @@ export default {
           this.isPlay = false
           window.lrc.pause()
           break
+        case 'stop':
+          this.isPlay = false
+          this.lyrics.lyric = ''
+          this.lyrics.tlyric = ''
+          this.lyrics.lxlyric = ''
+          this.setLyric()
+          break
         case 'info':
           // console.log('info', data)
           this.lyrics.lyric = data.lrc
@@ -215,7 +221,9 @@ export default {
           this.setLyric()
           this.$nextTick(() => {
             this.lyric.line = data.line
-            rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+            setTimeout(() => {
+              rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+            })
           })
         case 'music_info':
           this.musicInfo.name = data.name

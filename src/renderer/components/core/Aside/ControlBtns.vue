@@ -1,11 +1,11 @@
 <template>
-<div :class="$style.controlBtn">
-  <button type="button" :class="[$style.btn, $style.close]" :tips="$t('close')" @click="close">
+<div :class="$style.controlBtn" v-show="!isFullscreen">
+  <button type="button" :class="[$style.btn, $style.close]" :aria-label="$t('close')" @click="close">
     <svg :class="$style.controlBtniIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-window-close"></use>
     </svg>
   </button>
-  <button type="button" :class="[$style.btn, $style.min]" :tips="$t('min')" @click="min">
+  <button type="button" :class="[$style.btn, $style.min]" :aria-label="$t('min')" @click="min">
     <svg :class="$style.controlBtniIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
       <use xlink:href="#icon-window-minimize"></use>
     </svg>
@@ -16,10 +16,12 @@
 <script>
 import { base as eventBaseName } from '@renderer/event/names'
 // import { getRandom } from '../../utils'
+import { isFullscreen } from '@renderer/core/share'
 
 export default {
   setup() {
     return {
+      isFullscreen,
       min() {
         window.eventHub.emit(eventBaseName.min)
       },

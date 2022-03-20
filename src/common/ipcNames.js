@@ -4,6 +4,7 @@ const names = {
     close: 'close',
     min: 'min',
     max: 'max',
+    fullscreen: 'fullscreen',
     set_app_name: 'set_app_name',
     clear_cache: 'clear_cache',
     get_cache_size: 'get_cache_size',
@@ -15,6 +16,7 @@ const names = {
     interval_callback: 'interval_callback',
     interval_cancel: 'interval_cancel',
     open_dev_tools: 'open_dev_tools',
+    system_theme_change: 'system_theme_change',
 
     set_music_meta: 'set_music_meta',
     progress: 'progress',

@@ -4,9 +4,15 @@ dd
   h3#basic_theme {{$t('setting__basic_theme')}}
   div
     ul(:class="$style.theme")
-      li(v-for="theme in themes.list" :key="theme.id" :tips="$t('theme_' + theme.className)" @click="currentStting.themeId = theme.id" :class="[theme.className, {[$style.active]: themes.active == theme.id}]")
-        span
+      li(v-for="theme in themes.list" :key="theme.id" :aria-label="$t('theme_' + theme.className)" @click="currentStting.theme.id = theme.id" :class="[theme.className, {[$style.active]: themes.active == theme.id}]")
+        div(:class="$style.bg")
         label {{$t('theme_' + theme.className)}}
+      li(:aria-label="$t('theme_auto_tip')" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true" :class="[$style.auto, themeClassName, {[$style.active]: themes.active == 'auto'}]")
+        div(:class="$style.bg")
+          div(:class="$style.bgContent")
+            div(:class="[$style.light, themes.lightTheme.className]")
+            div(:class="[$style.dark, themes.darkTheme.className]")
+        label {{$t('theme_auto')}}
 
 dd
   div
@@ -19,7 +25,7 @@ dd
     p.gap-top
       base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
-dd(:tips="$t('setting__basic_source_title')")
+dd(:aria-label="$t('setting__basic_source_title')")
   h3#basic_source {{$t('setting__basic_source')}}
   div
     .gap-top(v-for="item in apiSources" :key="item.id")
@@ -28,19 +34,19 @@ dd(:tips="$t('setting__basic_source_title')")
     p.gap-top
       base-btn.btn(min @click="isShowUserApiModal = true") {{$t('setting__basic_source_user_api_btn')}}
 
-dd(:tips="$t('setting__basic_window_size_title')")
+dd(:aria-label="$t('setting__basic_window_size_title')")
   h3#basic_window_size {{$t('setting__basic_window_size')}}
   div
     base-checkbox.gap-left(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size"
-      need v-model="currentStting.windowSizeId" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" :key="item.id")
+      need v-model="currentStting.windowSizeId" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" :key="item.id")
 
-dd(:tips="$t('setting__basic_lang_title')")
+dd(:aria-label="$t('setting__basic_lang_title')")
   h3#basic_lang {{$t('setting__basic_lang')}}
   div
     base-checkbox.gap-left(v-for="item in langList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
       need v-model="currentStting.langId" :value="item.locale" :label="item.name")
 
-dd(:tips="$t('setting__basic_sourcename_title')")
+dd(:aria-label="$t('setting__basic_sourcename_title')")
   h3#basic_sourcename {{$t('setting__basic_sourcename')}}
   div
     base-checkbox.gap-left(v-for="item in sourceNameTypes" :key="item.id" :id="`setting_abasic_sourcename_${item.id}`"
@@ -55,20 +61,23 @@ dd
   div
     base-selection.gap-teft(:list="fontList" v-model="currentStting.font" item-key="id" item-name="label")
 
+ThemeSelectorModal(v-model="isShowThemeSelectorModal")
 play-timeout-modal(v-model="isShowPlayTimeoutModal")
 user-api-modal(v-model="isShowUserApiModal")
 </template>
 
 <script>
-import { computed, ref, useI18n, watch } from '@renderer/utils/vueTools'
-import { themes as themeList, windowSizeList, apiSource, userApi } from '@renderer/core/share'
+import { computed, ref, useI18n, watch, useRefGetter } from '@renderer/utils/vueTools'
+import { themes as themeList, windowSizeList, apiSource, userApi, isFullscreen } from '@renderer/core/share'
 import { langList } from '@/lang'
 import { currentStting } from '../setting'
 import { setWindowSize } from '@renderer/utils'
 import apiSourceInfo from '@renderer/utils/music/api-source-info'
 import { useTimeout } from '@renderer/utils/timeoutStop'
 import { getSystemFonts } from '@renderer/utils/tools'
+import { dialog } from '@renderer/plugins/Dialog'
 
+import ThemeSelectorModal from './ThemeSelectorModal'
 import PlayTimeoutModal from './PlayTimeoutModal'
 import UserApiModal from './UserApiModal'
 
@@ -76,19 +85,34 @@ import UserApiModal from './UserApiModal'
 export default {
   name: 'SettingBasic',
   components: {
+    ThemeSelectorModal,
     PlayTimeoutModal,
     UserApiModal,
   },
   setup() {
     const { t, locale } = useI18n()
 
-
+    const themeClassName = useRefGetter('theme')
     const themes = computed(() => {
       return {
-        active: currentStting.value.themeId,
+        active: currentStting.value.theme.id,
+        lightTheme: themeList.find(t => t.id == currentStting.value.theme.lightId) ?? themeList[0],
+        darkTheme: themeList.find(t => t.id == currentStting.value.theme.darkId) ?? themeList[0],
         list: themeList,
       }
     })
+    const isShowThemeSelectorModal = ref(false)
+    const handleSetThemeAuto = () => {
+      if (currentStting.value.theme.id == 'auto') return
+      currentStting.value.theme.id = 'auto'
+      if (window.localStorage.getItem('theme-auto-tip') != 'true') {
+        window.localStorage.setItem('theme-auto-tip', 'true')
+        dialog({
+          message: t('setting__basic_theme_auto_tip'),
+          confirmButtonText: t('ok'),
+        })
+      }
+    }
 
     watch(() => currentStting.value.apiSource, visible => {
       apiSource.value = visible
@@ -161,6 +185,9 @@ export default {
     return {
       currentStting,
       themes,
+      themeClassName,
+      isShowThemeSelectorModal,
+      handleSetThemeAuto,
       isShowPlayTimeoutModal,
       timeLabel,
       apiSources,
@@ -170,6 +197,7 @@ export default {
       sourceNameTypes,
       controlBtnPositionList,
       fontList,
+      isFullscreen,
     }
   },
 }
@@ -199,7 +227,7 @@ export default {
       margin-right: 0;
     }
 
-    span {
+    .bg {
       display: block;
       width: 36px;
       height: 36px;
@@ -229,7 +257,7 @@ export default {
 
     each(@themes, {
       &:global(.@{value}) {
-        span {
+        .bg {
           &:after {
             background-color: ~'@{color-@{value}-theme}';
             background-image: ~'@{color-@{value}-theme-bgimg}';
@@ -237,6 +265,68 @@ export default {
         }
       }
     })
+
+    &.auto {
+      >.bg {
+        &:after {
+          content: none;
+        }
+      }
+      .bgContent {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 5px;
+      }
+      .light, .dark {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        &:after {
+          display: block;
+          content: ' ';
+          width: 100%;
+          height: 100%;
+          background-position: center;
+          background-size: cover;
+          background-repeat: no-repeat;
+        }
+      }
+      .light {
+        &:after {
+          clip-path: polygon(0 0, 100% 0, 0 100%);
+        }
+        each(@themes, {
+          &:global(.@{value}) {
+            svg {
+              fill: ~'@{color-@{value}-theme}';
+            }
+            &:after {
+              background-color: ~'@{color-@{value}-theme}';
+              background-image: ~'@{color-@{value}-theme-bgimg}';
+            }
+          }
+        })
+      }
+      .dark {
+        &:after {
+          clip-path: polygon(0 100%, 100% 0, 100% 100%);
+        }
+        each(@themes, {
+          &:global(.@{value}) {
+            svg {
+              fill: ~'@{color-@{value}-theme}';
+            }
+            &:after {
+              background-color: ~'@{color-@{value}-theme}';
+              background-image: ~'@{color-@{value}-theme-bgimg}';
+            }
+          }
+        })
+      }
+    }
   }
 }
 
@@ -247,7 +337,7 @@ each(@themes, {
         &.active {
           &:global(.@{value}) {
             color: ~'@{color-@{value}-theme}';
-            span {
+            .bg {
               border-color: ~'@{color-@{value}-theme}';
             }
           }

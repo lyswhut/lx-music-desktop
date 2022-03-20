@@ -1,10 +1,11 @@
 import { onBeforeUnmount, useCommit } from '@renderer/utils/vueTools'
-import { player as eventPlayerNames, taskbar as eventTaskbarNames } from '@renderer/event/names'
+import { player as eventPlayerNames, taskbar as eventTaskbarNames, list as eventListNames } from '@renderer/event/names'
 import { onTaskbarThumbarClick, setTaskbarThumbnailClip, setTaskbarThumbarButtons } from '@renderer/utils/tools'
 // import store from '@renderer/store'
 
 import { loveList, getList } from '@renderer/core/share/list'
 import { playMusicInfo } from '@renderer/core/share/player'
+import { throttle } from '@renderer/utils'
 
 export default () => {
   const listAdd = useCommit('list', 'listAdd')
@@ -54,6 +55,11 @@ export default () => {
   const handleSetTaskbarThumbnailClip = (clip) => {
     setTaskbarThumbnailClip(clip)
   }
+  const throttleListChange = throttle(listIds => {
+    if (!listIds.includes(loveList.id)) return
+    if (!updateCollectStatus()) return
+    setButtons()
+  })
   // const updateSetting = () => {
   //   const setting = store.getters.setting
   //   buttons.lrc = setting.desktopLyric.enable
@@ -107,6 +113,7 @@ export default () => {
   window.eventHub.on(eventPlayerNames.stop, handleStop)
   window.eventHub.on(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
   window.eventHub.on(eventTaskbarNames.setTaskbarThumbnailClip, handleSetTaskbarThumbnailClip)
+  window.eventHub.on(eventListNames.listChange, throttleListChange)
 
   onBeforeUnmount(() => {
     rTaskbarThumbarClick()
@@ -115,6 +122,7 @@ export default () => {
     window.eventHub.off(eventPlayerNames.stop, handleStop)
     window.eventHub.off(eventPlayerNames.setPlayInfo, handleSetPlayInfo)
     window.eventHub.off(eventTaskbarNames.setTaskbarThumbnailClip, handleSetTaskbarThumbnailClip)
+    window.eventHub.off(eventListNames.listChange, throttleListChange)
   })
 
   return () => {

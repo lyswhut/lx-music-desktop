@@ -14,6 +14,7 @@ import { messages } from '@/lang'
 const i18n = createI18n({
   locale: 'zh-cn',
   fallbackLocale: 'zh-cn',
+  allowComposition: true,
   messages,
 })
 

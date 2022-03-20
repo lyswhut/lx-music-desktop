@@ -185,11 +185,7 @@ export default {
     return location == null ? link : location
   },
 
-  // 获取歌曲列表内的音乐
-  async getListDetail(id, tryNum = 0) {
-    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
-    if (tryNum > 2) return Promise.reject(new Error('try max num'))
-
+  async getListId(id) {
     if ((/[?&:/]/.test(id))) {
       let regx = /\/\/i\.y\.qq\.com/.test(id) ? this.regExps.listDetailLink1 : this.regExps.listDetailLink2
       if (!regx.test(id)) {
@@ -200,6 +196,14 @@ export default {
       id = id.replace(regx, '$1')
       // console.log(id)
     }
+    return id
+  },
+  // 获取歌曲列表内的音乐
+  async getListDetail(id, tryNum = 0) {
+    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
+    if (tryNum > 2) return Promise.reject(new Error('try max num'))
+
+    id = await this.getListId(id)
 
     this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id), {
       headers: {
@@ -293,7 +297,9 @@ export default {
     return Promise.all([this.getTag(), this.getHotTag()]).then(([tags, hotTag]) => ({ tags, hotTag, source: 'tx' }))
   },
 
-  getDetailPageUrl(id) {
+  async getDetailPageUrl(id) {
+    id = await this.getListId(id)
+
     return `https://y.qq.com/n/ryqq/playlist/${id}`
   },
 }

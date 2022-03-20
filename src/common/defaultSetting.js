@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.51',
+  version: '1.0.54',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -18,6 +18,14 @@ const defaultSetting = {
     audioVisualization: false,
     waitPlayEndStop: true,
     waitPlayEndStopTime: '',
+  },
+  playDetail: {
+    isZoomActiveLrc: true,
+    isShowLyricProgressSetting: false,
+    style: {
+      fontSize: 100,
+      align: 'center',
+    },
   },
   desktopLyric: {
     enable: false,
@@ -97,7 +105,11 @@ const defaultSetting = {
     port: '23332',
   },
   windowSizeId: 2,
-  themeId: 0,
+  theme: {
+    id: 0,
+    lightId: 0,
+    darkId: 13,
+  },
   langId: null,
   sourceId: 'kw',
   apiSource: 'temp',
@@ -116,7 +128,7 @@ const overwriteSetting = {
 
 // 使用新年皮肤
 if (new Date().getMonth() < 2) {
-  defaultSetting.themeId = 9
+  defaultSetting.theme.id = 9
   defaultSetting.desktopLyric.theme = 3
 }
 

@@ -3,7 +3,7 @@ div.comment(:class="$style.comment" ref="dom_container")
   div(:class="$style.commentHeader")
     h3 {{$t('comment__title', { name: title })}}
     div(:class="$style.commentHeaderBtns")
-      div(:class="$style.commentHeaderBtn" @click="handleShowComment" :tips="$t('comment__refresh')")
+      div(:class="$style.commentHeaderBtn" @click="handleShowComment" :aria-label="$t('comment__refresh')")
         svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style='transform: rotate(45deg);' viewBox='0 0 24 24' space='preserve')
           use(xlink:href='#icon-refresh')
       div(:class="$style.commentHeaderBtn" @click="$emit('close')")
@@ -132,7 +132,13 @@ export default {
   },
   methods: {
     setWidth() {
-      this.$refs.dom_container.style.width = this.$refs.dom_container.clientWidth + 'px'
+      setTimeout(() => {
+        this.$refs.dom_container.style.width = Math.floor(this.$refs.dom_container.parentNode.clientWidth * 0.5) + 'px'
+
+        setTimeout(() => {
+          this.handleToggleTab(this.tabActiveId, true)
+        })
+      })
     },
     async getComment(musicInfo, page, limit, retryNum = 0) {
       let resp
@@ -219,8 +225,8 @@ export default {
       this.newComment.nextPage = page
       this.handleGetNewComment(this.currentMusicInfo, page, this.newComment.limit)
     },
-    handleToggleTab(id) {
-      if (this.tabActiveId == id) return
+    handleToggleTab(id, force) {
+      if (!force && this.tabActiveId == id) return
       switch (id) {
         case 'hot':
           this.$refs.dom_tabMain.scrollLeft = 0

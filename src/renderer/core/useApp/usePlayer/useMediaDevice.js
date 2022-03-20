@@ -7,6 +7,10 @@ import { setMediaDeviceId } from '@renderer/plugins/player'
 import { isPlay } from '@renderer/core/share/player'
 import { player as eventPlayerNames } from '@renderer/event/names'
 
+const getDevices = async() => {
+  const devices = await navigator.mediaDevices.enumerateDevices()
+  return devices.filter(({ kind }) => kind == 'audiooutput')
+}
 
 export default ({ setting }) => {
   let prevDeviceLabel = null
@@ -15,7 +19,7 @@ export default ({ setting }) => {
 
   const setMediaDevice = async(mediaDeviceId) => {
     let label = prevDeviceLabel
-    const devices = await navigator.mediaDevices.enumerateDevices()
+    const devices = await getDevices()
     let device = devices.find(device => device.deviceId === mediaDeviceId)
     if (device) {
       mediaDeviceId = device.deviceId
@@ -41,12 +45,15 @@ export default ({ setting }) => {
       setting.value.player.isMediaDeviceRemovedStopPlay &&
       isPlay.value &&
       device.label != prevDeviceLabel
-    ) window.eventHub.emit(eventPlayerNames.setTogglePlay)
+    ) {
+      global.isPlayedStop = true
+      window.eventHub.emit(eventPlayerNames.setPause)
+    }
   }
 
   const handleMediaListChange = async() => {
     let mediaDeviceId = setting.value.player.mediaDeviceId
-    const devices = await navigator.mediaDevices.enumerateDevices()
+    const devices = await getDevices()
     let device = devices.find(device => device.deviceId === mediaDeviceId)
     if (!device) device = devices.find(device => device.deviceId === 'default')
     if (!device) device = { label: null, deviceId: null }

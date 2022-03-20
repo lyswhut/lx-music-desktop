@@ -7,7 +7,7 @@ module.exports = class Lyric {
   constructor({
     lyric = '',
     translationLyric = '',
-    offset = 150,
+    offset = 0,
     lineClassName = '',
     fontClassName = 'font',
     translationClassName = 'translation',
@@ -61,7 +61,7 @@ module.exports = class Lyric {
           font.reset()
           font.lineContent.classList.remove(this.activeLineClassName)
         }
-      } else if (num > this.playingLineNum + 1) {
+      } else if (num > this.playingLineNum) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
           font.reset()
@@ -79,7 +79,7 @@ module.exports = class Lyric {
           font.lineContent.classList.remove(this.activeLineClassName)
           font.reset()
         }
-      } else if (num > this.playingLineNum + 1) {
+      } else if (num > this.playingLineNum) {
         for (let i = Math.max(this.playingLineNum, 0); i < num; i++) {
           const font = this._lineFonts[i]
           font.lineContent.classList.remove(this.activeLineClassName)
@@ -106,6 +106,7 @@ module.exports = class Lyric {
     if (this.isLineMode) {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
+          time: line.time,
           lyric: line.text,
           translationLyric: line.translation,
           lineClassName: this.lineClassName,
@@ -127,6 +128,7 @@ module.exports = class Lyric {
     } else {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
+          time: line.time,
           lyric: line.text,
           translationLyric: line.translation,
           lineClassName: this.lineClassName,
@@ -164,5 +166,6 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.translationLyric = translationLyric
     this._init()
+    this.linePlayer.offset = this.isLineMode ? this.offset + 90 : this.offset
   }
 }

@@ -1,5 +1,7 @@
 import music from '../../utils/music'
 import { markRawList } from '@renderer/utils/vueTools'
+import { deduplicationList } from '@renderer/utils'
+
 const sourceList = {}
 const sources = []
 const cache = new Map()
@@ -57,6 +59,7 @@ const actions = {
     //     : music[source].leaderboard.getList(bangId, page)
     // ).then(result => commit('setList', { result, key }))
     return music[source].leaderboard.getList(bangId, page).then(result => {
+      result.list = deduplicationList(result.list)
       cache.set(key, result)
       listInfo.list = markRawList(result.list)
       listInfo.total = result.total
@@ -75,6 +78,7 @@ const actions = {
       return cache.has(key)
         ? Promise.resolve(cache.get(key))
         : music[source].leaderboard.getList(bangId, page).then(result => {
+          result.list = markRawList(deduplicationList(result.list))
           cache.set(key, result)
           return result
         })
@@ -89,7 +93,7 @@ const actions = {
           : loadData(id, loadPage).then(result1 => load(++loadPage).then(result2 => [...result1.list, ...result2]))
       }
       return load().then(result2 => [...result.list, ...result2])
-    })
+    }).then(list => deduplicationList(list))
   },
 }
 

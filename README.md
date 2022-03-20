@@ -56,6 +56,8 @@
 从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
 脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 
+若你想自己调用LX Music，可以看常见问题[Scheme URL支持](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#scheme-url%E6%94%AF%E6%8C%81)部分说明
+
 #### 启动参数
 
 目前软件已支持的启动参数如下：
@@ -76,7 +78,7 @@
 
 - Windows：`%APPDATA%/lx-music-desktop`
 - Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
-- macOS：`~/Library/Application/lx-music-desktop`
+- macOS：`~/Library/Application Support/lx-music-desktop`
 
 在Windows平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0新增）。
 

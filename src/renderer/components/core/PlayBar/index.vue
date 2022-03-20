@@ -1,13 +1,13 @@
 <template lang="pug">
 div(:class="$style.player")
-  div(:class="$style.left" @contextmenu="handleToMusicLocation" @click="showPlayerDetail" :tips="$t('player__pic_tip')")
+  div(:class="$style.left" @contextmenu="handleToMusicLocation" @click="showPlayerDetail" :aria-label="$t('player__pic_tip')")
     img(v-if="musicInfo.img" :src="musicInfo.img" @error="imgError")
     svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='102%' width='100%' viewBox='0 0 60 60' space='preserve')
       use(:xlink:href='`#${$style.iconPic}`')
   div(:class="$style.middle")
     div(:class="$style.column1")
       div(:class="$style.container")
-        div(:class="$style.title" @click="handleCopy(title)" :tips="title + $t('copy_tip')") {{title}}
+        div(:class="$style.title" @click="handleCopy(title)" :aria-label="title + $t('copy_tip')") {{title}}
         control-btns
     div(:class="$style.column2")
       common-progress-bar(:progress="progress" :handleTransitionEnd="handleTransitionEnd" :isActiveTransition="isActiveTransition" v-if="!isShowPlayerDetail")
@@ -18,15 +18,15 @@ div(:class="$style.player")
         span(style="margin: 0 5px;") /
         span {{maxPlayTimeStr}}
   div(:class="$style.right")
-    div(:class="$style.playBtn" @click='playPrev' :tips="$t('player__prev')" style="transform: rotate(180deg);")
+    div(:class="$style.playBtn" @click='playPrev' :aria-label="$t('player__prev')" style="transform: rotate(180deg);")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
         use(xlink:href='#icon-nextMusic')
-    div(:class="$style.playBtn" :tips="isPlay ? $t('player__pause') : $t('player__play')" @click='togglePlay')
+    div(:class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click='togglePlay')
       svg(v-if="isPlay" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
         use(xlink:href='#icon-pause')
       svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
         use(xlink:href='#icon-play')
-    div(:class="$style.playBtn" @click='playNext' :tips="$t('player__next')")
+    div(:class="$style.playBtn" @click='playNext' :aria-label="$t('player__next')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
         use(xlink:href='#icon-nextMusic')
 
@@ -276,6 +276,7 @@ export default {
 .column2 {
   flex: none;
   padding: 3px 0;
+  height: 10px;
   position: relative;
 }
 

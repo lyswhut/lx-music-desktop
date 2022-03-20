@@ -40,7 +40,7 @@ const kw = {
   comment,
   getLyric(songInfo, isGetLyricx) {
     // let singer = songInfo.singer.indexOf('、') > -1 ? songInfo.singer.split('、')[0] : songInfo.singer
-    return lyric.getLyric(songInfo.songmid, isGetLyricx)
+    return lyric.getLyric(songInfo, isGetLyricx)
   },
   handleMusicInfo(songInfo) {
     return this.getMusicInfo(songInfo).then(info => {

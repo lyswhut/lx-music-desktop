@@ -157,11 +157,6 @@ exports.initSetting = isShowErrorAlert => {
       electronStore_config.set('setting.list.isSaveScrollLocation', scroll.enable)
       delete setting.list.scroll
     }
-
-    if (setting.player.isShowLyricTransition != null) { // 修正拼写问题 v1.8.2 及以前
-      setting.player.isShowLyricTranslation = setting.player.isShowLyricTransition
-      delete setting.player.isShowLyricTransition
-    }
   }
 
   // 从我的列表分离下载列表 v1.7.0 后
@@ -172,6 +167,18 @@ exports.initSetting = isShowErrorAlert => {
   }
 
   const { version: settingVersion, setting: newSetting } = exports.mergeSetting(setting, electronStore_config.get('version'))
+
+  // 修正拼写问题 v1.8.2 及以前
+  if (newSetting.player.isShowLyricTransition != null) {
+    newSetting.player.isShowLyricTranslation = newSetting.player.isShowLyricTransition
+    delete newSetting.player.isShowLyricTransition
+  }
+
+  // 迁移v1.19.0之前的主题设置
+  if (newSetting.themeId != null) {
+    newSetting.theme.id = newSetting.themeId
+    delete newSetting.themeId
+  }
 
   // 重置 ^0.18.2 排行榜ID
   if (!newSetting.leaderboard.tabId.includes('__')) newSetting.leaderboard.tabId = 'kw__16'

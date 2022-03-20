@@ -1,5 +1,5 @@
 import { ref, reactive, shallowRef, markRaw } from '@renderer/utils/vueTools'
-import { windowSizeList as configWindowSizeList, themes as configThemes } from '@common/config'
+import { windowSizeList as configWindowSizeList, themes as configThemes, themeLights as themeLightIds, themeDarks as themeDarkIds } from '@common/config'
 import { version } from '../../../../package.json'
 process.versions.app = version
 
@@ -36,9 +36,14 @@ export const sync = window.sync = reactive({
     devices: [],
   },
 })
+export const isFullscreen = ref(false)
 
 export const windowSizeList = markRaw(configWindowSizeList)
 export const themes = markRaw(configThemes)
+export const themeLights = markRaw(configThemes.filter(t => themeLightIds.includes(t.id)))
+export const themeDarks = markRaw(configThemes.filter(t => themeDarkIds.includes(t.id)))
+export const themeShouldUseDarkColors = ref(window.shouldUseDarkColors)
+delete window.shouldUseDarkColors
 
 export const qualityList = shallowRef({})
 export const setQualityList = _qualityList => {

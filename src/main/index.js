@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell } = require('electron')
+const { app, BrowserWindow, shell, nativeTheme } = require('electron')
 const path = require('path')
 
 const urlSchemeRxp = /^lxmusic:\/\//
@@ -170,7 +170,7 @@ function createWindow() {
     // icon: path.join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
     maximizable: false,
-    fullscreenable: false,
+    fullscreenable: true,
     show: false,
     webPreferences: {
       contextIsolation: false,
@@ -180,7 +180,14 @@ function createWindow() {
     },
   })
 
-  global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&theme=${themes.find(t => t.id == global.appSetting.themeId)?.className ?? themes[0].className}`)
+  const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
+  const themeId = global.appSetting.theme.id == 'auto'
+    ? shouldUseDarkColors
+      ? global.appSetting.theme.darkId
+      : global.appSetting.theme.lightId
+    : global.appSetting.theme.id
+  const themeClass = themes.find(t => t.id == themeId)?.className ?? themes[0].className
+  global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${themeClass}`)
 
   winEvent(global.modules.mainWindow)
   // global.modules.mainWindow.webContents.openDevTools()

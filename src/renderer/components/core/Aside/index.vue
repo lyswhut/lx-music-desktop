@@ -1,5 +1,5 @@
 <template>
-<div :class="$style.aside">
+<div :class="[$style.aside, { [$style.fullscreen]: isFullscreen }]">
   <ControlBtns v-if="setting.controlBtnPosition == 'left'" />
   <div :class="$style.logo" v-else>L X</div>
   <NavBar />
@@ -8,6 +8,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { isFullscreen } from '@renderer/core/share'
 
 import ControlBtns from './ControlBtns'
 import NavBar from './NavBar'
@@ -15,6 +16,11 @@ import NavBar from './NavBar'
 export default {
   name: 'CoreAside',
   components: { ControlBtns, NavBar },
+  setup() {
+    return {
+      isFullscreen,
+    }
+  },
   computed: {
     ...mapGetters(['setting']),
   },
@@ -36,6 +42,13 @@ export default {
   -webkit-user-select: none;
   display: flex;
   flex-flow: column nowrap;
+
+  &.fullscreen {
+    -webkit-app-region: no-drag;
+    .logo {
+      display: none;
+    }
+  }
 }
 
 .logo {

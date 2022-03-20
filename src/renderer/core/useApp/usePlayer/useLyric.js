@@ -44,9 +44,11 @@ export default ({ setting }) => {
     setDesktopLyricInfo('lyric', { lrc: musicInfo.lrc, tlrc: musicInfo.tlrc, lxlrc: musicInfo.lxlrc })
 
     if (isPlay.value && (musicInfo.url || playMusicInfo.listId == 'download')) {
-      const time = getCurrentTime() * 1000
-      setDesktopLyricInfo('play', time)
-      lrc.play(time)
+      setTimeout(() => {
+        const time = getCurrentTime() * 1000
+        setDesktopLyricInfo('play', time)
+        lrc.play(time)
+      })
     }
   }
 

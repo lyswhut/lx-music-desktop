@@ -11,15 +11,15 @@ div(:class="$style.footer")
       span(style="margin: 0 5px;") /
       span {{maxPlayTimeStr}}
   div(:class="$style.playControl")
-    div(:class="$style.playBtn" @click="playPrev" style="transform: rotate(180deg);" :tips="$t('player__prev')")
+    div(:class="$style.playBtn" @click="playPrev" style="transform: rotate(180deg);" :aria-label="$t('player__prev')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
         use(xlink:href='#icon-nextMusic')
-    div(:class="$style.playBtn" @click="togglePlay" :tips="isPlay ? $t('player__pause') : $t('player__play')")
+    div(:class="$style.playBtn" @click="togglePlay" :aria-label="isPlay ? $t('player__pause') : $t('player__play')")
       svg(v-if="isPlay" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve')
         use(xlink:href='#icon-pause')
       svg(v-else version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve')
         use(xlink:href='#icon-play')
-    div(:class="$style.playBtn" @click="playNext" :tips="$t('player__next')")
+    div(:class="$style.playBtn" @click="playNext" :aria-label="$t('player__next')")
       svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 220.847 220.847' space='preserve')
         use(xlink:href='#icon-nextMusic')
 </template>

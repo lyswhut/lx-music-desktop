@@ -1,5 +1,6 @@
 import music from '../../utils/music'
 import { markRawList } from '@renderer/utils/vueTools'
+import { deduplicationList } from '@renderer/utils'
 
 const sortList = {}
 const sources = []
@@ -91,6 +92,7 @@ const actions = {
         ? Promise.resolve(cache.get(key))
         : music[source]?.songList.getListDetail(id, page).then(result => ({ ...result, list: filterList(result.list) }))
     ).then(result => {
+      result.list = markRawList(deduplicationList(result.list))
       commit('setListDetail', { result, key, source, id, page })
       return result.list
     })
@@ -103,9 +105,10 @@ const actions = {
       return cache.has(key)
         ? Promise.resolve(cache.get(key))
         : music[source]?.songList.getListDetail(id, page).then(result => {
+          result.list = markRawList(deduplicationList(result.list))
           cache.set(key, result)
           return result
-        })
+        }) ?? Promise.reject(new Error('source not found'))
     }
     return loadData(id, 1).then(result => {
       if (result.total <= result.limit) return filterList(result.list)
@@ -117,7 +120,7 @@ const actions = {
           : loadData(id, loadPage).then(result1 => loadDetail(++loadPage).then(result2 => [...result1.list, ...result2]))
       }
       return loadDetail().then(result2 => [...result.list, ...result2]).then(list => filterList(list))
-    })
+    }).then(list => deduplicationList(list))
   },
 }
 
@@ -139,7 +142,7 @@ const mutations = {
     cache.set(key, result)
   },
   setListDetail(state, { result, key, source, id, page }) {
-    state.listDetail.list = markRawList(result.list)
+    state.listDetail.list = result.list
     state.listDetail.id = id
     state.listDetail.source = source
     state.listDetail.total = result.total
