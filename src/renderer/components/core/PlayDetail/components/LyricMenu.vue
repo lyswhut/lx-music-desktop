@@ -49,7 +49,8 @@ import { computed, useRefGetter, ref, useCommit, watch } from '@renderer/utils/v
 import useMenuLocation from '@renderer/utils/compositions/useMenuLocation'
 import { setLyricEdited, removeLyricEdited, debounce } from '@renderer/utils'
 
-const offsetTagRxp = /^\s*\[offset:\s*(\S+(?:\d+)*)\s*\]/
+const offsetTagRxp = /(?:^|\n)\s*\[offset:\s*(\S+(?:\d+)*)\s*\]/
+const offsetTagAllRxp = /(?:^|\n)\s*\[offset:\s*(\S+(?:\d+)*)\s*\]/g
 
 const saveLyric = debounce((musicInfo, lyricInfo) => {
   setLyricEdited(musicInfo, lyricInfo)
@@ -105,9 +106,9 @@ export default {
       let tlyric = props.lyricInfo.tlyric
       let lxlyric = props.lyricInfo.lxlyric
       if (offsetTagRxp.test(lyric)) {
-        lyric = lyric.replace(offsetTagRxp, `[offset:${offset}]`)
-        if (tlyric) tlyric = tlyric.replace(offsetTagRxp, `[offset:${offset}]`)
-        if (lxlyric) lxlyric = lxlyric.replace(offsetTagRxp, `[offset:${offset}]`)
+        lyric = lyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
+        if (tlyric) tlyric = tlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
+        if (lxlyric) lxlyric = lxlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
       } else {
         lyric = `[offset:${offset}]\n` + lyric
         if (tlyric) tlyric = `[offset:${offset}]\n` + tlyric
