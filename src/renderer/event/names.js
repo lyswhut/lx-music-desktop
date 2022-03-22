@@ -30,6 +30,7 @@ const names = {
     setPlayInfo: 'setPlayInfo', // 设置播放信息
     updatePic: 'updatePic', // 更新图片事件
     updateLyric: 'updateLyric', // 更新歌词事件
+    updateLyricOffset: 'updateLyricOffset', // 更新歌词偏移
 
     activeTransition: 'activeTransition', // 激活进度条动画事件
     playedStop: 'playedStop', // 定时停止事件

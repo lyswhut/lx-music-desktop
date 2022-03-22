@@ -69,4 +69,7 @@ export default {
   isShowAnimation(state) {
     return state.setting.isShowAnimation
   },
+  playDetailSetting(state) {
+    return state.setting.playDetail
+  },
 }

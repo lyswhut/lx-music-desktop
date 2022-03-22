@@ -1,5 +1,5 @@
 <template>
-<div :class="['right', $style.right]" :style="lrcFontSize">
+<div :class="['right', $style.right]" :style="lrcFontSize" @contextmenu.stop="handleShowLyricMenu">
   <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
     <div :class="['pre', $style.lyricSpace]"></div>
     <div ref="dom_lyric_text"></div>
@@ -25,6 +25,7 @@
       </div>
     </div>
   </transition>
+  <LyricMenu v-model="lyricMenuVisible" :xy="lyricMenuXY" :lyricInfo="lyricInfo" @updateLyric="handleUpdateLyric" />
 </div>
 </template>
 
@@ -32,14 +33,18 @@
 import { clipboardWriteText } from '@renderer/utils'
 import { lyric } from '@renderer/core/share/lyric'
 import { isFullscreen } from '@renderer/core/share'
-import { isPlay, isShowLrcSelectContent, isShowPlayComment } from '@renderer/core/share/player'
-import { onMounted, onBeforeUnmount, useCommit, useRefGetter, computed } from '@renderer/utils/vueTools'
+import { isPlay, isShowLrcSelectContent, isShowPlayComment, musicInfo as playerMusicInfo, musicInfoItem, setMusicInfo } from '@renderer/core/share/player'
+import { onMounted, onBeforeUnmount, useRefGetter, computed, reactive, ref } from '@renderer/utils/vueTools'
 import useLyric from '@renderer/utils/compositions/useLyric'
+import LyricMenu from './components/LyricMenu'
+import { player as eventPlayerNames } from '@renderer/event/names'
 
 export default {
+  components: {
+    LyricMenu,
+  },
   setup() {
     const setting = useRefGetter('setting')
-    const setPlayDetailLyricFont = useCommit('setPlayDetailLyricFont')
     const {
       dom_lyric,
       dom_lyric_text,
@@ -54,13 +59,37 @@ export default {
       handleSkipMouseLeave,
     } = useLyric({ isPlay, lyric })
 
-    const fontSizeUp = () => {
-      if (setting.value.playDetail.style.fontSize >= 200) return
-      setPlayDetailLyricFont(setting.value.playDetail.style.fontSize + 1)
+    const lyricMenuVisible = ref(false)
+    const lyricMenuXY = reactive({
+      x: 0,
+      y: 0,
+    })
+    const lyricInfo = reactive({
+      lyric: '',
+      tlyric: '',
+      lxlyric: '',
+      musicInfo: null,
+    })
+    const updateMusicInfo = () => {
+      lyricInfo.lyric = playerMusicInfo.lrc
+      lyricInfo.tlyric = playerMusicInfo.tlrc
+      lyricInfo.lxlyric = playerMusicInfo.lxlrc
+      lyricInfo.musicInfo = musicInfoItem.value
     }
-    const fontSizeDown = () => {
-      if (setting.value.playDetail.style.fontSize <= 70) return
-      setPlayDetailLyricFont(setting.value.playDetail.style.fontSize - 1)
+    const handleShowLyricMenu = event => {
+      updateMusicInfo()
+      lyricMenuXY.x = event.pageX
+      lyricMenuXY.y = event.pageY
+      lyricMenuVisible.value = true
+    }
+    const handleUpdateLyric = ({ lyric, tlyric, lxlyric, offset }) => {
+      setMusicInfo({
+        lrc: lyric,
+        tlrc: tlyric,
+        lxlrc: lxlyric,
+      })
+      console.log(offset)
+      window.eventHub.emit(eventPlayerNames.updateLyricOffset, offset)
     }
 
     const lrcStyles = computed(() => {
@@ -79,16 +108,10 @@ export default {
     const isShowLyricProgressSetting = computed(() => setting.value.playDetail.isShowLyricProgressSetting)
 
     onMounted(() => {
-      window.eventHub.on('key_shift++_down', fontSizeUp)
-      window.eventHub.on('key_numadd_down', fontSizeUp)
-      window.eventHub.on('key_-_down', fontSizeDown)
-      window.eventHub.on('key_numsub_down', fontSizeDown)
+      window.eventHub.on(eventPlayerNames.updateLyric, updateMusicInfo)
     })
     onBeforeUnmount(() => {
-      window.eventHub.off('key_shift++_down', fontSizeUp)
-      window.eventHub.off('key_numadd_down', fontSizeUp)
-      window.eventHub.off('key_-_down', fontSizeDown)
-      window.eventHub.off('key_numsub_down', fontSizeDown)
+      window.eventHub.off(eventPlayerNames.updateLyric, updateMusicInfo)
     })
 
     return {
@@ -109,6 +132,11 @@ export default {
       isShowLyricProgressSetting,
       isZoomActiveLrc,
       isStopScroll,
+      lyricMenuVisible,
+      lyricMenuXY,
+      handleShowLyricMenu,
+      handleUpdateLyric,
+      lyricInfo,
     }
   },
   methods: {

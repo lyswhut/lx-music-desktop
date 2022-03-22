@@ -35,6 +35,9 @@ export default {
       state.setting.player.volume = val
     }
   },
+  setPlayDetailLyricAlign(state, val) {
+    state.setting.playDetail.style.align = val
+  },
   setPlayDetailLyricFont(state, val) {
     state.setting.playDetail.style.fontSize = val
   },

@@ -97,9 +97,9 @@ export default {
     watch(() => setting.value.player.mediaDeviceId, val => {
       currentStting.value.player.mediaDeviceId = val
     })
-    watch(() => setting.value.playDetail.style.fontSize, val => {
-      currentStting.value.playDetail.style.fontSize = val
-    })
+    watch(() => setting.value.playDetail, val => {
+      currentStting.value.playDetail = val
+    }, { deep: true })
     watch(() => setting.value.player.isMute, val => {
       currentStting.value.player.isMute = val
     })
