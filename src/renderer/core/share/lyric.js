@@ -4,7 +4,8 @@ export const lyric = reactive({
   lines: [],
   text: '',
   line: 0,
-  offset: 0, // 临时延迟
+  offset: 0, // 歌词延迟
+  tempOffset: 0, // 歌词临时延迟
 })
 
 export const setLines = lines => {
@@ -16,4 +17,7 @@ export const setText = (text, line) => {
 }
 export const setOffset = offset => {
   lyric.offset = offset
+}
+export const setTempOffset = offset => {
+  lyric.tempOffset = offset
 }

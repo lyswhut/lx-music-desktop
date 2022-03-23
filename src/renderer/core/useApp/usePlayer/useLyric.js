@@ -3,7 +3,7 @@ import Lyric from '@renderer/utils/lyric-font-player'
 import { getCurrentTime as getPlayerCurrentTime } from '@renderer/plugins/player'
 import { setDesktopLyricInfo, onGetDesktopLyricInfo } from '@renderer/utils/tools'
 import { player as eventPlayerNames } from '@renderer/event/names'
-import { lyric, setText, setLines, setOffset } from '@renderer/core/share/lyric'
+import { lyric, setText, setLines, setOffset, setTempOffset } from '@renderer/core/share/lyric'
 import { musicInfo, setStatusText, isPlay, playMusicInfo } from '@renderer/core/share/player'
 
 export default ({ setting }) => {
@@ -17,11 +17,12 @@ export default ({ setting }) => {
       setStatusText(text)
       // console.log(line, text)
     },
-    onSetLyric(lines) { // listening lyrics seting event
+    onSetLyric(lines, offset) { // listening lyrics seting event
       // console.log(lines) // lines is array of all lyric text
       setLines(markRawList([...lines]))
       setText(lines[0] ?? '', 0)
-      setOffset(0) // 重置临时延迟
+      setOffset(offset) // 歌词延迟
+      setTempOffset(0) // 重置临时延迟
     },
     // offset: 80,
   })
@@ -58,7 +59,7 @@ export default ({ setting }) => {
   }
 
   const setLyricOffset = offset => {
-    setOffset(offset)
+    setTempOffset(offset)
     if (isPlay.value && (musicInfo.url || playMusicInfo.listId == 'download')) {
       setTimeout(() => {
         const time = getCurrentTime()

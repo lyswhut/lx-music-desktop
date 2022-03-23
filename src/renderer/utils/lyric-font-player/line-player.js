@@ -34,7 +34,7 @@ module.exports = class LinePlayer {
     if (this.translationLyric == null) this.translationLyric = ''
     this._initTag()
     this._initLines()
-    this.onSetLyric(this.lines)
+    this.onSetLyric(this.lines, this.tags.offset + this.offset)
   }
 
   _initTag() {
