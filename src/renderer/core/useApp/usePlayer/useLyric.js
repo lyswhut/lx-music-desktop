@@ -28,7 +28,7 @@ export default ({ setting }) => {
   })
 
   const getCurrentTime = () => {
-    return getPlayerCurrentTime() * 1000 + lyric.offset
+    return getPlayerCurrentTime() * 1000 + lyric.tempOffset
   }
 
 

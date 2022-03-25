@@ -97,7 +97,7 @@ module.exports = class Lyric {
     this.onPlay(num, this._lines[num].text)
   }
 
-  _handleLinePlayerOnSetLyric = lyricLines => {
+  _handleLinePlayerOnSetLyric = (lyricLines, offset) => {
     // console.log(lyricLines)
     // this._lines = lyricsLines
     this.isLineMode = lyricLines.length && !/^<\d+,\d+>/.test(lyricLines[0].text)
@@ -148,7 +148,7 @@ module.exports = class Lyric {
       })
     }
 
-    this.onSetLyric(this._lines)
+    this.onSetLyric(this._lines, offset)
   }
 
   play(curTime) {
