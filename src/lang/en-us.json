@@ -338,6 +338,7 @@
   "setting__other_tray_theme_native": "White",
   "setting__other_tray_theme_origin": "Primary Color",
   "setting__play": "Play",
+  "setting__play_auto_skip_on_error": "Automatically switch songs on playback error",
   "setting__play_detail": "Play details page settings",
   "setting__play_detail_align": "Lyric Alignment",
   "setting__play_detail_align_center": "Centered",

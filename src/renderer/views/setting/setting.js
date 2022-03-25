@@ -16,6 +16,7 @@ export const currentStting = ref({
     audioVisualization: false,
     waitPlayEndStop: true,
     waitPlayEndStopTime: '',
+    autoSkipOnError: true,
   },
   playDetail: {
     isZoomActiveLrc: true,

@@ -2,8 +2,10 @@ import { onBeforeUnmount, useI18n } from '@renderer/utils/vueTools'
 import { player as eventPlayerNames } from '@renderer/event/names'
 import { wait, waitCancel } from '@renderer/utils/tools'
 import { musicInfo, musicInfoItem, playMusicInfo } from '@renderer/core/share/player'
+import { setStop, isEmpty } from '@renderer/plugins/player'
 
 export default ({
+  setting,
   playNext,
   setAllStatus,
   setUrl,
@@ -50,7 +52,7 @@ export default ({
 
   const handleLoadstart = () => {
     if (global.isPlayedStop) return
-    startLoadingTimeout()
+    if (setting.value.player.autoSkipOnError) startLoadingTimeout()
     setAllStatus(t('player__loading'))
   }
 
@@ -79,6 +81,7 @@ export default ({
     if (!musicInfo.songmid) return
     clearLoadingTimeout()
     if (global.isPlayedStop) return
+    if (!isEmpty()) setStop()
     if (playMusicInfo.listId != 'download' && errCode !== 1 && retryNum < 2) { // 若音频URL无效则尝试刷新2次URL
       // console.log(this.retryNum)
       retryNum++
@@ -87,8 +90,10 @@ export default ({
       return
     }
 
-    setAllStatus(t('player__error'))
-    addDelayNextTimeout()
+    if (setting.value.player.autoSkipOnError) {
+      setAllStatus(t('player__error'))
+      addDelayNextTimeout()
+    }
   }
 
   const handleSetPlayInfo = () => {
