@@ -98,7 +98,7 @@ export default {
       currentStting.value.player.mediaDeviceId = val
     })
     watch(() => setting.value.playDetail, val => {
-      currentStting.value.playDetail = val
+      currentStting.value.playDetail = JSON.parse(JSON.stringify(val))
     }, { deep: true })
     watch(() => setting.value.player.isMute, val => {
       currentStting.value.player.isMute = val

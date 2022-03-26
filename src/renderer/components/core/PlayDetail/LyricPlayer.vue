@@ -1,10 +1,12 @@
 <template>
 <div :class="['right', $style.right]" :style="lrcFontSize" @contextmenu.stop="handleShowLyricMenu">
-  <div :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
-    <div :class="['pre', $style.lyricSpace]"></div>
-    <div ref="dom_lyric_text"></div>
-    <div :class="$style.lyricSpace"></div>
-  </div>
+  <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+    <div v-show="!isShowLrcSelectContent" :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
+      <div :class="['pre', $style.lyricSpace]"></div>
+      <div ref="dom_lyric_text"></div>
+      <div :class="$style.lyricSpace"></div>
+    </div>
+  </transition>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
     <div :class="$style.skip" v-if="isShowLyricProgressSetting" v-show="isStopScroll">
       <div :class="$style.line" ref="dom_skip_line"></div>
@@ -159,34 +161,13 @@ export default {
   // padding: 0 30px;
   position: relative;
   transition: flex-basis @transition-theme;
-
-  &:before {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    content: ' ';
-    height: 100px;
-    width: 100%;
-    background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
-    pointer-events: none;
-  }
-  &:after {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    content: ' ';
-    height: 100px;
-    width: 100%;
-    background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,@color-theme_2-background_1 95%);
-    pointer-events: none;
-  }
 }
 .lyric {
   text-align: center;
   height: 100%;
   overflow: hidden;
   font-size: var(--playDetail-lrc-font-size, 16px);
+  -webkit-mask-image: linear-gradient(transparent 0%, #fff 20%,  #fff 80%, transparent 100%);
   cursor: grab;
   &.draging {
     cursor: grabbing;
@@ -274,9 +255,10 @@ export default {
   pointer-events: none;
   // opacity: .5;
   .line {
-    border-top: 1px dashed @color-player-detail-lyric-active;
+    border-top: 2px dotted @color-player-detail-lyric-active;
     opacity: .15;
     margin-right: 30px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 15%, #fff 100%);
   }
   .label {
     position: absolute;
@@ -316,7 +298,6 @@ export default {
   height: 100%;
   width: 100%;
   font-size: 16px;
-  background-color: @color-theme_2-background_1;
   z-index: 10;
   color: @color-player-detail-lyric;
 
@@ -341,14 +322,6 @@ export default {
 
 each(@themes, {
   :global(#root.@{value}) {
-    .right {
-      &:before {
-        background-image: linear-gradient(0deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
-      }
-      &:after {
-        background-image: linear-gradient(-180deg,rgba(255,255,255,0) 0%,~'@{color-@{value}-theme_2-background_1}' 95%);
-      }
-    }
     .lyric {
       :global {
         .lrc-content {
@@ -381,7 +354,6 @@ each(@themes, {
       }
     }
     .lyricSelectContent {
-      background-color: ~'@{color-@{value}-theme_2-background_1}';
       color: ~'@{color-@{value}-player-detail-lyric}';
       .lrc-active {
         color: ~'@{color-@{value}-theme}';

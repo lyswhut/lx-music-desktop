@@ -1,6 +1,7 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
   div(:class="[$style.container, , { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+    div(:class="$style.bg")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
     div(:class="[$style.header, $style.controlBtnLeft]" v-if="setting.controlBtnPosition == 'left'")
@@ -173,16 +174,25 @@ export default {
   }
 
 }
-// .bg {
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   top: 0;
-//   left: 0;
-//   background-size: 110% 110%;
-//   filter: blur(60px);
-//   z-index: -1;
-// }
+.bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: @color-theme-bgimg;
+  // background-size: 110% 110%;
+  // filter: blur(60px);
+  opacity: .7;
+  z-index: -1;
+  &:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: @color-theme_2;
+  }
+}
 // .bg2 {
 //   position: absolute;
 //   width: 100%;
@@ -376,6 +386,15 @@ each(@themes, {
       border-left-color: ~'@{color-@{value}-theme}';
       background-color: ~'@{color-@{value}-theme_2-background_1}';
       // color: ~'@{color-@{value}-theme_2-font}';
+    }
+    .bg {
+      // background-color: ~'@{color-@{value}-theme}';
+      background-image: ~'@{color-@{value}-theme-bgimg}';
+      background-size: ~'@{color-@{value}-theme-bgsize}';
+      background-position: ~'@{color-@{value}-theme-bgposition}';
+      &:after {
+        background-color: ~'@{color-@{value}-theme_2}';
+      }
     }
     .header {
       &.controlBtnLeft {
