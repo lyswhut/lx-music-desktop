@@ -334,7 +334,6 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 以下是目前可用的Scheme URL调用方式：
 
 - URL统一以`lxmusic://`开头
-- 此技术目前只支持 Windows、Mac系统
 - 若无特别说明，源的可用值为：`kw/kg/tx/wy/mg`
 - 若无特别说明，音质的可用值为：`128k/320k/flac/flac32bit`
 
