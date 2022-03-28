@@ -43,7 +43,7 @@ div(:class="$style.search")
         p {{$t('list__loading')}}
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       div(v-show="!isLoading && !listInfo.list.length" :class="$style.noitem")
-        div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || (setting.search.isShowHistorySearch && setting.search.isShowHistorySearch.length)")
+        div.scroll(:class="$style.noitemListContainer" v-if="setting.search.isShowHotSearch || (setting.search.isShowHistorySearch && historyList.length)")
           dl(:class="[$style.noitemList, $style.noitemHotSearchList]" v-if="setting.search.isShowHotSearch")
             dt(:class="$style.noitemListTitle") {{$t('search__hot_search')}}
             dd(:class="$style.noitemListItem" @click="handleNoitemSearch(item)" v-for="item in hotSearchList") {{item}}
