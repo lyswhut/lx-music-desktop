@@ -32,12 +32,12 @@
         <button :class="[$style.btn, $style.titleBtn]" :disabled="offsetDisabled || !offset" @click="offsetReset">{{$t('lyric_menu__offset_reset')}}</button>
       </div>
       <div :class="$style.subGroup">
-        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(10)" @contextmenu="setOffset(5)" :aria-label="$t('lyric_menu__offset_add_10')">+ 10ms</button>
-        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(-10)" @contextmenu="setOffset(-5)" :aria-label="$t('lyric_menu__offset_dec_10')">- 10ms</button>
+        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(10)" ignore-tip :aria-label="$t('lyric_menu__offset_add_10')">+ 10ms</button>
+        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(-10)" ignore-tip :aria-label="$t('lyric_menu__offset_dec_10')">- 10ms</button>
       </div>
       <div :class="$style.subGroup">
-        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(100)" @contextmenu="setOffset(50)" :aria-label="$t('lyric_menu__offset_add_100')">+ 100ms</button>
-        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(-100)" @contextmenu="setOffset(-50)" :aria-label="$t('lyric_menu__offset_dec_100')">- 100ms</button>
+        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(100)" ignore-tip :aria-label="$t('lyric_menu__offset_add_100')">+ 100ms</button>
+        <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(-100)" ignore-tip :aria-label="$t('lyric_menu__offset_dec_100')">- 100ms</button>
       </div>
     </div>
   </div>
