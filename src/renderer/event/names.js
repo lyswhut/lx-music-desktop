@@ -10,6 +10,7 @@ const names = {
     min: 'min',
     max: 'max',
     close: 'close',
+    fullscreenToggle: 'fullscreenToggle',
     set_config: 'set_config',
     set_hot_key_config: 'set_hot_key_config',
   },

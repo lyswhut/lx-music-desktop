@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="[$style.container, , { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+  div(:class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
     div(:class="$style.bg")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
@@ -9,6 +9,9 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
         button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='80%' viewBox='0 0 30.727 30.727' space='preserve')
             use(xlink:href='#icon-window-hide')
+        button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" @click="fullscreenExit")
+          svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%')
+            use(xlink:href='#icon-fullscreen-exit')
         button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='100%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-minimize')
@@ -22,6 +25,9 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
         button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='35%' viewBox='0 0 30.727 30.727' space='preserve')
             use(xlink:href='#icon-window-hide')
+        button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" @click="fullscreenExit")
+          svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%')
+            use(xlink:href='#icon-fullscreen-exit')
         button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-minimize-2')
@@ -30,7 +36,6 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
         button(type="button" :class="$style.close" :aria-label="$t('close')" @click="close")
           svg(:class="$style.controBtnIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='60%' viewBox='0 0 24 24' space='preserve')
             use(xlink:href='#icon-window-close-2')
-
     div(:class="[$style.main, {[$style.showComment]: isShowPlayComment}]")
       div.left(:class="$style.left")
         //- div(:class="$style.info")
@@ -120,6 +125,9 @@ export default {
       handleAfterLeave,
       visibled,
       isFullscreen,
+      fullscreenExit() {
+        window.eventHub.emit(eventBaseName.fullscreenToggle, false)
+      },
       min() {
         window.eventHub.emit(eventBaseName.min)
       },
@@ -167,8 +175,14 @@ export default {
   &.fullscreen {
     .header {
       -webkit-app-region: no-drag;
-      > * {
-        display: none;
+      align-self: flex-start;
+      .controBtn {
+        .close, .min {
+          display: none;
+        }
+        .fullscreenExit {
+          display: flex;
+        }
       }
     }
   }
@@ -214,6 +228,23 @@ export default {
     top: 0;
     display: flex;
     -webkit-app-region: no-drag;
+
+    button {
+      display: flex;
+      position: relative;
+      background: none;
+      border: none;
+      outline: none;
+      padding: 1px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fullscreenExit {
+      display: none;
+    }
   }
 
   &.controlBtnLeft {
@@ -230,19 +261,10 @@ export default {
       }
 
       button {
-        position: relative;
         width: @control-btn-width;
         height: @control-btn-width;
-        background: none;
-        border: none;
-        outline: none;
-        padding: 1px;
-        cursor: pointer;
         border-radius: 50%;
         color: @color-theme_2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         + button {
           margin-right: (@control-btn-width / 2);
         }
@@ -250,7 +272,7 @@ export default {
         &.hide {
           background-color: @color-hideBtn;
         }
-        &.min {
+        &.min, &.fullscreenExit {
           background-color: @color-minBtn;
         }
         &.max {
@@ -272,24 +294,14 @@ export default {
     .controBtn {
       right: 0;
       button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
         width: 46px;
         height: 30px;
-        background: none;
-        border: none;
-        outline: none;
-        padding: 1px;
-        cursor: pointer;
         color: @color-theme;
         transition: background-color 0.2s ease-in-out;
 
         &:hover {
-          &.hide, &.min, &.max {
-            background-color: @color-btn-hover;
-          }
+          background-color: @color-btn-hover;
+
           &.close {
             background-color: @color-closeBtn;
           }
@@ -407,7 +419,7 @@ each(@themes, {
             &.hide {
               background-color: ~'@{color-@{value}-hideBtn}';
             }
-            &.min {
+            &.min, &.fullscreenExit {
               background-color: ~'@{color-@{value}-minBtn}';
             }
             &.max {
@@ -424,9 +436,8 @@ each(@themes, {
           button {
             color: ~'@{color-@{value}-theme_2-font-label}';
             &:hover {
-              &.hide, &.min, &.max {
-                background-color: ~'@{color-@{value}-btn-hover}';
-              }
+              background-color: ~'@{color-@{value}-btn-hover}';
+
               &.close {
                 background-color: ~'@{color-@{value}-closeBtn}';
               }
