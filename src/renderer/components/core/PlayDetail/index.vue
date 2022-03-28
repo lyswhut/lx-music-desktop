@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
+  div(:class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail" ref="dom_content")
     div(:class="$style.bg")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
@@ -57,7 +57,7 @@ transition(enter-active-class="animated lightSpeedIn" leave-active-class="animat
 
 
 <script>
-import { useRefGetter, ref } from '@renderer/utils/vueTools'
+import { useRefGetter, ref, watch } from '@renderer/utils/vueTools'
 import { isFullscreen } from '@renderer/core/share'
 import { base as eventBaseName } from '@renderer/event/names'
 import {
@@ -72,6 +72,7 @@ import {
 import LyricPlayer from './LyricPlayer'
 import PlayBar from './PlayBar'
 import MusicComment from './components/MusicComment'
+import { registerAutoHideMounse, unregisterAutoHideMounse } from './autoHideMounse'
 
 export default {
   name: 'CorePlayDetail',
@@ -83,6 +84,7 @@ export default {
   setup() {
     const setting = useRefGetter('setting')
     const visibled = ref(false)
+    const dom_content = ref(null)
 
     let clickTime = 0
 
@@ -103,6 +105,8 @@ export default {
     }
 
     const handleAfterEnter = () => {
+      if (isFullscreen.value) registerAutoHideMounse(dom_content.value)
+
       visibled.value = true
     }
 
@@ -110,7 +114,13 @@ export default {
       setShowPlayLrcSelectContentLrc(false)
       hideComment(false)
       visibled.value = false
+
+      unregisterAutoHideMounse(dom_content.value)
     }
+
+    watch(isFullscreen, isFullscreen => {
+      (isFullscreen ? registerAutoHideMounse : unregisterAutoHideMounse)(dom_content.value)
+    })
 
     return {
       setting,
@@ -125,6 +135,7 @@ export default {
       handleAfterLeave,
       visibled,
       isFullscreen,
+      dom_content,
       fullscreenExit() {
         window.eventHub.emit(eventBaseName.fullscreenToggle, false)
       },
