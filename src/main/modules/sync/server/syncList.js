@@ -1,8 +1,6 @@
-const path = require('path')
 const fs = require('fs')
 const fsPromises = fs.promises
-const { app } = require('electron')
-const { encryptMsg, decryptMsg } = require('./utils')
+const { encryptMsg, decryptMsg, getSnapshotFilePath } = require('./utils')
 const SYNC_EVENT_NAMES = require('../event/name')
 const { common: COMMON_EVENT_NAME } = require('@main/events/_name')
 const { throttle } = require('@common/utils')
@@ -403,7 +401,7 @@ const registerUpdateSnapshotTask = (socket, snapshot) => {
 }
 
 const syncList = async socket => {
-  socket.data.snapshotFilePath = path.join(app.getPath('userData'), `snapshot-${Buffer.from(socket.data.keyInfo.clientId).toString('hex').substring(0, 10)}.json`)
+  socket.data.snapshotFilePath = getSnapshotFilePath(socket.data.keyInfo)
   let fileData
   let isSyncRequired = false
   try {
@@ -423,7 +421,7 @@ const checkSyncQueue = async() => {
   await wait()
   return checkSyncQueue()
 }
-module.exports = async(_io, socket) => {
+exports.syncList = async(_io, socket) => {
   io = _io
   await checkSyncQueue()
   syncingId = socket.data.keyInfo.clientId
@@ -433,4 +431,8 @@ module.exports = async(_io, socket) => {
   }).finally(() => {
     syncingId = null
   })
+}
+exports.removeSnapshot = keyInfo => {
+  const filePath = getSnapshotFilePath(keyInfo)
+  return fsPromises.unlink(filePath)
 }

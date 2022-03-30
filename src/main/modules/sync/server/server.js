@@ -3,8 +3,8 @@ const sio = require('socket.io')
 const { createHttpTerminator } = require('http-terminator')
 const modules = require('../modules')
 const { authCode, authConnect } = require('./auth')
-const { getAddress, getServerId, generateCode, getClientKeyInfo } = require('./utils')
-const syncList = require('./syncList')
+const { getAddress, getServerId, generateCode, getClientKeyInfo, setClientKeyInfo } = require('./utils')
+const { syncList, removeSnapshot } = require('./syncList')
 const { log } = require('@common/utils')
 
 
@@ -84,6 +84,8 @@ const handleStartServer = (port = 9527) => new Promise((resolve, reject) => {
       global.lx_event.sync.status(status)
     })
     const keyInfo = getClientKeyInfo(socket.handshake.query.i)
+    keyInfo.connectionTime = Date.now()
+    setClientKeyInfo(keyInfo)
     // socket.lx_keyInfo = keyInfo
     socket.data.keyInfo = keyInfo
     try {
@@ -172,3 +174,5 @@ exports.generateCode = async() => {
   global.lx_event.sync.status(status)
   return status.code
 }
+
+exports.removeSnapshot = removeSnapshot
