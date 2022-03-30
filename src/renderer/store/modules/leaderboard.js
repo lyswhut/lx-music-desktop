@@ -30,6 +30,9 @@ const getters = {
   sources(state, getters, rootState, { sourceNames }) {
     return sources.map(item => ({ id: item.id, name: sourceNames[item.id] }))
   },
+  sourceIds() {
+    return sources.map(item => item.id)
+  },
   boards(state) {
     return state.boards
   },

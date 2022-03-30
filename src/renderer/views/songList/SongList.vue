@@ -97,7 +97,7 @@ export default {
         case 'tx':
         case 'mg':
         case 'kg':
-        case 'xm':
+        // case 'xm':
           list.push({
             name: this.$t('songlist__open_list', { name: this.sourceInfo.sources.find(s => s.id == this.source).name }),
             id: 'importSongList',
@@ -164,6 +164,7 @@ export default {
   },
   mounted() {
     this.source = this.setting.songList.source
+    if (!this.sourceInfo.sourceIds.includes(this.source)) this.source = this.sourceInfo.sourceIds[0]
     this.isToggleSource = true
     this.tagInfo = this.setting.songList.tagInfo
     this.sortId = this.setting.songList.sortId
