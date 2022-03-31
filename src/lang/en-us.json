@@ -257,6 +257,7 @@
   "setting__click_open": "Click to open",
   "setting__desktop_lyric": "Desktop Lyric Settings",
   "setting__desktop_lyric_always_on_top": "Make the lyrics always above other windows",
+  "setting__desktop_lyric_always_on_top_loop": "Automatically refresh the top of the lyrics (try to enable this setting when the lyrics are still blocked by some programs)",
   "setting__desktop_lyric_delay_scroll": "Delayed lyrics scroll",
   "setting__desktop_lyric_enable": "Display lyrics",
   "setting__desktop_lyric_font": "Lyric font",

@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.55',
+  version: '1.0.56',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -32,6 +32,7 @@ const defaultSetting = {
     enable: false,
     isLock: false,
     isAlwaysOnTop: false,
+    isAlwaysOnTopLoop: false,
     width: 380,
     height: 420,
     x: null,
