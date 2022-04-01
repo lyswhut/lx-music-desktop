@@ -1,7 +1,12 @@
 <template>
-<div :class="['right', $style.right]" :style="lrcFontSize" @contextmenu.stop="handleShowLyricMenu">
+<div :class="['right', $style.right]" :style="lrcFontSize">
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div v-show="!isShowLrcSelectContent" :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" ref="dom_lyric">
+    <div v-show="!isShowLrcSelectContent"
+      :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]"
+      :style="lrcStyles" @wheel="handleWheel"
+      @mousedown="handleLyricMouseDown" ref="dom_lyric"
+      @contextmenu.stop="handleShowLyricMenu"
+    >
       <div :class="['pre', $style.lyricSpace]"></div>
       <div ref="dom_lyric_text"></div>
       <div :class="$style.lyricSpace"></div>
