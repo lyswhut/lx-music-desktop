@@ -106,6 +106,7 @@
   "list_sort_modal_by_up": "升序",
   "list_sort_modal_tip_confirm": "你确定要这么做吗？",
   "list_update_modal__auto_update": "自动更新",
+  "list_update_modal__tips": "💡 每次启动软件时将会自动更新已勾选“自动更新”的列表",
   "list_update_modal__title": "列表更新管理",
   "list_update_modal__update": "立即更新",
   "lists__duplicate": "重复歌曲",

@@ -27,6 +27,9 @@
       <p v-text="$t('no_item')"></p>
     </div>
   </main>
+  <div :class="$style.footer">
+    <div :class="$style.tips">{{$t('list_update_modal__tips')}}</div>
+  </div>
 </material-modal>
 </template>
 
@@ -73,6 +76,8 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
+@width: 460px;
+
 .header {
   flex: none;
   padding: 15px;
@@ -83,7 +88,7 @@ export default {
 }
 .main {
   min-height: 200px;
-  width: 460px;
+  width: @width;
 }
 
 .list {
@@ -93,7 +98,7 @@ export default {
   position: relative;
   .listItem {
     position: relative;
-    padding: 15px 10px;
+    padding: 15px 10px 15px 15px;
     transition: .3s ease;
     transition-property: background-color, opacity;
     line-height: 1.3;
@@ -126,6 +131,7 @@ export default {
 
 .text {
   flex: auto;
+  margin-bottom: 2px;
   .mixin-ellipsis-1;
 }
 .checkbox {
@@ -179,6 +185,15 @@ export default {
   }
 }
 
+.footer {
+  width: @width;
+}
+.tips {
+  padding: 8px 15px;
+  font-size: 13px;
+  line-height: 1.25;
+  color: @color-theme_2-font;
+}
 
 .no-item {
   position: relative;
@@ -209,6 +224,9 @@ each(@themes, {
       &:active {
         background-color: ~'@{color-@{value}-theme_2-active}';
       }
+    }
+    .note {
+      color: ~'@{color-@{value}-theme_2-font}';
     }
     .no-item {
       p {

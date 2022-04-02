@@ -106,6 +106,7 @@
   "list_sort_modal_by_up": "Ascending",
   "list_sort_modal_tip_confirm": "Are you sure you want to do this?",
   "list_update_modal__auto_update": "auto update",
+  "list_update_modal__tips": "💡 The list with \"Automatic Updates\" checked will be automatically updated each time the software is launched",
   "list_update_modal__title": "List update management",
   "list_update_modal__update": "Sync",
   "lists__duplicate": "Duplicate song",

@@ -2,7 +2,7 @@
 <div :class="$style.lists" ref="dom_lists">
   <div :class="$style.listHeader">
     <h2 :class="$style.listsTitle">{{$t('my_list')}}</h2>
-    <div>
+    <div :class="$style.headerBtns">
       <button :class="$style.listsAdd" @click="handleShowNewList" :aria-label="$t('lists__new_list_btn')">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
           <use xlink:href="#icon-list-add"></use>
@@ -499,7 +499,6 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  justify-content: space-between;
   &:hover {
     .listsAdd {
       opacity: 1;
@@ -507,9 +506,13 @@ export default {
   }
 }
 .listsTitle {
+  flex: auto;
   font-size: 12px;
   line-height: 38px;
   padding: 0 10px;
+  .mixin-ellipsis-1;
+}
+.headerBtns {
   flex: none;
 }
 .listsAdd {
