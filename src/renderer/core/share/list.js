@@ -121,3 +121,8 @@ export const removeUserList = id => {
 export const getList = id => {
   return allList[id] ?? []
 }
+
+export const fetchingListStatus = reactive({})
+export const setFetchingListStatus = (id, status) => {
+  fetchingListStatus[id] = status
+}

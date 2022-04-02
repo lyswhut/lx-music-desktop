@@ -1,7 +1,7 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
 import { sync as eventSyncName, list as eventListNames } from '@renderer/event/names'
-import { removeListPosition, setListPrevSelectId } from '@renderer/utils/data'
+import { removeListPosition, setListPrevSelectId, removeListUpdateInfo } from '@renderer/utils/data'
 import { markRawList, toRaw, markRaw } from '@renderer/utils/vueTools'
 import { allList, allListInit, setInited, removeUserList, addUserList, updateList, defaultList, loveList, userLists } from '@renderer/core/share/list'
 
@@ -337,6 +337,7 @@ const mutations = {
     if (index < 0) return
     removeUserList(id)
     removeListPosition(id)
+    removeListUpdateInfo(id)
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   setUserListName(state, { id, name, isSync }) {
