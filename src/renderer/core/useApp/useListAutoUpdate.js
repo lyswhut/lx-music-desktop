@@ -10,7 +10,9 @@ export default () => {
     if (!waitUpdateLists.length) return
     const targetListInfo = waitUpdateLists.shift()
     // console.log(targetListInfo)
-    await syncSourceList(targetListInfo)
+    try {
+      await syncSourceList(targetListInfo)
+    } catch {}
     handleSyncSourceList(waitUpdateLists)
   }
 
