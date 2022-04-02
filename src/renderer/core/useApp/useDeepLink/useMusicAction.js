@@ -1,7 +1,7 @@
 import { useCommit, useAction, useRouter, markRaw } from '@renderer/utils/vueTools'
 import { decodeName } from '@renderer/utils'
 // import { allList, defaultList, loveList, userLists } from '@renderer/core/share/list'
-import { playMusicInfo } from '@renderer/core/share/player'
+import { playMusicInfo, isShowPlayerDetail, setShowPlayerDetail } from '@renderer/core/share/player'
 
 import { dataVerify, qualityFilter, sources } from './utils'
 
@@ -29,6 +29,7 @@ const useSearchMusic = () => {
       if (text.length > 128) text = text.substring(0, 128)
     }
 
+    if (isShowPlayerDetail.value) setShowPlayerDetail(false)
     const sourceList = [...sources, 'all']
     source = sourceList.includes(source) ? source : null
     router.replace({
