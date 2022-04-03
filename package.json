@@ -104,7 +104,11 @@
     },
     "mac": {
       "icon": "./resources/icons/icon.icns",
-      "category": "public.app-category.music"
+      "category": "public.app-category.music",
+      "extendInfo": {
+        "CFBundleName": "lx-music-desktop",
+        "CFBundleDisplayName": "LX Music"
+      }
     },
     "linux": {
       "maintainer": "lyswhut <lyswhut@qq.com>",
