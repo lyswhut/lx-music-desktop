@@ -8,8 +8,8 @@
           <use xlink:href="#icon-list-add"></use>
         </svg>
       </button>
-      <button :class="$style.listsAdd" @click="isShowListUpdateModal = true" style="transform: rotate(45deg);" :aria-label="$t('list_update_modal__title')">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
+      <button :class="$style.listsAdd" @click="isShowListUpdateModal = true" :aria-label="$t('list_update_modal__title')">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" height="70%" viewBox="0 0 24 24" space="preserve">
           <use xlink:href="#icon-refresh"></use>
         </svg>
       </button>
@@ -514,6 +514,7 @@ export default {
 }
 .headerBtns {
   flex: none;
+  display: flex;
 }
 .listsAdd {
   // position: absolute;
