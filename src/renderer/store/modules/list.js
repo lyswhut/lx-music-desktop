@@ -31,8 +31,9 @@ const actions = {
     if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
     const promise = musicSdk.findMusic(musicInfo).then(otherSource => {
       commit('setOtherSource', { musicInfo, otherSource })
-      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
       return otherSource
+    }).finally(() => {
+      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
     })
     getOtherSourcePromises.set(key, promise)
     return promise
