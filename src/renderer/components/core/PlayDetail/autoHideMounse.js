@@ -41,13 +41,13 @@ const handleMouseUp = () => {
   startTimeout()
 }
 
-export const registerAutoHideMounse = _dom => {
-  if (isAutoHide || !_dom) return
+export const registerAutoHideMounse = () => {
+  if (isAutoHide) return
+  if (!dom) dom = document.getElementById('root')
   isAutoHide = true
-  _dom.addEventListener('mousemove', handleMouseMove)
-  _dom.addEventListener('mousedown', handleMouseDown)
-  _dom.addEventListener('mouseup', handleMouseUp)
-  dom = _dom
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mousedown', handleMouseDown)
+  document.addEventListener('mouseup', handleMouseUp)
   startTimeout()
 }
 
@@ -55,8 +55,8 @@ export const unregisterAutoHideMounse = dom => {
   if (!isAutoHide) return
   isAutoHide = false
   // console.log(dom)
-  dom?.removeEventListener('mousemove', handleMouseMove)
-  dom?.removeEventListener('mousedown', handleMouseDown)
-  dom?.removeEventListener('mouseup', handleMouseUp)
+  dom.removeEventListener('mousemove', handleMouseMove)
+  dom.removeEventListener('mousedown', handleMouseDown)
+  dom.removeEventListener('mouseup', handleMouseUp)
   unLockPointer()
 }

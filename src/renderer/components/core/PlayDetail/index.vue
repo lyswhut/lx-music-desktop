@@ -1,6 +1,6 @@
 <template lang="pug">
 transition(enter-active-class="animated lightSpeedIn" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(:class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail" ref="dom_content")
+  div(:class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu" v-if="isShowPlayerDetail")
     div(:class="$style.bg")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
@@ -84,7 +84,6 @@ export default {
   setup() {
     const setting = useRefGetter('setting')
     const visibled = ref(false)
-    const dom_content = ref(null)
 
     let clickTime = 0
 
@@ -105,7 +104,7 @@ export default {
     }
 
     const handleAfterEnter = () => {
-      if (isFullscreen.value) registerAutoHideMounse(dom_content.value)
+      if (isFullscreen.value) registerAutoHideMounse()
 
       visibled.value = true
     }
@@ -115,11 +114,11 @@ export default {
       hideComment(false)
       visibled.value = false
 
-      unregisterAutoHideMounse(dom_content.value)
+      unregisterAutoHideMounse()
     }
 
     watch(isFullscreen, isFullscreen => {
-      (isFullscreen ? registerAutoHideMounse : unregisterAutoHideMounse)(dom_content.value)
+      (isFullscreen ? registerAutoHideMounse : unregisterAutoHideMounse)()
     })
 
     return {
@@ -135,7 +134,6 @@ export default {
       handleAfterLeave,
       visibled,
       isFullscreen,
-      dom_content,
       fullscreenExit() {
         window.eventHub.emit(eventBaseName.fullscreenToggle, false)
       },
