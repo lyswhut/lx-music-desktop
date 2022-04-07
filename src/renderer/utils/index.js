@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { shell, clipboard } from 'electron'
+import { httpOverHttp, httpsOverHttp } from 'tunnel'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { log } from '@common/utils'
@@ -451,10 +452,31 @@ export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.se
 
 export const getProxyInfo = () => {
   return proxy.enable && proxy.host
-    ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port};`
+    ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port}`
     : proxy.envProxy
-      ? `http://${proxy.envProxy.host}:${proxy.envProxy.port};`
+      ? `http://${proxy.envProxy.host}:${proxy.envProxy.port}`
       : undefined
+}
+
+const httpsRxp = /^https:/
+export const getRequestAgent = url => {
+  let options
+  if (proxy.enable && proxy.host) {
+    options = {
+      proxy: {
+        host: proxy.host,
+        port: proxy.port,
+      },
+    }
+  } else if (proxy.envProxy) {
+    options = {
+      proxy: {
+        host: proxy.envProxy.host,
+        port: proxy.envProxy.port,
+      },
+    }
+  }
+  return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)(options) : undefined
 }
 
 
