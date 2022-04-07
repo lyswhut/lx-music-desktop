@@ -34,7 +34,7 @@ export const weapi = object => {
 export const linuxapi = object => {
   const text = JSON.stringify(object)
   return {
-    eparams: aesEncrypt(Buffer.from(text), 'ecb', linuxapiKey, '').toString('hex').toUpperCase(),
+    eparams: aesEncrypt(Buffer.from(text), 'aes-128-ecb', linuxapiKey, '').toString('hex').toUpperCase(),
   }
 }
 
