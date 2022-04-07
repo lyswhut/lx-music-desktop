@@ -26,8 +26,7 @@ teleport(to="#view")
 </template>
 
 <script>
-import { clipboardReadText, debounce, scrollTo } from '@renderer/utils'
-let canceleFn
+import { clipboardReadText, debounce } from '@renderer/utils'
 
 
 // https://blog.csdn.net/xcxy2015/article/details/77164126#comments
@@ -223,13 +222,13 @@ export default {
       let dom = this.$refs.dom_list.children[this.selectIndex]
       let offsetTop = dom.offsetTop
       let scrollTop = this.$refs.dom_scrollContainer.scrollTop
+      let top
       if (offsetTop < scrollTop) {
-        if (canceleFn) canceleFn()
-        canceleFn = scrollTo(this.$refs.dom_scrollContainer, offsetTop, 200, () => canceleFn = null)
+        top = offsetTop
       } else if (offsetTop + dom.clientHeight > this.$refs.dom_scrollContainer.clientHeight + scrollTop) {
-        if (canceleFn) canceleFn()
-        canceleFn = scrollTo(this.$refs.dom_scrollContainer, offsetTop + dom.clientHeight - this.$refs.dom_scrollContainer.clientHeight, 200, () => canceleFn = null)
-      }
+        top = offsetTop + dom.clientHeight - this.$refs.dom_scrollContainer.clientHeight
+      } else return
+      this.$refs.dom_scrollContainer.scrollTo(0, top)
     },
     handleContextMenu() {
       let str = clipboardReadText()
@@ -345,6 +344,8 @@ export default {
     height: 0;
     transition-property: height;
     position: relative;
+    scroll-behavior: smooth;
+
     li {
       position: relative;
       cursor: pointer;

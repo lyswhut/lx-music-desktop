@@ -56,7 +56,6 @@ div(:class="$style.container")
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { scrollTo } from '@renderer/utils'
 import TagList from './components/TagList'
 import { tempList } from '@renderer/core/share/list'
 export default {
@@ -122,7 +121,7 @@ export default {
       this.$nextTick(() => {
         this.getList(1).then(() => {
           this.$nextTick(() => {
-            scrollTo(this.$refs.dom_scrollContent, 0)
+            this.$refs.dom_scrollContent.scrollTo(0, 0)
           })
         })
       })
@@ -139,7 +138,7 @@ export default {
       this.$nextTick(() => {
         this.getList(1).then(() => {
           this.$nextTick(() => {
-            scrollTo(this.$refs.dom_scrollContent, 0)
+            this.$refs.dom_scrollContent.scrollTo(0, 0)
           })
         })
       })
@@ -231,7 +230,7 @@ export default {
     handleToggleListPage(page) {
       this.getList(page).then(() => {
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+          this.$refs.dom_scrollContent.scrollTo(0, 0)
         })
       })
     },
@@ -403,7 +402,9 @@ export default {
   align-items: center;
   padding-top: 20%;
 }
-
+.songList {
+  scroll-behavior: smooth;
+}
 .song-list-header {
   display: flex;
   flex-flow: row nowrap;

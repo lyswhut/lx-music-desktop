@@ -66,7 +66,7 @@ div(:class="$style.search")
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { scrollTo, clipboardWriteText, assertApiSupport, openUrl } from '@renderer/utils'
+import { clipboardWriteText, assertApiSupport, openUrl } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import { defaultList } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
@@ -264,7 +264,7 @@ export default {
       this.search({ text, page, limit: this.listInfo.limit }).then(data => {
         this.page = page
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_scrollContent, 0)
+          this.$refs.dom_scrollContent.scrollTo(0, 0)
         })
       }).finally(() => {
         this.isLoading = false
@@ -569,6 +569,8 @@ export default {
 .tbody {
   flex: auto;
   overflow-y: auto;
+  scroll-behavior: smooth;
+
   td {
     font-size: 12px;
     :global(.badge) {
