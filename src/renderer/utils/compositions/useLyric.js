@@ -2,7 +2,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from '@renderer/util
 import { scrollTo, throttle, formatPlayTime2 } from '@renderer/utils'
 import { player as eventPlayerNames } from '@renderer/event/names'
 
-export default ({ isPlay, lyric }) => {
+export default ({ isPlay, lyric, isShowLyricProgressSetting }) => {
   const dom_lyric = ref(null)
   const dom_lyric_text = ref(null)
   const dom_skip_line = ref(null)
@@ -40,13 +40,11 @@ export default ({ isPlay, lyric }) => {
     startLyricScrollTimeout()
   }
 
-  const setTime = throttle(() => {
-    if (point.x == null) {
-      if (!dom_skip_line.value) return
-      const rect = dom_skip_line.value.getBoundingClientRect()
-      point.x = rect.x
-      point.y = rect.y
-    }
+  const throttleSetTime = throttle(() => {
+    if (!dom_skip_line.value) return
+    const rect = dom_skip_line.value.getBoundingClientRect()
+    point.x = rect.x
+    point.y = rect.y
     let dom = document.elementFromPoint(point.x, point.y)
     if (dom_pre_line === dom) return
     if (dom.tagName == 'SPAN') {
@@ -70,6 +68,9 @@ export default ({ isPlay, lyric }) => {
     }
     dom_pre_line = dom
   })
+  const setTime = () => {
+    if (isShowLyricProgressSetting.value) throttleSetTime()
+  }
 
   const handleScrollLrc = (duration = 300) => {
     if (!dom_lines?.length || !dom_lyric.value) return
@@ -184,14 +185,15 @@ export default ({ isPlay, lyric }) => {
   watch(() => lyric.line, scrollLine)
 
   onMounted(() => {
+    document.addEventListener('mousemove', handleMouseMsMove)
+    document.addEventListener('mouseup', handleMouseMsUp)
+
     initLrc(lyric.lines, null)
     nextTick(() => {
       scrollLine(lyric.line)
     })
   })
 
-  document.addEventListener('mousemove', handleMouseMsMove)
-  document.addEventListener('mouseup', handleMouseMsUp)
   onBeforeUnmount(() => {
     document.removeEventListener('mousemove', handleMouseMsMove)
     document.removeEventListener('mouseup', handleMouseMsUp)

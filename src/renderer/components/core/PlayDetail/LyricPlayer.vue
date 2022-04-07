@@ -52,6 +52,9 @@ export default {
   },
   setup() {
     const setting = useRefGetter('setting')
+    const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
+    const isShowLyricProgressSetting = computed(() => setting.value.playDetail.isShowLyricProgressSetting)
+
     const {
       dom_lyric,
       dom_lyric_text,
@@ -64,7 +67,7 @@ export default {
       handleSkipPlay,
       handleSkipMouseEnter,
       handleSkipMouseLeave,
-    } = useLyric({ isPlay, lyric })
+    } = useLyric({ isPlay, lyric, isShowLyricProgressSetting })
 
     const lyricMenuVisible = ref(false)
     const lyricMenuXY = reactive({
@@ -111,8 +114,6 @@ export default {
         '--playDetail-lrc-font-size': (isShowPlayComment.value ? size * 0.82 : size) + 'rem',
       }
     })
-    const isZoomActiveLrc = computed(() => setting.value.playDetail.isZoomActiveLrc)
-    const isShowLyricProgressSetting = computed(() => setting.value.playDetail.isShowLyricProgressSetting)
 
     onMounted(() => {
       window.eventHub.on(eventPlayerNames.updateLyric, updateMusicInfo)
