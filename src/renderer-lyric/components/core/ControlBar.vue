@@ -51,7 +51,7 @@ div(:class="$style.container")
 </template>
 
 <script>
-import { rendererSend, rendererOn, NAMES } from '../../../common/ipc'
+import { rendererSend, NAMES } from '../../../common/ipc'
 import { toRaw } from 'vue'
 
 export default {
@@ -108,9 +108,6 @@ export default {
   },
   mounted() {
     this.config = JSON.parse(JSON.stringify(this.lrcConfig))
-    rendererOn(NAMES.winLyric.key_down, (event, key) => {
-
-    })
   },
   methods: {
     sendEvent() {

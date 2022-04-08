@@ -20,7 +20,7 @@ rendererInvoke(NAMES.mainWindow.get_hot_key).then(({ local, global }) => {
 })
 
 eventHub.on(baseName.bindKey, () => {
-  keyBind.bindKey((key, type, event, keys) => {
+  keyBind.bindKey((key, eventKey, type, event, keys) => {
     // console.log(`key_${key}_${type}`)
     eventHub.emit(baseName.key_down, { event, keys, key, type })
     // console.log(event, key)
@@ -38,7 +38,8 @@ eventHub.on(baseName.bindKey, () => {
       eventHub.emit(appHotKeyConfig.local.keys[key].action)
       return
     }
-    eventHub.emit(`key_${key}_${type}`, { event, keys, key, type })
+    eventHub.emit(`key_${key}_${type}`, { event, keys, key, eventKey, type })
+    if (key != eventKey) eventHub.emit(`key_${eventKey}_${type}`, { event, keys, key, eventKey, type })
   })
   registerCommonEvents()
 })
