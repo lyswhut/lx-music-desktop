@@ -177,12 +177,10 @@ export default {
       }
     },
     handle_key_mod_down() {
-      this.isModDown = true
+      if (!this.isModDown) this.isModDown = true
     },
     handle_key_mod_up() {
-      setTimeout(() => {
-        this.isModDown = false
-      }, 100)
+      if (this.isModDown) this.isModDown = false
     },
     handle_key_mod_f_down() {
       if (this.visible) this.$refs.dom_input.focus()
