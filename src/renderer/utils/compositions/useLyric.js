@@ -28,7 +28,9 @@ export default ({ isPlay, lyric, isShowLyricProgressSetting }) => {
     if (time == -1) return
     handleSkipMouseLeave()
     isStopScroll.value = false
-    window.eventHub.emit(eventPlayerNames.setProgress, Math.max(time + lyric.offset + lyric.tempOffset, 0))
+    let offset = lyric.offset + lyric.tempOffset
+    if (offset) offset = offset / 1000
+    window.eventHub.emit(eventPlayerNames.setProgress, Math.max(time + offset, 0))
     if (!isPlay.value) window.eventHub.emit(eventPlayerNames.setPlay)
   }
   const handleSkipMouseEnter = () => {

@@ -12,9 +12,7 @@ const tagRegMap = {
 const timeoutTools = new TimeoutTools()
 
 module.exports = class LinePlayer {
-  constructor({ lyric = '', translationLyric = '', offset = 0, onPlay = function() { }, onSetLyric = function() { } } = {}) {
-    this.lyric = lyric
-    this.translationLyric = translationLyric
+  constructor({ offset = 0, onPlay = function() { }, onSetLyric = function() { } } = {}) {
     this.tags = {}
     this.lines = null
     this.translationLines = null
@@ -26,7 +24,6 @@ module.exports = class LinePlayer {
     this.offset = offset
     this._performanceTime = 0
     this._startTime = 0
-    this._init()
   }
 
   _init() {
