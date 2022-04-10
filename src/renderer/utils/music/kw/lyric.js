@@ -201,6 +201,7 @@ export default {
           lrcInfo.lxlyric = ''
         }
         lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
+        if (!lrcInfo.lyric.trim()) return Promise.reject(new Error('Get lyric failed'))
         // console.log(lrcInfo)
         return lrcInfo
       })

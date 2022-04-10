@@ -158,7 +158,10 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.catch(err => {
+  return reqPromise.then(lyricInfo => {
+    if (!lyricInfo.lyric.trim()) return Promise.reject(new Error('failed'))
+    return lyricInfo
+  }).catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
@@ -213,7 +216,7 @@ const actions = {
     const lrcInfo = await getStoreLyric(musicInfo)
     // lrcInfo = {}
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
-    if (lrcInfo.lyric && lrcInfo.tlyric != null) {
+    if (lrcInfo.lyric && lrcInfo.lyric.trim() && lrcInfo.tlyric != null) {
       // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
       //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
       //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })

@@ -161,7 +161,10 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.catch(err => {
+  return reqPromise.then(lyricInfo => {
+    if (!lyricInfo.lyric.trim()) return Promise.reject(new Error('failed'))
+    return lyricInfo
+  }).catch(err => {
     // console.log(err)
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
@@ -181,7 +184,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
 const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
-      lrcInfo.lyric
+      lrcInfo.lyric && lrcInfo.lyric.trim()
         ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
         : (
             isUseOtherSource
