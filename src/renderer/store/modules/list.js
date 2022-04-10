@@ -310,19 +310,11 @@ const mutations = {
       return
     }
     const targetMusicInfo = targetList.find(item => item.songmid == id)
-    if (targetMusicInfo) Object.assign(targetMusicInfo, data)
-
-    switch (listId) {
-      case defaultList.id:
-        window.eventHub.emit(eventListNames.musicInfoChange, { list: targetList, ...defaultList })
-        break
-      case loveList.id:
-        window.eventHub.emit(eventListNames.musicInfoChange, { list: targetList, ...loveList })
-        break
-      default:
-        window.eventHub.emit(eventListNames.musicInfoChange, userLists.map(l => ({ list: allList[l.id], ...l })))
-        break
-    }
+    if (!targetMusicInfo) return
+    Object.assign(targetMusicInfo, data)
+    const targetListInfo = [defaultList, loveList, ...userLists].find(l => l.id == listId)
+    if (!targetListInfo) return
+    window.eventHub.emit(eventListNames.musicInfoChange, targetListInfo)
   },
   createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, position, isSync }) {
     if (!isSync) {
