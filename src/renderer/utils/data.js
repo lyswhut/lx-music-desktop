@@ -19,6 +19,11 @@ export const initListPosition = () => {
   })
 }
 export const getListPosition = id => listPosition[id] || 0
+export const getListPositionAll = () => listPosition
+export const setListPositionAll = positions => {
+  listPosition = positions
+  saveListPosition()
+}
 export const setListPosition = (id, position) => {
   listPosition[id] = position || 0
   saveListPosition()
@@ -60,6 +65,10 @@ const saveListUpdateInfo = throttle(() => {
 }, 1000)
 
 export const getListUpdateInfo = () => listUpdateInfo
+export const setListUpdateInfo = info => {
+  listUpdateInfo = info
+  saveListUpdateInfo()
+}
 export const setListAutoUpdate = (id, enable) => {
   const targetInfo = listUpdateInfo[id] ?? { updateTime: '', isAutoUpdate: false }
   targetInfo.isAutoUpdate = enable
