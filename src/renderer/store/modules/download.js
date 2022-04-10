@@ -153,6 +153,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
+const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
   let reqPromise
@@ -162,8 +163,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
     reqPromise = Promise.reject(err)
   }
   return reqPromise.then(lyricInfo => {
-    if (!lyricInfo.lyric.trim()) return Promise.reject(new Error('failed'))
-    return lyricInfo
+    return existTimeExp.test(lyricInfo.lyric) ? lyricInfo : Promise.reject(new Error('failed'))
   }).catch(err => {
     // console.log(err)
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
@@ -184,7 +184,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
 const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
-      lrcInfo.lyric && lrcInfo.lyric.trim()
+      existTimeExp.test(lrcInfo.lyric)
         ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
         : (
             isUseOtherSource
