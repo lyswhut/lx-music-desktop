@@ -51,7 +51,7 @@ export const registerAutoHideMounse = () => {
   startTimeout()
 }
 
-export const unregisterAutoHideMounse = dom => {
+export const unregisterAutoHideMounse = () => {
   if (!isAutoHide) return
   isAutoHide = false
   // console.log(dom)
