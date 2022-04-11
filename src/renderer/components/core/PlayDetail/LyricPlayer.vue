@@ -13,7 +13,7 @@
     </div>
   </transition>
   <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-    <div :class="$style.skip" v-if="isShowLyricProgressSetting" v-show="isStopScroll">
+    <div :class="$style.skip" v-if="isShowLyricProgressSetting && !isShowLrcSelectContent" v-show="isStopScroll">
       <div :class="$style.line" ref="dom_skip_line"></div>
       <span :class="$style.label">{{timeStr}}</span>
       <base-btn :class="$style.skipBtn" @mouseenter="handleSkipMouseEnter" @mouseleave="handleSkipMouseLeave" @click="handleSkipPlay">
