@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install package
-        run: sudo apt-get install -y rpm libarchive-tools
+        run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
 
       - name: Check out git repository
         uses: actions/checkout@v2
