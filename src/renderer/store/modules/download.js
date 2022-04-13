@@ -236,7 +236,7 @@ const saveMeta = function({ downloadInfo, filePath, isUseOtherSource, isEmbedPic
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
-    if (lyrics.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
+    if (lyrics?.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
     setMeta(filePath, {
       title: downloadInfo.metadata.musicInfo.name,
       artist: downloadInfo.metadata.musicInfo.singer,
@@ -565,6 +565,7 @@ const actions = {
       if (!result) return
       downloadInfo = result
     }
+    commit('setStatus', { downloadInfo, status: downloadStatus.RUN })
 
     let dl = dls[downloadInfo.key]
     if (dl) {
