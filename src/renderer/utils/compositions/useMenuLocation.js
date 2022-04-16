@@ -16,7 +16,7 @@ export default ({ visible, location, onHide }) => {
   const handleShow = () => {
     show = true
     menuStyles.opacity = 1
-    menuStyles.transform = `scaleY(1) translate(${handleGetOffsetXY(location.x, location.y)})`
+    menuStyles.transform = `scaleY(1) translate(${handleGetOffsetXY(location.value.x, location.value.y)})`
   }
   const handleHide = () => {
     menuStyles.opacity = 0
