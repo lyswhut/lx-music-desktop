@@ -192,17 +192,17 @@
     "chalk": "^4.1.2",
     "changelog-parser": "^2.8.1",
     "copy-webpack-plugin": "^10.2.4",
-    "core-js": "^3.21.1",
+    "core-js": "^3.22.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "del": "^6.0.0",
     "electron": "^13.6.9",
-    "electron-builder": "^23.0.4",
+    "electron-builder": "^23.0.6",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.107",
-    "electron-updater": "^5.0.1",
+    "electron-to-chromium": "^1.4.111",
+    "electron-updater": "^5.0.2",
     "eslint": "^8.13.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-formatter-friendly": "git+https://github.com/lyswhut/eslint-friendly-formatter.git#2170d1320e2fad13615a9dcf229669f0bb473a53",
@@ -260,12 +260,13 @@
     "sortablejs": "^1.15.0",
     "tunnel": "^0.0.6",
     "utf-8-validate": "^5.0.9",
-    "vue": "^3.2.32",
+    "vue": "^3.2.33",
     "vue-i18n": "^9.2.0-beta.35",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
   },
   "overrides": {
+    "async": "^2.3.0",
     "svg-sprite-loader": {
       "postcss": "8.2.13"
     }
