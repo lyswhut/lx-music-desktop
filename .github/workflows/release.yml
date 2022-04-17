@@ -31,7 +31,9 @@ jobs:
             ${{ runner.os }}-build-
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install npm@8.5 -g
+          npm install
 
       - name: Build src code
         run: npm run build:src
@@ -79,7 +81,9 @@ jobs:
             ${{ runner.os }}-build-
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install npm@8.5 -g
+          npm install
 
       - name: Build src code
         run: npm run build:src
@@ -127,7 +131,9 @@ jobs:
             ${{ runner.os }}-build-
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install npm@8.5 -g
+          npm install
 
       - name: Build src code
         run: npm run build:src
