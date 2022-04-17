@@ -153,6 +153,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
+const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
   let reqPromise
@@ -161,7 +162,9 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.catch(err => {
+  return reqPromise.then(lyricInfo => {
+    return existTimeExp.test(lyricInfo.lyric) ? lyricInfo : Promise.reject(new Error('failed'))
+  }).catch(err => {
     // console.log(err)
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
@@ -181,7 +184,7 @@ const handleGetLyric = function(musicInfo, retryedSource = [], originMusic) {
 const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
-      lrcInfo.lyric
+      existTimeExp.test(lrcInfo.lyric)
         ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
         : (
             isUseOtherSource
@@ -233,7 +236,7 @@ const saveMeta = function({ downloadInfo, filePath, isUseOtherSource, isEmbedPic
       : Promise.resolve(),
   ]
   Promise.all(tasks).then(([imgUrl, lyrics = {}]) => {
-    if (lyrics.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
+    if (lyrics?.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
     setMeta(filePath, {
       title: downloadInfo.metadata.musicInfo.name,
       artist: downloadInfo.metadata.musicInfo.singer,
@@ -562,6 +565,7 @@ const actions = {
       if (!result) return
       downloadInfo = result
     }
+    commit('setStatus', { downloadInfo, status: downloadStatus.RUN })
 
     let dl = dls[downloadInfo.key]
     if (dl) {

@@ -23,7 +23,7 @@ const themes = {
   blue2: 'rgba(79,98,208,.14)',
   black: 'rgba(39,39,39,.4)',
   mid_autumn: 'rgba(74,55,82,.1)',
-  naruto: 'rgba(87,144,167,.14)',
+  naruto: 'rgba(87,144,167,.15)',
   happy_new_year: 'rgba(192,57,43,.1)',
 }
 

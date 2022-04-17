@@ -35,7 +35,6 @@ div.comment(:class="$style.comment" ref="dom_container")
 
 <script>
 import { mapGetters } from 'vuex'
-import { scrollTo } from '@renderer/utils'
 import music from '@renderer/utils/music'
 import CommentFloor from './CommentFloor'
 
@@ -170,7 +169,7 @@ export default {
         this.newComment.page = page
         this.newComment.list = comment.comments
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_commentNew, 0, 300)
+          this.$refs.dom_commentNew.scrollTo(0, 0)
         })
       }).catch(err => {
         console.log(err)
@@ -189,7 +188,7 @@ export default {
         this.hotComment.page = page
         this.hotComment.list = hotComment.comments
         this.$nextTick(() => {
-          scrollTo(this.$refs.dom_commentHot, 0, 300)
+          this.$refs.dom_commentHot.scrollTo(0, 0)
         })
       }).catch(err => {
         console.log(err)
@@ -321,6 +320,7 @@ export default {
   height: 100%;
   padding-left: 15px;
   padding-right: 10px;
+  scroll-behavior: smooth;
 }
 .commentLabel {
   padding: 15px;

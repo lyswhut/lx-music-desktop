@@ -34,23 +34,19 @@ module.exports = class Lyric {
 
     this.playingLineNum = -1
     this.isLineMode = false
+
+    this.linePlayer = new LinePlayer({
+      offset: this.offset,
+      onPlay: this._handleLinePlayerOnPlay,
+      onSetLyric: this._handleLinePlayerOnSetLyric,
+    })
   }
 
   _init() {
     this.playingLineNum = -1
     this.isLineMode = false
 
-    if (this.linePlayer) {
-      this.linePlayer.setLyric(this.lyric, this.translationLyric)
-    } else {
-      this.linePlayer = new LinePlayer({
-        lyric: this.lyric,
-        translationLyric: this.translationLyric,
-        offset: this.offset,
-        onPlay: this._handleLinePlayerOnPlay,
-        onSetLyric: this._handleLinePlayerOnSetLyric,
-      })
-    }
+    this.linePlayer.setLyric(this.lyric, this.translationLyric)
   }
 
   _handleLinePlayerOnPlay = (num, text, curTime) => {
@@ -97,7 +93,7 @@ module.exports = class Lyric {
     this.onPlay(num, this._lines[num].text)
   }
 
-  _handleLinePlayerOnSetLyric = lyricLines => {
+  _handleLinePlayerOnSetLyric = (lyricLines, offset) => {
     // console.log(lyricLines)
     // this._lines = lyricsLines
     this.isLineMode = lyricLines.length && !/^<\d+,\d+>/.test(lyricLines[0].text)
@@ -148,7 +144,11 @@ module.exports = class Lyric {
       })
     }
 
-    this.onSetLyric(this._lines)
+    // 如果是逐行歌词，则添加 60ms 的偏移
+    let newOffset = this.isLineMode ? this.offset + 60 : this.offset
+    offset = offset - this.linePlayer.offset + newOffset
+    this.linePlayer.offset = newOffset
+    this.onSetLyric(this._lines, offset)
   }
 
   play(curTime) {
@@ -166,6 +166,5 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.translationLyric = translationLyric
     this._init()
-    this.linePlayer.offset = this.isLineMode ? this.offset + 90 : this.offset
   }
 }

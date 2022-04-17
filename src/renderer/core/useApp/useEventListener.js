@@ -28,8 +28,11 @@ const handle_open_devtools = event => {
   rendererSend(NAMES.mainWindow.open_dev_tools)
 }
 const handle_fullscreen = event => {
-  if (event.event.repeat) return
-  rendererInvoke(NAMES.mainWindow.fullscreen, !isFullscreen.value).then(fullscreen => {
+  let fullscreen = !isFullscreen.value
+  if (typeof event == 'boolean') {
+    fullscreen = event
+  } else if (event.event.repeat) return
+  rendererInvoke(NAMES.mainWindow.fullscreen, fullscreen).then(fullscreen => {
     isFullscreen.value = fullscreen
   })
 }
@@ -75,6 +78,7 @@ export default ({
   window.eventHub.on('key_escape_down', handle_key_esc_down)
   window.eventHub.on('key_mod+f12_down', handle_open_devtools)
   window.eventHub.on('key_f11_down', handle_fullscreen)
+  window.eventHub.on(eventBaseName.fullscreenToggle, handle_fullscreen)
   document.body.addEventListener('click', handleBodyClick, true)
 
   if (isProd && !window.dt && !isLinux) {
@@ -89,6 +93,7 @@ export default ({
     window.eventHub.off('key_escape_down', handle_key_esc_down)
     window.eventHub.off('key_mod+f12_down', handle_open_devtools)
     window.eventHub.off('key_f11_down', handle_fullscreen)
+    window.eventHub.off(eventBaseName.fullscreenToggle, handle_fullscreen)
     document.body.removeEventListener('click', handleBodyClick)
     window.eventHub.emit(eventBaseName.unbindKey)
     rSetConfig()

@@ -91,6 +91,7 @@ const buildParams = (id, isGetLyricx) => {
 // console.log(buildParams('207527604', true))
 
 const timeExp = /^\[([\d:.]*)\]{1}/g
+const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 export default {
   sortLrcArr(arr) {
     const lrcSet = new Set()
@@ -201,6 +202,7 @@ export default {
           lrcInfo.lxlyric = ''
         }
         lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
+        if (!existTimeExp.test(lrcInfo.lyric)) return Promise.reject(new Error('Get lyric failed'))
         // console.log(lrcInfo)
         return lrcInfo
       })

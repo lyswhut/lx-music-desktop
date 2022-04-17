@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { shell, clipboard } from 'electron'
+import { httpOverHttp, httpsOverHttp } from 'tunnel'
 import crypto from 'crypto'
 import { rendererSend, rendererInvoke, NAMES } from '@common/ipc'
 import { log } from '@common/utils'
@@ -451,10 +452,31 @@ export const setWindowSize = (width, height) => rendererSend(NAMES.mainWindow.se
 
 export const getProxyInfo = () => {
   return proxy.enable && proxy.host
-    ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port};`
+    ? `http://${proxy.username}:${proxy.password}@${proxy.host}:${proxy.port}`
     : proxy.envProxy
-      ? `http://${proxy.envProxy.host}:${proxy.envProxy.port};`
+      ? `http://${proxy.envProxy.host}:${proxy.envProxy.port}`
       : undefined
+}
+
+const httpsRxp = /^https:/
+export const getRequestAgent = url => {
+  let options
+  if (proxy.enable && proxy.host) {
+    options = {
+      proxy: {
+        host: proxy.host,
+        port: proxy.port,
+      },
+    }
+  } else if (proxy.envProxy) {
+    options = {
+      proxy: {
+        host: proxy.envProxy.host,
+        port: proxy.envProxy.port,
+      },
+    }
+  }
+  return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)(options) : undefined
 }
 
 
@@ -491,11 +513,17 @@ export const parseUrlParams = str => {
 }
 
 export const getLyric = musicInfo => rendererInvoke(NAMES.mainWindow.get_lyric, `${musicInfo.source}_${musicInfo.songmid}`)
-export const setLyric = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric, {
+export const setLyric = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_raw, {
   id: `${musicInfo.source}_${musicInfo.songmid}`,
   lyrics: { lyric, tlyric, lxlyric },
 })
-export const clearLyric = () => rendererSend(NAMES.mainWindow.clear_lyric)
+export const setLyricEdited = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_edited, {
+  id: `${musicInfo.source}_${musicInfo.songmid}`,
+  lyrics: { lyric, tlyric, lxlyric },
+})
+export const removeLyricEdited = musicInfo => rendererSend(NAMES.mainWindow.remove_lyric_edited, `${musicInfo.source}_${musicInfo.songmid}`)
+
+export const clearLyric = () => rendererSend(NAMES.mainWindow.clear_lyric_raw)
 
 export const getMusicUrl = (musicInfo, type) => rendererInvoke(NAMES.mainWindow.get_music_url, `${musicInfo.source}_${musicInfo.songmid}_${type}`)
 export const setMusicUrl = (musicInfo, type, url) => rendererSend(NAMES.mainWindow.save_music_url, {

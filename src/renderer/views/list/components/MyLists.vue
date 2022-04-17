@@ -2,11 +2,18 @@
 <div :class="$style.lists" ref="dom_lists">
   <div :class="$style.listHeader">
     <h2 :class="$style.listsTitle">{{$t('my_list')}}</h2>
-    <button :class="$style.listsAdd" @click="handleShowNewList" :aria-label="$t('lists__new_list_btn')">
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
-        <use xlink:href="#icon-list-add"></use>
-      </svg>
-    </button>
+    <div :class="$style.headerBtns">
+      <button :class="$style.listsAdd" @click="handleShowNewList" :aria-label="$t('lists__new_list_btn')">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
+          <use xlink:href="#icon-list-add"></use>
+        </svg>
+      </button>
+      <button :class="$style.listsAdd" @click="isShowListUpdateModal = true" :aria-label="$t('list_update_modal__title')">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" height="70%" viewBox="0 0 24 24" space="preserve">
+          <use xlink:href="#icon-refresh"></use>
+        </svg>
+      </button>
+   </div>
   </div>
   <ul class="scroll" :class="[$style.listsContent, { [$style.sortable]: keyEvent.isModDown }]" ref="dom_lists_list">
     <li class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}]" :aria-label="defaultList.name" :aria-selected="defaultList.id == listId"
@@ -36,19 +43,23 @@
   <base-menu :menus="listsItemMenu" :location="listsData.menuLocation" item-name="name" :isShow="listsData.isShowItemMenu" @menu-click="handleListsItemMenuClick" />
   <DuplicateMusicModal v-model:visible="isShowDuplicateMusicModal" :list-info="selectedDuplicateListInfo" />
   <ListSortModal v-model:visible="isShowListSortModal" :list-info="selectedSortListInfo" />
+  <ListUpdateModal v-model:visible="isShowListUpdateModal" :list-update-times="listUpdateTimes" @update-list="handleSyncSourceList" />
 </div>
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
-import { openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName, openUrl } from '@renderer/utils'
+import { mapMutations } from 'vuex'
+import { openSaveDir, saveLxConfigFile, selectDir, readLxConfigFile, filterFileName, openUrl, dateFormat } from '@renderer/utils'
 import musicSdk from '@renderer/utils/music'
 import DuplicateMusicModal from './DuplicateMusicModal'
 import ListSortModal from './ListSortModal'
-import { defaultList, loveList, userLists } from '@renderer/core/share/list'
+import ListUpdateModal from './ListUpdateModal'
+import { defaultList, loveList, userLists, fetchingListStatus } from '@renderer/core/share/list'
 import { ref, computed, useCommit, useCssModule } from '@renderer/utils/vueTools'
 import { getList } from '@renderer/core/share/utils'
 import useDarg from '@renderer/utils/compositions/useDrag'
+import { getListUpdateInfo } from '@renderer/utils/data'
+import useSyncSourceList from '@renderer/utils/compositions/useSyncSourceList'
 
 export default {
   name: 'MyLists',
@@ -61,11 +72,14 @@ export default {
   components: {
     DuplicateMusicModal,
     ListSortModal,
+    ListUpdateModal,
   },
   setup() {
     const dom_lists_list = ref(null)
     const lists = computed(() => [defaultList, loveList, ...userLists])
     const setUserListPosition = useCommit('list', 'setUserListPosition')
+
+    const syncSourceList = useSyncSourceList()
 
     const styles = useCssModule()
     const { setDisabled } = useDarg({
@@ -82,8 +96,10 @@ export default {
       loveList,
       userLists,
       lists,
+      fetchingListStatus,
       dom_lists_list,
       setDisabledSort: setDisabled,
+      syncSourceList,
     }
   },
   emits: ['show-menu'],
@@ -91,6 +107,7 @@ export default {
     return {
       isShowDuplicateMusicModal: false,
       isShowListSortModal: false,
+      isShowListUpdateModal: false,
       listsData: {
         isShowItemMenu: false,
         itemMenuControl: {
@@ -111,9 +128,9 @@ export default {
         isShowNewList: false,
         isNewLeave: false,
       },
-      fetchingListStatus: {},
       selectedDuplicateListInfo: {},
       selectedSortListInfo: {},
+      listUpdateTimes: {},
       keyEvent: {
         isModDown: false,
       },
@@ -186,6 +203,9 @@ export default {
     this.setListsScroll()
     window.eventHub.on('key_mod_down', this.handle_key_mod_down)
     window.eventHub.on('key_mod_up', this.handle_key_mod_up)
+    for (const [id, value] of Object.entries(getListUpdateInfo())) {
+      this.listUpdateTimes[id] = value.updateTime ? dateFormat(value.updateTime) : ''
+    }
   },
   beforeUnmount() {
     window.eventHub.off('key_mod_down', this.handle_key_mod_down)
@@ -199,10 +219,6 @@ export default {
       'setPrevSelectListId',
       'setList',
     ]),
-    ...mapActions('songList', ['getListDetailAll']),
-    ...mapActions('leaderboard', {
-      getBoardListAll: 'getListAll',
-    }),
     handle_key_mod_down(event) {
       if (!this.keyEvent.isModDown) {
         // console.log(event)
@@ -336,7 +352,7 @@ export default {
           this.handleExportList(index)
           break
         case 'sync':
-          this.handleSyncSourceList(index)
+          this.handleSyncSourceList(userLists[index])
           break
         case 'remove':
           this.$dialog.confirm({
@@ -349,28 +365,10 @@ export default {
           break
       }
     },
-    fetchList(id, source, sourceListId) {
-      this.fetchingListStatus[id] = true
-
-      let promise
-      if (/board__/.test(sourceListId)) {
-        const id = sourceListId.replace(/board__/, '')
-        promise = this.getBoardListAll({ id, isRefresh: true })
-      } else {
-        promise = this.getListDetailAll({ source, id: sourceListId, isRefresh: true })
-      }
-      return promise.finally(() => {
-        this.fetchingListStatus[id] = false
-      })
-    },
-    async handleSyncSourceList(index) {
-      const targetListInfo = userLists[index]
-      const list = await this.fetchList(targetListInfo.id, targetListInfo.source, targetListInfo.sourceListId)
+    async handleSyncSourceList(targetListInfo) {
+      await this.syncSourceList(targetListInfo)
       // console.log(targetListInfo.list.length, list.length)
-      this.setList({
-        ...targetListInfo,
-        list,
-      })
+      this.listUpdateTimes[targetListInfo.id] = dateFormat(Date.now())
     },
     getTargetListInfo(index) {
       let list
@@ -498,6 +496,9 @@ export default {
 }
 .listHeader {
   position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   &:hover {
     .listsAdd {
       opacity: 1;
@@ -505,23 +506,27 @@ export default {
   }
 }
 .listsTitle {
+  flex: auto;
   font-size: 12px;
   line-height: 38px;
   padding: 0 10px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  .mixin-ellipsis-1;
+}
+.headerBtns {
   flex: none;
+  display: flex;
 }
 .listsAdd {
-  position: absolute;
-  right: 0;
-  top: 8px;
+  // position: absolute;
+  // right: 0;
+  margin-top: 6px;
   background: none;
   height: 30px;
   border: none;
   outline: none;
   border-radius: @radius-border;
   cursor: pointer;
-  opacity: 0;
+  opacity: .1;
   transition: opacity @transition-theme;
   color: @color-btn;
   svg {
@@ -529,6 +534,9 @@ export default {
   }
   &:active {
     opacity: .7 !important;
+  }
+  &:hover {
+    opacity: .6 !important;
   }
 }
 .listsContent {

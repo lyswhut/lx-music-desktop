@@ -150,6 +150,7 @@ const getPic = function(musicInfo, retryedSource = [], originMusic) {
     })
   })
 }
+const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   if (!originMusic) originMusic = musicInfo
   let reqPromise
@@ -158,7 +159,9 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
-  return reqPromise.catch(err => {
+  return reqPromise.then(lyricInfo => {
+    return existTimeExp.test(lyricInfo.lyric) ? lyricInfo : Promise.reject(new Error('failed'))
+  }).catch(err => {
     if (!retryedSource.includes(musicInfo.source)) retryedSource.push(musicInfo.source)
     return this.dispatch('list/getOtherSource', originMusic).then(otherSource => {
       console.log('find otherSource', otherSource)
@@ -213,7 +216,7 @@ const actions = {
     const lrcInfo = await getStoreLyric(musicInfo)
     // lrcInfo = {}
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
-    if (lrcInfo.lyric && lrcInfo.tlyric != null) {
+    if (existTimeExp.test(lrcInfo.lyric) && lrcInfo.tlyric != null) {
       // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
       //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
       //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })

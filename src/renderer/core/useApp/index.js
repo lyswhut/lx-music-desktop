@@ -11,6 +11,7 @@ import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
 import useDeepLink from './useDeepLink'
 import usePlayer from './usePlayer'
+import useListAutoUpdate from './useListAutoUpdate'
 
 
 export default () => {
@@ -46,6 +47,7 @@ export default () => {
     setting,
   })
   const initDeepLink = useDeepLink()
+  const handleListAutoUpdate = useListAutoUpdate()
 
 
   getEnvParams().then(envParams => {
@@ -63,6 +65,7 @@ export default () => {
       initPlayer()
       handleEnvParams(envParams) // 处理传入的启动参数
       initDeepLink(envParams)
+      handleListAutoUpdate()
     })
   })
 }

@@ -4,7 +4,7 @@ import { onTaskbarThumbarClick, setTaskbarThumbnailClip, setTaskbarThumbarButton
 // import store from '@renderer/store'
 
 import { loveList, getList } from '@renderer/core/share/list'
-import { playMusicInfo } from '@renderer/core/share/player'
+import { playMusicInfo, musicInfoItem } from '@renderer/core/share/player'
 import { throttle } from '@renderer/utils'
 
 export default () => {
@@ -82,12 +82,12 @@ export default () => {
         break
       case 'collect':
         if (!playMusicInfo.musicInfo) return
-        listAdd({ id: loveList.id, musicInfo: playMusicInfo.musicInfo })
+        listAdd({ id: loveList.id, musicInfo: musicInfoItem.value })
         if (updateCollectStatus()) setButtons()
         break
       case 'unCollect':
         if (!playMusicInfo.musicInfo) return
-        listRemove({ listId: loveList.id, id: playMusicInfo.musicInfo.songmid })
+        listRemove({ listId: loveList.id, id: musicInfoItem.value.songmid })
         if (updateCollectStatus()) setButtons()
         break
       // case 'lrc':

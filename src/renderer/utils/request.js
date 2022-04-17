@@ -4,7 +4,7 @@ import { debugRequest } from './env'
 import { requestMsg } from './message'
 import { bHh } from './music/options'
 import { deflateRaw } from 'zlib'
-import { getProxyInfo } from './index'
+import { getRequestAgent } from './index'
 // import fs from 'fs'
 
 const request = (url, options, callback) => {
@@ -277,7 +277,7 @@ const fetchData = async(url, method, {
     method,
     headers: Object.assign({}, defaultHeaders, headers),
     timeout,
-    proxy: getProxyInfo(),
+    agent: getRequestAgent(url),
     json: format === 'json',
   }, (err, resp, body) => {
     if (err) return callback(err, null)

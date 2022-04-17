@@ -1,5 +1,7 @@
+const { app } = require('electron')
 const { networkInterfaces } = require('os')
 const { randomBytes, createCipheriv, createDecipheriv } = require('crypto')
+const path = require('path')
 const getStore = require('@common/store')
 const STORE_NAME = 'sync'
 
@@ -90,4 +92,8 @@ exports.decryptMsg = (keyInfo, enMsg) => {
   //   console.log(err)
   // }
   // return msg
+}
+
+exports.getSnapshotFilePath = keyInfo => {
+  return path.join(app.getPath('userData'), `snapshot-${Buffer.from(keyInfo.clientId).toString('hex').substring(0, 10)}.json`)
 }

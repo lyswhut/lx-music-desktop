@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     ...mapGetters(['setting']),
-    ...mapGetters('leaderboard', ['sources', 'boards', 'info']),
+    ...mapGetters('leaderboard', ['sources', 'sourceIds', 'boards', 'info']),
     boardList() {
       return this.source && this.boards[this.source] ? this.boards[this.source] : []
     },
@@ -129,6 +129,7 @@ export default {
   },
   mounted() {
     this.source = this.setting.leaderboard.source
+    if (!this.sourceIds.includes(this.source)) this.source = this.sourceIds[0]
     this.tabId = this.setting.leaderboard.tabId
     this.page = this.listInfo.page
   },

@@ -45,6 +45,8 @@ export default {
         document.body.classList.add(window.dt ? 'disableTransparent' : 'transparent')
         document.documentElement.style.fontSize = windowSizeActive.value.fontSize
       }
+    }, {
+      immediate: true,
     })
 
     useApp()

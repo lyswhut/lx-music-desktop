@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.19.0",
+  "version": "1.20.0",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/electron/main.js",
   "productName": "lx-music-desktop",
@@ -73,7 +73,8 @@
     "Electron 13.6.8"
   ],
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16",
+    "npm": ">=8.3.0"
   },
   "build": {
     "appId": "cn.toside.music.desktop",
@@ -103,7 +104,11 @@
     },
     "mac": {
       "icon": "./resources/icons/icon.icns",
-      "category": "public.app-category.music"
+      "category": "public.app-category.music",
+      "extendInfo": {
+        "CFBundleName": "lx-music-desktop",
+        "CFBundleDisplayName": "LX Music"
+      }
     },
     "linux": {
       "maintainer": "lyswhut <lyswhut@qq.com>",
@@ -173,7 +178,7 @@
   },
   "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.8",
+    "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -181,33 +186,31 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/polyfill": "^7.12.1",
     "@babel/preset-env": "^7.16.11",
-    "babel-loader": "^8.2.3",
+    "babel-loader": "^8.2.4",
     "babel-preset-minify": "^0.5.1",
     "browserslist": "^4.20.2",
-    "cfonts": "^2.10.0",
     "chalk": "^4.1.2",
     "changelog-parser": "^2.8.1",
     "copy-webpack-plugin": "^10.2.4",
-    "core-js": "^3.21.1",
+    "core-js": "^3.22.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^3.4.1",
     "del": "^6.0.0",
     "electron": "^13.6.9",
-    "electron-builder": "^23.0.2",
+    "electron-builder": "^23.0.6",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.88",
-    "electron-updater": "^5.0.0",
-    "eslint": "^8.11.0",
+    "electron-to-chromium": "^1.4.111",
+    "electron-updater": "^5.0.2",
+    "eslint": "^8.13.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-formatter-friendly": "git+https://github.com/lyswhut/eslint-friendly-formatter.git#2170d1320e2fad13615a9dcf229669f0bb473a53",
     "eslint-plugin-html": "^6.2.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.1.0",
-    "eslint-plugin-vue": "^8.5.0",
     "eslint-webpack-plugin": "^3.1.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
@@ -232,10 +235,10 @@
     "url-loader": "^4.1.1",
     "vue-loader": "^17.0.0",
     "vue-template-compiler": "^2.6.14",
-    "webpack": "^5.70.0",
+    "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.7.4",
-    "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
+    "webpack-dev-server": "^4.8.1",
+    "webpack-hot-middleware": "git+https://github.com/lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
@@ -243,22 +246,29 @@
     "crypto-js": "^4.1.1",
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",
-    "font-list": "github:lyswhut/node-font-list#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
+    "font-list": "git+https://github.com/lyswhut/node-font-list#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
     "http-terminator": "^3.2.0",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.1",
     "koa": "^2.13.4",
     "long": "^5.2.0",
     "mitt": "^3.0.0",
-    "needle": "^3.0.0",
+    "needle": "^3.1.0",
     "node-id3": "^0.2.3",
     "request": "^2.88.2",
     "socket.io": "^4.4.1",
-    "sortablejs": "^1.14.0",
+    "sortablejs": "^1.15.0",
+    "tunnel": "^0.0.6",
     "utf-8-validate": "^5.0.9",
-    "vue": "^3.2.31",
-    "vue-i18n": "^9.2.0-beta.32",
+    "vue": "^3.2.33",
+    "vue-i18n": "^9.2.0-beta.35",
     "vue-router": "^4.0.14",
     "vuex": "^4.0.2"
+  },
+  "overrides": {
+    "async": "^2.3.0",
+    "svg-sprite-loader": {
+      "postcss": "8.2.13"
+    }
   }
 }

@@ -6,6 +6,8 @@ dd
   .gap-top
     base-checkbox(id="setting_player_lyric_transition" v-model="currentStting.player.isShowLyricTranslation" :label="$t('setting__play_lyric_transition')")
   .gap-top
+    base-checkbox(id="setting_player_auto_skip_on_error" v-model="currentStting.player.autoSkipOnError" :label="$t('setting__play_auto_skip_on_error')")
+  .gap-top
     base-checkbox(id="setting_player_lyric_s2t" v-model="currentStting.player.isS2t" :label="$t('setting__play_lyric_s2t')")
   .gap-top
     base-checkbox(id="setting_player_lyric_play_lxlrc" v-model="currentStting.player.isPlayLxlrc" :label="$t('setting__play_lyric_lxlrc')")

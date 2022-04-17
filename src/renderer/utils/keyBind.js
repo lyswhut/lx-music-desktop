@@ -3,12 +3,15 @@ import { isMac } from '../../common/utils'
 const downKeys = new Set()
 
 const handleEvent = (type, event, keys) => {
+  let eventKey = event.key
   if (isMac) {
     let index = keys.indexOf('meta')
     if (index > -1) keys.splice(index, 1, 'mod')
+    if (eventKey == 'Meta') eventKey = 'mod'
   } else {
     let index = keys.indexOf('ctrl')
     if (index > -1) keys.splice(index, 1, 'mod')
+    if (eventKey == 'Control') eventKey = 'mod'
   }
   let key = keys.join('+')
 
@@ -20,7 +23,7 @@ const handleEvent = (type, event, keys) => {
       downKeys.delete(key)
       break
   }
-  handleSendEvent(key, type, event, keys)
+  handleSendEvent(key, eventKey, type, event, keys)
 }
 
 // 修饰键处理

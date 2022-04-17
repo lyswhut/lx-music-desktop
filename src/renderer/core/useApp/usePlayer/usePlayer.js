@@ -87,12 +87,14 @@ export default ({ setting }) => {
   const { addDelayNextTimeout, clearDelayNextTimeout } = useDelayNextTimeout({ playNext, timeout: 5000 })
   const { addDelayNextTimeout: addLoadTimeout, clearDelayNextTimeout: clearLoadTimeout } = useDelayNextTimeout({ playNext, timeout: 123000 })
 
+  let isGettingUrl = false
   const setUrl = (targetSong, isRefresh, isRetryed = false) => {
     let type = getPlayType(setting.value.player.highQuality, targetSong)
     // this.musicInfo.url = await getMusicUrl(targetSong, type)
     setAllStatus(t('player__geting_url'))
-    addLoadTimeout()
+    if (setting.value.player.autoSkipOnError) addLoadTimeout()
 
+    isGettingUrl = true
     return getUrl({
       musicInfo: targetSong,
       type,
@@ -113,10 +115,11 @@ export default ({ setting }) => {
       if (err.message == requestMsg.cancelRequest) return
       if (!isRetryed) return setUrl(targetSong, isRefresh, true)
       setAllStatus(err.message)
-      addDelayNextTimeout()
+      if (setting.value.player.autoSkipOnError) addDelayNextTimeout()
       return Promise.reject(err)
     }).finally(() => {
       clearLoadTimeout()
+      if (targetSong === musicInfoItem.value) isGettingUrl = false
     })
   }
   const setImg = ({ listId, musicInfo: targetSong }) => {
@@ -162,6 +165,7 @@ export default ({ setting }) => {
   usePlayProgress({ setting, playNext })
   useMediaSessionInfo({ playPrev, playNext })
   usePlayEvent({
+    setting,
     playNext,
     setAllStatus,
     setUrl,
@@ -313,10 +317,10 @@ export default ({ setting }) => {
           }
           return
         }
-        setResource(filePath)
+        if (!isGettingUrl) setResource(filePath)
       } else {
         // if (!this.assertApiSupport(this.targetSong.source)) return this.playNext()
-        setUrl(musicInfoItem.value)
+        if (!isGettingUrl) setUrl(musicInfoItem.value)
       }
       return
     }

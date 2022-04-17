@@ -56,7 +56,7 @@
 从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
 脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 
-若你想自己调用LX Music，可以看常见问题[Scheme URL支持](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#scheme-url%E6%94%AF%E6%8C%81)部分说明
+若你想自己调用LX Music，可以看[Scheme URL支持](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#scheme-url%E6%94%AF%E6%8C%81)
 
 #### 启动参数
 
@@ -70,7 +70,7 @@
 - `-dt` 以非透明模式启动（Disable Transparent）
 - `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
 
-启动参数的详细说明请看[常见问题](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0)
+启动参数的详细说明请看[启动参数说明](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0)
 
 #### 数据存储路径
 
@@ -84,7 +84,7 @@
 
 ### 源码使用方法
 
-环境要求：Node.js 14+
+环境要求：Node.js 16+
 
 ```bash
 # 开发模式

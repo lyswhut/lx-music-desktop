@@ -31,7 +31,7 @@ export default ({ setting, playNext }) => {
       if (skipTime > playProgress.maxPlayTime) skipTime = (playProgress.maxPlayTime - currentTime) / 2
       if (skipTime - mediaBuffer.playTime < 1 || playProgress.maxPlayTime - skipTime < 1) {
         mediaBuffer.playTime = 0
-        playNext()
+        if (setting.value.player.autoSkipOnError) playNext()
         return
       }
       startBuffering()

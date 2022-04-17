@@ -1,7 +1,7 @@
 import musicSdk from '../../utils/music'
 import { clearLyric, clearMusicUrl } from '../../utils'
 import { sync as eventSyncName, list as eventListNames } from '@renderer/event/names'
-import { removeListPosition, setListPrevSelectId } from '@renderer/utils/data'
+import { removeListPosition, setListPrevSelectId, removeListUpdateInfo, getListPositionAll, setListPositionAll, getListUpdateInfo, setListUpdateInfo } from '@renderer/utils/data'
 import { markRawList, toRaw, markRaw } from '@renderer/utils/vueTools'
 import { allList, allListInit, setInited, removeUserList, addUserList, updateList, defaultList, loveList, userLists } from '@renderer/core/share/list'
 
@@ -31,13 +31,34 @@ const actions = {
     if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
     const promise = musicSdk.findMusic(musicInfo).then(otherSource => {
       commit('setOtherSource', { musicInfo, otherSource })
-      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
       return otherSource
+    }).finally(() => {
+      if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
     })
     getOtherSourcePromises.set(key, promise)
     return promise
   },
 }
+
+const updateListMetaData = () => {
+  const listUpdateInfos = getListUpdateInfo()
+  const newListUpdateInfos = {}
+
+  const listPositions = getListPositionAll()
+  const newListPositions = {}
+
+  for (const list of [defaultList, loveList, ...userLists]) {
+    if (listPositions[list.id] != null) {
+      newListPositions[list.id] = listPositions[list.id]
+    }
+    if (listUpdateInfos[list.id] != null) {
+      newListUpdateInfos[list.id] = listUpdateInfos[list.id]
+    }
+  }
+  setListPositionAll(newListPositions)
+  setListUpdateInfo(newListUpdateInfos)
+}
+
 
 // mitations
 const mutations = {
@@ -58,6 +79,8 @@ const mutations = {
     window.eventHub.emit(eventListNames.listChange, [defaultList.id, loveList.id, tempList.id, ...userList.map(l => l.id)])
     // state.isInitedList = true
     setInited()
+
+    updateListMetaData()
 
     // if (!isSync) {
     //   window.eventHub.emit(eventSyncName.send_action_list, {
@@ -287,19 +310,11 @@ const mutations = {
       return
     }
     const targetMusicInfo = targetList.find(item => item.songmid == id)
-    if (targetMusicInfo) Object.assign(targetMusicInfo, data)
-
-    switch (listId) {
-      case defaultList.id:
-        window.eventHub.emit(eventListNames.musicInfoChange, { list: targetList, ...defaultList })
-        break
-      case loveList.id:
-        window.eventHub.emit(eventListNames.musicInfoChange, { list: targetList, ...loveList })
-        break
-      default:
-        window.eventHub.emit(eventListNames.musicInfoChange, userLists.map(l => ({ list: allList[l.id], ...l })))
-        break
-    }
+    if (!targetMusicInfo) return
+    Object.assign(targetMusicInfo, data)
+    const targetListInfo = [defaultList, loveList, ...userLists].find(l => l.id == listId)
+    if (!targetListInfo) return
+    window.eventHub.emit(eventListNames.musicInfoChange, targetListInfo)
   },
   createUserList(state, { name, id = `userlist_${Date.now()}`, list = [], source, sourceListId, position, isSync }) {
     if (!isSync) {
@@ -337,6 +352,7 @@ const mutations = {
     if (index < 0) return
     removeUserList(id)
     removeListPosition(id)
+    removeListUpdateInfo(id)
     window.eventHub.emit(eventListNames.listChange, [id])
   },
   setUserListName(state, { id, name, isSync }) {
