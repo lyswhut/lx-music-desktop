@@ -68,7 +68,7 @@ export default {
     }
 
     return {
-      setting: setting,
+      setting,
       isShowAddMusicTo,
       nextTogglePlayName,
       toggleNextPlayMode,

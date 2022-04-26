@@ -81,7 +81,7 @@ export default {
       return Promise.resolve({
         list,
         allPage: this.allPage,
-        limit: limit,
+        limit,
         total: this.total,
         source: 'bd',
       })

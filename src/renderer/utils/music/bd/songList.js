@@ -66,7 +66,7 @@ export default {
       },
     }
     let encrypted = CryptoJS.AES.encrypt(strData, key, {
-      iv: iv,
+      iv,
       blockSize: 16,
       mode: CryptoJS.mode.CBC,
       format: JsonFormatter,
@@ -74,9 +74,9 @@ export default {
     let ciphertext = encrypted.toString().ct
     let sign = toMD5('baidu_taihe_music' + ciphertext + timestamp)
     let jsonRet = {
-      timestamp: timestamp,
+      timestamp,
       param: ciphertext,
-      sign: sign,
+      sign,
     }
     return jsonRet
   },

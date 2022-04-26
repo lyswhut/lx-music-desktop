@@ -165,7 +165,7 @@ contextBridge.exposeInMainWorld('lx', {
         headers: resp.headers,
         bytes: resp.bytes,
         raw: resp.raw,
-        body: body,
+        body,
       }, body)
     }).request
 
@@ -212,7 +212,7 @@ contextBridge.exposeInMainWorld('lx', {
       },
       rsaEncrypt(buffer, key) {
         buffer = Buffer.concat([Buffer.alloc(128 - buffer.length), buffer])
-        return publicEncrypt({ key: key, padding: constants.RSA_NO_PADDING }, buffer)
+        return publicEncrypt({ key, padding: constants.RSA_NO_PADDING }, buffer)
       },
       randomBytes(size) {
         return randomBytes(size)

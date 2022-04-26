@@ -27,7 +27,7 @@ export const setAllowShowUserApiUpdateAlert = (id, enable) => {
 export const saveMyList = data => {
   rendererSend(NAMES.mainWindow.save_playlist, {
     type: 'myList',
-    data: data,
+    data,
   })
 }
 export const saveDownloadList = list => {
