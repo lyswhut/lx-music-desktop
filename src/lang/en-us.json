@@ -120,6 +120,7 @@
   "lists__new_list_btn": "Create list",
   "lists__new_list_input": "New list...",
   "lists__remove": "Remove",
+  "lists__remove music_tip": "Do you really want to remove the selected {len} songs?",
   "lists__remove_tip": "Do you really want to remove {name}?",
   "lists__remove_tip_button": "Yes, that's right",
   "lists__rename": "Rename",

@@ -120,6 +120,7 @@
   "lists__new_list_btn": "新建列表",
   "lists__new_list_input": "新列表...",
   "lists__remove": "刪除",
+  "lists__remove music_tip": "你真的要移除所選的 {len} 首歌曲嗎？",
   "lists__remove_tip": "你真的想要移除 {name} 嗎？",
   "lists__remove_tip_button": "是的 沒錯",
   "lists__rename": "重命名",
