@@ -1,4 +1,4 @@
-import { openUrl } from '@renderer/utils'
+import { openUrl, getFontSizeWithScreen } from '@renderer/utils'
 import { base as eventBaseName } from '@renderer/event/names'
 import { onSetConfig, onSystemThemeChange } from '@renderer/utils/tools'
 import { isFullscreen, themeShouldUseDarkColors } from '@renderer/core/share'
@@ -44,9 +44,36 @@ export default ({
   isProd,
   isLinux,
 }) => {
-  const setSetting = useCommit('setSetting')
+  const theme = useRefGetter('theme')
+  const font = useRefGetter('font')
   const windowSizeActive = useRefGetter('windowSizeActive')
+  const setSetting = useCommit('setSetting')
   const isShowAnimation = useRefGetter('isShowAnimation')
+
+  const dom_root = document.getElementById('root')
+
+
+  watch(theme, (val) => {
+    dom_root.className = val
+  })
+  watch(font, (val) => {
+    document.documentElement.style.fontFamily = val
+  }, {
+    immediate: true,
+  })
+  watch(isFullscreen, val => {
+    if (val) {
+      document.body.classList.remove(window.dt ? 'disableTransparent' : 'transparent')
+      document.body.classList.add('fullscreen')
+      document.documentElement.style.fontSize = getFontSizeWithScreen(window.screen.width) + 'px'
+    } else {
+      document.body.classList.remove('fullscreen')
+      document.body.classList.add(window.dt ? 'disableTransparent' : 'transparent')
+      document.documentElement.style.fontSize = windowSizeActive.value.fontSize
+    }
+  }, {
+    immediate: true,
+  })
 
   watch(windowSizeActive, ({ fontSize }) => {
     document.documentElement.style.fontSize = fontSize
@@ -61,6 +88,8 @@ export default ({
         document.body.classList.add('disableAnimation')
       }
     }
+  }, {
+    immediate: true,
   })
 
   const rSetConfig = onSetConfig((event, config) => {
