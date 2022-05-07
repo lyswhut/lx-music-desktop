@@ -119,6 +119,7 @@ export default {
   p {
     line-height: 1.5;
     word-break: break-all;
+    overflow-wrap: break-word;
   }
 }
 
