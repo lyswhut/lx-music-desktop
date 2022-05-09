@@ -78,12 +78,14 @@ export default {
       lyric: '',
       tlyric: '',
       lxlyric: '',
+      rawlyric: '',
       musicInfo: null,
     })
     const updateMusicInfo = () => {
       lyricInfo.lyric = playerMusicInfo.lrc
       lyricInfo.tlyric = playerMusicInfo.tlrc
       lyricInfo.lxlyric = playerMusicInfo.lxlrc
+      lyricInfo.rawlyric = playerMusicInfo.rawlrc
       lyricInfo.musicInfo = musicInfoItem.value
     }
     const handleShowLyricMenu = event => {
@@ -98,7 +100,7 @@ export default {
         tlrc: tlyric,
         lxlrc: lxlyric,
       })
-      console.log(offset)
+      // console.log(offset)
       window.eventHub.emit(eventPlayerNames.updateLyricOffset, offset)
     }
 

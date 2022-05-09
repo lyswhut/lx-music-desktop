@@ -135,7 +135,7 @@ export default ({ setting }) => {
     }
   }
   const setLrc = (targetSong) => {
-    getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
+    getLrc(targetSong).then(({ lyric, tlyric, lxlyric, rawInfo }) => {
       if (targetSong.songmid !== musicInfo.songmid) return
       return (
         setting.value.player.isS2t
@@ -150,6 +150,7 @@ export default ({ setting }) => {
           lrc: lyric,
           tlrc: tlyric,
           lxlrc: lxlyric,
+          rawlrc: rawInfo.lyric,
         })
       })
     }).catch((err) => {
@@ -213,6 +214,7 @@ export default ({ setting }) => {
       lrc: null,
       tlrc: null,
       lxlrc: null,
+      rawlrc: null,
       url: null,
       name: '',
       singer: '',

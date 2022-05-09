@@ -4,6 +4,7 @@ import {
   getRandom,
   checkPath,
   getLyric as getStoreLyric,
+  getLyricRaw as getStoreLyricRaw,
   setLyric,
   setMusicUrl,
   getMusicUrl as getStoreMusicUrl,
@@ -177,6 +178,14 @@ const getLyric = function(musicInfo, retryedSource = [], originMusic) {
   })
 }
 
+const buildLyricInfo = async(lyricInfo, musicInfo) => {
+  const lyricRawInfo = await getStoreLyricRaw(musicInfo)
+  return {
+    ...lyricInfo,
+    rawInfo: lyricRawInfo,
+  }
+}
+
 // getters
 const getters = {
 
@@ -231,16 +240,16 @@ const actions = {
           case 'kw':
             break
           default:
-            return lrcInfo
+            return buildLyricInfo(lrcInfo, musicInfo)
         }
-      } else return lrcInfo
+      } else return buildLyricInfo(lrcInfo, musicInfo)
     }
 
     // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
     return getLyric.call(this, musicInfo).then(({ lyric, tlyric, lxlyric }) => {
       // lrcRequest = null
       commit('setLrc', { musicInfo, lyric, tlyric, lxlyric })
-      return { lyric, tlyric, lxlyric }
+      return buildLyricInfo({ lyric, tlyric, lxlyric }, musicInfo)
     }).catch(err => {
       // lrcRequest = null
       return Promise.reject(err)
