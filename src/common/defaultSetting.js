@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.56',
+  version: '1.0.57',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -12,6 +12,7 @@ const defaultSetting = {
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
     isShowLyricTranslation: false,
+    isShowLyricRoma: false,
     isS2t: false, // 是否将歌词从简体转换为繁体
     isPlayLxlrc: true,
     isSavePlayTime: false,

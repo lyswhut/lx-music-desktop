@@ -40,6 +40,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    isShowLyricRoma: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -74,6 +78,7 @@ export default {
       lyrics: {
         lyric: '',
         tlyric: '',
+        rlyric: '',
         lxlyric: '',
       },
     }
@@ -143,6 +148,10 @@ export default {
       this.setLyric()
       rendererSend(NAMES.winLyric.get_lyric_info, 'status')
     },
+    isShowLyricRoma() {
+      this.setLyric()
+      rendererSend(NAMES.winLyric.get_lyric_info, 'status')
+    },
     isPlayLxlrc() {
       this.setLyric()
       rendererSend(NAMES.winLyric.get_lyric_info, 'status')
@@ -195,6 +204,7 @@ export default {
         case 'lyric':
           this.lyrics.lyric = data.lrc
           this.lyrics.tlyric = data.tlrc
+          this.lyrics.rlyric = data.rlrc
           this.lyrics.lxlyric = data.lxlrc
           this.setLyric()
           break
@@ -211,12 +221,14 @@ export default {
           this.lyrics.lyric = ''
           this.lyrics.tlyric = ''
           this.lyrics.lxlyric = ''
+          this.lyrics.rlyric = ''
           this.setLyric()
           break
         case 'info':
           // console.log('info', data)
           this.lyrics.lyric = data.lrc
           this.lyrics.tlyric = data.tlrc
+          this.lyrics.rlyric = data.rlrc
           this.lyrics.lxlyric = data.lxlrc
           this.setLyric()
           this.$nextTick(() => {
@@ -343,10 +355,12 @@ export default {
       rendererSend(NAMES.winLyric.close)
     },
     setLyric() {
+      const extendedLyrics = []
+      if (this.isShowLyricTranslation && this.lyrics.tlyric) extendedLyrics.push(this.lyrics.tlyric)
+      if (this.isShowLyricRoma && this.lyrics.rlyric) extendedLyrics.push(this.lyrics.rlyric)
       window.lrc.setLyric(
         this.isPlayLxlrc && this.lyrics.lxlyric ? this.lyrics.lxlyric : this.lyrics.lyric,
-        this.isShowLyricTranslation && this.lyrics.tlyric ? this.lyrics.tlyric : '',
-        // (this.isShowLyricTranslation && this.lyrics.tlyric ? (this.lyrics.tlyric + '\n') : '') + (this.lyrics.lyric || ''),
+        extendedLyrics,
       )
     },
   },
@@ -375,11 +389,11 @@ export default {
         display: inline-block;
       }
 
-      .font, .translation {
+      .font, .extended {
         cursor: grab;
       }
 
-      .translation {
+      .extended {
         transition: @transition-theme !important;
         transition-property: font-size, color;
         font-size: 0.8em;
@@ -396,7 +410,7 @@ export default {
         .line {
           color: @color-theme;
         }
-        .translation {
+        .extended {
           color: @color-theme;
         }
         // span {
@@ -465,7 +479,7 @@ export default {
 .draging {
   :global {
     .lrc-content {
-      .font, .translation {
+      .font, .extended {
         cursor: grabbing;
       }
     }
@@ -475,7 +489,7 @@ export default {
   :global {
     .lrc-content {
       &.active {
-        .translation {
+        .extended {
           font-size: .94em;
         }
         span {
@@ -508,7 +522,7 @@ each(@themes, {
       :global {
         .lrc-content {
           &.active {
-            .translation {
+            .extended {
               color: ~'@{color-@{value}-theme}';
             }
             .line {

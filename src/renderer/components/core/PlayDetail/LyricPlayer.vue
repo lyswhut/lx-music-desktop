@@ -27,8 +27,10 @@
     <div :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" v-if="isShowLrcSelectContent" @contextmenu="handleCopySelectText">
       <div v-for="(info, index) in lyric.lines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]">
         <span>{{info.text}}</span>
-        <br v-if="info.translation"/>
-        <span :class="$style.lyricSelectlineTransition">{{info.translation}}</span>
+        <template v-for="(lrc, index) in info.extendedLyrics" :key="index">
+          <br />
+          <span :class="$style.lyricSelectlineExtended">{{lrc}}</span>
+        </template>
       </div>
     </div>
   </transition>
@@ -77,6 +79,7 @@ export default {
     const lyricInfo = reactive({
       lyric: '',
       tlyric: '',
+      rlyric: '',
       lxlyric: '',
       rawlyric: '',
       musicInfo: null,
@@ -84,6 +87,7 @@ export default {
     const updateMusicInfo = () => {
       lyricInfo.lyric = playerMusicInfo.lrc
       lyricInfo.tlyric = playerMusicInfo.tlrc
+      lyricInfo.rlyric = playerMusicInfo.rlrc
       lyricInfo.lxlyric = playerMusicInfo.lxlrc
       lyricInfo.rawlyric = playerMusicInfo.rawlrc
       lyricInfo.musicInfo = musicInfoItem.value
@@ -94,10 +98,11 @@ export default {
       lyricMenuXY.y = event.pageY
       lyricMenuVisible.value = true
     }
-    const handleUpdateLyric = ({ lyric, tlyric, lxlyric, offset }) => {
+    const handleUpdateLyric = ({ lyric, tlyric, rlyric, lxlyric, offset }) => {
       setMusicInfo({
         lrc: lyric,
         tlrc: tlyric,
+        rlrc: rlyric,
         lxlrc: lxlyric,
       })
       // console.log(offset)
@@ -189,7 +194,7 @@ export default {
       transition: @transition-theme;
       transition-property: padding;
 
-      .translation {
+      .extended {
         transition: @transition-theme !important;
         transition-property: font-size, color;
         font-size: .9em;
@@ -205,7 +210,7 @@ export default {
         .line {
           color: @color-theme;
         }
-        .translation {
+        .extended {
           color: @color-theme;
         }
         // span {
@@ -243,7 +248,7 @@ export default {
   :global {
     .lrc-content {
       &.active {
-        .translation {
+        .extended {
           font-size: .94em;
         }
         span {
@@ -316,7 +321,7 @@ export default {
     transition-property: color, font-size;
     line-height: 1.3;
   }
-  .lyricSelectlineTransition {
+  .lyricSelectlineExtended {
     font-size: 14px;
   }
   .lrc-active {
@@ -336,7 +341,7 @@ each(@themes, {
           color: ~'@{color-@{value}-player-detail-lyric}';
 
           &.active {
-            .translation {
+            .extended {
               color: ~'@{color-@{value}-player-detail-lyric-active}';
             }
             .line {

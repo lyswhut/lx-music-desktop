@@ -185,14 +185,14 @@ const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
       existTimeExp.test(lrcInfo.lyric)
-        ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
+        ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '', rlyric: lrcInfo.rlyric || '', lxlyric: lrcInfo.lxlyric || '' })
         : (
             isUseOtherSource
               ? handleGetLyric.call(this, musicInfo)
               : music[musicInfo.source].getLyric(musicInfo).promise
-          ).then(({ lyric, tlyric, lxlyric }) => {
-            setLyric(musicInfo, { lyric, tlyric, lxlyric })
-            return { lyric, tlyric, lxlyric }
+          ).then(({ lyric, tlyric, rlyric, lxlyric }) => {
+            setLyric(musicInfo, { lyric, tlyric, rlyric, lxlyric })
+            return { lyric, tlyric, rlyric, lxlyric }
           }).catch(err => {
             console.log(err)
             return null

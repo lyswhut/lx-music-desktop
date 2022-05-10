@@ -43,11 +43,14 @@ export default ({ setting }) => {
 
   const setLyric = () => {
     if (!musicInfo.songmid) return
+    const extendedLyrics = []
+    if (setting.value.player.isShowLyricTranslation && musicInfo.tlrc) extendedLyrics.push(musicInfo.tlrc)
+    if (setting.value.player.isShowLyricRoma && musicInfo.rlrc) extendedLyrics.push(musicInfo.rlrc)
     lrc.setLyric(
       setting.value.player.isPlayLxlrc && musicInfo.lxlrc ? musicInfo.lxlrc : musicInfo.lrc,
-      setting.value.player.isShowLyricTranslation && musicInfo.tlrc ? musicInfo.tlrc : '',
+      extendedLyrics,
     )
-    setDesktopLyricInfo('lyric', { lrc: musicInfo.lrc, tlrc: musicInfo.tlrc, lxlrc: musicInfo.lxlrc })
+    setDesktopLyricInfo('lyric', { lrc: musicInfo.lrc, tlrc: musicInfo.tlrc, rlrc: musicInfo.rlrc, lxlrc: musicInfo.lxlrc })
 
     if (isPlay.value && (musicInfo.url || playMusicInfo.listId == 'download')) {
       setTimeout(() => {
@@ -99,6 +102,7 @@ export default ({ setting }) => {
           album: musicInfo.album,
           lrc: musicInfo.lrc,
           tlrc: musicInfo.tlrc,
+          rlrc: musicInfo.rlrc,
           lxlrc: musicInfo.lxlrc,
           isPlay: isPlay.value,
           line: lyric.line,

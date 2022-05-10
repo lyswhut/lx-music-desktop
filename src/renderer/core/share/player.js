@@ -6,6 +6,7 @@ export const musicInfo = window.musicInfo = reactive({
   img: null,
   lrc: null,
   tlrc: null,
+  rlrc: null,
   lxlrc: null,
   rawlrc: null,
   url: null,

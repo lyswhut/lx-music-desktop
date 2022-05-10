@@ -4,7 +4,7 @@
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       .control-bar(v-show="!lrcConfig.isLock")
         core-control-bar(:lrcConfig="lrcConfig" :themes="themeList")
-    core-lyric(:lrcConfig="lrcConfig" :isPlayLxlrc="isPlayLxlrc" :isShowLyricTranslation="isShowLyricTranslation")
+    core-lyric(:lrcConfig="lrcConfig" :isPlayLxlrc="isPlayLxlrc" :isShowLyricTranslation="isShowLyricTranslation" :isShowLyricRoma="isShowLyricRoma")
   div.resize-left(@mousedown.self="handleMouseDown('left', $event)" @touchstart.self="handleTouchDown('left', $event)")
   div.resize-top(@mousedown.self="handleMouseDown('top', $event)" @touchstart.self="handleTouchDown('top', $event)")
   div.resize-right(@mousedown.self="handleMouseDown('right', $event)" @touchstart.self="handleTouchDown('right', $event)")
@@ -46,7 +46,8 @@ export default {
           isZoomActiveLrc: true,
         },
       },
-      isShowLyricTranslation: true,
+      isShowLyricTranslation: false,
+      isShowLyricRoma: false,
       isPlayLxlrc: true,
       themeList: [
         {
@@ -111,9 +112,10 @@ export default {
     document.removeEventListener('mouseup', this.handleMouseUp)
   },
   methods: {
-    handleUpdateConfig({ config, languageId, isShowLyricTranslation, isPlayLxlrc }) {
+    handleUpdateConfig({ config, languageId, isShowLyricTranslation, isShowLyricRoma, isPlayLxlrc }) {
       this.lrcConfig = config
       this.isShowLyricTranslation = isShowLyricTranslation
+      this.isShowLyricRoma = isShowLyricRoma
       this.isPlayLxlrc = isPlayLxlrc
       if (this.$i18n.locale !== languageId && languageId != null) this.$i18n.locale = languageId
     },

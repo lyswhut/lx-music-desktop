@@ -114,15 +114,18 @@ export default {
     const updateLyric = offset => {
       let lyric = props.lyricInfo.lyric
       let tlyric = props.lyricInfo.tlyric
+      let rlyric = props.lyricInfo.rlyric
       let lxlyric = props.lyricInfo.lxlyric
       if (offsetTagRxp.test(lyric)) {
         lyric = lyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
         if (tlyric) tlyric = tlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
         if (lxlyric) lxlyric = lxlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
+        if (rlyric) rlyric = rlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
       } else {
         lyric = `[offset:${offset}]\n` + lyric
         if (tlyric) tlyric = `[offset:${offset}]\n` + tlyric
         if (lxlyric) lxlyric = `[offset:${offset}]\n` + lxlyric
+        if (rlyric) rlyric = `[offset:${offset}]\n` + rlyric
       }
 
       if (offset == originOffset.value) {
@@ -131,6 +134,7 @@ export default {
         saveLyric(props.lyricInfo.musicInfo, {
           lyric,
           tlyric,
+          rlyric,
           lxlyric,
         })
       }
@@ -138,6 +142,7 @@ export default {
       emit('updateLyric', {
         lyric,
         tlyric,
+        rlyric,
         lxlyric,
         offset,
       })

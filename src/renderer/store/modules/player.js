@@ -223,7 +223,7 @@ const actions = {
   },
   async getLrc({ commit, state }, musicInfo) {
     const lrcInfo = await getStoreLyric(musicInfo)
-    // lrcInfo = {}
+    // let lrcInfo = {}
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     if (existTimeExp.test(lrcInfo.lyric) && lrcInfo.tlyric != null) {
       // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
@@ -242,14 +242,16 @@ const actions = {
           default:
             return buildLyricInfo(lrcInfo, musicInfo)
         }
+      } else if (lrcInfo.rlyric == null) {
+        if (musicInfo.source != 'wy') return buildLyricInfo(lrcInfo, musicInfo)
       } else return buildLyricInfo(lrcInfo, musicInfo)
     }
 
     // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-    return getLyric.call(this, musicInfo).then(({ lyric, tlyric, lxlyric }) => {
+    return getLyric.call(this, musicInfo).then(({ lyric, tlyric, rlyric, lxlyric }) => {
       // lrcRequest = null
-      commit('setLrc', { musicInfo, lyric, tlyric, lxlyric })
-      return buildLyricInfo({ lyric, tlyric, lxlyric }, musicInfo)
+      commit('setLrc', { musicInfo, lyric, tlyric, rlyric, lxlyric })
+      return buildLyricInfo({ lyric, tlyric, rlyric, lxlyric }, musicInfo)
     }).catch(err => {
       // lrcRequest = null
       return Promise.reject(err)
@@ -443,6 +445,7 @@ const mutations = {
     setLyric(datas.musicInfo, {
       lyric: datas.lyric,
       tlyric: datas.tlyric,
+      rlyric: datas.rlyric,
       lxlyric: datas.lxlyric,
     })
   },

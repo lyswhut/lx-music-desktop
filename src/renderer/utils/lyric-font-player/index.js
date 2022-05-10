@@ -6,11 +6,11 @@ const fontTimeExp = /<(\d+),(\d+)>/g
 module.exports = class Lyric {
   constructor({
     lyric = '',
-    translationLyric = '',
+    extendedLyrics = [],
     offset = 0,
     lineClassName = '',
     fontClassName = 'font',
-    translationClassName = 'translation',
+    extendedLrcClassName = 'extended',
     activeLineClassName = 'active',
     lineModeClassName = 'line',
     shadowClassName = '',
@@ -19,14 +19,14 @@ module.exports = class Lyric {
     onSetLyric = function() { },
   }) {
     this.lyric = lyric
-    this.translationLyric = translationLyric
+    this.extendedLyrics = extendedLyrics
     this.offset = offset
     this.onPlay = onPlay
     this.onSetLyric = onSetLyric
 
     this.lineClassName = lineClassName
     this.fontClassName = fontClassName
-    this.translationClassName = translationClassName
+    this.extendedLrcClassName = extendedLrcClassName
     this.activeLineClassName = activeLineClassName
     this.lineModeClassName = lineModeClassName
     this.shadowClassName = shadowClassName
@@ -46,7 +46,7 @@ module.exports = class Lyric {
     this.playingLineNum = -1
     this.isLineMode = false
 
-    this.linePlayer.setLyric(this.lyric, this.translationLyric)
+    this.linePlayer.setLyric(this.lyric, this.extendedLyrics)
   }
 
   _handleLinePlayerOnPlay = (num, text, curTime) => {
@@ -104,10 +104,10 @@ module.exports = class Lyric {
         const fontPlayer = new FontPlayer({
           time: line.time,
           lyric: line.text,
-          translationLyric: line.translation,
+          extendedLyrics: line.extendedLyrics,
           lineClassName: this.lineClassName,
           fontClassName: this.fontClassName,
-          translationClassName: this.translationClassName,
+          extendedLrcClassName: this.extendedLrcClassName,
           lineModeClassName: this.lineModeClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
@@ -117,7 +117,7 @@ module.exports = class Lyric {
         return {
           text: line.text,
           time: line.time,
-          translation: line.translation,
+          extendedLyrics: line.extendedLyrics,
           dom_line: fontPlayer.lineContent,
         }
       })
@@ -126,10 +126,10 @@ module.exports = class Lyric {
         const fontPlayer = new FontPlayer({
           time: line.time,
           lyric: line.text,
-          translationLyric: line.translation,
+          extendedLyrics: line.extendedLyrics,
           lineClassName: this.lineClassName,
           fontClassName: this.fontClassName,
-          translationClassName: this.translationClassName,
+          extendedLrcClassName: this.extendedLrcClassName,
           shadowClassName: this.shadowClassName,
           shadowContent: this.shadowContent,
         })
@@ -138,7 +138,7 @@ module.exports = class Lyric {
         return {
           text: line.text.replace(fontTimeExp, ''),
           time: line.time,
-          translation: line.translation,
+          extendedLyrics: line.extendedLyrics,
           dom_line: fontPlayer.lineContent,
         }
       })
@@ -162,9 +162,9 @@ module.exports = class Lyric {
     if (this.playingLineNum > -1) this._lineFonts[this.playingLineNum].pause()
   }
 
-  setLyric(lyric, translationLyric) {
+  setLyric(lyric, extendedLyrics) {
     this.lyric = lyric
-    this.translationLyric = translationLyric
+    this.extendedLyrics = extendedLyrics
     this._init()
   }
 }
