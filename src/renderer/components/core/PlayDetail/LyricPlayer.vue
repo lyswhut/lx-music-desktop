@@ -183,7 +183,7 @@ export default {
   :global {
     .lrc-content {
       line-height: 1.2;
-      padding: calc(var(--playDetail-lrc-font-size, 16px) / 2) 0;
+      padding: calc(var(--playDetail-lrc-font-size, 16px) / 2) 1px;
       overflow-wrap: break-word;
       color: @color-player-detail-lyric;
       transition: @transition-theme;
