@@ -2,7 +2,7 @@
   "name": "lx-music-desktop",
   "version": "1.20.1-beta",
   "description": "一个免费的音乐查找助手",
-  "main": "./dist/electron/main.js",
+  "main": "./dist/main.js",
   "productName": "lx-music-desktop",
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win:setup:x64",
@@ -57,7 +57,7 @@
     "publish:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm --x64 -p onTagOrDraft",
     "publish:linux:pacman": "cross-env ARCH=x64 electron-builder -l=pacman --x64 -p onTagOrDraft",
     "dev": "node build-config/runner-dev.js",
-    "clean:electron": "rimraf dist/electron",
+    "clean:electron": "rimraf dist",
     "clean": "rimraf dist && rimraf build",
     "build:src": "node build-config/pack.js",
     "build:main": "cross-env NODE_ENV=production webpack --config build-config/main/webpack.config.prod.js --progress",
@@ -89,7 +89,7 @@
       "output": "./build"
     },
     "files": [
-      "dist/electron/**/*"
+      "dist/**/*"
     ],
     "asar": {
       "smartUnpack": false

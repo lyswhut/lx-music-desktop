@@ -14,7 +14,7 @@ const okayLog = chalk.bgGreen.white(' OKAY ') + ' '
 
 
 function build() {
-  del.sync(['dist/electron/**', 'build/**'])
+  del.sync(['dist/**', 'build/**'])
 
   const spinners = new Spinnies({ color: 'blue' })
   spinners.add('main', { text: 'main building' })

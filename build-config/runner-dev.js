@@ -151,7 +151,7 @@ function startElectron() {
   let args = [
     '--inspect=5858',
     // 'NODE_ENV=development',
-    path.join(__dirname, '../dist/electron/main.js'),
+    path.join(__dirname, '../dist/main.js'),
   ]
 
   // detect yarn or npm and process commandline args accordingly

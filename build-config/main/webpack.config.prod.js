@@ -26,11 +26,11 @@ module.exports = merge(baseConfig, {
       patterns: [
         {
           from: path.join(__dirname, '../../src/main/modules/userApi/renderer'),
-          to: path.join(__dirname, '../../dist/electron/userApi/renderer'),
+          to: path.join(__dirname, '../../dist/userApi/renderer'),
         },
         {
           from: path.join(__dirname, '../../src/main/modules/userApi/rendererEvent/name.js'),
-          to: path.join(__dirname, '../../dist/electron/userApi/rendererEvent/name.js'),
+          to: path.join(__dirname, '../../dist/userApi/rendererEvent/name.js'),
         },
       ],
     }),
