@@ -71,16 +71,14 @@ export default {
     listData: /global\.features = (\[.+\]);/,
   },
   _requestBoardsObj: null,
-  _requestDataObj: null,
   getBoardsData() {
     if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this._requestBoardsObj = httpFetch('http://mobilecdnbj.kugou.com/api/v3/rank/list?version=9108&plat=0&showtype=2&parentid=0&apiver=6&area_code=1&withsong=1')
     return this._requestBoardsObj.promise
   },
   getData(url) {
-    if (this._requestDataObj) this._requestDataObj.cancelHttp()
-    this._requestDataObj = httpFetch(url)
-    return this._requestDataObj.promise
+    const requestDataObj = httpFetch(url)
+    return requestDataObj.promise
   },
   filterData(rawList) {
     // console.log(rawList)

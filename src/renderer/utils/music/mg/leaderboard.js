@@ -65,7 +65,6 @@ export default {
   },
   successCode: '000000',
   requestBoardsObj: null,
-  requestObj: null,
   getBoardsData() {
     if (this.requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this.requestBoardsObj = httpFetch('https://app.c.nf.migu.cn/MIGUM3.0/v1.0/template/rank-list/release', {
@@ -79,9 +78,8 @@ export default {
     return this.requestBoardsObj.promise
   },
   getData(url) {
-    if (this.requestObj) this.requestObj.cancelHttp()
-    this.requestObj = httpFetch(url)
-    return this.requestObj.promise
+    const requestObj = httpFetch(url)
+    return requestObj.promise
   },
   getSinger(singers) {
     let arr = []

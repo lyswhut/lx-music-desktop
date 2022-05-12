@@ -57,14 +57,12 @@ export default {
   },
   successCode: '000000',
   requestBoardsObj: null,
-  requestObj: null,
   regExps: {
     listData: /var listData = (\{.+\})<\/script>/,
   },
   getData(url) {
-    if (this.requestObj) this.requestObj.cancelHttp()
-    this.requestObj = httpFetch(url)
-    return this.requestObj.promise
+    const requestObj = httpFetch(url)
+    return requestObj.promise
   },
   getSinger(singers) {
     let arr = []

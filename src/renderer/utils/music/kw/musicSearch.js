@@ -9,16 +9,14 @@ export default {
   regExps: {
     mInfo: /bitrate:(\d+),format:(\w+),size:([\w.]+)/,
   },
-  _musicSearchRequestObj: null,
   limit: 30,
   total: 0,
   page: 0,
   allPage: 1,
   // cancelFn: null,
   musicSearch(str, page, limit) {
-    if (this._musicSearchRequestObj) this._musicSearchRequestObj.cancelHttp()
-    this._musicSearchRequestObj = httpFetch(`http://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(str)}&pn=${page - 1}&rn=${limit}&uid=794762570&ver=kwplayer_ar_9.2.2.1&vipver=1&show_copyright_off=1&newver=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&issubtitle=1`)
-    return this._musicSearchRequestObj.promise
+    const musicSearchRequestObj = httpFetch(`http://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(str)}&pn=${page - 1}&rn=${limit}&uid=794762570&ver=kwplayer_ar_9.2.2.1&vipver=1&show_copyright_off=1&newver=1&ft=music&cluster=0&strategy=2012&encoding=utf8&rformat=json&vermerge=1&mobi=1&issubtitle=1`)
+    return musicSearchRequestObj.promise
   },
   // getImg(songId) {
   //   return httpGet(`http://player.kuwo.cn/webmusic/sj/dtflagdate?flag=6&rid=MUSIC_${songId}`)

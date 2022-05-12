@@ -104,7 +104,6 @@ export default {
     list: /<textarea id="song-list-pre-data" style="display:none;">(.+?)<\/textarea>/,
   },
   _requestBoardsObj: null,
-  _requestBoardsDetailObj: null,
   getBoardsData() {
     if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this._requestBoardsObj = httpFetch('https://music.163.com/weapi/toplist', {
@@ -114,8 +113,7 @@ export default {
     return this._requestBoardsObj.promise
   },
   getData(id) {
-    if (this._requestBoardsDetailObj) this._requestBoardsDetailObj.cancelHttp()
-    this._requestBoardsDetailObj = httpFetch('https://music.163.com/weapi/v3/playlist/detail', {
+    const requestBoardsDetailObj = httpFetch('https://music.163.com/weapi/v3/playlist/detail', {
       method: 'post',
       form: weapi({
         id,
@@ -123,7 +121,7 @@ export default {
         p: 1,
       }),
     })
-    return this._requestBoardsDetailObj.promise
+    return requestBoardsDetailObj.promise
   },
 
   filterBoardsData(rawList) {

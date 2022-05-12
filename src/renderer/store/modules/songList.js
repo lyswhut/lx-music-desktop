@@ -65,6 +65,8 @@ const getters = {
   },
 }
 
+let loadId = null
+
 // actions
 const actions = {
   getTags({ state, rootState, commit }) {
@@ -76,11 +78,14 @@ const actions = {
     let tabId = rootState.setting.songList.tagInfo.id
     let sortId = rootState.setting.songList.sortId
     // console.log(sortId)
-    let key = `slist__${source}__${sortId}__${tabId}__${page}`
+    let key = loadId = `slist__${source}__${sortId}__${tabId}__${page}`
     if (state.list.list.length && state.list.key == key) return
     if (cache.has(key)) return Promise.resolve(cache.get(key)).then(result => commit('setList', { result, key, page }))
     commit('clearList')
-    return music[source]?.songList.getList(sortId, tabId, page).then(result => commit('setList', { result, key, page }))
+    return music[source]?.songList.getList(sortId, tabId, page).then(result => {
+      if (loadId != key) return
+      commit('setList', { result, key, page })
+    })
   },
   getListDetail({ state, commit }, { id, source, page, isRefresh = false }) {
     let key = `sdetail__${source}__${id}__${page}`

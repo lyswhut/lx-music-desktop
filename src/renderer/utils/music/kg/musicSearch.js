@@ -5,15 +5,13 @@ import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 // import { debug } from '../../utils/env'
 // import { formatSinger } from './util'
 
-let searchRequest
 export default {
   limit: 30,
   total: 0,
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
+    const searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => body)
   },
   filterData(rawData) {

@@ -107,6 +107,7 @@ export default {
         },
       },
       isLoading: false,
+      searchId: null,
     }
   },
   beforeRouteUpdate(to, from) {
@@ -259,14 +260,20 @@ export default {
       this.handleSelectAllData()
     },
     handleSearch(text, page) {
-      if (text === '') return this.clearList()
+      const searchId = this.searchId = `${this.searchSourceId}__${page}__${text}`
+      if (text === '') {
+        this.isLoading = false
+        return this.clearList()
+      }
       this.isLoading = true
       this.search({ text, page, limit: this.listInfo.limit }).then(data => {
+        if (this.searchId != searchId) return
         this.page = page
         this.$nextTick(() => {
           this.$refs.dom_scrollContent.scrollTo(0, 0)
         })
       }).finally(() => {
+        if (this.searchId != searchId) return
         this.isLoading = false
       })
     },

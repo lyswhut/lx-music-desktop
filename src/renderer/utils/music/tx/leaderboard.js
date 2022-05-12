@@ -86,16 +86,14 @@ export default {
   periods: {},
   periodUrl: 'https://c.y.qq.com/node/pc/wk_v15/top.html',
   _requestBoardsObj: null,
-  _requestDataObj: null,
   getBoardsData() {
     if (this._requestBoardsObj) this._requestBoardsObj.cancelHttp()
     this._requestBoardsObj = httpFetch('https://c.y.qq.com/v8/fcg-bin/fcg_myqq_toplist.fcg?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&uin=0&needNewCode=1&platform=h5')
     return this._requestBoardsObj.promise
   },
   getData(url) {
-    if (this._requestDataObj) this._requestDataObj.cancelHttp()
-    this._requestDataObj = httpFetch(url)
-    return this._requestDataObj.promise
+    const requestDataObj = httpFetch(url)
+    return requestDataObj.promise
   },
   getSinger(singers) {
     let arr = []

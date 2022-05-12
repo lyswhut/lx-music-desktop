@@ -151,6 +151,7 @@ const mutations = {
     state.text = text
   },
   setList(state, datas) {
+    if (!state.text) return
     let source = state.sourceList[datas.source]
     datas.list = deduplicationList(datas.list)
     source.list = markRawList(datas.list)
@@ -160,6 +161,7 @@ const mutations = {
     source.limit = datas.limit
   },
   setLists(state, { results, page }) {
+    if (!state.text) return
     let pages = []
     let total = 0
     let limit = 0
