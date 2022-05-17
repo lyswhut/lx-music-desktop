@@ -228,6 +228,7 @@ export default ({ setting }) => {
   // 播放音乐
   const playMusic = async() => {
     // console.log('playMusic')
+    isGettingUrl = false
     setStopStatus()
     if (window.restorePlayInfo) {
       handleRestorePlay(window.restorePlayInfo)
