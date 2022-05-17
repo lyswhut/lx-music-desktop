@@ -519,7 +519,8 @@ const actions = {
       delete dls[item.key]
     }
     commit('removeTask', item)
-    if (item.status != downloadStatus.COMPLETED) {
+    // 没有未完成、已下载大于1k
+    if (item.status != downloadStatus.COMPLETED && item.progress.total && item.progress.downloaded > 1024) {
       try {
         await deleteFile(item.metadata.filePath)
       } catch (_) {}
@@ -541,7 +542,8 @@ const actions = {
           delete dls[item.key]
         }
       }
-      if (item.status != downloadStatus.COMPLETED) {
+      // 没有未完成、已下载大于1k
+      if (item.status != downloadStatus.COMPLETED && item.progress.total && item.progress.downloaded > 1024) {
         deleteFile(item.metadata.filePath).catch(_ => _)
       }
     }
