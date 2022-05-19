@@ -14,9 +14,18 @@ import {
 
 const handle_key_esc_down = ({ event }) => {
   if (event.repeat) return
-  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) return
+  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) {
+    if (isFullscreen.value) {
+      event.lx_handled = true
+      rendererInvoke(NAMES.mainWindow.fullscreen, false).then(fullscreen => {
+        isFullscreen.value = fullscreen
+      })
+    }
+    return
+  }
   event.target.value = ''
   event.target.blur()
+  event.lx_handled = true
 }
 const handleBodyClick = event => {
   if (event.target.tagName != 'A') return
