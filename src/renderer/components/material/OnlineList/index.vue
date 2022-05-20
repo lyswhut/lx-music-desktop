@@ -20,9 +20,10 @@ div(:class="$style.songList")
               div.list-item(@click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
                 :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]")
                 div.list-item-cell.nobreak.center(:style="{ width: rowWidth.r1 }" style="padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-                div.list-item-cell.auto(:style="{ width: rowWidth.r2 }" :aria-label="item.name + ((item._types.ape || item._types.flac || item._types.wav) ? ` - ${$t('tag__lossless')}` : item._types['320k'] ? ` - ${$t('tag__high_quality')}` : '')")
+                div.list-item-cell.auto(:style="{ width: rowWidth.r2 }" :aria-label="item.name + (item._types.flac32bit ? ` - ${$t('tag__lossless_24bit')}` : (item._types.ape || item._types.flac || item._types.wav) ? ` - ${$t('tag__lossless')}` : item._types['320k'] ? ` - ${$t('tag__high_quality')}` : '')")
                   span.select {{item.name}}
-                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('tag__lossless')}}
+                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.flac32bit") {{$t('tag__lossless_24bit')}}
+                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types.ape || item._types.flac || item._types.wav") {{$t('tag__lossless')}}
                   span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('tag__high_quality')}}
                 div.list-item-cell(:style="{ width: rowWidth.r3 }" :aria-label="item.singer")
                   span.select {{item.singer}}

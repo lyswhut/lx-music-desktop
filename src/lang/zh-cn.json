@@ -434,6 +434,7 @@
   "sync__title": "选择与 {name} 的列表同步方式",
   "tag__high_quality": "HQ",
   "tag__lossless": "SQ",
+  "tag__lossless_24bit": "24bit",
   "theme_auto": "道法自然",
   "theme_auto_tip": "鼠标 右击 可打开亮、暗主题设置窗口",
   "theme_black": "黑灯瞎火",

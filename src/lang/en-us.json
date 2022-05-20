@@ -434,6 +434,7 @@
   "sync__title": "Choose how to synchronize the list with {name}",
   "tag__high_quality": "HQ",
   "tag__lossless": "SQ",
+  "tag__lossless_24bit": "24bit",
   "theme_auto": "Auto",
   "theme_auto_tip": "Right-click to open the light and dark theme settings window",
   "theme_black": "Black",

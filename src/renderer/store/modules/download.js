@@ -69,6 +69,7 @@ const getExt = type => {
     case 'ape':
       return 'ape'
     case 'flac':
+    case 'flac32bit':
       return 'flac'
     case 'wav':
       return 'wav'

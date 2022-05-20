@@ -103,28 +103,28 @@ export default {
         let size
         switch (type.formatType) {
           case 'PQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: '128k', size })
             _types['128k'] = {
               size,
             }
             break
           case 'HQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: '320k', size })
             _types['320k'] = {
               size,
             }
             break
           case 'SQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: 'flac', size })
             _types.flac = {
               size,
             }
             break
           case 'ZQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: 'flac32bit', size })
             _types.flac32bit = {
               size,
