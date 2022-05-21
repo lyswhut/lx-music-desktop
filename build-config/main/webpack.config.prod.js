@@ -40,6 +40,10 @@ module.exports = merge(baseConfig, {
       },
     }),
   ],
+  performance: {
+    maxEntrypointSize: 1024 * 1024 * 10,
+    maxAssetSize: 1024 * 1024 * 20,
+  },
   optimization: {
     minimize: false,
   },

@@ -25,9 +25,6 @@ module.exports = {
       },
     ],
   },
-  performance: {
-    maxEntrypointSize: 300000,
-  },
   plugins: [
     new ESLintPlugin(),
   ],

@@ -127,9 +127,6 @@ module.exports = {
       },
     ],
   },
-  performance: {
-    maxEntrypointSize: 300000,
-  },
   plugins: [
     new HTMLPlugin({
       filename: 'lyric.html',
