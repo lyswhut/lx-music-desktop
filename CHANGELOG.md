@@ -6,6 +6,32 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.21.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.20.0...v1.21.0) - 2022-05-22
+
+### 新增
+
+- 新增设置-播放设置-显示歌词罗马音，默认关闭，注：目前只有网易源能获取到罗马音歌词（得益于 Binaryify/NeteaseCloudMusicApi/pull/1523），如果你知道其他源的歌词罗马音获取方式，欢迎PR或开issue交流！
+
+### 优化
+
+- 同时删除一首歌以上时将需要二次确认删除
+- 禁用透明窗口时右侧不再偏移5px距离（在win7、Ubuntu等系统上测试发现不偏移也不影响滚动条的拖动了）
+- 删除未下载完成的任务时，只同时尝试删除已有下载进度的本地文件
+- 在全屏状态下使用`Esc`键可以退出全屏（#827）
+
+### 修复
+
+- 修复某些情况下歌曲播放出错时不会自动切歌的问题
+- 修复关闭“显示切换动画”设置后，在应用启动时该设置没有被应用的问题
+- 修复原始歌词存在偏移时，歌词偏移设置的重置未按预期工作的问题
+- 修复长度大于一行的歌词在使用歌词调整播放进度时的时间不准问题
+- 修复潜在歌单更新失败的问题
+
+### 文档
+
+- 将歌曲添加“稍后播放”后，它们会被放在一个优先级最高的特殊队列中，点击“下一曲”时会消耗该队列中的歌曲，并且无法通过“上一曲”功能播放该队列的上一首歌曲
+- 在切歌时若不是通过“上一曲”、“下一曲”功能切歌（例如直接点击“排行榜列表”、“我的列表”中的歌曲切歌），“稍后播放”队列将会被清空
+
 ## [1.20.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.19.0...v1.20.0) - 2022-04-17
 
 特别说明：Scheme URL其实是支持Linux系统的，但好像需要deb之类的安装包创建出`.desktop`文件才行。
