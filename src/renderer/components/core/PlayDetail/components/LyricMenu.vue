@@ -29,7 +29,7 @@
     <div :class="$style.group">
       <div :class="$style.subGroup">
         <div :class="$style.title">{{$t('lyric_menu__offset', { offset })}}</div>
-        <button :class="[$style.btn, $style.titleBtn]" :disabled="offsetDisabled || !offset" @click="offsetReset">{{$t('lyric_menu__offset_reset')}}</button>
+        <button :class="[$style.btn, $style.titleBtn]" :disabled="offsetDisabled || offset == originOffset" @click="offsetReset">{{$t('lyric_menu__offset_reset')}}</button>
       </div>
       <div :class="$style.subGroup">
         <button :class="$style.btn" :disabled="offsetDisabled" @click="setOffset(10)" ignore-tip :aria-label="$t('lyric_menu__offset_add_10')">+ 10ms</button>
@@ -59,6 +59,15 @@ const removeLyric = debounce(musicInfo => {
   removeLyricEdited(musicInfo)
 })
 
+const getOffset = lrc => {
+  let offset = offsetTagRxp.exec(lrc)
+  if (offset) {
+    offset = parseInt(offset[1])
+    if (Number.isNaN(offset)) offset = 0
+  } else offset = 0
+  return offset
+}
+
 export default {
   name: 'LyricMenu',
   props: {
@@ -75,6 +84,7 @@ export default {
 
     const offset = ref(0)
     const offsetDisabled = ref(true)
+    const originOffset = ref(0)
 
     const visible = computed(() => props.modelValue)
     const musicInfo = computed(() => props.lyricInfo.musicInfo)
@@ -104,28 +114,35 @@ export default {
     const updateLyric = offset => {
       let lyric = props.lyricInfo.lyric
       let tlyric = props.lyricInfo.tlyric
+      let rlyric = props.lyricInfo.rlyric
       let lxlyric = props.lyricInfo.lxlyric
       if (offsetTagRxp.test(lyric)) {
         lyric = lyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
         if (tlyric) tlyric = tlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
         if (lxlyric) lxlyric = lxlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
+        if (rlyric) rlyric = rlyric.replace(offsetTagAllRxp, `[offset:${offset}]`)
       } else {
         lyric = `[offset:${offset}]\n` + lyric
         if (tlyric) tlyric = `[offset:${offset}]\n` + tlyric
         if (lxlyric) lxlyric = `[offset:${offset}]\n` + lxlyric
+        if (rlyric) rlyric = `[offset:${offset}]\n` + rlyric
       }
 
-      if (offset) {
+      if (offset == originOffset.value) {
+        removeLyric(props.lyricInfo.musicInfo)
+      } else {
         saveLyric(props.lyricInfo.musicInfo, {
           lyric,
           tlyric,
+          rlyric,
           lxlyric,
         })
-      } else removeLyric(props.lyricInfo.musicInfo)
+      }
 
       emit('updateLyric', {
         lyric,
         tlyric,
+        rlyric,
         lxlyric,
         offset,
       })
@@ -135,25 +152,15 @@ export default {
       updateLyric(offset.value)
     }
     const offsetReset = () => {
-      if (!offset.value) return
-      offset.value = 0
-      updateLyric(0)
+      if (offset.value == originOffset.value) return
+      offset.value = originOffset.value
+      updateLyric(originOffset.value)
     }
 
     const parseLrcOffset = () => {
-      let lrcOffset
-      if (props.lyricInfo.lyric) {
-        lrcOffset = offsetTagRxp.exec(props.lyricInfo.lyric)
-        if (lrcOffset) {
-          lrcOffset = parseInt(lrcOffset[1])
-          if (Number.isNaN(lrcOffset)) lrcOffset = 0
-        } else lrcOffset = 0
-        offsetDisabled.value = false
-      } else {
-        offsetDisabled.value = true
-        lrcOffset = 0
-      }
-      offset.value = lrcOffset
+      offset.value = getOffset(props.lyricInfo.lyric)
+      originOffset.value = getOffset(props.lyricInfo.rawlyric)
+      offsetDisabled.value = !props.lyricInfo.lyric
     }
 
 
@@ -177,6 +184,7 @@ export default {
       menuStyles,
       playDetailSetting,
       offset,
+      originOffset,
       fontSizeUp,
       fontSizeDown,
       fontSizeReset,

@@ -19,4 +19,8 @@ module.exports = merge(baseConfig, {
       __userApi: `"${path.join(__dirname, '../../src/main/modules/userApi').replace(/\\/g, '\\\\')}"`,
     }),
   ],
+  performance: {
+    maxEntrypointSize: 1024 * 1024 * 50,
+    maxAssetSize: 1024 * 1024 * 30,
+  },
 })

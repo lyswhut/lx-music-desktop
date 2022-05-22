@@ -23,7 +23,7 @@ module.exports = merge(baseConfig, {
       patterns: [
         {
           from: path.join(__dirname, '../../src/static'),
-          to: path.join(__dirname, '../../dist/electron/static'),
+          to: path.join(__dirname, '../../dist/static'),
         },
       ],
     }),
@@ -43,6 +43,8 @@ module.exports = merge(baseConfig, {
     ],
   },
   performance: {
+    maxEntrypointSize: 1024 * 1024 * 10,
+    maxAssetSize: 1024 * 1024 * 20,
     hints: 'warning',
   },
   node: {

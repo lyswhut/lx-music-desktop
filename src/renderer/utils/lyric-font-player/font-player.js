@@ -20,14 +20,14 @@ const createAnimation = (dom, duration) => new window.Animation(new window.Keyfr
 // https://jsfiddle.net/ceqpnbky/1/
 
 module.exports = class FontPlayer {
-  constructor({ time = 0, lyric = '', translationLyric = '', lineClassName = '', fontClassName = '', translationClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
+  constructor({ time = 0, lyric = '', extendedLyrics = '', lineClassName = '', fontClassName = '', extendedLrcClassName = '', lineModeClassName = '', shadowContent = false, shadowClassName = '' }) {
     this.time = time
     this.lyric = lyric
-    this.translationLyric = translationLyric
+    this.extendedLyrics = extendedLyrics
 
     this.lineClassName = lineClassName
     this.fontClassName = fontClassName
-    this.translationClassName = translationClassName
+    this.extendedLrcClassName = extendedLrcClassName
     this.lineModeClassName = lineModeClassName
     this.shadowContent = shadowContent
     this.shadowClassName = shadowClassName
@@ -40,8 +40,8 @@ module.exports = class FontPlayer {
 
     this.fontContent = null
 
-    this.timeoutTools = new TimeoutTools()
-    this.waitPlayTimeout = new TimeoutTools()
+    this.timeoutTools = new TimeoutTools(80)
+    this.waitPlayTimeout = new TimeoutTools(80)
 
     this._init()
   }
@@ -64,20 +64,20 @@ module.exports = class FontPlayer {
       this.fontContent.appendChild(this.fontShadowContent)
     }
     this.lineContent.appendChild(this.fontContent)
-    if (this.translationLyric) {
-      this.translationContent = document.createElement('div')
-      this.translationContent.style = 'position:relative;display:inline-block;'
-      this.translationContent.className = this.translationClassName
-      this.translationContent.textContent = this.translationLyric
+    for (const lrc of this.extendedLyrics) {
+      const extendedLrcContent = document.createElement('div')
+      extendedLrcContent.style = 'position:relative;display:inline-block;'
+      extendedLrcContent.className = this.extendedLrcClassName
+      extendedLrcContent.textContent = lrc
       this.lineContent.appendChild(document.createElement('br'))
-      this.lineContent.appendChild(this.translationContent)
+      this.lineContent.appendChild(extendedLrcContent)
 
       if (this.shadowContent) {
-        this.translationShadowContent = document.createElement('div')
-        this.translationShadowContent.style = 'position:absolute;top:0;left:0;width:100%;z-index:-1;'
-        this.translationShadowContent.className = this.shadowClassName
-        this.translationShadowContent.textContent = this.translationLyric
-        this.translationContent.appendChild(this.translationShadowContent)
+        const extendedLrcShadowContent = document.createElement('div')
+        extendedLrcShadowContent.style = 'position:absolute;top:0;left:0;width:100%;z-index:-1;'
+        extendedLrcShadowContent.className = this.shadowClassName
+        extendedLrcShadowContent.textContent = lrc
+        extendedLrcContent.appendChild(extendedLrcShadowContent)
       }
     }
     this._parseLyric()

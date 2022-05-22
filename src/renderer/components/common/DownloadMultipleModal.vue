@@ -5,6 +5,7 @@
     <base-btn :class="$style.btn" @click="handleClick('128k')">{{$t('download__normal')}} - 128K</base-btn>
     <base-btn :class="$style.btn" @click="handleClick('320k')">{{$t('download__high_quality')}} - 320K</base-btn>
     <base-btn :class="$style.btn" @click="handleClick('flac')">{{$t('download__lossless')}} - FLAC</base-btn>
+    <base-btn :class="$style.btn" @click="handleClick('flac32bit')">{{$t('download__lossless')}} - FLAC 24bit</base-btn>
   </main>
 </material-modal>
 </template>

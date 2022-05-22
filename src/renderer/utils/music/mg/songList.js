@@ -6,9 +6,6 @@ import { sizeFormate } from '../../index'
 export default {
   _requestObj_tags: null,
   _requestObj_list: null,
-  _requestObj_listDetail: null,
-  _requestObj_listDetailLink: null,
-  _requestObj_listDetailInfo: null,
   limit_list: 10,
   limit_song: 50,
   successCode: '000000',
@@ -74,7 +71,6 @@ export default {
   },
 
   getListDetailList(id, page, tryNum = 0) {
-    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
     // https://h5.nf.migu.cn/app/v4/p/share/playlist/index.html?id=184187437&channel=0146921
 
@@ -82,8 +78,8 @@ export default {
       id = id.replace(/.*(?:\?|&)id=(\d+)(?:&.*|$)/, '$1')
     } else if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
 
-    this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
-    return this._requestObj_listDetail.promise.then(({ body }) => {
+    const requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id, page), { headers: this.defaultHeaders })
+    return requestObj_listDetail.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
       // console.log(JSON.stringify(body))
       // console.log(body)
@@ -98,14 +94,13 @@ export default {
   },
 
   getListDetailInfo(id, tryNum = 0) {
-    if (this._requestObj_listDetailInfo) this._requestObj_listDetailInfo.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
     if (this.cachedDetailInfo[id]) return Promise.resolve(this.cachedDetailInfo[id])
-    this._requestObj_listDetailInfo = httpFetch(`https://c.musicapp.migu.cn/MIGUM3.0/resource/playlist/v2.0?playlistId=${id}`, {
+    const requestObj_listDetailInfo = httpFetch(`https://c.musicapp.migu.cn/MIGUM3.0/resource/playlist/v2.0?playlistId=${id}`, {
       headers: this.defaultHeaders,
     })
-    return this._requestObj_listDetailInfo.promise.then(({ body }) => {
+    return requestObj_listDetailInfo.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
       // console.log(JSON.stringify(body))
       // console.log(body)
@@ -123,15 +118,13 @@ export default {
   async getDetailUrl(link, page, retryNum = 0) {
     if (retryNum > 3) return Promise.reject(new Error('link try max num'))
 
-    if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
-
-    this._requestObj_listDetailLink = httpFetch(link, {
+    const requestObj_listDetailLink = httpFetch(link, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
         Referer: link,
       },
     })
-    const { headers: { location }, statusCode } = await this._requestObj_listDetailLink.promise
+    const { headers: { location }, statusCode } = await requestObj_listDetailLink.promise
     // console.log(body, location)
     if (statusCode > 400) return this.getDetailUrl(link, page, ++retryNum)
     if (location) {
@@ -174,28 +167,28 @@ export default {
         let size
         switch (type.formatType) {
           case 'PQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: '128k', size })
             _types['128k'] = {
               size,
             }
             break
           case 'HQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: '320k', size })
             _types['320k'] = {
               size,
             }
             break
           case 'SQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: 'flac', size })
             _types.flac = {
               size,
             }
             break
           case 'ZQ':
-            size = sizeFormate(type.size)
+            size = sizeFormate(type.size ?? type.androidSize)
             types.push({ type: 'flac32bit', size })
             _types.flac32bit = {
               size,

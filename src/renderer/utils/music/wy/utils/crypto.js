@@ -19,7 +19,7 @@ const aesDecrypt = function(cipherBuffer, mode, key, iv) {
 
 const rsaEncrypt = (buffer, key) => {
   buffer = Buffer.concat([Buffer.alloc(128 - buffer.length), buffer])
-  return publicEncrypt({ key: key, padding: constants.RSA_NO_PADDING }, buffer)
+  return publicEncrypt({ key, padding: constants.RSA_NO_PADDING }, buffer)
 }
 
 export const weapi = object => {

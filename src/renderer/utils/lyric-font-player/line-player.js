@@ -11,11 +11,26 @@ const tagRegMap = {
 
 const timeoutTools = new TimeoutTools()
 
+const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
+  const extendedLines = extendedLyric.split(/\r\n|\n|\r/)
+  for (let i = 0; i < extendedLines.length; i++) {
+    const line = extendedLines[i].trim()
+    let result = timeExp.exec(line)
+    if (result) {
+      const text = line.replace(timeExp, '').trim()
+      if (text) {
+        const timeStr = RegExp.$1.replace(/(\.\d\d)0$/, '$1')
+        const targetLine = lrcLinesMap[timeStr]
+        if (targetLine) targetLine.extendedLyrics.push(text)
+      }
+    }
+  }
+}
+
 module.exports = class LinePlayer {
   constructor({ offset = 0, onPlay = function() { }, onSetLyric = function() { } } = {}) {
     this.tags = {}
     this.lines = null
-    this.translationLines = null
     this.onPlay = onPlay
     this.onSetLyric = onSetLyric
     this.isPlay = false
@@ -28,7 +43,7 @@ module.exports = class LinePlayer {
 
   _init() {
     if (this.lyric == null) this.lyric = ''
-    if (this.translationLyric == null) this.translationLyric = ''
+    if (this.extendedLyrics == null) this.extendedLyrics = []
     this._initTag()
     this._initLines()
     this.onSetLyric(this.lines, this.tags.offset + this.offset)
@@ -50,17 +65,15 @@ module.exports = class LinePlayer {
 
   _initLines() {
     this.lines = []
-    this.translationLines = []
     const lines = this.lyric.split(/\r\n|\r|\n/)
     const linesMap = {}
-    // const translationLines = this.translationLyric.split('\n')
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim()
       let result = timeExp.exec(line)
       if (result) {
         const text = line.replace(timeExp, '').trim()
         if (text) {
-          const timeStr = RegExp.$1
+          const timeStr = RegExp.$1.replace(/(\.\d\d)0$/, '$1')
           const timeArr = timeStr.split(':')
           if (timeArr.length < 3) timeArr.unshift(0)
           if (timeArr[2].indexOf('.') > -1) {
@@ -70,24 +83,13 @@ module.exports = class LinePlayer {
           linesMap[timeStr] = {
             time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(timeArr[3] || 0),
             text,
+            extendedLyrics: [],
           }
         }
       }
     }
 
-    const translationLines = this.translationLyric.split('\n')
-    for (let i = 0; i < translationLines.length; i++) {
-      const line = translationLines[i].trim()
-      let result = timeExp.exec(line)
-      if (result) {
-        const text = line.replace(timeExp, '').trim()
-        if (text) {
-          const timeStr = RegExp.$1
-          const targetLine = linesMap[timeStr]
-          if (targetLine) targetLine.translation = text
-        }
-      }
-    }
+    for (const lrc of this.extendedLyrics) parseExtendedLyric(linesMap, lrc)
     this.lines = Object.values(linesMap)
     this.lines.sort((a, b) => {
       return a.time - b.time
@@ -172,11 +174,11 @@ module.exports = class LinePlayer {
     }
   }
 
-  setLyric(lyric, translationLyric) {
-    // console.log(translationLyric)
+  setLyric(lyric, extendedLyrics) {
+    // console.log(extendedLyrics)
     if (this.isPlay) this.pause()
     this.lyric = lyric
-    this.translationLyric = translationLyric
+    this.extendedLyrics = extendedLyrics
     this._init()
   }
 }

@@ -4,7 +4,6 @@ import { formatPlayTime, sizeFormate } from '../..'
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/song_detail.js
 
 export default {
-  _requestObj: null,
   getSinger(singers) {
     let arr = []
     singers.forEach(singer => {
@@ -70,10 +69,9 @@ export default {
     return list
   },
   async getList(ids = [], retryNum = 0) {
-    if (this._requestObj) this._requestObj.cancelHttp()
     if (retryNum > 2) return Promise.reject(new Error('try max num'))
 
-    const _requestObj = httpFetch('https://music.163.com/weapi/v3/song/detail', {
+    const requestObj = httpFetch('https://music.163.com/weapi/v3/song/detail', {
       method: 'post',
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
@@ -84,7 +82,7 @@ export default {
         ids: '[' + ids.join(',') + ']',
       }),
     })
-    const { body, statusCode } = await _requestObj.promise
+    const { body, statusCode } = await requestObj.promise
     if (statusCode != 200 || body.code !== 200) throw new Error('获取歌曲详情失败')
     // console.log(body)
     return { source: 'wy', list: this.filterList(body) }

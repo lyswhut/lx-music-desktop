@@ -67,11 +67,10 @@ exports.createWindow = async userApi => {
       event.preventDefault()
     })
   }
-  global.modules.userApiWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-    if (webContents === global.modules.mainWindow.webContents) return callback(true)
+  global.modules.userApiWindow.webContents.session.setPermissionRequestHandler((webContents, permission, resolve) => {
+    if (webContents === global.modules.mainWindow.webContents) return resolve(true)
 
-    // eslint-disable-next-line node/no-callback-literal
-    callback(false)
+    resolve(false)
   })
   global.modules.userApiWindow.webContents.setWindowOpenHandler(() => {
     return { action: 'deny' }

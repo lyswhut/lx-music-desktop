@@ -513,13 +513,14 @@ export const parseUrlParams = str => {
 }
 
 export const getLyric = musicInfo => rendererInvoke(NAMES.mainWindow.get_lyric, `${musicInfo.source}_${musicInfo.songmid}`)
-export const setLyric = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_raw, {
+export const getLyricRaw = musicInfo => rendererInvoke(NAMES.mainWindow.get_lyric_raw, `${musicInfo.source}_${musicInfo.songmid}`)
+export const setLyric = (musicInfo, { lyric, tlyric, rlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_raw, {
   id: `${musicInfo.source}_${musicInfo.songmid}`,
-  lyrics: { lyric, tlyric, lxlyric },
+  lyrics: { lyric, tlyric, rlyric, lxlyric },
 })
-export const setLyricEdited = (musicInfo, { lyric, tlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_edited, {
+export const setLyricEdited = (musicInfo, { lyric, tlyric, rlyric, lxlyric }) => rendererSend(NAMES.mainWindow.save_lyric_edited, {
   id: `${musicInfo.source}_${musicInfo.songmid}`,
-  lyrics: { lyric, tlyric, lxlyric },
+  lyrics: { lyric, tlyric, rlyric, lxlyric },
 })
 export const removeLyricEdited = musicInfo => rendererSend(NAMES.mainWindow.remove_lyric_edited, `${musicInfo.source}_${musicInfo.songmid}`)
 

@@ -32,8 +32,9 @@ export default () => {
   })
   const rOnError = onError(() => {
     // console.log('onError')
-    window.eventHub.emit(player.player_error, getErrorCode())
-    window.eventHub.emit(player.error)
+    const errorCode = getErrorCode()
+    window.eventHub.emit(player.player_error, errorCode)
+    window.eventHub.emit(player.error, errorCode)
   })
   const rOnLoadeddata = onLoadeddata(() => {
     // console.log('onLoadeddata')

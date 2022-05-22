@@ -55,6 +55,7 @@ export default {
     },
     getTypeName(type) {
       switch (type) {
+        case 'flac32bit':
         case 'flac':
         case 'ape':
         case 'wav':

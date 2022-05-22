@@ -79,11 +79,9 @@ export default {
     item: /data-song="({.+?})"/g,
     info: /{total[\s:]+"(\d+)", size[\s:]+"(\d+)", page[\s:]+"(\d+)"}/,
   },
-  requestObj: null,
   getData(url) {
-    if (this.requestObj) this.requestObj.cancelHttp()
-    this.requestObj = httpFetch(url)
-    return this.requestObj.promise
+    const requestObj = httpFetch(url)
+    return requestObj.promise
   },
   filterData(rawList) {
     // console.log(rawList)

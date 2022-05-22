@@ -1,4 +1,4 @@
-import { openUrl } from '@renderer/utils'
+import { openUrl, getFontSizeWithScreen } from '@renderer/utils'
 import { base as eventBaseName } from '@renderer/event/names'
 import { onSetConfig, onSystemThemeChange } from '@renderer/utils/tools'
 import { isFullscreen, themeShouldUseDarkColors } from '@renderer/core/share'
@@ -14,9 +14,18 @@ import {
 
 const handle_key_esc_down = ({ event }) => {
   if (event.repeat) return
-  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) return
+  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) {
+    if (isFullscreen.value) {
+      event.lx_handled = true
+      rendererInvoke(NAMES.mainWindow.fullscreen, false).then(fullscreen => {
+        isFullscreen.value = fullscreen
+      })
+    }
+    return
+  }
   event.target.value = ''
   event.target.blur()
+  event.lx_handled = true
 }
 const handleBodyClick = event => {
   if (event.target.tagName != 'A') return
@@ -44,9 +53,36 @@ export default ({
   isProd,
   isLinux,
 }) => {
-  const setSetting = useCommit('setSetting')
+  const theme = useRefGetter('theme')
+  const font = useRefGetter('font')
   const windowSizeActive = useRefGetter('windowSizeActive')
+  const setSetting = useCommit('setSetting')
   const isShowAnimation = useRefGetter('isShowAnimation')
+
+  const dom_root = document.getElementById('root')
+
+
+  watch(theme, (val) => {
+    dom_root.className = val
+  })
+  watch(font, (val) => {
+    document.documentElement.style.fontFamily = val
+  }, {
+    immediate: true,
+  })
+  watch(isFullscreen, val => {
+    if (val) {
+      document.body.classList.remove(window.dt ? 'disableTransparent' : 'transparent')
+      document.body.classList.add('fullscreen')
+      document.documentElement.style.fontSize = getFontSizeWithScreen(window.screen.width) + 'px'
+    } else {
+      document.body.classList.remove('fullscreen')
+      document.body.classList.add(window.dt ? 'disableTransparent' : 'transparent')
+      document.documentElement.style.fontSize = windowSizeActive.value.fontSize
+    }
+  }, {
+    immediate: true,
+  })
 
   watch(windowSizeActive, ({ fontSize }) => {
     document.documentElement.style.fontSize = fontSize
@@ -61,6 +97,8 @@ export default ({
         document.body.classList.add('disableAnimation')
       }
     }
+  }, {
+    immediate: true,
   })
 
   const rSetConfig = onSetConfig((event, config) => {

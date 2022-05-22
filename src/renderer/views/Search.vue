@@ -22,7 +22,8 @@ div(:class="$style.search")
               td.nobreak.center(style="width: 5%; padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
               td.break
                 span.select {{item.name}}
-                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.ape || item._types.flac || item._types.wav") {{$t('tag__lossless')}}
+                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.flac32bit") {{$t('tag__lossless_24bit')}}
+                span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types.ape || item._types.flac || item._types.wav") {{$t('tag__lossless')}}
                 span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('tag__high_quality')}}
                 span(:class="[$style.labelSource, $style.noSelect]" v-if="searchSourceId == 'all'") {{item.source}}
               td.break(style="width: 22%;")
@@ -107,6 +108,7 @@ export default {
         },
       },
       isLoading: false,
+      searchId: null,
     }
   },
   beforeRouteUpdate(to, from) {
@@ -259,14 +261,20 @@ export default {
       this.handleSelectAllData()
     },
     handleSearch(text, page) {
-      if (text === '') return this.clearList()
+      const searchId = this.searchId = `${this.searchSourceId}__${page}__${text}`
+      if (text === '') {
+        this.isLoading = false
+        return this.clearList()
+      }
       this.isLoading = true
       this.search({ text, page, limit: this.listInfo.limit }).then(data => {
+        if (this.searchId != searchId) return
         this.page = page
         this.$nextTick(() => {
           this.$refs.dom_scrollContent.scrollTo(0, 0)
         })
       }).finally(() => {
+        if (this.searchId != searchId) return
         this.isLoading = false
       })
     },

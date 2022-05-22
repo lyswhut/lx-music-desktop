@@ -3,7 +3,6 @@ import { decodeName } from '../../index'
 import { formatSinger, objStr2JSON } from './util'
 
 // let requestObj_list
-let requestObj_listDetail
 export default {
   limit_list: 36,
   limit_song: 1000,
@@ -72,11 +71,8 @@ export default {
     return num
   },
   getAlbumListDetail(id, page, retryNum = 0) {
-    if (requestObj_listDetail) {
-      requestObj_listDetail.cancelHttp()
-    }
     if (retryNum > 2) return Promise.reject(new Error('try max num'))
-    requestObj_listDetail = httpFetch(`http://search.kuwo.cn/r.s?pn=${page - 1}&rn=${this.limit_song}&stype=albuminfo&albumid=${id}&show_copyright_off=0&encoding=utf&vipver=MUSIC_9.1.0`)
+    const requestObj_listDetail = httpFetch(`http://search.kuwo.cn/r.s?pn=${page - 1}&rn=${this.limit_song}&stype=albuminfo&albumid=${id}&show_copyright_off=0&encoding=utf&vipver=MUSIC_9.1.0`)
     return requestObj_listDetail.promise.then(({ statusCode, body }) => {
       if (statusCode !== 200) return this.getAlbumListDetail(id, page, ++retryNum)
       body = objStr2JSON(body)

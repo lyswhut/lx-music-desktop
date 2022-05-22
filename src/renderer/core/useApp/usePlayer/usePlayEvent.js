@@ -91,8 +91,12 @@ export default ({
     }
 
     if (setting.value.player.autoSkipOnError) {
-      setAllStatus(t('player__error'))
-      addDelayNextTimeout()
+      if (document.hidden) {
+        playNext()
+      } else {
+        setAllStatus(t('player__error'))
+        setTimeout(addDelayNextTimeout)
+      }
     }
   }
 

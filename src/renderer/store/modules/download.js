@@ -69,6 +69,7 @@ const getExt = type => {
     case 'ape':
       return 'ape'
     case 'flac':
+    case 'flac32bit':
       return 'flac'
     case 'wav':
       return 'wav'
@@ -185,14 +186,14 @@ const getLyric = function(musicInfo, isUseOtherSource, isS2t) {
   return getLyricFromStorage(musicInfo).then(lrcInfo => {
     return (
       existTimeExp.test(lrcInfo.lyric)
-        ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '' })
+        ? Promise.resolve({ lyric: lrcInfo.lyric, tlyric: lrcInfo.tlyric || '', rlyric: lrcInfo.rlyric || '', lxlyric: lrcInfo.lxlyric || '' })
         : (
             isUseOtherSource
               ? handleGetLyric.call(this, musicInfo)
               : music[musicInfo.source].getLyric(musicInfo).promise
-          ).then(({ lyric, tlyric, lxlyric }) => {
-            setLyric(musicInfo, { lyric, tlyric, lxlyric })
-            return { lyric, tlyric, lxlyric }
+          ).then(({ lyric, tlyric, rlyric, lxlyric }) => {
+            setLyric(musicInfo, { lyric, tlyric, rlyric, lxlyric })
+            return { lyric, tlyric, rlyric, lxlyric }
           }).catch(err => {
             console.log(err)
             return null
@@ -519,7 +520,8 @@ const actions = {
       delete dls[item.key]
     }
     commit('removeTask', item)
-    if (item.status != downloadStatus.COMPLETED) {
+    // 没有未完成、已下载大于1k
+    if (item.status != downloadStatus.COMPLETED && item.progress.total && item.progress.downloaded > 1024) {
       try {
         await deleteFile(item.metadata.filePath)
       } catch (_) {}
@@ -541,7 +543,8 @@ const actions = {
           delete dls[item.key]
         }
       }
-      if (item.status != downloadStatus.COMPLETED) {
+      // 没有未完成、已下载大于1k
+      if (item.status != downloadStatus.COMPLETED && item.progress.total && item.progress.downloaded > 1024) {
         deleteFile(item.metadata.filePath).catch(_ => _)
       }
     }

@@ -14,40 +14,12 @@
 </template>
 
 <script>
-import { useRefGetter, watch, onMounted } from '@renderer/utils/vueTools'
+import { onMounted } from '@renderer/utils/vueTools'
 import useApp from '@renderer/core/useApp'
-import { isFullscreen } from '@renderer/core/share'
-import { getFontSizeWithScreen } from '@renderer/utils'
 
 export default {
   setup() {
-    const theme = useRefGetter('theme')
-    const font = useRefGetter('font')
-    const windowSizeActive = useRefGetter('windowSizeActive')
-
     const dom_root = document.getElementById('root')
-
-    watch(theme, (val) => {
-      dom_root.className = val
-    })
-    watch(font, (val) => {
-      document.documentElement.style.fontFamily = val
-    }, {
-      immediate: true,
-    })
-    watch(isFullscreen, val => {
-      if (val) {
-        document.body.classList.remove(window.dt ? 'disableTransparent' : 'transparent')
-        document.body.classList.add('fullscreen')
-        document.documentElement.style.fontSize = getFontSizeWithScreen(window.screen.width) + 'px'
-      } else {
-        document.body.classList.remove('fullscreen')
-        document.body.classList.add(window.dt ? 'disableTransparent' : 'transparent')
-        document.documentElement.style.fontSize = windowSizeActive.value.fontSize
-      }
-    }, {
-      immediate: true,
-    })
 
     useApp()
 
@@ -124,9 +96,9 @@ body {
     border-bottom-left-radius: 0;
   }
 
-  #view { // 偏移5px距离解决非透明模式下右侧滚动条无法拖动的问题
-    margin-right: 5Px;
-  }
+  // #view { // 偏移5px距离解决非透明模式下右侧滚动条无法拖动的问题
+  //   margin-right: 5Px;
+  // }
 }
 .fullscreen {
   background-color: #fff;

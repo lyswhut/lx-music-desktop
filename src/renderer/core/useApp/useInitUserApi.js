@@ -39,7 +39,7 @@ export default ({ setting }) => {
                     promise: userApiRequest({
                       requestKey,
                       data: {
-                        source: source,
+                        source,
                         action: 'musicUrl',
                         info: {
                           type,

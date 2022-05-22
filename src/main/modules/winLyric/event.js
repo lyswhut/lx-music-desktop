@@ -41,6 +41,7 @@ const setLrcConfig = () => {
       config: desktopLyric,
       languageId: global.appSetting.langId,
       isShowLyricTranslation: global.appSetting.player.isShowLyricTranslation,
+      isShowLyricRoma: global.appSetting.player.isShowLyricRoma,
       isPlayLxlrc: global.appSetting.player.isPlayLxlrc,
     })
     if (isLock != desktopLyric.isLock) {

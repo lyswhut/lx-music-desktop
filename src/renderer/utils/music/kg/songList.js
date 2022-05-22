@@ -18,7 +18,6 @@ export default {
   _requestObj_listInfo: null,
   _requestObj_list: null,
   _requestObj_listRecommend: null,
-  _requestObj_listDetail: null,
   listDetailLimit: 10000,
   currentTagInfo: {
     id: undefined,
@@ -477,15 +476,14 @@ export default {
         }
       } else if (!link.includes('song.html')) return this.getUserListDetail3(link.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
     }
-    if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
 
-    this._requestObj_listDetailLink = httpFetch(link, {
+    const requestObj_listDetailLink = httpFetch(link, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
         Referer: link,
       },
     })
-    const { headers: { location }, statusCode, body } = await this._requestObj_listDetailLink.promise
+    const { headers: { location }, statusCode, body } = await requestObj_listDetailLink.promise
     // console.log(body, location)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
     if (location) {
@@ -512,7 +510,6 @@ export default {
   },
 
   getListDetail(id, page, tryNum = 0) { // 获取歌曲列表内的音乐
-    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
     id = id.toString()
@@ -528,8 +525,8 @@ export default {
 
     // if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
 
-    this._requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
-    return this._requestObj_listDetail.promise.then(({ body }) => {
+    const requestObj_listDetail = httpFetch(this.getSongListDetailUrl(id))
+    return requestObj_listDetail.promise.then(({ body }) => {
       let listData = body.match(this.regExps.listData)
       let listInfo = body.match(this.regExps.listInfo)
       if (!listData) return this.getListDetail(id, page, ++tryNum)

@@ -5,15 +5,13 @@ import { formatPlayTime } from '../../index'
 // import { debug } from '../../utils/env'
 // import { formatSinger } from './util'
 
-let searchRequest
 export default {
   limit: 30,
   total: 0,
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    if (searchRequest && searchRequest.cancelHttp) searchRequest.cancelHttp()
-    searchRequest = httpFetch(`http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version=5.6.5.6&method=baidu.ting.search.merge&format=json&query=${encodeURIComponent(str)}&page_no=${page}&page_size=${limit}&type=0&data_source=0&use_cluster=1`)
+    const searchRequest = httpFetch(`http://tingapi.ting.baidu.com/v1/restserver/ting?from=android&version=5.6.5.6&method=baidu.ting.search.merge&format=json&query=${encodeURIComponent(str)}&page_no=${page}&page_size=${limit}&type=0&data_source=0&use_cluster=1`)
     return searchRequest.promise.then(({ body }) => body)
   },
   handleResult(rawData) {
@@ -81,7 +79,7 @@ export default {
       return Promise.resolve({
         list,
         allPage: this.allPage,
-        limit: limit,
+        limit,
         total: this.total,
         source: 'bd',
       })

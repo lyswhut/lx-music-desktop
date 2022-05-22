@@ -10,6 +10,7 @@ export const currentStting = ref({
     mediaDeviceId: 'default',
     isMediaDeviceRemovedStopPlay: false,
     isShowLyricTranslation: false,
+    isShowLyricRoma: false,
     isS2t: false, // 是否将歌词从简体转换为繁体
     isPlayLxlrc: true,
     isSavePlayTime: false,

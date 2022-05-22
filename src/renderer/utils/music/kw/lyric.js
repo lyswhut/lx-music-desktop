@@ -93,6 +93,58 @@ const buildParams = (id, isGetLyricx) => {
 const timeExp = /^\[([\d:.]*)\]{1}/g
 const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 export default {
+  /* sortLrcArr(arr) {
+    const lrcSet = new Set()
+    let lrc = []
+    let lrcT = []
+    let markIndex = []
+    for (const item of arr) {
+      if (lrcSet.has(item.time)) {
+        if (lrc.length < 2) continue
+        const index = lrc.findIndex(l => l.time == item.time)
+        markIndex.push(index)
+        if (index == lrc.length - 1) {
+          lrcT.push({ ...lrc[index], time: item.time })
+          lrc.push(item)
+        } else {
+          lrcT.push({ ...lrc[index], time: lrc[index + 1].time })
+          if (item.text) {
+            //   const lastIndex = lrc.length - 1
+            //   markIndex.push(lastIndex)
+            //   lrcT.push({ ...lrc[lastIndex], time: lrc[lastIndex - 1].time })
+            lrc.push(item)
+          }
+        }
+      } else {
+        lrc.push(item)
+        lrcSet.add(item.time)
+      }
+    }
+
+    // console.log(markIndex)
+    markIndex = Array.from(new Set(markIndex))
+    for (let index = markIndex.length - 1; index >= 0; index--) {
+      lrc.splice(markIndex[index], 1)
+    }
+
+    // if (lrcT.length) {
+    //   if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
+    //     const tItem = lrc.pop()
+    //     tItem.time = lrc[lrc.length - 1].time
+    //     lrcT.push(tItem)
+    //   } else {
+    //     lrc = arr
+    //     lrcT = []
+    //   }
+    // }
+
+    console.log(lrc, lrcT)
+
+    return {
+      lrc,
+      lrcT,
+    }
+  }, */
   sortLrcArr(arr) {
     const lrcSet = new Set()
     let lrc = []
@@ -111,15 +163,16 @@ export default {
       }
     }
 
-    if (lrcT.length) {
-      if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
-        const tItem = lrc.pop()
-        tItem.time = lrc[lrc.length - 1].time
-        lrcT.push(tItem)
-      } else {
-        lrc = arr
-        lrcT = []
-      }
+    if (lrcT.length > lrc.length * 0.3) {
+      throw new Error('failed')
+      // if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
+      //   const tItem = lrc.pop()
+      //   tItem.time = lrc[lrc.length - 1].time
+      //   lrcT.push(tItem)
+      // } else {
+      //   lrc = arr
+      //   lrcT = []
+      // }
     }
 
     return {

@@ -5,8 +5,6 @@ export default {
   _requestObj_tags: null,
   _requestObj_hotTags: null,
   _requestObj_list: null,
-  _requestObj_listDetail: null,
-  _requestObj_listDetailLink: null,
   limit_list: 36,
   limit_song: 100000,
   successCode: 0,
@@ -175,11 +173,10 @@ export default {
   },
 
   async handleParseId(link, retryNum = 0) {
-    if (this._requestObj_listDetailLink) this._requestObj_listDetailLink.cancelHttp()
     if (retryNum > 2) return Promise.reject(new Error('link try max num'))
 
-    this._requestObj_listDetailLink = httpFetch(link)
-    const { headers: { location }, statusCode } = await this._requestObj_listDetailLink.promise
+    const requestObj_listDetailLink = httpFetch(link)
+    const { headers: { location }, statusCode } = await requestObj_listDetailLink.promise
     // console.log(headers)
     if (statusCode > 400) return this.handleParseId(link, ++retryNum)
     return location == null ? link : location
@@ -200,18 +197,17 @@ export default {
   },
   // 获取歌曲列表内的音乐
   async getListDetail(id, tryNum = 0) {
-    if (this._requestObj_listDetail) this._requestObj_listDetail.cancelHttp()
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
     id = await this.getListId(id)
 
-    this._requestObj_listDetail = httpFetch(this.getListDetailUrl(id), {
+    const requestObj_listDetail = httpFetch(this.getListDetailUrl(id), {
       headers: {
         Origin: 'https://y.qq.com',
         Referer: `https://y.qq.com/n/yqq/playsquare/${id}.html`,
       },
     })
-    const { body } = await this._requestObj_listDetail.promise
+    const { body } = await requestObj_listDetail.promise
 
     if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
     const cdlist = body.cdlist[0]

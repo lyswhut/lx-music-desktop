@@ -135,21 +135,24 @@ export default ({ setting }) => {
     }
   }
   const setLrc = (targetSong) => {
-    getLrc(targetSong).then(({ lyric, tlyric, lxlyric }) => {
+    getLrc(targetSong).then(({ lyric, tlyric, rlyric, lxlyric, rawInfo }) => {
       if (targetSong.songmid !== musicInfo.songmid) return
       return (
         setting.value.player.isS2t
           ? Promise.all([
             lyric ? langS2T(lyric) : Promise.resolve(''),
             tlyric ? langS2T(tlyric) : Promise.resolve(''),
+            rlyric ? langS2T(rlyric) : Promise.resolve(''),
             lxlyric ? langS2T(lxlyric) : Promise.resolve(''),
           ])
-          : Promise.resolve([lyric, tlyric, lxlyric])
-      ).then(([lyric, tlyric, lxlyric]) => {
+          : Promise.resolve([lyric, tlyric, rlyric, lxlyric])
+      ).then(([lyric, tlyric, rlyric, lxlyric]) => {
         setMusicInfo({
           lrc: lyric,
           tlrc: tlyric,
+          rlrc: rlyric,
           lxlrc: lxlyric,
+          rawlrc: rawInfo.lyric,
         })
       })
     }).catch((err) => {
@@ -212,7 +215,9 @@ export default ({ setting }) => {
       img: null,
       lrc: null,
       tlrc: null,
+      rlrc: null,
       lxlrc: null,
+      rawlrc: null,
       url: null,
       name: '',
       singer: '',
@@ -223,6 +228,7 @@ export default ({ setting }) => {
   // 播放音乐
   const playMusic = async() => {
     // console.log('playMusic')
+    isGettingUrl = false
     setStopStatus()
     if (window.restorePlayInfo) {
       handleRestorePlay(window.restorePlayInfo)
