@@ -87,6 +87,7 @@ export const currentStting = ref({
     port: '23332',
   },
   windowSizeId: 1,
+  startInFullscreen: false,
   langId: 'cns',
   theme: {
     id: 0,

@@ -21,6 +21,8 @@ dd
     .gap-top
       base-checkbox(id="setting_animate" v-model="currentStting.randomAnimate" :label="$t('setting__basic_animation')")
     .gap-top
+      base-checkbox(id="setting_start_in_fullscreen" v-model="currentStting.startInFullscreen" :label="$t('setting__basic_start_in_fullscreen')")
+    .gap-top
       base-checkbox(id="setting_to_tray" v-model="currentStting.tray.isShow" :label="$t('setting__basic_to_tray')")
     p.gap-top
       base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}

@@ -2,7 +2,7 @@ const path = require('path')
 const os = require('os')
 
 const defaultSetting = {
-  version: '1.0.57',
+  version: '1.0.58',
   player: {
     togglePlayMethod: 'listLoop',
     highQuality: false,
@@ -108,6 +108,7 @@ const defaultSetting = {
     port: '23332',
   },
   windowSizeId: 2,
+  startInFullscreen: false,
   theme: {
     id: 0,
     lightId: 0,

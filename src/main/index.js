@@ -160,7 +160,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  global.modules.mainWindow = new BrowserWindow({
+  const options = {
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -178,7 +178,12 @@ function createWindow() {
       nodeIntegration: true,
       spellcheck: false, // 禁用拼写检查器
     },
-  })
+  }
+  if (global.appSetting.startInFullscreen) {
+    options.fullscreen = true
+    if (isLinux) options.resizable = true
+  }
+  global.modules.mainWindow = new BrowserWindow(options)
 
   const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
   const themeId = global.appSetting.theme.id == 'auto'
