@@ -222,8 +222,8 @@ const actions = {
     })
   },
   async getLrc({ commit, state }, musicInfo) {
-    const lrcInfo = await getStoreLyric(musicInfo)
-    // let lrcInfo = {}
+    let lrcInfo = await getStoreLyric(musicInfo)
+    // lrcInfo = {}
     // if (lrcRequest && lrcRequest.cancelHttp) lrcRequest.cancelHttp()
     if (existTimeExp.test(lrcInfo.lyric) && lrcInfo.tlyric != null) {
       // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {

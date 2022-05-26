@@ -89,14 +89,26 @@ export const lrcTools = {
   isOK: false,
   lines: [],
   tags: [],
-  getWordInfo(str, str2) {
+  getWordInfo(str, str2, prevWord) {
     const offset = parseInt(str)
     const offset2 = parseInt(str2)
-    const startTime = Math.floor((offset + offset2) / (this.offset * 2))
-    const timeLength = Math.floor((offset - offset2) / (this.offset2 * 2))
+    let startTime = Math.abs((offset + offset2) / (this.offset * 2))
+    let endTime = Math.abs((offset - offset2) / (this.offset2 * 2)) + startTime
+    if (prevWord) {
+      if (startTime < prevWord.endTime) {
+        prevWord.endTime = startTime
+        if (prevWord.startTime > prevWord.endTime) {
+          prevWord.startTime = prevWord.endTime
+        }
+
+        prevWord.newTimeStr = `<${prevWord.startTime},${prevWord.endTime - prevWord.startTime}>`
+        // console.log(prevWord)
+      }
+    }
     return {
       startTime,
-      timeLength,
+      endTime,
+      timeStr: `<${startTime},${endTime - startTime}>`,
     }
   },
   parseLine(line) {
@@ -111,10 +123,13 @@ export const lrcTools = {
       const wordTimes = words.match(this.rxps.wordTimeAll)
       if (!wordTimes) return
       // console.log(wordTimes)
+      let preTimeInfo
       for (const timeStr of wordTimes) {
         const result = this.rxps.wordTime.exec(timeStr)
-        const wordInfo = this.getWordInfo(result[1], result[2])
-        words = words.replace(timeStr, `<${wordInfo.startTime},${wordInfo.timeLength}>`)
+        const wordInfo = this.getWordInfo(result[1], result[2], preTimeInfo)
+        words = words.replace(timeStr, wordInfo.timeStr)
+        if (preTimeInfo?.newTimeStr) words = words.replace(preTimeInfo.timeStr, preTimeInfo.newTimeStr)
+        preTimeInfo = wordInfo
       }
       this.lines.push(time + words)
       return
@@ -127,8 +142,8 @@ export const lrcTools = {
         content = content.substring(0, content.indexOf(']['))
       }
       const valueOf = parseInt(content, 8)
-      this.offset = Math.floor(valueOf / 10)
-      this.offset2 = Math.floor(valueOf % 10)
+      this.offset = Math.trunc(valueOf / 10)
+      this.offset2 = Math.trunc(valueOf % 10)
       if (this.offset == 0 || Number.isNaN(this.offset) || this.offset2 == 0 || Number.isNaN(this.offset2)) {
         this.isOK = false
       }
@@ -147,12 +162,13 @@ export const lrcTools = {
     tools.tags = []
 
     for (const line of lines) {
-      if (!tools.isOK) return ''
+      if (!tools.isOK) throw new Error('failed')
       tools.parseLine(line)
     }
     if (!tools.lines.length) return ''
     let lrcs = tools.lines.join('\n')
     if (tools.tags.length) lrcs = `${tools.tags.join('\n')}\n${lrcs}`
+    // console.log(lrcs)
     return lrcs
   },
 }
