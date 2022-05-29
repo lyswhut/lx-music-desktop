@@ -52,6 +52,10 @@ export default () => {
 
 
   getEnvParams().then(envParams => {
+    // 移除代理相关的环境变量设置，防止请求库自动应用它们
+    for (const key of Object.keys(process.env)) {
+      if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]
+    }
     const envProxy = envParams.cmdParams['proxy-server']
     if (envProxy && typeof envProxy == 'string') {
       const [host, port = ''] = envProxy.split(':')
