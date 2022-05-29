@@ -14,6 +14,7 @@ module.exports = merge(baseConfig, {
         NODE_ENV: '"development"',
         ELECTRON_DISABLE_SECURITY_WARNINGS: 'true',
       },
+      ENVIRONMENT: 'process.env',
       __VUE_OPTIONS_API__: 'true',
       __VUE_PROD_DEVTOOLS__: 'false',
       __static: `"${path.join(__dirname, '../../src/static').replace(/\\/g, '\\\\')}"`,
