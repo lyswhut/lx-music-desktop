@@ -94,7 +94,7 @@ export default ({ list, setting }) => {
     }
   }
 
-  watch(() => list, removeAllSelect)
+  watch(list, removeAllSelect)
 
   return {
     selectedList,
