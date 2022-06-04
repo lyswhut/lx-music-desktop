@@ -10,3 +10,8 @@
 
 - 修复若配置了`http_proxy`环境变量时，会意外使用此代理配置的问题
 - 修复多选后切换列表后不会清空多选内容的问题
+
+### 文档
+
+桌面版文档已迁移到：<https://lyswhut.github.io/lx-music-doc/desktop>
+

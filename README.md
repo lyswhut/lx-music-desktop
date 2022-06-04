@@ -48,7 +48,7 @@
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
-使用常见问题请转至：[常见问题](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md)<br>
+使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)<br>
 移动版项目地址：<https://github.com/lyswhut/lx-music-mobile>
 
 #### Scheme URL支持
@@ -56,7 +56,7 @@
 从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
 脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 
-若你想自己调用LX Music，可以看[Scheme URL支持](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#scheme-url%E6%94%AF%E6%8C%81)
+若你想自己调用LX Music，可以看[Scheme URL支持](https://lyswhut.github.io/lx-music-doc/desktop/scheme-url)
 
 #### 启动参数
 
@@ -70,7 +70,7 @@
 - `-dt` 以非透明模式启动（Disable Transparent）
 - `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
 
-启动参数的详细说明请看[启动参数说明](https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0)
+启动参数的详细说明请看[启动参数说明](https://lyswhut.github.io/lx-music-doc/desktop/run-params)
 
 #### 数据存储路径
 
@@ -110,7 +110,7 @@ npm run pack:linux
 
 ### 常见问题
 
-常见问题已移至：<https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md>
+常见问题已移至：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
 
 ### 项目协议
 
