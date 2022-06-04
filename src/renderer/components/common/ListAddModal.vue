@@ -21,6 +21,7 @@ import { mapMutations } from 'vuex'
 import { computed } from '@renderer/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
 import { getList } from '@renderer/core/share/utils'
+import useKeyDown from '@renderer/utils/compositions/useKeyDown'
 
 export default {
   props: {
@@ -57,6 +58,8 @@ export default {
   },
   emits: ['update:show'],
   setup(props) {
+    const keyModDown = useKeyDown('mod')
+
     const lists = computed(() => {
       if (!props.musicInfo) return []
       const targetMid = props.musicInfo.songmid
@@ -67,6 +70,7 @@ export default {
       ].filter(l => !props.excludeListId.includes(l.id)).map(l => ({ ...l, isExist: getList(l.id).some(s => s.songmid == targetMid) }))
     })
     return {
+      keyModDown,
       lists,
     }
   },
@@ -103,6 +107,8 @@ export default {
       this.isMove
         ? this.listMove({ fromId: this.fromListId, toId: this.lists[index].id, musicInfo: this.musicInfo })
         : this.listAdd({ id: this.lists[index].id, musicInfo: this.musicInfo })
+
+      if (this.keyModDown && !this.isMove) return
       this.$nextTick(() => {
         this.handleClose()
       })

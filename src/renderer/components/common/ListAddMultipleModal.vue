@@ -20,6 +20,7 @@
 import { mapMutations } from 'vuex'
 import { computed } from '@renderer/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/core/share/list'
+import useKeyDown from '@renderer/utils/compositions/useKeyDown'
 
 export default {
   props: {
@@ -59,6 +60,8 @@ export default {
   },
   emits: ['update:show', 'confirm'],
   setup(props) {
+    const keyModDown = useKeyDown('mod')
+
     const lists = computed(() => {
       return [
         defaultList,
@@ -67,6 +70,7 @@ export default {
       ].filter(l => !props.excludeListId.includes(l.id))
     })
     return {
+      keyModDown,
       lists,
     }
   },
@@ -104,6 +108,8 @@ export default {
       this.isMove
         ? this.listMoveMultiple({ fromId: this.fromListId, toId: this.lists[index].id, list: this.musicList })
         : this.listAddMultiple({ id: this.lists[index].id, list: this.musicList })
+
+      if (this.keyModDown && !this.isMove) return
       this.$nextTick(() => {
         this.handleClose()
         this.$emit('confirm')
