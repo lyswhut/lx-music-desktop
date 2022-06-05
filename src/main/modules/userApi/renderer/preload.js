@@ -3,6 +3,10 @@ const needle = require('needle')
 const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = require('crypto')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 
+for (const key of Object.keys(process.env)) {
+  if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]
+}
+
 const sendMessage = (action, data, status, message) => {
   ipcRenderer.send(action, { data, status, message })
 }
