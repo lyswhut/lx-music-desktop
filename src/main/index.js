@@ -195,6 +195,7 @@ function createWindow() {
   global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${themeClass}`)
 
   winEvent(global.modules.mainWindow)
+  if (global.envParams.cmdParams.odt) require('@main/utils').openDevTools(global.modules.mainWindow.webContents)
   // global.modules.mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()

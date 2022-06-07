@@ -3,7 +3,7 @@ dt#update {{$t('setting__update')}}
 dd
   p.small
     | {{$t('setting__update_latest_label')}}{{versionInfo.newVersion ? versionInfo.newVersion.version : $t('setting__update_unknown')}}
-  p.small {{$t('setting__update_current_label')}}{{versionInfo.version}}
+  p.small(@click="handleOPenDevTools") {{$t('setting__update_current_label')}}{{versionInfo.version}}
   p.small(v-if="versionInfo.downloadProgress" style="line-height: 1.5;")
     | {{$t('setting__update_downloading')}}
     br
@@ -20,11 +20,29 @@ import { versionInfo } from '@renderer/core/share'
 import { sizeFormate } from '@renderer/utils/tools'
 // import { openDirInExplorer, selectDir } from '@renderer/utils'
 import { currentStting } from '../setting'
+import { rendererSend, NAMES } from '@common/ipc'
 
 export default {
   name: 'SettingUpdate',
   setup() {
+    let lastClickTime = 0
+    let clickNum = 0
+
     const { t } = useI18n()
+
+    const handleOPenDevTools = () => {
+      if (window.performance.now() - lastClickTime > 1000) {
+        if (clickNum > 0) clickNum = 0
+      } else {
+        if (clickNum > 6) {
+          rendererSend(NAMES.mainWindow.open_dev_tools)
+          clickNum = 0
+          return
+        }
+      }
+      clickNum++
+      lastClickTime = window.performance.now()
+    }
 
     const downloadProgress = computed(() => {
       return versionInfo.downloadProgress
@@ -40,6 +58,7 @@ export default {
       currentStting,
       versionInfo,
       downloadProgress,
+      handleOPenDevTools,
       showUpdateModal,
     }
   },
