@@ -148,6 +148,8 @@ export default {
         img: item.albumImgs && item.albumImgs.length ? item.albumImgs[0].img : null,
         lrc: null,
         lrcUrl: item.lrcUrl,
+        mrcUrl: item.mrcUrl,
+        trcUrl: item.trcUrl,
         otherSource: null,
         types,
         _types,

@@ -238,6 +238,7 @@ const actions = {
         switch (musicInfo.source) {
           case 'kg':
           case 'kw':
+          case 'mg':
             break
           default:
             return buildLyricInfo(lrcInfo, musicInfo)
