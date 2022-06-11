@@ -107,7 +107,7 @@ const unbindKey = () => {
 const clearDownKeys = () => {
   let keys = Array.from(downKeys)
   for (let i = keys.length - 1; i > -1; i--) {
-    handleSendEvent(keys[i], 'up')
+    handleSendEvent(keys[i], keys[i], 'up', null, [keys[i]])
   }
   downKeys.clear()
 }

@@ -24,8 +24,10 @@ eventHub.on(baseName.bindKey, () => {
     // console.log(`key_${key}_${type}`)
     eventHub.emit(baseName.key_down, { event, keys, key, type })
     // console.log(event, key)
-    if (!window.isEditingHotKey && appHotKeyConfig.local.enable && appHotKeyConfig.local.keys[key]) {
-      event.preventDefault()
+    // console.log(key, eventKey, type, event, keys)
+    if (window.isEditingHotKey) return
+    if (appHotKeyConfig.local.enable && appHotKeyConfig.local.keys[key]) {
+      event?.preventDefault()
       if (type == 'up') return
 
       // 软件内快捷键的最小化触发时

@@ -102,65 +102,67 @@ export default {
       })
     }
 
-    const handleHotKeyBlur = async(event, info, type) => {
-      await hotKeySetEnable(true)
-      window.isEditingHotKey = false
-      isEditHotKey = false
-      const prevInput = hotKeyTargetInput
-      hotKeyTargetInput = null
-      if (prevInput.value == t('setting__hot_key_tip_input')) {
-        prevInput.value = newHotKey ? formatHotKeyName(newHotKey) : ''
-        return
-      }
-      let config = hotKeyConfig.value[type][info.name]
-      let originKey
-      if (type == 'global' && newHotKey && current_hot_key.value.global.enable) {
-        try {
-          await hotKeySetConfig({
-            action: 'register',
-            data: {
-              key: newHotKey,
-              info,
-            },
-          })
-        } catch (error) {
-          console.log(error)
+    const handleHotKeyBlur = (event, info, type) => {
+      setTimeout(async() => {
+        await hotKeySetEnable(true)
+        window.isEditingHotKey = false
+        isEditHotKey = false
+        const prevInput = hotKeyTargetInput
+        hotKeyTargetInput = null
+        if (prevInput?.value == t('setting__hot_key_tip_input')) {
+          prevInput.value = newHotKey ? formatHotKeyName(newHotKey) : ''
           return
         }
-      }
-      if (config) {
-        if (config.key == newHotKey) return
-        originKey = config.key
-        delete current_hot_key.value[type].keys[config.key]
-      } else if (!newHotKey) return
-
-      if (newHotKey) {
-        for (const [tempType, tempInfo] of Object.entries(current_hot_key.value)) {
-          if (tempType == type) continue
-          config = tempInfo.keys[newHotKey]
-          if (config) {
-            console.log(newHotKey, info, config, info.name, config.name)
-            delete current_hot_key.value[tempType].keys[newHotKey]
-            break
+        let config = hotKeyConfig.value[type][info.name]
+        let originKey
+        if (type == 'global' && newHotKey && current_hot_key.value.global.enable) {
+          try {
+            await hotKeySetConfig({
+              action: 'register',
+              data: {
+                key: newHotKey,
+                info,
+              },
+            })
+          } catch (error) {
+            console.log(error)
+            return
           }
         }
-        current_hot_key.value[type].keys[newHotKey] = info
-      }
+        if (config) {
+          if (config.key == newHotKey) return
+          originKey = config.key
+          delete current_hot_key.value[type].keys[config.key]
+        } else if (!newHotKey) return
 
-      initHotKeyConfig()
-      // console.log(this.current_hot_key.global.keys)
-      if (originKey && current_hot_key.value.global.enable) {
-        try {
-          await hotKeySetConfig({
-            action: 'unregister',
-            data: originKey,
-          })
-        } catch (error) {
-          console.log(error)
+        if (newHotKey) {
+          for (const [tempType, tempInfo] of Object.entries(current_hot_key.value)) {
+            if (tempType == type) continue
+            config = tempInfo.keys[newHotKey]
+            if (config) {
+              console.log(newHotKey, info, config, info.name, config.name)
+              delete current_hot_key.value[tempType].keys[newHotKey]
+              break
+            }
+          }
+          current_hot_key.value[type].keys[newHotKey] = info
         }
-      }
-      await handleHotKeySaveConfig()
-      await getHotKeyStatus()
+
+        initHotKeyConfig()
+        // console.log(this.current_hot_key.global.keys)
+        if (originKey && current_hot_key.value.global.enable) {
+          try {
+            await hotKeySetConfig({
+              action: 'unregister',
+              data: originKey,
+            })
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        await handleHotKeySaveConfig()
+        await getHotKeyStatus()
+      })
     }
 
     const handleKeyDown = ({ event, keys, key, type }) => {
