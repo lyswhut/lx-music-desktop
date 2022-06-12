@@ -14,8 +14,8 @@ import {
 
 const handle_key_down = ({ event, type, key }) => {
   // console.log(key)
-  if (key != 'escape' || !event || event.repeat || type == 'up' || window.isEditingHotKey) return
-  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) {
+  if (key != 'escape' || !event || event.repeat || type == 'up' || window.isEditingHotKey || event.target.classList.contains('ignore-esc')) return
+  if (event.target.tagName != 'INPUT') {
     if (isFullscreen.value) {
       event.lx_handled = true
       rendererInvoke(NAMES.mainWindow.fullscreen, false).then(fullscreen => {
