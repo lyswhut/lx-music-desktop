@@ -4,7 +4,7 @@ teleport(to="#view")
     transition(enter-active-class="animated-fast zoomIn" leave-active-class="animated zoomOut" @after-leave="handleAnimated")
       div(:class="$style.search" v-show="visible")
         div(:class="$style.form")
-          input.key-bind.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
+          input.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
                 @input="handleDelaySearch"
                 @keyup.enter="handleTemplistClick(selectIndex)"
                 @keyup.arrow-down.prevent="handleKeyDown"

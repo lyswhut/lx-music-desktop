@@ -7,7 +7,7 @@ dd
   div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
     div(:class="$style.hotKeyItem" v-for="item in allHotKeys.local")
       h4(:class="$style.hotKeyItemTitle") {{$t('setting__hot_key_' + item.name)}}
-      base-input.key-bind(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('setting__hot_key_unset_input')"
+      base-input(:class="$style.hotKeyItemInput" readonly @keyup.prevent :placeholder="$t('setting__hot_key_unset_input')"
         :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
         @focus="handleHotKeyFocus($event, item, 'local')"
         @blur="handleHotKeyBlur($event, item, 'local')")
@@ -18,7 +18,7 @@ dd
   div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
     div(:class="$style.hotKeyItem" v-for="item in allHotKeys.global")
       h4(:class="$style.hotKeyItemTitle") {{$t('setting__hot_key_' + item.name)}}
-      base-input.key-bind(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
+      base-input(:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
         :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" @input.prevent readonly :placeholder="$t('setting__hot_key_unset_input')"
         @focus="handleHotKeyFocus($event, item, 'global')"
         @blur="handleHotKeyBlur($event, item, 'global')")

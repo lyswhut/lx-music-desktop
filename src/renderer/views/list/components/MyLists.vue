@@ -30,12 +30,12 @@
       @contextmenu="handleListsItemRigthClick($event, index)" :aria-label="item.name" v-for="(item, index) in userLists" :key="item.id" :aria-selected="defaultList.id == listId"
     >
       <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">{{item.name}}</span>
-      <input class="key-bind" :class="$style.listsInput" @contextmenu.stop type="text"
+      <input :class="$style.listsInput" @contextmenu.stop type="text"
         @keyup.enter="handleListsSave(index, $event)" @blur="handleListsSave(index, $event)" :value="item.name" :placeholder="item.name"/>
     </li>
     <transition enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="handleListsNewAfterLeave" @after-enter="$refs.dom_listsNewInput.focus()">
       <li :class="[$style.listsItem, $style.listsNew, listsData.isNewLeave ? $style.newLeave : null]" v-if="listsData.isShowNewList">
-        <input class="key-bind" :class="$style.listsInput" @contextmenu.stop ref="dom_listsNewInput" type="text" @keyup.enter="handleListsCreate"
+        <input :class="$style.listsInput" @contextmenu.stop ref="dom_listsNewInput" type="text" @keyup.enter="handleListsCreate"
           @blur="handleListsCreate" :placeholder="$t('lists__new_list_input')"/>
       </li>
     </transition>

@@ -8,7 +8,7 @@
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42" space="preserve">
           <use xlink:href="#icon-addTo"></use>
         </svg>
-        <input class="key-bind" :class="$style.newListInput" :value="newListName" type="text" :placeholder="$t('lists__new_list_input')" @keyup.enter="handleSaveList($event)" @blur="handleSaveList($event)"/>
+        <input :class="$style.newListInput" :value="newListName" type="text" :placeholder="$t('lists__new_list_input')" @keyup.enter="handleSaveList($event)" @blur="handleSaveList($event)"/>
       </base-btn>
       <span :class="$style.btn" :key="i" v-for="i in spaceNum"></span>
     </div>
