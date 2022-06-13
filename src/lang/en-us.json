@@ -127,6 +127,7 @@
   "lists__sort_list": "Sort songs",
   "lists__source_detail": "Playlist Page",
   "lists__sync": "Update",
+  "lists__sync_confirm_tip": "This will replace the songs in {name} with the songs in the online list, are you sure you want to update?",
   "load_list_file_error_detail": "We have helped you back up the old list file to {path}\nIt is stored in JSON format, you can try to repair and restore it manually\n\nError details: {detail}",
   "load_list_file_error_title": "Error loading playlist data",
   "loding_list": "Loading...",

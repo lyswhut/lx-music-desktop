@@ -352,7 +352,13 @@ export default {
           this.handleExportList(index)
           break
         case 'sync':
-          this.handleSyncSourceList(userLists[index])
+          this.$dialog.confirm({
+            message: this.$t('lists__sync_confirm_tip', { name: userLists[index].name }),
+            confirmButtonText: this.$t('lists__remove_tip_button'),
+          }).then(isSync => {
+            if (!isSync) return
+            this.handleSyncSourceList(userLists[index])
+          })
           break
         case 'remove':
           this.$dialog.confirm({

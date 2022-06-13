@@ -127,6 +127,7 @@
   "lists__sort_list": "排序歌曲",
   "lists__source_detail": "歌單詳情頁",
   "lists__sync": "更新",
+  "lists__sync_confirm_tip": "這將會把 {name} 內的歌曲替換成在線列表的歌曲，你確認要更新嗎？",
   "load_list_file_error_detail": "我們已經幫你把舊的列表文件備份到{path}\n它以 JSON 格式存儲，你可以嘗試手動修復並恢復它\n\n錯誤詳情：{detail}",
   "load_list_file_error_title": "播放列表數據加載錯誤",
   "loding": "加載中...",

@@ -127,6 +127,7 @@
   "lists__sort_list": "排序歌曲",
   "lists__source_detail": "歌单详情页",
   "lists__sync": "更新",
+  "lists__sync_confirm_tip": "这将会把 {name} 内的歌曲替换成在线列表的歌曲，你确认要更新吗？",
   "load_list_file_error_detail": "我们已经帮你把旧的列表文件备份到{path}\n它以 JSON 格式存储，你可以尝试手动修复并恢复它\n\n错误详情：{detail}",
   "load_list_file_error_title": "播放列表数据加载错误（建议到GitHub或加群反馈）",
   "loding": "加载中...",
