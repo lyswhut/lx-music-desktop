@@ -269,6 +269,7 @@
   "setting__desktop_lyric_enable": "Display lyrics",
   "setting__desktop_lyric_font": "Lyric font",
   "setting__desktop_lyric_font_default": "Default",
+  "setting__desktop_lyric_hover_hide": "Reduce the transparency of lyrics when the mouse moves into the lyrics area (this feature has platform compatibility issues)",
   "setting__desktop_lyric_lock": "Lock lyrics",
   "setting__desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the main screen",
   "setting__download": "Download",

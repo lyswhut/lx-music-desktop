@@ -13,6 +13,8 @@ dd
     base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" v-model="currentStting.desktopLyric.isAlwaysOnTopLoop" :label="$t('setting__desktop_lyric_always_on_top_loop')")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lockScreen" v-model="currentStting.desktopLyric.isLockScreen" :label="$t('setting__desktop_lyric_lock_screen')")
+  .gap-top
+    base-checkbox(id="setting_desktop_lyric_hoverHide" v-model="currentStting.desktopLyric.isHoverHide" :label="$t('setting__desktop_lyric_hover_hide')")
 dd
   h3#desktop_lyric_font {{$t('setting__desktop_lyric_font')}}
   div

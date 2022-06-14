@@ -36,6 +36,7 @@ export const currentStting = ref({
     theme: '',
     isLockScreen: true,
     isDelayScroll: true,
+    isHoverHide: false,
     style: {
       font: '',
       fontSize: 125,

@@ -47,9 +47,9 @@ const setLrcConfig = () => {
     if (isLock != desktopLyric.isLock) {
       isLock = desktopLyric.isLock
       if (desktopLyric.isLock) {
-        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
+        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: true })
       } else {
-        global.modules.lyricWindow.setIgnoreMouseEvents(false)
+        global.modules.lyricWindow.setIgnoreMouseEvents(false, { forward: true })
       }
     }
     if (isAlwaysOnTop != desktopLyric.isAlwaysOnTop) {

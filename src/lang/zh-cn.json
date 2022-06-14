@@ -269,6 +269,7 @@
   "setting__desktop_lyric_enable": "显示歌词",
   "setting__desktop_lyric_font": "歌词字体",
   "setting__desktop_lyric_font_default": "默认",
+  "setting__desktop_lyric_hover_hide": "鼠标移入歌词区域时降低歌词透明度（此功能存在平台兼容性问题）",
   "setting__desktop_lyric_lock": "锁定歌词",
   "setting__desktop_lyric_lock_screen": "不允许歌词窗口拖出主屏幕之外",
   "setting__download": "下载设置",
