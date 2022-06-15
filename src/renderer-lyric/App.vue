@@ -1,6 +1,6 @@
 <template lang="pug">
 #container(:class="[theme, { lock: lrcConfig.isLock }, { hide: isHoverHide && isMouseEnter }]")
-  #main(@mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave")
+  #main(@mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" @mousemove="handleMouseMoveMain")
     transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
       .control-bar(v-show="!lrcConfig.isLock")
         core-control-bar(:lrcConfig="lrcConfig" :themes="themeList")
@@ -189,13 +189,6 @@ export default {
     },
     handleMouseMove(event) {
       this.handleMove(event.clientX, event.clientY)
-
-      if (this.isHoverHide) {
-        this.handleMouseEnter()
-        mouseCheckTools.handleMove(event.clientX, event.clientY, () => {
-          this.handleMouseLeave()
-        })
-      }
     },
     handleTouchMove(event) {
       if (event.changedTouches.length) {
@@ -268,6 +261,13 @@ export default {
     // handleMouseOver() {
     //   // this.handleMouseUp()
     // },
+    handleMouseMoveMain(event) {
+      if (!this.isHoverHide) return
+      this.handleMouseEnter()
+      mouseCheckTools.handleMove(event.clientX, event.clientY, () => {
+        this.handleMouseLeave()
+      })
+    },
     handleMouseEnter() {
       // console.log('enter - >')
       if (!this.isHoverHide || this.isMouseEnter) return
