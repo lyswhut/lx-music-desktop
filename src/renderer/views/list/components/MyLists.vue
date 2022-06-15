@@ -60,6 +60,7 @@ import { getList } from '@renderer/core/share/utils'
 import useDarg from '@renderer/utils/compositions/useDrag'
 import { getListUpdateInfo } from '@renderer/utils/data'
 import useSyncSourceList from '@renderer/utils/compositions/useSyncSourceList'
+import useImportTip from '@renderer/utils/compositions/useImportTip'
 
 export default {
   name: 'MyLists',
@@ -78,6 +79,7 @@ export default {
     const dom_lists_list = ref(null)
     const lists = computed(() => [defaultList, loveList, ...userLists])
     const setUserListPosition = useCommit('list', 'setUserListPosition')
+    const showImportTip = useImportTip()
 
     const syncSourceList = useSyncSourceList()
 
@@ -100,6 +102,7 @@ export default {
       dom_lists_list,
       setDisabledSort: setDisabled,
       syncSourceList,
+      showImportTip,
     }
   },
   emits: ['show-menu'],
@@ -455,7 +458,7 @@ export default {
         } catch (error) {
           return
         }
-        if (listData.type !== 'playListPart') return
+        if (listData.type !== 'playListPart') return this.showImportTip(listData.type)
         const targetList = this.lists.find(l => l.id == listData.data.id)
         if (targetList) {
           const confirm = await this.$dialog.confirm({
