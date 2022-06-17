@@ -1,7 +1,7 @@
 <template lang="pug">
 dt#sync
   | {{$t('setting__sync')}}
-  button(class="help-btn" @click="openUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md#%E5%90%8C%E6%AD%A5%E5%8A%9F%E8%83%BD%E7%9A%84%E4%BD%BF%E7%94%A8%E5%AE%9E%E9%AA%8C%E6%80%A7%E9%A6%96%E6%AC%A1%E4%BD%BF%E7%94%A8%E5%89%8D%E5%BB%BA%E8%AE%AE%E5%85%88%E5%A4%87%E4%BB%BD%E4%B8%80%E6%AC%A1%E5%88%97%E8%A1%A8')" :aria-label="$t('setting__sync_tip')")
+  button(class="help-btn" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq/sync')" :aria-label="$t('setting__sync_tip')")
     svg-icon(name="help-circle-outline")
 dd
   base-checkbox(id="setting_sync_enable" v-model="currentStting.sync.enable" :label="syncEnableTitle")
