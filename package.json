@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 17"
+    "Electron 17.4.7"
   ],
   "engines": {
     "node": ">= 16",
