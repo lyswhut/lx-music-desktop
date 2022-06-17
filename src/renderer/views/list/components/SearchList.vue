@@ -10,6 +10,10 @@ teleport(to="#view")
                 @keyup.arrow-down.prevent="handleKeyDown"
                 @keyup.arrow-up.prevent="handleKeyUp"
                 @keyup.escape.prevent="handleKeyEsc"
+                @keydown.control.prevent="handle_key_mod_down"
+                @keydown.meta.prevent="handle_key_mod_down"
+                @keyup.control.prevent="handle_key_mod_up"
+                @keyup.meta.prevent="handle_key_mod_up"
                 @contextmenu="handleContextMenu")
           button(type="button" @click="handleHide")
             slot
@@ -147,13 +151,13 @@ export default {
   },
   mounted() {
     this.init()
-    window.eventHub.on('key_mod_down', this.handle_key_mod_down)
-    window.eventHub.on('key_mod_up', this.handle_key_mod_up)
+    // window.eventHub.on('key_mod_down', this.handle_key_mod_down)
+    // window.eventHub.on('key_mod_up', this.handle_key_mod_up)
     window.eventHub.on('key_mod+f_down', this.handle_key_mod_f_down)
   },
   beforeUnmount() {
-    window.eventHub.off('key_mod_down', this.handle_key_mod_down)
-    window.eventHub.off('key_mod_up', this.handle_key_mod_up)
+    // window.eventHub.off('key_mod_down', this.handle_key_mod_down)
+    // window.eventHub.off('key_mod_up', this.handle_key_mod_up)
     window.eventHub.off('key_mod+f_down', this.handle_key_mod_f_down)
   },
   methods: {
