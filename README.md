@@ -36,7 +36,7 @@
 
 所用技术栈：
 
-- Electron 13
+- Electron 17
 - Vue 3
 
 已支持的平台：

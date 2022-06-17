@@ -21,3 +21,6 @@
 
 桌面版文档已迁移到：<https://lyswhut.github.io/lx-music-doc/desktop>
 
+### 其他
+
+- 更新 Electron 到 v17.4.7
