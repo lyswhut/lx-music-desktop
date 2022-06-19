@@ -2,7 +2,7 @@ import { isLinux } from '@common/utils'
 import { getEnvParams, setIgnoreMouseEvents } from '@renderer/utils/tools'
 
 import { useRefGetter } from '@renderer/utils/vueTools'
-import { sync, apiSource, proxy } from '@renderer/core/share'
+import { sync, apiSource, proxy, isFullscreen } from '@renderer/core/share'
 
 import useSync from './useSync'
 import useUpdate from './useUpdate'
@@ -22,6 +22,7 @@ export default () => {
   sync.enable = setting.value.sync.enable
   apiSource.value = setting.value.apiSource
   Object.assign(proxy, setting.value.network.proxy)
+  isFullscreen.value = setting.value.startInFullscreen
 
   const dieableIgnoreMouseEvents = () => {
     if (window.dt) return
@@ -51,6 +52,12 @@ export default () => {
 
 
   getEnvParams().then(envParams => {
+    // 移除代理相关的环境变量设置，防止请求库自动应用它们
+    // eslint-disable-next-line no-undef
+    const processEnv = ENVIRONMENT
+    for (const key of Object.keys(processEnv)) {
+      if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete processEnv[key]
+    }
     const envProxy = envParams.cmdParams['proxy-server']
     if (envProxy && typeof envProxy == 'string') {
       const [host, port = ''] = envProxy.split(':')

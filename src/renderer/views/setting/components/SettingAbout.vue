@@ -11,7 +11,7 @@ dd
     span.hover(:aria-label="$t('setting__click_copy')" @click="clipboardWriteText('glqw')") glqw
   p.small
     | 软件的常见问题可转至：
-    span.hover.underline(:aria-label="$t('setting__click_open')" @click="openUrl('https://github.com/lyswhut/lx-music-desktop/blob/master/FAQ.md')") 常见问题
+    span.hover.underline(:aria-label="$t('setting__click_open')" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq')") 常见问题
   p.small
     strong 本软件没有客服
     | ，但我们整理了一些常见的使用问题，

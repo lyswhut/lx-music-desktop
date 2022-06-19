@@ -90,7 +90,7 @@ export default {
       listItemHeight,
       handleSelectData,
       removeAllSelect,
-    } = useList({ list, setting, emit })
+    } = useList({ list, setting })
 
     const {
       handlePlayMusic,

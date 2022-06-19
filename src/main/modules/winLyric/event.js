@@ -2,6 +2,7 @@ const { common: COMMON_EVENT_NAME, winLyric: WIN_LYRIC_EVENT_NAME, hotKey: HOT_K
 const { mainSend, NAMES: { winLyric: ipcWinLyricNames } } = require('../../../common/ipc')
 const { desktop_lyric } = require('../../../common/hotKey')
 const { getLyricWindowBounds } = require('./utils')
+const { isLinux } = require('@common/utils')
 
 let isLock = null
 let isEnable = null
@@ -47,9 +48,9 @@ const setLrcConfig = () => {
     if (isLock != desktopLyric.isLock) {
       isLock = desktopLyric.isLock
       if (desktopLyric.isLock) {
-        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: false })
+        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: !isLinux })
       } else {
-        global.modules.lyricWindow.setIgnoreMouseEvents(false)
+        global.modules.lyricWindow.setIgnoreMouseEvents(false, { forward: !isLinux })
       }
     }
     if (isAlwaysOnTop != desktopLyric.isAlwaysOnTop) {

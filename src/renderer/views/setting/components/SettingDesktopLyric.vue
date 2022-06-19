@@ -13,6 +13,8 @@ dd
     base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" v-model="currentStting.desktopLyric.isAlwaysOnTopLoop" :label="$t('setting__desktop_lyric_always_on_top_loop')")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lockScreen" v-model="currentStting.desktopLyric.isLockScreen" :label="$t('setting__desktop_lyric_lock_screen')")
+  .gap-top(v-if="!isLinux")
+    base-checkbox(id="setting_desktop_lyric_hoverHide" v-model="currentStting.desktopLyric.isHoverHide" :label="$t('setting__desktop_lyric_hover_hide')")
 dd
   h3#desktop_lyric_font {{$t('setting__desktop_lyric_font')}}
   div
@@ -23,6 +25,7 @@ dd
 import { ref, computed, useI18n } from '@renderer/utils/vueTools'
 import { getSystemFonts } from '@renderer/utils/tools'
 import { currentStting } from '../setting'
+import { isLinux } from '@common/utils'
 
 export default {
   name: 'SettingDesktopLyric',
@@ -39,6 +42,7 @@ export default {
     return {
       currentStting,
       fontList,
+      isLinux,
     }
   },
 }

@@ -192,8 +192,10 @@ export default {
       let result = timeExp.exec(line)
       if (result) {
         const text = line.replace(timeExp, '').trim()
+        let time = RegExp.$1
+        if (/\.\d\d$/.test(time)) time += '0'
         lrcArr.push({
-          time: RegExp.$1,
+          time,
           text,
         })
       } else if (lrcTools.rxps.tagLine.test(line)) {

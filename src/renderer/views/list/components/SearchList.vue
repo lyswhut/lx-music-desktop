@@ -4,12 +4,16 @@ teleport(to="#view")
     transition(enter-active-class="animated-fast zoomIn" leave-active-class="animated zoomOut" @after-leave="handleAnimated")
       div(:class="$style.search" v-show="visible")
         div(:class="$style.form")
-          input.key-bind.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
+          input.ignore-esc(:placeholder="placeholder" v-model.trim="text" ref="dom_input"
                 @input="handleDelaySearch"
                 @keyup.enter="handleTemplistClick(selectIndex)"
                 @keyup.arrow-down.prevent="handleKeyDown"
                 @keyup.arrow-up.prevent="handleKeyUp"
                 @keyup.escape.prevent="handleKeyEsc"
+                @keydown.control.prevent="handle_key_mod_down"
+                @keydown.meta.prevent="handle_key_mod_down"
+                @keyup.control.prevent="handle_key_mod_up"
+                @keyup.meta.prevent="handle_key_mod_up"
                 @contextmenu="handleContextMenu")
           button(type="button" @click="handleHide")
             slot
@@ -147,13 +151,13 @@ export default {
   },
   mounted() {
     this.init()
-    window.eventHub.on('key_mod_down', this.handle_key_mod_down)
-    window.eventHub.on('key_mod_up', this.handle_key_mod_up)
+    // window.eventHub.on('key_mod_down', this.handle_key_mod_down)
+    // window.eventHub.on('key_mod_up', this.handle_key_mod_up)
     window.eventHub.on('key_mod+f_down', this.handle_key_mod_f_down)
   },
   beforeUnmount() {
-    window.eventHub.off('key_mod_down', this.handle_key_mod_down)
-    window.eventHub.off('key_mod_up', this.handle_key_mod_up)
+    // window.eventHub.off('key_mod_down', this.handle_key_mod_down)
+    // window.eventHub.off('key_mod_up', this.handle_key_mod_up)
     window.eventHub.off('key_mod+f_down', this.handle_key_mod_f_down)
   },
   methods: {

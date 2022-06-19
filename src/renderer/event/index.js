@@ -20,11 +20,14 @@ rendererInvoke(NAMES.mainWindow.get_hot_key).then(({ local, global }) => {
 })
 
 eventHub.on(baseName.bindKey, () => {
-  keyBind.bindKey((key, eventKey, type, event, keys) => {
+  keyBind.bindKey((key, eventKey, type, event, keys, isEditing) => {
     // console.log(`key_${key}_${type}`)
     eventHub.emit(baseName.key_down, { event, keys, key, type })
     // console.log(event, key)
-    if (!window.isEditingHotKey && appHotKeyConfig.local.enable && appHotKeyConfig.local.keys[key]) {
+    // console.log(key, eventKey, type, event, keys)
+    if (window.isEditingHotKey || (isEditing && type == 'down') || event?.lx_handled) return
+    if (event && appHotKeyConfig.local.enable && appHotKeyConfig.local.keys[key] && (key != 'escape' || !event.target.classList.contains('ignore-esc'))) {
+      // console.log(key, eventKey, type, keys, isEditing)
       event.preventDefault()
       if (type == 'up') return
 
@@ -38,6 +41,7 @@ eventHub.on(baseName.bindKey, () => {
       eventHub.emit(appHotKeyConfig.local.keys[key].action)
       return
     }
+    // console.log(`key_${key}_${type}`)
     eventHub.emit(`key_${key}_${type}`, { event, keys, key, eventKey, type })
     if (key != eventKey) eventHub.emit(`key_${eventKey}_${type}`, { event, keys, key, eventKey, type })
   })

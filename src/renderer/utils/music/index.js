@@ -68,6 +68,8 @@ export default {
         const item = arr[i]
         if (callback(item)) {
           delete item.sortedSinger
+          delete item.lowerCaseName
+          delete item.lowerCaseAlbumName
           tempResult.push(item)
           arr.splice(i, 1)
         }
@@ -80,10 +82,11 @@ export default {
     const musicName = trimStr(musicInfo.name)
     const lowerCaseName = String(musicName).toLowerCase()
     const lowerCaseAlbumName = String(musicInfo.albumName).toLowerCase()
+    const excludeSource = ['xm']
     for (const source of sources.sources) {
-      if (!sources[source.id].musicSearch || source.id === musicInfo.source || source.id === 'xm') continue
+      if (!sources[source.id].musicSearch || source.id === musicInfo.source || excludeSource.includes(source.id)) continue
 
-      tasks.push(sources[source.id].musicSearch.search(`${musicName} ${musicInfo.singer || ''}`.trim(), 1, { limit: 10 }).then(res => {
+      tasks.push(sources[source.id].musicSearch.search(`${musicName} ${musicInfo.singer || ''}`.trim(), 1, { limit: 25 }).then(res => {
         for (const item of res.list) {
           item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
           item.name = trimStr(item.name)
@@ -110,18 +113,6 @@ export default {
             return item
           }
         }
-        for (const item of res.list) {
-          item.sortedSinger = String(sortSingle(item.singer)).toLowerCase()
-          item.name = trimStr(item.name)
-          item.lowerCaseName = String(item.name).toLowerCase()
-          item.lowerCaseAlbumName = String(item.albumName).toLowerCase()
-          // console.log(lowerCaseName, item.lowerCaseName)
-          if (
-            item.sortedSinger === sortedSinger && item.interval === musicInfo.interval
-          ) {
-            return item
-          }
-        }
         return null
       }).catch(_ => null))
     }
@@ -135,6 +126,7 @@ export default {
       for (const item of result) {
         delete item.sortedSinger
         delete item.lowerCaseName
+        delete item.lowerCaseAlbumName
       }
       newResult.push(...result)
     }

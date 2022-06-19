@@ -160,7 +160,7 @@ function createWindow() {
   /**
    * Initial window options
    */
-  global.modules.mainWindow = new BrowserWindow({
+  const options = {
     height: windowSizeInfo.height,
     useContentSize: true,
     width: windowSizeInfo.width,
@@ -178,7 +178,12 @@ function createWindow() {
       nodeIntegration: true,
       spellcheck: false, // 禁用拼写检查器
     },
-  })
+  }
+  if (global.appSetting.startInFullscreen) {
+    options.fullscreen = true
+    if (isLinux) options.resizable = true
+  }
+  global.modules.mainWindow = new BrowserWindow(options)
 
   const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
   const themeId = global.appSetting.theme.id == 'auto'
@@ -190,6 +195,7 @@ function createWindow() {
   global.modules.mainWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${themeClass}`)
 
   winEvent(global.modules.mainWindow)
+  if (global.envParams.cmdParams.odt) require('@main/utils').openDevTools(global.modules.mainWindow.webContents)
   // global.modules.mainWindow.webContents.openDevTools()
 
   if (!isDev) autoUpdate()

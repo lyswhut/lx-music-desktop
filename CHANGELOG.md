@@ -6,6 +6,35 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.22.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.21.0...v1.22.0) - 2022-06-19
+
+### 新增
+
+- 新增设置-以全屏模式启动设置
+- 新增设置-桌面歌词设置-鼠标移入歌词区域时降低歌词透明度（#883），默认关闭，此设置不支持linux，注：此功能存在兼容性问题，若鼠标移出后无法恢复到正常透明度，可尝试再移入移出即可恢复
+
+### 优化
+
+- 添加歌曲到“我的列表”时，若按住`ctrl`键（Mac对应`Command`），则不会自动关闭添加窗口，这对想要将同一首（一批）歌曲添加到多个列表时会很有用
+- 支持mg源逐字歌词的播放，感谢 @mozbugbox 提供的帮助
+- 添加歌曲列表更新操作的二次确认
+- 添加导入文件错误时的指引提示
+
+### 修复
+
+- 修复若配置了`http_proxy`环境变量时，会意外使用此代理配置的问题
+- 修复多选后切换列表后不会清空多选内容的问题
+- 修复设置快捷键时的处理逻辑问题
+- 修复在新建歌单输入框、歌单内歌曲搜索输入框会意外触发设置的全局快捷键的问题（#879）
+
+### 文档
+
+桌面版文档已迁移到：<https://lyswhut.github.io/lx-music-doc/desktop>
+
+### 其他
+
+- 更新 Electron 到 v17.4.7
+
 ## [1.21.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.20.0...v1.21.0) - 2022-05-22
 
 ### 新增

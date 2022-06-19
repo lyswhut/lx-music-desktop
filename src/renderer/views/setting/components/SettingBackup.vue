@@ -39,6 +39,7 @@ import { getList } from '@renderer/core/share/utils'
 import path from 'path'
 import { dialog } from '@renderer/plugins/Dialog'
 import iconv from 'iconv-lite'
+import useImportTip from '@renderer/utils/compositions/useImportTip'
 
 export default {
   name: 'SettingUpdate',
@@ -48,6 +49,7 @@ export default {
     const settingVersion = useRefGetter('settingVersion')
     const setSettingVersion = useCommit('setSettingVersion')
     const setList = useCommit('list', 'setList')
+    const showImportTip = useImportTip()
 
     const handleUpdateSetting = (config) => {
       currentStting.value = JSON.parse(JSON.stringify(config))
@@ -66,7 +68,7 @@ export default {
       } catch (error) {
         return
       }
-      if (allData.type !== 'allData') return
+      if (allData.type !== 'allData') return showImportTip(allData.type)
 
       // 兼容0.6.2及以前版本的列表数据
       if (allData.defaultList) return setList({ id: 'default', list: allData.defaultList.list, name: '试听列表' })
@@ -145,7 +147,7 @@ export default {
       } catch (error) {
         return
       }
-      if (settingData.type !== 'setting') return
+      if (settingData.type !== 'setting') return showImportTip(settingData.type)
       const { version: settingVersion, setting } = mergeSetting(settingData.data)
       setting.isAgreePact = false
       refreshSetting(setting, settingVersion)
@@ -202,7 +204,7 @@ export default {
       // 兼容0.6.2及以前版本的列表数据
       if (listData.type === 'defautlList') return setList({ id: 'default', list: listData.data.list, name: '试听列表' })
 
-      if (listData.type !== 'playList') return
+      if (listData.type !== 'playList') return showImportTip(listData.type)
 
       for (const list of listData.data) {
         setList(list)

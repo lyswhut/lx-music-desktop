@@ -18,8 +18,7 @@ export default () => {
 
   return () => {
     const waitUpdateLists = Object.entries(getListUpdateInfo())
-      .filter(([id, info]) => info.isAutoUpdate)
-      .map(([id]) => userLists.find(l => l.id === id))
+      .map(([id, info]) => info.isAutoUpdate && userLists.find(l => l.id === id))
       .filter(_ => _)
     for (let i = 2; i > 0; i--) {
       handleSyncSourceList(waitUpdateLists)

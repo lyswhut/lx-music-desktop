@@ -12,9 +12,10 @@ import {
   useRefGetter,
 } from '@renderer/utils/vueTools'
 
-const handle_key_esc_down = ({ event }) => {
-  if (event.repeat) return
-  if (event.target.tagName != 'INPUT' || event.target.classList.contains('ignore-esc')) {
+const handle_key_down = ({ event, type, key }) => {
+  // console.log(key)
+  if (key != 'escape' || !event || event.repeat || type == 'up' || window.isEditingHotKey || event.target.classList.contains('ignore-esc')) return
+  if (event.target.tagName != 'INPUT') {
     if (isFullscreen.value) {
       event.lx_handled = true
       rendererInvoke(NAMES.mainWindow.fullscreen, false).then(fullscreen => {
@@ -113,7 +114,7 @@ export default ({
   })
 
   window.eventHub.emit(eventBaseName.bindKey)
-  window.eventHub.on('key_escape_down', handle_key_esc_down)
+  window.eventHub.on(eventBaseName.key_down, handle_key_down)
   window.eventHub.on('key_mod+f12_down', handle_open_devtools)
   window.eventHub.on('key_f11_down', handle_fullscreen)
   window.eventHub.on(eventBaseName.fullscreenToggle, handle_fullscreen)
@@ -128,7 +129,7 @@ export default ({
   }
 
   onBeforeUnmount(() => {
-    window.eventHub.off('key_escape_down', handle_key_esc_down)
+    window.eventHub.off(eventBaseName.key_down, handle_key_down)
     window.eventHub.off('key_mod+f12_down', handle_open_devtools)
     window.eventHub.off('key_f11_down', handle_fullscreen)
     window.eventHub.off(eventBaseName.fullscreenToggle, handle_fullscreen)
