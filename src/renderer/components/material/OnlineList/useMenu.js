@@ -1,4 +1,4 @@
-import { computed, ref, useI18n, useCssModule, nextTick } from '@renderer/utils/vueTools'
+import { computed, ref, reactive, useI18n, useCssModule, nextTick } from '@renderer/utils/vueTools'
 import musicSdk from '@renderer/utils/music'
 
 export default ({
@@ -13,7 +13,7 @@ export default ({
   handleShowMusicAddModal,
   handleOpenMusicDetail,
 }) => {
-  const itemMenuControl = ref({
+  const itemMenuControl = reactive({
     play: true,
     addTo: true,
     playLater: true,
@@ -31,38 +31,38 @@ export default ({
       {
         name: t('list__play'),
         action: 'play',
-        disabled: !itemMenuControl.value.play,
+        disabled: !itemMenuControl.play,
       },
       {
         name: t('list__download'),
         action: 'download',
-        disabled: !itemMenuControl.value.download,
+        disabled: !itemMenuControl.download,
       },
       {
         name: t('list__play_later'),
         action: 'playLater',
-        disabled: !itemMenuControl.value.playLater,
+        disabled: !itemMenuControl.playLater,
       },
       {
         name: t('list__search'),
         action: 'search',
-        disabled: !itemMenuControl.value.search,
+        disabled: !itemMenuControl.search,
       },
       {
         name: t('list__add_to'),
         action: 'addTo',
-        disabled: !itemMenuControl.value.addTo,
+        disabled: !itemMenuControl.addTo,
       },
       {
         name: t('list__source_detail'),
         action: 'sourceDetail',
-        disabled: !itemMenuControl.value.sourceDetail,
+        disabled: !itemMenuControl.sourceDetail,
       },
     ]
   })
 
   const showMenu = (event, musicInfo) => {
-    itemMenuControl.value.sourceDetail = !!musicSdk[musicInfo.source].getMusicDetailPageUrl
+    itemMenuControl.sourceDetail = !!musicSdk[musicInfo.source].getMusicDetailPageUrl
     // this.listMenu.itemMenuControl.play =
     //   this.listMenu.itemMenuControl.playLater =
     itemMenuControl.download = assertApiSupport(musicInfo.source)
