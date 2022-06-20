@@ -64,7 +64,7 @@ const winEvent = lyricWindow => {
   lyricWindow.once('ready-to-show', () => {
     lyricWindow.show()
     if (global.appSetting.desktopLyric.isLock) {
-      global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: !isLinux })
+      global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: !isLinux && global.appSetting.desktopLyric.isHoverHide })
     }
     // linux下每次重开时貌似要重新设置置顶
     if (isLinux && global.appSetting.desktopLyric.isAlwaysOnTop) {

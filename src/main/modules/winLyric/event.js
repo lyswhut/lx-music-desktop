@@ -9,6 +9,7 @@ let isEnable = null
 let isAlwaysOnTop = null
 let isAlwaysOnTopLoop = null
 let isLockScreen = null
+let isHoverHide = null
 
 const alwaysOnTopTools = {
   timeout: null,
@@ -48,9 +49,15 @@ const setLrcConfig = () => {
     if (isLock != desktopLyric.isLock) {
       isLock = desktopLyric.isLock
       if (desktopLyric.isLock) {
-        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: !isLinux })
+        global.modules.lyricWindow.setIgnoreMouseEvents(true, { forward: !isLinux && global.appSetting.desktopLyric.isHoverHide })
       } else {
-        global.modules.lyricWindow.setIgnoreMouseEvents(false, { forward: !isLinux })
+        global.modules.lyricWindow.setIgnoreMouseEvents(false, { forward: !isLinux && global.appSetting.desktopLyric.isHoverHide })
+      }
+    }
+    if (isHoverHide != desktopLyric.isHoverHide) {
+      isHoverHide = desktopLyric.isHoverHide
+      if (!isLinux) {
+        global.modules.lyricWindow.setIgnoreMouseEvents(desktopLyric.isLock, { forward: global.appSetting.desktopLyric.isHoverHide })
       }
     }
     if (isAlwaysOnTop != desktopLyric.isAlwaysOnTop) {
