@@ -33,7 +33,13 @@ div(:class="$style.container")
                       //- img(:src="item.img")
                     div(:class="$style.right" :src="item.img")
                       h4 {{item.name}}
-                      p(:class="$style.play_count") {{item.play_count}}
+                      div(:class="$style.songlist_info")
+                        span(v-if="item.total != null")
+                          svg-icon(name="music")
+                          | {{item.total}}
+                        span
+                          svg-icon(name="headphones")
+                          | {{item.play_count}}
                       p(:class="$style.author") {{item.author}}
                   li(:class="$style.item" style="cursor: default;" v-for="i in spaceNum")
                 div(:class="$style.pagination")
@@ -529,7 +535,10 @@ export default {
     .mixin-ellipsis-2;
   }
 }
-.play_count {
+.songlist_info {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 15px;
   margin-top: 12px;
   font-size: 12px;
   .mixin-ellipsis-1;
@@ -537,6 +546,9 @@ export default {
   line-height: 1.2;
   // text-indent: 24px;
   color: @color-theme_2-font-label;
+  svg {
+    margin-right: 2px;
+  }
 }
 .author {
   margin-top: 6px;

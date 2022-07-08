@@ -284,6 +284,7 @@ export default {
     // })
   },
   filterList(rawData) {
+    // console.log(rawData)
     return rawData.map(item => ({
       play_count: this.formatPlayCount(item.playCount),
       id: item.playListId,
@@ -292,6 +293,7 @@ export default {
       time: item.createTime,
       img: item.image,
       grade: item.grade,
+      total: item.contentCount,
       desc: item.summary,
       source: 'mg',
     }))

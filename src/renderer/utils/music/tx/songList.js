@@ -142,6 +142,7 @@ export default {
         // time: item.publish_time,
         img: item.cover_url_medium,
         // grade: item.favorcnt / 10,
+        total: item.song_ids?.length,
         desc: item.desc,
         source: 'tx',
       })),
