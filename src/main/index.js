@@ -83,14 +83,13 @@ app.on('open-url', (event, url) => {
     init()
   }
 })
-if (isDev && process.platform === 'win32') {
-  // Set the path of electron.exe and your app.
-  // These two additional parameters are only available on windows.
-  // console.log(process.execPath, process.argv)
-  app.setAsDefaultProtocolClient('lxmusic', process.execPath, process.argv.slice(1))
-} else {
-  app.setAsDefaultProtocolClient('lxmusic')
-}
+// if (isDev && process.platform === 'win32') {
+//   // Set the path of electron.exe and your app.
+//   // These two additional parameters are only available on windows.
+//   // console.log(process.execPath, process.argv)
+//   app.setAsDefaultProtocolClient('lxmusic', process.execPath, process.argv.slice(1))
+// }
+if (!isDev) app.setAsDefaultProtocolClient('lxmusic')
 
 const { navigationUrlWhiteList, themes } = require('../common/config')
 const { getWindowSizeInfo, initSetting, updateSetting } = require('./utils')
