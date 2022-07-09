@@ -6,6 +6,22 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.22.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.0...v1.22.1) - 2022-07-09
+
+### 优化
+
+- 歌单列表添加歌单内歌曲数量显示，注：目前只有kw、mg、wy、tx（部分）源支持显示
+
+### 修复
+
+- 修复处于不支持的源时，歌单、排行榜的右键下载菜单没有禁用的问题
+- 修复若桌面歌词窗口与主窗口重叠时，鼠标划过重叠区域鼠标会闪烁的问题，注：此修复只对未启用“鼠标移入歌词区域时降低歌词透明度”时有效
+- 修复tx源搜索失效的问题
+
+### 其他
+
+- 升级Electron到 v17.4.10
+
 ## [1.22.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.21.0...v1.22.0) - 2022-06-19
 
 ### 新增
