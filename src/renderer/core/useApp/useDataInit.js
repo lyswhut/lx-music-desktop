@@ -94,7 +94,7 @@ const useListInit = ({
 const usePlayInfoInit = () => {
   const setPlayList = useCommit('player', 'setList')
 
-  return downloadList => {
+  return () => {
     return getPlayInfo().then(info => {
       window.restorePlayInfo = null
       if (!info?.listId || info.index < 0) return
@@ -157,7 +157,7 @@ export default ({
     ]).catch(err => log.error(err))
     music.init() // 初始化音乐sdk
     await initList().catch(err => log.error(err)) // 初始化列表
-    await initPlayInfo(downloadList.value).catch(err => log.error(err)) // 初始化上次的歌曲播放信息
+    await initPlayInfo(downloadList).catch(err => log.error(err)) // 初始化上次的歌曲播放信息
     await initSearchHistory(saveSearchHistoryListThrottle).catch(err => log.error(err)) // 初始化搜索历史记录
   }
 }

@@ -18,7 +18,10 @@ export const allListInit = (newLists) => {
   }
   allListUpdate(defaultList.id, newLists.defaultList.list)
   allListUpdate(loveList.id, newLists.loveList.list)
-  if (newLists.tempList) allListUpdate(tempList.id, newLists.tempList.list)
+  if (newLists.tempList) {
+    allListUpdate(tempList.id, newLists.tempList.list)
+    tempList.meta = newLists.tempList.meta ?? {}
+  }
   userLists.splice(0, userLists.length)
   for (const { list, ...listInfo } of newLists.userList) {
     allListUpdate(listInfo.id, list)

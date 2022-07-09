@@ -65,6 +65,7 @@ const hotKey = {
 }
 
 const keyName = {
+  common: names.mainWindow.name,
   player: names.mainWindow.name,
   desktop_lyric: names.winLyric.name,
 }
