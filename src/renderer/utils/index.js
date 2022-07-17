@@ -79,6 +79,7 @@ export const b64DecodeUnicode = str => {
 }
 
 const encodeNames = {
+  '&nbsp;': ' ',
   '&amp;': '&',
   '&lt;': '<',
   '&gt;': '>',
@@ -86,7 +87,7 @@ const encodeNames = {
   '&apos;': "'",
   '&#039;': "'",
 }
-export const decodeName = (str = '') => str?.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;)/gm, s => encodeNames[s]) || ''
+export const decodeName = (str = '') => str?.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;|&nbsp;)/gm, s => encodeNames[s]) || ''
 
 const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
