@@ -32,8 +32,6 @@
 
 ### 说明
 
-testststteet
-
 一个基于 Electron + Vue 开发的音乐软件。
 
 所用技术栈：
@@ -48,14 +46,16 @@ testststteet
 - Linux
 
 **软件变化：**
-[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)
+
+- [更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)
+
 <br>
 
 **软件下载:**
 
 - [发布页面](https://github.com/lyswhut/lx-music-desktop/releases)
 
-- [网盘下载链接](https://www.lanzoui.com/b0bf2cfa/)密码：`glqw`
+- [网盘下载链接](https://www.lanzoui.com/b0bf2cfa/) 密码：`glqw`
 
 - [国内文档链接](https://lxmusic.huiyi.art/download)
 
@@ -64,22 +64,24 @@ testststteet
 <br>
 
 **常见问题：**
-[国内文档链接](https://lxmusic.huiyi.art/desktop)
 
-[文档链接](https://lxmusic.toside.cn/desktop/faq)
+- [国内文档链接](https://lxmusic.huiyi.art/desktop)
+
+- [文档链接](https://lxmusic.toside.cn/desktop/faq)
+
+- [FAQ](./FAQ.md)
 
 <br>
 
-**移动版项目地址：**
-<https://github.com/lyswhut/lx-music-mobile>
+**移动版项目地址：**<https://github.com/lyswhut/lx-music-mobile>
 
 ### 源码使用方法
 
 环境要求：Node.js 16+
 
 ```bash
-# 安装依赖
-npm install 如报错请自行百度报错信息
+# 安装依赖(如报错请自行百度报错信息)
+npm install
 
 # 开发模式
 npm run dev
@@ -131,11 +133,7 @@ npm run pack:linux
 
 ### UI 界面
 
-<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
-
-### 常见问题
-
-常见问题已移至：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
+<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/apps.png" alt="lx-music UI"></a></p>
 
 ### 项目协议
 
