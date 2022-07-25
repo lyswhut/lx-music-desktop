@@ -45,48 +45,44 @@
 - Mac OS
 - Linux
 
-软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
-软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
-使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)<br>
-移动版项目地址：<https://github.com/lyswhut/lx-music-mobile>
+**软件变化：**
 
-#### Scheme URL支持
+- [更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)
 
-从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
-脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
+<br>
 
-若你想自己调用LX Music，可以看[Scheme URL支持](https://lyswhut.github.io/lx-music-doc/desktop/scheme-url)
+**软件下载:**
 
-#### 启动参数
+- [发布页面](https://github.com/lyswhut/lx-music-desktop/releases)
 
-目前软件已支持的启动参数如下：
+- [网盘下载链接](https://www.lanzoui.com/b0bf2cfa/) 密码：`glqw`
 
-- `-proxy-server` 设置代理服务器，代理应用的所有流量
-- `-proxy-bypass-list` 以分号分隔的主机列表绕过代理服务器
-- `-play` 启动时播放指定列表的音乐
-- `-search`  启动软件时自动在搜索框搜索指定的内容
-- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration）
-- `-dt` 以非透明模式启动（Disable Transparent）
-- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
+- [国内文档链接](https://lxmusic.huiyi.art/download)
 
-启动参数的详细说明请看[启动参数说明](https://lyswhut.github.io/lx-music-doc/desktop/run-params)
+- [文档链接](https://lxmusic.toside.cn/download)
 
-#### 数据存储路径
+<br>
 
-默认情况下，软件的数据存储在：
+**常见问题：**
 
-- Windows：`%APPDATA%/lx-music-desktop`
-- Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
-- macOS：`~/Library/Application Support/lx-music-desktop`
+- [国内文档链接](https://lxmusic.huiyi.art/desktop)
 
-在Windows平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0新增）。
+- [文档链接](https://lxmusic.toside.cn/desktop/faq)
+
+- [FAQ](./FAQ.md)
+
+<br>
+
+**移动版项目地址：**<https://github.com/lyswhut/lx-music-mobile>
 
 ### 源码使用方法
 
 环境要求：Node.js 16+
 
 ```bash
+# 安装依赖(如报错请自行百度报错信息)
+npm install
+
 # 开发模式
 npm run dev
 
@@ -104,13 +100,40 @@ npm run pack:linux
 
 ```
 
-### UI界面
+#### Scheme URL 支持
 
-<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music UI"></a></p>
+从 v1.17.0 起支持 Scheme URL，可以使用此功能从浏览器等场景下调用 LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
+脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 
-### 常见问题
+若你想自己调用 LX Music，可以看[Scheme URL 支持](https://lxmusic.toside.cn/desktop/scheme-url)
 
-常见问题已移至：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
+#### 启动参数
+
+目前软件已支持的启动参数如下：
+
+- `-proxy-server` 设置代理服务器，代理应用的所有流量
+- `-proxy-bypass-list` 以分号分隔的主机列表绕过代理服务器
+- `-play` 启动时播放指定列表的音乐
+- `-search` 启动软件时自动在搜索框搜索指定的内容
+- `-dha` 禁用硬件加速启动（Disable Hardware Acceleration）
+- `-dt` 以非透明模式启动（Disable Transparent）
+- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
+
+启动参数的详细说明请看[启动参数说明](https://lxmusic.toside.cn/desktop/run-params)
+
+#### 数据存储路径
+
+默认情况下，软件的数据存储在：
+
+- Windows：`%APPDATA%/lx-music-desktop`
+- Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
+- macOS：`~/Library/Application Support/lx-music-desktop`
+
+在 Windows 平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0 新增）。
+
+### UI 界面
+
+<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/apps.png" alt="lx-music UI"></a></p>
 
 ### 项目协议
 
@@ -119,7 +142,7 @@ npm run pack:linux
 词语约定：本协议中的“本项目”指洛雪音乐桌面版项目；“使用者”指签署本协议的使用者；“官方音乐平台”指对本项目内置的包括酷我、酷狗、咪咕等音乐源的官方平台统称；“版权数据”指包括但不限于图像、音频、名字等在内的他人拥有所属版权的数据。
 
 1. 本项目的数据来源原理是从各官方音乐平台的公开服务器中拉取数据，经过对数据简单地筛选与合并后进行展示，因此本项目不对数据的准确性负责。
-2. 使用本项目的过程中可能会产生版权数据，对于这些版权数据，本项目不拥有它们的所有权，为了避免造成侵权，使用者务必在**24小时**内清除使用本项目的过程中所产生的版权数据。
+2. 使用本项目的过程中可能会产生版权数据，对于这些版权数据，本项目不拥有它们的所有权，为了避免造成侵权，使用者务必在**24 小时**内清除使用本项目的过程中所产生的版权数据。
 3. 本项目内的官方音乐平台别名为本项目内对官方音乐平台的一个称呼，不包含恶意，如果官方音乐平台觉得不妥，可联系本项目更改或移除。
 4. 本项目内使用的部分包括但不限于字体、图片等资源来源于互联网，如果出现侵权可联系本项目移除。
 5. 由于使用本项目产生的包括由于本协议或由于使用或无法使用本项目而引起的任何性质的任何直接、间接、特殊、偶然或结果性损害（包括但不限于因商誉损失、停工、计算机故障或故障引起的损害赔偿，或任何及所有其他商业损害或损失）由使用者负责。
