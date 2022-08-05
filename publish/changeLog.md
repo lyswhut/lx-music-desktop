@@ -4,4 +4,4 @@
 
 ### 其他
 
-- 升级electron到v18.3.7
+- 降级electron到v15.5.7

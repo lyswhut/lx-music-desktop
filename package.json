@@ -70,7 +70,7 @@
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 18.3.7"
+    "Electron 15.5.7"
   ],
   "engines": {
     "node": ">= 16",
@@ -196,7 +196,7 @@
     "css-loader": "^6.7.1",
     "css-minimizer-webpack-plugin": "^4.0.0",
     "del": "^6.1.1",
-    "electron": "^18.3.7",
+    "electron": "^15.5.7",
     "electron-builder": "^23.3.3",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
