@@ -23,6 +23,7 @@ const handleSaveList = ({ defaultList, loveList, userList, tempList }) => {
   getStore('playList').set(data)
 }
 mainOn(ipcMainWindowNames.save_playlist, (event, { type, data }) => {
+  data = JSON.parse(data)
   switch (type) {
     case 'myList':
       handleSaveList(data)
