@@ -35,7 +35,7 @@ export default {
       let size
       switch (item.privilege.maxbr) {
         case 999000:
-          size = null
+          size = item.sq ? sizeFormate(item.sq.size) : null
           types.push({ type: 'flac', size })
           _types.flac = {
             size,
@@ -80,6 +80,7 @@ export default {
       // console.log(result)
       if (!result || result.code !== 200) return this.search(str, page, { limit }, retryNum)
       let list = this.handleResult(result.result.songs || [])
+      // console.log(list)
 
       if (list == null) return this.search(str, page, { limit }, retryNum)
 

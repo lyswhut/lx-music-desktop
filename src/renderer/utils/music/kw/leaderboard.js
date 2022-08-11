@@ -115,6 +115,12 @@ export default {
           size: null,
         }
       }
+      if (formats.includes('HIRFLAC')) {
+        types.push({ type: 'flac32bit', size: null })
+        _types.flac32bit = {
+          size: null,
+        }
+      }
       // types.reverse()
       return {
         singer: formatSinger(decodeName(item.artist)),

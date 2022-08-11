@@ -21,7 +21,7 @@ export default {
     },
   ],
   regExps: {
-    mInfo: /bitrate:(\d+),format:(\w+),size:([\w.]+)/,
+    mInfo: /level:(\w+),bitrate:(\d+),format:(\w+),size:([\w.]+)/,
     // http://www.kuwo.cn/playlist_detail/2886046289
     // https://m.kuwo.cn/h5app/playlist/2736267853?t=qqfriend
     listDetailLink: /^.+\/playlist(?:_detail)?\/(\d+)(?:\?.*|&.*$|#.*$|$)/,
@@ -244,34 +244,36 @@ export default {
   filterListDetail(rawData) {
     // console.log(rawData)
     return rawData.map(item => {
-      let infoArr = item.MINFO.split(';')
+      let infoArr = item.N_MINFO.split(';')
       let types = []
       let _types = {}
       for (let info of infoArr) {
         info = info.match(this.regExps.mInfo)
         if (info) {
           switch (info[2]) {
-            case 'flac':
-              types.push({ type: 'flac', size: info[3] })
-              _types.flac = {
-                size: info[3].toLocaleUpperCase(),
+            case '4000':
+              types.push({ type: 'flac32bit', size: info[4] })
+              _types.flac32bit = {
+                size: info[4].toLocaleUpperCase(),
               }
               break
-            case 'mp3':
-              switch (info[1]) {
-                case '320':
-                  types.push({ type: '320k', size: info[3] })
-                  _types['320k'] = {
-                    size: info[3].toLocaleUpperCase(),
-                  }
-                  break
-                case '192':
-                case '128':
-                  types.push({ type: '128k', size: info[3] })
-                  _types['128k'] = {
-                    size: info[3].toLocaleUpperCase(),
-                  }
-                  break
+            case '2000':
+              types.push({ type: 'flac', size: info[4] })
+              _types.flac = {
+                size: info[4].toLocaleUpperCase(),
+              }
+              break
+            case '320':
+              types.push({ type: '320k', size: info[4] })
+              _types['320k'] = {
+                size: info[4].toLocaleUpperCase(),
+              }
+              break
+            case '192':
+            case '128':
+              types.push({ type: '128k', size: info[4] })
+              _types['128k'] = {
+                size: info[4].toLocaleUpperCase(),
               }
               break
           }
