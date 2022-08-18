@@ -13,10 +13,10 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
     } else {
       selectedNum.value = 0
       musicInfo.value = list.value[index]
-      nextTick(() => {
-        isShowMusicSortModal.value = true
-      })
     }
+    nextTick(() => {
+      isShowMusicSortModal.value = true
+    })
   }
 
   const sortMusic = num => {

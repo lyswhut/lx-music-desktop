@@ -3,7 +3,7 @@
   <main :class="$style.main">
     <h2>{{ info.name }}<br/>{{ info.singer }}</h2>
     <base-btn :class="$style.btn" :key="type.type" @click="handleClick(type.type)" v-for="type in types"
-    >{{getTypeName(type.type)}} {{ type.type.toUpperCase() }}{{ type.size && ` - ${type.size.toUpperCase()}` }}</base-btn>
+    >{{getTypeName(type.type)}}{{ type.size && ` - ${type.size.toUpperCase()}` }}</base-btn>
   </main>
 </material-modal>
 </template>
@@ -56,15 +56,16 @@ export default {
     getTypeName(type) {
       switch (type) {
         case 'flac32bit':
+          return this.$t('download__lossless') + ' FLAC Hires'
         case 'flac':
         case 'ape':
         case 'wav':
-          return this.$t('download__lossless')
+          return this.$t('download__lossless') + ' ' + type.toUpperCase()
         case '320k':
-          return this.$t('download__high_quality')
+          return this.$t('download__high_quality') + ' ' + type.toUpperCase()
         case '192k':
         case '128k':
-          return this.$t('download__normal')
+          return this.$t('download__normal') + ' ' + type.toUpperCase()
       }
     },
     checkSource(type) {

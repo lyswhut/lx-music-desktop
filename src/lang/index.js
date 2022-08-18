@@ -32,6 +32,7 @@ langs.forEach(item => {
   langList.push({
     name: item.name,
     locale: item.locale,
+    alternate: item.alternate,
   })
   messages[item.locale] = item.message
 })

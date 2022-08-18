@@ -253,17 +253,17 @@ export default {
           size,
         }
       }
-      if (item.file.size_ape !== 0) {
-        let size = sizeFormate(item.file.size_ape)
-        types.push({ type: 'ape', size })
-        _types.ape = {
-          size,
-        }
-      }
       if (item.file.size_flac !== 0) {
         let size = sizeFormate(item.file.size_flac)
         types.push({ type: 'flac', size })
         _types.flac = {
+          size,
+        }
+      }
+      if (item.file.size_hires !== 0) {
+        let size = sizeFormate(item.file.size_hires)
+        types.push({ type: 'flac32bit', size })
+        _types.flac32bit = {
           size,
         }
       }

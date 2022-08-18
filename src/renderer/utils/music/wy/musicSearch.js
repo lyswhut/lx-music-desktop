@@ -35,27 +35,23 @@ export default {
       let size
       switch (item.privilege.maxbr) {
         case 999000:
-          size = null
+          size = item.sq ? sizeFormate(item.sq.size) : null
           types.push({ type: 'flac', size })
           _types.flac = {
             size,
           }
         case 320000:
-          if (item.h) {
-            size = sizeFormate(item.h.size)
-            types.push({ type: '320k', size })
-            _types['320k'] = {
-              size,
-            }
+          size = item.h ? sizeFormate(item.h.size) : null
+          types.push({ type: '320k', size })
+          _types['320k'] = {
+            size,
           }
         case 192000:
         case 128000:
-          if (item.l) {
-            size = sizeFormate(item.l.size)
-            types.push({ type: '128k', size })
-            _types['128k'] = {
-              size,
-            }
+          size = item.l ? sizeFormate(item.l.size) : null
+          types.push({ type: '128k', size })
+          _types['128k'] = {
+            size,
           }
       }
 
@@ -84,6 +80,7 @@ export default {
       // console.log(result)
       if (!result || result.code !== 200) return this.search(str, page, { limit }, retryNum)
       let list = this.handleResult(result.result.songs || [])
+      // console.log(list)
 
       if (list == null) return this.search(str, page, { limit }, retryNum)
 

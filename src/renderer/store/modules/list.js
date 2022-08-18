@@ -189,7 +189,7 @@ const mutations = {
           break
       }
     }
-    window.eventHub.emit(eventListNames.listChange, [fromId, toList])
+    window.eventHub.emit(eventListNames.listChange, [fromId, toId])
   },
   listAddMultiple(state, { id, list, addMusicLocationType, isSync }) {
     if (!addMusicLocationType) addMusicLocationType = this.state.setting.list.addMusicLocationType

@@ -3,6 +3,7 @@ module.exports = {
   reject: [
     'electron',
     'chalk',
+    'del',
   ],
   // target: 'newest',
   // filter: [

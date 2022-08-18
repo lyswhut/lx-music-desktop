@@ -24,7 +24,7 @@ div(:class="$style.download")
             span.select {{item.name}}
           div.list-item-cell(style="width: 20%;") {{item.progress.progress}}%
           div.list-item-cell(style="width: 22%;" :aria-label="item.statusText") {{item.statusText}}
-          div.list-item-cell(style="width: 10%;") {{item.metadata.type && item.metadata.type.toUpperCase()}}
+          div.list-item-cell(style="width: 10%;") {{getTypeName(item.metadata.type)}}
           div.list-item-cell(style="width: 13%; padding-left: 0; padding-right: 0;")
             material-list-buttons(:index="index" :download-btn="false" :file-btn="item.status != downloadStatus.ERROR" remove-btn
               :start-btn="!item.isComplate && item.status != downloadStatus.WAITING && (item.status != downloadStatus.RUN)"
@@ -481,6 +481,9 @@ export default {
           if (!url) return
           openUrl(url)
       }
+    },
+    getTypeName(type) {
+      return type == 'flac32bit' ? 'FLAC Hires' : type?.toUpperCase()
     },
   },
 }

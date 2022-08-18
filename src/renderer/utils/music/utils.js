@@ -9,7 +9,7 @@ import { qualityList } from '@renderer/core/share'
  * @param {*} type
  */
 
-const types = ['flac', 'wav', 'ape', '320k', '192k', '128k']
+const types = ['flac32bit', 'flac', 'wav', 'ape', '320k', '192k', '128k']
 export const getMusicType = (info, type) => {
   let list = qualityList.value[info.source]
   if (!list) return '128k'

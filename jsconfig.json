@@ -2,12 +2,16 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
+      "@/*": ["src/*"],
       "@main/*": ["src/main/*"],
       "@renderer/*": ["src/renderer/*"],
       "@lyric/*": ["src/renderer-lyric/*"],
       "@static/*": ["src/static/*"],
       "@common/*": ["src/common/*"],
-    }
+    },
+  },
+  "vueCompilerOptions": {
+    "experimentalDisableTemplateSupport": true
   },
   "exclude": ["node_modules", "build", "dist"]
 }
