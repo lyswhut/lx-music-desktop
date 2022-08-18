@@ -6,6 +6,22 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.22.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.1...v1.22.2) - 2022-08-18
+
+### 优化
+
+- 为tx、kw源添加 Flac 24bit 音质显示，注：由于之前没有记录此音质，所以之前收藏的歌曲信息中不包含它
+
+### 修复
+
+- 修复无法批量排序歌曲的问题
+- 修复某些缺失的繁体中文翻译
+- 修复企鹅音乐搜索失效的问题
+
+### 其他
+
+- 降级electron到v15.5.7
+
 ## [1.22.1](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.0...v1.22.1) - 2022-07-09
 
 ### 优化
