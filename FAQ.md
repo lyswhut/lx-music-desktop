@@ -178,6 +178,23 @@
 
 ## 界面异常（界面显示不完整）
 
+### Windows 10、11界面异常、界面无法显示
+
+尝试添加运行参数 `--disable-gpu-sandbox` 启动，例如：`.\lx-music-desktop.exe --disable-gpu-sandbox`，添加方法可自行百度“给快捷方式加参数”。
+
+若以上方法无效，则尝试将 `--disable-gpu-sandbox` 逐个换成以下参数启动，直到恢复正常为止：
+
+- `--no-sandbox`
+- `-dha`
+- `--disable-gpu`
+
+:::caution
+这些参数会禁用程序的某些安全特性或降低程序性能，没有遇到问题不要使用它们！
+:::
+
+对于界面无法显示，任务栏里也没看到图标，但是任务管理器里面看到进程的问题，还可尝试更换软件安装目录（对于安装版需要先卸载再换目录安装，绿色版直接剪切移动即可，只要目录换了就行），<br />
+此方法的相关讨论看：<https://github.com/lyswhut/lx-music-desktop/issues/943#issuecomment-1217832186>
+
 ### Windows 7 下界面异常
 
 由于软件默认使用了透明窗口，根据Electron官方文档的[说明](https://www.electronjs.org/docs/latest/tutorial/window-customization#limitations)：
