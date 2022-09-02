@@ -189,7 +189,7 @@ const mutations = {
       state.sourceList[source].total = 0
       state.sourceMaxPage[source] = 0
     }
-    state.list.length = []
+    state.list = []
     state.page = 0
     state.allPage = 0
     state.total = 0

@@ -6,6 +6,12 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.22.3](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.2...v1.22.3) - 2022-09-03
+
+### 修复
+
+- 修复因音源的域名到期导致的音源失效的问题
+
 ## [1.22.2](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.1...v1.22.2) - 2022-08-18
 
 ### 优化

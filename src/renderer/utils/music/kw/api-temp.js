@@ -4,7 +4,7 @@ import { dnsLookup } from '../utils'
 
 const api_temp = {
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`http://tm.tempmusic.tk/url/kw/${songInfo.songmid}/${type}`, {
+    const requestObj = httpFetch(`http://tm.tempmusics.tk/url/kw/${songInfo.songmid}/${type}`, {
       method: 'get',
       headers,
       timeout,
