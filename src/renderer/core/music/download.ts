@@ -28,14 +28,14 @@ export const getPicUrl = async({ musicInfo, isRefresh, listId, onToggleSource = 
   onToggleSource?: (musicInfo?: LX.Music.MusicInfoOnline) => void
 }): Promise<string> => {
   if (!isRefresh) {
-    const onlineMusicInfo = musicInfo.metadata.musicInfo
-    if (onlineMusicInfo.meta.picUrl && !isRefresh) return onlineMusicInfo.meta.picUrl
-
     const path = await getDownloadFilePath(musicInfo, appSetting['download.savePath'])
     if (path) {
       const pic = await window.lx.worker.main.getMusicFilePic(path)
       if (pic) return pic
     }
+
+    const onlineMusicInfo = musicInfo.metadata.musicInfo
+    if (onlineMusicInfo.meta.picUrl) return onlineMusicInfo.meta.picUrl
   }
 
   return await getOnlinePicUrl({ musicInfo: musicInfo.metadata.musicInfo, isRefresh, onToggleSource }).then((url) => {
