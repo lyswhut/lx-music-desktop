@@ -24,11 +24,11 @@ const events = {
 }
 const allSources = ['kw', 'kg', 'tx', 'wy', 'mg']
 const supportQualitys = {
-  kw: ['128k', '320k', 'flac'],
-  kg: ['128k', '320k', 'flac'],
-  tx: ['128k', '320k', 'flac'],
-  wy: ['128k', '320k', 'flac'],
-  mg: ['128k', '320k', 'flac'],
+  kw: ['128k', '320k', 'flac', 'flac24bit'],
+  kg: ['128k', '320k', 'flac', 'flac24bit'],
+  tx: ['128k', '320k', 'flac', 'flac24bit'],
+  wy: ['128k', '320k', 'flac', 'flac24bit'],
+  mg: ['128k', '320k', 'flac', 'flac24bit'],
 }
 const supportActions = {
   kw: ['musicUrl'],
@@ -76,11 +76,11 @@ const handleRequest = (context, { requestKey, data }) => {
  *                    status: true,
  *                    message: 'xxx',
  *                    sources: {
- *                         kw: ['128k', '320k', 'flac'],
- *                         kg: ['128k', '320k', 'flac'],
- *                         tx: ['128k', '320k', 'flac'],
- *                         wy: ['128k', '320k', 'flac'],
- *                         mg: ['128k', '320k', 'flac'],
+ *                         kw: ['128k', '320k', 'flac', 'flac24bit'],
+ *                         kg: ['128k', '320k', 'flac', 'flac24bit'],
+ *                         tx: ['128k', '320k', 'flac', 'flac24bit'],
+ *                         wy: ['128k', '320k', 'flac', 'flac24bit'],
+ *                         mg: ['128k', '320k', 'flac', 'flac24bit'],
  *                     }
  *                 }
  */
