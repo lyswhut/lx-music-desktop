@@ -25,6 +25,8 @@ export default {
       fontSize: Math.trunc(setting['desktopLyric.style.fontSize']) + 'px',
       opacity: setting['desktopLyric.style.opacity'] / 100,
       textAlign: setting['desktopLyric.style.align'],
+      '--line-gap': setting['desktopLyric.style.lineGap'] + 'px',
+      '--line-extended-gap': (setting['desktopLyric.style.lineGap'] / 3).toFixed(2) + 'px',
     }))
     const {
       dom_lyric,
@@ -74,7 +76,7 @@ export default {
     }
     .line-content {
       line-height: 1.2;
-      margin: 16px 0;
+      margin: var(--line-gap) 0;
       overflow-wrap: break-word;
 
       .font-lrc {
@@ -83,7 +85,7 @@ export default {
 
       .extended {
         font-size: 0.8em;
-        margin-top: 5px;
+        margin-top: var(--line-extended-gap);
       }
       &.line-mode {
         .font-lrc {
@@ -167,7 +169,7 @@ export default {
 //   // -webkit-text-stroke: thin #124628;
 // }
 .lyric-space {
-  height: 70%;
+  height: 80%;
 }
 // .lrc-active {
 

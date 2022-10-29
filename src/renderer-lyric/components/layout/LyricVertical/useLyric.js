@@ -4,6 +4,13 @@ import { lyric } from '@lyric/store/lyric'
 import { isPlay, setting } from '@lyric/store/state'
 import { setWindowBounds } from '@lyric/utils/ipc'
 
+const getOffsetTop = (contentWidth, lineWidth) => {
+  switch (setting['desktopLyric.scrollAlign']) {
+    case 'top': return contentWidth - lineWidth - lineWidth * 0.1
+    default: return contentWidth * 0.5 - lineWidth / 2
+  }
+}
+
 export default () => {
   const dom_lyric = ref(null)
   const dom_lyric_text = ref(null)
@@ -32,7 +39,7 @@ export default () => {
     }
     if (isStopScroll) return
     let dom_p = dom_lines[lyric.line]
-    cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft - dom_lyric.value.clientWidth * 0.5 + dom_p.clientWidth / 2) : 0, duration)
+    cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft - getOffsetTop(dom_lyric.value.clientWidth, dom_p.clientWidth)) : 0, duration)
   }
   const clearLyricScrollTimeout = () => {
     if (!timeout) return

@@ -31,12 +31,24 @@ dd
     base-checkbox.gap-left(id="setting_desktop_lyric_direction_vertical" :modelValue="appSetting['desktopLyric.direction']" @update:modelValue="updateSetting({ 'desktopLyric.direction': $event })" need value="vertical" :label="$t('setting__desktop_lyric_direction_vertical')")
 
 dd
+  h3#desktop_lyric_scroll_align {{$t('setting__desktop_lyric_scroll_align')}}
+  div
+    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_top" :modelValue="appSetting['desktopLyric.scrollAlign']" @update:modelValue="updateSetting({ 'desktopLyric.scrollAlign': $event })" need value="top" :label="$t('setting__desktop_lyric_scroll_align_top')")
+    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_center" :modelValue="appSetting['desktopLyric.scrollAlign']" @update:modelValue="updateSetting({ 'desktopLyric.scrollAlign': $event })" need value="center" :label="$t('setting__desktop_lyric_scroll_align_center')")
+
+dd
   h3#desktop_lyric_align {{$t('setting__desktop_lyric_align')}}
   div
     base-checkbox.gap-left(id="setting_desktop_lyric_align_left" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="left" :label="$t('setting__desktop_lyric_align_left')")
     base-checkbox.gap-left(id="setting_desktop_lyric_align_center" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="center" :label="$t('setting__desktop_lyric_align_center')")
     base-checkbox.gap-left(id="setting_desktop_lyric_align_right" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="right" :label="$t('setting__desktop_lyric_align_right')")
 
+dd
+  h3#desktop_lyric_line_gap {{$t('setting__desktop_lyric_line_gap', { num: appSetting['desktopLyric.style.lineGap'] })}}
+  div
+    p
+      base-btn.btn(min @click="changeLineGap(-1)") {{$t('setting__desktop_lyric_line_gap_dec')}}
+      base-btn.btn(min @click="changeLineGap(1)") {{$t('setting__desktop_lyric_line_gap_add')}}
 dd
   h3#desktop_lyric_color {{$t('setting__desktop_lyric_color')}}
   div
@@ -174,7 +186,7 @@ const useLyricColor = () => {
     const defaultSetting = {
       'desktopLyric.style.lyricUnplayColor': 'rgba(255, 255, 255, 1)',
       'desktopLyric.style.lyricPlayedColor': 'rgba(7, 197, 86, 1)',
-      'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.14)',
+      'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.15)',
     }
     updateSetting(defaultSetting)
     setLyricUnplayColor(defaultSetting['desktopLyric.style.lyricUnplayColor'])
@@ -202,6 +214,10 @@ export default {
   setup() {
     const t = useI18n()
 
+    const changeLineGap = (step) => {
+      let gap = appSetting['desktopLyric.style.lineGap'] + step
+      updateSetting({ 'desktopLyric.style.lineGap': Math.min(Math.max(gap, 0), 25) })
+    }
 
     const {
       lyric_unplay_color_ref,
@@ -221,6 +237,7 @@ export default {
     return {
       appSetting,
       updateSetting,
+      changeLineGap,
       lyric_unplay_color_ref,
       lyric_played_color_ref,
       lyric_shadow_color_ref,

@@ -12,7 +12,7 @@ export default () => {
       '--color-lyric-unplay': unplayColor,
       '--color-lyric-played': playedColor,
       '--color-lyric-shadow': shadowColor,
-      '--color-lyric-shadow-font-mode': RGB_Alpha_Shade(0.5, shadowColor),
+      '--color-lyric-shadow-font-mode': RGB_Alpha_Shade(0.49, shadowColor),
     })
   }, {
     immediate: true,

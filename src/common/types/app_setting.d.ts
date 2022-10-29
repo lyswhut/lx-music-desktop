@@ -223,6 +223,11 @@ declare namespace LX {
     'desktopLyric.isDelayScroll': boolean
 
     /**
+     * 歌词滚动位置
+     */
+    'desktopLyric.scrollAlign': 'top' | 'center'
+
+    /**
      * 是否在鼠标划过桌面歌词窗口时降低歌词透明度
      */
     'desktopLyric.isHoverHide': boolean
@@ -233,7 +238,7 @@ declare namespace LX {
     'desktopLyric.direction': 'horizontal' | 'vertical'
 
     /**
-     * 是否在鼠标划过桌面歌词窗口时降低歌词透明度
+     * 歌词对齐方式
      */
     'desktopLyric.style.align': 'center' | 'left' | 'right'
 
@@ -246,6 +251,11 @@ declare namespace LX {
      * 桌面歌词字体大小
      */
     'desktopLyric.style.fontSize': number
+
+    /**
+     * 歌词间距大小
+     */
+    'desktopLyric.style.lineGap': number
 
     /**
      * 桌面歌词未播放字体颜色
