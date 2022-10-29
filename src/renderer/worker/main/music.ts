@@ -1,4 +1,4 @@
-import { getLocalMusicFileLyric, getLocalMusicFilePic, parseLyric } from '@renderer/utils/music'
+import { getLocalMusicFileLyric, getLocalMusicFilePic } from '@renderer/utils/music'
 
 
 export const getMusicFilePic = async(filePath: string) => {
@@ -10,5 +10,7 @@ export const getMusicFilePic = async(filePath: string) => {
 export const getMusicFileLyric = async(filePath: string): Promise<LX.Music.LyricInfo | null> => {
   const lyric = await getLocalMusicFileLyric(filePath)
   if (!lyric) return null
-  return parseLyric(lyric)
+  return {
+    lyric,
+  }
 }
