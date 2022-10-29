@@ -6,6 +6,7 @@
 //   return listId == 'download' ? downloadList : getListFromState(listId)
 // }
 import { commonColorNames, commonDarkColorValues, commonLightColorValues } from '@common/config'
+import { isUrl } from '@common/utils/common'
 import { joinPath } from '@common/utils/nodejs'
 import { markRaw, shallowReactive } from '@common/utils/vueTools'
 import { getThemes as getTheme } from '@renderer/utils/ipc'
@@ -13,6 +14,12 @@ import { qualityList, themeInfo, themeShouldUseDarkColors } from './index'
 
 export const assertApiSupport = (source: LX.Source): boolean => {
   return source == 'local' || qualityList.value[source] != null
+}
+
+export const buildBgUrl = (originUrl: string, dataPath: string): string => {
+  return isUrl(originUrl)
+    ? `url(${originUrl})`
+    : `url(file:///${joinPath(dataPath, originUrl).replaceAll('\\', '/')})`
 }
 
 export const getThemes = (callback: (themeInfo: LX.ThemeInfo) => void) => {
@@ -27,7 +34,7 @@ export const getThemes = (callback: (themeInfo: LX.ThemeInfo) => void) => {
 export const buildThemeColors = (theme: LX.Theme, dataPath: string) => {
   if (theme.isCustom && theme.config.extInfo['--background-image'] != 'none') {
     theme = copyTheme(theme)
-    theme.config.extInfo['--background-image'] = `url(file:///${joinPath(dataPath, theme.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+    theme.config.extInfo['--background-image'] = buildBgUrl(theme.config.extInfo['--background-image'], dataPath)
   }
   const colors: Record<string, string> = {
     ...theme.config.themeColors,

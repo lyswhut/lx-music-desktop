@@ -38,10 +38,9 @@
 </template>
 
 <script>
-import { joinPath } from '@common/utils/nodejs'
 import { markRaw, reactive, watch } from '@common/utils/vueTools'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-import { applyTheme, getThemes } from '@renderer/store/utils'
+import { applyTheme, getThemes, buildBgUrl } from '@renderer/store/utils'
 
 export default {
   name: 'ThemeSelectorModal',
@@ -81,7 +80,7 @@ export default {
               '--background-image-theme': t.isCustom
                 ? t.config.extInfo['--background-image'] == 'none'
                   ? 'none'
-                  : `url(file:///${joinPath(info.dataPath, t.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+                  : buildBgUrl(t.config.extInfo['--background-image'], info.dataPath)
                 : t.config.extInfo['--background-image'],
             },
           }
@@ -96,7 +95,7 @@ export default {
               '--background-image-theme': t.isCustom
                 ? t.config.extInfo['--background-image'] == 'none'
                   ? 'none'
-                  : `url(file:///${joinPath(info.dataPath, t.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+                  : buildBgUrl(t.config.extInfo['--background-image'], info.dataPath)
                 : t.config.extInfo['--background-image'],
             },
           }

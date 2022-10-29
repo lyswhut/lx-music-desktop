@@ -60,6 +60,8 @@ export const decodeName = (str: string | null = '') => {
   return str?.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;|&nbsp;)/gm, (s: string) => encodeNames[s as keyof typeof encodeNames]) ?? ''
 }
 
+export const isUrl = (path: string) => /https?:\/\//.test(path)
+
 // 解析URL参数为对象
 export const parseUrlParams = (str: string): Record<string, string> => {
   const params: Record<string, string> = {}

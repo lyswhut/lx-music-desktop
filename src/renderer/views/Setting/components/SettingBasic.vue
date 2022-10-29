@@ -100,8 +100,7 @@ import ThemeEditModal from './ThemeEditModal'
 import PlayTimeoutModal from './PlayTimeoutModal'
 import UserApiModal from './UserApiModal'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-import { getThemes, applyTheme, findTheme } from '@renderer/store/utils'
-import { joinPath } from '@common/utils/nodejs'
+import { getThemes, applyTheme, findTheme, buildBgUrl } from '@renderer/store/utils'
 
 export default {
   name: 'SettingBasic',
@@ -126,13 +125,13 @@ export default {
       autoTheme['--background-image-theme-light'] = light.isCustom
         ? light.config.extInfo['--background-image'] == 'none'
           ? 'none'
-          : `url(file:///${joinPath(info.dataPath, light.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+          : buildBgUrl(light.config.extInfo['--background-image'], info.dataPath)
         : light.config.extInfo['--background-image']
       autoTheme['--color-primary-theme-dark'] = dark.config.themeColors['--color-theme']
       autoTheme['--background-image-theme-dark'] = dark.isCustom
         ? dark.config.extInfo['--background-image'] == 'none'
           ? 'none'
-          : `url(file:///${joinPath(info.dataPath, dark.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+          : buildBgUrl(dark.config.extInfo['--background-image'], info.dataPath)
         : dark.config.extInfo['--background-image']
     }
 
@@ -158,7 +157,7 @@ export default {
               '--color-primary-theme': t.config.themeColors['--color-theme'],
               '--background-image-theme': t.config.extInfo['--background-image'] == 'none'
                 ? 'none'
-                : `url(file:///${joinPath(info.dataPath, t.config.extInfo['--background-image']).replaceAll('\\', '/')})`,
+                : buildBgUrl(t.config.extInfo['--background-image'], info.dataPath),
             },
           }
         }))

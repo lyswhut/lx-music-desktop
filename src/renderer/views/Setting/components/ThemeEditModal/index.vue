@@ -120,6 +120,7 @@
 import { joinPath, extname, copyFile, checkPath, createDir, removeFile, moveFile, basename } from '@common/utils/nodejs'
 import { nextTick, ref, watch } from '@common/utils/vueTools'
 import { applyTheme, buildThemeColors, getThemes, copyTheme } from '@renderer/store/utils'
+import { isUrl } from '@common/utils/common'
 // import { appSetting, updateSetting } from '@renderer/store/setting'
 // import { applyTheme, getThemes } from '@renderer/store/utils'
 import { createThemeColors } from '@common/theme/utils'
@@ -244,7 +245,9 @@ export default {
         bgImg.value = ''
         originBgName = ''
       } else {
-        bgImg.value = joinPath(themeInfo.dataPath, theme.config.extInfo['--background-image'])
+        bgImg.value = isUrl(theme.config.extInfo['--background-image'])
+          ? theme.config.extInfo['--background-image']
+          : joinPath(themeInfo.dataPath, theme.config.extInfo['--background-image'])
         originBgName = theme.config.extInfo['--background-image']
       }
       appBgColorOrigin = theme.config.extInfo['--color-app-background']
@@ -387,6 +390,10 @@ export default {
       theme.isDark = val
       applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.isDark)
     }
+    /**
+     * 预览主题
+     * @param {*} val 是否预览当前编辑的主题
+     */
     const handlePreview = (val) => {
       if (val) {
         createPreview()
@@ -398,17 +405,20 @@ export default {
       handlePreview(false)
       emit('update:modelValue', false)
     }
+    // 保存
     const handleSubmit = async() => {
       if (!themeName.value) return
       theme.name = themeName.value.substring(0, 20)
       // 保存新背景
-      if (currentBgPath) {
+      if (currentBgPath && !isUrl(currentBgPath)) {
         const name = basename(currentBgPath)
         await moveFile(currentBgPath, joinPath(themeInfo.dataPath, name))
         theme.config.extInfo['--background-image'] = name
       }
       // 移除旧背景
-      if (originBgName && theme.config.extInfo['--background-image'] != originBgName) removeFile(joinPath(themeInfo.dataPath, originBgName))
+      if (originBgName &&
+        theme.config.extInfo['--background-image'] != originBgName &&
+        !isUrl(theme.config.extInfo['--background-image'])) removeFile(joinPath(themeInfo.dataPath, originBgName))
       if (props.themeId) {
         const index = themeInfo.userThemes.findIndex(t => t.id == theme.id)
         if (index > -1) themeInfo.userThemes.splice(index, 1, theme)
@@ -418,6 +428,7 @@ export default {
       emit('submit')
       emit('update:modelValue', false)
     }
+    // 删除
     const handleRemove = async() => {
       const confirm = await dialog.confirm({
         message: window.i18n.t('theme_edit_modal__remove_tip'),
@@ -452,19 +463,22 @@ export default {
       emit('submit')
       emit('update:modelValue', false)
     }
+    // 另存为
     const handleSaveNew = async() => {
       if (!themeName.value) return
       theme.name = themeName.value.substring(0, 20)
       theme.id = 'user_theme_' + Date.now()
       // 保存新背景
-      if (currentBgPath) {
-        const name = basename(currentBgPath)
-        await moveFile(currentBgPath, joinPath(themeInfo.dataPath, name))
-        theme.config.extInfo['--background-image'] = name
-      } else if (bgImg.value) {
-        const fileName = `${theme.id}_${Date.now()}${extname(bgImg.value)}`
-        await copyFile(bgImg.value, joinPath(themeInfo.dataPath, fileName))
-        theme.config.extInfo['--background-image'] = fileName
+      if (!isUrl(currentBgPath)) {
+        if (currentBgPath) {
+          const name = basename(currentBgPath)
+          await moveFile(currentBgPath, joinPath(themeInfo.dataPath, name))
+          theme.config.extInfo['--background-image'] = name
+        } else if (bgImg.value) {
+          const fileName = `${theme.id}_${Date.now()}${extname(bgImg.value)}`
+          await copyFile(bgImg.value, joinPath(themeInfo.dataPath, fileName))
+          theme.config.extInfo['--background-image'] = fileName
+        }
       }
       themeInfo.userThemes.push(theme)
       handlePreview(false)
