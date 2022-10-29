@@ -4,7 +4,7 @@ dt#sync
   button(class="help-btn" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq/sync')" :aria-label="$t('setting__sync_tip')")
     svg-icon(name="help-circle-outline")
 dd
-  base-checkbox(id="setting_sync_enable" v-model="currentStting.sync.enable" :label="syncEnableTitle")
+  base-checkbox(id="setting_sync_enable" :modelValue="appSetting['sync.enable']" @update:modelValue="updateSetting({ 'sync.enable': $event })" :label="syncEnableTitle")
   div
     p.small {{$t('setting__sync_auth_code', { code: sync.status.code || '' })}}
     p.small {{$t('setting__sync_address', { address: sync.status.address.join(', ') || '' })}}
@@ -15,20 +15,22 @@ dd
   h3#sync_port {{$t('setting__sync_port')}}
   div
     p
-      base-input.gap-left(v-model.trim="currentStting.sync.port" :placeholder="$t('setting__sync_port_tip')")
+      base-input.gap-left(:modelValue="appSetting['sync.port']" @update:modelValue="setSyncPort" :placeholder="$t('setting__sync_port_tip')")
 </template>
 
 <script>
-import { computed, useI18n, watch } from '@renderer/utils/vueTools'
-import { sync } from '@renderer/core/share'
-import { refreshSyncCode, syncEnable } from '@renderer/utils/tools'
-import { debounce, openUrl } from '@renderer/utils'
-import { currentStting } from '../setting'
+import { computed } from '@common/utils/vueTools'
+import { sync } from '@renderer/store'
+import { sendSyncAction } from '@renderer/utils/ipc'
+import { openUrl } from '@common/utils/electron'
+import { useI18n } from '@renderer/plugins/i18n'
+import { appSetting, updateSetting } from '@renderer/store/setting'
+import { debounce } from '@common/utils/common'
 
 export default {
   name: 'SettingSync',
   setup() {
-    const { t } = useI18n()
+    const t = useI18n()
 
 
     const syncEnableTitle = computed(() => {
@@ -47,28 +49,21 @@ export default {
         : ''
     })
 
-    watch(() => currentStting.value.sync.enable, enable => {
-      syncEnable({
-        enable,
-        port: currentStting.value.sync.port,
-      })
-      sync.enable = enable
-    })
+    const refreshSyncCode = () => {
+      sendSyncAction({ action: 'generate_code' })
+    }
 
-    const setPort = debounce(port => {
-      syncEnable({
-        enable: currentStting.value.sync.enable,
-        port,
-      })
-      sync.port = port
+    const setSyncPort = debounce(port => {
+      updateSetting({ 'sync.port': port.trim() })
     }, 500)
-    watch(() => currentStting.value.sync.port, setPort)
 
 
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
       sync,
       syncEnableTitle,
+      setSyncPort,
       syncDevices,
       refreshSyncCode,
       openUrl,

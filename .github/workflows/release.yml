@@ -11,15 +11,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Cache file
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             node_modules
@@ -32,7 +32,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install npm@8.5 -g
           npm install
 
       - name: Build src code
@@ -61,15 +60,15 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Cache file
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             node_modules
@@ -82,7 +81,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install npm@8.5 -g
           npm install
 
       - name: Build src code
@@ -111,15 +109,15 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
 
       - name: Check out git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
       - name: Cache file
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             node_modules
@@ -132,7 +130,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install npm@8.5 -g
           npm install
 
       - name: Build src code
@@ -141,7 +138,6 @@ jobs:
       - name: Release package
         run: |
           npm run publish:linux:deb:x64:always
-          npm run publish:linux:deb:x86
           npm run publish:linux:deb:arm64
           npm run publish:linux:deb:armv7l
           npm run publish:linux:appImage

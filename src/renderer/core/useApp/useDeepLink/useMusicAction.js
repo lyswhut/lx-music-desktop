@@ -1,9 +1,14 @@
-import { useCommit, useAction, useRouter, markRaw } from '@renderer/utils/vueTools'
-import { decodeName } from '@renderer/utils'
-// import { allList, defaultList, loveList, userLists } from '@renderer/core/share/list'
-import { playMusicInfo, isShowPlayerDetail, setShowPlayerDetail } from '@renderer/core/share/player'
+import { markRaw } from '@common/utils/vueTools'
+import { useRouter } from '@common/utils/vueRouter'
+import { decodeName } from '@common/utils/common'
+// import { allList, defaultList, loveList, userLists } from '@renderer/store/list'
+import { playMusicInfo, isShowPlayerDetail } from '@renderer/store/player/state'
+import { setShowPlayerDetail, addTempPlayList } from '@renderer/store/player/action'
 
 import { dataVerify, qualityFilter, sources } from './utils'
+import { focusWindow } from '@renderer/utils/ipc'
+import { playNext } from '@renderer/core/player/action'
+import { toNewMusicInfo } from '@common/utils/tools'
 
 const useSearchMusic = () => {
   const router = useRouter()
@@ -39,13 +44,11 @@ const useSearchMusic = () => {
         source,
       },
     })
+    focusWindow()
   }
 }
 
 const usePlayMusic = () => {
-  const setTempPlayList = useCommit('player', 'setTempPlayList')
-  const playNext = useAction('player', 'playNext')
-
   const filterInfoByPlayMusic = musicInfo => {
     switch (musicInfo.source) {
       case 'kw':
@@ -131,7 +134,7 @@ const usePlayMusic = () => {
   return ({ data: _musicInfo }) => {
     _musicInfo = filterInfoByPlayMusic(_musicInfo)
 
-    const musicInfo = {
+    let musicInfo = {
       ..._musicInfo,
       singer: decodeName(_musicInfo.singer),
       name: decodeName(_musicInfo.name),
@@ -143,9 +146,10 @@ const usePlayMusic = () => {
     for (const type of musicInfo.types) {
       musicInfo._types[type.type] = { size: type.size }
     }
+    musicInfo = toNewMusicInfo(musicInfo)
     markRaw(musicInfo)
     const isPlaying = !!playMusicInfo.musicInfo
-    setTempPlayList([{ listId: '__temp__', musicInfo, isTop: true }])
+    addTempPlayList([{ listId: '__temp__', musicInfo, isTop: true }])
     if (isPlaying) playNext()
   }
 }

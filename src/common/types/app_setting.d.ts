@@ -1,0 +1,456 @@
+
+
+declare namespace LX {
+  type AddMusicLocationType = 'top' | 'bottom'
+
+  interface AppSetting {
+    version: string
+
+    /**
+     * 窗口大小id
+     */
+    'common.windowSizeId': number
+
+    /**
+     * 窗口大小id
+     */
+    'common.fontSize': number
+
+    /**
+     * 是否以全屏启动
+     */
+    'common.startInFullscreen': boolean
+
+    /**
+     * 语言id
+     */
+    'common.langId': string | null
+
+    /**
+     * api id
+     */
+    'common.apiSource': string
+
+    /**
+     * 音源名称类型，原名、别名
+     */
+    'common.sourceNameType': 'alias' | 'real'
+
+    /**
+     * 显示的字体
+     */
+    'common.font': string
+
+    /**
+     * 是否启用动画
+     */
+    'common.isShowAnimation': boolean
+
+    /**
+     * 是否启用随机弹窗动画
+     */
+    'common.randomAnimate': boolean
+
+    /**
+     * 是否同意软件协议
+     */
+    'common.isAgreePact': boolean
+
+    /**
+     * 控制按钮位置，左边、右边
+     */
+    'common.controlBtnPosition': 'left' | 'right'
+
+    /**
+     * 启动时自动播放歌曲
+     */
+    'player.startupAutoPlay': boolean
+
+    /**
+     * 切歌模式
+     */
+    'player.togglePlayMethod': 'listLoop' | 'random' | 'list' | 'singleLoop' | 'none'
+
+    /**
+     * 是否优先播放320k音质
+     */
+    'player.highQuality': boolean
+
+    /**
+     * 是否显示任务栏进度条
+     */
+    'player.isShowTaskProgess': boolean
+
+    /**
+     * 音量大小
+     */
+    'player.volume': number
+
+    /**
+     * 是否静音
+     */
+    'player.isMute': boolean
+
+    /**
+     * 音频输出设备id
+     */
+    'player.mediaDeviceId': string
+
+    /**
+     * 是否在音频输出设备更改时暂停播放
+     */
+    'player.isMediaDeviceRemovedStopPlay': boolean
+
+    /**
+     * 是否显示歌词翻译
+     */
+    'player.isShowLyricTranslation': boolean
+
+    /**
+     * 是否显示歌词罗马音
+     */
+    'player.isShowLyricRoma': boolean
+
+    /**
+     * 是否将歌词从简体转换为繁体
+     */
+    'player.isS2t': boolean
+
+    /**
+     * 是否播放卡拉OK歌词
+     */
+    'player.isPlayLxlrc': boolean
+
+    /**
+     * 启动软件时是否恢复上次播放进度
+     */
+    'player.isSavePlayTime': boolean
+
+    /**
+     * 是否启用音频可视化
+     */
+    'player.audioVisualization': boolean
+
+    /**
+     * 定时暂停播放-是否等待歌曲播放完毕再暂停
+     */
+    'player.waitPlayEndStop': boolean
+
+    /**
+     * 定时暂停播放-倒计时时间
+     */
+    'player.waitPlayEndStopTime': string
+
+    /**
+     * 是否启用音频加载失败时自动切歌
+     */
+    'player.autoSkipOnError': boolean
+
+    /**
+     * 播放详情页-是否缩放当前播放的歌词行
+     */
+    'playDetail.isZoomActiveLrc': boolean
+
+    /**
+     * 播放详情页-是否允许通过歌词调整播放进度
+     */
+    'playDetail.isShowLyricProgressSetting': boolean
+
+    /**
+     * 播放详情页-歌词字体大小
+     */
+    'playDetail.style.fontSize': number
+
+    /**
+     * 播放详情页-歌词对齐方式
+     */
+    'playDetail.style.align': 'center' | 'left' | 'right'
+
+
+    /**
+     * 是否启用桌面歌词
+     */
+    'desktopLyric.enable': boolean
+
+    /**
+     * 是否锁定桌面歌词
+     */
+    'desktopLyric.isLock': boolean
+
+    /**
+     * 是在置顶桌面
+     */
+    'desktopLyric.isAlwaysOnTop': boolean
+
+    /**
+     * 是否自动刷新歌词置顶
+     */
+    'desktopLyric.isAlwaysOnTopLoop': boolean
+
+    /**
+     * 是否启用音频可视化
+     */
+    'desktopLyric.audioVisualization': boolean
+
+    /**
+     * 桌面歌词窗口宽度
+     */
+    'desktopLyric.width': number
+
+    /**
+     * 桌面歌词窗口高度
+     */
+    'desktopLyric.height': number
+
+    /**
+     * 桌面歌词窗口x坐标
+     */
+    'desktopLyric.x': number | null
+
+    /**
+     * 桌面歌词窗口y坐标
+     */
+    'desktopLyric.y': number | null
+
+    /**
+     * 是否允许桌面歌词窗口拖出主屏幕之外
+     */
+    'desktopLyric.isLockScreen': boolean
+
+    /**
+     * 是否延迟桌面歌词滚动
+     */
+    'desktopLyric.isDelayScroll': boolean
+
+    /**
+     * 是否在鼠标划过桌面歌词窗口时降低歌词透明度
+     */
+    'desktopLyric.isHoverHide': boolean
+
+    /**
+     * 歌词方向
+     */
+    'desktopLyric.direction': 'horizontal' | 'vertical'
+
+    /**
+     * 是否在鼠标划过桌面歌词窗口时降低歌词透明度
+     */
+    'desktopLyric.style.align': 'center' | 'left' | 'right'
+
+    /**
+     * 桌面歌词字体
+     */
+    'desktopLyric.style.font': string
+
+    /**
+     * 桌面歌词字体大小
+     */
+    'desktopLyric.style.fontSize': number
+
+    /**
+     * 桌面歌词未播放字体颜色
+     */
+    'desktopLyric.style.lyricUnplayColor': string
+
+    /**
+     * 桌面歌词已播放字体颜色
+     */
+    'desktopLyric.style.lyricPlayedColor': string
+
+    /**
+     * 桌面歌词字体阴影颜色
+     */
+    'desktopLyric.style.lyricShadowColor': string
+
+    /**
+     * 桌面歌词加粗字体
+     */
+    // 'desktopLyric.style.fontWeight': boolean
+
+    /**
+     * 桌面歌词字体透明度
+     */
+    'desktopLyric.style.opacity': number
+
+    /**
+     * 桌面歌词是否允许换行
+     */
+    'desktopLyric.style.ellipsis': boolean
+
+    /**
+     * 是否缩放当前正在播放的桌面歌词
+     */
+    'desktopLyric.style.isZoomActiveLrc': boolean
+
+    /**
+     * 是否启用双击列表里的歌曲时自动切换到当前列表播放（仅对歌单、排行榜有效）
+     */
+    'list.isClickPlayList': boolean
+
+    /**
+     * 是否显示歌曲来源（仅对我的列表有效）
+     */
+    'list.isShowSource': boolean
+
+    /**
+     * 是否自动恢复列表滚动位置（仅对我的列表有效）
+     */
+    'list.isSaveScrollLocation': boolean
+
+    /**
+     * 添加歌曲到我的列表时的方式
+     */
+    'list.addMusicLocationType': LX.AddMusicLocationType
+
+    /**
+     * 是否显示列表操作按钮列
+     */
+    'list.actionButtonsVisible': boolean
+
+    /**
+     * 是否启用下载功能
+     */
+    'download.enable': boolean
+
+    /**
+     * 下载路径
+     */
+    'download.savePath': string
+
+    /**
+     * 文件命名方式
+     */
+    'download.fileName': '歌名 - 歌手' | '歌手 - 歌名' | '歌名'
+
+    /**
+     * 最大并发下载数
+     */
+    'download.maxDownloadNum': number
+
+    /**
+     * 是否下载lrc文件
+     */
+    'download.isDownloadLrc': boolean
+
+    /**
+     * 是否下载翻译歌词文件
+     */
+    'download.isDownloadTLrc': boolean
+
+    /**
+     * 是否下载罗马音歌词文件
+     */
+    'download.isDownloadRLrc': boolean
+
+    /**
+     * 保存lrc时的文本编码格式
+     */
+    'download.lrcFormat': 'utf8' | 'gbk'
+
+    /**
+     * 是否在音频文件中嵌入歌曲封面
+     */
+    'download.isEmbedPic': boolean
+
+    /**
+     * 是否在音频文件中嵌入歌词
+     */
+    'download.isEmbedLyric': boolean
+
+    /**
+     * 歌曲源不可用时，是否启用换源下载
+     */
+    'download.isUseOtherSource': boolean
+
+    /**
+     * 主题id
+     */
+    'theme.id': string
+
+    /**
+     * 亮色主题id
+     */
+    'theme.lightId': string
+
+    /**
+     * 暗色主题id
+     */
+    'theme.darkId': string
+
+    /**
+     * 是否显示热门搜索
+     */
+    'search.isShowHotSearch': boolean
+
+    /**
+     * 是否显示搜索历史
+     */
+    'search.isShowHistorySearch': boolean
+
+    /**
+     * 软件启动时是否自动聚焦搜索框
+     */
+    'search.isFocusSearchBox': boolean
+
+    /**
+     * 是否启用代理
+     */
+    'network.proxy.enable': boolean
+
+    /**
+     * 代理服务器地址
+     */
+    'network.proxy.host': string
+
+    /**
+     * 代理服务器端口号
+     */
+    'network.proxy.port': string
+
+    /**
+     * 代理服务器用户名
+     */
+    'network.proxy.username': string
+
+    /**
+     * 代理服务器密码
+     */
+    'network.proxy.password': string
+
+    /**
+     * 是否启用托盘
+     */
+    'tray.enable': boolean
+
+    /**
+     * 是否关闭时是否最小化到托盘
+     */
+    // 'tray.isToTray': boolean
+
+    /**
+     * 托盘主题id
+     */
+    'tray.themeId': number
+
+    /**
+     * 是否启用同步服务
+     */
+    'sync.enable': boolean
+
+    /**
+     * 同步服务端口号
+     */
+    'sync.port': '23332' | string
+
+    /**
+     * 是否在离开搜索界面时自动清空搜索框
+     */
+    'odc.isAutoClearSearchInput': boolean
+
+    /**
+     * 是否在离开搜索界面时自动清空搜索结果列表
+     */
+    'odc.isAutoClearSearchList': boolean
+  }
+}
+

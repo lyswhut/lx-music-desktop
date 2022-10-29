@@ -4,53 +4,50 @@ dd
   h3#network_proxy_title {{$t('setting__network_proxy_title')}}
   div
     p
-      base-checkbox(id="setting_network_proxy_enable" v-model="currentStting.network.proxy.enable" :label="$t('setting__is_enable')")
+      base-checkbox(id="setting_network_proxy_enable" :modelValue="appSetting['network.proxy.enable']" @update:modelValue="updateSetting({'network.proxy.enable': $event})" :label="$t('setting__is_enable')")
     p
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.host" :placeholder="proxy.envProxy ? proxy.envProxy.host : $t('setting__network_proxy_host')")
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.port" :placeholder="proxy.envProxy ? proxy.envProxy.port : $t('setting__network_proxy_port')")
+      base-input.gap-left(:modelValue="appSetting['network.proxy.host']" @update:modelValue="setHost" :placeholder="proxy.envProxy ? proxy.envProxy.host : $t('setting__network_proxy_host')")
+      base-input.gap-left(:modelValue="appSetting['network.proxy.port']" @update:modelValue="setPort" :placeholder="proxy.envProxy ? proxy.envProxy.port : $t('setting__network_proxy_port')")
     p
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.username" :placeholder="$t('setting__network_proxy_username')")
-      base-input.gap-left(v-model.trim="currentStting.network.proxy.password" type="password" :placeholder="$t('setting__network_proxy_password')")
+      base-input.gap-left(:modelValue="appSetting['network.proxy.username']" @update:modelValue="setUserName" :placeholder="$t('setting__network_proxy_username')")
+      base-input.gap-left(:modelValue="appSetting['network.proxy.password']" @update:modelValue="setPassword" type="password" :placeholder="$t('setting__network_proxy_password')")
 
 </template>
 
 <script>
-import { watch, onBeforeUnmount } from '@renderer/utils/vueTools'
-import { proxy } from '@renderer/core/share'
-import { debounce } from '@renderer/utils'
+import { onBeforeUnmount } from '@common/utils/vueTools'
+import { proxy } from '@renderer/store'
+import { debounce } from '@common/utils'
 
-import { currentStting } from '../setting'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 export default {
   name: 'SettingNetwork',
   setup() {
-    watch(() => currentStting.value.network.proxy.enable, enable => {
-      proxy.enable = enable
-    })
-
     const setHost = debounce(host => {
-      proxy.host = host
+      updateSetting({ 'network.proxy.host': host.trim() })
     }, 500)
-    watch(() => currentStting.value.network.proxy.host, setHost)
     const setPort = debounce(port => {
-      proxy.port = port
+      updateSetting({ 'network.proxy.port': port.trim() })
     }, 500)
-    watch(() => currentStting.value.network.proxy.port, setPort)
     const setUserName = debounce(username => {
-      proxy.username = username
+      updateSetting({ 'network.proxy.username': username.trim() })
     }, 500)
-    watch(() => currentStting.value.network.proxy.username, setUserName)
     const setPassword = debounce(password => {
-      proxy.password = password
+      updateSetting({ 'network.proxy.password': password.trim() })
     }, 500)
-    watch(() => currentStting.value.network.proxy.password, setPassword)
 
     onBeforeUnmount(() => {
-      if (currentStting.value.network.proxy.enable && !currentStting.value.network.proxy.host) proxy.enable = false
+      if (appSetting['network.proxy.enable'] && !appSetting['network.proxy.host']) proxy.enable = false
     })
 
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
+      setHost,
+      setPort,
+      setUserName,
+      setPassword,
       proxy,
     }
   },

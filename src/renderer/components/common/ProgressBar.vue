@@ -1,19 +1,21 @@
 <template>
-<div :class="[$style.progress, className]">
-  <div :class="[$style.progressBar, $style.progressBar2, {[$style.barTransition]: isActiveTransition}]" @transitionend="handleTransitionEnd" :style="{ transform: `scaleX(${progress || 0})` }"></div>
-  <div v-show="dragging" :class="[$style.progressBar, $style.progressBar3]" :style="{ transform: `scaleX(${dragProgress || 0})` }"></div>
-</div>
-<div :class="$style.progressMask" @mousedown="handleMsDown" ref="dom_progress"></div>
+  <div :class="[$style.progress, className]">
+    <div :class="[$style.progressBar, $style.progressBar2, {[$style.barTransition]: isActiveTransition}]" :style="{ transform: `scaleX(${progress || 0})` }" @transitionend="handleTransitionEnd" />
+    <div v-show="dragging" :class="[$style.progressBar, $style.progressBar3]" :style="{ transform: `scaleX(${dragProgress || 0})` }" />
+  </div>
+  <div ref="dom_progress" :class="$style.progressMask" @mousedown="handleMsDown" />
 </template>
 
 <script>
-import { ref, onBeforeUnmount } from '@renderer/utils/vueTools'
-import { player as eventPlayerNames } from '@renderer/event/names'
-import { playProgress } from '@renderer/core/share/playProgress'
+import { ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { playProgress } from '@renderer/store/player/playProgress'
 
 export default {
   props: {
-    className: String,
+    className: {
+      type: String,
+      default: '',
+    },
     progress: {
       type: Number,
       required: true,
@@ -70,7 +72,7 @@ export default {
     })
 
     const setProgress = num => {
-      window.eventHub.emit(eventPlayerNames.setProgress, num)
+      window.app_event.setProgress(num)
     }
 
     // const handleSetProgress = event => {
@@ -93,11 +95,11 @@ export default {
 
 .progress {
   width: 100%;
-  height: 4px;
+  height: 5px;
   // overflow: hidden;
-  transition: @transition-theme;
+  transition: @transition-normal;
   transition-property: background-color;
-  background-color: @color-player-progress;
+  background-color: var(--color-primary-light-100-alpha-800);
   // background-color: #f5f5f5;
   position: relative;
   border-radius: 20px;
@@ -120,16 +122,16 @@ export default {
   border-radius: 20px;
 }
 .progress-bar1 {
-  background-color: @color-player-progress-bar1;
+  background-color: var(--color-primary-light-100-alpha-600);
 }
 
 .progress-bar2 {
-  background-color: @color-player-progress-bar2;
+  background-color: var(--color-primary-light-100-alpha-400);
   will-change: transform;
 }
 
 .progress-bar3 {
-  background-color: @color-player-progress-bar2;
+  background-color: var(--color-primary-light-100-alpha-200);
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   opacity: 0.5;
 }
@@ -140,20 +142,4 @@ export default {
   transition-duration: 0.2s;
 }
 
-each(@themes, {
-  :global(#root.@{value}) {
-    .progress {
-      background-color: ~'@{color-@{value}-player-progress}';
-    }
-    .progress-bar1 {
-      background-color: ~'@{color-@{value}-player-progress-bar1}';
-    }
-    .progress-bar2 {
-      background-color: ~'@{color-@{value}-player-progress-bar2}';
-    }
-    .progress-bar3 {
-      background-color: ~'@{color-@{value}-player-progress-bar2}';
-    }
-  }
-})
 </style>

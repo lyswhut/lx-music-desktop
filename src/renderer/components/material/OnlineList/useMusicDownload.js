@@ -1,4 +1,4 @@
-import { ref, nextTick } from '@renderer/utils/vueTools'
+import { ref, nextTick } from '@common/utils/vueTools'
 
 export default ({ selectedList, props }) => {
   const isShowDownload = ref(false)

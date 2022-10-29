@@ -1,63 +1,114 @@
-<template lang="pug">
-div(:class="$style.songList")
-  transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-    div(:class="$style.list")
-      div.thead(:class="$style.thead")
-        table
-          thead
-            tr
-              th.nobreak.center(:class="$style.th" :style="{ width: rowWidth.r1 }") #
-              th.nobreak(:class="$style.th" :style="{ width: rowWidth.r2 }") {{$t('music_name')}}
-              th.nobreak(:class="$style.th" :style="{ width: rowWidth.r3 }") {{$t('music_singer')}}
-              th.nobreak(:class="$style.th" :style="{ width: rowWidth.r4 }") {{$t('music_album')}}
-              th.nobreak(:class="$style.th" :style="{ width: rowWidth.r5 }") {{$t('music_time')}}
-              th.nobreak(:class="$style.th" :style="{ width: rowWidth.r6 }") {{$t('action')}}
-      div(:class="$style.content")
-        div(v-show="list.length" :class="$style.content" ref="dom_listContent")
-          base-virtualized-list(:list="list" key-name="songmid" ref="listRef" :item-height="listItemHeight"
-            containerClass="scroll" contentClass="list" @contextmenu.capture="handleListRightClick")
-            template(#default="{ item, index }")
-              div.list-item(@click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
-                :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]")
-                div.list-item-cell.nobreak.center(:style="{ width: rowWidth.r1 }" style="padding-left: 3px; padding-right: 3px;" :class="$style.noSelect" @click.stop) {{index + 1}}
-                div.list-item-cell.auto(:style="{ width: rowWidth.r2 }" :aria-label="item.name + (item._types.flac32bit ? ` - ${$t('tag__lossless_24bit')}` : (item._types.ape || item._types.flac || item._types.wav) ? ` - ${$t('tag__lossless')}` : item._types['320k'] ? ` - ${$t('tag__high_quality')}` : '')")
-                  span.select {{item.name}}
-                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-if="item._types.flac32bit") {{$t('tag__lossless_24bit')}}
-                  span.badge.badge-theme-success(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types.ape || item._types.flac || item._types.wav") {{$t('tag__lossless')}}
-                  span.badge.badge-theme-info(:class="[$style.labelQuality, $style.noSelect]" v-else-if="item._types['320k']") {{$t('tag__high_quality')}}
-                div.list-item-cell(:style="{ width: rowWidth.r3 }" :aria-label="item.singer")
-                  span.select {{item.singer}}
-                div.list-item-cell(:style="{ width: rowWidth.r4 }" :aria-label="item.albumName")
-                  span.select {{item.albumName}}
-                div.list-item-cell(:style="{ width: rowWidth.r5 }")
-                  span(:class="[$style.time, $style.noSelect]") {{item.interval || '--/--'}}
-                div.list-item-cell(:style="{ width: rowWidth.r6 }" style="padding-left: 0; padding-right: 0;")
-                  material-list-buttons(:index="index" :class="$style.btns"
-                      :remove-btn="false" @btn-click="handleListBtnClick"
-                      :download-btn="assertApiSupport(item.source)")
-            template(#footer)
-              div(:class="$style.pagination")
-                material-pagination(:count="total" :limit="limit" :page="page" @btn-click="$emit('togglePage', $event)")
-        transition(enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut")
-          div(v-show="!list.length" :class="$style.noitem")
-            p(v-html="noItem")
-  //- material-flow-btn(:show="isShowEditBtn && assertApiSupport(source)" :remove-btn="false" @btn-click="handleFlowBtnClick")
-  common-download-modal(v-model:show="isShowDownload" :musicInfo="selectedDownloadMusicInfo" teleport="#view")
-  common-download-multiple-modal(v-model:show="isShowDownloadMultiple" :list="selectedList" @confirm="removeAllSelect" teleport="#view")
-  common-list-add-modal(v-model:show="isShowListAdd" :musicInfo="selectedAddMusicInfo" teleport="#view")
-  common-list-add-multiple-modal(v-model:show="isShowListAddMultiple" :musicList="selectedList" @confirm="removeAllSelect" teleport="#view")
-  base-menu(:menus="menus" :location="menuLocation" item-name="name" :isShow="isShowItemMenu" @menu-click="handleMenuClick")
+<template>
+  <div :class="$style.songList">
+    <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
+      <div :class="$style.list">
+        <div class="thead">
+          <table>
+            <thead>
+              <tr v-if="actionButtonsVisible">
+                <th class="num" style="width: 5%;">#</th>
+                <th class="nobreak">{{ $t('music_name') }}</th>
+                <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
+                <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
+                <th class="nobreak" style="width: 9%;">{{ $t('music_time') }}</th>
+                <th class="nobreak" style="width: 16%;">{{ $t('action') }}</th>
+              </tr>
+              <tr v-else>
+                <th class="num" style="width: 5%;">#</th>
+                <th class="nobreak">{{ $t('music_name') }}</th>
+                <th class="nobreak" style="width: 24%;">{{ $t('music_singer') }}</th>
+                <th class="nobreak" style="width: 27%;">{{ $t('music_album') }}</th>
+                <th class="nobreak" style="width: 10%;">{{ $t('music_time') }}</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div :class="$style.content">
+          <div v-show="!noItem" ref="dom_listContent" :class="$style.content">
+            <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+              <template #default="{ item, index }">
+                <div
+                  class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
+                  @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
+                >
+                  <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
+                  <div class="list-item-cell auto name">
+                    <span class="select name" :aria-label="item.name">{{ item.name }}</span>
+                    <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
+                    <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
+                    <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
+                    <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  </div>
+                  <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
+                  <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
+                  <div class="list-item-cell" style="flex: 0 0 9%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
+                  <div class="list-item-cell" style="flex: 0 0 16%; padding-left: 0; padding-right: 0;">
+                    <material-list-buttons :index="index" :remove-btn="false" :download-btn="assertApiSupport(item.source)" :play-btn="checkApiSource ? assertApiSupport(item.source) : true" @btn-click="handleListBtnClick" />
+                  </div>
+                </div>
+              </template>
+              <template #footer>
+                <div :class="$style.pagination">
+                  <material-pagination :count="total" :limit="limit" :page="page" @btn-click="$emit('togglePage', $event)" />
+                </div>
+              </template>
+            </base-virtualized-list>
+            <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+              <template #default="{ item, index }">
+                <div
+                  class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
+                  @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
+                >
+                  <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
+                  <div class="list-item-cell auto name">
+                    <span class="select name" :aria-label="item.name">{{ item.name }}</span>
+                    <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
+                    <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
+                    <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
+                    <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  </div>
+                  <div class="list-item-cell" style="flex: 0 0 24%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
+                  <div class="list-item-cell" style="flex: 0 0 27%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
+                  <div class="list-item-cell" style="flex: 0 0 10%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
+                </div>
+              </template>
+              <template #footer>
+                <div :class="$style.pagination">
+                  <material-pagination :count="total" :limit="limit" :page="page" @btn-click="$emit('togglePage', $event)" />
+                </div>
+              </template>
+            </base-virtualized-list>
+          </div>
+          <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+            <div v-show="noItem" :class="$style.noitem">
+              <p v-text="noItem" />
+            </div>
+          </transition>
+        </div>
+      </div>
+    </transition>
+    <!-- <material-flow-btn :show="isShowEditBtn && assertApiSupport(source)" :remove-btn="false" @btn-click="handleFlowBtnClick" /> -->
+    <!-- <common-download-modal v-model:show="isShowDownload" :music-info="selectedDownloadMusicInfo" teleport="#view" />
+    <common-download-multiple-modal v-model:show="isShowDownloadMultiple" :list="selectedList" teleport="#view" @confirm="removeAllSelect" /> -->
+    <common-list-add-modal v-model:show="isShowListAdd" :music-info="selectedAddMusicInfo" teleport="#view" />
+    <common-list-add-multiple-modal v-model:show="isShowListAddMultiple" :music-list="selectedList" teleport="#view" @confirm="removeAllSelect" />
+    <common-download-modal v-model:show="isShowDownload" :music-info="selectedDownloadMusicInfo" teleport="#view" />
+    <common-download-multiple-modal v-model:show="isShowDownloadMultiple" :list="selectedList" teleport="#view" @confirm="removeAllSelect" />
+    <base-menu v-model="isShowItemMenu" :menus="menus" :xy="menuLocation" item-name="name" @menu-click="handleMenuClick" />
+  </div>
 </template>
 
 <script>
-import { clipboardWriteText, assertApiSupport } from '@renderer/utils'
-import { ref, useCssModule, useRefGetter } from '@renderer/utils/vueTools'
+import { clipboardWriteText } from '@common/utils/electron'
+import { assertApiSupport } from '@renderer/store/utils'
+import { ref } from '@common/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
 import useMusicDownload from './useMusicDownload'
 import useMusicAdd from './useMusicAdd'
 import useMusicActions from './useMusicActions'
+import { appSetting } from '@renderer/store/setting'
 export default {
   name: 'MaterialOnlineList',
   props: {
@@ -79,32 +130,25 @@ export default {
       type: Number,
       required: true,
     },
-    rowWidth: {
-      type: Object,
-      default() {
-        return {
-          r1: '5%',
-          r2: 'auto',
-          r3: '22%',
-          r4: '22%',
-          r5: '8%',
-          r6: '13%',
-        }
-      },
+    sourceTag: {
+      type: Boolean,
+      default: false,
     },
     noItem: {
       type: String,
+      default: '',
+    },
+    checkApiSource: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['show-menu', 'play-list', 'togglePage'],
   setup(props, { emit }) {
+    const actionButtonsVisible = appSetting['list.actionButtonsVisible']
     const rightClickSelectedIndex = ref(-1)
     const dom_listContent = ref(null)
     const listRef = ref(null)
-
-    const styles = useCssModule()
-
-    const setting = useRefGetter('setting')
 
     const {
       selectedList,
@@ -117,7 +161,7 @@ export default {
       handlePlayMusic,
       handlePlayMusicLater,
       doubleClickPlay,
-    } = usePlay({ selectedList, props, removeAllSelect, setting, emit })
+    } = usePlay({ selectedList, props, removeAllSelect, emit })
 
     const {
       isShowListAdd,
@@ -143,10 +187,9 @@ export default {
       menuLocation,
       isShowItemMenu,
       showMenu,
-      hideMenu,
       menuClick,
     } = useMenu({
-      listRef,
+      props,
       assertApiSupport,
       emit,
 
@@ -176,10 +219,10 @@ export default {
       if (!event.target.classList.contains('select')) return
       event.stopImmediatePropagation()
       let classList = dom_listContent.value.classList
-      classList.add(styles.copying)
+      classList.add('copying')
       window.requestAnimationFrame(() => {
         let str = window.getSelection().toString()
-        classList.remove(styles.copying)
+        classList.remove('copying')
         str = str.split(/\n\n/).map(s => s.replace(/\n/g, '  ')).join('\n').trim()
         if (!str.length) return
         clipboardWriteText(str)
@@ -220,7 +263,6 @@ export default {
       isShowItemMenu,
       menuLocation,
       handleMenuClick,
-      hideMenu,
 
       handleListRightClick,
       assertApiSupport,
@@ -234,6 +276,7 @@ export default {
       selectedDownloadMusicInfo,
 
       scrollToTop,
+      actionButtonsVisible,
     }
   },
 }
@@ -251,50 +294,23 @@ export default {
 }
 
 .list {
-  position: relative;
-  font-size: 14px;
-  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  height: 100%;
+  font-size: 14px;
 }
-.thead {
-  flex: none;
-}
-.th:first-child {
-  color: @color-theme_2-font-label;
-  // padding-left: 10px;
-}
+
 .content {
   flex: auto;
   min-height: 0;
   position: relative;
   height: 100%;
+}
 
-  &.copying {
-    .no-select {
-      display: none;
-    }
-  }
-}
-:global(.list) {
-  height: 100%;
-  overflow-y: auto;
-  :global(.list-item-cell) {
-    font-size: 12px !important;
-    :global(.badge) {
-      margin-left: 3px;
-    }
-    &:first-child {
-      // padding-left: 10px;
-      font-size: 11px !important;
-      color: @color-theme_2-font-label !important;
-    }
-  }
-  :global(.badge) {
-    opacity: .85;
-  }
-}
 .pagination {
   text-align: center;
   padding: 15px 0;
@@ -311,30 +327,12 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  // background-color: var(--color-000);
 
   p {
     font-size: 24px;
-    color: @color-theme_2-font-label;
+    color: var(--color-font-label);
   }
 }
 
-each(@themes, {
-  :global(#root.@{value}) {
-    .th:first-child {
-      color: ~'@{color-@{value}-theme_2-font-label}';
-    }
-    :global(.list) {
-      :global(.list-item-cell) {
-        &:first-child {
-          color: ~'@{color-@{value}-theme_2-font-label}' !important;
-        }
-      }
-    }
-    .noitem {
-      p {
-        color: ~'@{color-@{value}-theme_2-font-label}';
-      }
-    }
-  }
-})
 </style>

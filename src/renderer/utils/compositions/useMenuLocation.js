@@ -1,4 +1,7 @@
-import { onMounted, onBeforeUnmount, watch, reactive, ref, nextTick } from '@renderer/utils/vueTools'
+import { onMounted, onBeforeUnmount, watch, reactive, ref } from '@common/utils/vueTools'
+import { isFullscreen } from '@renderer/store'
+
+let rootOffset = window.dt ? 0 : 8
 
 export default ({ visible, location, onHide }) => {
   const transition1 = 'transform, opacity'
@@ -10,17 +13,20 @@ export default ({ visible, location, onHide }) => {
     top: 0,
     opacity: 0,
     transitionProperty: 'transform, opacity',
-    transform: 'scale(0) translate(0,0)',
+    transform: 'scale(.8, .7) translate(0,0)',
+    pointerEvents: 'none',
   })
 
   const handleShow = () => {
     show = true
     menuStyles.opacity = 1
-    menuStyles.transform = `scaleY(1) translate(${handleGetOffsetXY(location.value.x, location.value.y)})`
+    menuStyles.transform = `scale(1) translate(${handleGetOffsetXY(location.value.x, location.value.y)})`
+    menuStyles.pointerEvents = 'auto'
   }
   const handleHide = () => {
     menuStyles.opacity = 0
-    menuStyles.transform = 'scale(0) translate(0, 0)'
+    menuStyles.transform = 'scale(.8, .7) translate(0, 0)'
+    menuStyles.pointerEvents = 'none'
     show = false
   }
   const handleGetOffsetXY = (left, top) => {
@@ -33,8 +39,8 @@ export default ({ visible, location, onHide }) => {
     const offsetHeight = containerHeight - top - listHeight
     let x = 0
     let y = 0
-    if (containerWidth > listWidth && offsetWidth < 17) {
-      x = offsetWidth - 17
+    if (containerWidth > listWidth && offsetWidth < 12) {
+      x = offsetWidth - 12
     }
     if (containerHeight > listHeight && offsetHeight < 5) {
       y = offsetHeight - 5
@@ -55,15 +61,19 @@ export default ({ visible, location, onHide }) => {
     visible ? handleShow() : handleHide()
   }, { immediate: true })
 
+  watch(isFullscreen, isFullscreen => {
+    rootOffset = window.dt || isFullscreen ? 0 : 8
+  }, { immediate: true })
+
   watch(location, location => {
-    menuStyles.left = location.x + 2 + 'px'
-    menuStyles.top = location.y + 'px'
-    nextTick(() => {
-      if (show) {
-        if (menuStyles.transitionProperty != transition2) menuStyles.transitionProperty = transition2
-        menuStyles.transform = `scaleY(1) translate(${handleGetOffsetXY(location.x, location.y)})`
-      }
-    })
+    menuStyles.left = location.x - rootOffset + 2 + 'px'
+    menuStyles.top = location.y - rootOffset + 'px'
+    // nextTick(() => {
+    if (show) {
+      if (menuStyles.transitionProperty != transition2) menuStyles.transitionProperty = transition2
+      menuStyles.transform = `scale(1) translate(${handleGetOffsetXY(location.x, location.y)})`
+    }
+    // })
   }, { deep: true })
 
   onMounted(() => {

@@ -15,12 +15,12 @@ dd
 </template>
 
 <script>
-import { computed, useI18n } from '@renderer/utils/vueTools'
-import { versionInfo } from '@renderer/core/share'
-import { sizeFormate } from '@renderer/utils/tools'
+import { computed } from '@common/utils/vueTools'
+import { versionInfo } from '@renderer/store'
+import { sizeFormate } from '@common/utils/common'
 // import { openDirInExplorer, selectDir } from '@renderer/utils'
-import { currentStting } from '../setting'
-import { rendererSend, NAMES } from '@common/ipc'
+import { openDevTools } from '@renderer/utils/ipc'
+import { useI18n } from '@renderer/plugins/i18n'
 
 export default {
   name: 'SettingUpdate',
@@ -28,14 +28,14 @@ export default {
     let lastClickTime = 0
     let clickNum = 0
 
-    const { t } = useI18n()
+    const t = useI18n()
 
     const handleOPenDevTools = () => {
       if (window.performance.now() - lastClickTime > 1000) {
         if (clickNum > 0) clickNum = 0
       } else {
-        if (clickNum > 6) {
-          rendererSend(NAMES.mainWindow.open_dev_tools)
+        if (clickNum > 4) {
+          openDevTools()
           clickNum = 0
           return
         }
@@ -55,7 +55,6 @@ export default {
     }
 
     return {
-      currentStting,
       versionInfo,
       downloadProgress,
       handleOPenDevTools,

@@ -1,6 +1,11 @@
 <template>
   <transition name="tips-fade" @after-leave="afterLeave">
-    <div v-show="visible" :style="{ left: position.left + 'px' , top: position.top + 'px', transform: transform }" ref="dom_tips" :class="$style.tips" role="presentation">{{message}}</div>
+    <div
+      v-show="visible" ref="dom_tips" :style="{ left: position.left + 'px' , top: position.top + 'px', transform: transform }"
+      :class="$style.tips" role="presentation"
+    >
+      {{ message }}
+    </div>
   </transition>
 </template>
 
@@ -69,12 +74,12 @@ export default {
   line-height: 1.2;
   word-wrap: break-word;
   padding: 4px 5px;
-  z-index: 999;
+  z-index: 10001;
   font-size: 12px;
   max-width: 80%;
-  color: @color-theme_2-font;
+  color: var(--color-font);
   border-radius: 3px;
-  background: @color-green-theme_2-background_1;
+  background: var(--color-content-background);
   overflow: hidden;
   pointer-events: none;
   // text-align: justify;
@@ -87,15 +92,6 @@ export default {
 :global(.tips-fade-enter), :global(.tips-fade-leave-to) {
   opacity: 0;
 }
-
-each(@themes, {
-  :global(#root.@{value}) {
-    ~.tips {
-      color: ~'@{color-@{value}-theme_2-font}';
-      background: ~'@{color-@{value}-theme_2-background_1}';
-    }
-  }
-})
 
 
 </style>

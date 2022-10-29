@@ -1,6 +1,5 @@
 import tips from './Tips'
-import { debounce } from '../../utils'
-import { base as eventBaseName } from '@renderer/event/names'
+import { debounce } from '@common/utils'
 
 let instance
 let prevTips
@@ -23,7 +22,7 @@ const getTips = el =>
 
 const showTips = debounce(event => {
   if (isDraging) return
-  let msg = getTips(event.target)
+  let msg = getTips(event.target)?.trim()
   if (!msg) return
   prevTips = msg
   instance = tips({
@@ -63,25 +62,27 @@ const updateTips = event => {
   })
 }
 
-document.body.addEventListener('mousemove', event => {
-  if ((event.x == prevX && event.y == prevY) || isDraging) return
-  prevX = event.x
-  prevY = event.y
-  hideTips()
-  showTips(event)
-})
+setTimeout(() => {
+  document.body.addEventListener('mousemove', event => {
+    if ((event.x == prevX && event.y == prevY) || isDraging) return
+    prevX = event.x
+    prevY = event.y
+    hideTips()
+    showTips(event)
+  })
 
-document.body.addEventListener('click', updateTips)
+  document.body.addEventListener('click', updateTips)
 
-document.body.addEventListener('contextmenu', updateTips)
+  document.body.addEventListener('contextmenu', updateTips)
 
-window.eventHub.on(eventBaseName.focus, () => {
-  hideTips()
-})
-window.eventHub.on(eventBaseName.dragStart, () => {
-  isDraging = true
-  hideTips()
-})
-window.eventHub.on(eventBaseName.dragEnd, () => {
-  isDraging = false
+  window.app_event.on('focus', () => {
+    hideTips()
+  })
+  window.app_event.on('dragStart', () => {
+    isDraging = true
+    hideTips()
+  })
+  window.app_event.on('dragEnd', () => {
+    isDraging = false
+  })
 })

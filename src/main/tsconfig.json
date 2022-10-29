@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",                                /* Specify what module code is generated. */
+    "moduleResolution": "nodenext",                      /* Specify how TypeScript looks up a file from a given module specifier. */
+    "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@common/*": ["common/*"],
+      "@main/*": ["main/*"],
+      "@static/*": ["static/*"],
+      "@/*": ["./*"],
+    },
+    "typeRoots": [                                       /* Specify multiple folders that act like './node_modules/@types'. */
+      "./types",
+    ],
+  },
+  // "include": [
+	//   "**/*.ts",
+	//   "**/*.js",
+	//   "**/*.vue",
+	//   "**/*.json",
+	// ],
+  // "exclude": ["dbService"]
+}

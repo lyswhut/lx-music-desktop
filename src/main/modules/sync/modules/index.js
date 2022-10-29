@@ -1,1 +1,0 @@
-exports.list = require('./list')

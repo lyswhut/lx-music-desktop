@@ -1,8 +1,8 @@
-import { useI18n } from '@renderer/utils/vueTools'
+import { useI18n } from '@renderer/plugins/i18n'
 import { dialog } from '@renderer/plugins/Dialog'
 
 export default () => {
-  const { t } = useI18n()
+  const t = useI18n()
 
 
   return (type) => {
@@ -19,6 +19,7 @@ export default () => {
         message = t('list_import_tip__alldata')
         break
       case 'playListPart':
+      case 'playListPart_v2':
         message = t('list_import_tip__playlist_part')
         break
 

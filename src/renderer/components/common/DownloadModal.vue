@@ -1,16 +1,17 @@
 <template>
-<material-modal :show="show" :bg-close="bgClose" @close="handleClose" :teleport="teleport">
-  <main :class="$style.main">
-    <h2>{{ info.name }}<br/>{{ info.singer }}</h2>
-    <base-btn :class="$style.btn" :key="type.type" @click="handleClick(type.type)" v-for="type in types"
-    >{{getTypeName(type.type)}}{{ type.size && ` - ${type.size.toUpperCase()}` }}</base-btn>
-  </main>
-</material-modal>
+  <material-modal :show="show" :bg-close="bgClose" :teleport="teleport" @close="handleClose">
+    <main :class="$style.main">
+      <h2>{{ info.name }}<br>{{ info.singer }}</h2>
+      <base-btn v-for="quality in qualitys" :key="quality.type" :class="$style.btn" @click="handleClick(quality.type)">
+        {{ getTypeName(quality.type) }}{{ quality.size && ` - ${quality.size.toUpperCase()}` }}
+      </base-btn>
+    </main>
+  </material-modal>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { qualityList } from '@renderer/core/share'
+import { qualityList } from '@renderer/store'
+import { createDownloadTasks } from '@renderer/store/download/action'
 
 export default {
   props: {
@@ -19,13 +20,17 @@ export default {
       default: false,
     },
     musicInfo: {
-      type: Object,
+      type: [Object, null],
+      required: true,
     },
     bgClose: {
       type: Boolean,
       default: true,
     },
-    teleport: String,
+    teleport: {
+      type: String,
+      default: '#root',
+    },
   },
   emits: ['update:show'],
   setup() {
@@ -40,36 +45,35 @@ export default {
     sourceQualityList() {
       return this.qualityList[this.musicInfo.source] || []
     },
-    types() {
-      return this.info?.types?.filter(type => this.checkSource(type.type)) || []
+    qualitys() {
+      return this.info.meta?.qualitys?.filter(quality => this.checkSource(quality.type)) || []
     },
   },
   methods: {
-    ...mapActions('download', ['createDownload']),
-    handleClick(type) {
-      this.createDownload({ musicInfo: this.musicInfo, type })
+    handleClick(quality) {
+      createDownloadTasks([this.musicInfo], quality)
       this.handleClose()
     },
     handleClose() {
       this.$emit('update:show', false)
     },
-    getTypeName(type) {
-      switch (type) {
-        case 'flac32bit':
+    getTypeName(quality) {
+      switch (quality) {
+        case 'flac24bit':
           return this.$t('download__lossless') + ' FLAC Hires'
         case 'flac':
         case 'ape':
         case 'wav':
-          return this.$t('download__lossless') + ' ' + type.toUpperCase()
+          return this.$t('download__lossless') + ' ' + quality.toUpperCase()
         case '320k':
-          return this.$t('download__high_quality') + ' ' + type.toUpperCase()
+          return this.$t('download__high_quality') + ' ' + quality.toUpperCase()
         case '192k':
         case '128k':
-          return this.$t('download__normal') + ' ' + type.toUpperCase()
+          return this.$t('download__normal') + ' ' + quality.toUpperCase()
       }
     },
-    checkSource(type) {
-      return this.sourceQualityList.includes(type)
+    checkSource(quality) {
+      return this.sourceQualityList.includes(quality)
     },
   },
 }
@@ -88,7 +92,7 @@ export default {
   justify-content: center;
   h2 {
     font-size: 13px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     line-height: 1.3;
     text-align: center;
     margin-bottom: 15px;
@@ -102,15 +106,5 @@ export default {
     margin-bottom: 0;
   }
 }
-
-each(@themes, {
-  :global(#root.@{value}) {
-    .main {
-      h2 {
-        color: ~'@{color-@{value}-theme_2-font}';
-      }
-    }
-  }
-})
 
 </style>

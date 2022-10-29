@@ -7,14 +7,14 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.mixin-ellipsis() {
+.mixin-ellipsis(@n: 1) {
 	display: -webkit-box;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	word-wrap: break-word;
 	word-break: break-all;
 	white-space: normal !important;
-	-webkit-line-clamp: 1;
+	-webkit-line-clamp: @n;
 	-webkit-box-orient: vertical;
 }
 .mixin-ellipsis-2() {
@@ -28,3 +28,8 @@
 	-webkit-box-orient: vertical;
 }
 
+.mixin-after() {
+  display: block;
+  position: absolute;
+  content: '';
+}

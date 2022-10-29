@@ -1,6 +1,6 @@
 import Sortable, { AutoScroll } from 'sortablejs/modular/sortable.core.esm'
-import { onMounted } from '@renderer/utils/vueTools'
-import { base as eventBaseName } from '@renderer/event/names'
+import { onMounted } from '@common/utils/vueTools'
+import { clearDownKeys } from '@renderer/event'
 
 Sortable.mount(new AutoScroll())
 
@@ -28,13 +28,14 @@ export default ({ dom_list, dragingItemClassName, filter, onUpdate, onStart = no
       onUnchoose() {
         onEnd()
         // 处于拖动状态期间，键盘事件无法监听，拖动结束手动清理按下的键
-        window.eventHub.emit(eventBaseName.setClearDownKeys)
+        // window.app_event.emit(eventBaseName.setClearDownKeys)
+        clearDownKeys()
       },
       onStart(event) {
-        window.eventHub.emit(eventBaseName.dragStart)
+        window.app_event.dragStart()
       },
       onEnd(event) {
-        window.eventHub.emit(eventBaseName.dragEnd)
+        window.app_event.dragEnd()
       },
     })
   })

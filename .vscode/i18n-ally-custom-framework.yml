@@ -1,0 +1,29 @@
+# .vscode/i18n-ally-custom-framework.yml
+
+# An array of strings which contain Language Ids defined by VS Code
+# You can check avaliable language ids here: https://code.visualstudio.com/docs/languages/overview#_language-id
+languageIds:
+  - javascript
+  - typescript
+  - vue
+
+# An array of RegExes to find the key usage. **The key should be captured in the first match group**.
+# You should unescape RegEx strings in order to fit in the YAML file
+# To help with this, you can use https://www.freeformatter.com/json-escape.html
+usageMatchRegex:
+  # The following example shows how to detect `t("your.i18n.keys")`
+  # the `{key}` will be placed by a proper keypath matching regex,
+  # you can ignore it and use your own matching rules as well
+  - "[^\\w\\d]t\\(['\"`]({key})['\"`]"
+
+
+# An array of strings containing refactor templates.
+# The "$1" will be replaced by the keypath specified.
+# Optional: uncomment the following two lines to use
+
+# refactorTemplates:
+#  - i18n.get("$1")
+
+
+# If set to true, only enables this custom framework (will disable all built-in frameworks)
+monopoly: true

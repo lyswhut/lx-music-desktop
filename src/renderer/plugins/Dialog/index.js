@@ -1,6 +1,4 @@
 import Dialog from './Dialog'
-import i18n from '../i18n'
-import store from '@renderer/store'
 import { createApp } from 'vue'
 
 
@@ -22,7 +20,7 @@ export const dialog = function(options) {
         app?.unmount()
         app = null
       },
-    }).use(i18n).use(store)
+    })
 
     let instance = app.mount(document.createElement('div'))
 

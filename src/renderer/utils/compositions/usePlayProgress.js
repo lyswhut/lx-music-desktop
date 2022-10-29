@@ -1,6 +1,5 @@
-import { ref, onBeforeUnmount, toRef } from '@renderer/utils/vueTools'
-import { player as eventPlayerNames } from '@renderer/event/names'
-import { playProgress } from '@renderer/core/share/playProgress'
+import { ref, onBeforeUnmount, toRef } from '@common/utils/vueTools'
+import { playProgress } from '@renderer/store/player/playProgress'
 
 export default () => {
   const isActiveTransition = ref(false)
@@ -15,10 +14,10 @@ export default () => {
     isActiveTransition.value = true
   }
 
-  window.eventHub.on(eventPlayerNames.activeTransition, handleActiveTransition)
+  window.app_event.on('activePlayProgressTransition', handleActiveTransition)
 
   onBeforeUnmount(() => {
-    window.eventHub.off(eventPlayerNames.activeTransition, handleActiveTransition)
+    window.app_event.off('activePlayProgressTransition', handleActiveTransition)
   })
 
   return {

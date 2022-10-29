@@ -1,8 +1,8 @@
-import { useI18n } from '@renderer/utils/vueTools'
+import { useI18n } from '@renderer/plugins/i18n'
 import { dialog } from '@renderer/plugins/Dialog'
 
 export const useDialog = () => {
-  const { t } = useI18n()
+  const t = useI18n()
   const errorDialog = message => {
     dialog({
       message: `${t('deep_link__handle_error_tip', { message })}`,

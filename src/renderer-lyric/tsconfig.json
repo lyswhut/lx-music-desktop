@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@common/*": ["common/*"],
+      // "@renderer/*": ["renderer/*"],
+      "@lyric/*": ["renderer-lyric/*"],
+      "@static/*": ["static/*"],
+      "@/*": ["./*"],
+    },
+    "typeRoots": [                                       /* Specify multiple folders that act like './node_modules/@types'. */
+      "./types"
+    ],
+  },
+  "vueCompilerOptions": {
+    "plugins": [
+      "@volar/vue-language-plugin-pug"
+    ]
+  }
+  // "include": [
+	//   "./**/*.ts",
+	//   // "./**/*.js",
+	//   "./**/*.vue",
+	//   "./**/*.json",
+	// ],
+}

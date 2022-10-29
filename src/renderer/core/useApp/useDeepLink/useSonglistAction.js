@@ -1,27 +1,30 @@
-import { useRouter } from '@renderer/utils/vueTools'
-import { isShowPlayerDetail, setShowPlayerDetail } from '@renderer/core/share/player'
+import { useRouter, useRoute } from '@common/utils/vueRouter'
+import { isShowPlayerDetail } from '@renderer/store/player/state'
+import { setShowPlayerDetail } from '@renderer/store/player/action'
 import usePlaySonglist from '../compositions/usePlaySonglist'
+import { focusWindow } from '@renderer/utils/ipc'
 
 import { dataVerify, sourceVerify } from './utils'
 
 const useOpenSonglist = () => {
   const router = useRouter()
+  const route = useRoute()
 
   const handleOpenSonglist = params => {
     if (params.id) {
-      router.replace({
-        path: '/songList',
+      router[route.path == '/songList/detail' ? 'replace' : 'push']({
+        path: '/songList/detail',
         query: {
           source: params.source,
           id: params.id,
         },
       })
     } else if (params.url) {
-      router.replace({
-        path: '/songList',
+      router[route.path == '/songList/detail' ? 'replace' : 'push']({
+        path: '/songList/detail',
         query: {
           source: params.source,
-          url: params.url,
+          id: params.url,
         },
       })
     }
@@ -51,12 +54,13 @@ const useOpenSonglist = () => {
     if (!songlistInfo.id && !songlistInfo.url) throw new Error('id or url missing')
     if (isShowPlayerDetail.value) setShowPlayerDetail(false)
     handleOpenSonglist(songlistInfo)
+    focusWindow()
   }
 }
 const usePlaySonglistDetail = () => {
   const playSongListDetail = usePlaySonglist()
 
-  return ({ paths, data }) => {
+  return async({ paths, data }) => {
     let songlistInfo = {
       source: null,
       id: null,
@@ -69,7 +73,10 @@ const usePlaySonglistDetail = () => {
       songlistInfo.source = paths[0]
       songlistInfo.url = paths[1]
       songlistInfo.index = paths[2]
-      if (songlistInfo.index != null) songlistInfo.index = parseInt(songlistInfo.index)
+      if (songlistInfo.index != null) {
+        songlistInfo.index = parseInt(songlistInfo.index)
+        if (Number.isNaN(songlistInfo.index)) delete songlistInfo.index
+      }
     }
 
     sourceVerify(songlistInfo.source)
@@ -83,7 +90,7 @@ const usePlaySonglistDetail = () => {
 
     if (!songlistInfo.id && !songlistInfo.url) throw new Error('id or url missing')
 
-    playSongListDetail(songlistInfo.source, songlistInfo.id ?? songlistInfo.url, songlistInfo.index ?? 0)
+    await playSongListDetail(songlistInfo.source, songlistInfo.id ?? songlistInfo.url, songlistInfo.index)
   }
 }
 
@@ -92,13 +99,13 @@ export default () => {
   const handlePlaySonglist = usePlaySonglistDetail()
 
 
-  return (action, info) => {
+  return async(action, info) => {
     switch (action) {
       case 'open':
         handleOpenSonglist(info)
         break
       case 'play':
-        handlePlaySonglist(info)
+        await handlePlaySonglist(info)
         break
       default: throw new Error('Unknown action: ' + action)
     }

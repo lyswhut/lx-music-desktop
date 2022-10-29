@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "typeRoots": [                                       /* Specify multiple folders that act like './node_modules/@types'. */
+      "./types"
+    ],
+  },
+  // "include": [
+	//   "**/*.ts",
+	//   "**/*.js",
+	//   "**/*.vue",
+	//   "**/*.json",
+	// ],
+}

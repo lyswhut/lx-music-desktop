@@ -369,7 +369,7 @@ Windows 7 未开启 Aero 效果时桌面歌词会有问题，详情看上面的 
 
 - URL统一以`lxmusic://`开头
 - 若无特别说明，源的可用值为：`kw/kg/tx/wy/mg`
-- 若无特别说明，音质的可用值为：`128k/320k/flac/flac32bit`
+- 若无特别说明，音质的可用值为：`128k/320k/flac/flac24bit`
 
 目前支持两种传参方式：
 
@@ -464,7 +464,7 @@ send(EVENT_NAMES.inited, {
       name: '酷我音乐',
       type: 'music',  // 目前固定为 music
       actions: ['musicUrl'], // 目前固定为 ['musicUrl']
-      qualitys: ['128k', '320k', 'flac'], // 当前脚本的该源所支持获取的Url音质，有效的值有：['128k', '320k', 'flac']
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'], // 当前脚本的该源所支持获取的Url音质，有效的值有：['128k', '320k', 'flac', 'flac24bit']
     },
   },
 })
@@ -506,8 +506,8 @@ send(EVENT_NAMES.inited, {
 
 | 事件名 | 描述
 | --- | ---
-| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，有效的值为`['128k', '320k', 'flac']`，该字段用于控制应用可用的音质类型
-| `request` | 应用API请求事件名，回调入参：`handler({ source, action, info})`，回调必须返回`Promise`对象<br>`source`：音乐源，可能的值取决于初始化时传入的`sources`对象的源key值<br>`info`：请求附加信息，内容根据`action`变化<br>`action`：请求操作类型，目前只有`musicUrl`，即获取音乐URL链接，需要在 Promise 返回歌曲 url，`info`的结构：`{type, musicInfo}`，`info.type`：音乐质量，可能的值有`128k` / `320k` / `flac`（取决于初始化时对应源传入的`qualitys`值中的一个），`info.musicInfo`：音乐信息对象，里面有音乐ID、名字等信息
+| `inited` | 脚本初始化完成后发送给应用的事件名，发送该事件时需要传入以下信息：`{status, sources, openDevTools}`<br>`status`：初始化结果（`true`成功，`false`失败）<br>`openDevTools`：是否打开DevTools，此选项可用于开发脚本时的调试<br>`sources`：支持的源信息对象，<br>`sources[kw/kg/tx/wy/mg].name`：源的名字（目前非必须）<br>`sources[kw/kg/tx/wy/mg].type`：源类型，目前固定值需为`music`<br>`sources[kw/kg/tx/wy/mg].actions`：支持的actions，由于目前只支持`musicUrl`，所以固定传`['musicUrl']`即可<br>`sources[kw/kg/tx/wy/mg].qualitys`：该源支持的音质列表，有效的值为`['128k', '320k', 'flac', 'flac24bit']`，该字段用于控制应用可用的音质类型
+| `request` | 应用API请求事件名，回调入参：`handler({ source, action, info})`，回调必须返回`Promise`对象<br>`source`：音乐源，可能的值取决于初始化时传入的`sources`对象的源key值<br>`info`：请求附加信息，内容根据`action`变化<br>`action`：请求操作类型，目前只有`musicUrl`，即获取音乐URL链接，需要在 Promise 返回歌曲 url，`info`的结构：`{type, musicInfo}`，`info.type`：音乐质量，可能的值有`128k` / `320k` / `flac` / `flac24bit`（取决于初始化时对应源传入的`qualitys`值中的一个），`info.musicInfo`：音乐信息对象，里面有音乐ID、名字等信息
 | `updateAlert` | 显示源更新弹窗，发送该事件时的参数：`{log, updateUrl}`<br>`log`：更新日志，必传，字符串类型，内容可以使用`\n`换行，最大长度1024，超过此长度后将被截取超出的部分<br>`updateUrl`：更新地址，用于引导用户去该地址更新源，选传，需为http协议的url地址，最大长度1024<br>此事件每次运行脚本只能调用一次（源版本v1.2.0新增）<br>例子：`lx.send(lx.EVENT_NAMES.updateAlert, { log: 'hello world', updateUrl: 'https://xxx.com' })`
 
 

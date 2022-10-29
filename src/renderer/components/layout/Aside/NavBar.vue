@@ -1,0 +1,187 @@
+<template>
+  <div :class="$style.menu">
+    <ul :class="$style.list" role="toolbar">
+      <li v-for="item in menus" :key="item.to" :class="$style.navItem" role="presentation">
+        <router-link :class="[$style.link, {[$style.active]: $route.meta.name == item.name}]" role="tab" :aria-selected="$route.meta.name == item.name" :to="item.to" :aria-label="item.tips">
+          <div :class="$style.icon">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" space="preserve">
+              <use :xlink:href="item.icon" />
+            </svg>
+          </div>
+        </router-link>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import { appSetting } from '@renderer/store/setting'
+
+export default {
+  name: 'NavBar',
+  setup() {
+    return {
+      appSetting,
+    }
+  },
+  computed: {
+    menus() {
+      return [
+        {
+          to: '/search',
+          tips: this.$t('search'),
+          icon: '#icon-search-2',
+          iconSize: '0 0 425.2 425.2',
+          name: 'Search',
+          enable: true,
+        },
+        {
+          to: '/songList/list',
+          tips: this.$t('song_list'),
+          icon: '#icon-album',
+          iconSize: '0 0 425.2 425.2',
+          name: 'SongList',
+          enable: true,
+        },
+        {
+          to: '/leaderboard',
+          tips: this.$t('leaderboard'),
+          icon: '#icon-leaderboard',
+          iconSize: '0 0 425.22 425.2',
+          name: 'Leaderboard',
+          enable: true,
+        },
+        {
+          to: '/list',
+          tips: this.$t('my_list'),
+          icon: '#icon-love',
+          iconSize: '0 0 444.87 391.18',
+          name: 'List',
+          enable: true,
+        },
+        {
+          to: '/download',
+          tips: this.$t('download'),
+          icon: '#icon-download-2',
+          iconSize: '0 0 425.2 425.2',
+          enable: this.appSetting['download.enable'],
+          name: 'Download',
+        },
+        {
+          to: '/setting',
+          tips: this.$t('setting'),
+          icon: '#icon-setting',
+          iconSize: '0 0 493.23 436.47',
+          enable: true,
+          name: 'Setting',
+        },
+      ].filter(m => m.enable)
+    },
+  },
+}
+</script>
+
+<style lang="less" module>
+@import '@renderer/assets/styles/layout.less';
+
+.menu {
+  flex: auto;
+  // &.controlBtnLeft {
+  //   display: flex;
+  //   flex-flow: column nowrap;
+  //   justify-content: center;
+  //   padding-bottom: @control-btn-height;
+  // }
+  // padding: 5px;
+}
+.list {
+  -webkit-app-region: no-drag;
+  // margin-bottom: 15px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+  // background-color: pink;
+  // dt {
+  //   padding-left: 5px;
+  //   font-size: 11px;
+  //   transition: @transition-normal;
+  //   transition-property: color;
+  //   color: @color-theme-font-label;
+  //   .mixin-ellipsis-1;
+  // }
+}
+.navItem {
+  position: relative;
+  &:before {
+    content: '';
+    display: block;
+    width: 100%;
+    padding-bottom: 84%;
+  }
+}
+.link {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  // left: 15%;
+  // top: 15%;
+  // width: 70%;
+  // height: 70%;
+  // display: block;
+  box-sizing: border-box;
+  // text-decoration: none;
+  // border-radius: 20%;
+
+  // padding: 18px 3px;
+  // margin: 5px 0;
+  // border-left: 5px solid transparent;
+  transition: @transition-normal;
+  transition-property: color;
+  color: var(--color-nav-font);
+  cursor: pointer;
+  font-size: 11.5px;
+  text-align: center;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.3s ease;
+  transition-property: background-color, opacity;
+  // border-radius: @radius-border;
+  .mixin-ellipsis-1;
+
+  &.active {
+    // border-left-color: @color-theme-active;
+    background-color: var(--color-primary-light-400-alpha-600);
+
+    &:hover {
+      background-color: var(--color-primary-light-300-alpha-600);
+    }
+  }
+
+
+  &:hover {
+    color: var(--color-nav-font);
+
+    &:not(.active) {
+      opacity: .8;
+      background-color: var(--color-primary-light-500-alpha-600);
+    }
+  }
+  &:active:not(.active) {
+    opacity: .6;
+    background-color: var(--color-primary-light-200-alpha-600);
+  }
+}
+
+.icon {
+  // margin-bottom: 5px;
+  &> svg {
+    width: 32%;
+  }
+}
+
+</style>

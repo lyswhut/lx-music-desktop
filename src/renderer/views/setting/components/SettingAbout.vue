@@ -33,7 +33,7 @@ dd
   p
     | 可以加入测试企鹅群&nbsp;
     span.hover(:aria-label="$t('setting__click_open')" @click="openUrl('https://qm.qq.com/cgi-bin/qm/qr?k=zR6aYosQoKb07g4FGFZdO9n9zL1dhFpE&jump_from=webapi')") 768786588
-    | &nbsp;，注意：测试版的功可能会不稳定，
+    | &nbsp;，注意：测试版的功能可能会不稳定，
     strong 打算潜水的勿加
 
   br
@@ -53,10 +53,9 @@ dd
 </template>
 
 <script>
-// import { ref, onBeforeUnmount } from '@renderer/utils/vueTools'
-import { isShowPact } from '@renderer/core/share'
-import { openUrl, clipboardWriteText } from '@renderer/utils'
-import { currentStting } from '../setting'
+// import { ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { isShowPact } from '@renderer/store'
+import { openUrl, clipboardWriteText } from '@common/utils/electron'
 
 export default {
   name: 'SettingAbout',
@@ -65,7 +64,6 @@ export default {
       isShowPact.value = true
     }
     return {
-      currentStting,
       openUrl,
       clipboardWriteText,
       handleShowPact,

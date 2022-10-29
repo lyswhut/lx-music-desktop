@@ -25,13 +25,11 @@ dd
 </template>
 
 <script>
-import { ref, useI18n, onBeforeUnmount, toRaw } from '@renderer/utils/vueTools'
-import { allHotKeys, hotKeySetEnable, hotKeySetConfig, hotKeyGetStatus } from '@renderer/utils/tools'
+import { ref, onBeforeUnmount, toRaw, shallowReactive } from '@common/utils/vueTools'
+import { allHotKeys, hotKeySetEnable, hotKeySetConfig, hotKeyGetStatus } from '@renderer/utils/ipc'
 import { isMac } from '@common/utils'
-import { base as eventBaseName } from '@renderer/event/names'
-import { mainWindow as eventsNameMainWindow } from '@main/events/_name'
+import { useI18n } from '@renderer/plugins/i18n'
 
-import { currentStting } from '../setting'
 
 const formatHotKeyName = (name) => {
   if (name.includes('arrow')) {
@@ -53,7 +51,7 @@ const formatHotKeyName = (name) => {
 export default {
   name: 'SettingHotKey',
   setup() {
-    const { t } = useI18n()
+    const t = useI18n()
     const current_hot_key = ref({
       local: {
         enable: false,
@@ -74,17 +72,18 @@ export default {
     let isEditHotKey = false
     let hotKeyTargetInput
     let newHotKey
+    let tip
 
     const initHotKeyConfig = () => {
       let config = {}
       for (const [type, typeInfo] of Object.entries(current_hot_key.value)) {
         let configInfo = config[type] = {}
         for (const [key, info] of Object.entries(typeInfo.keys)) {
-          if (info.name == null) continue
-          configInfo[info.name] = {
+          if (!info.name) continue
+          configInfo[info.name] = shallowReactive({
             key,
             info,
-          }
+          })
         }
       }
       hotKeyConfig.value = config
@@ -93,23 +92,23 @@ export default {
     const handleHotKeyFocus = (event, info, type) => {
       setTimeout(async() => {
         await hotKeySetEnable(false)
-        window.isEditingHotKey = true
+        window.lx.isEditingHotKey = true
         isEditHotKey = true
         let config = hotKeyConfig.value[type][info.name]
         newHotKey = config?.key
         hotKeyTargetInput = event.target
-        event.target.value = t('setting__hot_key_tip_input')
+        event.target.value = tip = t('setting__hot_key_tip_input')
       })
     }
 
     const handleHotKeyBlur = (event, info, type) => {
       setTimeout(async() => {
         await hotKeySetEnable(true)
-        window.isEditingHotKey = false
+        window.lx.isEditingHotKey = false
         isEditHotKey = false
         const prevInput = hotKeyTargetInput
         hotKeyTargetInput = null
-        if (prevInput?.value == t('setting__hot_key_tip_input')) {
+        if (prevInput?.value == tip) {
           prevInput.value = newHotKey ? formatHotKeyName(newHotKey) : ''
           return
         }
@@ -180,26 +179,23 @@ export default {
       // console.log(keys, key, type)
       newHotKey = key
     }
-    const handleUpdateHotKeyConfig = (config) => {
-      // console.log(config)
-      for (const [type, info] of Object.entries(config)) {
-        current_hot_key.value[type] = info
-      }
-    }
+    // const handleUpdateHotKeyConfig = (config) => {
+    //   // console.log(config)
+    //   for (const [type, info] of Object.entries(config)) {
+    //     current_hot_key.value[type] = info
+    //   }
+    // }
     const handleHotKeySaveConfig = async() => {
       // console.log(this.current_hot_key)
-      window.appHotKeyConfig = current_hot_key.value
       await hotKeySetConfig({
         action: 'config',
         data: toRaw(current_hot_key.value),
-        source: eventsNameMainWindow.name,
       })
     }
     const handleEnableHotKey = async() => {
       await hotKeySetConfig({
         action: 'enable',
         data: current_hot_key.value.global.enable,
-        source: eventsNameMainWindow.name,
       })
       await handleHotKeySaveConfig()
       await getHotKeyStatus()
@@ -212,20 +208,18 @@ export default {
       })
     }
 
-    current_hot_key.value = window.appHotKeyConfig
+    current_hot_key.value = window.lx.appHotKeyConfig
     initHotKeyConfig()
     getHotKeyStatus()
 
-    window.eventHub.on(eventBaseName.set_hot_key_config, handleUpdateHotKeyConfig)
-    window.eventHub.on(eventBaseName.key_down, handleKeyDown)
+    window.app_event.on('keyDown', handleKeyDown)
 
     onBeforeUnmount(() => {
-      window.eventHub.off(eventBaseName.set_hot_key_config, handleUpdateHotKeyConfig)
-      window.eventHub.off(eventBaseName.key_down, handleKeyDown)
+      window.app_event.off('keyDown', handleKeyDown)
     })
 
     return {
-      currentStting,
+      // appSetting,
       allHotKeys,
       current_hot_key,
       hotKeyConfig,
@@ -248,7 +242,7 @@ export default {
   flex-flow: row wrap;
   // margin-top: -15px;
   margin-bottom: 15px;
-  transition: opacity @transition-theme;
+  transition: opacity @transition-normal;
 }
 .hotKeyItem {
   width: 30%;
@@ -259,7 +253,7 @@ export default {
 .hotKeyItemTitle {
   .mixin-ellipsis-1;
   padding-bottom: 5px;
-  color: @color-theme_2-font-label;
+  color: var(--color-font-label);
   font-size: 12px;
 }
 .hotKeyItemInput {
@@ -267,7 +261,7 @@ export default {
   box-sizing: border-box;
   // font-family: monospace;
   &:focus {
-    background-color: @color-theme_2-active;
+    background-color: var(--color-primary-background-active);
     text-decoration: none;
   }
   &::placeholder {
@@ -308,11 +302,4 @@ export default {
   }
 }
 
-each(@themes, {
-  :global(#root.@{value}) {
-    .hotKeyItemTitle {
-      color: ~'@{color-@{value}-theme_2-font-label}';
-    }
-  }
-})
 </style>

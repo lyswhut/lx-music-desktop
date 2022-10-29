@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "1.22.3",
+  "version": "2.0.0-beta.1",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -21,9 +21,8 @@
     "pack:win:7z:arm64": "cross-env TARGET=green ARCH=win_arm64 electron-builder -w=7z --arm64 -p never",
     "pack:linux": "node build-config/pack.js && npm run pack:linux:deb && npm run pack:linux:appImage && npm run pack:linux:rpm && npm run pack:linux:pacman",
     "pack:linux:appImage": "cross-env ARCH=x64 electron-builder -l=AppImage -p never",
-    "pack:linux:deb": "npm run pack:linux:deb:x64 && npm run pack:linux:deb:x86 && npm run pack:linux:deb:arm64 && npm run pack:linux:deb:armv7l",
+    "pack:linux:deb": "npm run pack:linux:deb:x64 && npm run pack:linux:deb:arm64 && npm run pack:linux:deb:armv7l",
     "pack:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p never",
-    "pack:linux:deb:x86": "cross-env ARCH=x86 electron-builder -l=deb --ia32 -p never",
     "pack:linux:deb:arm64": "cross-env ARCH=arm64 electron-builder -l=deb --arm64 -p never",
     "pack:linux:deb:armv7l": "cross-env ARCH=armv7l electron-builder -l=deb --armv7l -p never",
     "pack:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm --x64 -p never",
@@ -50,27 +49,29 @@
     "publish:mac:dmg:arm64": "electron-builder -m=dmg --arm64 -p onTagOrDraft",
     "publish:linux:deb:x64:always": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p always",
     "publish:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p onTagOrDraft",
-    "publish:linux:deb:x86": "cross-env ARCH=x86 electron-builder -l=deb --ia32 -p onTagOrDraft",
     "publish:linux:deb:arm64": "cross-env ARCH=arm64 electron-builder -l=deb --arm64 -p onTagOrDraft",
     "publish:linux:deb:armv7l": "cross-env ARCH=armv7l electron-builder -l=deb --armv7l -p onTagOrDraft",
     "publish:linux:appImage": "cross-env ARCH=x64 electron-builder -l=AppImage -p onTagOrDraft",
     "publish:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm --x64 -p onTagOrDraft",
     "publish:linux:pacman": "cross-env ARCH=x64 electron-builder -l=pacman --x64 -p onTagOrDraft",
-    "dev": "node build-config/runner-dev.js",
+    "dev": "cross-env NODE_OPTIONS=--max-http-header-size=200000 node build-config/runner-dev.js",
     "clean:electron": "rimraf dist",
     "clean": "rimraf dist && rimraf build",
+    "build:theme": "node src/common/theme/createThemes.js",
     "build:src": "node build-config/pack.js",
     "build:main": "cross-env NODE_ENV=production webpack --config build-config/main/webpack.config.prod.js --progress",
     "build:renderer": "cross-env NODE_ENV=production webpack --config build-config/renderer/webpack.config.prod.js --progress",
     "build:renderer-lyric": "cross-env NODE_ENV=production webpack --config build-config/renderer-lyric/webpack.config.prod.js --progress",
-    "build": "npm run clean:electron && npm run build:main && npm run build:renderer && npm run build:renderer-lyric",
+    "build:renderer-scripts": "cross-env NODE_ENV=production webpack --config build-config/renderer-scripts/webpack.config.prod.js --progress",
+    "build": "npm run clean:electron && npm run build:main && npm run build:renderer && npm run build:renderer-lyric && npm run build:renderer-scripts",
     "lint": "eslint --ext .js,.vue -f node_modules/eslint-formatter-friendly src",
+    "postinstall": "electron-builder install-app-deps",
     "lint:fix": "eslint --ext .js,.vue -f node_modules/eslint-formatter-friendly --fix src",
     "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm run pack",
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://localhost:1081 npm i"
   },
   "browserslist": [
-    "Electron 15.5.7"
+    "Electron 19.1.0"
   ],
   "engines": {
     "node": ">= 16",
@@ -78,6 +79,7 @@
   },
   "build": {
     "appId": "cn.toside.music.desktop",
+    "afterPack": "./build-config/build-after-pack.js",
     "protocols": {
       "name": "lx-music-protocol",
       "schemes": [
@@ -89,6 +91,14 @@
       "output": "./build"
     },
     "files": [
+      "!node_modules/**/*",
+      "node_modules/font-list",
+      "node_modules/better-sqlite3/lib",
+      "node_modules/better-sqlite3/package.json",
+      "node_modules/better-sqlite3/build/Release/better_sqlite3.node",
+      "node_modules/node-gyp-build",
+      "node_modules/bufferutil",
+      "node_modules/utf-8-validate",
       "dist/**/*"
     ],
     "asar": {
@@ -104,11 +114,7 @@
     },
     "mac": {
       "icon": "./resources/icons/icon.icns",
-      "category": "public.app-category.music",
-      "extendInfo": {
-        "CFBundleName": "lx-music-desktop",
-        "CFBundleDisplayName": "LX Music"
-      }
+      "category": "public.app-category.music"
     },
     "linux": {
       "maintainer": "lyswhut <lyswhut@qq.com>",
@@ -116,7 +122,12 @@
       "icon": "./resources/icons",
       "category": "Utility;AudioVideo;Audio;Player;Music;",
       "desktop": {
-        "Name[zh_CN]": "洛雪音乐助手"
+        "Name": "LX Music",
+        "Name[zh_CN]": "LX Music",
+        "Name[zh_TW]": "LX Music",
+        "Encoding": "UTF-8",
+        "MimeType": "x-scheme-handler/lxmusic",
+        "StartupNotify": "false"
       }
     },
     "nsis": {
@@ -159,6 +170,20 @@
       }
     ]
   },
+  "macLanguagesInfoPlistStrings": {
+    "en": {
+      "CFBundleDisplayName": "LX Music",
+      "CFBundleName": "LX Music"
+    },
+    "zh_CN": {
+      "CFBundleDisplayName": "LX Music",
+      "CFBundleName": "LX Music"
+    },
+    "zh_TW": {
+      "CFBundleDisplayName": "LX Music",
+      "CFBundleName": "LX Music"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lyswhut/lx-music-desktop.git"
@@ -166,7 +191,7 @@
   "keywords": [
     "music-player",
     "electron-app",
-    "vuejs2"
+    "vuejs3"
   ],
   "author": {
     "name": "lyswhut",
@@ -178,96 +203,104 @@
   },
   "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
   "devDependencies": {
-    "@babel/core": "^7.18.10",
-    "@babel/eslint-parser": "^7.18.9",
+    "@babel/core": "^7.19.6",
+    "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-modules-umd": "^7.18.6",
-    "@babel/plugin-transform-runtime": "^7.18.10",
-    "@babel/preset-env": "^7.18.10",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "^7.19.4",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/better-sqlite3": "^7.6.2",
+    "@types/needle": "^2.5.3",
+    "@types/tunnel": "^0.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@volar/vue-language-plugin-pug": "^1.0.9",
     "babel-loader": "^8.2.5",
-    "babel-preset-minify": "^0.5.2",
-    "browserslist": "^4.21.3",
+    "browserslist": "^4.21.4",
     "chalk": "^4.1.2",
     "changelog-parser": "^2.8.1",
     "copy-webpack-plugin": "^11.0.0",
-    "core-js": "^3.24.1",
+    "core-js": "^3.26.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
-    "css-minimizer-webpack-plugin": "^4.0.0",
+    "css-minimizer-webpack-plugin": "^4.2.2",
     "del": "^6.1.1",
-    "electron": "^15.5.7",
-    "electron-builder": "^23.3.3",
+    "electron": "^19.1.3",
+    "electron-builder": "^24.0.0-alpha.2",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.224",
-    "electron-updater": "^5.2.1",
-    "eslint": "^8.22.0",
+    "electron-to-chromium": "^1.4.284",
+    "electron-updater": "^6.0.0-alpha.1",
+    "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",
-    "eslint-formatter-friendly": "git+https://github.com/lyswhut/eslint-friendly-formatter.git#2170d1320e2fad13615a9dcf229669f0bb473a53",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-formatter-friendly": "github:lyswhut/eslint-friendly-formatter#2170d1320e2fad13615a9dcf229669f0bb473a53",
     "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-vue": "^9.6.0",
     "eslint-webpack-plugin": "^3.2.0",
-    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "less": "^4.1.3",
-    "less-loader": "^11.0.0",
+    "less-loader": "^11.1.0",
     "mini-css-extract-plugin": "^2.6.1",
     "node-loader": "^2.0.0",
-    "postcss": "^8.4.16",
+    "postcss": "^8.4.18",
     "postcss-loader": "^7.0.1",
     "postcss-pxtorem": "^6.0.0",
     "pug": "^3.0.2",
-    "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.1.0",
-    "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
-    "spinnies": "git+https://github.com/lyswhut/spinnies.git#233305c58694aa3b053e3ab9af9049993f918b9d",
+    "spinnies": "github:lyswhut/spinnies#233305c58694aa3b053e3ab9af9049993f918b9d",
     "svg-sprite-loader": "^6.0.11",
     "svg-transform-loader": "^2.0.13",
     "svgo-loader": "^3.0.1",
-    "terser": "^5.14.2",
-    "terser-webpack-plugin": "^5.3.5",
-    "url-loader": "^4.1.1",
+    "terser": "^5.15.1",
+    "terser-webpack-plugin": "^5.3.6",
+    "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
+    "vue-eslint-parser": "^9.1.0",
     "vue-loader": "^17.0.0",
-    "vue-template-compiler": "^2.7.8",
+    "vue-template-compiler": "^2.7.13",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.10.0",
-    "webpack-hot-middleware": "git+https://github.com/lyswhut/webpack-hot-middleware.git#329c4375134b89d39da23a56a94db651247c74a1",
+    "webpack-dev-server": "^4.11.1",
+    "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "bufferutil": "^4.0.6",
+    "@simonwep/pickr": "^1.8.2",
+    "better-sqlite3": "^7.6.2",
+    "bufferutil": "^4.0.7",
+    "comlink": "^4.3.1",
     "crypto-js": "^4.1.1",
     "electron-log": "^4.4.8",
     "electron-store": "^8.1.0",
-    "font-list": "git+https://github.com/lyswhut/node-font-list.git#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
+    "font-list": "github:lyswhut/node-font-list#4edbb1933b49a9bac1eedd63a31da16b487fe57d",
     "http-terminator": "^3.2.0",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.2",
+    "jschardet": "^3.0.0",
     "koa": "^2.13.4",
     "long": "^5.2.0",
-    "mitt": "^3.0.0",
-    "needle": "^3.1.0",
+    "music-metadata": "^8.1.0",
+    "needle": "github:lyswhut/needle#95cd7135818824a90d1ed4bb5aa4f8610304ae34",
     "node-id3": "^0.2.3",
-    "request": "^2.88.2",
-    "socket.io": "^4.5.1",
+    "socket.io": "^4.5.3",
     "sortablejs": "^1.15.0",
     "tunnel": "^0.0.6",
-    "utf-8-validate": "^5.0.9",
-    "vue": "^3.2.37",
-    "vue-i18n": "^9.2.2",
-    "vue-router": "^4.1.3",
-    "vuex": "^4.0.2"
+    "utf-8-validate": "^5.0.10",
+    "vue": "^3.2.41",
+    "vue-router": "^4.1.6"
   },
   "overrides": {
-    "async": "^2.3.0",
-    "got": "^11.8.5",
-    "svg-sprite-loader": {
-      "postcss": "8.2.13"
-    }
+    "got": "^11",
+    "svg-baker": {
+      "postcss": "latest"
+    },
+    "minimatch": "latest"
   }
 }

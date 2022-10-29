@@ -2,28 +2,29 @@
 dt#play_detail {{$t('setting__play_detail')}}
 dd
   .gap-top
-    base-checkbox(id="setting_play_detail_font_zoom_enable" v-model="currentStting.playDetail.isZoomActiveLrc" :label="$t('setting__play_detail_font_zoom')")
+    base-checkbox(id="setting_play_detail_font_zoom_enable" :modelValue="appSetting['playDetail.isZoomActiveLrc']" @update:modelValue="updateSetting({'playDetail.isZoomActiveLrc': $event})" :label="$t('setting__play_detail_font_zoom')")
   .gap-top
-    base-checkbox(id="setting_play_detail_lyric_progress_enable" v-model="currentStting.playDetail.isShowLyricProgressSetting" :label="$t('setting__play_detail_lyric_progress')")
+    base-checkbox(id="setting_play_detail_lyric_progress_enable" :modelValue="appSetting['playDetail.isShowLyricProgressSetting']" @update:modelValue="updateSetting({'playDetail.isShowLyricProgressSetting': $event})" :label="$t('setting__play_detail_lyric_progress')")
 
 dd
   h3#play_detail_align {{$t('setting__play_detail_align')}}
   div
-    base-checkbox.gap-left(id="setting_play_detail_align_left" v-model="currentStting.playDetail.style.align" value="left" :label="$t('setting__play_detail_align_left')")
-    base-checkbox.gap-left(id="setting_play_detail_align_center" v-model="currentStting.playDetail.style.align" value="center" :label="$t('setting__play_detail_align_center')")
-    //- base-checkbox.gap-left(id="setting_play_detail_align_right" v-model="currentStting.playDetail.style.align" value="right" :label="$t('setting__play_detail_align_right')")
+    base-checkbox.gap-left(id="setting_play_detail_align_left" :modelValue="appSetting['playDetail.style.align']" @update:modelValue="updateSetting({ 'playDetail.style.align': $event })" need value="left" :label="$t('setting__play_detail_align_left')")
+    base-checkbox.gap-left(id="setting_play_detail_align_center" :modelValue="appSetting['playDetail.style.align']" @update:modelValue="updateSetting({ 'playDetail.style.align': $event })" need value="center" :label="$t('setting__play_detail_align_center')")
+    base-checkbox.gap-left(id="setting_play_detail_align_right" :modelValue="appSetting['playDetail.style.align']" @update:modelValue="updateSetting({ 'playDetail.style.align': $event })" need value="right" :label="$t('setting__play_detail_align_right')")
 
 </template>
 
 <script>
-// import { ref, onBeforeUnmount } from '@renderer/utils/vueTools'
-import { currentStting } from '../setting'
+// import { ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 export default {
   name: 'SettingPlayDetail',
   setup() {
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
     }
   },
 }

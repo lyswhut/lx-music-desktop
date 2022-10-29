@@ -1,9 +1,11 @@
 <template>
-<button
-  :class="[$style.btn, {[$style.min]: min}, {[$style.outline]: outline}]"
-  :disabled="disabled">
-  <slot />
-</button>
+  <button
+    :class="[$style.btn, {[$style.min]: min}, {[$style.outline]: outline}]"
+    tabindex="0"
+    :disabled="disabled"
+  >
+    <slot />
+  </button>
 </template>
 
 <script>
@@ -34,13 +36,14 @@ export default {
   border-radius: @form-radius;
   cursor: pointer;
   padding: 8px 15px;
-  color: @color-btn;
+  color: var(--color-button-font);
   outline: none;
   transition: background-color 0.2s ease;
-  background-color: @color-btn-background;
+  background-color: var(--color-button-background);
   font-size: 14px;
   &[disabled] {
     opacity: .4;
+    cursor: default;
   }
 
   &.outline {
@@ -48,10 +51,10 @@ export default {
   }
 
   &:hover {
-    background-color: @color-btn-hover;
+    background-color: var(--color-button-background-hover);
   }
   &:active {
-    background-color: @color-btn-active;
+    background-color: var(--color-button-background-active);
   }
 }
 
@@ -59,23 +62,5 @@ export default {
   padding: 3px 8px;
   font-size: 12px;
 }
-
-each(@themes, {
-  :global(#root.@{value}) {
-    .btn {
-      color: ~'@{color-@{value}-btn}';
-      background-color: ~'@{color-@{value}-btn-background}';
-      &.outline {
-        background-color: transparent;
-      }
-      &:hover {
-        background-color: ~'@{color-@{value}-btn-hover}';
-      }
-      &:active {
-        background-color: ~'@{color-@{value}-btn-active}';
-      }
-    }
-  }
-})
 
 </style>

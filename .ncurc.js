@@ -11,4 +11,9 @@ module.exports = {
   //   'electron-builder',
   //   'electron-updater',
   // ],
+
+  // target: 'minor',
+  // filter: [
+  //   'electron',
+  // ],
 }

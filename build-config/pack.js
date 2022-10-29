@@ -5,12 +5,15 @@ const del = require('del')
 const webpack = require('webpack')
 const Spinnies = require('spinnies')
 
-const mainConfig = require('./main/webpack.config.prod')
-const rendererConfig = require('./renderer/webpack.config.prod')
-const rendererLyricConfig = require('./renderer-lyric/webpack.config.prod')
+const mainConfig = './main/webpack.config.prod'
+const rendererConfig = './renderer/webpack.config.prod'
+const rendererLyricConfig = './renderer-lyric/webpack.config.prod'
+const rendererScriptConfig = './renderer-scripts/webpack.config.prod'
 
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
 const okayLog = chalk.bgGreen.white(' OKAY ') + ' '
+
+const { Worker, isMainThread, parentPort } = require('worker_threads')
 
 
 function build() {
@@ -20,6 +23,7 @@ function build() {
   spinners.add('main', { text: 'main building' })
   spinners.add('renderer', { text: 'renderer building' })
   spinners.add('renderer-lyric', { text: 'renderer-lyric building' })
+  spinners.add('renderer-scripts', { text: 'renderer-scripts building' })
   let results = ''
 
   // m.on('success', () => {
@@ -63,11 +67,35 @@ function build() {
       console.error(`\n${err}\n`)
       process.exit(1)
     }),
+    pack(rendererScriptConfig).then(result => {
+      results += result + '\n\n'
+      spinners.succeed('renderer-scripts', { text: 'renderer-scripts build success!' })
+    }).catch(err => {
+      spinners.fail('renderer-scripts', { text: 'renderer-scripts build fail :(' })
+      console.log(`\n  ${errorLog}failed to build renderer-scripts process`)
+      console.error(`\n${err}\n`)
+      process.exit(1)
+    }),
   ]).then(handleSuccess)
 }
 
 function pack(config) {
   return new Promise((resolve, reject) => {
+    const worker = new Worker(__filename)
+    const subChannel = new MessageChannel()
+    worker.postMessage({ port: subChannel.port1, config }, [subChannel.port1])
+    subChannel.port2.on('message', ({ status, message }) => {
+      switch (status) {
+        case 'success': return resolve(message)
+        case 'error': return reject(message)
+      }
+    })
+  })
+}
+
+function runPack(config) {
+  return new Promise((resolve, reject) => {
+    config = require(config)
     config.mode = 'production'
     webpack(config, (err, stats) => {
       if (err) reject(err.stack || err)
@@ -95,5 +123,22 @@ function pack(config) {
   })
 }
 
-build()
-
+if (isMainThread) build()
+else {
+  parentPort.once('message', ({ port, config }) => {
+    // assert(port instanceof MessagePort)
+    runPack(config).then((result) => {
+      port.postMessage({
+        status: 'success',
+        message: result,
+      })
+    }).catch((err) => {
+      port.postMessage({
+        status: 'error',
+        message: err,
+      })
+    }).finally(() => {
+      port.close()
+    })
+  })
+}

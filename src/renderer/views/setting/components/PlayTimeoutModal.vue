@@ -7,7 +7,7 @@ material-modal(:show="modelValue" bg-close @close="handleCloseModal" @after-ente
         base-input(:class="$style.input" ref="dom_input" v-model="time" type="number")
         p(:class="$style.inputLabel") {{$t('play_timeout_unit')}}
       div(:class="$style.row")
-        base-checkbox(id="play_timeout_end" v-model="currentStting.player.waitPlayEndStop" :label="$t('play_timeout_end')")
+        base-checkbox(id="play_timeout_end" :modelValue="appSetting['player.waitPlayEndStop']" @update:modelValue="updateSetting({'player.waitPlayEndStop': $event})" :label="$t('play_timeout_end')")
       div(:class="[$style.row, $style.tip, { [$style.show]: !!timeLabel }]")
         p {{$t('play_timeout_tip', { time: timeLabel })}}
     div(:class="$style.footer")
@@ -16,9 +16,9 @@ material-modal(:show="modelValue" bg-close @close="handleCloseModal" @after-ente
 </template>
 
 <script>
-import { currentStting } from '../setting'
-import { useTimeout, startTimeoutStop, stopTimeoutStop } from '@renderer/utils/timeoutStop'
-import { ref } from '@renderer/utils/vueTools'
+import { useTimeout, startTimeoutStop, stopTimeoutStop } from '@renderer/core/player/timeoutStop'
+import { ref } from '@common/utils/vueTools'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 const MAX_MIN = 1440
 
@@ -31,9 +31,10 @@ export default {
       default: false,
     },
   },
+  emits: ['update:modelValue'],
   setup(props, { emit }) {
     const { timeLabel } = useTimeout()
-    const time = ref(currentStting.value.player.waitPlayEndStopTime)
+    const time = ref(appSetting['player.waitPlayEndStopTime'])
 
     const handleCloseModal = () => {
       emit('update:modelValue', false)
@@ -62,12 +63,13 @@ export default {
     const handleConfirm = () => {
       let time = verify()
       if (time == '') return
-      currentStting.value.player.waitPlayEndStopTime = time
+      if (appSetting['player.waitPlayEndStopTime'] != time) updateSetting({ 'player.waitPlayEndStopTime': time })
       startTimeoutStop(time * 60)
       handleCloseModal()
     }
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
       timeLabel,
       time,
       handleCloseModal,
@@ -94,7 +96,7 @@ export default {
   // overflow: hidden;
   h2 {
     font-size: 16px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     line-height: 1.3;
     text-align: center;
   }
@@ -143,33 +145,5 @@ export default {
 .ruleLink {
   .mixin-ellipsis-1;
 }
-
-
-each(@themes, {
-  :global(#root.@{value}) {
-    .main {
-      h2 {
-        color: ~'@{color-@{value}-theme_2-font}';
-      }
-    }
-    .listItem {
-      &:hover {
-        background-color: ~'@{color-@{value}-theme_2-hover}';
-      }
-      &.active {
-        background-color: ~'@{color-@{value}-theme_2-active}';
-      }
-      h3 {
-        color: ~'@{color-@{value}-theme_2-font}';
-      }
-      p {
-        color: ~'@{color-@{value}-theme_2-font-label}';
-      }
-    }
-    .noitem {
-      color: ~'@{color-@{value}-theme_2-font-label}';
-    }
-  }
-})
 
 </style>

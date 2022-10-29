@@ -3,7 +3,7 @@ material-modal(:show="modelValue" bg-close @close="handleClose" teleport="#view"
   main(:class="$style.main")
     h2 {{$t('user_api__title')}}
     ul.scroll(v-if="apiList.length" :class="$style.content")
-      li(:class="[$style.listItem, {[$style.active]: setting.apiSource == api.id}]" v-for="(api, index) in apiList" :key="api.id")
+      li(:class="[$style.listItem, {[$style.active]: appSetting['common.apiSource'] == api.id}]" v-for="(api, index) in apiList" :key="api.id")
         div(:class="$style.listLeft")
           h3 {{api.name}}
           p {{api.description}}
@@ -25,13 +25,12 @@ material-modal(:show="modelValue" bg-close @close="handleClose" teleport="#view"
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { rendererInvoke, NAMES } from '@common/ipc'
-import { promises as fsPromises } from 'fs'
-import { selectDir, openUrl } from '@renderer/utils'
-import apiSourceInfo from '@renderer/utils/music/api-source-info'
-import { userApi, apiSource } from '@renderer/core/share'
-import { setAllowShowUserApiUpdateAlert } from '@renderer/utils/tools'
+import { importUserApi, removeUserApi, showSelectDialog, setAllowShowUserApiUpdateAlert } from '@renderer/utils/ipc'
+import { readFile } from '@common/utils/nodejs'
+import { openUrl } from '@common/utils/electron'
+import apiSourceInfo from '@renderer/utils/musicSdk/api-source-info'
+import { userApi } from '@renderer/store'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 export default {
   props: {
@@ -40,13 +39,14 @@ export default {
       default: false,
     },
   },
+  emits: ['update:modelValue'],
   setup() {
     return {
       userApi,
+      appSetting,
     }
   },
   computed: {
-    ...mapGetters(['setting']),
     apiList() {
       return this.userApi.list
     },
@@ -60,7 +60,7 @@ export default {
         })
         return
       }
-      selectDir({
+      showSelectDialog({
         title: this.$t('user_api__import_file'),
         properties: ['openFile'],
         filters: [
@@ -69,8 +69,8 @@ export default {
         ],
       }).then(result => {
         if (result.canceled) return
-        return fsPromises.readFile(result.filePaths[0]).then(data => {
-          return rendererInvoke(NAMES.mainWindow.import_user_api, data.toString()).then(({ apiList }) => {
+        return readFile(result.filePaths[0]).then(data => {
+          return importUserApi(data.toString()).then(({ apiList }) => {
             userApi.list = apiList
           })
         })
@@ -82,11 +82,11 @@ export default {
     async handleRemove(index) {
       const api = this.apiList[index]
       if (!api) return
-      if (this.setting.apiSource == api.id) {
+      if (appSetting['common.apiSource'] == api.id) {
         let backApi = apiSourceInfo.find(api => !api.disabled)
-        if (backApi) apiSource.value = backApi.id
+        if (backApi) updateSetting({ 'common.apiSource': backApi.id })
       }
-      userApi.list = await rendererInvoke(NAMES.mainWindow.remove_user_api, [api.id])
+      userApi.list = await removeUserApi([api.id])
     },
     handleClose() {
       this.$emit('update:modelValue', false)
@@ -117,14 +117,14 @@ export default {
   // overflow: hidden;
   h2 {
     font-size: 16px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     line-height: 1.3;
     text-align: center;
   }
 }
 
 .name {
-  color: @color-theme;
+  color: var(--color-primary);
 }
 
 .checkbox {
@@ -147,27 +147,27 @@ export default {
   padding: 10px;
   border-radius: @radius-border;
   &:hover {
-    background-color: @color-theme_2-hover;
+    background-color: var(--color-primary-background-hover);
   }
   &.active {
-    background-color: @color-theme_2-active;
+    background-color: var(--color-primary-background-active);
   }
   h3 {
     font-size: 15px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     word-break: break-all;
   }
   p {
     margin-top: 5px;
     font-size: 14px;
-    color: @color-theme_2-font-label;
+    color: var(--color-font-label);
     word-break: break-all;
   }
 }
 .noitem {
   height: 100px;
   font-size: 18px;
-  color: @color-theme_2-font-label;
+  color: var(--color-font-label);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -195,7 +195,7 @@ export default {
   margin-top: 15px;
   font-size: 12px;
   line-height: 1.25;
-  color: @color-theme_2-font;
+  color: var(--color-font);
   p {
     + p {
       margin-top: 5px;
@@ -221,37 +221,5 @@ export default {
 .ruleLink {
   .mixin-ellipsis-1;
 }
-
-
-each(@themes, {
-  :global(#root.@{value}) {
-    .main {
-      h2 {
-        color: ~'@{color-@{value}-theme_2-font}';
-      }
-    }
-    .listItem {
-      &:hover {
-        background-color: ~'@{color-@{value}-theme_2-hover}';
-      }
-      &.active {
-        background-color: ~'@{color-@{value}-theme_2-active}';
-      }
-      h3 {
-        color: ~'@{color-@{value}-theme_2-font}';
-      }
-      p {
-        color: ~'@{color-@{value}-theme_2-font-label}';
-      }
-    }
-    .noitem {
-      color: ~'@{color-@{value}-theme_2-font-label}';
-    }
-
-    .note {
-      color: ~'@{color-@{value}-theme_2-font}';
-    }
-  }
-})
 
 </style>

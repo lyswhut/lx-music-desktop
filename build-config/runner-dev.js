@@ -13,6 +13,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const mainConfig = require('./main/webpack.config.dev')
 const rendererConfig = require('./renderer/webpack.config.dev')
 const rendererLyricConfig = require('./renderer-lyric/webpack.config.dev')
+const rendererScriptConfig = require('./renderer-scripts/webpack.config.dev')
 
 let electronProcess = null
 let manualRestart = false
@@ -47,9 +48,10 @@ function startRenderer() {
       port: 9080,
       hot: true,
       historyApiFallback: true,
-      // static: {
-      //   directory: path.join(__dirname, '../'),
-      // },
+      static: {
+        directory: path.join(__dirname, '../src/common/theme/images'),
+        publicPath: '/theme_images',
+      },
       client: {
         logging: 'warn',
         overlay: true,
@@ -108,6 +110,22 @@ function startRendererLyric() {
     }, compiler)
 
     server.start()
+  })
+}
+
+function startRendererScripts() {
+  return new Promise((resolve, reject) => {
+    // mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
+    // mainConfig.mode = 'development'
+    const compiler = webpack(rendererScriptConfig)
+
+    compiler.watch({}, (err, stats) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+      resolve()
+    })
   })
 }
 
@@ -175,11 +193,19 @@ function startElectron() {
   })
 }
 
+const logs = [
+  'Manifest version 2 is deprecated, and support will be removed in 2023',
+  '"Extension server error: Operation failed: Permission denied", source: devtools://devtools/bundled',
+
+  // https://github.com/electron/electron/issues/32133
+  '"Electron sandbox_bundle.js script failed to run"',
+  '"TypeError: object null is not iterable (cannot read property Symbol(Symbol.iterator))",',
+]
 function electronLog(data, color) {
   let log = data.toString()
   if (/[0-9A-z]+/.test(log)) {
-    // 抑制 user api 窗口使用 data url 加载页面时 vue扩展 的报错日志刷屏的问题
-    if (color == 'red' && typeof log === 'string' && log.includes('"Extension server error: Operation failed: Permission denied", source: devtools://devtools/bundled/extensions/extensions.js')) return
+    // 抑制某些无关的报错日志
+    if (color == 'red' && typeof log === 'string' && logs.some(l => log.includes(l))) return
 
     console.log(chalk[color](log))
   }
@@ -191,6 +217,7 @@ function init() {
   spinners.add('main', { text: 'main compiling' })
   spinners.add('renderer', { text: 'renderer compiling' })
   spinners.add('renderer-lyric', { text: 'renderer-lyric compiling' })
+  spinners.add('renderer-scripts', { text: 'renderer-scripts compiling' })
   function handleSuccess(name) {
     spinners.succeed(name, { text: name + ' compile success!' })
   }
@@ -206,6 +233,10 @@ function init() {
     startRendererLyric().then(() => handleSuccess('renderer-lyric')).catch((err) => {
       console.error(err.message)
       return handleFail('renderer-lyric')
+    }),
+    startRendererScripts().then(() => handleSuccess('renderer-scripts')).catch((err) => {
+      console.error(err.message)
+      return handleFail('renderer-scripts')
     }),
     startMain().then(() => handleSuccess('main')).catch(() => handleFail('main')),
   ]).then(startElectron).catch(err => {

@@ -1,52 +1,56 @@
 <template>
-<div :class="$style.pagination" v-if="allPage &gt; 1">
-  <ul>
-    <li v-if="page===1" :class="$style.disabled"><span>
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-left"></use>
-        </svg></span></li>
-    <li v-else>
-      <button type="button" @click="handleClick(page - 1)" :aria-label="$t('pagination__prev')">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-left"></use>
-        </svg>
-      </button>
-    </li>
-    <li v-if="allPage &gt; btnLength &amp;&amp; page &gt; pageEvg+1" :class="$style.first">
-      <button type="button" @click="handleClick(1)" :aria-label="$t('pagination__page', { num: 1 })">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-first"></use>
-        </svg>
-      </button>
-    </li>
-    <li v-for="(p, index) in pages" :key="index" :class="{[$style.active] : p == page}"><span v-if="p === page" v-text="page"></span>
-      <button v-else type="button" @click="handleClick(p)" v-text="p" :aria-label="$t('pagination__page', { num: p })"></button>
-    </li>
-    <li v-if="allPage &gt; btnLength &amp;&amp; allPage - page &gt; pageEvg" :class="$style.last">
-      <button type="button" @click="handleClick(allPage)" :aria-label="$t('pagination__page', { num: allPage })">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-last"></use>
-        </svg>
-      </button>
-    </li>
-    <li v-if="page===allPage" :class="$style.disabled"><span>
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-right"></use>
-        </svg></span></li>
-    <li v-else>
-      <button type="button" @click="handleClick(page + 1)" :aria-label="$t('pagination__next')">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
-          <use xlink:href="#icon-right"></use>
-        </svg>
-      </button>
-    </li>
-  </ul>
-</div>
-
+  <div v-if="maxPage > 1" :class="$style.pagination">
+    <ul>
+      <li v-if="page == 1" :class="$style.disabled">
+        <span>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-left" />
+          </svg>
+        </span>
+      </li>
+      <li v-else>
+        <button type="button" :aria-label="$t('pagination__prev')" @click="handleClick(page - 1)">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-left" />
+          </svg>
+        </button>
+      </li>
+      <li v-if="maxPage > btnLength && page > pageEvg+1" :class="$style.first">
+        <button type="button" :aria-label="$t('pagination__page', { num: 1 })" @click="handleClick(1)">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-first" />
+          </svg>
+        </button>
+      </li>
+      <li v-for="p in pages" :key="p" :class="{[$style.active] : p == page}">
+        <span v-if="p === page" v-text="page" />
+        <button v-else type="button" :aria-label="$t('pagination__page', { num: p })" @click="handleClick(p)" v-text="p" />
+      </li>
+      <li v-if="maxPage > btnLength && maxPage - page > pageEvg" :class="$style.last">
+        <button type="button" :aria-label="$t('pagination__page', { num: maxPage })" @click="handleClick(maxPage)">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-last" />
+          </svg>
+        </button>
+      </li>
+      <li v-if="page == maxPage" :class="$style.disabled">
+        <span>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-right" />
+          </svg></span>
+      </li>
+      <li v-else>
+        <button type="button" :aria-label="$t('pagination__next')" @click="handleClick(page + 1)">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-right" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -66,60 +70,30 @@ export default {
       type: Number,
       default: 7,
     },
-    maxPage: {
-      type: Number,
-      default: null,
-    },
   },
-  data() {
-    return {
-      pageArr: [],
-    }
-  },
+  emits: ['btn-click'],
   computed: {
-    ...mapGetters(['userInfo']),
-    allPage() {
-      return this.maxPage == null ? Math.ceil(this.count / this.limit) || 1 : this.maxPage
+    maxPage() {
+      return Math.ceil(this.count / this.limit) || 1
     },
     pageEvg() {
       return Math.floor(this.btnLength / 2)
     },
     pages() {
-      if (this.allPage <= this.btnLength) return this.pageArr
+      if (this.maxPage <= this.btnLength) return Array.from({ length: this.maxPage }, (_, i) => i + 1)
       let start =
         this.page - this.pageEvg > 1
-          ? this.allPage - this.page < this.pageEvg + 1
-            ? this.allPage - (this.btnLength - 1)
+          ? this.maxPage - this.page < this.pageEvg + 1
+            ? this.maxPage - (this.btnLength - 1)
             : this.page - this.pageEvg
           : 1
-      let end =
-        this.page + this.pageEvg <= this.btnLength
-          ? this.btnLength
-          : this.page + this.pageEvg <= this.allPage
-            ? this.page + this.pageEvg
-            : this.allPage
-      // console.log(start-1);
-      // console.log(end);
-      // console.log(this.pageArr.slice(start-1, end-1));
-      return this.pageArr.slice(start - 1, end)
-    },
-  },
-  watch: {
-    allPage() {
-      this.initPageArr()
+      return Array.from({ length: this.btnLength }, (_, i) => start + i)
     },
   },
   methods: {
-    initPageArr() {
-      this.pageArr = []
-      for (let i = 1; i <= this.allPage; i++) this.pageArr.push(i)
-    },
     handleClick(page) {
       this.$emit('btn-click', page)
     },
-  },
-  mounted() {
-    this.initPageArr()
   },
 }
 </script>
@@ -130,7 +104,7 @@ export default {
 
 .pagination {
   display: inline-block;
-  background-color: @color-pagination-background;
+  background-color: var(--color-button-background);
   // border-top-left-radius: 8px;
   border-radius: @radius-border;
   ul {
@@ -140,7 +114,7 @@ export default {
     // border-radius: .3125rem;
     li {
       // margin-right: @padding;
-      color: @color-theme;
+      // color: var(--color-button-font);
       // border: .0625rem solid @theme_line;
       // border-radius: .3125rem;
       transition: 0.4s ease;
@@ -156,12 +130,12 @@ export default {
         display: block;
         padding: 7px 12px;
         line-height: 1;
-        color: @color-theme;
+        color: var(--color-button-font);
         font-size: 13px;
       }
       &.active {
         span {
-          background-color: @color-pagination-select;
+          background-color: var(--color-button-background-selected);
         }
       }
       button {
@@ -171,10 +145,10 @@ export default {
         outline: none;
         transition: background-color .3s ease;
         &:hover {
-          background-color: @color-pagination-hover;
+          background-color: var(--color-button-background-hover);
         }
         &:active {
-          background-color: @color-pagination-active;
+          background-color: var(--color-button-background-active);
         }
       }
       &.disabled {
@@ -206,36 +180,5 @@ export default {
   }
 }
 
-
-each(@themes, {
-  :global(#root.@{value}) {
-
-    .pagination {
-      background-color: ~'@{color-@{value}-pagination-background}';
-      ul {
-        li {
-          color: ~'@{color-@{value}-theme}';
-          span,
-          button {
-            color: ~'@{color-@{value}-theme}';
-          }
-          &.active {
-            span {
-              background-color: ~'@{color-@{value}-pagination-select}';
-            }
-          }
-          button {
-            &:hover {
-              background-color: ~'@{color-@{value}-pagination-hover}';
-            }
-            &:active {
-              background-color: ~'@{color-@{value}-pagination-active}';
-            }
-          }
-        }
-      }
-    }
-  }
-})
 
 </style>

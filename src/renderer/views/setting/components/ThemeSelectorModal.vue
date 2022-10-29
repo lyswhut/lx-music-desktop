@@ -1,28 +1,47 @@
-<template lang="pug">
-material-modal(:show="modelValue" bg-close @close="$emit('update:modelValue', false)" teleport="#view")
-  main(:class="$style.main")
-    h2 {{$t('theme_selector_modal__title')}}
-    div.scroll(:class="$style.content")
-      div
-        h3 {{$t('theme_selector_modal__light_title')}}
-        ul(:class="$style.theme")
-          li(v-for="theme in themeLights" :key="theme.id" :aria-label="$t('theme_' + theme.className)" @click="currentStting.theme.lightId = theme.id" :class="[theme.className, {[$style.active]: lightId == theme.id}]")
-            span
-            label {{$t('theme_' + theme.className)}}
-      div
-        h3 {{$t('theme_selector_modal__dark_title')}}
-        ul(:class="$style.theme")
-          li(v-for="theme in themeDarks" :key="theme.id" :aria-label="$t('theme_' + theme.className)" @click="currentStting.theme.darkId = theme.id" :class="[theme.className, {[$style.active]: darkId == theme.id}]")
-            span
-            label {{$t('theme_' + theme.className)}}
-    div(:class="$style.note")
-      p {{$t('theme_selector_modal__title_tip')}}
+<template>
+  <material-modal :show="modelValue" bg-close="bg-close" teleport="#view" @close="$emit('update:modelValue', false)">
+    <main :class="$style.main">
+      <h2>{{ $t('theme_selector_modal__title') }}</h2>
+      <div class="scroll" :class="$style.content">
+        <div>
+          <h3>{{ $t('theme_selector_modal__light_title') }}</h3>
+          <ul :class="$style.theme">
+            <li
+              v-for="theme in themeInfo.themeLights" :key="theme.id"
+              :style="theme.styles" :aria-label="theme.name"
+              :class="[{[$style.active]: appSetting['theme.lightId'] == theme.id}]" @click="setLightId(theme.id)"
+            >
+              <span :class="$style.bg" />
+              <label>{{ theme.name }}</label>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>{{ $t('theme_selector_modal__dark_title') }}</h3>
+          <ul :class="$style.theme">
+            <li
+              v-for="theme in themeInfo.themeDarks" :key="theme.id"
+              :style="theme.styles" :aria-label="theme.name"
+              :class="[{[$style.active]: appSetting['theme.darkId'] == theme.id}]" @click="setDarkId(theme.id)"
+            >
+              <span :class="$style.bg" />
+              <label>{{ theme.name }}</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div :class="$style.note">
+        <p>{{ $t('theme_selector_modal__title_tip') }}</p>
+      </div>
+    </main>
+  </material-modal>
 </template>
 
 <script>
-import { computed } from '@renderer/utils/vueTools'
-import { themeLights, themeDarks } from '@renderer/core/share'
-import { currentStting } from '../setting'
+import { joinPath } from '@common/utils/nodejs'
+import { markRaw, reactive, watch } from '@common/utils/vueTools'
+import { appSetting, updateSetting } from '@renderer/store/setting'
+import { applyTheme, getThemes } from '@renderer/store/utils'
 
 export default {
   name: 'ThemeSelectorModal',
@@ -32,19 +51,74 @@ export default {
       default: false,
     },
   },
-  setup() {
-    const lightId = computed(() => {
-      return currentStting.value.theme.lightId
+  emits: ['update:modelValue'],
+  setup(props) {
+    const themeInfo = reactive({
+      themeLights: [],
+      themeDarks: [],
     })
-    const darkId = computed(() => {
-      return currentStting.value.theme.darkId
+    let dataPath = ''
+
+    watch(() => props.modelValue, (val) => {
+      if (!val) return
+      getThemes((info) => {
+      // console.log(info)
+        const themes = [...info.themes, ...info.userThemes]
+        const lights = []
+        const darks = themes.filter(t => {
+          if (t.isDark) return true
+          lights.push(t)
+          return false
+        })
+        dataPath = info.dataPath
+        themeInfo.themeLights = lights.map(t => {
+          return {
+            id: t.id,
+            // @ts-expect-error
+            name: t.isCustom ? t.name : window.i18n.t('theme_' + t.id),
+            styles: {
+              '--color-primary-theme': t.config.themeColors['--color-theme'],
+              '--background-image-theme': t.isCustom
+                ? t.config.extInfo['--background-image'] == 'none'
+                  ? 'none'
+                  : `url(file:///${joinPath(info.dataPath, t.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+                : t.config.extInfo['--background-image'],
+            },
+          }
+        })
+        themeInfo.themeDarks = markRaw(darks.map(t => {
+          return {
+            id: t.id,
+            // @ts-expect-error
+            name: t.isCustom ? t.name : window.i18n.t('theme_' + t.id),
+            styles: {
+              '--color-primary-theme': t.config.themeColors['--color-theme'],
+              '--background-image-theme': t.isCustom
+                ? t.config.extInfo['--background-image'] == 'none'
+                  ? 'none'
+                  : `url(file:///${joinPath(info.dataPath, t.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+                : t.config.extInfo['--background-image'],
+            },
+          }
+        }))
+      })
     })
+
+    const setLightId = (id) => {
+      if (appSetting['theme.lightId'] == id) return
+      updateSetting({ 'theme.lightId': id })
+      if (appSetting['theme.id'] == 'auto') applyTheme('auto', id, appSetting['theme.darkId'], dataPath)
+    }
+    const setDarkId = (id) => {
+      if (appSetting['theme.darkId'] == id) return
+      updateSetting({ 'theme.darkId': id })
+      if (appSetting['theme.id'] == 'auto') applyTheme('auto', appSetting['theme.lightId'], id, dataPath)
+    }
     return {
-      currentStting,
-      themeLights,
-      themeDarks,
-      lightId,
-      darkId,
+      appSetting,
+      themeInfo,
+      setLightId,
+      setDarkId,
     }
   },
 }
@@ -66,14 +140,14 @@ export default {
   h2 {
     flex: none;
     font-size: 16px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     line-height: 1.3;
     text-align: center;
     padding: 15px;
   }
   h3 {
     font-size: 16px;
-    color: @color-theme_2-font;
+    color: var(--color-font);
     line-height: 1.3;
     padding-bottom: 15px;
     font-size: 15px;
@@ -96,7 +170,7 @@ export default {
     flex-flow: column nowrap;
     align-items: center;
     cursor: pointer;
-    // color: @color-theme;
+    // color: var(--color-primary);
     margin-right: 30px;
     transition: color .3s ease;
     margin-bottom: 15px;
@@ -106,7 +180,14 @@ export default {
       margin-right: 0;
     }
 
-    span {
+    &.active {
+      color: var(--color-primary-theme);
+      .bg {
+        border-color: var(--color-primary-theme);
+      }
+    }
+
+    .bg {
       display: block;
       width: 36px;
       height: 36px;
@@ -124,6 +205,8 @@ export default {
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
+        background-color: var(--color-primary-theme);
+        background-image: var(--background-image-theme);
       }
     }
 
@@ -134,17 +217,6 @@ export default {
       font-size: 14px;
       .mixin-ellipsis-1;
     }
-
-    each(@themes, {
-      &:global(.@{value}) {
-        span {
-          &:after {
-            background-color: ~'@{color-@{value}-theme}';
-            background-image: ~'@{color-@{value}-theme-bgimg}';
-          }
-        }
-      }
-    })
   }
 }
 
@@ -152,30 +224,12 @@ export default {
   padding: 8px 15px;
   font-size: 13px;
   line-height: 1.25;
-  color: @color-theme_2-font;
+  color: var(--color-font);
   // p {
   //   + p {
   //     margin-top: 5px;
   //   }
   // }
 }
-
-each(@themes, {
-  .theme {
-    li {
-      &:global(.@{value}) {
-        &.active {
-          color: ~'@{color-@{value}-theme}';
-          span {
-            border-color: ~'@{color-@{value}-theme}';
-          }
-        }
-      }
-    }
-  }
-  .note {
-    color: ~'@{color-@{value}-theme_2-font}';
-  }
-})
 
 </style>

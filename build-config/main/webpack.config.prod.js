@@ -5,18 +5,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const baseConfig = require('./webpack.config.base')
 
-const { dependencies } = require('../../package.json')
+// const { dependencies } = require('../../package.json')
+
+const buildConfig = require('../webpack-build-config')
 
 
 module.exports = merge(baseConfig, {
   mode: 'production',
   entry: {
-    main: path.join(__dirname, '../../src/main/index.js'),
+    main: path.join(__dirname, '../../src/main/index.ts'),
+    // 'dbService.worker': path.join(__dirname, '../../src/main/worker/dbService/index.ts'),
   },
-  externals: [
-    ...Object.keys(dependencies || {}),
-    // 'font-list',
-  ],
   node: {
     __dirname: false,
     __filename: false,
@@ -25,12 +24,12 @@ module.exports = merge(baseConfig, {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: path.join(__dirname, '../../src/main/modules/userApi/renderer'),
-          to: path.join(__dirname, '../../dist/userApi/renderer'),
+          from: path.join(__dirname, '../../src/main/modules/userApi/renderer/user-api.html'),
+          to: path.join(__dirname, '../../dist/userApi/renderer/user-api.html'),
         },
         {
-          from: path.join(__dirname, '../../src/main/modules/userApi/rendererEvent/name.js'),
-          to: path.join(__dirname, '../../dist/userApi/rendererEvent/name.js'),
+          from: path.join(__dirname, '../../src/common/theme/images/*').replace(/\\/g, '/'),
+          to: path.join(__dirname, '../../dist/theme_images/[name][ext]'),
         },
       ],
     }),
@@ -45,6 +44,6 @@ module.exports = merge(baseConfig, {
     maxAssetSize: 1024 * 1024 * 20,
   },
   optimization: {
-    minimize: false,
+    minimize: buildConfig.minimize,
   },
 })

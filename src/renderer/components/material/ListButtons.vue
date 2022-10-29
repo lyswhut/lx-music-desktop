@@ -1,37 +1,50 @@
-<template lang="pug">
-div(:class="$style.btns")
-  button(type="button" v-if="playBtn" @contextmenu.capture.stop :aria-label="$t('list__play')" @click.stop="handleClick('play')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 287.386 287.386' space='preserve' v-once)
-      use(xlink:href='#icon-testPlay')
-  button(type="button" v-if="listAddBtn" @contextmenu.capture.stop :aria-label="$t('list__add_to')" @click.stop="handleClick('listAdd')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve' v-once)
-      use(xlink:href='#icon-addTo')
-  button(type="button" v-if="downloadBtn && setting.download.enable" @contextmenu.capture.stop :aria-label="$t('list__download')" @click.stop="handleClick('download')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 475.078 475.077' space='preserve' v-once)
-      use(xlink:href='#icon-download')
-  //- button(type="button" :aria-label="$t('list__add')" v-if="userInfo" @click.stop="handleClick('add')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 42 42' space='preserve')
-      use(xlink:href='#icon-addTo')
-  button(type="button" v-if="startBtn" @contextmenu.capture.stop :aria-label="$t('list__start')" @click.stop="handleClick('start')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 170 170' space='preserve' v-once)
-      use(xlink:href='#icon-play')
-  button(type="button" v-if="pauseBtn" @contextmenu.capture.stop :aria-label="$t('list__pause')" @click.stop="handleClick('pause')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 277.338 277.338' space='preserve' v-once)
-      use(xlink:href='#icon-pause')
-  button(type="button" v-if="fileBtn" @contextmenu.capture.stop :aria-label="$t('list__file')" @click.stop="handleClick('file')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='-61 0 512 512' space='preserve' v-once)
-      use(xlink:href='#icon-musicFile')
-  button(type="button" v-if="searchBtn" @contextmenu.capture.stop :aria-label="$t('list__search')" @click.stop="handleClick('search')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 30.239 30.239' space='preserve' v-once)
-      use(xlink:href='#icon-search')
-  button(type="button" v-if="removeBtn" :aria-label="$t('list__remove')" @click.stop="handleClick('remove')")
-    svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='100%' viewBox='0 0 212.982 212.982' space='preserve' v-once)
-      use(xlink:href='#icon-delete')
-
+<template>
+  <div :class="$style.btns">
+    <button v-if="playBtn" type="button" :aria-label="$t('list__play')" @contextmenu.capture.stop @click.stop="handleClick('play')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 287.386 287.386" space="preserve">
+        <use xlink:href="#icon-testPlay" />
+      </svg>
+    </button>
+    <button v-if="listAddBtn" type="button" :aria-label="$t('list__add_to')" @contextmenu.capture.stop @click.stop="handleClick('listAdd')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 42 42" space="preserve">
+        <use xlink:href="#icon-addTo" />
+      </svg>
+    </button>
+    <button v-if="downloadBtn && appSetting['download.enable']" type="button" :aria-label="$t('list__download')" @contextmenu.capture.stop @click.stop="handleClick('download')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 475.078 475.077" space="preserve">
+        <use xlink:href="#icon-download" />
+      </svg>
+    </button>
+    <button v-if="startBtn" type="button" :aria-label="$t('list__start')" @contextmenu.capture.stop @click.stop="handleClick('start')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
+        <use xlink:href="#icon-play" />
+      </svg>
+    </button>
+    <button v-if="pauseBtn" type="button" :aria-label="$t('list__pause')" @contextmenu.capture.stop @click.stop="handleClick('pause')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
+        <use xlink:href="#icon-pause" />
+      </svg>
+    </button>
+    <button v-if="fileBtn" type="button" :aria-label="$t('list__file')" @contextmenu.capture.stop @click.stop="handleClick('file')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="-61 0 512 512" space="preserve">
+        <use xlink:href="#icon-musicFile" />
+      </svg>
+    </button>
+    <button v-if="searchBtn" type="button" :aria-label="$t('list__search')" @contextmenu.capture.stop @click.stop="handleClick('search')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 30.239 30.239" space="preserve">
+        <use xlink:href="#icon-search" />
+      </svg>
+    </button>
+    <button v-if="removeBtn" type="button" :aria-label="$t('list__remove')" @click.stop="handleClick('remove')">
+      <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 212.982 212.982" space="preserve">
+        <use xlink:href="#icon-delete" />
+      </svg>
+    </button>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { appSetting } from '@renderer/store/setting'
 
 export default {
   props: {
@@ -72,8 +85,11 @@ export default {
       default: false,
     },
   },
-  computed: {
-    ...mapGetters(['setting']),
+  emits: ['btn-click'],
+  setup() {
+    return {
+      appSetting,
+    }
   },
   methods: {
     handleClick(action) {
@@ -97,7 +113,7 @@ export default {
     margin-right: 5px;
     cursor: pointer;
     padding: 4px 7px;
-    color: @color-btn;
+    color: var(--color-button-font);
     outline: none;
     transition: background-color 0.2s ease;
     line-height: 0;
@@ -110,27 +126,12 @@ export default {
     }
 
     &:hover {
-      background-color: @color-theme_2-hover;
+      background-color: var(--color-button-background-hover);
     }
     &:active {
-      background-color: @color-theme_2-active;
+      background-color: var(--color-button-background-active);
     }
   }
 }
 
-each(@themes, {
-  :global(#root.@{value}) {
-    .btns {
-      button {
-        color: ~'@{color-@{value}-btn}';
-        &:hover {
-          background-color: ~'@{color-@{value}-theme_2-hover}';
-        }
-        &:active {
-          background-color: ~'@{color-@{value}-theme_2-active}';
-        }
-      }
-    }
-  }
-})
 </style>

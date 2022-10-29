@@ -1,8 +1,9 @@
-import { computed, ref, reactive, useI18n, useCssModule, nextTick } from '@renderer/utils/vueTools'
-import musicSdk from '@renderer/utils/music'
+import { computed, ref, reactive, nextTick } from '@common/utils/vueTools'
+import musicSdk from '@renderer/utils/musicSdk'
+import { useI18n } from '@renderer/plugins/i18n'
 
 export default ({
-  listRef,
+  props,
   assertApiSupport,
   emit,
 
@@ -21,9 +22,8 @@ export default ({
     search: true,
     sourceDetail: true,
   })
-  const { t } = useI18n()
-  const styles = useCssModule()
-  const menuLocation = ref({ x: 0, y: 0 })
+  const t = useI18n()
+  const menuLocation = reactive({ x: 0, y: 0 })
   const isShowItemMenu = ref(false)
 
   const menus = computed(() => {
@@ -66,17 +66,17 @@ export default ({
     // this.listMenu.itemMenuControl.play =
     //   this.listMenu.itemMenuControl.playLater =
     itemMenuControl.download = assertApiSupport(musicInfo.source)
-    let dom_container = event.target.closest('.' + styles.songList)
-    const getOffsetValue = (target, x = 0, y = 0) => {
-      if (target === dom_container) return { x, y }
-      if (!target) return { x: 0, y: 0 }
-      x += target.offsetLeft
-      y += target.offsetTop
-      return getOffsetValue(target.offsetParent, x, y)
+
+    if (props.checkApiSource) {
+      itemMenuControl.playLater =
+      itemMenuControl.play =
+        itemMenuControl.download
     }
-    let { x, y } = getOffsetValue(event.target)
-    menuLocation.value.x = x + event.offsetX
-    menuLocation.value.y = y + event.offsetY - listRef.value.getScrollTop()
+
+    menuLocation.x = event.pageX
+    menuLocation.y = event.pageY
+
+    if (isShowItemMenu.value) return
     emit('show-menu')
     nextTick(() => {
       isShowItemMenu.value = true
@@ -119,6 +119,5 @@ export default ({
     isShowItemMenu,
     showMenu,
     menuClick,
-    hideMenu,
   }
 }

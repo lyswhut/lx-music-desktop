@@ -5,9 +5,17 @@ module.exports = {
   target: 'electron-main',
   output: {
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
+    library: {
+      type: 'commonjs2',
+    },
     path: path.join(__dirname, '../../dist'),
   },
+  externals: [
+    'font-list',
+    'better-sqlite3',
+    'bufferutil',
+    'utf-8-validate',
+  ],
   resolve: {
     alias: {
       '@main': path.join(__dirname, '../../src/main'),
@@ -15,13 +23,18 @@ module.exports = {
       '@lyric': path.join(__dirname, '../../src/renderer-lyric'),
       '@common': path.join(__dirname, '../../src/common'),
     },
-    extensions: ['*', '.js', '.json', '.node'],
+    extensions: ['.tsx', '.ts', '.js', '.mjs', '.json', '.node'],
   },
   module: {
     rules: [
       {
         test: /\.node$/,
         use: 'node-loader',
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
     ],
   },

@@ -3,7 +3,7 @@ dt#other {{$t('setting__other')}}
 dd
   h3#other_tray_theme {{$t('setting__other_tray_theme')}}
   div
-    base-checkbox.gap-left(:id="'setting_tray_theme_' + item.id" v-model="currentStting.tray.themeId" name="setting_tray_theme" need
+    base-checkbox.gap-left(:id="'setting_tray_theme_' + item.id" :modelValue="appSetting['tray.themeId']" @update:modelValue="updateSetting({'tray.themeId': $event})" name="setting_tray_theme" need
       :label="item.label" :key="item.id" :value="item.id" v-for="item in trayThemeList")
 dd
   h3#other_resource_cache
@@ -15,26 +15,53 @@ dd
       span.auto-hidden {{cacheSize}}
     p
       base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{$t('setting__other_resource_cache_clear_btn')}}
-dd
-  h3#other_play_list_cache
-    | {{$t('setting__other_play_list_cache')}}
-    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_play_list_cache_tip')")
 
+dd
+  h3#other_other_source {{$t('setting__other_other_cache')}}
   div
-    base-btn.btn(min :disabled="isDisabledListCacheClear" @click="clearListCache") {{$t('setting__other_play_list_cache_clear_btn')}}
+    p
+      | {{$t('setting__other_other_source_label')}}
+      span.auto-hidden {{otherSourceCount}}
+    p
+      | {{$t('setting__other_music_url_label')}}
+      span.auto-hidden {{musicUrlCount}}
+    p
+      | {{$t('setting__other_lyric_raw_label')}}
+      span.auto-hidden {{lyricRawCount}}
+    p
+      base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{$t('setting__other_other_source_clear_btn')}}
+      base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{$t('setting__other_music_url_clear_btn')}}
+      base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{$t('setting__other_lyric_raw_clear_btn')}}
+
+dd
+  h3#other_lyric_edited {{$t('setting__other_lyric_edited_cache')}}
+  div
+    p
+      | {{$t('setting__other_lyric_edited_label')}}
+      span.auto-hidden {{lyricEditedCount}}
+    p
+      base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{$t('setting__other_lyric_edited_clear_btn')}}
+
 </template>
 
 <script>
-import { ref, computed, useI18n, useCommit } from '@renderer/utils/vueTools'
-import { sizeFormate, clearCache, getCacheSize } from '@renderer/utils'
+import { ref, computed } from '@common/utils/vueTools'
+import {
+  clearCache, getCacheSize,
+  getOtherSourceCount, clearOtherSource,
+  getMusicUrlCount, clearMusicUrl,
+  getLyricRawCount, clearLyricRaw,
+  getLyricEditedCount, clearLyricEdited,
+} from '@renderer/utils/ipc'
+import { sizeFormate } from '@common/utils/common'
 import { dialog } from '@renderer/plugins/Dialog'
-
-import { currentStting } from '../setting'
+import { useI18n } from '@renderer/plugins/i18n'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 export default {
   name: 'SettingOther',
   setup() {
-    const { t } = useI18n()
+    const t = useI18n()
 
     const trayThemeList = computed(() => {
       return [
@@ -46,7 +73,7 @@ export default {
 
     const cacheSize = ref('0 B')
     const isDisabledResourceCacheClear = ref(false)
-    const isDisabledListCacheClear = ref(false)
+    // const isDisabledListCacheClear = ref(false)
     const refreshCacheSize = () => {
       getCacheSize().then(size => {
         cacheSize.value = sizeFormate(size)
@@ -66,27 +93,102 @@ export default {
     }
     refreshCacheSize()
 
-    const clearMyListCache = useCommit('list', 'clearCache')
-    const clearListCache = async() => {
+
+    const otherSourceCount = ref(0)
+    const isDisabledOtherSourceCacheClear = ref(false)
+    const refreshOtherSourceCount = () => {
+      getOtherSourceCount().then(count => {
+        otherSourceCount.value = count
+      })
+    }
+    const handleClearOtherSourceCache = async() => {
+      isDisabledOtherSourceCacheClear.value = true
+      clearOtherSource().then(() => {
+        refreshOtherSourceCount()
+        isDisabledOtherSourceCacheClear.value = false
+      })
+    }
+    refreshOtherSourceCount()
+
+
+    const musicUrlCount = ref(0)
+    const isDisabledMusicUrlCacheClear = ref(false)
+    const refreshMusicUrlCount = () => {
+      getMusicUrlCount().then(count => {
+        musicUrlCount.value = count
+      })
+    }
+    const handleClearMusicUrlCache = async() => {
+      isDisabledMusicUrlCacheClear.value = true
+      clearMusicUrl().then(() => {
+        refreshMusicUrlCount()
+        isDisabledMusicUrlCacheClear.value = false
+      })
+    }
+    refreshMusicUrlCount()
+
+
+    const lyricRawCount = ref(0)
+    const isDisabledLyricRawCacheClear = ref(false)
+    const refreshLyricRawCount = () => {
+      getLyricRawCount().then(count => {
+        lyricRawCount.value = count
+      })
+    }
+    const handleClearLyricRawCache = async() => {
+      isDisabledLyricRawCacheClear.value = true
+      clearLyricRaw().then(() => {
+        refreshLyricRawCount()
+        isDisabledLyricRawCacheClear.value = false
+      })
+    }
+    refreshLyricRawCount()
+
+
+    const lyricEditedCount = ref(0)
+    const isDisabledLyricEditedCacheClear = ref(false)
+    const refreshLyricEditedCount = () => {
+      getLyricEditedCount().then(count => {
+        lyricEditedCount.value = count
+      })
+    }
+    const handleClearLyricEditedCache = async() => {
       if (!await dialog.confirm({
-        message: t('setting__other_play_list_cache_tip_confirm'),
+        message: t('setting__other_lyric_edited_clear_tip_confirm'),
         cancelButtonText: t('cancel_button_text'),
         confirmButtonText: t('setting__other_resource_cache_confirm'),
       })) return
-
-      isDisabledListCacheClear.value = true
-      clearMyListCache()
-      isDisabledListCacheClear.value = false
+      isDisabledLyricEditedCacheClear.value = true
+      clearLyricEdited().then(() => {
+        refreshLyricEditedCount()
+        isDisabledLyricEditedCacheClear.value = false
+      })
     }
+    refreshLyricEditedCount()
 
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
       trayThemeList,
       cacheSize,
       isDisabledResourceCacheClear,
-      isDisabledListCacheClear,
       clearResourceCache,
-      clearListCache,
+
+      otherSourceCount,
+      isDisabledOtherSourceCacheClear,
+      handleClearOtherSourceCache,
+
+      musicUrlCount,
+      isDisabledMusicUrlCacheClear,
+      handleClearMusicUrlCache,
+
+      lyricRawCount,
+      isDisabledLyricRawCacheClear,
+      handleClearLyricRawCache,
+
+      lyricEditedCount,
+      isDisabledLyricEditedCacheClear,
+      handleClearLyricEditedCache,
     }
   },
 }

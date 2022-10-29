@@ -1,18 +1,22 @@
 <template>
-<div class="content" :class="[$style.select, show ? $style.active : '']">
-  <div class="label-content" :class="$style.label" ref="dom_btn" @click="handleShow">
-    <span class="label">{{label}}</span>
-    <div class="icon" :class="$style.icon">
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.847 451.847" space="preserve">
-        <use xlink:href="#icon-down"></use>
-      </svg>
+  <div class="content" :class="[$style.select, show ? $style.active : '']">
+    <div ref="dom_btn" class="label-content" :class="$style.label" @click="handleShow">
+      <span class="label">{{ label }}</span>
+      <div class="icon" :class="$style.icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.847 451.847" space="preserve">
+          <use xlink:href="#icon-down" />
+        </svg>
+      </div>
     </div>
+    <ul v-if="show" ref="dom_list" class="selection-list scroll" :class="$style.list" :style="listStyles">
+      <li
+        v-for="(item, index) in list" :key="index" :class="[$style.listItem, (itemKey ? item[itemKey] : item) == modelValue ? $style.active : null]"
+        :aria-label="itemName ? item[itemName] : item" @click="handleClick(item)"
+      >
+        {{ itemName ? item[itemName] : item }}
+      </li>
+    </ul>
   </div>
-  <ul class="selection-list scroll" :class="$style.list" :style="listStyles" ref="dom_list">
-    <li v-for="(item, index) in list" :key="index" :class="(itemKey ? item[itemKey] : item) == modelValue ? $style.active : null"
-      @click="handleClick(item)" :aria-label="itemName ? item[itemName] : item">{{itemName ? item[itemName] : item}}</li>
-  </ul>
-</div>
 </template>
 
 <script>
@@ -27,14 +31,18 @@ export default {
     },
     modelValue: {
       type: [String, Number],
+      required: true,
     },
     itemName: {
       type: String,
+      default: '',
     },
     itemKey: {
       type: String,
+      default: '',
     },
   },
+  emits: ['update:modelValue', 'change'],
   data() {
     return {
       show: false,
@@ -42,12 +50,6 @@ export default {
         transform: 'scaleY(0) translateY(0)',
       },
     }
-  },
-  mounted() {
-    document.addEventListener('click', this.handleHide)
-  },
-  beforeUnmount() {
-    document.removeEventListener('click', this.handleHide)
   },
   computed: {
     label() {
@@ -58,8 +60,15 @@ export default {
       return item[this.itemName]
     },
   },
+  mounted() {
+    document.addEventListener('click', this.handleHide, true)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleHide, true)
+  },
   methods: {
     handleHide(e) {
+      if (!this.show) return
       // if (e && e.target.parentNode != this.$refs.dom_list && this.show) return this.show = false
       if (e && (e.target == this.$refs.dom_btn || this.$refs.dom_btn.contains(e.target))) return
       this.listStyles.transform = 'scaleY(0) translateY(0)'
@@ -75,7 +84,9 @@ export default {
     },
     handleShow() {
       this.show = true
-      this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset()}px)`
+      this.$nextTick(() => {
+        this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset()}px)`
+      })
     },
     handleGetOffset() {
       const listHeight = this.$refs.dom_list.clientHeight
@@ -105,7 +116,7 @@ export default {
 
   &.active {
     .label {
-      background-color: @color-btn-background;
+      background-color: var(--color-button-background);
     }
     .list {
       opacity: 1;
@@ -119,16 +130,17 @@ export default {
 }
 
 .label {
-  background-color: @color-btn-background;
+  background-color: var(--color-button-background);
   padding: 0 10px;
-  transition: background-color @transition-theme;
+  transition: background-color @transition-normal;
   height: @selection-height;
-  line-height: 27px;
+  // line-height: 27px;
   box-sizing: border-box;
-  color: @color-btn;
+  color: var(--color-button-font);
   border-radius: @form-radius;
   cursor: pointer;
   display: flex;
+  align-items: center;
 
   span {
     flex: auto;
@@ -146,10 +158,10 @@ export default {
   }
 
   &:hover {
-    background-color: @color-btn-hover;
+    background-color: var(--color-button-background-hover);
   }
   &:active {
-    background-color: @color-btn-active;
+    background-color: var(--color-button-background-active);
   }
 }
 
@@ -158,7 +170,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: @color-theme_2-background_2;
+  background-color: var(--color-content-background);
   opacity: 0;
   transform: scaleY(0) translateY(0);
   transform-origin: 0 (@selection-height / 2) 0;
@@ -169,61 +181,28 @@ export default {
   box-shadow: 0 0 4px rgba(0, 0, 0, .15);
   overflow: auto;
   max-height: 200px;
+}
+.listItem {
+  cursor: pointer;
+  padding: 0 10px;
+  line-height: @selection-height;
+  // color: var(--color-button-font);
+  outline: none;
+  transition: background-color @transition-normal;
+  background-color: var(--color-button-font)-background;
+  box-sizing: border-box;
+  .mixin-ellipsis-1;
 
-  li {
-    cursor: pointer;
-    padding: 0 10px;
-    line-height: @selection-height;
-    // color: @color-btn;
-    outline: none;
-    transition: background-color @transition-theme;
-    background-color: @color-btn-background;
-    box-sizing: border-box;
-    .mixin-ellipsis-1;
-
-    &:hover {
-      background-color: @color-btn-hover;
-    }
-    &:active {
-      background-color: @color-btn-active;
-    }
-    &.active {
-      color: @color-btn;
-    }
+  &:hover {
+    background-color: var(--color-button-background-hover);
+  }
+  &:active {
+    background-color: var(--color-button-background-active);
+  }
+  &.active {
+    color: var(--color-button-font);
   }
 }
 
-
-each(@themes, {
-  :global(#root.@{value}) {
-    .label {
-      color: ~'@{color-@{value}-btn}';
-      background-color: ~'@{color-@{value}-btn-background}';
-      &:hover {
-        background-color: ~'@{color-@{value}-btn-hover}';
-      }
-      &:active {
-        background-color: ~'@{color-@{value}-btn-active}';
-      }
-    }
-
-    .list {
-      background-color: ~'@{color-@{value}-theme_2-background_2}';
-      li {
-        // color: ~'@{color-@{value}-btn}';
-        background-color: ~'@{color-@{value}-btn-background}';
-        &:hover {
-          background-color: ~'@{color-@{value}-btn-hover}';
-        }
-        &:active {
-          background-color: ~'@{color-@{value}-btn-active}';
-        }
-        &.active {
-          color: ~'@{color-@{value}-btn}';
-        }
-      }
-    }
-  }
-})
 
 </style>

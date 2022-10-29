@@ -2,23 +2,25 @@
 dt#play {{$t('setting__play')}}
 dd
   .gap-top
-    base-checkbox(id="setting_player_save_play_time" v-model="currentStting.player.isSavePlayTime" :label="$t('setting__play_save_play_time')")
+    base-checkbox(id="setting_player_startup_auto_play" :modelValue="appSetting['player.startupAutoPlay']" @update:modelValue="updateSetting({'player.startupAutoPlay': $event})" :label="$t('setting__play_startup_auto_play')")
   .gap-top
-    base-checkbox(id="setting_player_lyric_transition" v-model="currentStting.player.isShowLyricTranslation" :label="$t('setting__play_lyric_transition')")
+    base-checkbox(id="setting_player_save_play_time" :modelValue="appSetting['player.isSavePlayTime']" @update:modelValue="updateSetting({'player.isSavePlayTime': $event})" :label="$t('setting__play_save_play_time')")
   .gap-top
-    base-checkbox(id="setting_player_lyric_roma" v-model="currentStting.player.isShowLyricRoma" :label="$t('setting__play_lyric_roma')")
+    base-checkbox(id="setting_player_lyric_transition" :modelValue="appSetting['player.isShowLyricTranslation']" @update:modelValue="updateSetting({'player.isShowLyricTranslation': $event})" :label="$t('setting__play_lyric_transition')")
   .gap-top
-    base-checkbox(id="setting_player_auto_skip_on_error" v-model="currentStting.player.autoSkipOnError" :label="$t('setting__play_auto_skip_on_error')")
+    base-checkbox(id="setting_player_lyric_roma" :modelValue="appSetting['player.isShowLyricRoma']" @update:modelValue="updateSetting({'player.isShowLyricRoma': $event})" :label="$t('setting__play_lyric_roma')")
   .gap-top
-    base-checkbox(id="setting_player_lyric_s2t" v-model="currentStting.player.isS2t" :label="$t('setting__play_lyric_s2t')")
+    base-checkbox(id="setting_player_auto_skip_on_error" :modelValue="appSetting['player.autoSkipOnError']" @update:modelValue="updateSetting({'player.autoSkipOnError': $event})" :label="$t('setting__play_auto_skip_on_error')")
   .gap-top
-    base-checkbox(id="setting_player_lyric_play_lxlrc" v-model="currentStting.player.isPlayLxlrc" :label="$t('setting__play_lyric_lxlrc')")
+    base-checkbox(id="setting_player_lyric_s2t" :modelValue="appSetting['player.isS2t']" @update:modelValue="updateSetting({'player.isS2t': $event})" :label="$t('setting__play_lyric_s2t')")
   .gap-top
-    base-checkbox(id="setting_player_highQuality" v-model="currentStting.player.highQuality" :label="$t('setting__play_quality')")
+    base-checkbox(id="setting_player_lyric_play_lxlrc" :modelValue="appSetting['player.isPlayLxlrc']" @update:modelValue="updateSetting({'player.isPlayLxlrc': $event})" :label="$t('setting__play_lyric_lxlrc')")
   .gap-top
-    base-checkbox(id="setting_player_showTaskProgess" v-model="currentStting.player.isShowTaskProgess" :label="$t('setting__play_task_bar')")
+    base-checkbox(id="setting_player_highQuality" :modelValue="appSetting['player.highQuality']" @update:modelValue="updateSetting({'player.highQuality': $event})" :label="$t('setting__play_quality')")
   .gap-top
-    base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" v-model="currentStting.player.isMediaDeviceRemovedStopPlay" :label="$t('setting__play_mediaDevice_remove_stop_play')")
+    base-checkbox(id="setting_player_showTaskProgess" :modelValue="appSetting['player.isShowTaskProgess']" @update:modelValue="updateSetting({'player.isShowTaskProgess': $event})" :label="$t('setting__play_task_bar')")
+  .gap-top
+    base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :modelValue="appSetting['player.isMediaDeviceRemovedStopPlay']" @update:modelValue="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})" :label="$t('setting__play_mediaDevice_remove_stop_play')")
 dd(:aria-label="$t('setting__play_mediaDevice_title')")
   h3#play_mediaDevice {{$t('setting__play_mediaDevice')}}
   div
@@ -26,17 +28,17 @@ dd(:aria-label="$t('setting__play_mediaDevice_title')")
 </template>
 
 <script>
-import { ref, onBeforeUnmount, watch, nextTick, useI18n } from '@renderer/utils/vueTools'
-import { setTaskBarProgress } from '@renderer/utils/tools'
+import { ref, onBeforeUnmount, watch } from '@common/utils/vueTools'
 import { hasInitedAnalyser } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
+import { useI18n } from '@renderer/plugins/i18n'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
-import { currentStting } from '../setting'
 
 export default {
   name: 'SettingPlay',
   setup() {
-    const { t } = useI18n()
+    const t = useI18n()
 
     const mediaDevices = ref([])
     const getMediaDevice = async() => {
@@ -52,44 +54,38 @@ export default {
       navigator.mediaDevices.removeEventListener('devicechange', getMediaDevice)
     })
 
-    watch(() => currentStting.value.player.isShowTaskProgess, val => {
-      if (val) return
-      nextTick(() => {
-        setTaskBarProgress(-1, 'normal')
-      })
-    })
-
-    const mediaDeviceId = ref(currentStting.value.player.mediaDeviceId)
+    const mediaDeviceId = ref(appSetting['player.mediaDeviceId'])
     const handleMediaDeviceIdChnage = async() => {
       if (hasInitedAnalyser()) {
         await dialog({
           message: t('setting__play_media_device_error_tip'),
           confirmButtonText: t('alert_button_text'),
         })
-        mediaDeviceId.value = currentStting.value.player.mediaDeviceId
-      } else if (currentStting.value.player.audioVisualization) {
+        mediaDeviceId.value = appSetting['player.mediaDeviceId']
+      } else if (appSetting['player.audioVisualization']) {
         const confirm = await dialog.confirm({
           message: t('setting__play_media_device_tip'),
           cancelButtonText: t('cancel_button_text'),
           confirmButtonText: t('confirm_button_text'),
         })
         if (confirm) {
-          currentStting.value.player.audioVisualization = false
-          currentStting.value.player.mediaDeviceId = mediaDeviceId.value
+          appSetting['player.audioVisualization'] = false
+          appSetting['player.mediaDeviceId'] = mediaDeviceId.value
         } else {
-          mediaDeviceId.value = currentStting.value.player.mediaDeviceId
+          mediaDeviceId.value = appSetting['player.mediaDeviceId']
         }
       } else {
-        currentStting.value.player.mediaDeviceId = mediaDeviceId.value
+        appSetting['player.mediaDeviceId'] = mediaDeviceId.value
       }
     }
-    watch(() => currentStting.value.player.mediaDeviceId, val => {
+    watch(() => appSetting['player.mediaDeviceId'], val => {
       mediaDeviceId.value = val
     })
 
 
     return {
-      currentStting,
+      appSetting,
+      updateSetting,
       mediaDevices,
       mediaDeviceId,
       handleMediaDeviceIdChnage,

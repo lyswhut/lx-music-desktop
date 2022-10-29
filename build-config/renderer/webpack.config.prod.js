@@ -6,17 +6,18 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { merge } = require('webpack-merge')
 
 const baseConfig = require('./webpack.config.base')
+const buildConfig = require('../webpack-build-config')
 
-const { dependencies } = require('../../package.json')
+// const { dependencies } = require('../../package.json')
 
-let whiteListedModules = ['vue', 'vue-router', 'vuex', 'vue-i18n']
+// let whiteListedModules = ['vue', 'vue-router', 'vuex', 'vue-i18n']
 
 
 module.exports = merge(baseConfig, {
   mode: 'production',
   devtool: false,
   externals: [
-    ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d)),
+    // ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d)),
   ],
   plugins: [
     new CopyWebpackPlugin({
@@ -31,17 +32,21 @@ module.exports = merge(baseConfig, {
       'process.env': {
         NODE_ENV: '"production"',
       },
-      ENVIRONMENT: 'process.env',
+      // ENVIRONMENT: 'process.env',
       __VUE_OPTIONS_API__: 'true',
       __VUE_PROD_DEVTOOLS__: 'false',
     }),
   ],
   optimization: {
-    minimize: false,
+    minimize: buildConfig.minimize,
     minimizer: [
       new TerserPlugin(),
       new CssMinimizerPlugin(),
     ],
+    splitChunks: {
+      chunks: 'initial',
+      minChunks: 2,
+    },
   },
   performance: {
     maxEntrypointSize: 1024 * 1024 * 10,

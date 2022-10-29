@@ -36,7 +36,7 @@
 
 所用技术栈：
 
-- Electron 17
+- Electron 15+
 - Vue 3
 
 已支持的平台：
@@ -48,8 +48,7 @@
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
-使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)<br>
-移动版项目地址：<https://github.com/lyswhut/lx-music-mobile>
+使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)
 
 #### Scheme URL支持
 

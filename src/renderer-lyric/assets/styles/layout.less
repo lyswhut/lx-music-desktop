@@ -7,14 +7,14 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.mixin-ellipsis() {
+.mixin-ellipsis(@n: 1) {
 	display: -webkit-box;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	word-wrap: break-word;
 	word-break: break-all;
 	white-space: normal !important;
-	-webkit-line-clamp: 1;
+	-webkit-line-clamp: @n;
 	-webkit-box-orient: vertical;
 }
 .mixin-ellipsis-2() {
@@ -28,3 +28,38 @@
 	-webkit-box-orient: vertical;
 }
 
+.stroke(@stroke, @color) {
+  @maxi: @stroke + 1;
+  .i-loop (@i) when (@i > 0) {
+    @maxj: @stroke + 1;
+    .j-loop (@j) when (@j > 0) {
+      text-shadow+: (@i - 1)*(1px)  (@j - 1)*(1px) 0 @color;
+      text-shadow+: (@i - 1)*(1px)  (@j - 1)*(-1px) 0 @color;
+      text-shadow+: (@i - 1)*(-1px)  (@j - 1)*(-1px) 0 @color;
+      text-shadow+: (@i - 1)*(-1px)  (@j - 1)*(1px) 0 @color;
+      .j-loop(@j - 1);
+    }
+    .j-loop (0) {}
+    .j-loop(@maxj);
+    .i-loop(@i - 1);
+  }
+  .i-loop (0) {}
+  .i-loop(@maxi);
+  text-shadow+: 0 0 0 @color;
+}
+
+.stroke2(@color) {
+  text-shadow: 2px 0 @color, -2px 0 @color, 0 2px @color, 0 -2px @color,
+             1px 1px @color, -1px -1px @color, 1px -1px @color, -1px 1px @color;
+}
+// .stroke2(@color) {
+//   text-shadow:
+//     -1px -1px 0px @color,
+//     0px -1px 0px @color,
+//     1px -1px 0px @color,
+//     -1px  0px 0px @color,
+//     1px  0px 0px @color,
+//     -1px  1px 0px @color,
+//     0px  1px 0px @color,
+//     1px  1px 0px @color;
+// }

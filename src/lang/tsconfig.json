@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",                                /* Specify what module code is generated. */
+    "moduleResolution": "nodenext",                      /* Specify how TypeScript looks up a file from a given module specifier. */
+  },
+  // "include": [
+	//   "**/*.ts",
+	//   "**/*.js",
+	//   "**/*.vue",
+	//   "**/*.json",
+	// ],
+  // "exclude": ["dbService"]
+}

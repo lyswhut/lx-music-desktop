@@ -1,6 +1,6 @@
 {
+  "root": true,
   "extends": [
-    // "plugin:vue/vue3-recommended",
     "standard"
   ],
   "plugins": [
@@ -8,7 +8,7 @@
   ],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "requireConfigFile": false
+    // "requireConfigFile": false
   },
   "rules": {
     "no-new": "off",
@@ -24,11 +24,94 @@
     "standard/no-callback-literal": "off",
     "prefer-const": "off",
     "no-labels": "off",
-    "node/no-callback-literal": "off",
-    "vue/multi-word-component-names": "off"
+    "node/no-callback-literal": "off"
   },
-  "settings": {
-    "html/html-extensions": [".html", ".vue"]
-  },
-  "ignorePatterns": ["vendors", "*.min.js", "dist", "node_modules"]
+  "ignorePatterns": ["vendors", "*.min.js", "dist"],
+  "overrides": [
+    {
+      "files": [ "*.vue" ],
+      "rules": {
+        "no-new": "off",
+        "camelcase": "off",
+        "no-return-assign": "off",
+        "space-before-function-paren": ["error", "never"],
+        "no-var": "error",
+        "no-fallthrough": "off",
+        "prefer-promise-reject-errors": "off",
+        "eqeqeq": "off",
+        "no-multiple-empty-lines": [1, {"max": 2}],
+        "comma-dangle": [2, "always-multiline"],
+        "standard/no-callback-literal": "off",
+        "prefer-const": "off",
+        "no-labels": "off",
+        "node/no-callback-literal": "off",
+        "vue/multi-word-component-names": "off",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/space-before-function-paren": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/naming-convention": "off",
+        "vue/max-attributes-per-line": "off",
+        "vue/singleline-html-element-content-newline": "off",
+        "vue/use-v-on-exact": "off",
+        "@typescript-eslint/restrict-template-expressions": "off",
+        // "no-undef": "off"
+      },
+      "parser": "vue-eslint-parser",
+      "extends": [
+        "plugin:vue/base",
+        // "plugin:vue/strongly-recommended"
+        "plugin:vue/vue3-recommended",
+        "standard-with-typescript",
+      ],
+      "parserOptions": {
+        "sourceType": "module",
+        "parser": {
+          // Script parser for `<script>`
+         "js": "@typescript-eslint/parser",
+
+          // Script parser for `<script lang="ts">`
+         "ts": "@typescript-eslint/parser"
+        },
+        "extraFileExtensions": [".vue"]
+      }
+    },
+    {
+      "files": [ "*.ts" ],
+      "rules": {
+        "no-new": "off",
+        "camelcase": "off",
+        "no-return-assign": "off",
+        "space-before-function-paren": ["error", "never"],
+        "no-var": "error",
+        "no-fallthrough": "off",
+        "prefer-promise-reject-errors": "off",
+        "eqeqeq": "off",
+        "no-multiple-empty-lines": [1, {"max": 2}],
+        "comma-dangle": [2, "always-multiline"],
+        "standard/no-callback-literal": "off",
+        "prefer-const": "off",
+        "no-labels": "off",
+        "node/no-callback-literal": "off",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/space-before-function-paren": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/restrict-template-expressions": [1, {
+          "allowBoolean": true
+        }],
+        "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/return-await": "off",
+        "multiline-ternary": "off",
+        "@typescript-eslint/comma-dangle": "off",
+      },
+      "parser": "@typescript-eslint/parser",
+      "extends": [
+        "standard-with-typescript"
+      ],
+      "parserOptions": {
+        "project": "./src/**/tsconfig.json"
+      }
+    }
+  ]
 }

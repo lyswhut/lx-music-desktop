@@ -1,29 +1,29 @@
 import {
   computed,
-  useCommit,
-} from '@renderer/utils/vueTools'
+} from '@common/utils/vueTools'
+import { useI18n } from '@renderer/plugins/i18n'
+import { appSetting, setLockDesktopLyric, setVisibleDesktopLyric } from '@renderer/store/setting'
 
-export default ({ setting, t }) => {
-  const setVisibleDesktopLyric = useCommit('setVisibleDesktopLyric')
-  const setLockDesktopLyric = useCommit('setLockDesktopLyric')
+export default () => {
+  const t = useI18n()
 
   const toggleDesktopLyricBtnTitle = computed(() => {
     return `${
-      setting.value.desktopLyric.enable
+      appSetting['desktopLyric.enable']
         ? t('player__desktop_lyric_off')
         : t('player__desktop_lyric_on')
     }（${
-      setting.value.desktopLyric.isLock
+      appSetting['desktopLyric.isLock']
         ? t('player__desktop_lyric_unlock')
         : t('player__desktop_lyric_lock')
     }）`
   })
 
   const toggleDesktopLyric = () => {
-    setVisibleDesktopLyric(!setting.value.desktopLyric.enable)
+    setVisibleDesktopLyric(!appSetting['desktopLyric.enable'])
   }
   const toggleLockDesktopLyric = () => {
-    setLockDesktopLyric(!setting.value.desktopLyric.isLock)
+    setLockDesktopLyric(!appSetting['desktopLyric.isLock'])
   }
 
   return {

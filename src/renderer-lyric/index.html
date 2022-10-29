@@ -1,0 +1,31 @@
+<html lang="cn">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>桌面歌词-洛雪音乐助手</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      window.dom_style_theme = document.createElement('style')
+      window.dom_style_lyric = document.createElement('style')
+
+      window.setTheme = colors => {
+        window.dom_style_theme.innerText = `:root {${(Object.entries(colors)).map(([key, value]) => `${key}:${value};`).join('')}}`
+      }
+      window.setLyricColor = colors => {
+        console.log(colors)
+        window.dom_style_lyric.innerText = `:root {${(Object.entries(colors)).map(([key, value]) => `${key}:${value};`).join('')}}`
+      }
+      document.body.appendChild(window.dom_style_lyric)
+
+      const applyThemeColor = (theme) => {
+        theme = JSON.parse(decodeURIComponent(theme))
+        window.setTheme(theme.colors)
+        document.body.appendChild(window.dom_style_theme)
+      }
+      if (/theme=(.+)(#|$)/.test(window.location.search)) applyThemeColor(RegExp.$1)
+    </script>
+  </body>
+</html>
