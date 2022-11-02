@@ -26,6 +26,7 @@ interface Lx {
     songlistKey: string | null
     songlistPosition?: number
   }
+  rootOffset: number
 }
 
 declare global {

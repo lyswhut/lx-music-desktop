@@ -222,6 +222,8 @@
   "player__refresh_url": "Music URL expired, refreshing...",
   "player__stop": "Paused",
   "player__volume": "Volume: ",
+  "player__volume_mute_label": "Mute",
+  "player__volume_muted": "muted",
   "search": "Search",
   "search__hot_search": "Top Searches",
   "search__type_music": "Song",

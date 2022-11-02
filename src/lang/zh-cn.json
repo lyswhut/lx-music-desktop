@@ -222,6 +222,8 @@
   "player__refresh_url": "URL过期，正在刷新URL...",
   "player__stop": "暂停播放",
   "player__volume": "当前音量：",
+  "player__volume_mute_label": "静音",
+  "player__volume_muted": "已静音",
   "search": "搜索",
   "search__hot_search": "热门搜索",
   "search__type_music": "歌曲",

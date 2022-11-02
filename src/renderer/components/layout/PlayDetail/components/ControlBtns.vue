@@ -1,32 +1,22 @@
 <template lang="pug">
 div(:class="$style.footerLeftControlBtns")
-  common-volume-bar
-  div(:class="[$style.footerLeftControlBtn, $style.lrcBtn]" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :aria-label="toggleDesktopLyricBtnTitle")
+  button(:class="[$style.footerLeftControlBtn, $style.lrcBtn]" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric" :aria-label="toggleDesktopLyricBtnTitle")
     svg(v-show="appSetting['desktopLyric.enable']" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='125%' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-desktop-lyric-on')
     svg(v-show="!appSetting['desktopLyric.enable']" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' height='125%' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-desktop-lyric-off')
-  div(:class="[$style.footerLeftControlBtn, { [$style.active]: appSetting['player.audioVisualization'] }]" @click="toggleAudioVisualization" :aria-label="$t('audio_visualization')")
+  button(:class="[$style.footerLeftControlBtn, { [$style.active]: appSetting['player.audioVisualization'] }]" @click="toggleAudioVisualization" :aria-label="$t('audio_visualization')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-audio-wave')
-  div(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="toggleVisibleLrc" :aria-label="$t('lyric__select')")
+  button(:class="[$style.footerLeftControlBtn, { [$style.active]: isShowLrcSelectContent }]" @click="toggleVisibleLrc" :aria-label="$t('lyric__select')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-text')
-  div(:class="[$style.footerLeftControlBtn, {[$style.active]: isShowPlayComment}]" @click="toggleVisibleComment" :aria-label="$t('comment__show')")
+  button(:class="[$style.footerLeftControlBtn, {[$style.active]: isShowPlayComment}]" @click="toggleVisibleComment" :aria-label="$t('comment__show')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-comment')
-  div(:class="$style.footerLeftControlBtn" @click="toggleNextPlayMode" :aria-label="nextTogglePlayName")
-    svg(v-show="appSetting['player.togglePlayMethod'] == 'listLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
-      use(xlink:href='#icon-list-loop')
-    svg(v-show="appSetting['player.togglePlayMethod'] == 'random'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
-      use(xlink:href='#icon-list-random')
-    svg(v-show="appSetting['player.togglePlayMethod'] == 'list'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
-      use(xlink:href='#icon-list-order')
-    svg(v-show="appSetting['player.togglePlayMethod'] == 'singleLoop'" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='110%' viewBox='0 0 24 24' space='preserve')
-      use(xlink:href='#icon-single-loop')
-    svg(v-show="!appSetting['player.togglePlayMethod']" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='120%' viewBox='0 0 24 24' space='preserve')
-      use(xlink:href='#icon-single')
-  div(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :aria-label="$t('player__add_music_to')")
+  common-volume-btn
+  common-toggle-play-mode-btn
+  button(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :aria-label="$t('player__add_music_to')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
       use(xlink:href='#icon-add-2')
   common-list-add-modal(v-model:show="isShowAddMusicTo" :musicInfo="playMusicInfo.musicInfo")
@@ -117,27 +107,32 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .footerLeftControlBtns {
-  color: var(--color-font);
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+
+  button {
+    width: 20px;
+    color: var(--color-font);
+  }
 
   .footerLeftControlBtn {
-    width: 18px;
-    height: 18px;
+    // width: 18px;
+    // height: 18px;
     opacity: .5;
     cursor: pointer;
     transition: opacity @transition-normal;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: transparent;
+    border: none;
+    padding: 0;
 
     &:hover {
       opacity: .9;
-    }
-
-    +.footerLeftControlBtn {
-      margin-left: 6px;
     }
 
     &.active {

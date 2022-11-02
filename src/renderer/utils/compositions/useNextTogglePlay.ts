@@ -4,13 +4,13 @@ import {
 } from '@common/utils/vueTools'
 import { useI18n } from '@renderer/plugins/i18n'
 
-const playNextModes = [
-  'listLoop',
-  'random',
-  'list',
-  'singleLoop',
-  'none',
-] as const
+// const playNextModes = [
+//   'listLoop',
+//   'random',
+//   'list',
+//   'singleLoop',
+//   'none',
+// ] as const
 
 export default () => {
   const t = useI18n()
@@ -24,10 +24,11 @@ export default () => {
     }
   })
 
-  const toggleNextPlayMode = () => {
-    let index = playNextModes.indexOf(appSetting['player.togglePlayMethod'])
-    if (++index >= playNextModes.length) index = 0
-    setTogglePlayMode(playNextModes[index] ?? playNextModes[0])
+  const toggleNextPlayMode = (mode: LX.AppSetting['player.togglePlayMethod']) => {
+    if (mode == appSetting['player.togglePlayMethod']) return
+    // let index = playNextModes.indexOf(appSetting['player.togglePlayMethod'])
+    // if (++index >= playNextModes.length) index = 0
+    setTogglePlayMode(mode)
   }
 
   return {

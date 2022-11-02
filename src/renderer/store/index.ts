@@ -1,4 +1,4 @@
-import { ref, reactive, shallowRef, markRaw, computed } from '@common/utils/vueTools'
+import { ref, reactive, shallowRef, markRaw, computed, watch } from '@common/utils/vueTools'
 import { windowSizeList as configWindowSizeList } from '@common/config'
 import { appSetting } from './setting'
 import pkg from '../../../package.json'
@@ -117,6 +117,9 @@ export const userApi = reactive<{
 })
 
 export const isFullscreen = ref(false)
+watch(isFullscreen, isFullscreen => {
+  window.lx.rootOffset = window.dt || isFullscreen ? 0 : 8
+}, { immediate: true })
 
 export const themeShouldUseDarkColors = ref(window.shouldUseDarkColors)
 

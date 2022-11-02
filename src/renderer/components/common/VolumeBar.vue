@@ -1,9 +1,9 @@
 <template>
   <div :class="[$style.volumeContent, className]">
-    <div :class="[$style.volume, {[$style.muted]: appSetting['player.isMute']} ]">
+    <div :class="[$style.volume ]">
       <div ref="dom_volumeBar" :class="$style.volumeBar" :style="{ transform: `scaleX(${volume || 0})` }" />
     </div>
-    <div :class="$style.volumeMask" :aria-label="`${$t('player__volume')}${parseInt(volume * 100)}%`" @mousedown="handleVolumeMsDown" />
+    <div :class="$style.volumeMask" @mousedown="handleVolumeMsDown" />
   </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
 
       window.app_event.setVolume(volumeEvent.msDownVolume = val)
 
-      if (isMute.value) window.app_event.setVolumeIsMute(false)
+      // if (isMute.value) window.app_event.setVolumeIsMute(false)
     }
     const handleVolumeMsUp = () => {
       volumeEvent.isMsDown = false
@@ -76,8 +76,9 @@ export default {
 .volume-content {
   flex: none;
   position: relative;
-  width: 80px;
-  margin-right: 10px;
+  width: 100px;
+  padding: 5px 0;
+  // margin-right: 10px;
   display: flex;
   align-items: center;
   opacity: .5;
@@ -90,20 +91,20 @@ export default {
 .volume {
   // cursor: pointer;
   width: 100%;
-  height: 0.25em;
-  border-radius: 10px;
+  height: 5px;
+  // border-radius: 10px;
   // overflow: hidden;
   transition: @transition-normal;
   transition-property: background-color, opacity;
-  background-color: var(--color-button-background);
+  background-color: var(--color-primary-alpha-700);
   // background-color: #f5f5f5;
   position: relative;
-  border-radius: @radius-progress-border;
+  // border-radius: @radius-progress-border;
 }
 
-.muted {
-  opacity: .5;
-}
+// .muted {
+//   opacity: .5;
+// }
 
 .volume-bar {
   position: absolute;
@@ -115,9 +116,9 @@ export default {
   transition-timing-function: ease;
   width: 100%;
   height: 100%;
-  border-radius: @radius-progress-border;
+  // border-radius: @radius-progress-border;
   transition-duration: 0.2s;
-  background-color: var(--color-button-background);
+  background-color: var(--color-button-font);
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 

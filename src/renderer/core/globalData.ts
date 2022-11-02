@@ -25,6 +25,7 @@ window.lx = {
   restorePlayInfo: null,
   worker: createWorkers(),
   isDev: process.env.NODE_ENV == 'production',
+  rootOffset: window.dt ? 0 : 8,
 }
 
 window.lxData = {}

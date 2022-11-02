@@ -12,7 +12,7 @@
           />
         </div>
       </div>
-      <div :class="$style.timeLabel"><span :class="$style.status" style="margin-left: 15px">{{ status }}</span><span>{{ nowPlayTimeStr }}</span><span style="margin: 0 5px;">/</span><span>{{ maxPlayTimeStr }}</span></div>
+      <div :class="$style.timeLabel"><span :class="$style.status" style="margin-right: 15px">{{ status }}</span><span>{{ nowPlayTimeStr }}</span><span style="margin: 0 5px;">/</span><span>{{ maxPlayTimeStr }}</span></div>
     </div>
     <div :class="$style.playControl">
       <div :class="$style.playBtn" style="transform: rotate(180deg);" :aria-label="$t('player__prev')" @click="playPrev()">

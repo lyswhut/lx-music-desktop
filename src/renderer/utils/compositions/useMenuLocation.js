@@ -1,7 +1,5 @@
 import { onMounted, onBeforeUnmount, watch, reactive, ref } from '@common/utils/vueTools'
-import { isFullscreen } from '@renderer/store'
 
-let rootOffset = window.dt ? 0 : 8
 
 export default ({ visible, location, onHide }) => {
   const transition1 = 'transform, opacity'
@@ -61,13 +59,9 @@ export default ({ visible, location, onHide }) => {
     visible ? handleShow() : handleHide()
   }, { immediate: true })
 
-  watch(isFullscreen, isFullscreen => {
-    rootOffset = window.dt || isFullscreen ? 0 : 8
-  }, { immediate: true })
-
   watch(location, location => {
-    menuStyles.left = location.x - rootOffset + 2 + 'px'
-    menuStyles.top = location.y - rootOffset + 'px'
+    menuStyles.left = location.x - window.lx.rootOffset + 2 + 'px'
+    menuStyles.top = location.y - window.lx.rootOffset + 'px'
     // nextTick(() => {
     if (show) {
       if (menuStyles.transitionProperty != transition2) menuStyles.transitionProperty = transition2
