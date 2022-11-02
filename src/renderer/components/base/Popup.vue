@@ -1,19 +1,31 @@
 <template>
-  <teleport to="#root">
+  <component :is="Teleport" to="#root">
     <div :class="[$style.popup, {[$style.top]: isShowTop}, {[$style.active]: props.visible}]" :style="popupStyle" :aria-hidden="!props.visible" @click.stop>
       <div ref="dom_content" class="scroll" :class="$style.list">
         <slot />
       </div>
     </div>
-  </teleport>
+  </component>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, reactive, defineEmits } from '@common/utils/vueTools'
 
+// https://github.com/vuejs/core/issues/2855#issuecomment-768388962
+import {
+  Teleport as teleport_,
+  TeleportProps,
+  VNodeProps,
+} from 'vue'
+const Teleport = teleport_ as {
+  new (): {
+    $props: VNodeProps & TeleportProps
+  }
+}
+
 const props = defineProps<{
   visible: boolean
-  el: HTMLElement | null
+  btnEl: HTMLElement | null
 }>()
 
 interface Emitter {
@@ -35,8 +47,8 @@ const arrowHeight = 9
 const arrowWidth = 8
 
 watch(() => props.visible, (visible) => {
-  if (!visible || !dom_content.value || !props.el) return
-  const rect = props.el.getBoundingClientRect()
+  if (!visible || !dom_content.value || !props.btnEl) return
+  const rect = props.btnEl.getBoundingClientRect()
   const maxHeight = document.body.clientHeight
   const elTop = rect.top - window.lx.rootOffset
   const bottomTopVal = elTop + rect.height

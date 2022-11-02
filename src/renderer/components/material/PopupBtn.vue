@@ -1,7 +1,7 @@
 <template>
   <div ref="dom_btn" :class="$style.content" @click="handleShowPopup">
     <slot />
-    <base-popup v-model:visible="visible" :el="dom_btn">
+    <base-popup v-model:visible="visible" :btn-el="dom_btn">
       <slot name="content" />
     </base-popup>
   </div>

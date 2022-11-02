@@ -246,7 +246,7 @@ export default {
 
 .title {
   max-width: 100%;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-font-label);
   .mixin-ellipsis-1;
 }
