@@ -54,6 +54,7 @@ if (appSetting['search.isShowHotSearch']) {
   watch(() => props.source, (source) => {
     if (!props.visible) return
     getList(source).then(list => {
+      if (source != props.source) return
       hotSearchList.value = list
     })
   })
