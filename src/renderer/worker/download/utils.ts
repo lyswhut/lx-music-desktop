@@ -19,7 +19,7 @@ export const saveLrc = async(filePath: string, lrc: string, format: LX.LyricForm
       break
     case 'utf8':
     default:
-      fs.writeFile(filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), 'utf8', err => {
+      fs.writeFile(filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), err => {
         if (err) console.log(err)
       })
       break
