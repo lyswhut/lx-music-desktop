@@ -242,6 +242,7 @@ export default {
   font-size: 14px;
   color: var(--color-font);
   min-width: 0;
+  line-height: 1.5;
 }
 
 .title {
@@ -251,10 +252,9 @@ export default {
   .mixin-ellipsis-1;
 }
 .status {
-  padding-top: 5px;
+  padding-top: 2px;
   height: 23px;
   .mixin-ellipsis-1;
-  line-height: 1.5;
   max-width: 100%;
 }
 
