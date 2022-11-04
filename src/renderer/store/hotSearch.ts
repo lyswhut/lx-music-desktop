@@ -52,10 +52,10 @@ export const getList = async(source: Source): Promise<string[]> => {
       task.push(
         sourceList[source]?.length
           ? Promise.resolve({ source, list: sourceList[source] })
-          : music[source]?.hotSearch.getList().catch((err: any) => {
-            console.log(err)
-            return { source, list: [] }
-          }) ?? Promise.reject(new Error('source not found: ' + source)),
+          : (music[source]?.hotSearch.getList() ?? Promise.reject(new Error('source not found: ' + source))).catch((err: any) => {
+              console.log(err)
+              return { source, list: [] }
+            }),
       )
     }
     return Promise.all(task).then((results: any[]) => {
