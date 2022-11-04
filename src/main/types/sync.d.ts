@@ -12,7 +12,7 @@ declare global {
         data: SocketData
       }
       class RemoteSocket extends _RemoteSocket<DefaultEventsMap, any> {
-        readonly data: SyncSocketData
+        readonly data: SocketData
       }
       interface Data {
         action: string

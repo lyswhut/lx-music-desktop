@@ -104,17 +104,6 @@ declare namespace LX {
     prev: boolean
   }
 
-  interface Wait {
-    time: number
-    id: string
-  }
-  type WaitCancel = string
-  interface Interval {
-    time: number
-    id: string
-  }
-  type IntervalCancel = string
-
   interface VersionInfo {
     version: string
     desc: string
