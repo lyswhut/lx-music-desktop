@@ -6,7 +6,7 @@ import { appSetting } from '@renderer/store/setting'
 import useSync from './useSync'
 import useUpdate from './useUpdate'
 import useDataInit from './useDataInit'
-// import useHandleEnvParams from './useHandleEnvParams'
+import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
 import useDeeplink from './useDeeplink'
 import usePlayer from './usePlayer'
@@ -29,7 +29,7 @@ export default () => {
   const initSyncService = useSync()
   useEventListener()
   const initPlayer = usePlayer()
-  // const handleEnvParams = useHandleEnvParams()
+  const handleEnvParams = useHandleEnvParams()
   const initData = useDataInit()
   const initDeeplink = useDeeplink()
   // const handleListAutoUpdate = useListAutoUpdate()
@@ -61,7 +61,7 @@ export default () => {
     // 初始化我的列表、下载列表等数据
     void initData().then(() => {
       initPlayer()
-      // handleEnvParams(envParams) // 处理传入的启动参数
+      handleEnvParams(envParams) // 处理传入的启动参数
       void initDeeplink(envParams)
       void initSyncService()
       handleListAutoUpdate()

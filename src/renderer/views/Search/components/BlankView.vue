@@ -66,7 +66,7 @@ if (appSetting['search.isShowHistorySearch']) {
 const router = useRouter()
 const handleSearch = (text) => {
   router.replace({
-    path: 'search',
+    path: '/search',
     query: {
       text,
     },

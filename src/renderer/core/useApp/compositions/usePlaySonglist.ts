@@ -21,7 +21,7 @@ export default () => {
     const id = decodeURIComponent(link)
     const playListId = `${source}__${decodeURIComponent(link)}`
     let list = (await getListDetail(id, source, 1)).list
-    if (playIndex != null && list.length > playIndex) {
+    if (playIndex == null || list.length > playIndex) {
       isPlayingList = true
       await setTempList(playListId, list)
       playList(tempList.id, getListPlayIndex(list, playIndex))

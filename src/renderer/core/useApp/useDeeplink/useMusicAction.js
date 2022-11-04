@@ -37,13 +37,15 @@ const useSearchMusic = () => {
     if (isShowPlayerDetail.value) setShowPlayerDetail(false)
     const sourceList = [...sources, 'all']
     source = sourceList.includes(source) ? source : null
-    router.replace({
-      path: '/search',
-      query: {
-        text,
-        source,
-      },
-    })
+    setTimeout(() => {
+      router.replace({
+        path: '/search',
+        query: {
+          text,
+          source,
+        },
+      })
+    }, 500)
     focusWindow()
   }
 }
