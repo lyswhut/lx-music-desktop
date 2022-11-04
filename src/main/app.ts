@@ -62,6 +62,8 @@ export const applyElectronEnvParams = () => {
   // https://github.com/electron/electron/issues/22691
   app.commandLine.appendSwitch('wm-window-animations-disabled')
 
+  app.commandLine.appendSwitch('--disable-gpu-sandbox')
+
   // proxy
   if (global.envParams.cmdParams['proxy-server']) {
     app.commandLine.appendSwitch('proxy-server', global.envParams.cmdParams['proxy-server'])

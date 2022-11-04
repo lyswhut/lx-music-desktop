@@ -78,8 +78,11 @@ export const createWindow = () => {
     webPreferences: {
       nodeIntegrationInWorker: true,
       contextIsolation: false,
-      webSecurity: !global.isDev,
+      webSecurity: false,
       nodeIntegration: true,
+      sandbox: false,
+      enableWebSQL: false,
+      webgl: false,
       spellcheck: false, // 禁用拼写检查器
     },
   }

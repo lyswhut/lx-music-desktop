@@ -124,8 +124,11 @@ export const createWindow = () => {
     skipTaskbar: true,
     webPreferences: {
       contextIsolation: false,
-      webSecurity: !global.isDev,
+      webSecurity: false,
+      sandbox: false,
       nodeIntegration: true,
+      enableWebSQL: false,
+      webgl: false,
       spellcheck: false, // 禁用拼写检查器
     },
   })
