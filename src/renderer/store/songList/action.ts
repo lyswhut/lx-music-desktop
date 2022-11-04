@@ -154,7 +154,7 @@ export const getListDetailAll = async(id: string, source: LX.OnlineSource, isRef
         result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m))))
         cache.set(key, result)
         return result
-      }) ?? Promise.reject(new Error('source not found'))
+      }) ?? Promise.reject(new Error('source not found' + source))
   }
   return await loadData(id, 1).then((result: ListDetailInfo) => {
     if (result.total <= result.limit) return result.list

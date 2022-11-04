@@ -10,7 +10,7 @@ export const sources: LX.OnlineSource[] = markRaw([])
 export const sortList = markRaw<Partial<Record<LX.OnlineSource, SortInfo[]>>>({})
 
 for (const source of music.sources) {
-  const songList = music[source.id as LX.OnlineSource].songList
+  const songList = music[source.id as LX.OnlineSource]?.songList
   if (!songList) continue
   sources.push(source.id as LX.OnlineSource)
   sortList[source.id as LX.OnlineSource] = songList.sortList as SortInfo[]

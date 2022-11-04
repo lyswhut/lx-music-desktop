@@ -25,7 +25,7 @@ export default ({ list, selectedList, removeAllSelect }) => {
   const handleOpenMusicDetail = index => {
     const task = list.value[index]
     const mInfo = toOldMusicInfo(task.metadata.musicInfo)
-    const url = musicSdk[mInfo.source].getMusicDetailPageUrl(mInfo)
+    const url = musicSdk[mInfo.source]?.getMusicDetailPageUrl?.(mInfo)
     if (!url) return
     openUrl(url)
   }

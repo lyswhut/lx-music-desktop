@@ -62,7 +62,7 @@ export default ({
   })
 
   const showMenu = (event, musicInfo) => {
-    itemMenuControl.sourceDetail = !!musicSdk[musicInfo.source].getMusicDetailPageUrl
+    itemMenuControl.sourceDetail = !!musicSdk[musicInfo.source]?.getMusicDetailPageUrl
     // this.listMenu.itemMenuControl.play =
     //   this.listMenu.itemMenuControl.playLater =
     itemMenuControl.download = assertApiSupport(musicInfo.source)

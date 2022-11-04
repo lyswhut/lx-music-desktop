@@ -31,7 +31,7 @@ export const listInfos: ListInfos = markRaw({
 })
 export const maxPages: Partial<Record<LX.OnlineSource, number>> = {}
 for (const source of music.sources) {
-  if (!music[source.id as LX.OnlineSource].songList?.search) continue
+  if (!music[source.id as LX.OnlineSource]?.songList?.search) continue
   sources.push(source.id as LX.OnlineSource)
   listInfos[source.id as LX.OnlineSource] = reactive<SearchListInfo>({
     page: 1,

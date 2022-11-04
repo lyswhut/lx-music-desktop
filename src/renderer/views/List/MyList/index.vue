@@ -124,7 +124,7 @@ export default {
       if (/board__/.test(sourceListId)) {
         const id = sourceListId.replace(/board__/, '')
         url = musicSdk[source].leaderboard.getDetailPageUrl(id)
-      } else if (musicSdk[source].songList?.getDetailPageUrl) {
+      } else if (musicSdk[source]?.songList?.getDetailPageUrl) {
         url = await musicSdk[source].songList.getDetailPageUrl(sourceListId)
       }
       if (!url) return

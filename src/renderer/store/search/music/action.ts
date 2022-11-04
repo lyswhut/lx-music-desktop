@@ -90,7 +90,7 @@ export const search = async(text: string, page: number, sourceId: LX.OnlineSourc
     let task = []
     for (const source of sources) {
       if (source == 'all') continue
-      task.push(music[source].musicSearch.search(text, page, listInfos.all.limit).catch((error: any) => {
+      task.push((music[source]?.musicSearch.search(text, page, listInfos.all.limit) ?? Promise.reject(new Error('source not found: ' + source))).catch((error: any) => {
         console.log(error)
         return {
           allPage: 1,

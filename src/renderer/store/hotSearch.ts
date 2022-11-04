@@ -17,7 +17,7 @@ export const sourceList: SourceLists = markRaw({
 
 
 for (const source of music.sources) {
-  if (!music[source.id as LX.OnlineSource].hotSearch) continue
+  if (!music[source.id as LX.OnlineSource]?.hotSearch) continue
   sources.push(source.id as LX.OnlineSource)
   sourceList[source.id as LX.OnlineSource] = reactive<string[]>([])
 }
@@ -52,10 +52,10 @@ export const getList = async(source: Source): Promise<string[]> => {
       task.push(
         sourceList[source]?.length
           ? Promise.resolve({ source, list: sourceList[source] })
-          : music[source].hotSearch.getList().catch((err: any) => {
+          : music[source]?.hotSearch.getList().catch((err: any) => {
             console.log(err)
             return { source, list: [] }
-          }),
+          }) ?? Promise.reject(new Error('source not found: ' + source)),
       )
     }
     return Promise.all(task).then((results: any[]) => {
@@ -63,11 +63,11 @@ export const getList = async(source: Source): Promise<string[]> => {
     })
   } else {
     if (sourceList[source]?.length) return Promise.resolve(sourceList[source] as string[])
-    if (!music[source].hotSearch) {
+    if (!music[source]?.hotSearch) {
       setList(source, [])
       return Promise.resolve([])
     }
-    return music[source].hotSearch.getList().then(data => setList(source, data.list))
+    return music[source]?.hotSearch.getList().then(data => setList(source, data.list))
   }
 }
 

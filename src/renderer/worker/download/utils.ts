@@ -1,6 +1,6 @@
 import { DOWNLOAD_STATUS, QUALITYS } from '@common/constants'
 import { filterFileName } from '@common/utils/common'
-import { joinPath } from '@common/utils/nodejs'
+import { joinPath, removeFile } from '@common/utils/nodejs'
 import fs from 'fs'
 
 /**
@@ -94,9 +94,11 @@ export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX
 
   // 删除同路径下的同名文件
   // TODO
-  // deleteFile(downloadInfo.metadata.filePath)
+  void removeFile(downloadInfo.metadata.filePath)
   // .catch(err => {
-  //   if (err.code !== 'ENOENT') return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
+  //   if (err.code !== 'ENOENT') {
+  //     return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
+  //   }
   // })
 
   return downloadInfo
