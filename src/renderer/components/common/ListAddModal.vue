@@ -18,7 +18,7 @@
 
 <script>
 // import { mapMutations } from 'vuex'
-import { watch, ref } from '@common/utils/vueTools'
+import { watch, ref, onBeforeUnmount } from '@common/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { addListMusics, moveListMusics, createUserList, getMusicExistListIds } from '@renderer/store/list/action'
 import useKeyDown from '@renderer/utils/compositions/useKeyDown'
@@ -77,19 +77,39 @@ export default {
       })
     }
 
-    watch(() => props.show, show => {
-      if (!show) return
-      if (!props.musicInfo) return lists.value = []
+    let stopWatchUserList = null
 
-      currentMusicInfo.value = 'progress' in props.musicInfo ? props.musicInfo.metadata.musicInfo : props.musicInfo
-
+    const getList = () => {
       lists.value = [
         defaultList,
         loveList,
         ...userLists,
       ].filter(l => !props.excludeListId.includes(l.id)).map(l => ({ ...l, isExist: false }))
-
       checkMusicExist(currentMusicInfo.value)
+    }
+
+    watch(() => props.show, show => {
+      if (!show) {
+        if (stopWatchUserList) {
+          stopWatchUserList()
+          stopWatchUserList = null
+        }
+        return
+      }
+      if (!props.musicInfo) return lists.value = []
+
+      currentMusicInfo.value = 'progress' in props.musicInfo ? props.musicInfo.metadata.musicInfo : props.musicInfo
+
+      getList()
+
+      stopWatchUserList = watch(userLists, getList)
+    })
+
+    onBeforeUnmount(() => {
+      if (stopWatchUserList) {
+        stopWatchUserList()
+        stopWatchUserList = null
+      }
     })
 
     return {
