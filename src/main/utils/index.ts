@@ -1,4 +1,4 @@
-import { isUrl, throttle } from '@common/utils'
+import { encodePath, isUrl, throttle } from '@common/utils'
 import migrateSetting from '@common/utils/migrateSetting'
 import getStore from '@main/utils/store'
 import { STORE_NAMES, URL_SCHEME_RXP } from '@common/constants'
@@ -250,7 +250,7 @@ export const getTheme = () => {
         theme.config.extInfo['--background-image'] =
           isUrl(theme.config.extInfo['--background-image'])
             ? `url(${theme.config.extInfo['--background-image']})`
-            : `url(file:///${joinPath(global.lxDataPath, 'theme_images', theme.config.extInfo['--background-image']).replaceAll('\\', '/')})`
+            : `url(file:///${encodePath(joinPath(global.lxDataPath, 'theme_images', theme.config.extInfo['--background-image']).replaceAll('\\', '/'))})`
       }
     } else {
       themeId = global.lx.appSetting['theme.id'] == 'auto' && shouldUseDarkColors ? 'black' : 'green'

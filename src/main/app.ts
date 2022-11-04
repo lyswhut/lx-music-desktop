@@ -7,7 +7,7 @@ import { navigationUrlWhiteList } from '@common/config'
 import defaultSetting from '@common/defaultSetting'
 import { closeWindow, isExistWindow as isExistMainWindow, showWindow as showMainWindow } from './modules/winMain'
 import { createAppEvent, createListEvent } from '@main/event'
-import { encodePath, isMac, log } from '@common/utils'
+import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
 import { migrateDBData } from './utils/migrate'
 
@@ -84,8 +84,8 @@ export const setUserDataPath = () => {
   }
 
   const userDataPath = app.getPath('userData')
-  global.lxDataPath = join(encodePath(userDataPath.replaceAll('\\', '/')), 'LxDatas')
-  global.lxOldDataPath = encodePath(userDataPath.replaceAll('\\', '/'))
+  global.lxOldDataPath = userDataPath
+  global.lxDataPath = join(userDataPath, 'LxDatas')
   if (!existsSync(global.lxDataPath)) mkdirSync(global.lxDataPath)
 }
 

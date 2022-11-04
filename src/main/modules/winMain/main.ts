@@ -93,7 +93,7 @@ export const createWindow = () => {
   }
   browserWindow = new BrowserWindow(options)
 
-  const winURL = global.isDev ? 'http://localhost:9080' : `file://${join(encodePath(isWin ? __dirname.replaceAll('\\', '/') : __dirname), 'index.html')}`
+  const winURL = global.isDev ? 'http://localhost:9080' : `file://${join(encodePath(__dirname), 'index.html')}`
   void browserWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()

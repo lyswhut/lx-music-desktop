@@ -1,3 +1,4 @@
+import { encodePath } from '@common/utils/common'
 import { updateListMusics } from '@renderer/store/list/action'
 import { saveLyric, saveMusicUrl } from '@renderer/utils/ipc'
 import { getLocalFilePath } from '@renderer/utils/music'
@@ -19,7 +20,7 @@ export const getMusicUrl = async({ musicInfo, isRefresh, onToggleSource = () => 
 }): Promise<string> => {
   if (!isRefresh) {
     const path = await getLocalFilePath(musicInfo)
-    if (path) return path
+    if (path) return encodePath(path)
   }
   onToggleSource()
   const otherSource = await getOtherSource(musicInfo)

@@ -6,7 +6,7 @@
 //   return listId == 'download' ? downloadList : getListFromState(listId)
 // }
 import { commonColorNames, commonDarkColorValues, commonLightColorValues } from '@common/config'
-import { isUrl } from '@common/utils/common'
+import { encodePath, isUrl } from '@common/utils/common'
 import { joinPath } from '@common/utils/nodejs'
 import { markRaw, shallowReactive } from '@common/utils/vueTools'
 import { getThemes as getTheme } from '@renderer/utils/ipc'
@@ -19,7 +19,7 @@ export const assertApiSupport = (source: LX.Source): boolean => {
 export const buildBgUrl = (originUrl: string, dataPath: string): string => {
   return isUrl(originUrl)
     ? `url(${originUrl})`
-    : `url(file:///${joinPath(dataPath, originUrl).replaceAll('\\', '/')})`
+    : `url(file:///${encodePath(joinPath(dataPath, originUrl).replaceAll('\\', '/'))})`
 }
 
 export const getThemes = (callback: (themeInfo: LX.ThemeInfo) => void) => {

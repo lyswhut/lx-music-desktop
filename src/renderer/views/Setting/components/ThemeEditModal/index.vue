@@ -120,7 +120,7 @@
 import { joinPath, extname, copyFile, checkPath, createDir, removeFile, moveFile, basename } from '@common/utils/nodejs'
 import { nextTick, ref, watch } from '@common/utils/vueTools'
 import { applyTheme, buildThemeColors, getThemes, copyTheme } from '@renderer/store/utils'
-import { isUrl } from '@common/utils/common'
+import { isUrl, encodePath } from '@common/utils/common'
 // import { appSetting, updateSetting } from '@renderer/store/setting'
 // import { applyTheme, getThemes } from '@renderer/store/utils'
 import { createThemeColors } from '@common/theme/utils'
@@ -158,6 +158,7 @@ export default {
     const isDark = ref(false)
     const preview = ref(false)
     const bgImg = ref('')
+    let bgImgRaw = ''
     let originBgName = ''
     let currentBgPath = ''
 
@@ -243,11 +244,13 @@ export default {
       currentBgPath = ''
       if (theme.config.extInfo['--background-image'] == 'none') {
         bgImg.value = ''
+        bgImgRaw = ''
         originBgName = ''
       } else {
-        bgImg.value = isUrl(theme.config.extInfo['--background-image'])
+        bgImgRaw = isUrl(theme.config.extInfo['--background-image'])
           ? theme.config.extInfo['--background-image']
           : joinPath(themeInfo.dataPath, theme.config.extInfo['--background-image'])
+        bgImg.value = encodePath(bgImgRaw)
         originBgName = theme.config.extInfo['--background-image']
       }
       appBgColorOrigin = theme.config.extInfo['--color-app-background']
@@ -372,7 +375,8 @@ export default {
       const bgPath = joinPath(tempDir, fileName)
       if (!await checkPath(tempDir)) await createDir(tempDir)
       await copyFile(path, bgPath)
-      currentBgPath = bgImg.value = bgPath
+      currentBgPath = bgImgRaw = bgPath
+      bgImg.value = encodePath(bgImgRaw)
       theme.config.extInfo['--background-image'] = 'temp/' + fileName
 
       createPreview()
@@ -383,6 +387,7 @@ export default {
         currentBgPath = ''
       }
       bgImg.value = ''
+      bgImgRaw = ''
       theme.config.extInfo['--background-image'] = 'none'
       createPreview()
     }
@@ -474,9 +479,9 @@ export default {
           const name = basename(currentBgPath)
           await moveFile(currentBgPath, joinPath(themeInfo.dataPath, name))
           theme.config.extInfo['--background-image'] = name
-        } else if (bgImg.value) {
-          const fileName = `${theme.id}_${Date.now()}${extname(bgImg.value)}`
-          await copyFile(bgImg.value, joinPath(themeInfo.dataPath, fileName))
+        } else if (bgImgRaw) {
+          const fileName = `${theme.id}_${Date.now()}${extname(bgImgRaw)}`
+          await copyFile(bgImgRaw, joinPath(themeInfo.dataPath, fileName))
           theme.config.extInfo['--background-image'] = fileName
         }
       }

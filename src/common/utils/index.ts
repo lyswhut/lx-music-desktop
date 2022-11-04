@@ -27,11 +27,6 @@ export function compareVer(currentVer: string, targetVer: string): -1 | 0 | 1 {
   return 0
 }
 
-export const encodePath = (path: string) => {
-  // https://github.com/lyswhut/lx-music-desktop/issues/963
-  return path.replaceAll('%', '%25')
-}
-
 
 export {
   log,

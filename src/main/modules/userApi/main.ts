@@ -3,7 +3,7 @@ import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import { join } from 'path'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
-import { encodePath, isWin } from '@common/utils'
+import { encodePath } from '@common/utils'
 
 let browserWindow: Electron.BrowserWindow | null = null
 
@@ -27,14 +27,14 @@ const winEvent = () => {
 
 export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   await closeWindow()
-  if (!dir) dir = global.isDev ? webpackUserApiPath : join(encodePath(isWin ? __dirname.replaceAll('\\', '/') : __dirname), 'userApi')
+  if (!dir) dir = global.isDev ? webpackUserApiPath : join(encodePath(__dirname), 'userApi')
 
   if (!html) {
     html = await fs.promises.readFile(join(dir, 'renderer/user-api.html'), 'utf8')
   }
   const preloadUrl = global.isDev
-    ? `${join(encodePath(isWin ? __dirname.replaceAll('\\', '/') : __dirname), '../dist/user-api-preload.js')}`
-    : `${join(encodePath(isWin ? __dirname.replaceAll('\\', '/') : __dirname), 'user-api-preload.js')}`
+    ? `${join(encodePath(__dirname), '../dist/user-api-preload.js')}`
+    : `${join(encodePath(__dirname), 'user-api-preload.js')}`
   // console.log(preloadUrl)
 
   /**

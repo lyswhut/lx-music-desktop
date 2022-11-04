@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
-import { debounce, encodePath, isLinux, isWin } from '@common/utils'
+import { debounce, encodePath, isLinux } from '@common/utils'
 import { getLyricWindowBounds } from './utils'
 import { mainSend } from '@common/mainIpc'
 
@@ -133,7 +133,7 @@ export const createWindow = () => {
     },
   })
 
-  const winURL = global.isDev ? 'http://localhost:9081/lyric.html' : `file://${join(encodePath(isWin ? __dirname.replaceAll('\\', '/') : __dirname), 'lyric.html')}`
+  const winURL = global.isDev ? 'http://localhost:9081/lyric.html' : `file://${join(encodePath(__dirname), 'lyric.html')}`
   void browserWindow.loadURL(winURL + `?dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()

@@ -175,3 +175,8 @@ export const sortInsert = (arr: Array<{ num: number, data: any }>, data: { num: 
 
   arr.splice(left, 0, data)
 }
+
+export const encodePath = (path: string) => {
+  // https://github.com/lyswhut/lx-music-desktop/issues/963
+  return path.replaceAll('%', '%25')
+}
