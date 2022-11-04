@@ -45,30 +45,6 @@ jobs:
           name: lx-music-desktop-x64-Setup
           path: build/* x64 Setup.exe
 
-      - name: Build Package Setup x86
-        run: npm run pack:win:setup:x86
-      - name: Upload Artifact Setup x86
-        uses: actions/upload-artifact@v3
-        with:
-          name: lx-music-desktop-x86-Setup
-          path: build/* x86 Setup.exe
-
-      - name: Build Package Setup arm64
-        run: npm run pack:win:setup:arm64
-      - name: Upload Artifact Setup arm64
-        uses: actions/upload-artifact@v3
-        with:
-          name: lx-music-desktop-arm64-Setup
-          path: build/* arm64 Setup.exe
-
-      - name: Build Package Setup x86_64
-        run: npm run pack:win:setup:x86_64
-      - name: Upload Artifact Setup x86_64
-        uses: actions/upload-artifact@v3
-        with:
-          name: lx-music-desktop-x86_64-Setup
-          path: build/*x86_64 Setup.exe
-
       - name: Build Package 7z x64
         run: npm run pack:win:7z:x64
       - name: Upload Artifact 7z x64
@@ -76,6 +52,14 @@ jobs:
         with:
           name: lx-music-desktop-win_x64-green
           path: build/*win_x64 green.7z
+
+      - name: Build Package Setup x86
+        run: npm run pack:win:setup:x86
+      - name: Upload Artifact Setup x86
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-x86-Setup
+          path: build/* x86 Setup.exe
 
       - name: Build Package 7z x86
         run: npm run pack:win:7z:x86
@@ -85,6 +69,14 @@ jobs:
           name: lx-music-desktop-win_x86-green
           path: build/*win_x86 green.7z
 
+      - name: Build Package Setup arm64
+        run: npm run pack:win:setup:arm64
+      - name: Upload Artifact Setup arm64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-arm64-Setup
+          path: build/* arm64 Setup.exe
+
       - name: Build Package 7z arm64
         run: npm run pack:win:7z:arm64
       - name: Upload Artifact 7z arm64
@@ -92,6 +84,14 @@ jobs:
         with:
           name: lx-music-desktop-win_arm64-green
           path: build/*win_arm64 green.7z
+
+      - name: Build Package Setup x86_64
+        run: npm run pack:win:setup:x86_64
+      - name: Upload Artifact Setup x86_64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-x86_64-Setup
+          path: build/*x86_64 Setup.exe
 
       - name: Generate file MD5
         run: |
