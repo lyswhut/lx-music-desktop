@@ -1,6 +1,13 @@
 <template>
   <component :is="Teleport" to="#root">
-    <div :class="[$style.popup, {[$style.top]: isShowTop}, {[$style.active]: props.visible}]" :style="popupStyle" :aria-hidden="!props.visible" @click.stop>
+    <div
+      :class="[$style.popup, {[$style.top]: isShowTop}, {[$style.active]: props.visible}]"
+      :style="popupStyle"
+      :aria-hidden="!props.visible"
+      @click.stop
+      @mouseenter="emit('mouseenter', $event)"
+      @mouseleave="emit('mouseleave', $event)"
+    >
       <div ref="dom_content" class="scroll" :class="$style.list">
         <slot />
       </div>
@@ -30,6 +37,8 @@ const props = defineProps<{
 
 interface Emitter {
   (event: 'update:visible', visible: boolean): void
+  (event: 'mouseenter', visible: MouseEvent): void
+  (event: 'mouseleave', visible: MouseEvent): void
 }
 const emit = defineEmits<Emitter>()
 

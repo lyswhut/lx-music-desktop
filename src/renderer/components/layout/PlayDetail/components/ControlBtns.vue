@@ -111,7 +111,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 
   button {
     width: 20px;

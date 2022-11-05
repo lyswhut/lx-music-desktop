@@ -84,6 +84,7 @@ const icon = computed(() => {
   display: flex;
   flex-flow: column nowrap;
   font-size: 14px;
+  padding: 2px 3px;
   gap: 8px;
   label span {
     line-height: 1;

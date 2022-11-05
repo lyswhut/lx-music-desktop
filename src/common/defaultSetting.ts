@@ -4,7 +4,7 @@ import { homedir } from 'os'
 const defaultSetting: LX.AppSetting = {
   version: '2.0.0',
 
-  'common.windowSizeId': 2,
+  'common.windowSizeId': 3,
   'common.fontSize': 16,
   'common.startInFullscreen': false,
   'common.langId': null,

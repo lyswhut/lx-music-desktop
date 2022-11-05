@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.player">
     <div :class="$style.progress">
-      <common-progress-bar v-if="!isShowPlayerDetail" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+      <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
     </div>
     <div :class="$style.picContent" :aria-label="$t('player__pic_tip')" @contextmenu="handleToMusicLocation" @click="showPlayerDetail">
       <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError">
@@ -18,6 +18,7 @@
       <span style="margin: 0 1px;">/</span>
       <span>{{ maxPlayTimeStr }}</span>
     </div>
+    <!-- <play-progress /> -->
     <control-btns />
     <div :class="$style.playBtnContent">
       <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
@@ -47,6 +48,7 @@ import { computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
 import ControlBtns from './ControlBtns'
+// import PlayProgress from './PlayProgress'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
 import {
@@ -68,6 +70,7 @@ export default {
   name: 'CorePlayBar',
   components: {
     ControlBtns,
+    // PlayProgress,
   },
   setup() {
     const router = useRouter()
@@ -152,7 +155,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   contain: strict;
-  padding: 11px 6px 6px;
+  padding: 8px 6px 6px;
   z-index: 2;
   // box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
   * {
@@ -175,8 +178,12 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
   // height: 15px;
+  .progressBar {
+    height: 2px;
+    border-radius: 0;
+  }
 }
 
 .picContent {

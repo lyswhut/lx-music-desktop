@@ -92,8 +92,8 @@ export default {
   // cursor: pointer;
   width: 100%;
   height: 5px;
-  // border-radius: 10px;
-  // overflow: hidden;
+  border-radius: 20px;
+  overflow: hidden;
   transition: @transition-normal;
   transition-property: background-color, opacity;
   background-color: var(--color-primary-alpha-700);

@@ -58,6 +58,11 @@ void getSetting().then(setting => {
     console.log('Set lang', setting['common.langId'])
   }
   window.i18n.setLanguage(setting['common.langId'])
+
+  if ((document.body.clientHeight > window.screen.availHeight || document.body.clientWidth > window.screen.availWidth) && setting['common.windowSizeId'] > 1) {
+    void updateSetting({ 'common.windowSizeId': 1 })
+  }
+
   // store.commit('setSetting', setting)
   initSetting(setting)
 

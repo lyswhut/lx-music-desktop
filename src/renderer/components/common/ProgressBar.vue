@@ -96,13 +96,13 @@ export default {
 .progress {
   width: 100%;
   height: 5px;
-  // overflow: hidden;
+  overflow: hidden;
   transition: @transition-normal;
   transition-property: background-color;
   background-color: var(--color-primary-light-100-alpha-800);
   // background-color: #f5f5f5;
   position: relative;
-  // border-radius: 20px;
+  border-radius: 40px;
 }
 .progress-mask {
   position: absolute;
@@ -119,7 +119,6 @@ export default {
   width: 100%;
   height: 100%;
   transform-origin: 0;
-  // border-radius: 20px;
 }
 .progress-bar1 {
   background-color: var(--color-primary-light-100-alpha-600);
