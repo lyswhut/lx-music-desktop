@@ -298,10 +298,16 @@
   },
   "overrides": {
     "got": "^11",
-    "svg-baker": {
-      "postcss": "latest"
-    },
     "minimatch": "latest",
-    "loader-utils": "latest"
+    "svg-sprite-loader": {
+      "postcss": "latest",
+      "loader-utils": "^2"
+    },
+    "pug-plain-loader": {
+      "loader-utils": "^2"
+    },
+    "svg-transform-loader": {
+      "loader-utils": "^2"
+    }
   }
 }
