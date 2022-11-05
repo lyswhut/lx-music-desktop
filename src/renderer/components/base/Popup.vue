@@ -130,13 +130,13 @@ onBeforeUnmount(() => {
   max-height: 250px;
   z-index: 10;
   pointer-events: none;
-  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, .15));
+  filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, .12));
   display: flex;
 
   &:before {
     content: " ";
     position: absolute;
-    top: -8px;
+    top: -6px;
     left: var(--arrow-left);
     width: 0;
     height: 0;
@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
   }
 
   &.top {
-    filter: drop-shadow(0px 1px 4px rgba(0, 0, 0, .15));
+    filter: drop-shadow(0px 1px 3px rgba(0, 0, 0, .12));
     transform-origin: 50% 100% 0;
 
     &:before {
