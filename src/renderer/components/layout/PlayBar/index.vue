@@ -148,8 +148,6 @@ export default {
       imgError,
       statusText,
       title,
-      titleName,
-      titleSinger,
       showPlayerDetail,
       isPlay,
       togglePlay,
