@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.0.0-beta.5",
+  "version": "2.0.0-beta.6",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -299,14 +299,14 @@
   "overrides": {
     "got": "^11",
     "minimatch": "latest",
+    "svg-transform-loader": {
+      "loader-utils": "^2"
+    },
     "svg-sprite-loader": {
       "postcss": "latest",
       "loader-utils": "^2"
     },
     "pug-plain-loader": {
-      "loader-utils": "^2"
-    },
-    "svg-transform-loader": {
       "loader-utils": "^2"
     }
   }
