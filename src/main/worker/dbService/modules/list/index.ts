@@ -240,50 +240,37 @@ export const musicsRemove = (listId: string, ids: string[]) => {
  * @param addMusicLocationType 添加在到列表的位置
  */
 export const musicsMove = (fromId: string, toId: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType) => {
-  const ids = musicInfos.map(musicInfo => musicInfo.id)
+  let fromList = getListMusics(fromId)
   let toList = getListMusics(toId)
+
+  const ids = musicInfos.map(musicInfo => musicInfo.id)
+
+  const map = new Map<string, LX.Music.MusicInfo>()
+  for (const item of toList) map.set(item.id, item)
+  musicInfos = musicInfos.filter(item => {
+    if (map.has(item.id)) return false
+    map.set(item.id, item)
+    return true
+  })
+
   switch (addMusicLocationType) {
     case 'top':
       moveMusicInfoAndRefreshOrder(fromId, ids, toId, toDBMusicInfo(musicInfos, toId), toDBMusicInfo(toList, toId, musicInfos.length))
+      toList.unshift(...musicInfos)
       break
     case 'bottom':
     default:
       moveMusicInfo(fromId, ids, toDBMusicInfo(musicInfos, toId, toList.length))
+      toList.push(...musicInfos)
       break
   }
-  musicsRemove(fromId, ids)
-  musicsAdd(toId, musicInfos, addMusicLocationType)
-  // let fromList = getListMusics(fromId)
-  // let toList = getListMusics(toId)
-
-  // const ids = musicInfos.map(musicInfo => musicInfo.id)
-
-  // const map = new Map<string, LX.Music.MusicInfo>()
-  // for (const item of toList) map.set(item.id, item)
-  // musicInfos = musicInfos.filter(item => {
-  //   if (map.has(item.id)) return false
-  //   map.set(item.id, item)
-  //   return true
-  // })
-
-  // switch (addMusicLocationType) {
-  //   case 'top':
-  //     moveMusicInfoAndRefreshOrder(fromId, ids, toId, toDBMusicInfo(musicInfos, toId), toDBMusicInfo(toList, toId, musicInfos.length))
-  //     toList.unshift(...musicInfos)
-  //     break
-  //   case 'bottom':
-  //   default:
-  //     moveMusicInfo(fromId, ids, toDBMusicInfo(musicInfos, toId, toList.length))
-  //     toList.push(...musicInfos)
-  //     break
-  // }
-  // for (let i = fromList.length - 1; i > -1; i--) {
-  //   const item = fromList[i]
-  //   const index = ids.indexOf(item.id)
-  //   if (index < 0) continue
-  //   ids.splice(index, 1)
-  //   fromList.splice(i, 1)
-  // }
+  for (let i = fromList.length - 1; i > -1; i--) {
+    const item = fromList[i]
+    const index = ids.indexOf(item.id)
+    if (index < 0) continue
+    ids.splice(index, 1)
+    fromList.splice(i, 1)
+  }
 }
 
 /**
