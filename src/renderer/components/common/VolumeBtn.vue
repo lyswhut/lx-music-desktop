@@ -7,14 +7,16 @@
     </button>
     <template #content>
       <div :class="$style.setting">
-        <span>{{ Math.trunc(volume * 100) }}%</span>
+        <div :class="$style.info">
+          <span>{{ Math.trunc(volume * 100) }}%</span>
+          <base-checkbox
+            id="player__volume_mute"
+            :model-value="isMute"
+            :label="$t('player__volume_mute_label')"
+            @update:model-value="saveVolumeIsMute($event)"
+          />
+        </div>
         <common-volume-bar />
-        <base-checkbox
-          id="player__volume_mute"
-          :model-value="isMute"
-          :label="$t('player__volume_mute_label')"
-          @update:model-value="saveVolumeIsMute($event)"
-        />
       </div>
     </template>
   </material-popup-btn>
@@ -83,10 +85,17 @@ const icon = computed(() => {
 .setting {
   display: flex;
   flex-flow: column nowrap;
-  font-size: 14px;
   padding: 2px 3px;
   gap: 8px;
-  label span {
+}
+
+.info {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  span {
     line-height: 1;
   }
 }

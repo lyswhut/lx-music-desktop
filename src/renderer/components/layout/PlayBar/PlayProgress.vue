@@ -3,9 +3,9 @@
     <span>{{ nowPlayTimeStr }}</span>
     <span style="margin: 0 1px;">/</span>
     <span>{{ maxPlayTimeStr }}</span>
-    <base-popup v-model:visible="visible" :btn-el="dom_btn" @mouseenter="handlMsEnter" @mouseleave="handlMsLeave">
+    <base-popup v-model:visible="visible" :btn-el="dom_btn" @mouseenter="handlMsEnter" @mouseleave="handlMsLeave" @transitionend="handleTranEnd">
       <div :class="$style.progress">
-        <common-progress-bar :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+        <common-progress-bar v-if="visibleProgress" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
       </div>
     </base-popup>
   </div>
@@ -19,14 +19,13 @@ import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 export default {
   setup() {
     const visible = ref(false)
+    const visibleProgress = ref(false)
     const dom_btn = ref<HTMLElement | null>(null)
 
     const handleShowPopup = (evt) => {
       if (visible.value) evt.stopPropagation()
-      setTimeout(() => {
-        // if (!)
-        visible.value = !visible.value
-      }, 50)
+      if (visible.value) handlMsLeave()
+      else handlMsEnter()
     }
     const {
       nowPlayTimeStr,
@@ -38,21 +37,30 @@ export default {
 
     let timeout = null
     const handlMsEnter = () => {
-      if (visible.value) {
-        if (timeout) {
-          clearTimeout(timeout)
-          timeout = null
-        }
-        return
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
       }
-      visible.value = true
+      if (visible.value) return
+      timeout = setTimeout(() => {
+        visible.value = true
+        visibleProgress.value = true
+      }, 100)
     }
     const handlMsLeave = () => {
+      if (timeout) {
+        clearTimeout(timeout)
+        timeout = null
+      }
       if (!visible.value) return
       timeout = setTimeout(() => {
         timeout = null
         visible.value = false
       }, 100)
+    }
+    const handleTranEnd = () => {
+      if (visible.value) return
+      visibleProgress.value = false
     }
 
     onMounted(() => {
@@ -64,6 +72,7 @@ export default {
 
     return {
       visible,
+      visibleProgress,
       dom_btn,
       handleShowPopup,
       nowPlayTimeStr,
@@ -73,6 +82,7 @@ export default {
       handleTransitionEnd,
       handlMsLeave,
       handlMsEnter,
+      handleTranEnd,
     }
   },
 }
@@ -86,8 +96,8 @@ export default {
   flex: none;
   position: relative;
   // display: inline-block;
-  padding: 5px 0 5px 5px;
-  color: var(--color-font);
+  padding: 5px 0;
+  color: var(--color-300);
   font-size: 13px;
   cursor: pointer;
   transition: opacity @transition-fast;

@@ -7,6 +7,7 @@
       @click.stop
       @mouseenter="emit('mouseenter', $event)"
       @mouseleave="emit('mouseleave', $event)"
+      @transitionend="emit('transitionend', $event)"
     >
       <div ref="dom_content" class="scroll" :class="$style.list">
         <slot />
@@ -39,6 +40,7 @@ interface Emitter {
   (event: 'update:visible', visible: boolean): void
   (event: 'mouseenter', visible: MouseEvent): void
   (event: 'mouseleave', visible: MouseEvent): void
+  (event: 'transitionend', visible: TransitionEvent): void
 }
 const emit = defineEmits<Emitter>()
 

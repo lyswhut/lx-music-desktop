@@ -54,7 +54,7 @@ export default {
     },
     maxHeight: {
       type: String,
-      default: '80%',
+      default: '76%',
     },
     width: {
       type: String,

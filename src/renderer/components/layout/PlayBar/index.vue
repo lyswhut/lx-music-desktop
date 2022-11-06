@@ -1,8 +1,5 @@
 <template>
   <div :class="$style.player">
-    <div :class="$style.progress">
-      <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
-    </div>
     <div :class="$style.picContent" :aria-label="$t('player__pic_tip')" @contextmenu="handleToMusicLocation" @click="showPlayerDetail">
       <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError">
       <div v-else :class="$style.emptyPic">L<span>X</span></div>
@@ -15,7 +12,10 @@
     </div>
     <div :class="$style.timeContent">
       <span>{{ nowPlayTimeStr }}</span>
-      <span style="margin: 0 1px;">/</span>
+      <div :class="$style.progress">
+        <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+      </div>
+      <!-- <span style="margin: 0 1px;">/</span> -->
       <span>{{ maxPlayTimeStr }}</span>
     </div>
     <!-- <play-progress /> -->
@@ -149,13 +149,13 @@ export default {
 .player {
   position: relative;
   height: @height-player;
-  // border-top: 1px solid var(--color-primary-alpha-900);
+  border-top: 1px solid var(--color-primary-alpha-900);
   box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   contain: strict;
-  padding: 8px 6px 6px;
+  padding: 6px;
   z-index: 2;
   // box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
   * {
@@ -169,20 +169,8 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--color-main-background);
-    opacity: .8;
+    opacity: .9;
     z-index: -1;
-  }
-}
-.progress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding-bottom: 6px;
-  // height: 15px;
-  .progressBar {
-    height: 2px;
-    border-radius: 0;
   }
 }
 
@@ -240,7 +228,7 @@ export default {
 }
 
 .infoContent {
-  padding-left: 10px;
+  padding: 0 10px;
   flex: auto;
   display: flex;
   flex-flow: column nowrap;
@@ -266,10 +254,37 @@ export default {
 }
 
 .timeContent {
+  width: 30%;
+  // position: relative;
   flex: none;
-  color: var(--color-font);
+  color: var(--color-300);
   font-size: 13px;
-  padding-left: 10px;
+  // padding-left: 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+.progress {
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  flex: auto;
+  // width: 160px;
+  position: relative;
+  // padding-bottom: 6px;
+  margin: 0 8px;
+  padding: 8px 0;
+  // height: 15px;
+  // .progressBar {
+  //   height: 4px;
+  //   // border-radius: 0;
+  // }
+}
+.time {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 
 .playBtnContent {
