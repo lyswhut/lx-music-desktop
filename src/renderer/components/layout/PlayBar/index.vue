@@ -44,8 +44,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <play-progress /> -->
   </div>
 </template>
 
@@ -118,18 +116,6 @@ export default {
     const title = computed(() => {
       return musicInfo.name
         ? appSetting['download.fileName'].replace('歌名', musicInfo.name).replace('歌手', musicInfo.singer)
-        : '^-^'
-    })
-
-    const titleName = computed(() => {
-      return musicInfo.name
-        ? musicInfo.name
-        : '^-^'
-    })
-
-    const titleSinger = computed(() => {
-      return musicInfo.singer
-        ? musicInfo.singer
         : '^-^'
     })
 
