@@ -5,41 +5,47 @@
       <div v-else :class="$style.emptyPic">L<span>X</span></div>
     </div>
     <div :class="$style.infoContent">
-      <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
+      <div :class="$style.title" :aria-label=" title + $t('copy_tip')" @click="handleCopy(title)">
         {{ title }}
       </div>
       <div :class="$style.status">{{ statusText }}</div>
     </div>
-    <div :class="$style.timeContent">
-      <span>{{ nowPlayTimeStr }}</span>
-      <div :class="$style.progress">
-        <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+    <div :class="$style.rightContent">
+      <div :class="$style.rightBtn">
+        <div :class="$style.playBtnContent">
+          <control-btns />
+          <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
+              <use xlink:href="#icon-nextMusic" />
+            </svg>
+          </div>
+          <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+            <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
+              <use xlink:href="#icon-pause" />
+            </svg>
+            <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
+              <use xlink:href="#icon-play" />
+            </svg>
+          </div>
+          <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
+              <use xlink:href="#icon-nextMusic" />
+            </svg>
+          </div>
+        </div>
       </div>
-      <!-- <span style="margin: 0 1px;">/</span> -->
-      <span>{{ maxPlayTimeStr }}</span>
+      <div :class="$style.rightProgress">
+        <div :class="$style.timeContent">
+          <span>{{ nowPlayTimeStr }}</span>
+          <div :class="$style.progress">
+            <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+          </div>
+          <span>{{ maxPlayTimeStr }}</span>
+        </div>
+      </div>
     </div>
+
     <!-- <play-progress /> -->
-    <control-btns />
-    <div :class="$style.playBtnContent">
-      <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
-        </svg>
-      </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
-          <use xlink:href="#icon-pause" />
-        </svg>
-        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
-          <use xlink:href="#icon-play" />
-        </svg>
-      </div>
-      <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
-        </svg>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -115,6 +121,18 @@ export default {
         : '^-^'
     })
 
+    const titleName = computed(() => {
+      return musicInfo.name
+        ? musicInfo.name
+        : '^-^'
+    })
+
+    const titleSinger = computed(() => {
+      return musicInfo.singer
+        ? musicInfo.singer
+        : '^-^'
+    })
+
     // onBeforeUnmount(() => {
     // window.eventHub.emit(eventPlayerNames.setTogglePlay)
     // })
@@ -130,6 +148,8 @@ export default {
       imgError,
       statusText,
       title,
+      titleName,
+      titleSinger,
       showPlayerDetail,
       isPlay,
       togglePlay,
@@ -177,7 +197,6 @@ export default {
 .picContent {
   height: 100%;
   aspect-ratio: 1 / 1;
-
   // color: var(--color-primary);
   // transition: @transition-normal;
   // transition-property: color;
@@ -189,11 +208,9 @@ export default {
   justify-content: center;
   // align-items: center;
   cursor: pointer;
-
   &:hover {
     opacity: .8;
   }
-
   // svg {
   //   fill: currentColor;
   // }
@@ -227,59 +244,24 @@ export default {
   }
 }
 
-.infoContent {
-  padding: 0 10px;
-  flex: auto;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: flex-start;
-  font-size: 14px;
-  color: var(--color-font);
-  min-width: 0;
-  line-height: 1.5;
-}
-
-.title {
-  max-width: 100%;
-  font-size: 12px;
-  color: var(--color-font-label);
-  .mixin-ellipsis-1;
-}
-.status {
-  padding-top: 2px;
-  height: 23px;
-  .mixin-ellipsis-1;
-  max-width: 100%;
-}
-
 .timeContent {
-  width: 30%;
+  width: 100%;
   // position: relative;
   flex: none;
   color: var(--color-300);
   font-size: 13px;
-  // padding-left: 10px;
+  padding-top: 8px;
+  padding-right: 10px;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
 }
 .progress {
   // position: absolute;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
   flex: auto;
-  // width: 160px;
   position: relative;
-  // padding-bottom: 6px;
   margin: 0 8px;
   padding: 8px 0;
-  // height: 15px;
-  // .progressBar {
-  //   height: 4px;
-  //   // border-radius: 0;
-  // }
 }
 .time {
   display: flex;
@@ -287,27 +269,78 @@ export default {
   justify-content: space-between;
 }
 
-.playBtnContent {
-  height: 100%;
-  flex: none;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
+.infoContent {
   padding-left: 10px;
-  padding-right: 15px;
-  gap: 18px;
+  flex: auto;
+  display: flex;
+  margin-right: auto;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  font-size: 12px;
+  color: var(--color-font);
+  min-width: 0;
+  line-height: 2.2;
+  max-width: 40%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.title {
+  .mixin-ellipsis-1;
+  color: var(--color-font);
+  font-size: 14px;
+  max-width: 100%;
+}
+.status {
+  .mixin-ellipsis-1;
+  color: var(--color-font-lable);
+  font-size: 12px;
+  max-width: 100%;
 }
 
+.rightContent {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  right: 0;
+  margin-right: auto;
+  padding-right: 10px;
+  flex: auto;
+  display: flex;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--color-font);
+}
+
+.rightBtn {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 8px;
+  padding-right: 20px;
+  width: 100%;
+  height: 50%;
+}
+.playBtnContent {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  gap: 28px;
+}
 .play-btn {
+  position: relative;
   flex: none;
-  height: 52%;
-  // margin-top: -2px;
+  height: 90%;
   transition: @transition-fast;
   transition-property: color, opacity;
   color: var(--color-button-font);
   opacity: 1;
   cursor: pointer;
-
   svg {
     fill: currentColor;
     filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
@@ -318,6 +351,18 @@ export default {
   &:active {
     opacity: 0.6;
   }
+}
+
+.rightProgress {
+  position: absolute;
+  right: 0;
+  display: inline-block;
+  justify-content: center;
+  width: 100%;
+  height: 50%;
+  top: 50%;
+  bottom: 0;
+  margin-left: auto;
 }
 
 </style>
