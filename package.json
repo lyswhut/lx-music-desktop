@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.0.0-beta.6",
+  "version": "2.0.0-beta.7",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -214,8 +214,8 @@
     "@types/better-sqlite3": "^7.6.2",
     "@types/needle": "^2.5.3",
     "@types/tunnel": "^0.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.42.0",
-    "@typescript-eslint/parser": "^5.42.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
     "@volar/vue-language-plugin-pug": "^1.0.9",
     "babel-loader": "^9.1.0",
     "browserslist": "^4.21.4",
@@ -233,13 +233,13 @@
     "electron-devtools-installer": "^3.2.0",
     "electron-to-chromium": "^1.4.284",
     "electron-updater": "^6.0.0-alpha.2",
-    "eslint": "^8.26.0",
+    "eslint": "^8.27.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-with-typescript": "^23.0.0",
     "eslint-formatter-friendly": "github:lyswhut/eslint-friendly-formatter#2170d1320e2fad13615a9dcf229669f0bb473a53",
     "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.4.0",
+    "eslint-plugin-n": "^15.5.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-vue": "^9.7.0",
     "eslint-webpack-plugin": "^3.2.0",
@@ -293,7 +293,7 @@
     "sortablejs": "^1.15.0",
     "tunnel": "^0.0.6",
     "utf-8-validate": "^5.0.10",
-    "vue": "^3.2.41",
+    "vue": "^3.2.42",
     "vue-router": "^4.1.6"
   },
   "overrides": {
@@ -305,6 +305,9 @@
     "svg-sprite-loader": {
       "postcss": "latest",
       "loader-utils": "^2"
+    },
+    "svg-baker": {
+      "postcss": "latest"
     },
     "pug-plain-loader": {
       "loader-utils": "^2"
