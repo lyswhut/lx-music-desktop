@@ -112,7 +112,7 @@ export default {
     const title = computed(() => {
       return musicInfo.name
         ? appSetting['download.fileName'].replace('歌名', musicInfo.name).replace('歌手', musicInfo.singer)
-        : '^-^'
+        : ''
     })
 
     // onBeforeUnmount(() => {

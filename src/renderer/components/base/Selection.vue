@@ -52,10 +52,15 @@ export default {
     }
   },
   computed: {
+    activeIndex() {
+      if (this.modelValue == null) return -1
+      if (!this.itemName) return this.list.indexOf(this.modelValue)
+      return this.list.findIndex(l => l[this.itemKey] == this.modelValue)
+    },
     label() {
       if (this.modelValue == null) return ''
       if (this.itemName == null) return this.modelValue
-      const item = this.list.find(l => l[this.itemKey] == this.modelValue)
+      const item = this.list[this.activeIndex]
       if (!item) return ''
       return item[this.itemName]
     },
@@ -86,6 +91,9 @@ export default {
       this.show = true
       this.$nextTick(() => {
         this.listStyles.transform = `scaleY(1) translateY(${this.handleGetOffset()}px)`
+
+        const activeItem = this.$refs.dom_list.children[this.activeIndex]
+        if (activeItem) this.$refs.dom_list.scrollTop = activeItem.offsetTop - this.$refs.dom_list.clientHeight * 0.38
       })
     },
     handleGetOffset() {
