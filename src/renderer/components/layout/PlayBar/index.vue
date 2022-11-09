@@ -9,40 +9,93 @@
       <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError" />
       <div v-else :class="$style.emptyPic">L<span>X</span></div>
     </div>
-    <div :class="$style.infoContent">
-      <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
-        {{ title }}
+    <div :class="$style.progressContent">
+      <div :class="$style.timeContent">
+        <span>{{ nowPlayTimeStr }}</span>
+        <div :class="$style.progress">
+          <common-progress-bar
+            v-if="!isShowPlayerDetail"
+            :class-name="$style.progressBar"
+            :progress="progress"
+            :handle-transition-end="handleTransitionEnd"
+            :is-active-transition="isActiveTransition"
+          />
+        </div>
+        <span>{{ maxPlayTimeStr }}</span>
       </div>
-      <div :class="$style.status" :aria-label="statusText">{{ statusText }}</div>
     </div>
-    <div :class="$style.timeContent">
-      <span>{{ nowPlayTimeStr }}</span>
-      <div :class="$style.progress">
-        <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+    <div :class="$style.mainContent">
+      <div :class="$style.infoContent">
+        <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
+          {{ title }}
+        </div>
+        <div :class="$style.status" :aria-label="statusText + $t('copy_tip')" @click="handleCopy(statusText)">
+          {{ statusText }}
+        </div>
       </div>
-      <!-- <span style="margin: 0 1px;">/</span> -->
-      <span>{{ maxPlayTimeStr }}</span>
-    </div>
-    <!-- <play-progress /> -->
-    <control-btns />
-    <div :class="$style.playBtnContent">
-      <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
-        </svg>
-      </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
-          <use xlink:href="#icon-pause" />
-        </svg>
-        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
-          <use xlink:href="#icon-play" />
-        </svg>
-      </div>
-      <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
-        </svg>
+      <div :class="$style.rightContent">
+        <div :class="$style.rightBtn">
+          <div :class="$style.playBtnContent">
+            <control-btns />
+            <div
+              :class="$style.playBtn"
+              :aria-label="$t('player__prev')"
+              style="transform: rotate(180deg)"
+              @click="playPrev()"
+            >
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xlink="http://www.w3.org/1999/xlink"
+                height="100%"
+                viewBox="0 0 220.847 220.847"
+                space="preserve"
+              >
+                <use xlink:href="#icon-nextMusic" />
+              </svg>
+            </div>
+            <div
+              :class="$style.playBtn"
+              :aria-label="isPlay ? $t('player__pause') : $t('player__play')"
+              @click="togglePlay"
+            >
+              <svg
+                v-if="isPlay"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xlink="http://www.w3.org/1999/xlink"
+                height="100%"
+                viewBox="0 0 277.338 277.338"
+                space="preserve"
+              >
+                <use xlink:href="#icon-pause" />
+              </svg>
+              <svg
+                v-else
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xlink="http://www.w3.org/1999/xlink"
+                height="100%"
+                viewBox="0 0 170 170"
+                space="preserve"
+              >
+                <use xlink:href="#icon-play" />
+              </svg>
+            </div>
+            <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xlink="http://www.w3.org/1999/xlink"
+                height="100%"
+                viewBox="0 0 220.847 220.847"
+                space="preserve"
+              >
+                <use xlink:href="#icon-nextMusic" />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -108,7 +161,7 @@ export default {
     const title = computed(() => {
       return musicInfo.name
         ? appSetting['download.fileName'].replace('歌名', musicInfo.name).replace('歌手', musicInfo.singer)
-        : ''
+        : '^-^'
     })
 
     // onBeforeUnmount(() => {
@@ -228,11 +281,6 @@ export default {
   top: 0px;
   width: calc(100% - 65px - 10px);
   justify-content: center;
-  align-items: flex-start;
-  font-size: 13px;
-  color: var(--color-font);
-  min-width: 0;
-  line-height: 1.5;
 }
 .timeContent {
   width: 100%;
