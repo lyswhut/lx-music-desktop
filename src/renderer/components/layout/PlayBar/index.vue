@@ -8,7 +8,7 @@
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
         {{ title }}
       </div>
-      <div :class="$style.status">{{ statusText }}</div>
+      <div :class="$style.status" :aria-label="statusText">{{ statusText }}</div>
     </div>
     <div :class="$style.timeContent">
       <span>{{ nowPlayTimeStr }}</span>
@@ -234,7 +234,7 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: flex-start;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-font);
   min-width: 0;
   line-height: 1.5;

@@ -556,7 +556,7 @@
   "theme_selector_modal__theme_name": "Topic name",
   "theme_selector_modal__title": "Follow system theme settings",
   "theme_selector_modal__title_tip": "Note: You can set a light theme and a dark theme in advance, and then it will automatically switch to the corresponding theme you set in advance according to the light and dark theme colors of the system.",
-  "toggle_source_failed": "Failed to automatically change the source, please try to manually search for the song in other sources to play",
+  "toggle_source_failed": "Failed to change the source, please try to manually search for the song in other sources to play",
   "toggle_source_try": "Try switching to another source...",
   "user_api__allow_show_update_alert": "Allow update popup to show",
   "user_api__btn_export": "Export",
