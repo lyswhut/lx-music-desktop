@@ -556,7 +556,7 @@
   "theme_selector_modal__theme_name": "主題名稱",
   "theme_selector_modal__title": "跟隨系統主題設置",
   "theme_selector_modal__title_tip": "注：你可以預先設置一個亮色主題及暗色主題，此後將根據系統的亮、暗主題色自動切換為你預先設置的相應主題。",
-  "toggle_source_failed": "自動換源失敗，請嘗試手動在其他源搜索該歌曲播放",
+  "toggle_source_failed": "換源失敗，請嘗試手動在其他源搜索該歌曲播放",
   "toggle_source_try": "嘗試切換到其他源...",
   "user_api__allow_show_update_alert": "允許顯示更新彈窗",
   "user_api__btn_export": "導出",

@@ -13,7 +13,7 @@ import { getMusicUrl, getPicUrl, getLyricInfo } from '@renderer/core/music/onlin
 import { appSetting } from '../setting'
 import { qualityList } from '..'
 import { proxyCallback } from '@renderer/worker/utils'
-import { joinPath } from '@renderer/utils'
+import { arrPush, arrUnshift, joinPath } from '@renderer/utils'
 import { DOWNLOAD_STATUS } from '@common/constants'
 
 const waitingUpdateTasks = new Map<string, LX.Download.ListItem>()
@@ -48,7 +48,7 @@ export const getDownloadList = async(): Promise<LX.Download.ListItem[]> => {
           break
       }
     }
-    downloadList.push(...list)
+    arrPush(downloadList, list)
   }
   return downloadList
 }
@@ -59,9 +59,9 @@ const addTasks = async(list: LX.Download.ListItem[]) => {
   await downloadTasksCreate(list.map(i => toRaw(i)), addMusicLocationType)
 
   if (addMusicLocationType === 'top') {
-    downloadList.unshift(...list)
+    arrUnshift(downloadList, list)
   } else {
-    downloadList.push(...list)
+    arrPush(downloadList, list)
   }
   window.app_event.downloadListUpdate()
 }
@@ -367,18 +367,21 @@ export const pauseDownloadTasks = async(list: LX.Download.ListItem[]) => {
  */
 export const removeDownloadTasks = async(ids: string[]) => {
   await downloadTasksRemove(ids)
-  ids = [...ids]
-  for (let i = downloadList.length; i--;) {
-    const item = downloadList[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    ids.splice(index, 1)
-    downloadList.splice(i, 1)
-    if (runingTask.has(item.id)) {
-      void window.lx.worker.download.removeTask(item.id)
-      runingTask.delete(item.id)
+
+  const listSet = new Set<string>()
+  for (const item of downloadList) listSet.add(item.id)
+  for (const id of ids) listSet.delete(id)
+  const newList = downloadList.filter(task => {
+    if (runingTask.has(task.id)) {
+      void window.lx.worker.download.removeTask(task.id)
+      runingTask.delete(task.id)
     }
-  }
+    return listSet.has(task.id)
+  })
+  downloadList.splice(0, downloadList.length)
+  arrPush(downloadList, newList)
+
+
   void checkStartTask()
   window.app_event.downloadListUpdate()
 }

@@ -1,49 +1,48 @@
 <template>
   <div :class="$style.player">
-    <div :class="$style.picContent" :aria-label="$t('player__pic_tip')" @contextmenu="handleToMusicLocation" @click="showPlayerDetail">
-      <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError">
+    <div
+      :class="$style.picContent"
+      :aria-label="$t('player__pic_tip')"
+      @contextmenu="handleToMusicLocation"
+      @click="showPlayerDetail"
+    >
+      <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError" />
       <div v-else :class="$style.emptyPic">L<span>X</span></div>
     </div>
-    <div :class="$style.progressContent">
-      <div :class="$style.timeContent">
-        <span>{{ nowPlayTimeStr }}</span>
-        <div :class="$style.progress">
-          <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
-        </div>
-        <span>{{ maxPlayTimeStr }}</span>
+    <div :class="$style.infoContent">
+      <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
+        {{ title }}
       </div>
+      <div :class="$style.status" :aria-label="statusText">{{ statusText }}</div>
     </div>
-    <div :class="$style.mainContent">
-      <div :class="$style.infoContent">
-        <div :class="$style.title" :aria-label=" title + $t('copy_tip')" @click="handleCopy(title)">
-          {{ title }}
-        </div>
-        <div :class="$style.status" :aria-label=" statusText + $t('copy_tip')" @click="handleCopy(statusText)">{{ statusText }}</div>
+    <div :class="$style.timeContent">
+      <span>{{ nowPlayTimeStr }}</span>
+      <div :class="$style.progress">
+        <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
       </div>
-      <div :class="$style.rightContent">
-        <div :class="$style.rightBtn">
-          <div :class="$style.playBtnContent">
-            <control-btns />
-            <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-                <use xlink:href="#icon-nextMusic" />
-              </svg>
-            </div>
-            <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-              <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
-                <use xlink:href="#icon-pause" />
-              </svg>
-              <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
-                <use xlink:href="#icon-play" />
-              </svg>
-            </div>
-            <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-                <use xlink:href="#icon-nextMusic" />
-              </svg>
-            </div>
-          </div>
-        </div>
+      <!-- <span style="margin: 0 1px;">/</span> -->
+      <span>{{ maxPlayTimeStr }}</span>
+    </div>
+    <!-- <play-progress /> -->
+    <control-btns />
+    <div :class="$style.playBtnContent">
+      <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
+          <use xlink:href="#icon-nextMusic" />
+        </svg>
+      </div>
+      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
+          <use xlink:href="#icon-pause" />
+        </svg>
+        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
+          <use xlink:href="#icon-play" />
+        </svg>
+      </div>
+      <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
+          <use xlink:href="#icon-nextMusic" />
+        </svg>
       </div>
     </div>
   </div>
@@ -65,10 +64,7 @@ import {
   playInfo,
   playMusicInfo,
 } from '@renderer/store/player/state'
-import {
-  setMusicInfo,
-  setShowPlayerDetail,
-} from '@renderer/store/player/action'
+import { setMusicInfo, setShowPlayerDetail } from '@renderer/store/player/action'
 import { appSetting } from '@renderer/store/setting'
 import { togglePlay, playNext, playPrev } from '@renderer/core/player'
 
@@ -81,19 +77,13 @@ export default {
   setup() {
     const router = useRouter()
 
-    const {
-      nowPlayTimeStr,
-      maxPlayTimeStr,
-      progress,
-      isActiveTransition,
-      handleTransitionEnd,
-    } = usePlayProgress()
+    const { nowPlayTimeStr, maxPlayTimeStr, progress, isActiveTransition, handleTransitionEnd } = usePlayProgress()
 
     const showPlayerDetail = () => {
       if (!playMusicInfo.musicInfo) return
       setShowPlayerDetail(true)
     }
-    const handleCopy = (text) => {
+    const handleCopy = text => {
       clipboardWriteText(text)
     }
 
@@ -118,7 +108,7 @@ export default {
     const title = computed(() => {
       return musicInfo.name
         ? appSetting['download.fileName'].replace('歌名', musicInfo.name).replace('歌手', musicInfo.singer)
-        : '^-^'
+        : ''
     })
 
     // onBeforeUnmount(() => {
@@ -148,7 +138,6 @@ export default {
 }
 </script>
 
-
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
@@ -175,7 +164,7 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--color-main-background);
-    opacity: .9;
+    opacity: 0.9;
     z-index: -1;
   }
 }
@@ -200,7 +189,7 @@ export default {
   // align-items: center;
   cursor: pointer;
   &:hover {
-    opacity: .8;
+    opacity: 0.8;
   }
   img {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
@@ -223,7 +212,7 @@ export default {
     color: var(--color-primary-light-400-alpha-200);
     user-select: none;
     font-size: 20px;
-    font-family: Consolas, "Courier New", monospace;
+    font-family: Consolas, 'Courier New', monospace;
 
     span {
       padding-left: 3px;
@@ -239,6 +228,11 @@ export default {
   top: 0px;
   width: calc(100% - 65px - 10px);
   justify-content: center;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--color-font);
+  min-width: 0;
+  line-height: 1.5;
 }
 .timeContent {
   width: 100%;
@@ -345,5 +339,4 @@ export default {
     opacity: 0.6;
   }
 }
-
 </style>

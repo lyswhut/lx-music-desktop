@@ -1,3 +1,4 @@
+import { arrPush, arrUnshift } from '@common/utils/common'
 import {
   queryDownloadList,
   inertDownloadList,
@@ -69,14 +70,14 @@ export const downloadInfoSave = (downloadInfos: LX.Download.ListItem[], addMusic
   if (!list) initDownloadList()
   if (addMusicLocationType == 'top') {
     let newList = [...list]
-    newList.unshift(...downloadInfos)
+    arrUnshift(newList, downloadInfos)
     inertDownloadList(toDBDownloadInfo(downloadInfos), newList.slice(downloadInfos.length - 1).map((info, index) => {
       return { id: info.id, position: index }
     }))
     list = newList
   } else {
     inertDownloadList(toDBDownloadInfo(downloadInfos, list.length), [])
-    list.push(...downloadInfos)
+    arrPush(list, downloadInfos)
   }
 }
 
@@ -103,12 +104,12 @@ export const downloadInfoUpdate = (lists: LX.Download.ListItem[]) => {
 export const downloadInfoRemove = (ids: string[]) => {
   deleteDownloadList(ids)
   if (list) {
-    for (let i = list.length; i--;) {
-      let idx = ids.indexOf(list[i].id)
-      if (idx < 0) continue
-      list.splice(i, 1)
-      ids.splice(idx, 1)
-    }
+    const listSet = new Set<string>()
+    for (const item of list) listSet.add(item.id)
+    for (const id of ids) listSet.delete(id)
+    const newList = list.filter(task => listSet.has(task.id))
+    list.splice(0, list.length)
+    for (const item of newList) list.push(item)
   }
 }
 

@@ -8,6 +8,7 @@ import {
 } from './state'
 import { overwriteListPosition, overwriteListUpdateInfo, removeListPosition, removeListUpdateInfo } from '@renderer/utils/data'
 import { LIST_IDS } from '@common/constants'
+import { arrPush, arrUnshift } from '@common/utils/common'
 
 export const setUserLists = (lists: LX.List.UserListInfo[]) => {
   userLists.splice(0, userLists.length, ...lists)
@@ -25,7 +26,8 @@ const overwriteMusicList = (id: string, list: LX.Music.MusicInfo[]) => {
   markRawList(list)
   let targetList = allMusicList.get(id)
   if (targetList) {
-    targetList.splice(0, targetList.length, ...list)
+    targetList.splice(0, targetList.length)
+    arrPush(targetList, list)
   } else {
     allMusicList.set(id, shallowReactive(list))
   }
@@ -179,16 +181,18 @@ export const userListsUpdatePosition = (position: number, ids: string[]) => {
 
   const updateLists: LX.List.UserListInfo[] = []
 
-  for (let i = newUserLists.length; i--;) {
-    if (ids.includes(newUserLists[i].id)) {
-      const list = newUserLists.splice(i, 1)[0]
-      list.locationUpdateTime = Date.now()
-      updateLists.push(list)
-    }
+  // const targetItem = list[position]
+  const map = new Map<string, LX.List.UserListInfo>()
+  for (const item of newUserLists) map.set(item.id, item)
+  for (const id of ids) {
+    const listInfo = map.get(id) as LX.List.UserListInfo
+    listInfo.locationUpdateTime = Date.now()
+    updateLists.push(listInfo)
+    map.delete(id)
   }
-  position = Math.min(newUserLists.length, position)
+  newUserLists.splice(0, newUserLists.length, ...newUserLists.filter(mInfo => map.has(mInfo.id)))
+  newUserLists.splice(Math.min(position, newUserLists.length), 0, ...updateLists)
 
-  newUserLists.splice(position, 0, ...updateLists)
   setUserLists(newUserLists)
 }
 
@@ -212,11 +216,11 @@ export const listMusicAdd = (id: string, musicInfos: LX.Music.MusicInfo[], addMu
   })
   switch (addMusicLocationType) {
     case 'top':
-      targetList.unshift(...musicInfos)
+      arrUnshift(targetList, musicInfos)
       break
     case 'bottom':
     default:
-      targetList.push(...musicInfos)
+      arrPush(targetList, musicInfos)
       break
   }
 
@@ -234,14 +238,13 @@ export const listMusicRemove = (listId: string, ids: string[]): string[] => {
   let targetList = allMusicList.get(listId)
   if (!targetList) return listId == loveList.id ? [listId] : []
 
-  ids = [...ids]
-  for (let i = targetList.length - 1; i > -1; i--) {
-    const item = targetList[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    ids.splice(index, 1)
-    targetList.splice(i, 1)
-  }
+  const listSet = new Set<string>()
+  for (const item of targetList) listSet.add(item.id)
+  for (const id of ids) listSet.delete(id)
+  const newList = targetList.filter(mInfo => listSet.has(mInfo.id))
+  targetList.splice(0, targetList.length)
+  arrPush(targetList, newList)
+
   return [listId]
 }
 
@@ -284,7 +287,9 @@ export const listMusicUpdatePosition = async(listId: string, position: number, i
 
   const list = await window.lx.worker.main.createSortedList(toRaw(targetList), position, ids)
   markRawList(list)
-  targetList.splice(0, targetList.length, ...list)
+  targetList.splice(0, targetList.length)
+  arrPush(targetList, list)
+
   // console.timeEnd('ts')
   return [listId]
 }
