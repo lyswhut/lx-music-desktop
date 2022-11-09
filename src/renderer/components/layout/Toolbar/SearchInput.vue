@@ -28,7 +28,7 @@ export default {
     const router = useRouter()
 
     watch(() => route.name, (newValue, oldValue) => {
-      if (newValue.name != 'search') {
+      if (oldValue == 'Search') {
         setTimeout(() => {
           if (appSetting['odc.isAutoClearSearchInput'] && searchText.value) searchText.value = ''
           if (appSetting['odc.isAutoClearSearchList']) setSearchText('')
