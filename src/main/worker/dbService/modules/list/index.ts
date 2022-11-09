@@ -1,4 +1,5 @@
 import { LIST_IDS } from '@common/constants'
+import { arrPush, arrPushByPosition, arrUnshift } from '@common/utils/common'
 import {
   deleteUserLists,
   inertUserLists,
@@ -180,7 +181,10 @@ export const getListMusics = (listId: string): LX.Music.MusicInfo[] => {
 export const musicOverwrite = (listId: string, musicInfos: LX.Music.MusicInfo[]) => {
   let targetList = getListMusics(listId)
   overwriteMusicInfo(listId, toDBMusicInfo(musicInfos, listId))
-  if (targetList) targetList.splice(0, targetList.length, ...musicInfos)
+  if (targetList) {
+    targetList.splice(0, targetList.length)
+    arrPush(targetList, musicInfos)
+  }
 }
 
 /**
@@ -203,12 +207,12 @@ export const musicsAdd = (listId: string, musicInfos: LX.Music.MusicInfo[], addM
   switch (addMusicLocationType) {
     case 'top':
       insertMusicInfoListAndRefreshOrder(toDBMusicInfo(musicInfos, listId), listId, toDBMusicInfo(targetList, listId, musicInfos.length))
-      targetList.unshift(...musicInfos)
+      arrUnshift(targetList, musicInfos)
       break
     case 'bottom':
     default:
       insertMusicInfoList(toDBMusicInfo(musicInfos, listId, targetList.length))
-      targetList.push(...musicInfos)
+      arrPush(targetList, musicInfos)
       break
   }
 }
@@ -221,15 +225,13 @@ export const musicsAdd = (listId: string, musicInfos: LX.Music.MusicInfo[], addM
 export const musicsRemove = (listId: string, ids: string[]) => {
   let targetList = getListMusics(listId)
   if (!targetList.length) return
-  ids = [...ids]
   removeMusicInfos(listId, ids)
-  for (let i = targetList.length - 1; i > -1; i--) {
-    const item = targetList[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    ids.splice(index, 1)
-    targetList.splice(i, 1)
-  }
+  const listSet = new Set<string>()
+  for (const item of targetList) listSet.add(item.id)
+  for (const id of ids) listSet.delete(id)
+  const newList = targetList.filter(mInfo => listSet.has(mInfo.id))
+  targetList.splice(0, targetList.length)
+  arrPush(targetList, newList)
 }
 
 /**
@@ -245,32 +247,32 @@ export const musicsMove = (fromId: string, toId: string, musicInfos: LX.Music.Mu
 
   const ids = musicInfos.map(musicInfo => musicInfo.id)
 
-  const map = new Map<string, LX.Music.MusicInfo>()
-  for (const item of toList) map.set(item.id, item)
+  let listSet = new Set<string>()
+  for (const item of toList) listSet.add(item.id)
   musicInfos = musicInfos.filter(item => {
-    if (map.has(item.id)) return false
-    map.set(item.id, item)
+    if (listSet.has(item.id)) return false
+    listSet.add(item.id)
     return true
   })
 
   switch (addMusicLocationType) {
     case 'top':
       moveMusicInfoAndRefreshOrder(fromId, ids, toId, toDBMusicInfo(musicInfos, toId), toDBMusicInfo(toList, toId, musicInfos.length))
-      toList.unshift(...musicInfos)
+      arrUnshift(toList, musicInfos)
       break
     case 'bottom':
     default:
       moveMusicInfo(fromId, ids, toDBMusicInfo(musicInfos, toId, toList.length))
-      toList.push(...musicInfos)
+      arrPush(toList, musicInfos)
       break
   }
-  for (let i = fromList.length - 1; i > -1; i--) {
-    const item = fromList[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    ids.splice(index, 1)
-    fromList.splice(i, 1)
-  }
+
+  listSet = new Set<string>()
+  for (const item of fromList) listSet.add(item.id)
+  for (const id of ids) listSet.delete(id)
+  const newList = fromList.filter(mInfo => listSet.has(mInfo.id))
+  fromList.splice(0, fromList.length)
+  arrPush(fromList, newList)
 }
 
 /**
@@ -320,15 +322,17 @@ export const musicsPositionUpdate = (listId: string, position: number, ids: stri
   let targetList = getListMusics(listId)
   if (!targetList.length) return
 
-  const newTargetList = [...targetList]
-  const infos = Array(ids.length)
-  for (let i = newTargetList.length; i--;) {
-    const item = newTargetList[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    infos.splice(index, 1, newTargetList.splice(i, 1)[0])
+  let newTargetList = [...targetList]
+
+  const infos: LX.Music.MusicInfo[] = []
+  const map = new Map<string, LX.Music.MusicInfo>()
+  for (const item of newTargetList) map.set(item.id, item)
+  for (const id of ids) {
+    infos.push(map.get(id) as LX.Music.MusicInfo)
+    map.delete(id)
   }
-  newTargetList.splice(Math.min(position, newTargetList.length), 0, ...infos)
+  newTargetList = newTargetList.filter(mInfo => map.has(mInfo.id))
+  arrPushByPosition(newTargetList, infos, Math.min(position, newTargetList.length))
 
   updateMusicInfoOrder(listId, newTargetList.map((info, index) => {
     return {
@@ -358,7 +362,7 @@ export const listDataOverwrite = (myListData: MakeOptional<LX.List.ListDataFull,
   ]
   listData.userList.forEach(({ list, ...listInfo }, index) => {
     dbLists.push({ ...listInfo, position: index })
-    dbMusicInfos.push(...toDBMusicInfo(list, listInfo.id))
+    arrPush(dbMusicInfos, toDBMusicInfo(list, listInfo.id))
   })
   overwriteListData(dbLists, dbMusicInfos)
 

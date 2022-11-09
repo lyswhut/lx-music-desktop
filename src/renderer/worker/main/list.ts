@@ -1,6 +1,6 @@
 // import { throttle } from '@common/utils'
 
-import { filterFileName, sortInsert, similar } from '@common/utils/common'
+import { filterFileName, sortInsert, similar, arrPushByPosition } from '@common/utils/common'
 import { joinPath, saveStrToFile } from '@common/utils/nodejs'
 import { createLocalMusicInfo } from '@renderer/utils/music'
 
@@ -212,14 +212,15 @@ export const searchListMusic = (list: LX.Music.MusicInfo[], text: string) => {
  * @returns
  */
 export const createSortedList = (list: LX.Music.MusicInfo[], position: number, ids: string[]) => {
-  const infos = Array(ids.length)
-  for (let i = list.length; i--;) {
-    const item = list[i]
-    const index = ids.indexOf(item.id)
-    if (index < 0) continue
-    infos.splice(index, 1, list.splice(i, 1)[0])
+  const infos: LX.Music.MusicInfo[] = []
+  const map = new Map<string, LX.Music.MusicInfo>()
+  for (const item of list) map.set(item.id, item)
+  for (const id of ids) {
+    infos.push(map.get(id) as LX.Music.MusicInfo)
+    map.delete(id)
   }
-  list.splice(Math.min(position, list.length), 0, ...infos)
+  list = list.filter(mInfo => map.has(mInfo.id))
+  arrPushByPosition(list, infos, Math.min(position, list.length))
   return list
 }
 

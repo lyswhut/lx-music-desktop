@@ -19,6 +19,7 @@ import { setProgress } from './playProgress'
 import { playNext } from '@renderer/core/player'
 import { LIST_IDS } from '@common/constants'
 import { toRaw } from '@common/utils/vueTools'
+import { arrPush, arrUnshift } from '@common/utils/common'
 
 
 type PlayerMusicInfoKeys = keyof typeof musicInfo
@@ -231,8 +232,8 @@ export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
     }
     return true
   })
-  if (topList.length) tempPlayList.unshift(...topList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
-  if (bottomList.length) tempPlayList.push(...bottomList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
+  if (topList.length) arrUnshift(tempPlayList, topList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
+  if (bottomList.length) arrPush(tempPlayList, bottomList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
 
   if (!playMusicInfo.musicInfo) void playNext()
 }
