@@ -1,11 +1,11 @@
 <template>
   <div :class="$style.checkbox">
     <input
-      :id="id" :type="need ? 'radio' : 'checkbox'" :aria-hidden="true" :checked="checked"
-      :class="$style.input" :disabled="disabled" :value="value" :name="name" @input="handleInput"
+      :id="id" ref="dom_input" :type="need ? 'radio' : 'checkbox'" :aria-hidden="true" :checked="checked"
+      :class="$style.input" :disabled="disabled" :value="value" :name="name" @input="handleInput($event.target.checked)"
     >
     <label :for="id" :class="$style.content">
-      <div :class="$style.container" role="checkbox" tabindex="0" :aria-label="ariaLabel || label" :aria-checked="checked" :aria-disabled="disabled">
+      <div :class="$style.container" :role="need ? 'radio' : 'checkbox'" tabindex="0" :aria-label="ariaLabel || label" :aria-checked="checked" :aria-disabled="disabled" @keydown.enter.space.stop.prevent="handleToggle">
         <svg version="1.1" :class="$style.icon" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" width="100%" viewBox="0 32 448 448" space="preserve">
           <use xlink:href="#icon-check-true" />
         </svg>
@@ -66,8 +66,7 @@ export default {
     this.setValue(this.modelValue)
   },
   methods: {
-    handleInput(event) {
-      const checked = event.target.checked
+    handleInput(checked) {
       let modelValue
       if (Array.isArray(this.modelValue)) {
         modelValue = [...this.modelValue]
@@ -98,6 +97,17 @@ export default {
       // this.checked = this.need ? checked && this.value : checked
       if (this.checked == checked) return
       this.checked = checked
+    },
+    handleToggle(event) {
+      event.lx_handled = true
+      if (this.need) {
+        if (this.$refs.dom_input.checked) return
+        this.$refs.dom_input.checked = true
+        this.handleInput(true)
+      } else {
+        this.$refs.dom_input.checked = !this.$refs.dom_input.checked
+        this.handleInput(this.$refs.dom_input.checked)
+      }
     },
   },
 }
