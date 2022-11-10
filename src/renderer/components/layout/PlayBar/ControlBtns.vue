@@ -55,12 +55,12 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .controlBtn {
-  padding-left: 20px;
-  padding-right: 10px;
+  // padding-left: 20px;
+  // padding-right: 10px;
   flex: none;
   display: flex;
   flex-flow: row nowrap;
-  gap: 10px;
+  gap: 25px;
 
   button {
     color: var(--color-button-font);
