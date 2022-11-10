@@ -8,15 +8,17 @@
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
         {{ title }}
       </div>
-      <div :class="$style.status" :aria-label="statusText">{{ statusText }}</div>
+      <div :class="$style.status">{{ statusText }}</div>
     </div>
-    <div :class="$style.timeContent">
-      <span>{{ nowPlayTimeStr }}</span>
-      <div :class="$style.progress">
-        <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+    <div :class="$style.timeContainer">
+      <div :class="$style.timeContent">
+        <span>{{ nowPlayTimeStr }}</span>
+        <span style="margin: 0 1px;">/</span>
+        <span>{{ maxPlayTimeStr }}</span>
+        <div :class="$style.progress">
+          <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
+        </div>
       </div>
-      <!-- <span style="margin: 0 1px;">/</span> -->
-      <span>{{ maxPlayTimeStr }}</span>
     </div>
     <!-- <play-progress /> -->
     <control-btns />
@@ -253,33 +255,45 @@ export default {
   max-width: 100%;
 }
 
+.timeContainer {
+  padding: 15px 0;
+  &:hover {
+    .progress {
+      opacity: 1;
+    }
+  }
+}
 .timeContent {
-  width: 30%;
-  // position: relative;
+  // width: 30%;
+  position: relative;
   flex: none;
   color: var(--color-300);
-  font-size: 13px;
+  font-size: 12px;
   // padding-left: 10px;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
+  // display: flex;
+  // flex-flow: column nowrap;
+  // align-items: center;
+  padding-bottom: 3px;
 }
 .progress {
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   flex: auto;
   // width: 160px;
-  position: relative;
+  // position: relative;
   // padding-bottom: 6px;
-  margin: 0 8px;
-  padding: 8px 0;
-  // height: 15px;
-  // .progressBar {
-  //   height: 4px;
-  //   // border-radius: 0;
-  // }
+  // margin: 0 8px;
+  padding: 2px 0;
+  height: 8px;
+  transition: opacity @transition-normal;
+  opacity: .24;
+
+  .progressBar {
+    height: 2px;
+    border-radius: 0;
+  }
 }
 .time {
   display: flex;
