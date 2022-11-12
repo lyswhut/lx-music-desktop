@@ -50,12 +50,12 @@ export const toOldMusicInfo = (minfo: LX.Music.MusicInfoOnline) => {
     singer: minfo.singer,
     source: minfo.source,
     songmid: minfo.meta.songId,
-    albumId: minfo.meta.albumId,
+    albumId: minfo.meta.albumId ?? '',
     interval: minfo.interval,
     albumName: minfo.meta.albumName,
-    img: minfo.meta.picUrl,
-    types: minfo.meta.qualitys,
-    _types: minfo.meta._qualitys,
+    img: minfo.meta.picUrl ?? '',
+    types: minfo.meta.qualitys ?? [],
+    _types: minfo.meta._qualitys ?? {},
     typeUrl: {},
   }
   switch (minfo.source) {

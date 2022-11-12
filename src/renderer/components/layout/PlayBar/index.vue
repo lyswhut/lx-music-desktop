@@ -268,7 +268,7 @@ export default {
   position: relative;
   flex: none;
   color: var(--color-300);
-  font-size: 12px;
+  font-size: 13px;
   // padding-left: 10px;
   // display: flex;
   // flex-flow: column nowrap;
