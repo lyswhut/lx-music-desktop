@@ -223,9 +223,157 @@ export default {
     return this.getListDetailDigest5Music(detailId, page, retryNum)
   },
 
+  filterBDListDetail(rawList) {
+    return rawList.map(item => {
+      let types = []
+      let _types = {}
+      for (let info of item.audios) {
+        info.size = info.size?.toLocaleUpperCase()
+        switch (info.bitrate) {
+          case '4000':
+            types.push({ type: 'flac24bit', size: info.size })
+            _types.flac24bit = {
+              size: info.size,
+            }
+            break
+          case '2000':
+            types.push({ type: 'flac', size: info.size })
+            _types.flac = {
+              size: info.size,
+            }
+            break
+          case '320':
+            types.push({ type: '320k', size: info.size })
+            _types['320k'] = {
+              size: info.size,
+            }
+            break
+          case '192':
+          case '128':
+            types.push({ type: '128k', size: info.size })
+            _types['128k'] = {
+              size: info.size,
+            }
+            break
+        }
+      }
+      types.reverse()
+
+      return {
+        singer: item.artists.map(s => s.name).join('、'),
+        name: item.name,
+        albumName: item.album,
+        albumId: item.albumId,
+        songmid: item.id,
+        source: 'kw',
+        interval: formatPlayTime(item.duration),
+        img: item.albumPic,
+        releaseDate: item.releaseDate,
+        lrc: null,
+        otherSource: null,
+        types,
+        _types,
+        typeUrl: {},
+      }
+    })
+  },
+  getReqId() {
+    function t() {
+      return (65536 * (1 + Math.random()) | 0).toString(16).substring(1)
+    }
+    return t() + t() + t() + t() + t() + t() + t() + t()
+  },
+  async getListDetailMusicListByBDListInfo(id, source) {
+    const { body: infoData } = await httpFetch(`https://bd-api.kuwo.cn/api/service/playlist/info/${id}?reqId=${this.getReqId()}&source=${source}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
+        plat: 'h5',
+      },
+    }).promise.catch(() => ({ code: 0 }))
+
+    if (infoData.code != 200) return null
+
+    return {
+      name: infoData.data.name,
+      img: infoData.data.pic,
+      desc: infoData.data.description,
+      author: infoData.data.creatorName,
+      play_count: infoData.data.playNum,
+    }
+  },
+  async getListDetailMusicListByBDUserPub(id) {
+    const { body: infoData } = await httpFetch(`https://bd-api.kuwo.cn/api/ucenter/users/pub/${id}?reqId=${this.getReqId()}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
+        plat: 'h5',
+      },
+    }).promise.catch(() => ({ code: 0 }))
+
+    if (infoData.code != 200) return null
+
+    // console.log(infoData)
+    return {
+      name: infoData.data.userInfo.nickname + '喜欢的音乐',
+      img: infoData.data.userInfo.headImg,
+      desc: '',
+      author: infoData.data.userInfo.nickname,
+      play_count: '',
+    }
+  },
+  async getListDetailMusicListByBDList(id, source, page, tryNum = 0) {
+    const { body: listData } = await httpFetch(`https://bd-api.kuwo.cn/api/service/playlist/${id}/musicList?reqId=${this.getReqId()}&source=${source}&pn=${page}&rn=${this.limit_song}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
+        plat: 'h5',
+      },
+    }).promise.catch(() => {
+      if (tryNum > 2) return Promise.reject(new Error('try max num'))
+      return this.getListDetailMusicListByBDList(id, source, page, ++tryNum)
+    })
+
+    if (listData.code !== 200) return Promise.reject(new Error('failed'))
+
+    return {
+      list: this.filterBDListDetail(listData.data.list),
+      page,
+      limit: listData.data.pageSize,
+      total: listData.data.total,
+      source: 'kw',
+    }
+  },
+  async getListDetailMusicListByBD(id, page) {
+    const uid = /uid=(\d+)/.exec(id)?.[1]
+    const listId = /playlistId=(\d+)/.exec(id)?.[1]
+    const source = /source=(\d+)/.exec(id)?.[1]
+    if (!listId) return Promise.reject(new Error('failed'))
+
+    const task = [this.getListDetailMusicListByBDList(listId, source, page)]
+    switch (source) {
+      case '4':
+        task.push(this.getListDetailMusicListByBDListInfo(listId, source))
+        break
+      case '5':
+        task.push(this.getListDetailMusicListByBDUserPub(uid ?? listId))
+        break
+    }
+    const [listData, info] = await Promise.all(task)
+    listData.info = info ?? {
+      name: '',
+      img: '',
+      desc: '',
+      author: '',
+      play_count: '',
+    }
+    // console.log(listData)
+    return listData
+  },
+
   // 获取歌曲列表内的音乐
   getListDetail(id, page, retryNum = 0) {
     // console.log(id)
+    // https://h5app.kuwo.cn/m/bodian/collection.html?uid=000&playlistId=000&source=5&ownerId=000
+    // https://h5app.kuwo.cn/m/bodian/collection.html?uid=000&playlistId=000&source=4&ownerId=
+    if (/\/bodian\//.test(id)) return this.getListDetailMusicListByBD(id, page)
     if ((/[?&:/]/.test(id))) id = id.replace(this.regExps.listDetailLink, '$1')
     else if (/^digest-/.test(id)) {
       let [digest, _id] = id.split('__')
