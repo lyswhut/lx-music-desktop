@@ -249,13 +249,14 @@ export default {
   .mixin-ellipsis-1;
 }
 .status {
-  padding-top: 2px;
+  padding-top: 3px;
   height: 23px;
   .mixin-ellipsis-1;
   max-width: 100%;
 }
 
 .timeContainer {
+  flex: none;
   padding: 15px 0;
   &:hover {
     .progress {
@@ -266,7 +267,7 @@ export default {
 .timeContent {
   // width: 30%;
   position: relative;
-  flex: none;
+  // flex: none;
   color: var(--color-300);
   font-size: 13px;
   // padding-left: 10px;
