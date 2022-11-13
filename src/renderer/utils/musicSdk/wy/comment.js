@@ -2,6 +2,74 @@ import { httpFetch } from '../../request'
 import { weapi } from './utils/crypto'
 import { dateFormat2 } from '../../index'
 
+const emojis = [
+  ['大笑', '😃'],
+  ['可爱', '😊'],
+  ['憨笑', '☺️'],
+  ['色', '😍'],
+  ['亲亲', '😙'],
+  ['惊恐', '😱'],
+  ['流泪', '😭'],
+  ['亲', '😚'],
+  ['呆', '😳'],
+  ['哀伤', '😔'],
+  ['呲牙', '😁'],
+  ['吐舌', '😝'],
+  ['撇嘴', '😒'],
+  ['怒', '😡'],
+  ['奸笑', '😏'],
+  ['汗', '😓'],
+  ['痛苦', '😖'],
+  ['惶恐', '😰'],
+  ['生病', '😨'],
+  ['口罩', '😷'],
+  ['大哭', '😂'],
+  ['晕', '😵'],
+  ['发怒', '👿'],
+  ['开心', '😄'],
+  ['鬼脸', '😜'],
+  ['皱眉', '😞'],
+  ['流感', '😢'],
+  ['爱心', '❤️'],
+  ['心碎', '💔'],
+  ['钟情', '💘'],
+  ['星星', '⭐️'],
+  ['生气', '💢'],
+  ['便便', '💩'],
+  ['强', '👍'],
+  ['弱', '👎'],
+  ['拜', '🙏'],
+  ['牵手', '👫'],
+  ['跳舞', '👯‍♀️'],
+  ['禁止', '🙅‍♀️'],
+  ['这边', '💁‍♀️'],
+  ['爱意', '💏'],
+  ['示爱', '👩‍❤️‍👨'],
+  ['嘴唇', '👄'],
+  ['狗', '🐶'],
+  ['猫', '🐱'],
+  ['猪', '🐷'],
+  ['兔子', '🐰'],
+  ['小鸡', '🐤'],
+  ['公鸡', '🐔'],
+  ['幽灵', '👻'],
+  ['圣诞', '🎅'],
+  ['外星', '👽'],
+  ['钻石', '💎'],
+  ['礼物', '🎁'],
+  ['男孩', '👦'],
+  ['女孩', '👧'],
+  ['蛋糕', '🎂'],
+  ['18', '🔞'],
+  ['圈', '⭕'],
+  ['叉', '❌'],
+]
+
+const applyEmoji = text => {
+  for (const e of emojis) text = text.replaceAll(`[${e[0]}]`, e[1])
+  return text
+}
+
 let cursorTools = {
   cache: {},
   getCursor(id, page, limit) {
@@ -111,7 +179,7 @@ export default {
     return rawList.map(item => {
       let data = {
         id: item.commentId,
-        text: item.content ? item.content.split('\n') : '',
+        text: item.content ? applyEmoji(item.content).split('\n') : '',
         time: item.time ? item.time : '',
         timeStr: item.time ? dateFormat2(item.time) : '',
         userName: item.user.nickname,
@@ -126,7 +194,7 @@ export default {
         ? {
             id: item.commentId,
             rootId: replyData.beRepliedCommentId,
-            text: replyData.content ? replyData.content.split('\n') : '',
+            text: replyData.content ? applyEmoji(replyData.content).split('\n') : '',
             time: item.time,
             timeStr: null,
             userName: replyData.user.nickname,
