@@ -125,8 +125,8 @@ onBeforeUnmount(() => {
   border-radius: 4px;
   background-color: var(--color-content-background);
   opacity: 0;
-  transform: scale(.8, .8);
-  transform-origin: 0 0 0;
+  transform: scale(.8);
+  transform-origin: 50% 0 0;
   transition: .16s ease;
   transition-property: transform, opacity;
   max-height: 250px;
