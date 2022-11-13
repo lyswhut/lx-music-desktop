@@ -23,21 +23,21 @@
     <!-- <play-progress /> -->
     <control-btns />
     <div :class="$style.playBtnContent">
-      <div :class="$style.playBtn" :aria-label="$t('player__prev')" style="transform: rotate(180deg);" @click="playPrev()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
+      <div :class="$style.playBtn" :aria-label="$t('player__prev')" @click="playPrev()">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
+          <use xlink:href="#icon-prevMusic" />
         </svg>
       </div>
       <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 277.338 277.338" space="preserve">
+        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-pause" />
         </svg>
-        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 170 170" space="preserve">
+        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-play" />
         </svg>
       </div>
       <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 220.847 220.847" space="preserve">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-nextMusic" />
         </svg>
       </div>
