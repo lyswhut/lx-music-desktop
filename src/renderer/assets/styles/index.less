@@ -570,3 +570,27 @@ table {
 .color-picker {
   border-radius: @radius-border !important;
 }
+
+.list-active-enter-active,
+.list-active-leave-active {
+  transition: .13s ease;
+  transition-property: width, opacity;
+}
+
+.list-active-enter-from,
+.list-active-leave-to {
+  width: 0.25em !important;
+  opacity: 0;
+}
+
+.play-active-enter-active,
+.play-active-leave-active {
+  transition: .13s ease;
+  transition-property: transform, opacity;
+}
+
+.play-active-enter-from,
+.play-active-leave-to {
+  transform: scale(0.8);
+  opacity: 0;
+}

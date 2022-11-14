@@ -5,7 +5,12 @@
       :key="item.id" :class="[$style.listsItem, { [$style.active]: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
       :aria-label="item.name" @click="handleToggleList(item.id)" @contextmenu="handleRigthClick($event, index)"
     >
-      <span :class="$style.listsLabel">{{ item.name }}</span>
+      <span :class="$style.listsLabel">
+        <transition name="list-active">
+          <svg-icon v-if="item.id == boardId" name="angle-right-solid" :class="$style.activeIcon" />
+        </transition>
+        {{ item.name }}
+      </span>
     </li>
   </ul>
   <base-menu
@@ -121,6 +126,12 @@ defineExpose({ hideMenu: handleMenuClick })
       display: block;
     }
   }
+}
+.activeIcon {
+  height: .9em;
+  width: .9em;
+  margin-left: -0.45em;
+  vertical-align: -0.05em;
 }
 .listsLabel {
   display: block;

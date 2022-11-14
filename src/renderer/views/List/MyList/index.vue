@@ -21,14 +21,29 @@
         :aria-label="defaultList.name" :aria-selected="defaultList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -2)" @click="handleListToggle(defaultList.id)"
       >
-        <span :class="$style.listsLabel">{{ defaultList.name }}</span>
+        <!-- <div v-if="defaultList.id == listId" :class="$style.activeIcon">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="40%" viewBox="0 0 451.846 451.847" space="preserve">
+            <use xlink:href="#icon-right" />
+          </svg>
+        </div> -->
+        <span :class="$style.listsLabel">
+          <transition name="list-active">
+            <svg-icon v-if="defaultList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
+          </transition>
+          {{ defaultList.name }}
+        </span>
       </li>
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: loveList.id == listId}, {[$style.clicked]: rightClickItemIndex == -1}, {[$style.fetching]: fetchingListStatus[loveList.id]}]"
         :aria-label="loveList.name" :aria-selected="loveList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)"
       >
-        <span :class="$style.listsLabel">{{ loveList.name }}</span>
+        <span :class="$style.listsLabel">
+          <transition name="list-active">
+            <svg-icon v-if="loveList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
+          </transition>
+          {{ loveList.name }}
+        </span>
       </li>
       <li
         v-for="(item, index) in userLists"
@@ -36,7 +51,12 @@
         :class="[$style.listsItem, {[$style.active]: item.id == listId}, {[$style.clicked]: rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]"
         :data-index="index" :aria-label="item.name" :aria-selected="defaultList.id == listId" @contextmenu="handleListsItemRigthClick($event, index)"
       >
-        <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">{{ item.name }}</span>
+        <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">
+          <transition name="list-active">
+            <svg-icon v-if="item.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
+          </transition>
+          {{ item.name }}
+        </span>
         <input
           :class="$style.listsInput" type="text" :value="item.name"
           :placeholder="item.name" @contextmenu.stop @keyup.enter="handleSaveListName(index, $event)" @blur="handleSaveListName(index, $event)"
@@ -340,6 +360,12 @@ export default {
       display: block;
     }
   }
+}
+.activeIcon {
+  height: .9em;
+  width: .9em;
+  margin-left: -0.45em;
+  vertical-align: -0.05em;
 }
 .listsLabel {
   display: block;

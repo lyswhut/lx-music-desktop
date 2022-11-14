@@ -8,6 +8,9 @@
             role="tab" :aria-selected="avtiveComponentName == h2.id"
             :aria-label="h2.title" ignore-tip @click="toggleTab(h2.id)"
           >
+            <transition name="list-active">
+              <svg-icon v-if="avtiveComponentName == h2.id" name="angle-right-solid" :class="$style.activeIcon" />
+            </transition>
             {{ h2.title }}
           </h2>
           <!-- <ul v-if="h2.children.length" :class="$style.tocList">
@@ -201,6 +204,12 @@ export default {
   &.active {
     color: var(--color-primary);
   }
+}
+.activeIcon {
+  height: .9em;
+  width: .9em;
+  margin-left: -0.45em;
+  vertical-align: -0.05em;
 }
 // .tocH3 {
 //   font-size: 13px;
