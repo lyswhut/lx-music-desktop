@@ -28,7 +28,14 @@
             :class="[{[$style.active]: playTaskId == item.id }, { selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
             @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
           >
-            <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
+            <div class="list-item-cell no-select" :class="$style.num" style="flex: 0 0 5%;">
+              <div v-if="playTaskId == item.id" :class="$style.playIcon">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 512 512" space="preserve">
+                  <use xlink:href="#icon-play-outline" />
+                </svg>
+              </div>
+              <div v-else class="num">{{ index + 1 }}</div>
+            </div>
             <div class="list-item-cell auto name">
               <span class="select name" :aria-label="getName(item)">{{ getName(item) }}</span>
             </div>
@@ -229,6 +236,27 @@ export default {
     }
   }
 }
+.num {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.playIcon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--color-button-font);
+  opacity: .7;
+}
+
 .content {
   min-height: 0;
   font-size: 14px;
