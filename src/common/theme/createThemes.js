@@ -293,6 +293,29 @@ const defaultThemes = [
     },
   },
   {
+    id: 'china_ink',
+    name: '近墨者黑',
+    isDark: false,
+    config: {
+      primary: 'rgba(47, 47, 47, 1)',
+      '--color-app-background': 'rgba(255, 255, 255, 0)',
+      '--color-main-background': 'rgba(255, 255, 255, 0.8)',
+      '--color-nav-font': 'var(--color-primary)',
+      '--background-image': 'url(./theme_images/china_ink.jpg)',
+      '--background-image-position': 'center',
+      '--background-image-size': 'cover',
+
+
+      '--color-btn-hide': 'rgba(183, 212, 208, 1)',
+      '--color-btn-min': 'rgba(200, 214, 183, 1)',
+      '--color-btn-close': 'rgba(218, 195, 188, 1)',
+
+      '--color-badge-primary': 'rgba(137, 70, 70, 1)',
+      '--color-badge-secondary': 'rgba(67, 139, 65, 1)',
+      '--color-badge-tertiary': 'rgba(132, 135, 65, 1)',
+    },
+  },
+  {
     id: 'happy_new_year',
     name: '新年快乐',
     isDark: false,
