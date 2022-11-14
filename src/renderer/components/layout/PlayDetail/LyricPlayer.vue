@@ -18,7 +18,7 @@
         <div ref="dom_skip_line" :class="$style.line" />
         <span :class="$style.label">{{ timeStr }}</span>
         <base-btn :class="$style.skipBtn" @mouseenter="handleSkipMouseEnter" @mouseleave="handleSkipMouseLeave" @click="handleSkipPlay">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 170 170" space="preserve">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 1024 1024" space="preserve">
             <use xlink:href="#icon-play" />
           </svg>
         </base-btn>
