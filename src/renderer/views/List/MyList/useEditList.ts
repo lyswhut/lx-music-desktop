@@ -28,11 +28,9 @@ export default ({ dom_lists_list }: {
     let name = dom_input.value.trim()
     if (dom_target.dataset.index == null) return
     const targetList = userLists[parseInt(dom_target.dataset.index)]
-    if (name.length) {
-      await updateUserList([{ ...targetList, name }])
-      dom_target.classList.remove(styles.editing)
-    }
+    if (name.length) await updateUserList([{ ...targetList, name }])
     dom_input.value = targetList.name
+    dom_target.classList.remove(styles.editing)
   }
 
   const handleCreateList = async(event: Event) => {
