@@ -32,12 +32,14 @@
           @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
         >
           <div class="list-item-cell no-select" :class="$style.num" style="flex: 0 0 5%;">
-            <div v-if="playerInfo.isPlayList && playerInfo.playIndex === index" :class="$style.playIcon">
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 512 512" space="preserve">
-                <use xlink:href="#icon-play-outline" />
-              </svg>
-            </div>
-            <div v-else class="num">{{ index + 1 }}</div>
+            <transition name="play-active">
+              <div v-if="playerInfo.isPlayList && playerInfo.playIndex === index" :class="$style.playIcon">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 512 512" space="preserve">
+                  <use xlink:href="#icon-play-outline" />
+                </svg>
+              </div>
+              <div v-else class="num">{{ index + 1 }}</div>
+            </transition>
           </div>
           <div class="list-item-cell auto name" :aria-label="item.name">
             <span class="select name">{{ item.name }}</span>

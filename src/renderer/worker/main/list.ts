@@ -149,19 +149,21 @@ const variantRxp2 = /\s|'|\.|,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[/g
  * @returns
  */
 export const filterDuplicateMusic = async(list: LX.Music.MusicInfo[], isFilterVariant: boolean = true) => {
-  type ListMapValue = Array<{ index: number, musicInfo: LX.Music.MusicInfo }>
+  type ListMapValue = Array<{ id: string, index: number, musicInfo: LX.Music.MusicInfo }>
   const listMap = new Map<string, ListMapValue>()
   const duplicateList = new Set<string>()
   const handleFilter = (name: string, index: number, musicInfo: LX.Music.MusicInfo) => {
     if (listMap.has(name)) {
       const targetMusicInfo = listMap.get(name)
       targetMusicInfo!.push({
+        id: musicInfo.id,
         index,
         musicInfo,
       })
       duplicateList.add(name)
     } else {
       listMap.set(name, [{
+        id: musicInfo.id,
         index,
         musicInfo,
       }])
