@@ -176,7 +176,7 @@ export default {
   overflow: hidden;
   border-radius: @radius-border;
   color: var(--color-font);
-  border-left: 12px solid var(--color-primary-light-200-alpha-500);
+  // border-left: 12px solid var(--color-primary-alpha-900);
   -webkit-app-region: no-drag;
   contain: strict;
 

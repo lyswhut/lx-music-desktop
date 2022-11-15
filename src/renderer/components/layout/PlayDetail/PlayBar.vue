@@ -67,7 +67,7 @@ const {
   flex: auto;
   display: flex;
   flex-flow: column nowrap;
-  padding: 13px;
+  padding: 13px 13px 13px 30px;
   overflow: hidden;
 }
 
