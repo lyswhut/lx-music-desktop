@@ -1,10 +1,11 @@
 import { BrowserWindow, dialog } from 'electron'
 import { join } from 'path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
-import { encodePath, isLinux, isWin } from '@common/utils'
+import { isLinux, isWin } from '@common/utils'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
 import { mainSend } from '@common/mainIpc'
 import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
+import { encodePath } from '@common/utils/electron'
 
 let browserWindow: Electron.BrowserWindow | null = null
 

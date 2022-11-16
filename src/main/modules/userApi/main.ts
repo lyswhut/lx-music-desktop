@@ -3,7 +3,7 @@ import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import { join } from 'path'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
-import { encodePath } from '@common/utils'
+import { encodePath } from '@common/utils/electron'
 
 let browserWindow: Electron.BrowserWindow | null = null
 

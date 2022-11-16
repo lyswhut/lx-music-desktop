@@ -177,8 +177,7 @@ export const sortInsert = (arr: Array<{ num: number, data: any }>, data: { num: 
 }
 
 export const encodePath = (path: string) => {
-  // https://github.com/lyswhut/lx-music-desktop/issues/963
-  return path.replaceAll('%', '%25')
+  return encodeURI(path.replaceAll('\\', '/'))
 }
 
 

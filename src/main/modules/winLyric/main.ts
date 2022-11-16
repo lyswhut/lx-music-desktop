@@ -1,8 +1,9 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
-import { debounce, encodePath, isLinux } from '@common/utils'
+import { debounce, isLinux } from '@common/utils'
 import { getLyricWindowBounds } from './utils'
 import { mainSend } from '@common/mainIpc'
+import { encodePath } from '@common/utils/electron'
 
 // require('./event')
 // require('./rendererEvent')

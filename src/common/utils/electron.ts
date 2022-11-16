@@ -36,3 +36,8 @@ export const clipboardReadText = (): string => {
   return clipboard.readText()
 }
 
+
+export const encodePath = (path: string) => {
+  // https://github.com/lyswhut/lx-music-desktop/issues/963
+  return path.replaceAll('%', '%25')
+}
