@@ -72,9 +72,8 @@ export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
     })
   }
   browserWindow.webContents.session.setPermissionRequestHandler((webContents, permission, resolve) => {
-    if (webContents === browserWindow?.webContents) return resolve(true)
-
-    resolve(false)
+    if (webContents === browserWindow?.webContents) return resolve(false)
+    resolve(true)
   })
   browserWindow.webContents.setWindowOpenHandler(() => {
     return { action: 'deny' }

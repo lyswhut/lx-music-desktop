@@ -1,7 +1,7 @@
 import { debounce } from '@common/utils/common'
 let isAutoHide = false
 let isLockedPointer = false
-let dom = null
+// let dom = null
 let event = null
 let isMouseDown = false
 
@@ -16,7 +16,7 @@ const lockPointer = () => {
   if (!isAutoHide || isMouseDown) return
   if (event && isControl(document.elementFromPoint(event.clientX, event.clientY))) return
 
-  dom.requestPointerLock()
+  document.body.requestPointerLock()
   isLockedPointer = true
 }
 const unLockPointer = () => {
@@ -43,11 +43,11 @@ const handleMouseUp = () => {
 
 export const registerAutoHideMounse = () => {
   if (isAutoHide) return
-  if (!dom) dom = document.getElementById('root')
+  // if (!dom) dom = document.getElementById('root')
   isAutoHide = true
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mousedown', handleMouseDown)
-  document.addEventListener('mouseup', handleMouseUp)
+  document.body.addEventListener('mousemove', handleMouseMove)
+  document.body.addEventListener('mousedown', handleMouseDown)
+  document.body.addEventListener('mouseup', handleMouseUp)
   startTimeout()
 }
 
@@ -55,8 +55,8 @@ export const unregisterAutoHideMounse = () => {
   if (!isAutoHide) return
   isAutoHide = false
   // console.log(dom)
-  dom.removeEventListener('mousemove', handleMouseMove)
-  dom.removeEventListener('mousedown', handleMouseDown)
-  dom.removeEventListener('mouseup', handleMouseUp)
+  document.body.removeEventListener('mousemove', handleMouseMove)
+  document.body.removeEventListener('mousedown', handleMouseDown)
+  document.body.removeEventListener('mouseup', handleMouseUp)
   unLockPointer()
 }
