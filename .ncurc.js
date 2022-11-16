@@ -4,7 +4,6 @@ module.exports = {
     'electron',
     'chalk',
     'del',
-    'svgo-loader',
   ],
   // target: 'newest',
   // filter: [

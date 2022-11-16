@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.0.0-beta.11",
+  "version": "2.0.0-beta.12",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -257,11 +257,11 @@
     "spinnies": "github:lyswhut/spinnies#233305c58694aa3b053e3ab9af9049993f918b9d",
     "svg-sprite-loader": "^6.0.11",
     "svg-transform-loader": "^2.0.13",
-    "svgo-loader": "^3.0.1",
+    "svgo-loader": "^3.0.3",
     "terser": "^5.15.1",
     "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.1",
-    "typescript": "^4.8.4",
+    "typescript": "^4.9.3",
     "vue-eslint-parser": "^9.1.0",
     "vue-loader": "^17.0.1",
     "vue-template-compiler": "^2.7.14",
@@ -299,18 +299,11 @@
   "overrides": {
     "got": "^11",
     "minimatch": "latest",
-    "svg-transform-loader": {
-      "loader-utils": "^2"
-    },
     "svg-sprite-loader": {
-      "postcss": "latest",
-      "loader-utils": "^2"
+      "postcss": "latest"
     },
     "svg-baker": {
       "postcss": "latest"
-    },
-    "pug-plain-loader": {
-      "loader-utils": "^2"
     }
   }
 }
