@@ -9,11 +9,12 @@
           <div :class="$style.desc">
             <h4>{{ item.name }}</h4>
             <div>
+              <p :class="$style.author">{{ item.author }}</p>
               <div :class="$style.songlist_info">
                 <span v-if="item.total != null"><svg-icon name="music" />{{ item.total }}</span>
                 <span v-if="item.play_count != null"><svg-icon name="headphones" />{{ item.play_count }}</span>
+                <span v-if="visibleSource">{{ item.source }}</span>
               </div>
-              <p :class="$style.author">{{ item.author }}</p>
             </div>
           </div>
         </li>
@@ -38,9 +39,12 @@ import { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   listInfo: ListInfo
-}>()
+  visibleSource: boolean
+}>(), {
+  visibleSource: false,
+})
 
 const router = useRouter()
 const route = useRoute()
@@ -175,7 +179,7 @@ defineExpose({
   font-size: 12px;
   .mixin-ellipsis-1;
   text-align: justify;
-  line-height: 1.2;
+  line-height: 1.3;
   // text-indent: 24px;
   color: var(--color-font-label);
 }

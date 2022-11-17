@@ -22,6 +22,7 @@ import {
   defineComponent,
   shallowReactive,
   defineExpose,
+  withDefaults,
 } from 'vue'
 // import { useStore } from 'vuex'
 
@@ -82,4 +83,5 @@ export {
   defineComponent,
   shallowReactive,
   defineExpose,
+  withDefaults,
 }

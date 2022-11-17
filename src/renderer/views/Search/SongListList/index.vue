@@ -1,6 +1,6 @@
 <template>
-  <div class="scroll" :class="$style.container">
-    <SongList ref="listRef" :list-info="listInfo" @toggle-page="togglePage" />
+  <div :class="$style.container">
+    <SongList ref="listRef" :list-info="listInfo" :visible-source="sourceId == 'all'" @toggle-page="togglePage" />
   </div>
 </template>
 
@@ -61,6 +61,7 @@ const togglePage = (page: number) => {
   top: 0;
   width: 100%;
   height: 100%;
+  padding-top: 5px;
 }
 
 // .list {
