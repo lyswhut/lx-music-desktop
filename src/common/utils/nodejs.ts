@@ -16,6 +16,7 @@ export const dirname = (p: string): string => path.dirname(p)
  */
 export const checkPath = async(path: string): Promise<boolean> => {
   return await new Promise(resolve => {
+    if (!path) return resolve(false)
     fs.access(path, fs.constants.F_OK, err => {
       if (err) return resolve(false)
       resolve(true)
@@ -25,6 +26,7 @@ export const checkPath = async(path: string): Promise<boolean> => {
 
 export const getFileStats = async(path: string): Promise<fs.Stats | null> => {
   return await new Promise(resolve => {
+    if (!path) return resolve(null)
     fs.stat(path, (err, stats) => {
       if (err) return resolve(null)
       resolve(stats)
