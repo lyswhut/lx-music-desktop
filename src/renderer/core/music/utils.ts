@@ -49,7 +49,7 @@ export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.
   if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
 
   const promise = musicSdk.findMusic(searchMusicInfo).then((otherSource) => {
-    const sources: LX.Music.MusicInfoOnline[] = otherSource.map(toNewMusicInfo)
+    const sources: LX.Music.MusicInfoOnline[] = otherSource.map(toNewMusicInfo) as LX.Music.MusicInfoOnline[]
     if (sources.length) void saveOtherSourceFromStore(musicInfo.id, sources)
     return sources
   }).finally(() => {

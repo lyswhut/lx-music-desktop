@@ -129,7 +129,7 @@ export const getListDetail = async(id: string, source: LX.OnlineSource, page: nu
   if (!isRefresh && cache.has(key)) return cache.get(key)
 
   return musicSdk[source]?.songList.getListDetail(id, page).then((result: ListDetailInfo) => {
-    result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m))))
+    result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m)) as LX.Music.MusicInfoOnline[]))
     cache.set(key, result)
     return result
   })
@@ -151,7 +151,7 @@ export const getListDetailAll = async(id: string, source: LX.OnlineSource, isRef
     return cache.has(key)
       ? Promise.resolve(cache.get(key))
       : musicSdk[source]?.songList.getListDetail(id, page).then((result: ListDetailInfo) => {
-        result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m))))
+        result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m)) as LX.Music.MusicInfoOnline[]))
         cache.set(key, result)
         return result
       }) ?? Promise.reject(new Error('source not found' + source))
