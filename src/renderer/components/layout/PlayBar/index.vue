@@ -10,7 +10,7 @@
       </div>
       <div :class="$style.status">{{ statusText }}</div>
     </div>
-    <div :class="$style.timeContainer">
+    <!-- <div :class="$style.timeContainer">
       <div :class="$style.timeContent">
         <span>{{ nowPlayTimeStr }}</span>
         <span style="margin: 0 1px;">/</span>
@@ -19,8 +19,8 @@
           <common-progress-bar v-if="!isShowPlayerDetail" :class-name="$style.progressBar" :progress="progress" :handle-transition-end="handleTransitionEnd" :is-active-transition="isActiveTransition" />
         </div>
       </div>
-    </div>
-    <!-- <play-progress /> -->
+    </div> -->
+    <play-progress />
     <control-btns />
     <div :class="$style.playBtnContent">
       <div :class="$style.playBtn" :aria-label="$t('player__prev')" @click="playPrev()">
@@ -50,7 +50,7 @@ import { computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
 import ControlBtns from './ControlBtns'
-// import PlayProgress from './PlayProgress'
+import PlayProgress from './PlayProgress'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
 import {
@@ -72,7 +72,7 @@ export default {
   name: 'CorePlayBar',
   components: {
     ControlBtns,
-    // PlayProgress,
+    PlayProgress,
   },
   setup() {
     const router = useRouter()
@@ -255,52 +255,52 @@ export default {
   max-width: 100%;
 }
 
-.timeContainer {
-  flex: none;
-  padding: 15px 0;
-  &:hover {
-    .progress {
-      opacity: 1;
-    }
-  }
-}
-.timeContent {
-  // width: 30%;
-  position: relative;
-  // flex: none;
-  color: var(--color-300);
-  font-size: 13px;
-  // padding-left: 10px;
-  // display: flex;
-  // flex-flow: column nowrap;
-  // align-items: center;
-  padding-bottom: 3px;
-}
-.progress {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  flex: auto;
-  // width: 160px;
-  // position: relative;
-  // padding-bottom: 6px;
-  // margin: 0 8px;
-  padding: 2px 0;
-  height: 8px;
-  transition: opacity @transition-normal;
-  opacity: .24;
+// .timeContainer {
+//   flex: none;
+//   padding: 15px 0;
+//   &:hover {
+//     .progress {
+//       opacity: 1;
+//     }
+//   }
+// }
+// .timeContent {
+//   // width: 30%;
+//   position: relative;
+//   // flex: none;
+//   color: var(--color-300);
+//   font-size: 13px;
+//   // padding-left: 10px;
+//   // display: flex;
+//   // flex-flow: column nowrap;
+//   // align-items: center;
+//   padding-bottom: 3px;
+// }
+// .progress {
+//   position: absolute;
+//   top: 100%;
+//   left: 0;
+//   width: 100%;
+//   flex: auto;
+//   // width: 160px;
+//   // position: relative;
+//   // padding-bottom: 6px;
+//   // margin: 0 8px;
+//   padding: 2px 0;
+//   height: 8px;
+//   transition: opacity @transition-normal;
+//   opacity: .24;
 
-  .progressBar {
-    height: 2px;
-    border-radius: 0;
-  }
-}
-.time {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
+//   .progressBar {
+//     height: 2px;
+//     border-radius: 0;
+//   }
+// }
+// .time {
+//   display: flex;
+//   flex-flow: row nowrap;
+//   justify-content: space-between;
+// }
 
 .playBtnContent {
   height: 100%;
