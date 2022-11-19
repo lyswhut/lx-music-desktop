@@ -53,12 +53,12 @@
             <use xlink:href="#icon-list-random" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'singleLoop'}]" :aria-label="$t('player__play_toggle_mode_single_loop')" @click="toggleMode('list')">
+        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'list'}]" :aria-label="$t('player__play_toggle_mode_list')" @click="toggleMode('list')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 32 32" space="preserve">
             <use xlink:href="#icon-list-order" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'list'}]" :aria-label="$t('player__play_toggle_mode_list')" @click="toggleMode('singleLoop')">
+        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'singleLoop'}]" :aria-label="$t('player__play_toggle_mode_single_loop')" @click="toggleMode('singleLoop')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-single-loop" />
           </svg>
