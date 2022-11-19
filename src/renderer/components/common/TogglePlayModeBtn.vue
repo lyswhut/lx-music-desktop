@@ -43,27 +43,27 @@
     </button>
     <template #content>
       <div :class="$style.setting">
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'listLoop'}]" :aria-label="$t('player__play_toggle_mode_list_loop')" @click="toggleMode('listLoop')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_list_loop')" @click="toggleMode('listLoop')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-list-loop" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'random'}]" :aria-label="$t('player__play_toggle_mode_random')" @click="toggleMode('random')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_random')" @click="toggleMode('random')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-list-random" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'singleLoop'}]" :aria-label="$t('player__play_toggle_mode_single_loop')" @click="toggleMode('list')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_list')" @click="toggleMode('list')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 32 32" space="preserve">
             <use xlink:href="#icon-list-order" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'list'}]" :aria-label="$t('player__play_toggle_mode_list')" @click="toggleMode('singleLoop')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_single_loop')" @click="toggleMode('singleLoop')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-single-loop" />
           </svg>
         </button>
-        <button :class="[$style.btn, {[$style.active]: appSetting['player.togglePlayMethod'] == 'none'}]" :aria-label="$t('player__play_toggle_mode_off')" @click="toggleMode('none')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_off')" @click="toggleMode('none')">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 32 32" space="preserve">
             <use xlink:href="#icon-single" />
           </svg>
