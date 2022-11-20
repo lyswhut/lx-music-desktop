@@ -176,7 +176,8 @@ export default {
   width: 300px;
   height: 15px;
   box-sizing: border-box;
-  padding: 5px;
+  padding: 5px 0;
+  margin: 0 5px;
 }
 
 
