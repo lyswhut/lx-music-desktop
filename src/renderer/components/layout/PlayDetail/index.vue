@@ -40,11 +40,11 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
       div.left(:class="$style.left")
         //- div(:class="$style.info")
         div(:class="$style.info")
-          img(:class="$style.img" :src="musicInfo.pic" v-if="musicInfo.pic")
+          img(:class="$style.img" :src="musicInfo.pic" :aria-label="$t('player__save_music_pic_click')" v-if="musicInfo.pic" @contextmenu.prevent="saveImage()")
           div.description(:class="$style.description")
-            p {{$t('player__music_name')}}{{musicInfo.name}}
-            p {{$t('player__music_singer')}}{{musicInfo.singer}}
-            p(v-if="musicInfo.album") {{$t('player__music_album')}}{{musicInfo.album}}
+            p(:aria-label="musicInfo.name + $t('copy_tip')" @click="handleCopy(musicInfo.name)") {{$t('player__music_name')}}{{musicInfo.name}}
+            p(:aria-label="musicInfo.singer + $t('copy_tip')" @click="handleCopy(musicInfo.singer)") {{$t('player__music_singer')}}{{musicInfo.singer}}
+            p(:aria-label="musicInfo.album + $t('copy_tip')" @click="handleCopy(musicInfo.album)" v-if="musicInfo.album") {{$t('player__music_album')}}{{musicInfo.album}}
 
       transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
         LyricPlayer(v-if="visibled")
@@ -75,7 +75,11 @@ import PlayBar from './PlayBar'
 import MusicComment from './components/MusicComment'
 import { registerAutoHideMounse, unregisterAutoHideMounse } from './autoHideMounse'
 import { appSetting } from '@renderer/store/setting'
-import { closeWindow, maxWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
+import { closeWindow, maxWindow, minWindow, setFullScreen, openSaveDir } from '@renderer/utils/ipc'
+import fs from 'fs'
+import needle from 'needle'
+import { useI18n } from '@renderer/plugins/i18n'
+import { clipboardWriteText } from '@common/utils/electron'
 
 export default {
   name: 'CorePlayDetail',
@@ -85,9 +89,28 @@ export default {
     MusicComment,
   },
   setup() {
+    const t = useI18n()
     const visibled = ref(false)
 
     let clickTime = 0
+
+    const handleCopy = (text) => {
+      clipboardWriteText(text)
+    }
+
+    const saveImage = () => {
+      openSaveDir({
+        title: t('player__save_music_pic'),
+        defaultPath: `${musicInfo.name} - ${musicInfo.singer}.jpg`,
+      }).then(result => {
+        if (result.canceled) return
+        saveImageFile(result.filePath)
+      })
+    }
+    const saveImageFile = async(path) => {
+      needle.get(musicInfo.pic).pipe(fs.createWriteStream(path))
+      console.log(path, musicInfo.pic)
+    }
 
     const hide = () => {
       setShowPlayerDetail(false)
@@ -125,6 +148,8 @@ export default {
 
 
     return {
+      handleCopy,
+      saveImage,
       appSetting,
       playMusicInfo,
       isShowPlayerDetail,

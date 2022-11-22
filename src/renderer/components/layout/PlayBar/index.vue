@@ -8,7 +8,7 @@
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
         {{ title }}
       </div>
-      <div :class="$style.status">{{ statusText }}</div>
+      <div :class="$style.status" :aria-label="statusText + $t('copy_tip')" @click="handleCopy(statusText)">{{ statusText }}</div>
     </div>
     <!-- <div :class="$style.timeContainer">
       <div :class="$style.timeContent">
@@ -239,18 +239,21 @@ export default {
   font-size: 13px;
   color: var(--color-font);
   min-width: 0;
-  line-height: 1.5;
+  line-height: 1.8;
 }
 
 .title {
   max-width: 100%;
-  font-size: 12px;
-  color: var(--color-font-label);
+  font-size: 15px;
+  // color: var(--color-font-label);
   .mixin-ellipsis-1;
 }
 .status {
+  translate: all 3s;
   padding-top: 3px;
   height: 23px;
+  font-size: 13px;
+  // color: var(--color-font-label);
   .mixin-ellipsis-1;
   max-width: 100%;
 }
