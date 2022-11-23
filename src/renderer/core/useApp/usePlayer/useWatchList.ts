@@ -20,7 +20,7 @@ export default () => {
         setTimeout(() => {
           setPlayMusicInfo(null, null)
         })
-      } else {
+      } else if (!playMusicInfo.isTempPlay) {
         console.log('current music removed')
         void playNext(true)
       }
