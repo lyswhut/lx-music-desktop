@@ -5,13 +5,13 @@ import musicSdk from '@renderer/utils/musicSdk'
 import apiSourceInfo from '@renderer/utils/musicSdk/api-source-info'
 
 
-export const setUserApi = (apiId: string) => {
+export const setUserApi = async(apiId: string) => {
   if (/^user_api/.test(apiId)) {
     qualityList.value = {}
     userApi.status = false
     userApi.message = 'initing'
 
-    setUserApiAction(apiId).then(() => {
+    await setUserApiAction(apiId).then(() => {
       apiSource.value = apiId
     }).catch(err => {
       console.log(err)

@@ -23,7 +23,7 @@ export default () => {
   })
 
   watch(() => appSetting['common.apiSource'], apiSource => {
-    setUserApi(apiSource)
+    void setUserApi(apiSource)
   })
 
   watch(() => appSetting['common.font'], (val) => {

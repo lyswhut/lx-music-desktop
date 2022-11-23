@@ -95,8 +95,8 @@ export default () => {
   })
 
   return async() => {
-    void setUserApi(appSetting['common.apiSource'])
-    return await getUserApiList().then(list => {
+    await setUserApi(appSetting['common.apiSource'])
+    void getUserApiList().then(list => {
       // console.log(list)
       // if (![...apiSourceInfo.map(s => s.id), ...list.map(s => s.id)].includes(appSetting['common.apiSource'])) {
       //   console.warn('reset api')

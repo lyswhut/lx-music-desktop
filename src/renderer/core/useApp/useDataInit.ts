@@ -14,7 +14,7 @@ const initPrevPlayInfo = async() => {
   window.lx.restorePlayInfo = null
   if (!info?.listId || info.index < 0) return
   const list = await getListMusics(info.listId)
-  if (!list || !list[info.index]) return
+  if (!list?.[info.index]) return
   window.lx.restorePlayInfo = info
   playList(info.listId, info.index)
 
