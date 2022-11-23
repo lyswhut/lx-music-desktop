@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.0.0-beta.15",
+  "version": "2.0.0-beta.16",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -289,7 +289,7 @@
     "music-metadata": "^8.1.0",
     "needle": "github:lyswhut/needle#95cd7135818824a90d1ed4bb5aa4f8610304ae34",
     "node-id3": "^0.2.4",
-    "socket.io": "^4.5.3",
+    "socket.io": "^4.5.4",
     "sortablejs": "^1.15.0",
     "tunnel": "^0.0.6",
     "utf-8-validate": "^5.0.10",
