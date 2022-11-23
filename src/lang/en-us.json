@@ -194,6 +194,8 @@
   "play_timeout_tip": "Pause after {time}",
   "play_timeout_unit": "Minute",
   "play_timeout_update": "Update timing",
+  "player__save_music_pic_click": "Right-click to save the song cover",
+  "player__save_music_pic": "Save the song cover to...",
   "player__add_music_to": "Add the current song to...",
   "player__buffering": "Buffering...",
   "player__desktop_lyric_lock": "Right click to lock lyrics",

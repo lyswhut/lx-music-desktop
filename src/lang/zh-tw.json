@@ -194,6 +194,8 @@
   "play_timeout_tip": "{time} 後暫停播放",
   "play_timeout_unit": "分鐘",
   "play_timeout_update": "更新定時",
+  "player__save_music_pic_click": "右擊保存歌曲封面",
+  "player__save_music_pic": "保存歌曲封面到...",
   "player__add_music_to": "添加當前歌曲到...",
   "player__album": "專輯名：",
   "player__buffering": "緩衝中...",
