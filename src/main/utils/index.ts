@@ -162,8 +162,8 @@ export const initHotKey = async() => {
       localConfig = config.local
       globalConfig = config.global
     } else {
-      localConfig = JSON.parse(JSON.stringify(defaultHotKey.global))
-      globalConfig = JSON.parse(JSON.stringify(defaultHotKey.local))
+      localConfig = JSON.parse(JSON.stringify(defaultHotKey.local))
+      globalConfig = JSON.parse(JSON.stringify(defaultHotKey.global))
     }
 
     electronStore_hotKey.set('local', localConfig)
