@@ -19,6 +19,8 @@ import router from './router'
 
 import { getSetting, updateSetting } from './utils/ipc'
 import { langList } from '@/lang'
+import type { I18n } from '@/lang/i18n'
+
 import { initSetting } from './store/setting'
 // import { bubbleCursor } from './utils/cursor-effects/bubbleCursor'
 
@@ -40,8 +42,8 @@ void getSetting().then(setting => {
   // window.lx.appSetting = setting
   // Set language automatically
   if (!setting['common.langId'] || !window.i18n.availableLocales.includes(setting['common.langId'])) {
-    let langId = null
-    let locale = window.navigator.language.toLocaleLowerCase()
+    let langId: I18n['locale'] | null = null
+    let locale = window.navigator.language.toLocaleLowerCase() as I18n['locale']
     if (window.i18n.availableLocales.includes(locale)) {
       langId = locale
     } else {

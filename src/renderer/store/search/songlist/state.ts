@@ -5,7 +5,7 @@ import music from '@renderer/utils/musicSdk'
 
 import { ListInfo } from '@renderer/store/songList/state'
 
-export { ListInfoItem } from '@renderer/store/songList/state'
+export type { ListInfoItem } from '@renderer/store/songList/state'
 
 export const sources: Array<LX.OnlineSource | 'all'> = markRaw([])
 

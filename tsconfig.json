@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
@@ -82,7 +83,7 @@
     // "preserveValueImports": true,                     /* Preserve unused imported values in the JavaScript output that would otherwise be removed. */
 
     /* Interop Constraints */
-    // "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
+    "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
     "allowSyntheticDefaultImports": true,                /* Allow 'import x from y' when a module doesn't have a default export. */
     "esModuleInterop": false,                            /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
     // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */

@@ -2,7 +2,8 @@ import { markRawList } from '@common/utils/vueTools'
 import music from '@renderer/utils/musicSdk'
 import { sortInsert, similar } from '@common/utils/common'
 
-import { sources, maxPages, listInfos, ListInfoItem, SearchListInfo } from './state'
+import type { ListInfoItem, SearchListInfo } from './state'
+import { sources, maxPages, listInfos } from './state'
 
 interface SearchResult {
   list: ListInfoItem[]

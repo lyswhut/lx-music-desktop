@@ -75,13 +75,16 @@ export {
   unref,
   onMounted,
   markRaw,
-  ComputedRef,
-  Ref,
-  ShallowRef,
   defineProps,
   defineEmits,
   defineComponent,
   shallowReactive,
   defineExpose,
   withDefaults,
+}
+
+export type {
+  ComputedRef,
+  Ref,
+  ShallowRef,
 }

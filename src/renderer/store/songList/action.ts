@@ -2,14 +2,12 @@
 import { deduplicationList, toNewMusicInfo } from '@renderer/utils'
 import musicSdk from '@renderer/utils/musicSdk'
 import { markRaw, markRawList } from '@common/utils/vueTools'
+import type { ListDetailInfo, ListInfoItem, ListInfo } from './state'
 import {
   tags,
   TagInfo,
   listInfo,
   listDetailInfo,
-  ListDetailInfo,
-  ListInfoItem,
-  ListInfo,
   selectListInfo,
   isVisibleListDetail,
   openSongListInputInfo,

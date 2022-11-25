@@ -6,20 +6,13 @@ type Message = Record<keyof typeof zh_cn, string>
 | Record<keyof typeof zh_tw, string>
 | Record<keyof typeof en_us, string>
 
-interface Lang {
-  name: string
-  locale: string
-  alternate?: string
-  country: string
-  fallback?: boolean
-  message: Message
-}
+type Messages = Record<(typeof langs)[number]['locale'], Message>
 
-const langs: Lang[] = [
+const langs = [
   {
     name: '简体中文',
     locale: 'zh-cn',
-    alternate: 'zh-hans',
+    // alternate: 'zh-hans',
     country: 'cn',
     fallback: true,
     message: zh_cn,
@@ -27,7 +20,7 @@ const langs: Lang[] = [
   {
     name: '繁体中文',
     locale: 'zh-tw',
-    alternate: 'zh-hk',
+    // alternate: 'zh-hk',
     country: 'cn',
     message: zh_tw,
   },
@@ -37,20 +30,20 @@ const langs: Lang[] = [
     country: 'us',
     message: en_us,
   },
-]
+] as const
 
 const langList: Array<{
   name: string
-  locale: string
+  locale: keyof Messages
   alternate?: string
 }> = []
-type Messages = Record<string, Message>
+// @ts-expect-error
 const messages: Messages = {}
 langs.forEach(item => {
   langList.push({
     name: item.name,
     locale: item.locale,
-    alternate: item.alternate,
+    // alternate: item.alternate,
   })
   messages[item.locale] = item.message
 })
@@ -58,6 +51,9 @@ langs.forEach(item => {
 export {
   langList,
   messages,
+}
+
+export type {
   Messages,
   Message,
 }

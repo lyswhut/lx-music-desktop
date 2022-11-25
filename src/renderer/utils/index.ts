@@ -53,7 +53,7 @@ export const getFontSizeWithScreen = (screenWidth: number = window.innerWidth): 
 
 
 export const deduplicationList = <T extends LX.Music.MusicInfo>(list: T[]): T[] => {
-  const ids: Set<string | number> = new Set()
+  const ids: Set<string> = new Set()
   return list.filter(s => {
     if (ids.has(s.id)) return false
     ids.add(s.id)

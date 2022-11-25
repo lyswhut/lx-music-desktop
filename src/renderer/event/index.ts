@@ -39,7 +39,9 @@ export const registerEvents = () => {
 //   // unregisterRendererEvents()
 // }
 
-export { AppEventTypes } from './appEvent'
-export { KeyEventTypes, clearDownKeys } from './keyEvent'
+export { clearDownKeys } from './keyEvent'
+
+export type { AppEventTypes } from './appEvent'
+export type { KeyEventTypes } from './keyEvent'
 
 registerEvents()

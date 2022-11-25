@@ -17,7 +17,7 @@ export const setUserLists = (lists: LX.List.UserListInfo[]) => {
 
 export const setMusicList = (listId: string, musicList: LX.Music.MusicInfo[]) => {
   const list = shallowReactive(markRawList(musicList))
-  allMusicList.set(listId, shallowReactive(musicList))
+  allMusicList.set(listId, list)
   return list
 }
 

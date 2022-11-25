@@ -1,22 +1,24 @@
 import { App, ref } from 'vue'
-import { messages, Messages, Message } from './index'
-
+import { messages } from './index'
+import type { Messages, Message } from './index'
 
 type TranslateValues = Record<string, string | number | boolean>
 
+type Langs = keyof Messages
+
 export declare interface I18n {
-  locale: keyof Messages
-  fallbackLocale: keyof Messages
-  availableLocales: Array<keyof Messages>
+  locale: Langs
+  fallbackLocale: Langs
+  availableLocales: Langs[]
   messages: Messages
   message: Message
-  setLanguage: (locale: string) => void
+  setLanguage: (locale: Langs) => void
   fillMessage: (message: string, val: TranslateValues) => string
   getMessage: (key: keyof Message, val?: TranslateValues) => string
   t: (key: keyof Message, val?: TranslateValues) => string
 }
 
-const locale = ref('zh-cn')
+const locale = ref<Langs>('zh-cn')
 
 let i18n: I18n
 
@@ -47,7 +49,7 @@ const useI18n = () => {
   }
 }
 
-const setLanguage = (lang: string) => {
+const setLanguage = (lang: Langs) => {
   i18n.setLanguage(lang)
 }
 
@@ -55,10 +57,10 @@ const createI18n = (): I18n => {
   return i18n = {
     locale: locale.value,
     fallbackLocale: 'zh-cn',
-    availableLocales: Object.keys(messages),
+    availableLocales: Object.keys(messages) as Langs[],
     messages,
     message: messages[locale.value],
-    setLanguage(_locale: string) {
+    setLanguage(_locale: Langs) {
       this.locale = _locale
       this.message = messages[_locale]
       locale.value = _locale
@@ -74,7 +76,7 @@ const createI18n = (): I18n => {
       return val ? this.fillMessage(targetMessage, val) : targetMessage
     },
     t(key: keyof Message, val?: TranslateValues): string {
-      trackReactivityValues()
+      // trackReactivityValues()
       return this.getMessage(key, val)
     },
   }
