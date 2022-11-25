@@ -170,7 +170,7 @@ export const listenerAppEvent = (startApp: () => void) => {
 
   nativeTheme.addListener('updated', (event: any) => {
     const themeInfo: Electron.NativeTheme = event.sender
-    global.lx.event_app.system_theme_change(themeInfo.shouldUseDarkColors)
+    global.lx?.event_app.system_theme_change(themeInfo.shouldUseDarkColors)
   })
 }
 
