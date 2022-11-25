@@ -96,6 +96,10 @@ body {
 .disableTransparent {
   background-color: var(--color-content-background);
 
+  #body {
+    border: 1Px solid var(--color-primary-light-500);
+  }
+
   #right {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
