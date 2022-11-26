@@ -5,6 +5,7 @@ declare namespace LX {
       'desktopLyric.isLock': LX.AppSetting['desktopLyric.isLock']
       'desktopLyric.isAlwaysOnTop': LX.AppSetting['desktopLyric.isAlwaysOnTop']
       'desktopLyric.isAlwaysOnTopLoop': LX.AppSetting['desktopLyric.isAlwaysOnTopLoop']
+      'desktopLyric.isShowTaskbar': LX.AppSetting['desktopLyric.isShowTaskbar']
       'desktopLyric.audioVisualization': LX.AppSetting['desktopLyric.audioVisualization']
       'desktopLyric.width': LX.AppSetting['desktopLyric.width']
       'desktopLyric.height': LX.AppSetting['desktopLyric.height']

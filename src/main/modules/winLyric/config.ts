@@ -1,5 +1,5 @@
 import { isLinux } from '@common/utils'
-import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents } from './main'
+import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
 import { sendConfigChange } from './rendererEvent'
 import { buildLyricConfig, getLyricWindowBounds, watchConfigKeys } from './utils'
 
@@ -7,6 +7,7 @@ let isLock: boolean
 let isEnable: boolean
 let isAlwaysOnTop: boolean
 let isAlwaysOnTopLoop: boolean
+let isShowTaskbar: boolean
 let isLockScreen: boolean
 let isHoverHide: boolean
 
@@ -36,6 +37,10 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
       if (isAlwaysOnTop && global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) {
         alwaysOnTopTools.startLoop()
       } else alwaysOnTopTools.clearLoop()
+    }
+    if (keys.includes('desktopLyric.isShowTaskbar') && isShowTaskbar != global.lx.appSetting['desktopLyric.isShowTaskbar']) {
+      isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
+      setSkipTaskbar(!global.lx.appSetting['desktopLyric.isShowTaskbar'])
     }
     if (keys.includes('desktopLyric.isAlwaysOnTopLoop') && isAlwaysOnTopLoop != global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) {
       isAlwaysOnTopLoop = global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']

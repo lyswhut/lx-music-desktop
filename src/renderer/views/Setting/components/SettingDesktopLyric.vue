@@ -12,6 +12,8 @@ dd
   .gap-top
     base-checkbox(id="setting_desktop_lyric_alwaysOnTop" :modelValue="appSetting['desktopLyric.isAlwaysOnTop']" @update:modelValue="updateSetting({ 'desktopLyric.isAlwaysOnTop': $event })" :label="$t('setting__desktop_lyric_always_on_top')")
   .gap-top
+    base-checkbox(id="setting_desktop_lyric_showTaskbar" :modelValue="appSetting['desktopLyric.isShowTaskbar']" @update:modelValue="updateSetting({ 'desktopLyric.isShowTaskbar': $event })" :label="$t('setting__desktop_lyric_show_taskbar')")
+  .gap-top
     base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" :modelValue="appSetting['desktopLyric.isAlwaysOnTopLoop']" @update:modelValue="updateSetting({ 'desktopLyric.isAlwaysOnTopLoop': $event })" :label="$t('setting__desktop_lyric_always_on_top_loop')")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lockScreen" :modelValue="appSetting['desktopLyric.isLockScreen']" @update:modelValue="updateSetting({ 'desktopLyric.isLockScreen': $event })" :label="$t('setting__desktop_lyric_lock_screen')")

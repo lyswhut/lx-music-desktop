@@ -80,6 +80,7 @@ export const watchConfigKeys = [
   'desktopLyric.isLock',
   'desktopLyric.isAlwaysOnTop',
   'desktopLyric.isAlwaysOnTopLoop',
+  'desktopLyric.isShowTaskbar',
   'desktopLyric.audioVisualization',
   'desktopLyric.width',
   'desktopLyric.height',

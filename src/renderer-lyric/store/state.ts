@@ -5,6 +5,7 @@ export const setting = shallowReactive<LX.DesktopLyric.Config>({
   'desktopLyric.isLock': false,
   'desktopLyric.isAlwaysOnTop': false,
   'desktopLyric.isAlwaysOnTopLoop': false,
+  'desktopLyric.isShowTaskbar': true,
   'desktopLyric.audioVisualization': false,
   'desktopLyric.width': 450,
   'desktopLyric.height': 300,

@@ -190,6 +190,11 @@ declare global {
       'desktopLyric.isAlwaysOnTopLoop': boolean
 
       /**
+       * 是否将歌词进程显示在任务栏
+       */
+      'desktopLyric.isShowTaskbar': boolean
+
+      /**
        * 是否启用音频可视化
        */
       'desktopLyric.audioVisualization': boolean

@@ -43,6 +43,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.isLock': false,
   'desktopLyric.isAlwaysOnTop': false,
   'desktopLyric.isAlwaysOnTopLoop': false,
+  'desktopLyric.isShowTaskbar': false,
   'desktopLyric.audioVisualization': false,
   'desktopLyric.width': 450,
   'desktopLyric.height': 300,

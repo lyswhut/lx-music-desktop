@@ -31,6 +31,9 @@ const winEvent = () => {
 
   browserWindow.on('closed', () => {
     browserWindow = null
+    if (global.lx.appSetting['desktopLyric.enable']) {
+      global.lx.event_app.update_config({ 'desktopLyric.enable': false })
+    }
   })
 
   browserWindow.on('move', () => {
@@ -86,6 +89,7 @@ export const createWindow = () => {
   let height = global.lx.appSetting['desktopLyric.height']
   let isAlwaysOnTop = global.lx.appSetting['desktopLyric.isAlwaysOnTop']
   let isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
+  let isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
   let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
   if (x == null || y == null) {
     x = screenWidth - width
@@ -122,7 +126,7 @@ export const createWindow = () => {
     fullscreenable: false,
     show: false,
     alwaysOnTop: isAlwaysOnTop,
-    skipTaskbar: true,
+    skipTaskbar: !isShowTaskbar,
     webPreferences: {
       contextIsolation: false,
       webSecurity: false,
@@ -171,6 +175,11 @@ export const setBounds = (bounds: Electron.Rectangle) => {
 export const setIgnoreMouseEvents = (ignore: boolean, options?: Electron.IgnoreMouseEventsOptions) => {
   if (!browserWindow) return
   browserWindow.setIgnoreMouseEvents(ignore, options)
+}
+
+export const setSkipTaskbar = (skip: boolean) => {
+  if (!browserWindow) return
+  browserWindow.setSkipTaskbar(skip)
 }
 
 export const setAlwaysOnTop = (flag: boolean, level?: 'normal' | 'floating' | 'torn-off-menu' | 'modal-panel' | 'main-menu' | 'status' | 'pop-up-menu' | 'screen-saver' | undefined, relativeLevel?: number | undefined) => {
