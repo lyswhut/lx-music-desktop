@@ -175,9 +175,9 @@ export default {
 
       if (item.pc) {
         list.push({
-          singer: item.pc.ar,
-          name: item.pc.sn,
-          albumName: item.pc.alb,
+          singer: item.pc.ar ?? '',
+          name: item.pc.sn ?? '',
+          albumName: item.pc.alb ?? '',
           albumId: item.al?.id,
           source: 'wy',
           interval: formatPlayTime(item.dt / 1000),
@@ -192,7 +192,7 @@ export default {
       } else {
         list.push({
           singer: this.getSinger(item.ar),
-          name: item.name,
+          name: item.name ?? '',
           albumName: item.al?.name,
           albumId: item.al?.id,
           source: 'wy',
