@@ -41,7 +41,7 @@ import { useRoute, useRouter } from '@common/utils/vueRouter'
 
 const props = withDefaults(defineProps<{
   listInfo: ListInfo
-  visibleSource: boolean
+  visibleSource?: boolean
 }>(), {
   visibleSource: false,
 })
