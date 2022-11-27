@@ -42,7 +42,7 @@ export default {
   },
   getSinger(singers) {
     let arr = []
-    singers.forEach(singer => {
+    singers?.forEach(singer => {
       arr.push(singer.name)
     })
     return arr.join('、')
@@ -107,20 +107,24 @@ export default {
     let limit = 1000
     let rangeStart = (page - 1) * limit
     // console.log(body)
-    let musicDetail
-    try {
-      musicDetail = await musicDetailApi.getList(body.playlist.trackIds.slice(rangeStart, limit * page).map(trackId => trackId.id))
-    } catch (err) {
-      console.log(err)
-      if (err.message == 'try max num') {
-        throw err
-      } else {
-        return this.getListDetail(id, page, ++tryNum)
+    let list
+    if (body.playlist.trackIds.length == body.privileges.length) {
+      list = this.filterListDetail(body)
+    } else {
+      try {
+        list = (await musicDetailApi.getList(body.playlist.trackIds.slice(rangeStart, limit * page).map(trackId => trackId.id))).list
+      } catch (err) {
+        console.log(err)
+        if (err.message == 'try max num') {
+          throw err
+        } else {
+          return this.getListDetail(id, page, ++tryNum)
+        }
       }
     }
-    // console.log(musicDetail)
+    // console.log(list)
     return {
-      list: musicDetail.list,
+      list,
       page,
       limit,
       total: body.playlist.trackIds.length,
@@ -169,21 +173,39 @@ export default {
 
       types.reverse()
 
-      list.push({
-        singer: this.getSinger(item.ar),
-        name: item.name,
-        albumName: item.al.name,
-        albumId: item.al.id,
-        source: 'wy',
-        interval: formatPlayTime(item.dt / 1000),
-        songmid: item.id,
-        img: item.al.picUrl,
-        lrc: null,
-        otherSource: null,
-        types,
-        _types,
-        typeUrl: {},
-      })
+      if (item.pc) {
+        list.push({
+          singer: item.pc.ar,
+          name: item.pc.sn,
+          albumName: item.pc.alb,
+          albumId: item.al?.id,
+          source: 'wy',
+          interval: formatPlayTime(item.dt / 1000),
+          songmid: item.id,
+          img: item.al?.picUrl ?? '',
+          lrc: null,
+          otherSource: null,
+          types,
+          _types,
+          typeUrl: {},
+        })
+      } else {
+        list.push({
+          singer: this.getSinger(item.ar),
+          name: item.name,
+          albumName: item.al?.name,
+          albumId: item.al?.id,
+          source: 'wy',
+          interval: formatPlayTime(item.dt / 1000),
+          songmid: item.id,
+          img: item.al?.picUrl,
+          lrc: null,
+          otherSource: null,
+          types,
+          _types,
+          typeUrl: {},
+        })
+      }
     })
     return list
   },
