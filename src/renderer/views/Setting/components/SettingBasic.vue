@@ -79,6 +79,15 @@ dd
   div
     base-checkbox.gap-left(v-for="item in controlBtnPositionList" :key="item.id" :id="`setting_basic_control_btn_position_${item.id}`"
       name="setting_basic_control_btn_position" need :modelValue="appSetting['common.controlBtnPosition']" @update:modelValue="updateSetting({'common.controlBtnPosition': $event})" :value="item.id" :label="item.name")
+dd
+  h3#basic_playbar_progress_style {{$t('setting__basic_playbar_progress_style')}}
+  div
+    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
+      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')")
+    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
+      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')")
+    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
+      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="full" :label="$t('setting__basic_playbar_progress_style_full')")
 
 ThemeSelectorModal(v-model="isShowThemeSelectorModal")
 ThemeEditModal(v-model="isShowThemeEditModal" :theme-id="editThemeId" @submit="handleRefreshTheme")

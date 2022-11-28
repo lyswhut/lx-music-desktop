@@ -64,6 +64,11 @@ declare global {
       'common.controlBtnPosition': 'left' | 'right'
 
       /**
+       * 播放栏进度条样式
+       */
+      'common.playBarProgressStyle': 'mini' | 'full' | 'middle'
+
+      /**
        * 启动时自动播放歌曲
        */
       'player.startupAutoPlay': boolean
