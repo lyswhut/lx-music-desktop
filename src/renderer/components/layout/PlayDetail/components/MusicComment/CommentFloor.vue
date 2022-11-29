@@ -8,13 +8,16 @@ div(:class="$style.container")
         div(:class="$style.right")
           div(:class="$style.info")
             div.select(:class="$style.name") {{item.userName}}
-            time(:class="$style.time" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
+            time(:class="$style.label" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
+            div(:class="$style.label" v-if="item.location") {{item.location}}
             div(:class="$style.likes" v-if="item.likedCount != null")
               svg(:class="$style.likesIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-thumbs-up')
               | {{item.likedCount}}
           div.select(:class="$style.comment_text")
             p(v-for="text in item.text") {{text}}
+          div(v-if="item.images?.length" :class="$style.comment_images")
+            img(v-for="url in item.images" :src="url")
       comment-floor(v-if="item.reply && item.reply.length" :class="$style.reply_floor" :comments="item.reply")
 </template>
 
@@ -87,17 +90,19 @@ export default {
   align-items: flex-end;
   min-width: 0;
   line-height: 1.3;
-  color: var(--color-font-label);
+  gap: 6px;
 }
 .name {
   flex: 0 1 auto;
   min-width: 0;
   .mixin-ellipsis-1;
+  color: var(--color-400);
 }
-.time {
+.label {
   flex: none;
-  font-size: 11px;
-  margin-left: 5px;
+  font-size: 12px;
+  // margin-left: 5px;
+  color: var(--color-200);
 }
 .likes {
   flex: 1 0 auto;
@@ -120,6 +125,16 @@ export default {
     line-height: 1.5;
     word-break: break-all;
     overflow-wrap: break-word;
+  }
+}
+.comment_images {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+  margin-top: 5px;
+
+  img {
+    max-width: 240px;
   }
 }
 

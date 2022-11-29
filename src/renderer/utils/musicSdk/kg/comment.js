@@ -7,7 +7,7 @@ export default {
   async getComment({ hash }, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
 
-    const _requestObj = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022`, {
+    const _requestObj = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022&need_show_image=1`, {
       headers: {
         'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
       },
@@ -21,7 +21,7 @@ export default {
     // console.log(songmid)
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
-    const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022`, {
+    const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022&need_show_image=1`, {
       headers: {
         'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
       },
@@ -39,7 +39,7 @@ export default {
       ? audioId.split('_')[0]
       : songmid
 
-    const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getReplyWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&kugouid=687373022&appid=1001&childrenid=${songmid}&tid=${replyId}`, {
+    const _requestObj2 = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getReplyWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&kugouid=687373022&need_show_image=1&appid=1001&childrenid=${songmid}&tid=${replyId}`, {
       headers: {
         'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
       },
@@ -54,6 +54,8 @@ export default {
       let data = {
         id: item.id,
         text: decodeName(item.content || '').split('\n'),
+        images: item.images ? item.images.map(i => i.url) : [],
+        location: item.location,
         time: item.addtime,
         timeStr: dateFormat2(new Date(item.addtime).getTime()),
         userName: item.user_name,
