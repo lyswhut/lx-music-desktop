@@ -91,6 +91,7 @@ export default {
   min-width: 0;
   line-height: 1.3;
   gap: 6px;
+  color: var(--color-200);
 }
 .name {
   flex: 0 1 auto;
@@ -102,7 +103,6 @@ export default {
   flex: none;
   font-size: 12px;
   // margin-left: 5px;
-  color: var(--color-200);
 }
 .likes {
   flex: 1 0 auto;
@@ -115,7 +115,7 @@ export default {
   width: 12px;
   height: 12px;
   margin-right: 3px;
-  color: var(--color-primary-font);
+  color: var(--color-primary-alpha-500);
 }
 .comment_text {
   text-align: justify;
