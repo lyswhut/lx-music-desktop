@@ -4,6 +4,10 @@ import { getFonts } from '@main/utils/fontManage'
 
 // 公共操作事件（公共，只注册一次）
 export default () => {
+  mainHandle<string>(CMMON_EVENT_NAME.get_data_path, async() => {
+    return global.lxOldDataPath
+  })
+
   mainHandle<LX.AppSetting>(CMMON_EVENT_NAME.get_app_setting, async() => {
     return global.lx.appSetting
   })
