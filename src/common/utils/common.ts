@@ -16,21 +16,45 @@ export const sizeFormate = (size: number): string => {
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
 
+/**
+ * 将字符串、时间戳等格式转成时间对象
+ * @param date 时间
+ * @returns 时间对象或空字符串
+ */
+export const toDateObj = (date: any): Date | '' => {
+  // console.log(date)
+  if (!date) return ''
+  switch (typeof date) {
+    case 'string':
+      if (!date.includes('T')) date = date.split('.')[0].replace(/-/g, '/')
+    // eslint-disable-next-line no-fallthrough
+    case 'number':
+      date = new Date(date)
+    // eslint-disable-next-line no-fallthrough
+    case 'object':
+      break
+    default: return ''
+  }
+  return date
+}
+
 const numFix = (n: number): string => n < 10 ? (`0${n}`) : n.toString()
 /**
-    * 日期格式化
-    * @param {*} date 时间
-    * @param {String} format 时间格式，默认YYYY-MM-DD hh:mm:ss
-    */
-export const dateFormat = (date: string | number | Date, format = 'YYYY-MM-DD hh:mm:ss') => {
-  if (typeof date != 'object') date = new Date(date)
+ * 时间格式化
+ * @param _date 时间
+ * @param format Y-M-D h:m:s Y年 M月 D日 h时 m分 s秒
+ */
+export const dateFormat = (_date: any, format = 'Y-M-D h:m:s') => {
+  // console.log(date)
+  const date = toDateObj(_date)
+  if (!date) return ''
   return format
-    .replace('YYYY', date.getFullYear().toString())
-    .replace('MM', numFix(date.getMonth() + 1).toString())
-    .replace('DD', numFix(date.getDate()))
-    .replace('hh', numFix(date.getHours()))
-    .replace('mm', numFix(date.getMinutes()))
-    .replace('ss', numFix(date.getSeconds()))
+    .replace('Y', date.getFullYear().toString())
+    .replace('M', numFix(date.getMonth() + 1))
+    .replace('D', numFix(date.getDate()))
+    .replace('h', numFix(date.getHours()))
+    .replace('m', numFix(date.getMinutes()))
+    .replace('s', numFix(date.getSeconds()))
 }
 
 

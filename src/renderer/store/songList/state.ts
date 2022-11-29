@@ -42,7 +42,7 @@ export declare interface ListInfoItem {
   id: string
   author: string
   name: string
-  // time: basic.publish_time,
+  time?: string
   img: string
   // grade: basic.favorcnt / 10,
   desc: string | null
@@ -110,7 +110,7 @@ export const selectListInfo = markRaw<ListInfoItem>({
   id: '',
   author: '',
   name: '',
-  // time: basic.publish_time,
+  time: '',
   img: '',
   // grade: basic.favorcnt / 10,
   desc: '',

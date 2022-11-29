@@ -10,6 +10,7 @@
             <h4>{{ item.name }}</h4>
             <div>
               <p :class="$style.author">{{ item.author }}</p>
+              <p v-if="item.time" :class="$style.time">{{ item.time }}</p>
               <div :class="$style.songlist_info">
                 <span v-if="item.total != null"><svg-icon name="music" />{{ item.total }}</span>
                 <span v-if="item.play_count != null"><svg-icon name="headphones" />{{ item.play_count }}</span>
@@ -176,6 +177,15 @@ defineExpose({
 }
 .author {
   margin-top: 6px;
+  font-size: 12px;
+  .mixin-ellipsis-1;
+  text-align: justify;
+  line-height: 1.3;
+  // text-indent: 24px;
+  color: var(--color-font-label);
+}
+.time {
+  margin-top: 3px;
   font-size: 12px;
   .mixin-ellipsis-1;
   text-align: justify;

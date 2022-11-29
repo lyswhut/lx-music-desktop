@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
 
 export default {
   _requestObj_tags: null,
@@ -30,23 +30,25 @@ export default {
   tagsUrl: 'https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=%7B%22tags%22%3A%7B%22method%22%3A%22get_all_categories%22%2C%22param%22%3A%7B%22qq%22%3A%22%22%7D%2C%22module%22%3A%22playlist.PlaylistAllCategoriesServer%22%7D%7D',
   hotTagUrl: 'https://c.y.qq.com/node/pc/wk_v15/category_playlist.html',
   getListUrl(sortId, id, page) {
-    return id
-      ? `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
-          comm: { cv: 1602, ct: 20 },
-          playlist: {
-            method: 'get_category_content',
-            param: {
-              titleid: id,
-              caller: '0',
-              category_id: id,
-              size: this.limit_list,
-              page: page - 1,
-              use_page: 1,
-            },
-            module: 'playlist.PlayListCategoryServer',
+    if (id) {
+      id = parseInt(id)
+      return `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
+        comm: { cv: 1602, ct: 20 },
+        playlist: {
+          method: 'get_category_content',
+          param: {
+            titleid: id,
+            caller: '0',
+            category_id: id,
+            size: this.limit_list,
+            page: page - 1,
+            use_page: 1,
           },
-          }))}`
-      : `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
+          module: 'playlist.PlayListCategoryServer',
+        },
+        }))}`
+    }
+    return `https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=${encodeURIComponent(JSON.stringify({
           comm: { cv: 1602, ct: 20 },
           playlist: {
             method: 'get_playlist_by_tag',
@@ -116,6 +118,7 @@ export default {
     this._requestObj_list = httpFetch(
       this.getListUrl(sortId, tagId, page),
     )
+    console.log(this.getListUrl(sortId, tagId, page))
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return tagId ? this.filterList2(body.playlist.data, page) : this.filterList(body.playlist.data, page)
@@ -139,7 +142,7 @@ export default {
         id: item.tid,
         author: item.creator_info.nick,
         name: item.title,
-        // time: item.publish_time,
+        time: item.modify_time ? dateFormat(item.modify_time * 1000, 'Y-M-D') : '',
         img: item.cover_url_medium,
         // grade: item.favorcnt / 10,
         total: item.song_ids?.length,
@@ -317,7 +320,7 @@ export default {
               id: item.dissid,
               author: item.creator.name,
               name: item.dissname,
-              time: item.createtime,
+              time: dateFormat(item.createtime, 'Y-M-D'),
               img: item.imgurl,
               // grade: item.favorcnt / 10,
               total: item.song_count,

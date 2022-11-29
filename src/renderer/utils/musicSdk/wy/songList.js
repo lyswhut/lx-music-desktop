@@ -5,7 +5,7 @@
 
 import { weapi, linuxapi } from './utils/crypto'
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { formatPlayTime, sizeFormate, dateFormat } from '../../index'
 import musicDetailApi from './musicDetail'
 import { eapiRequest } from './utils/index'
 
@@ -225,7 +225,7 @@ export default {
       }),
     })
     return this._requestObj_list.promise.then(({ body }) => {
-      // console.log(body)
+      console.log(body)
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.playlists),
@@ -243,7 +243,7 @@ export default {
       id: item.id,
       author: item.creator.nickname,
       name: item.name,
-      time: item.createTime,
+      time: item.createTime ? dateFormat(item.createTime, 'Y-M-D') : '',
       img: item.coverImgUrl,
       grade: item.grade,
       total: item.trackCount,

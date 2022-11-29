@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
 import { toMD5 } from '../utils'
 import infSign from './vendors/infSign.min'
 
@@ -149,7 +149,7 @@ export default {
       id: 'id_' + item.specialid,
       author: item.nickname,
       name: item.specialname,
-      time: item.publish_time || item.publishtime,
+      time: dateFormat(item.publish_time || item.publishtime, 'Y-M-D'),
       img: item.img || item.imgurl,
       total: item.songcount,
       grade: item.grade,
@@ -739,7 +739,7 @@ export default {
               id: 'id_' + item.specialid,
               author: item.nickname,
               name: item.specialname,
-              time: item.publishtime,
+              time: dateFormat(item.publishtime, 'Y-M-D'),
               img: item.imgurl,
               grade: item.grade,
               desc: item.intro,
