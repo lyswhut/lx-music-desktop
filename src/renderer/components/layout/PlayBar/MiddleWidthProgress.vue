@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.player">
     <div :class="$style.picContent" :aria-label="$t('player__pic_tip')" @contextmenu="handleToMusicLocation" @click="showPlayerDetail">
-      <img v-if="musicInfo.pic" :src="musicInfo.pic" loading="lazy" decoding="async" @error="imgError">
+      <img v-if="musicInfo.pic" :src="musicInfo.pic" decoding="async" @error="imgError">
       <div v-else :class="$style.emptyPic">L<span>X</span></div>
     </div>
     <div :class="$style.infoContent">

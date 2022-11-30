@@ -17,7 +17,7 @@ div(:class="$style.container")
           div.select(:class="$style.comment_text")
             p(v-for="text in item.text") {{text}}
           div(v-if="item.images?.length" :class="$style.comment_images")
-            img(v-for="url in item.images" :src="url")
+            img(v-for="url in item.images" :src="url" loading="lazy" decoding="async")
       comment-floor(v-if="item.reply && item.reply.length" :class="$style.reply_floor" :comments="item.reply")
 </template>
 
