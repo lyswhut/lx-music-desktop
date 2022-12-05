@@ -204,7 +204,8 @@ export const initAppSetting = async() => {
     const config = await initHotKey()
     global.lx = {
       isTrafficLightClose: false,
-      isQuitting: false,
+      isSkipTrayQuit: false,
+      // mainWindowClosed: true,
       event_app: createAppEvent(),
       event_list: createListEvent(),
       appSetting: defaultSetting,
@@ -241,6 +242,6 @@ export const initAppSetting = async() => {
 }
 
 export const quitApp = () => {
-  global.lx.isQuitting = true
+  global.lx.isSkipTrayQuit = true
   closeWindow()
 }

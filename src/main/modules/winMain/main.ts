@@ -13,8 +13,9 @@ const winEvent = () => {
   if (!browserWindow) return
 
   browserWindow.on('close', event => {
-    if (global.lx.isQuitting || !global.lx.appSetting['tray.enable'] || (!isWin && !global.lx.isTrafficLightClose)) {
+    if (global.lx.isSkipTrayQuit || !global.lx.appSetting['tray.enable'] || (!isWin && !global.lx.isTrafficLightClose)) {
       browserWindow!.setProgressBar(-1)
+      // global.lx.mainWindowClosed = true
       global.lx.event_app.main_window_close()
       return
     }
@@ -25,6 +26,7 @@ const winEvent = () => {
   })
 
   browserWindow.on('closed', () => {
+    // global.lx.mainWindowClosed = true
     browserWindow = null
   })
 
@@ -100,6 +102,8 @@ export const createWindow = () => {
   winEvent()
 
   if (global.envParams.cmdParams.odt) handleOpenDevTools(browserWindow.webContents)
+
+  // global.lx.mainWindowClosed = false
   // browserWindow.webContents.openDevTools()
 }
 

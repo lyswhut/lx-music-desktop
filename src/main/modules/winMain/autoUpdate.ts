@@ -109,7 +109,7 @@ export default () => {
   })
 
   mainOn(WIN_MAIN_RENDERER_EVENT_NAME.quit_update, () => {
-    global.lx.isQuitting = true
+    global.lx.isSkipTrayQuit = true
 
     setTimeout(() => {
       autoUpdater.quitAndInstall(true, true)

@@ -17,23 +17,16 @@ const setLyricsConfig = debounce((config: Partial<LX.AppSetting>) => {
 
 const winEvent = () => {
   if (!browserWindow) return
-  // let bounds
-  // lyricWindow.on('close', event => {
-  //   if (global.isQuitting || !global.appSetting.tray.enable || (!isWin && !global.isTrafficLightClose)) {
-  //     lyricWindow.setProgressBar(-1)
-  //     return
-  //   }
 
-  //   if (global.isTrafficLightClose) global.isTrafficLightClose = false
-  //   event.preventDefault()
-  //   lyricWindow.hide()
+  // browserWindow.on('close', () => {
+  //   if (global.lx.appSetting['desktopLyric.enable'] && !global.lx.mainWindowClosed) {
+  //     browserWindow = null
+  //     global.lx.event_app.update_config({ 'desktopLyric.enable': false })
+  //   }
   // })
 
   browserWindow.on('closed', () => {
     browserWindow = null
-    if (global.lx.appSetting['desktopLyric.enable']) {
-      global.lx.event_app.update_config({ 'desktopLyric.enable': false })
-    }
   })
 
   browserWindow.on('move', () => {

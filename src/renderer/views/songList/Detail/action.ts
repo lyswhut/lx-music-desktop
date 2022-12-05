@@ -36,7 +36,7 @@ export const addSongListDetail = async(id: string, source: LX.OnlineSource, name
 
 export const playSongListDetail = async(id: string, source: LX.OnlineSource, list?: LX.Music.MusicInfoOnline[], index: number = 0) => {
   let isPlayingList = false
-  console.log(list)
+  // console.log(list)
   const listId = getListId(id, source)
   if (!list?.length) list = (await getListDetail(id, source, 1)).list
   if (list?.length) {

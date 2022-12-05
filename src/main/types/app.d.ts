@@ -11,8 +11,18 @@ interface Lx {
     config: LX.HotKeyConfigAll
     state: LX.HotKeyState
   }
+  /**
+   * 是否红绿灯关闭
+   */
   isTrafficLightClose: boolean
-  isQuitting: boolean
+  /**
+   * 是否跳过托盘退出
+   */
+  isSkipTrayQuit: boolean
+  /**
+   * main window 是否关闭
+   */
+  // mainWindowClosed: boolean
   event_app: AppType
   event_list: ListType
   worker: {
