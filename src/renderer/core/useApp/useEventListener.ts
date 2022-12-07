@@ -2,6 +2,7 @@ import { getFontSizeWithScreen } from '@renderer/utils'
 import {
   minWindow,
   onFocus,
+  onOpenSetting,
   onSettingChanged,
   onThemeChange,
   openDevTools,
@@ -101,6 +102,10 @@ export default () => {
     window.app_event.configUpdate()
   })
 
+  const rOpenSetting = onOpenSetting(({}) => {
+    window.location.href="#/setting"
+  })
+
   const rFocus = onFocus(() => {
     clearDownKeys()
   })
@@ -140,5 +145,6 @@ export default () => {
     rSetConfig()
     rFocus()
     rThemeChange()
+    rOpenSetting()
   })
 }
