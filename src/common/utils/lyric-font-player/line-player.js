@@ -24,7 +24,7 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
         const times = timeField.match(timeExp)
         if (times == null) continue
         for (const time of times) {
-          const timeStr = time.replace(/(\.\d\d)0$/, '$1')
+          const timeStr = time.replace(/(?:\.0+|0+)$/, '')
           const targetLine = lrcLinesMap[timeStr]
           if (targetLine) targetLine.extendedLyrics.push(text)
         }
@@ -83,7 +83,7 @@ module.exports = class LinePlayer {
           const times = timeField.match(timeExp)
           if (times == null) continue
           for (const time of times) {
-            const timeStr = time.replace(/(\.\d\d)0$/, '$1')
+            const timeStr = time.replace(/(?:\.0+|0+)$/, '')
             if (linesMap[timeStr]) {
               linesMap[timeStr].extendedLyrics.push(text)
               continue
