@@ -503,7 +503,7 @@ export default {
         } else return this.getUserListDetail3(location.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
       }
       // console.log('location', location)
-      return this.getUserListDetail(link, page, ++retryNum)
+      return this.getUserListDetail(location, page, ++retryNum)
     }
     if (typeof body == 'string') return this.getUserListDetail2(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'))
     if (body.errcode !== 0) return this.getUserListDetail(link, page, ++retryNum)
