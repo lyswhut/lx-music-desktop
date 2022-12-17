@@ -16,7 +16,8 @@
 
 <script setup>
 import { onMounted } from '@common/utils/vueTools'
-// import BubbleCursor from '@common/utils/cursor-effects/bubbleCursor'
+// import BubbleCursor from '@common/utils/effects/cursor-effects/bubbleCursor'
+// import '@common/utils/effects/snow.min'
 import useApp from '@renderer/core/useApp'
 
 useApp()
