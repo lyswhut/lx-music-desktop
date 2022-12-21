@@ -7,6 +7,10 @@ import { APP_EVENT_NAMES, DATA_KEYS, DEFAULT_SETTING } from '@common/constants'
 
 type RemoveListener = () => void
 
+export const getDataPath = async() => {
+  return rendererInvoke(CMMON_EVENT_NAME.get_data_path)
+}
+
 export const getSetting = async() => {
   return rendererInvoke<LX.AppSetting>(CMMON_EVENT_NAME.get_app_setting)
 }

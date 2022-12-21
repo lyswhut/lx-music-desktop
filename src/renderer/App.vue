@@ -19,12 +19,31 @@ import { onMounted } from '@common/utils/vueTools'
 // import BubbleCursor from '@common/utils/effects/cursor-effects/bubbleCursor'
 // import '@common/utils/effects/snow.min'
 import useApp from '@renderer/core/useApp'
+import { getDataPath } from '@renderer/utils/ipc'
+import fs from 'fs'
+import path from 'path'
+
+function loadCss(path) {
+  const head = document.getElementsByTagName('head')[0]
+  const link = document.createElement('link')
+  link.type = 'text/css'
+  link.rel = 'stylesheet'
+  link.href = path
+  head.appendChild(link)
+}
 
 useApp()
 
 onMounted(() => {
   document.getElementById('root').style.display = 'block'
-
+  getDataPath().then(value => {
+    console.log(value)
+    // 判断目录下是否有style.css
+    if (fs.existsSync(path.join(value + '/style.css'))) {
+      loadCss(path.join(value + '/style.css'))
+      console.log('Load style.css')
+    }
+  })
   // const styles = getComputedStyle(document.documentElement)
   // window.lxData.bubbleCursor = new BubbleCursor({
   //   fillStyle: styles.getPropertyValue('--color-primary-alpha-900'),
