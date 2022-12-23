@@ -26,7 +26,7 @@ div.comment(:class="$style.comment" ref="dom_container")
               material-pagination(:count="hotComment.total" :btnLength="5" :limit="hotComment.limit" :page="hotComment.page" @btn-click="handleToggleHotCommentPage")
         div(:class="$style.tab_content")
           div.scroll(:class="$style.tab_content_scroll" ref="dom_commentNew")
-            p(:class="$style.commentLabel" style="cursor: pointer;" v-if="newComment.isLoadError" @click="handleGetNewComment(currentMusicInfo, newComment.nextPage, newComment.limit)") {{$t('comment__new_load_error')}}
+            p(:class="$style.commentLabel" style="cursor: pointer;" v-if="newComment.isLoadError" @click="handleGetNewComment(currentMusicInfo, newComment.nextPage, newComment.limit, this.newComment.list.pop() === undefined ? 0 : this.newComment.list.pop().id)") {{$t('comment__new_load_error')}}
             p(:class="$style.commentLabel" v-else-if="newComment.isLoading && !newComment.list.length") {{$t('comment__new_loading')}}
             comment-floor(v-if="!newComment.isLoadError && newComment.list.length" :class="[$style.commentFloor, newComment.isLoading ? $style.loading : null]" :comments="newComment.list")
             p(:class="$style.commentLabel" v-else-if="!newComment.isLoadError && !newComment.isLoading") {{$t('comment__no_content')}}
@@ -148,10 +148,10 @@ export default {
         })
       })
     },
-    async getComment(musicInfo, page, limit, retryNum = 0) {
+    async getComment(musicInfo, page, limit, retryNum = 0, id = 0) {
       let resp
       try {
-        resp = await music[musicInfo.source].comment.getComment(musicInfo, page, limit)
+        resp = await music[musicInfo.source].comment.getComment(musicInfo, page, limit, id)
       } catch (error) {
         if (error.message == '取消请求' || ++retryNum > 2) throw error
         resp = await this.getComment(musicInfo, page, limit, retryNum)
@@ -168,10 +168,10 @@ export default {
       }
       return resp
     },
-    handleGetNewComment(musicInfo, page, limit) {
+    handleGetNewComment(musicInfo, page, limit, id) {
       this.newComment.isLoadError = false
       this.newComment.isLoading = true
-      this.getComment(toOldMusicInfo(musicInfo), page, limit).then(comment => {
+      this.getComment(toOldMusicInfo(musicInfo), page, limit, 0, id).then(comment => {
         this.newComment.isLoading = false
         this.newComment.total = comment.total
         this.newComment.maxPage = comment.maxPage
@@ -228,7 +228,7 @@ export default {
       this.isShowComment = true
 
       this.handleGetHotComment(this.currentMusicInfo, this.hotComment.page, this.hotComment.limit)
-      this.handleGetNewComment(this.currentMusicInfo, this.newComment.page, this.newComment.limit)
+      this.handleGetNewComment(this.currentMusicInfo, this.newComment.page, this.newComment.limit, this.newComment.list.pop() === undefined ? 0 : this.newComment.list.pop().id)
     },
     handleToggleHotCommentPage(page) {
       this.hotComment.nextPage = page
@@ -236,7 +236,7 @@ export default {
     },
     handleToggleCommentPage(page) {
       this.newComment.nextPage = page
-      this.handleGetNewComment(this.currentMusicInfo, page, this.newComment.limit)
+      this.handleGetNewComment(this.currentMusicInfo, page, this.newComment.limit, this.newComment.list.pop() === undefined ? 0 : this.newComment.list.pop().id)
     },
     handleToggleTab(id, force) {
       if (!this.available || (!force && this.tabActiveId == id)) return
