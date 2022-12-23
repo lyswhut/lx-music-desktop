@@ -22,6 +22,7 @@ declare namespace LX {
       songId: string | number // 歌曲ID，mg源为copyrightId，local为文件路径
       albumName: string // 歌曲专辑名称
       picUrl?: string | null // 歌曲图片链接
+      songMid?: string | number //tx源的歌曲id，用于获取评论
     }
 
     interface MusicInfoMeta_online extends MusicInfoMetaBase {

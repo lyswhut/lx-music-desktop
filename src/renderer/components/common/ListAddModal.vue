@@ -99,6 +99,7 @@ export default {
       if (!props.musicInfo) return lists.value = []
 
       currentMusicInfo.value = 'progress' in props.musicInfo ? props.musicInfo.metadata.musicInfo : props.musicInfo
+      console.log(props.musicInfo)
 
       getList()
 
