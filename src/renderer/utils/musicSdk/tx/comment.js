@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
 import { dateFormat2 } from '../../index'
+import getMusicInfo from './musicInfo'
 
 const emojis = {
   e400846: '😘',
@@ -70,11 +71,27 @@ const emojis = {
   e400432: '👑',
 }
 
+const songIdMap = new Map()
+const promises = new Map()
+
 export default {
   _requestObj: null,
   _requestObj2: null,
-  async getComment({ songId }, page = 1, limit = 20) {
+  async getSongId({ songId, songmid }) {
+    if (songId) return songId
+    if (songIdMap.has(songmid)) return songIdMap.get(songmid)
+    if (promises.has(songmid)) return (await promises.get(songmid)).songId
+    const promise = getMusicInfo(songmid)
+    promises.set(promise)
+    const info = await promise
+    songIdMap.set(songmid, info.songId)
+    promises.delete(songmid)
+    return info.songId
+  },
+  async getComment(mInfo, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
+
+    const songId = await this.getSongId(mInfo)
 
     const _requestObj = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
       method: 'POST',
@@ -107,8 +124,10 @@ export default {
       maxPage: Math.ceil(comment.commenttotal / limit) || 1,
     }
   },
-  async getHotComment({ songId }, page = 1, limit = 100) {
+  async getHotComment(mInfo, page = 1, limit = 100) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
+
+    const songId = await this.getSongId(mInfo)
 
     const _requestObj2 = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
       method: 'POST',
