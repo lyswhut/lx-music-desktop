@@ -125,6 +125,8 @@ const usePlayMusic = () => {
 
           { key: 'copyrightId', types: ['string', 'number'], required: true, max: 64 },
           { key: 'lrcUrl', types: ['string'], max: 1024 },
+          { key: 'trcUrl', types: ['string'], max: 1024 },
+          { key: 'mrcUrl', types: ['string'], max: 1024 },
         ], musicInfo)
         break
       default: throw new Error('Unknown source: ' + musicInfo.source)
