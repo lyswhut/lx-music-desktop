@@ -202,6 +202,17 @@ export const listMusicOverwrite = (listId: string, musicInfos: LX.Music.MusicInf
   return isExist || listId == loveList.id ? [listId] : []
 }
 
+export const listMusicClear = (ids: string[]): string[] => {
+  const changedIds: string[] = []
+  for (const id of ids) {
+    const list = allMusicList.get(id)
+    if (!list?.length) continue
+    overwriteMusicList(id, [])
+    changedIds.push(id)
+  }
+  return changedIds
+}
+
 export const listMusicAdd = (id: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType): string[] => {
   const targetList = allMusicList.get(id)
   if (!targetList) return id == loveList.id ? [id] : []

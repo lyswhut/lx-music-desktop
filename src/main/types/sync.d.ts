@@ -1,8 +1,6 @@
 import { Socket as _Socket, RemoteSocket as _RemoteSocket } from 'socket.io'
 
-interface DefaultEventsMap {
-  [event: string]: (...args: any[]) => void
-}
+type DefaultEventsMap = Record<string, (...args: any[]) => void>
 
 
 declare global {

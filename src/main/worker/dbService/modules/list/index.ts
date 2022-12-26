@@ -305,11 +305,13 @@ export const musicsUpdate = (musicInfos: LX.List.ListActionMusicUpdate) => {
  * 清空列表内的歌曲
  * @param listId 列表Id
  */
-export const musicsClear = (listId: string) => {
-  removeMusicInfoByListId(listId)
-  const targetList = getListMusics(listId)
-  if (targetList == null) return
-  targetList.slice(0, targetList.length)
+export const musicsClear = (ids: string[]) => {
+  removeMusicInfoByListId(ids)
+  for (const id of ids) {
+    const targetList = musicLists.get(id)
+    if (!targetList) continue
+    targetList.splice(0, targetList.length)
+  }
 }
 
 /**

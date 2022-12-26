@@ -108,9 +108,8 @@ const updateSnapshot = async(path: string, data: string) => {
   })
 }
 
-interface UserDataObj {
-  [listId: string]: LX.List.UserListInfoFull
-}
+type UserDataObj = Record<string, LX.List.UserListInfoFull>
+
 const createUserListDataObj = (listData: LX.Sync.ListData): UserDataObj => {
   const userListDataObj: UserDataObj = {}
   for (const list of listData.userList) userListDataObj[list.id] = list

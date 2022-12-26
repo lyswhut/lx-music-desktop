@@ -8,7 +8,7 @@ import {
 } from './utils'
 
 const authMsg = 'lx-music auth::'
-const helloMsg = 'Hello~::^-^::~v2'
+const helloMsg = 'Hello~::^-^::~v2~'
 
 const requestIps = new Map<string, number>()
 

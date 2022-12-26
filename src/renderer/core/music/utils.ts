@@ -69,16 +69,16 @@ export const buildLyricInfo = async(lyricInfo: MakeOptional<LX.Player.LyricInfo,
 
   if (appSetting['player.isS2t']) {
     const tasks = [
-      lyricInfo.lyric ? window.lx.worker.main.langS2t(lyricInfo.lyric) : Promise.resolve(''),
+      lyricInfo.lyric ? langS2T(lyricInfo.lyric) : Promise.resolve(''),
       lyricInfo.tlyric ? langS2T(lyricInfo.tlyric) : Promise.resolve(''),
       lyricInfo.rlyric ? langS2T(lyricInfo.rlyric) : Promise.resolve(''),
       lyricInfo.lxlyric ? langS2T(lyricInfo.lxlyric) : Promise.resolve(''),
     ]
     if (lyricInfo.rawlrcInfo) {
-      tasks.push(lyricInfo.lyric ? window.lx.worker.main.langS2t(lyricInfo.lyric) : Promise.resolve(''))
-      tasks.push(lyricInfo.tlyric ? window.lx.worker.main.langS2t(lyricInfo.tlyric) : Promise.resolve(''))
-      tasks.push(lyricInfo.rlyric ? window.lx.worker.main.langS2t(lyricInfo.rlyric) : Promise.resolve(''))
-      tasks.push(lyricInfo.lxlyric ? window.lx.worker.main.langS2t(lyricInfo.lxlyric) : Promise.resolve(''))
+      tasks.push(lyricInfo.lyric ? langS2T(lyricInfo.lyric) : Promise.resolve(''))
+      tasks.push(lyricInfo.tlyric ? langS2T(lyricInfo.tlyric) : Promise.resolve(''))
+      tasks.push(lyricInfo.rlyric ? langS2T(lyricInfo.rlyric) : Promise.resolve(''))
+      tasks.push(lyricInfo.lxlyric ? langS2T(lyricInfo.lxlyric) : Promise.resolve(''))
     }
     return await Promise.all(tasks).then(([lyric, tlyric, rlyric, lxlyric, lyric_raw, tlyric_raw, rlyric_raw, lxlyric_raw]) => {
       const rawlrcInfo = lyric_raw ? {

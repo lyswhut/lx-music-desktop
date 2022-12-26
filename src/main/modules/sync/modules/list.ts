@@ -56,51 +56,51 @@ const handleListAction = ({ action, data }: LX.Sync.ActionList) => {
 const registerListActionEvent = () => {
   const list_data_overwrite = async(listData: MakeOptional<LX.List.ListDataFull, 'tempList'>, isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_data_overwrite', listData)
+    await sendListAction({ action: 'list_data_overwrite', data: listData })
   }
-  const list_create = async(position: number, lists: LX.List.UserListInfo[], isRemote: boolean = false) => {
+  const list_create = async(position: number, listInfos: LX.List.UserListInfo[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_create', { position, lists })
+    await sendListAction({ action: 'list_create', data: { position, listInfos } })
   }
   const list_remove = async(ids: string[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_remove', ids)
+    await sendListAction({ action: 'list_remove', data: ids })
   }
   const list_update = async(lists: LX.List.UserListInfo[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_update', lists)
+    await sendListAction({ action: 'list_update', data: lists })
   }
   const list_update_position = async(position: number, ids: string[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_update_position', { position, ids })
+    await sendListAction({ action: 'list_update_position', data: { position, ids } })
   }
   const list_music_overwrite = async(listId: string, musicInfos: LX.Music.MusicInfo[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_overwrite', { listId, musicInfos })
+    await sendListAction({ action: 'list_music_overwrite', data: { listId, musicInfos } })
   }
-  const list_music_add = async(listId: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType, isRemote: boolean = false) => {
+  const list_music_add = async(id: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType, isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_add', { listId, musicInfos, addMusicLocationType })
+    await sendListAction({ action: 'list_music_add', data: { id, musicInfos, addMusicLocationType } })
   }
   const list_music_move = async(fromId: string, toId: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType, isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_move', { fromId, toId, musicInfos, addMusicLocationType })
+    await sendListAction({ action: 'list_music_move', data: { fromId, toId, musicInfos, addMusicLocationType } })
   }
   const list_music_remove = async(listId: string, ids: string[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_remove', { listId, ids })
+    await sendListAction({ action: 'list_music_remove', data: { listId, ids } })
   }
   const list_music_update = async(musicInfos: LX.List.ListActionMusicUpdate, isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_update', musicInfos)
+    await sendListAction({ action: 'list_music_update', data: musicInfos })
   }
-  const list_music_clear = async(listId: string, isRemote: boolean = false) => {
+  const list_music_clear = async(ids: string[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_clear', listId)
+    await sendListAction({ action: 'list_music_clear', data: ids })
   }
   const list_music_update_position = async(listId: string, position: number, ids: string[], isRemote: boolean = false) => {
     if (isRemote) return
-    await sendListAction('list_music_update_position', { listId, position, ids })
+    await sendListAction({ action: 'list_music_update_position', data: { listId, position, ids } })
   }
   global.lx.event_list.on('list_data_overwrite', list_data_overwrite)
   global.lx.event_list.on('list_create', list_create)
@@ -143,9 +143,9 @@ const broadcast = async(action: listAction, data: any, excludeIds: string[] = []
   }
 }
 
-export const sendListAction = async(action: string, data: any) => {
+export const sendListAction = async(action: LX.Sync.ActionList) => {
   // io.sockets
-  return await broadcast('list:action', JSON.stringify({ action, data }))
+  return await broadcast('list:action', JSON.stringify(action))
 }
 
 export const registerListHandler = (_io: Server, socket: LX.Sync.Socket) => {

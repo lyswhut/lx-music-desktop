@@ -250,14 +250,16 @@ export const removeMusicInfos = (listId: string, ids: string[]) => {
  * 清空列表内歌曲
  * @param listId 列表id
  */
-export const removeMusicInfoByListId = (listId: string) => {
+export const removeMusicInfoByListId = (ids: string[]) => {
   const db = getDB()
   const musicInfoDeleteByListIdStatement = createMusicInfoDeleteByListIdStatement()
   const musicInfoOrderDeleteByListIdStatement = createMusicInfoOrderDeleteByListIdStatement()
-  db.transaction((listId: string) => {
-    musicInfoDeleteByListIdStatement.run(listId)
-    musicInfoOrderDeleteByListIdStatement.run(listId)
-  })(listId)
+  db.transaction((ids: string[]) => {
+    for (const id of ids) {
+      musicInfoDeleteByListIdStatement.run(id)
+      musicInfoOrderDeleteByListIdStatement.run(id)
+    }
+  })(ids)
 }
 
 /**

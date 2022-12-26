@@ -15,6 +15,7 @@ import {
   listMusicUpdatePosition,
   setMusicList,
   setUserLists,
+  listMusicClear,
 } from './action'
 import { allMusicList } from './state'
 
@@ -122,10 +123,10 @@ export const overwriteListMusics = async(data: LX.List.ListActionMusicOverwrite)
 
 /**
  * 清空列表内的歌曲
- * @param listId
+ * @param ids
  */
-export const clearListMusics = async(listId: LX.List.ListActionMusicClear) => {
-  await rendererInvoke<LX.List.ListActionMusicClear>(PLAYER_EVENT_NAME.list_music_clear, listId)
+export const clearListMusics = async(ids: LX.List.ListActionMusicClear) => {
+  await rendererInvoke<LX.List.ListActionMusicClear>(PLAYER_EVENT_NAME.list_music_clear, ids)
 }
 
 /**
@@ -218,6 +219,10 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
     const updatedListIds = listMusicOverwrite(listId, musicInfos)
     if (updatedListIds.length) onListChanged(updatedListIds)
   }
+  const list_music_clear = ({ params: ids }: LX.IpcRendererEventParams<LX.List.ListActionMusicClear>) => {
+    const updatedListIds = listMusicClear(ids)
+    if (updatedListIds.length) onListChanged(updatedListIds)
+  }
 
   rendererOn(PLAYER_EVENT_NAME.list_data_overwire, list_data_overwrite)
   rendererOn(PLAYER_EVENT_NAME.list_add, list_create)
@@ -230,7 +235,7 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
   rendererOn(PLAYER_EVENT_NAME.list_music_update, list_music_update)
   rendererOn(PLAYER_EVENT_NAME.list_music_update_position, list_music_update_position)
   rendererOn(PLAYER_EVENT_NAME.list_music_overwrite, list_music_overwrite)
-  // rendererOn(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
+  rendererOn(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
 
   return () => {
     rendererOff(PLAYER_EVENT_NAME.list_data_overwire, list_data_overwrite)
@@ -244,6 +249,6 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
     rendererOff(PLAYER_EVENT_NAME.list_music_update, list_music_update)
     rendererOff(PLAYER_EVENT_NAME.list_music_update_position, list_music_update_position)
     rendererOff(PLAYER_EVENT_NAME.list_music_overwrite, list_music_overwrite)
-    // rendererOff(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
+    rendererOff(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
   }
 }

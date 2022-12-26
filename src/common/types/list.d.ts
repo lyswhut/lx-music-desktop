@@ -116,7 +116,7 @@ declare namespace LX {
       musicInfos: LX.Music.MusicInfo[]
     }
 
-    type ListActionMusicClear = string
+    type ListActionMusicClear = string[]
 
     interface MyDefaultListInfoFull extends MyDefaultListInfo {
       list: LX.Music.MusicInfo[]
