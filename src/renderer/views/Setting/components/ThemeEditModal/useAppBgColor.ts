@@ -10,7 +10,6 @@ export default () => {
     tools = pickrTools.create(app_bg_color_ref.value, color, [
       'rgba(255, 255, 255, 0)',
       'rgba(255, 255, 255, 0.15)',
-      'rgba(255, 255, 255, 0.15)',
       'rgba(21.34, 18.92, 44.61, 0.81)',
     ], changed, reset)
   }
