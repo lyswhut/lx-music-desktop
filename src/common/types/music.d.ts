@@ -9,13 +9,13 @@ declare namespace LX {
       size: string | null
       hash: string
     }
-    type _MusicQualityType = Record<Quality, {
+    type _MusicQualityType = Partial<Record<Quality, {
       size: string | null
-    }>
-    type _MusicQualityTypeKg = Record<Quality, {
+    }>>
+    type _MusicQualityTypeKg = Partial<Record<Quality, {
       size: string | null
       hash: string
-    }>
+    }>>
 
 
     interface MusicInfoMetaBase {
@@ -64,6 +64,7 @@ declare namespace LX {
 
     interface MusicInfoMeta_tx extends MusicInfoMeta_online {
       strMediaMid: string // 歌曲strMediaMid
+      id?: number // 歌曲songId
       albumMid?: string // 歌曲albumMid
     }
     interface MusicInfo_tx extends MusicInfoBase<'tx'> {
