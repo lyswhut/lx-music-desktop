@@ -59,7 +59,7 @@ import SettingDesktopLyric from './components/SettingDesktopLyric'
 import SettingSearch from './components/SettingSearch'
 import SettingList from './components/SettingList'
 import SettingDownload from './components/SettingDownload'
-import SettingSync from './components/SettingSync'
+// import SettingSync from './components/SettingSync'
 import SettingHotKey from './components/SettingHotKey'
 import SettingNetwork from './components/SettingNetwork'
 import SettingOdc from './components/SettingOdc'
@@ -78,7 +78,7 @@ export default {
     SettingSearch,
     SettingList,
     SettingDownload,
-    SettingSync,
+    // SettingSync,
     SettingHotKey,
     SettingNetwork,
     SettingOdc,
@@ -102,7 +102,7 @@ export default {
         { id: 'SettingSearch', title: t('setting__search') },
         { id: 'SettingList', title: t('setting__list') },
         { id: 'SettingDownload', title: t('setting__download') },
-        { id: 'SettingSync', title: t('setting__sync') },
+        // { id: 'SettingSync', title: t('setting__sync') },
         { id: 'SettingHotKey', title: t('setting__hot_key') },
         { id: 'SettingNetwork', title: t('setting__network') },
         { id: 'SettingOdc', title: t('setting__odc') },

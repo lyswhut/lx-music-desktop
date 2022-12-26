@@ -1,5 +1,5 @@
 import { markRaw, onBeforeUnmount } from '@common/utils/vueTools'
-import { onSyncAction, sendSyncAction } from '@renderer/utils/ipc'
+import { onSyncAction } from '@renderer/utils/ipc'
 import { sync } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 
@@ -34,14 +34,14 @@ export default () => {
   return async() => {
     sync.enable = appSetting['sync.enable']
     sync.port = appSetting['sync.port']
-    if (appSetting['sync.enable'] && appSetting['sync.port']) {
-      void sendSyncAction({
-        action: 'enable',
-        data: {
-          enable: appSetting['sync.enable'],
-          port: appSetting['sync.port'],
-        },
-      })
-    }
+    // if (appSetting['sync.enable'] && appSetting['sync.port']) {
+    //   void sendSyncAction({
+    //     action: 'enable',
+    //     data: {
+    //       enable: appSetting['sync.enable'],
+    //       port: appSetting['sync.port'],
+    //     },
+    //   })
+    // }
   }
 }
