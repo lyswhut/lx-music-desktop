@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.0.0-beta.23",
+  "version": "2.0.0-beta.24",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -214,15 +214,15 @@
     "@types/better-sqlite3": "^7.6.3",
     "@types/needle": "^3.2.0",
     "@types/tunnel": "^0.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
-    "@volar/vue-language-plugin-pug": "^1.0.17",
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/parser": "^5.47.1",
+    "@volar/vue-language-plugin-pug": "^1.0.18",
     "babel-loader": "^9.1.0",
     "browserslist": "^4.21.4",
     "chalk": "^4.1.2",
     "changelog-parser": "^3.0.1",
     "copy-webpack-plugin": "^11.0.0",
-    "core-js": "^3.27.0",
+    "core-js": "^3.27.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^4.2.2",
@@ -298,8 +298,8 @@
   },
   "overrides": {
     "got": "^11",
+    "json5": "latest",
     "minimatch": "latest",
-    "decode-uri-component": "latest",
     "svg-sprite-loader": {
       "postcss": "latest"
     },
