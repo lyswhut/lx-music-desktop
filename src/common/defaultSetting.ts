@@ -77,6 +77,7 @@ const defaultSetting: LX.AppSetting = {
   'download.savePath': join(homedir(), 'Desktop'),
   'download.fileName': '歌名 - 歌手',
   'download.maxDownloadNum': 3,
+  'download.skipExistFile': true,
   'download.isDownloadLrc': false,
   'download.isDownloadTLrc': false,
   'download.isDownloadRLrc': false,

@@ -8,7 +8,7 @@ import { createDownloadInfo } from './utils'
 //   assertApiSupport,
 //   getExt,
 // } from '..'
-import { checkPath, removeFile } from '@common/utils/nodejs'
+import { checkPath, getFileStats, removeFile } from '@common/utils/nodejs'
 import { DOWNLOAD_STATUS } from '@common/constants'
 // import { download as eventDownloadNames } from '@renderer/event/names'
 
@@ -55,7 +55,7 @@ export const createDownloadTasks = (
   // }
 }
 
-const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string) => {
+const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, skipExistFile: boolean) => {
   // console.log('createTask', downloadInfo, savePath)
   // 开始任务
   /* commit('onStart', downloadInfo)
@@ -71,7 +71,32 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string) =
   }
   if (!tasks.has(downloadInfo.id)) return
 
-  // TODO check file exists
+  if (downloadInfo.downloaded == 0) {
+    if (skipExistFile) {
+      const stats = await getFileStats(downloadInfo.metadata.filePath)
+      if (stats && stats.size > 100) {
+        sendAction(downloadInfo.id, {
+          action: 'error',
+          data: {
+            error: 'download_status_error_check_path_exist',
+          },
+        })
+        return
+      }
+    } else if (await checkPath(downloadInfo.metadata.filePath)) {
+      try {
+        await removeFile(downloadInfo.metadata.filePath)
+      } catch (err) {
+        sendAction(downloadInfo.id, {
+          action: 'error',
+          data: {
+            error: 'download_status_error_check_path',
+          },
+        })
+        return
+      }
+    }
+  }
 
   const downloadOptions: DownloadOptions = {
     url: downloadInfo.metadata.url ?? '',
@@ -204,7 +229,7 @@ export const updateUrl = (id: string, url: string) => {
   })
 }
 
-export const startTask = async(downloadInfo: LX.Download.ListItem, savePath: string, callback: (action: LX.Download.DownloadTaskActions) => void) => {
+export const startTask = async(downloadInfo: LX.Download.ListItem, savePath: string, skipExistFile: boolean, callback: (action: LX.Download.DownloadTaskActions) => void) => {
   await pauseTask(downloadInfo.id)
 
   tasks.set(downloadInfo.id, downloadInfo)
@@ -239,7 +264,7 @@ export const startTask = async(downloadInfo: LX.Download.ListItem, savePath: str
       // await dispatch('startTask')
     }
   } else {
-    await createTask(downloadInfo, savePath)
+    await createTask(downloadInfo, savePath, skipExistFile)
     // await dispatch('handleStartTask', downloadInfo)
   }
 }

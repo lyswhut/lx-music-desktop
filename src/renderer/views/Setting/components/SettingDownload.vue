@@ -1,7 +1,10 @@
 <template lang="pug">
 dt#download {{$t('setting__download')}}
 dd
-  base-checkbox(id="setting_download_enable" :modelValue="appSetting['download.enable']" @update:modelValue="updateSetting({'download.enable': $event})" :label="$t('setting__download_enable')")
+  .gap-top
+    base-checkbox(id="setting_download_enable" :modelValue="appSetting['download.enable']" @update:modelValue="updateSetting({'download.enable': $event})" :label="$t('setting__download_enable')")
+  .gap-top
+    base-checkbox(id="setting_download_skip_exist_file" :modelValue="appSetting['download.skipExistFile']" @update:modelValue="updateSetting({'download.skipExistFile': $event})" :label="$t('setting__download_skip_exist_file')")
 dd(:aria-label="$t('setting__download_path_title')")
   h3#download_path {{$t('setting__download_path')}}
   div

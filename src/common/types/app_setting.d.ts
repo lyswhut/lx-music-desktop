@@ -350,6 +350,11 @@ declare global {
       'download.maxDownloadNum': number
 
       /**
+       * 存在同名文件时跳过下载
+       */
+      'download.skipExistFile': boolean
+
+      /**
        * 是否下载lrc文件
        */
       'download.isDownloadLrc': boolean

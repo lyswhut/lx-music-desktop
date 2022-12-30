@@ -231,7 +231,7 @@ const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
 
   setStatusText(downloadInfo, window.i18n.t('download_status_start'))
 
-  await window.lx.worker.download.startTask(toRaw(downloadInfo), appSetting['download.savePath'], proxyCallback((event: LX.Download.DownloadTaskActions) => {
+  await window.lx.worker.download.startTask(toRaw(downloadInfo), appSetting['download.savePath'], appSetting['download.skipExistFile'], proxyCallback((event: LX.Download.DownloadTaskActions) => {
     // console.log(event)
     switch (event.action) {
       case 'start':
