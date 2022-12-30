@@ -266,6 +266,7 @@ export default {
       line-height: @height-toolbar * 0.52 + 5px;
       &::placeholder {
         color: var(--color-button-font);
+        font-size: .98em;
       }
     }
     button {

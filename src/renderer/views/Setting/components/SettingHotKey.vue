@@ -265,7 +265,7 @@ export default {
     text-decoration: none;
   }
   &::placeholder {
-    color: rgba(197, 197, 197, 0.7)!important;
+    color: var(--color-200) !important;
   }
 }
 .hotKeyFailed {
