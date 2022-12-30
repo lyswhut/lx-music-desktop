@@ -118,7 +118,7 @@ export const listDataOverwrite = ({ defaultList, loveList, userList, tempList }:
     return listInfo
   })
   for (const list of userLists) {
-    if (!allMusicList.has(list.id)) continue
+    if (!allMusicList.has(list.id) || newUserIds.includes(list.id)) continue
     removeMusicList(list.id)
     updatedListIds.push(list.id)
   }
