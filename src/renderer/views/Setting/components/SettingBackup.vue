@@ -27,6 +27,7 @@ import { toRaw } from '@common/utils/vueTools'
 import {
   toNewMusicInfo,
   // toOldMusicInfo,
+  filterMusicList,
   fixNewMusicInfoQuality,
 } from '@renderer/utils'
 import {
@@ -72,12 +73,12 @@ export default {
         try {
           const targetList = allLists.find(l => l.id == list.id)
           if (targetList) {
-            targetList.list = list.list.map(m => toNewMusicInfo(m))
+            targetList.list = filterMusicList(list.list.map(m => toNewMusicInfo(m)))
           } else {
             allLists.push({
               name: list.name,
               id: list.id,
-              list: list.list.map(m => toNewMusicInfo(m)),
+              list: filterMusicList(list.list.map(m => toNewMusicInfo(m))),
               position: list.position,
               source: list.source,
               sourceListId: list.sourceListId,
@@ -139,7 +140,7 @@ export default {
       switch (allData.type) {
         case 'allData':
           // 兼容0.6.2及以前版本的列表数据
-          if (allData.defaultList) await overwriteListMusics({ listId: LIST_IDS.DEFAULT, musicInfos: allData.defaultList.list.map(m => toNewMusicInfo(m)) })
+          if (allData.defaultList) await overwriteListMusics({ listId: LIST_IDS.DEFAULT, musicInfos: filterMusicList(allData.defaultList.list.map(m => toNewMusicInfo(m))) })
           else await importOldListData(allData.playList)
           importOldSettingData(allData.setting)
           break
@@ -266,7 +267,7 @@ export default {
 
       switch (listData.type) {
         case 'defautlList': // 兼容0.6.2及以前版本的列表数据
-          await overwriteListMusics({ listId: LIST_IDS.DEFAULT, musicInfos: listData.data.list.map(m => toNewMusicInfo(m)) })
+          await overwriteListMusics({ listId: LIST_IDS.DEFAULT, musicInfos: filterMusicList(listData.data.list.map(m => toNewMusicInfo(m))) })
           break
         case 'playList':
           await importOldListData(listData.data)

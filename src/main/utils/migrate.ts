@@ -28,6 +28,14 @@ interface OldUserListInfo {
   locationUpdateTime?: number
   list: any[]
 }
+const filterMusicList = <T extends LX.Music.MusicInfo>(list: T[]): T[] => {
+  const ids: Set<string> = new Set()
+  return list.filter(s => {
+    if (!s.id || ids.has(s.id)) return false
+    ids.add(s.id)
+    return true
+  })
+}
 /**
  * 迁移 v2.0.0 之前的 list data
  * @returns
@@ -42,15 +50,15 @@ export const migrateDBData = async() => {
   }
   let isRequiredSave = false
   if (playList) {
-    if (playList.defaultList) listDataAll.defaultList = playList.defaultList.list.map(m => toNewMusicInfo(m))
-    if (playList.loveList) listDataAll.loveList = playList.loveList.list.map(m => toNewMusicInfo(m))
-    if (playList.tempList) listDataAll.tempList = playList.tempList.list.map(m => toNewMusicInfo(m))
+    if (playList.defaultList) listDataAll.defaultList = filterMusicList(playList.defaultList.list.map(m => toNewMusicInfo(m)))
+    if (playList.loveList) listDataAll.loveList = filterMusicList(playList.loveList.list.map(m => toNewMusicInfo(m)))
+    if (playList.tempList) listDataAll.tempList = filterMusicList(playList.tempList.list.map(m => toNewMusicInfo(m)))
     if (playList.userList) {
       listDataAll.userList = playList.userList.map(l => {
         return {
           ...l,
           locationUpdateTime: l.locationUpdateTime ?? null,
-          list: l.list.map(m => toNewMusicInfo(m)),
+          list: filterMusicList(l.list.map(m => toNewMusicInfo(m))),
         }
       })
     }
@@ -59,8 +67,8 @@ export const migrateDBData = async() => {
     const config = await parseDataFile<{ list?: { defaultList?: any[], loveList?: any[] } }>('config.json')
     if (config?.list) {
       const list = config.list
-      if (list.defaultList) listDataAll.defaultList = list.defaultList.map(m => toNewMusicInfo(m))
-      if (list.loveList) listDataAll.loveList = list.loveList.map(m => toNewMusicInfo(m))
+      if (list.defaultList) listDataAll.defaultList = filterMusicList(list.defaultList.map(m => toNewMusicInfo(m)))
+      if (list.loveList) listDataAll.loveList = filterMusicList(list.loveList.map(m => toNewMusicInfo(m)))
       isRequiredSave = true
     }
   }

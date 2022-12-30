@@ -1,7 +1,7 @@
 import { toRaw } from '@common/utils/vueTools'
 import { openSaveDir, showSelectDialog } from '@renderer/utils/ipc'
 import { useI18n } from '@renderer/plugins/i18n'
-import { filterFileName, toNewMusicInfo, fixNewMusicInfoQuality } from '@renderer/utils'
+import { filterFileName, toNewMusicInfo, fixNewMusicInfoQuality, filterMusicList } from '@renderer/utils'
 import { getListMusics, updateUserList, addListMusics, overwriteListMusics, createUserList } from '@renderer/store/list/action'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import useImportTip from '@renderer/utils/compositions/useImportTip'
@@ -47,7 +47,7 @@ export default () => {
       switch (configData.type) {
         case 'playListPart':
           listData = configData.data
-          listData.list = listData.list.map(m => toNewMusicInfo(m))
+          listData.list = filterMusicList(listData.list.map(m => toNewMusicInfo(m)))
           break
         case 'playListPart_v2':
           listData = configData.data
