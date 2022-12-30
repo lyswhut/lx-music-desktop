@@ -6,6 +6,7 @@ import {
   createClientKeyInfo,
   getClientKeyInfo,
   setClientKeyInfo,
+  rsaEncrypt,
 } from './utils'
 import querystring from 'node:querystring'
 
@@ -20,7 +21,7 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
   if (typeof req.headers.m == 'string' && ip && (requestIps.get(ip) ?? 0) < 10) {
     if (req.headers.m) {
       label:
-      if (req.headers.i) {
+      if (req.headers.i) { // key验证
         if (typeof req.headers.i != 'string') break label
         const keyInfo = getClientKeyInfo(req.headers.i)
         if (!keyInfo) break label
@@ -40,7 +41,7 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
           }
           msg = aesEncrypt(SYNC_CODE.helloMsg, keyInfo.key)
         }
-      } else {
+      } else { // 连接码验证
         let key = ''.padStart(16, Buffer.from(authCode).toString('hex'))
         // const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
         key = Buffer.from(key).toString('base64')
@@ -54,8 +55,10 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
         // console.log(text)
         if (text.startsWith(SYNC_CODE.authMsg)) {
           code = 200
-          const deviceName = text.replace(SYNC_CODE.authMsg, '') || 'Unknown'
-          msg = aesEncrypt(JSON.stringify(createClientKeyInfo(deviceName)), key)
+          const data = text.split('\n')
+          const publicKey = `-----BEGIN PUBLIC KEY-----\n${data[1]}\n-----END PUBLIC KEY-----`
+          const deviceName = data[2] || 'Unknown'
+          msg = rsaEncrypt(Buffer.from(JSON.stringify(createClientKeyInfo(deviceName))), publicKey)
         }
       }
     }

@@ -53,7 +53,6 @@ declare namespace LX {
     interface KeyInfo {
       clientId: string
       key: string
-      iv: string
       deviceName: string
       connectionTime?: number
     }

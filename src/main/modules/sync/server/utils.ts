@@ -1,5 +1,5 @@
 import { networkInterfaces } from 'os'
-import { randomBytes, createCipheriv, createDecipheriv } from 'crypto'
+import { randomBytes, createCipheriv, createDecipheriv, publicEncrypt, privateDecrypt, constants } from 'crypto'
 import { join } from 'path'
 import getStore from '@main/utils/store'
 
@@ -41,7 +41,6 @@ export const createClientKeyInfo = (deviceName: string): LX.Sync.KeyInfo => {
   const keyInfo: LX.Sync.KeyInfo = {
     clientId: randomBytes(4 * 4).toString('base64'),
     key: randomBytes(16).toString('base64'),
-    iv: randomBytes(16).toString('base64'),
     deviceName,
   }
   const store = getStore(STORE_NAME)
@@ -77,6 +76,13 @@ export const aesEncrypt = (buffer: string | Buffer, key: string): string => {
 export const aesDecrypt = (text: string, key: string): string => {
   const decipher = createDecipheriv('aes-128-ecb', Buffer.from(key, 'base64'), '')
   return Buffer.concat([decipher.update(Buffer.from(text, 'base64')), decipher.final()]).toString()
+}
+
+export const rsaEncrypt = (buffer: Buffer, key: string): string => {
+  return publicEncrypt({ key, padding: constants.RSA_PKCS1_OAEP_PADDING }, buffer).toString('base64')
+}
+export const rsaDecrypt = (buffer: Buffer, key: string): Buffer => {
+  return privateDecrypt({ key, padding: constants.RSA_PKCS1_OAEP_PADDING }, buffer)
 }
 
 export const encryptMsg = (keyInfo: LX.Sync.KeyInfo, msg: string): string => {
