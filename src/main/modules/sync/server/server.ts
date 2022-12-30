@@ -7,6 +7,7 @@ import { getAddress, getServerId, generateCode as handleGenerateCode, getClientK
 import { syncList, removeSnapshot } from './syncList'
 import { log } from '@common/utils'
 import { sendStatus } from '@main/modules/winMain'
+import { SYNC_CODE } from './config'
 
 
 let status: LX.Sync.Status = {
@@ -44,6 +45,14 @@ const handleConnection = (io: Server, socket: LX.Sync.Socket) => {
   }
 }
 
+const handleUnconnection = () => {
+  console.log('unconnection')
+  // console.log(socket.handshake.query)
+  for (const module of Object.values(modules)) {
+    module.unregisterListHandler()
+  }
+}
+
 const authConnection = (req: http.IncomingMessage, callback: (err: string | null | undefined, success: boolean) => void) => {
   // console.log(req.headers)
   // // console.log(req.auth)
@@ -66,11 +75,11 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
     switch (req.url) {
       case '/hello':
         code = 200
-        msg = 'Hello~::^-^::~v2'
+        msg = SYNC_CODE.helloMsg
         break
       case '/id':
         code = 200
-        msg = 'OjppZDo6' + getServerId()
+        msg = SYNC_CODE.idPrefix + getServerId()
         break
       case '/ah':
         void authCode(req, res, status.code)
@@ -103,6 +112,7 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
       console.log('disconnect', reason)
       status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
       sendStatus(status)
+      if (!status.devices.length) handleUnconnection()
     })
     if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
     const keyInfo = getClientKeyInfo(socket.handshake.query.i)

@@ -5,9 +5,7 @@ import getStore from '@main/utils/store'
 
 const STORE_NAME = 'sync'
 
-interface KeyInfos {
-  [key: string]: LX.Sync.KeyInfo
-}
+type KeyInfos = Record<string, LX.Sync.KeyInfo>
 
 export const getAddress = (): string[] => {
   const nets = networkInterfaces()
@@ -71,13 +69,13 @@ export const generateCode = (): string => {
   return Math.random().toString().substring(2, 8)
 }
 
-export const aesEncrypt = (buffer: string | Buffer, key: string, iv: string): string => {
-  const cipher = createCipheriv('aes-128-cbc', Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'))
+export const aesEncrypt = (buffer: string | Buffer, key: string): string => {
+  const cipher = createCipheriv('aes-128-ecb', Buffer.from(key, 'base64'), '')
   return Buffer.concat([cipher.update(buffer), cipher.final()]).toString('base64')
 }
 
-export const aesDecrypt = (text: string, key: string, iv: string): string => {
-  const decipher = createDecipheriv('aes-128-cbc', Buffer.from(key, 'base64'), Buffer.from(iv, 'base64'))
+export const aesDecrypt = (text: string, key: string): string => {
+  const decipher = createDecipheriv('aes-128-ecb', Buffer.from(key, 'base64'), '')
   return Buffer.concat([decipher.update(Buffer.from(text, 'base64')), decipher.final()]).toString()
 }
 

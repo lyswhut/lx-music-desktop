@@ -5,7 +5,6 @@
 // export const getList = (listId: string | null): LX.Download.ListItem[] | LX.Music.MusicInfo[] => {
 //   return listId == 'download' ? downloadList : getListFromState(listId)
 // }
-import { commonColorNames, commonDarkColorValues, commonLightColorValues } from '@common/config'
 import { encodePath, isUrl } from '@common/utils/common'
 import { joinPath } from '@common/utils/nodejs'
 import { markRaw, shallowReactive } from '@common/utils/vueTools'
@@ -39,11 +38,6 @@ export const buildThemeColors = (theme: LX.Theme, dataPath: string) => {
   const colors: Record<string, string> = {
     ...theme.config.themeColors,
     ...theme.config.extInfo,
-  }
-
-  const vals = theme.isDark ? commonDarkColorValues : commonLightColorValues
-  for (let i = commonColorNames.length; i--;) {
-    colors[commonColorNames[i]] = vals[i]
   }
 
   return colors

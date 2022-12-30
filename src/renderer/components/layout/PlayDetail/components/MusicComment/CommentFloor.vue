@@ -91,13 +91,13 @@ export default {
   min-width: 0;
   line-height: 1.3;
   gap: 6px;
-  color: var(--color-200);
+  color: var(--color-450);
 }
 .name {
   flex: 0 1 auto;
   min-width: 0;
   .mixin-ellipsis-1;
-  color: var(--color-400);
+  color: var(--color-650);
 }
 .label {
   flex: none;

@@ -5,7 +5,6 @@ import { STORE_NAMES, URL_SCHEME_RXP } from '@common/constants'
 import defaultSetting from '@common/defaultSetting'
 import defaultHotKey from '@common/defaultHotKey'
 import { migrateDataJson, migrateHotKey, migrateUserApi, parseDataFile } from './migrate'
-import { commonColorNames, commonLightColorValues, commonDarkColorValues } from '@common/config'
 import { nativeTheme } from 'electron'
 import { joinPath } from '@common/utils/nodejs'
 import themes from '@common/theme/index.json'
@@ -261,11 +260,6 @@ export const getTheme = () => {
   const colors: Record<string, string> = {
     ...theme.config.themeColors,
     ...theme.config.extInfo,
-  }
-
-  const vals = theme.isDark ? commonDarkColorValues : commonLightColorValues
-  for (let i = commonColorNames.length; i--;) {
-    colors[commonColorNames[i]] = vals[i]
   }
 
   return {

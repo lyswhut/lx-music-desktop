@@ -43,13 +43,15 @@ const saveViewPrevStateThrottle = throttle((state) => {
   saveViewPrevStateFromData(state)
 }, 1000)
 
-
-export const getListPosition = async(id: string): Promise<number> => {
+const initPosition = async() => {
   if (listPosition == null) listPosition = await getListPositionInfoFromData() ?? {}
+}
+export const getListPosition = async(id: string): Promise<number> => {
+  await initPosition()
   return listPosition[id] ?? 0
 }
 export const setListPosition = async(id: string, position?: number) => {
-  if (listPosition == null) await getListPosition(id)
+  await initPosition()
   listPosition[id] = position ?? 0
   saveListPositionThrottle()
 }
@@ -57,7 +59,8 @@ export const removeListPosition = (id: string) => {
   delete listPosition[id]
   saveListPositionThrottle()
 }
-export const overwriteListPosition = (ids: string[]) => {
+export const overwriteListPosition = async(ids: string[]) => {
+  await initPosition()
   const removedIds = []
   for (const id of Object.keys(listPosition)) {
     if (ids.includes(id)) continue
@@ -83,29 +86,32 @@ const saveListUpdateInfo = throttle(() => {
   saveListUpdateInfoFromData(listUpdateInfo)
 }, 1000)
 
-export const getListUpdateInfo = async() => {
+const initListUpdateInfo = async() => {
   if (listUpdateInfo == null) {
     listUpdateInfo = await getListUpdateInfoFromData() ?? {}
     for (const [id, info] of Object.entries(listUpdateInfo)) {
       setUpdateTime(id, info.updateTime ? dateFormat(info.updateTime) : '')
     }
   }
+}
+export const getListUpdateInfo = async() => {
+  await initListUpdateInfo()
   return listUpdateInfo
 }
 export const setListUpdateInfo = async(info: LX.List.ListUpdateInfo) => {
-  if (listUpdateInfo == null) await getListUpdateInfo()
+  await initListUpdateInfo()
   listUpdateInfo = info
   saveListUpdateInfo()
 }
 export const setListAutoUpdate = async(id: string, enable: boolean) => {
-  if (listUpdateInfo == null) await getListUpdateInfo()
+  await initListUpdateInfo()
   const targetInfo = listUpdateInfo[id] ?? { updateTime: 0, isAutoUpdate: false }
   targetInfo.isAutoUpdate = enable
   listUpdateInfo[id] = targetInfo
   saveListUpdateInfo()
 }
 export const setListUpdateTime = async(id: string, time: number) => {
-  if (listUpdateInfo == null) await getListUpdateInfo()
+  await initListUpdateInfo()
   const targetInfo = listUpdateInfo[id] ?? { updateTime: 0, isAutoUpdate: false }
   targetInfo.updateTime = time
   listUpdateInfo[id] = targetInfo
@@ -119,9 +125,10 @@ export const removeListUpdateInfo = (id: string) => {
   delete listUpdateInfo[id]
   saveListUpdateInfo()
 }
-export const overwriteListUpdateInfo = (ids: string[]) => {
+export const overwriteListUpdateInfo = async(ids: string[]) => {
+  await initListUpdateInfo()
   const removedIds = []
-  for (const id of Object.keys(listPosition)) {
+  for (const id of Object.keys(listUpdateInfo)) {
     if (ids.includes(id)) continue
     removedIds.push(id)
   }

@@ -11,6 +11,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(77, 175, 124)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -33,6 +34,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(52, 152, 219)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -55,6 +57,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(77, 131, 175)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-600)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -77,6 +80,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(245, 171, 53)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -99,6 +103,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(214, 69, 65)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -121,6 +126,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(241, 130, 141)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -143,6 +149,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(155, 89, 182)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -165,6 +172,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(108, 122, 137)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -187,6 +195,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(51, 110, 123)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -209,6 +218,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(79, 98, 208)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'var(--color-primary-light-600-alpha-700)',
       '--color-main-background': 'rgba(255, 255, 255, 1)',
       '--color-nav-font': 'var(--color-primary)',
@@ -231,6 +241,7 @@ const defaultThemes = [
     isDark: true,
     config: {
       primary: 'rgb(150, 150, 150)',
+      font: 'rgb(229, 229, 229)',
       '--color-app-background': 'rgba(0, 0, 0, 0)',
       '--color-main-background': 'rgba(19, 19, 19, 0.9)',
       '--color-nav-font': 'var(--color-primary)',
@@ -253,6 +264,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(74, 55, 82)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'rgba(255, 255, 255, 0)',
       '--color-main-background': 'rgba(255, 255, 255, 0.9)',
       '--color-nav-font': 'var(--color-primary-light-600)',
@@ -276,6 +288,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(87, 144, 167)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'rgba(255, 255, 255, 0.15)',
       '--color-main-background': 'rgba(255, 255, 255, 0.8)',
       '--color-nav-font': 'var(--color-primary)',
@@ -298,6 +311,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgba(47, 47, 47, 1)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'rgba(255, 255, 255, 0)',
       '--color-main-background': 'rgba(255, 255, 255, 0.8)',
       '--color-nav-font': 'var(--color-primary)',
@@ -321,6 +335,7 @@ const defaultThemes = [
     isDark: false,
     config: {
       primary: 'rgb(192, 57, 43)',
+      font: 'rgb(33, 33, 33)',
       '--color-app-background': 'rgba(255, 255, 255, 0.15)',
       '--color-main-background': 'rgba(255, 255, 255, 0.8)',
       '--color-nav-font': 'var(--color-primary)',
@@ -339,12 +354,12 @@ const defaultThemes = [
   },
 ]
 
-const themes = defaultThemes.map(({ config: { primary, ...extInfo }, ...themeInfo }) => {
+const themes = defaultThemes.map(({ config: { primary, font, ...extInfo }, ...themeInfo }) => {
   return {
     ...themeInfo,
     isCustom: false,
     config: {
-      themeColors: createThemeColors(primary, themeInfo.isDark),
+      themeColors: createThemeColors(primary, font, themeInfo.isDark),
       extInfo,
     },
   }

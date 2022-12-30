@@ -1,17 +1,29 @@
 declare namespace LX {
 
   interface ThemeColors {
-    // '--color-000': string
-    // '--color-050': string
-    // '--color-100': string
-    // '--color-200': string
-    // '--color-300': string
-    // '--color-400': string
-    // '--color-500': string
-    // '--color-600': string
-    // '--color-700': string
-    // '--color-800': string
-    // '--color-900': string
+    '--color-000': string
+    '--color-050': string
+    '--color-100': string
+    '--color-150': string
+    '--color-200': string
+    '--color-250': string
+    '--color-300': string
+    '--color-350': string
+    '--color-400': string
+    '--color-450': string
+    '--color-500': string
+    '--color-550': string
+    '--color-600': string
+    '--color-650': string
+    '--color-700': string
+    '--color-750': string
+    '--color-800': string
+    '--color-850': string
+    '--color-900': string
+    '--color-950': string
+    '--color-1000': string
+
+
     '--color-theme': string
 
     '--color-primary': string

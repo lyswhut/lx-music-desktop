@@ -10,6 +10,10 @@
               <div :class="$style.label">{{ $t('theme_edit_modal__primary') }}</div>
             </div>
             <div :class="$style.item">
+              <div ref="font_color_ref" :class="$style.color" />
+              <div :class="$style.label">{{ $t('theme_edit_modal__font') }}</div>
+            </div>
+            <div :class="$style.item">
               <div ref="app_bg_color_ref" :class="$style.color" />
               <div :class="$style.label">{{ $t('theme_edit_modal__app_bg') }}</div>
             </div>
@@ -124,7 +128,8 @@ import { isUrl, encodePath } from '@common/utils/common'
 // import { appSetting, updateSetting } from '@renderer/store/setting'
 // import { applyTheme, getThemes } from '@renderer/store/utils'
 import { createThemeColors } from '@common/theme/utils'
-import useMainCoolor from './useMainCoolor'
+import useMainColor from './useMainColor'
+import useFontColor from './useFontColor'
 import useAppBgColor from './useAppBgColor'
 import useMainBgColor from './useMainBgColor'
 import useAsideFontColor from './useAsideFontColor'
@@ -191,7 +196,8 @@ export default {
     // '--color-badge-primary': string
     // '--color-badge-secondary': string
     // '--color-badge-tertiary': string
-    const { primary_color_ref, initMainColor, destroyMainColor } = useMainCoolor()
+    const { primary_color_ref, initMainColor, destroyMainColor } = useMainColor()
+    const { font_color_ref, initFontColor, destroyFontColor } = useFontColor()
     const { app_bg_color_ref, initAppBgColor, destroyAppBgColor, setAppBgColor } = useAppBgColor()
     const { aside_font_color_ref, initAsideFontColor, destroyAsideFontColor, setAsideFontColor } = useAsideFontColor()
     const { main_bg_color_ref, initMainBgColor, destroyMainBgColor, setMainBgColor } = useMainBgColor()
@@ -221,8 +227,8 @@ export default {
     let hideBtnColorOrigin
     let hideBtnColor
 
-    const applyPrimaryColor = (color, isDark) => {
-      theme.config.themeColors = createThemeColors(color, isDark)
+    const applyPrimaryColor = (color, fontColor, isDark) => {
+      theme.config.themeColors = createThemeColors(color, fontColor, isDark)
       if (theme.config.extInfo['--color-app-background'].startsWith('var')) setAppBgColor(getColor(appBgColorOrigin, theme))
       if (theme.config.extInfo['--color-nav-font'].startsWith('var')) setAsideFontColor(getColor(asideFontColorOrigin, theme))
       if (theme.config.extInfo['--color-main-background'].startsWith('var')) setMainBgColor(getColor(mainBgColorOrigin, theme))
@@ -273,8 +279,10 @@ export default {
       hideBtnColor = getColor(hideBtnColorOrigin, theme)
 
       initMainColor(theme.config.themeColors['--color-primary'], (color) => {
-        // console.log(color)
-        applyPrimaryColor(color, theme.isDark)
+        applyPrimaryColor(color, theme.config.themeColors['--color-1000'], theme.isDark)
+      })
+      initFontColor(theme.config.themeColors['--color-1000'] ?? (isDark ? 'rgb(229, 229, 229)' : 'rgb(33, 33, 33)'), (color) => {
+        applyPrimaryColor(theme.config.themeColors['--color-primary'], color, theme.isDark)
       })
       initAppBgColor(appBgColor, (color) => {
         // console.log('appBgColor', color)
@@ -318,6 +326,7 @@ export default {
     }
     const destroyColors = () => {
       destroyMainColor()
+      destroyFontColor()
       destroyAppBgColor()
       destroyAsideFontColor()
       destroyMainBgColor()
@@ -393,7 +402,7 @@ export default {
     }
     const handleDark = (val) => {
       theme.isDark = val
-      applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.isDark)
+      applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.config.themeColors['--color-1000'], theme.isDark)
     }
     /**
      * 预览主题
@@ -507,6 +516,7 @@ export default {
       removeBgImg,
 
       primary_color_ref,
+      font_color_ref,
       app_bg_color_ref,
       main_bg_color_ref,
       aside_font_color_ref,
@@ -552,7 +562,7 @@ export default {
 }
 .content {
   flex: auto;
-  padding: 15px 0;
+  // padding: 15px 0;
   font-size: 14px;
   gap: 5px;
   display: flex;
@@ -562,7 +572,7 @@ export default {
 
 }
 .groupTitle {
-  padding: 20px;
+  padding: 20px 20px 0;
   display: flex;
   flex-flow: row wrap;
 
@@ -575,7 +585,7 @@ export default {
   flex-flow: row wrap;
 }
 .item {
-  padding: 0 20px;
+  padding: 15px 20px 0;
   width: 60px;
   display: flex;
   flex-flow: column nowrap;
@@ -607,11 +617,11 @@ export default {
 }
 
 .bg {
-  width: 0;
-  flex: 1 1 auto;
-  // width: 180px;
-  min-width: 60px;
-  max-width: 200px;
+  // width: 0;
+  // flex: 1 1 auto;
+  width: 150px;
+  // min-width: 60px;
+  // max-width: 200px;
 }
 .bgImg {
   width: 100%;

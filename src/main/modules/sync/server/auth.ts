@@ -1,4 +1,5 @@
 import http from 'http'
+import { SYNC_CODE } from './config'
 import {
   aesEncrypt,
   aesDecrypt,
@@ -6,19 +7,17 @@ import {
   getClientKeyInfo,
   setClientKeyInfo,
 } from './utils'
-
-const authMsg = 'lx-music auth::'
-const helloMsg = 'Hello~::^-^::~v2~'
+import querystring from 'node:querystring'
 
 const requestIps = new Map<string, number>()
 
 export const authCode = async(req: http.IncomingMessage, res: http.ServerResponse, authCode: string) => {
   let code = 401
-  let msg = 'Forbidden'
+  let msg: string = SYNC_CODE.msgAuthFailed
 
   let ip = req.socket.remoteAddress
   // console.log(req.headers)
-  if (typeof req.headers.m == 'string' && ip && (requestIps.get(ip) ?? 0) > 10) {
+  if (typeof req.headers.m == 'string' && ip && (requestIps.get(ip) ?? 0) < 10) {
     if (req.headers.m) {
       label:
       if (req.headers.i) {
@@ -27,36 +26,36 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
         if (!keyInfo) break label
         let text
         try {
-          text = aesDecrypt(req.headers.m, keyInfo.key, keyInfo.iv)
+          text = aesDecrypt(req.headers.m, keyInfo.key)
         } catch (err) {
           break label
         }
-        console.log(text)
-        if (text.startsWith(authMsg)) {
+        // console.log(text)
+        if (text.startsWith(SYNC_CODE.authMsg)) {
           code = 200
-          const deviceName = text.replace(authMsg, '') || 'Unknown'
+          const deviceName = text.replace(SYNC_CODE.authMsg, '') || 'Unknown'
           if (deviceName != keyInfo.deviceName) {
             keyInfo.deviceName = deviceName
             setClientKeyInfo(keyInfo)
           }
-          msg = aesEncrypt(helloMsg, keyInfo.key, keyInfo.iv)
+          msg = aesEncrypt(SYNC_CODE.helloMsg, keyInfo.key)
         }
       } else {
         let key = ''.padStart(16, Buffer.from(authCode).toString('hex'))
-        const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
+        // const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
         key = Buffer.from(key).toString('base64')
-        // console.log(authCode, key, iv)
+        // console.log(req.headers.m, authCode, key)
         let text
         try {
-          text = aesDecrypt(req.headers.m, key, iv)
+          text = aesDecrypt(req.headers.m, key)
         } catch (err) {
           break label
         }
-        console.log(text)
-        if (text.startsWith(authMsg)) {
+        // console.log(text)
+        if (text.startsWith(SYNC_CODE.authMsg)) {
           code = 200
-          const deviceName = text.replace(authMsg, '') || 'Unknown'
-          msg = aesEncrypt(JSON.stringify(createClientKeyInfo(deviceName)), key, iv)
+          const deviceName = text.replace(SYNC_CODE.authMsg, '') || 'Unknown'
+          msg = aesEncrypt(JSON.stringify(createClientKeyInfo(deviceName)), key)
         }
       }
     }
@@ -72,20 +71,21 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
 }
 
 export const authConnect = async(req: http.IncomingMessage) => {
-  const url = new URL(req.url as string)
-  const i = url.searchParams.get('i')
-  const t = url.searchParams.get('t')
+  const query = querystring.parse((req.url as string).split('?')[1])
+  const i = query.i
+  const t = query.t
   label:
-  if (i && t) {
+  if (typeof i == 'string' && typeof t == 'string') {
     const keyInfo = getClientKeyInfo(i)
     if (!keyInfo) break label
     let text
     try {
-      text = aesDecrypt(t, keyInfo.key, keyInfo.iv)
+      text = aesDecrypt(t, keyInfo.key)
     } catch (err) {
       break label
     }
-    if (text == 'lx-music connect') return
+    // console.log(text)
+    if (text == SYNC_CODE.msgConnect) return
   }
   throw new Error('failed')
 }

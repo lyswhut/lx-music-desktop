@@ -534,6 +534,7 @@
   "theme_edit_modal__control_btn": "左侧控制按钮颜色",
   "theme_edit_modal__copy": "复制主题",
   "theme_edit_modal__dark": "暗色主题",
+  "theme_edit_modal__font": "字体颜色",
   "theme_edit_modal__hide_btn": "隐藏播放详情页",
   "theme_edit_modal__main_bg": "内容区域背景颜色",
   "theme_edit_modal__min_btn": "最小化",

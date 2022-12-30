@@ -97,7 +97,7 @@ const removeUserList = (id: string) => {
 }
 
 const overwriteUserList = (lists: LX.List.UserListInfo[]) => {
-  userLists.splice(0, lists.length, ...lists)
+  userLists.splice(0, userLists.length, ...lists)
 }
 
 
@@ -108,13 +108,22 @@ const overwriteUserList = (lists: LX.List.UserListInfo[]) => {
 
 export const listDataOverwrite = ({ defaultList, loveList, userList, tempList }: MakeOptional<LX.List.ListDataFull, 'tempList'>): string[] => {
   const updatedListIds: string[] = []
-  overwriteUserList(userList.map(({ list, ...listInfo }) => {
+  const newUserIds: string[] = []
+  const newUserListInfos = userList.map(({ list, ...listInfo }) => {
+    newUserIds.push(listInfo.id)
     if (allMusicList.has(listInfo.id)) {
       overwriteMusicList(listInfo.id, list)
       updatedListIds.push(listInfo.id)
     }
     return listInfo
-  }))
+  })
+  for (const list of userLists) {
+    if (!allMusicList.has(list.id)) continue
+    removeMusicList(list.id)
+    updatedListIds.push(list.id)
+  }
+  overwriteUserList(newUserListInfos)
+
   if (allMusicList.has(LIST_IDS.DEFAULT)) {
     overwriteMusicList(LIST_IDS.DEFAULT, defaultList)
     updatedListIds.push(LIST_IDS.DEFAULT)
@@ -130,8 +139,8 @@ export const listDataOverwrite = ({ defaultList, loveList, userList, tempList }:
   }
   const newIds = [LIST_IDS.DEFAULT, LIST_IDS.LOVE, ...userList.map(l => l.id)]
   if (tempList) newIds.push(LIST_IDS.TEMP)
-  overwriteListPosition(newIds)
-  overwriteListUpdateInfo(newIds)
+  void overwriteListPosition(newIds)
+  void overwriteListUpdateInfo(newIds)
   return updatedListIds
 }
 
@@ -158,10 +167,10 @@ export const userListsRemove = (ids: string[]) => {
   const changedIds = []
   for (const id of ids) {
     removeUserList(id)
-    if (!allMusicList.has(id)) continue
-    removeMusicList(id)
     removeListPosition(id)
     removeListUpdateInfo(id)
+    if (!allMusicList.has(id)) continue
+    removeMusicList(id)
     changedIds.push(id)
   }
 

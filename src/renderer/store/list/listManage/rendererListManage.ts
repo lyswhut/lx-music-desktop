@@ -235,7 +235,7 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
   rendererOn(PLAYER_EVENT_NAME.list_music_update, list_music_update)
   rendererOn(PLAYER_EVENT_NAME.list_music_update_position, list_music_update_position)
   rendererOn(PLAYER_EVENT_NAME.list_music_overwrite, list_music_overwrite)
-  rendererOn(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
+  rendererOn(PLAYER_EVENT_NAME.list_music_clear, list_music_clear)
 
   return () => {
     rendererOff(PLAYER_EVENT_NAME.list_data_overwire, list_data_overwrite)
@@ -249,6 +249,6 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
     rendererOff(PLAYER_EVENT_NAME.list_music_update, list_music_update)
     rendererOff(PLAYER_EVENT_NAME.list_music_update_position, list_music_update_position)
     rendererOff(PLAYER_EVENT_NAME.list_music_overwrite, list_music_overwrite)
-    rendererOff(PLAYER_EVENT_NAME.list_data_overwire, list_music_clear)
+    rendererOff(PLAYER_EVENT_NAME.list_music_clear, list_music_clear)
   }
 }

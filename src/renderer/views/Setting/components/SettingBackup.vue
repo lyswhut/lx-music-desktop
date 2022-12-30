@@ -37,7 +37,7 @@ import {
 import { dialog } from '@renderer/plugins/Dialog'
 import useImportTip from '@renderer/utils/compositions/useImportTip'
 import { useI18n } from '@renderer/plugins/i18n'
-import { createUserList, getListMusics, overwriteListMusics } from '@renderer/store/list/action'
+import { getListMusics, overwriteListFull, overwriteListMusics } from '@renderer/store/list/action'
 import { LIST_IDS } from '@common/constants'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { appSetting, updateSetting } from '@renderer/store/setting'
@@ -67,12 +67,14 @@ export default {
     }
 
     const importOldListData = async(lists) => {
-      for await (const list of lists) {
+      const allLists = await getAllLists()
+      for (const list of lists) {
         try {
-          if (userLists.some(l => l.id == list.id) || list.id == LIST_IDS.DEFAULT || list.id == LIST_IDS.LOVE) {
-            await overwriteListMusics({ listId: list.id, musicInfos: list.list.map(m => toNewMusicInfo(m)) })
+          const targetList = allLists.find(l => l.id == list.id)
+          if (targetList) {
+            targetList.list = list.list.map(m => toNewMusicInfo(m))
           } else {
-            await createUserList({
+            allLists.push({
               name: list.name,
               id: list.id,
               list: list.list.map(m => toNewMusicInfo(m)),
@@ -85,14 +87,19 @@ export default {
           console.log(err)
         }
       }
+      const defaultList = allLists.shift().list
+      const loveList = allLists.shift().list
+      await overwriteListFull({ defaultList, loveList, userList: allLists })
     }
     const importNewListData = async(lists) => {
-      for await (const list of lists) {
+      const allLists = await getAllLists()
+      for (const list of lists) {
         try {
-          if (userLists.some(l => l.id == list.id) || list.id == LIST_IDS.DEFAULT || list.id == LIST_IDS.LOVE) {
-            await overwriteListMusics({ listId: list.id, musicInfos: list.list.map(m => fixNewMusicInfoQuality(m)) })
+          const targetList = allLists.find(l => l.id == list.id)
+          if (targetList) {
+            targetList.list = list.list.map(m => fixNewMusicInfoQuality(m))
           } else {
-            await createUserList({
+            allLists.push({
               name: list.name,
               id: list.id,
               list: list.list.map(m => fixNewMusicInfoQuality(m)),
@@ -105,6 +112,9 @@ export default {
           console.log(err)
         }
       }
+      const defaultList = allLists.shift().list
+      const loveList = allLists.shift().list
+      await overwriteListFull({ defaultList, loveList, userList: allLists })
     }
     const importOldSettingData = (setting) => {
       console.log(setting)

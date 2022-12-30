@@ -126,7 +126,7 @@ export default {
   // width: 30%;
   position: relative;
   // flex: none;
-  color: var(--color-300);
+  color: var(--color-550);
   font-size: 13px;
   // padding-left: 10px;
   // display: flex;

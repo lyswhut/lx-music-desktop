@@ -267,7 +267,7 @@ const handleSyncList = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListData |
     if (remoteListData.defaultList.length || remoteListData.loveList.length || remoteListData.userList.length) {
       const mergedList = await handleMergeListData(socket)
       console.log('handleMergeListData', 'mergedList')
-      console.log(mergedList)
+      // console.log(mergedList)
       if (!mergedList) return null
       listData.defaultList = mergedList.defaultList
       listData.loveList = mergedList.loveList

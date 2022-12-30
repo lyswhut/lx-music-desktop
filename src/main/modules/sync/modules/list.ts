@@ -9,7 +9,7 @@ let removeListener: (() => void) | null
 type listAction = 'list:action'
 
 const handleListAction = ({ action, data }: LX.Sync.ActionList) => {
-  // console.log(action, data)
+  // console.log('handleListAction', action)
 
   switch (action) {
     case 'list_data_overwrite':
@@ -144,11 +144,14 @@ const broadcast = async(action: listAction, data: any, excludeIds: string[] = []
 }
 
 export const sendListAction = async(action: LX.Sync.ActionList) => {
+  console.log('sendListAction', action.action)
   // io.sockets
   return await broadcast('list:action', JSON.stringify(action))
 }
 
 export const registerListHandler = (_io: Server, socket: LX.Sync.Socket) => {
+  unregisterListHandler()
+
   io = _io
   socket.on('list:action', msg => {
     // console.log(msg)
