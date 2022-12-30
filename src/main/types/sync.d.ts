@@ -20,6 +20,7 @@ declare global {
         snapshotFilePath: string
         isCreatedSnapshot: boolean
         keyInfo: KeyInfo
+        isReady: boolean
       }
       type Action = 'list:sync'
       type ListAction = 'getData' | 'finished'

@@ -138,7 +138,7 @@ const broadcast = async(action: listAction, data: any, excludeIds: string[] = []
   if (!io) return
   const sockets: LX.Sync.RemoteSocket[] = await io.fetchSockets()
   for (const socket of sockets) {
-    if (excludeIds.includes(socket.data.keyInfo.clientId)) continue
+    if (excludeIds.includes(socket.data.keyInfo.clientId) || !socket.data.isReady) continue
     socket.emit(action, encryptMsg(socket.data.keyInfo, data))
   }
 }
@@ -150,10 +150,13 @@ export const sendListAction = async(action: LX.Sync.ActionList) => {
 }
 
 export const registerListHandler = (_io: Server, socket: LX.Sync.Socket) => {
-  unregisterListHandler()
+  if (!io) {
+    io = _io
+    removeListener = registerListActionEvent()
+  }
 
-  io = _io
   socket.on('list:action', msg => {
+    if (!socket.data.isReady) return
     // console.log(msg)
     msg = decryptMsg(socket.data.keyInfo, msg)
     if (!msg) return
@@ -162,7 +165,6 @@ export const registerListHandler = (_io: Server, socket: LX.Sync.Socket) => {
     // socket.broadcast.emit('list:action', { action: 'list_remove', data: { id: 'default', index: 0 } })
   })
 
-  removeListener = registerListActionEvent()
   // socket.on('list:add', addMusic)
 }
 export const unregisterListHandler = () => {

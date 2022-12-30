@@ -121,6 +121,7 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
     setClientKeyInfo(keyInfo)
     // socket.lx_keyInfo = keyInfo
     socket.data.keyInfo = keyInfo
+    socket.data.isReady = false
     try {
       await syncList(io, socket)
     } catch (err) {
@@ -130,6 +131,7 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
     }
     status.devices.push(keyInfo)
     handleConnection(io, socket)
+    socket.data.isReady = true
     sendStatus(status)
   })
 

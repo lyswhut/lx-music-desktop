@@ -22,6 +22,8 @@ const patchListData = (listData: Partial<LX.Sync.ListData>): LX.Sync.ListData =>
 const getRemoteListData = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListData> => await new Promise((resolve, reject) => {
   console.log('getRemoteListData')
   const handleError = (reason: string) => {
+    socket.removeListener('list:sync', handleSuccess)
+    socket.removeListener('disconnect', handleError)
     reject(new Error(reason))
   }
   const handleSuccess = (enData: string) => {
@@ -449,6 +451,7 @@ const syncList = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListData | null>
 
 const checkSyncQueue = async(): Promise<void> => {
   if (!syncingId) return
+  console.log('sync queue...')
   await wait()
   return await checkSyncQueue()
 }
