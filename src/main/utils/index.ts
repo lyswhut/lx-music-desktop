@@ -60,7 +60,7 @@ export const mergeSetting = (originSetting: LX.AppSetting, targetSetting?: Parti
   updatedSettingKeys: Array<keyof LX.AppSetting>
   updatedSetting: Partial<LX.AppSetting>
 } => {
-  let originSettingCopy: LX.AppSetting = JSON.parse(JSON.stringify(originSetting))
+  let originSettingCopy: LX.AppSetting = { ...originSetting }
   // const defaultVersion = targetSettingCopy.version
   const updatedSettingKeys: Array<keyof LX.AppSetting> = []
   const updatedSetting: Partial<LX.AppSetting> = {}
@@ -114,7 +114,7 @@ export const updateSetting = (setting?: Partial<LX.AppSetting>, isInit: boolean 
   let originSetting: LX.AppSetting
   if (isInit) {
     if (setting) setting = migrateSetting(setting)
-    originSetting = defaultSetting
+    originSetting = { ...defaultSetting }
   } else originSetting = global.lx.appSetting
 
   const result = mergeSetting(originSetting, setting)
