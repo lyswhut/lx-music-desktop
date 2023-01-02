@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import { checkPath, joinPath } from '@common/utils/nodejs'
 import { log } from '@common/utils'
-import { toNewMusicInfo } from '@common/utils/tools'
+import { filterMusicList, toNewMusicInfo } from '@common/utils/tools'
 import { APP_EVENT_NAMES, STORE_NAMES } from '@common/constants'
 
 /**
@@ -28,15 +28,7 @@ interface OldUserListInfo {
   locationUpdateTime?: number
   list: any[]
 }
-const filterMusicList = <T extends LX.Music.MusicInfo>(list: T[]): T[] => {
-  const ids: Set<string> = new Set()
-  return list.filter(s => {
-    if (!s.id || ids.has(s.id) || !s.name) return false
-    if (s.singer == null) s.singer = ''
-    ids.add(s.id)
-    return true
-  })
-}
+
 /**
  * 迁移 v2.0.0 之前的 list data
  * @returns

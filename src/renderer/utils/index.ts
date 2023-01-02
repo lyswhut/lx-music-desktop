@@ -60,14 +60,6 @@ export const deduplicationList = <T extends LX.Music.MusicInfo>(list: T[]): T[] 
     return true
   })
 }
-export const filterMusicList = <T extends LX.Music.MusicInfo>(list: T[]): T[] => {
-  const ids: Set<string> = new Set()
-  return list.filter(s => {
-    if (!s.id || ids.has(s.id)) return false
-    ids.add(s.id)
-    return true
-  })
-}
 
 export const langS2T = async(str: string) => {
   return await window.lx.worker.main.langS2t(Buffer.from(str).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
