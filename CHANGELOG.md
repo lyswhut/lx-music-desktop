@@ -6,6 +6,23 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.0.1](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.0...v2.0.1) - 2023-01-02
+
+若你更新v2.0.0后，出现之前收藏的歌曲全部丢失或者歌曲无法添加到列表播放的问题，可以按以下方式解决：
+
+1. 根据你的平台类型，进入软件数据目录
+   - Windows：`%APPDATA%/lx-music-desktop`
+   - Linux：`$XDG_CONFIG_HOME/lx-music-desktop` 或 `~/.config/lx-music-desktop`
+   - macOS：`~/Library/Application Support/lx-music-desktop`
+
+2. 进入`LxDatas`目录，退出LX，删除`lx.data.db`文件，再启动软件即可
+
+若以上操作仍然不行，可以加交流群或者在GitHub开issue反馈
+
+### 优化
+
+- 单次执行所有sql语句，尝试解决某些情况下某些表没有成功创建的问题
+
 ## [2.0.0](https://github.com/lyswhut/lx-music-desktop/compare/v1.22.3...v2.0.0) - 2023-01-01
 
 
