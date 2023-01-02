@@ -1,8 +1,9 @@
 import Database from 'better-sqlite3'
 
 const migrateV1 = (db: Database.Database) => {
-  db.exec('DROP TABLE "main"."download_list"')
-  db.exec(`
+  const sql = `
+    DROP TABLE "main"."download_list";
+
     CREATE TABLE "download_list" (
       "id" TEXT NOT NULL,
       "isComplate" INTEGER NOT NULL,
@@ -18,11 +19,16 @@ const migrateV1 = (db: Database.Database) => {
       "musicInfo" TEXT NOT NULL,
       "position" INTEGER NOT NULL,
       PRIMARY KEY("id")
-    )`)
+    );
+  `
+  db.exec(sql)
   db.prepare('UPDATE "main"."db_info" SET "field_value"=@value WHERE "field_name"=@name').run({ name: 'version', value: '2' })
 }
 
 export default (db: Database.Database) => {
+  // PRAGMA user_version = x
+  // console.log(db.prepare('PRAGMA user_version').get().user_version)
+  // https://github.com/WiseLibs/better-sqlite3/issues/668#issuecomment-1145285728
   const version = db.prepare('SELECT "field_value" FROM "main"."db_info" WHERE "field_name" = ?').get('version').field_value
   switch (version) {
     case '1':

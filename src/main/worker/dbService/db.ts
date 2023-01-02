@@ -6,19 +6,14 @@ let db: Database.Database
 
 
 const initTables = (db: Database.Database) => {
-  db.exec(`
+  const sql = `
     CREATE TABLE "db_info" (
       "id" INTEGER NOT NULL UNIQUE,
       "field_name" TEXT,
       "field_value" TEXT,
       PRIMARY KEY("id" AUTOINCREMENT)
-    )`)
+    );
 
-  db.prepare(`INSERT INTO "main"."db_info" ("field_name", "field_value") VALUES
-      ('version', '1')
-    `).run()
-
-  db.exec(`
     CREATE TABLE "my_list" (
       "id" TEXT NOT NULL,
       "name" TEXT NOT NULL,
@@ -27,17 +22,8 @@ const initTables = (db: Database.Database) => {
       "position" INTEGER NOT NULL,
       "locationUpdateTime" INTEGER,
       PRIMARY KEY("id")
-    )`)
-  // const insert = db.prepare(`INSERT INTO "main"."my_list" ("id", "name", "source", "sourceListId", "locationUpdateTime") VALUES
-  //     (@id, @name, @source, @sourceListId, @locationUpdateTime)`)
-  // db.transaction((cats) => {
-  //   for (const cat of cats) insert.run(cat)
-  // })([
-  //   { id: 'default', name: '默认列表', source: null, sourceListId: null, locationUpdateTime: null },
-  //   { id: 'love', name: '收藏列表', source: null, sourceListId: null, locationUpdateTime: null },
-  //   { id: 'temp', name: '临时列表', source: null, sourceListId: null, locationUpdateTime: null },
-  // ])
-  db.exec(`
+    );
+
     CREATE TABLE "my_list_music_info" (
       "id" TEXT NOT NULL,
       "listId" TEXT NOT NULL,
@@ -47,26 +33,22 @@ const initTables = (db: Database.Database) => {
       "interval" TEXT,
       "meta" TEXT NOT NULL,
       UNIQUE("id","listId")
-    )`)
-  db.exec(`
+    );
     CREATE INDEX "index_my_list_music_info" ON "my_list_music_info" (
       "id",
       "listId"
-    )`)
+    );
 
-  db.exec(`
     CREATE TABLE "my_list_music_info_order" (
       "listId" TEXT NOT NULL,
       "musicInfoId" TEXT NOT NULL,
       "order" INTEGER NOT NULL
-    )`)
-  db.exec(`
+    );
     CREATE INDEX "index_my_list_music_info_order" ON "my_list_music_info_order" (
       "listId",
       "musicInfoId"
-    )`)
+    );
 
-  db.exec(`
     CREATE TABLE "music_info_other_source" (
       "source_id" TEXT NOT NULL,
       "id" TEXT NOT NULL,
@@ -76,29 +58,25 @@ const initTables = (db: Database.Database) => {
       "meta" TEXT NOT NULL,
       "order" INTEGER NOT NULL,
       UNIQUE("source_id","id")
-    )`)
-  db.exec(`
+    );
     CREATE INDEX "index_music_info_other_source" ON "music_info_other_source" (
       "source_id",
       "id"
-    )`)
+    );
 
-  // TODO  "meta" TEXT NOT NULL,
-  db.exec(`
+    -- TODO  "meta" TEXT NOT NULL,
     CREATE TABLE "lyric" (
       "id" TEXT NOT NULL,
       "source" TEXT NOT NULL,
       "type" TEXT NOT NULL,
       "text" TEXT NOT NULL
-    )`)
+    );
 
-  db.exec(`
     CREATE TABLE "music_url" (
       "id" TEXT NOT NULL,
       "url" TEXT NOT NULL
-    )`)
+    );
 
-  db.exec(`
     CREATE TABLE "download_list" (
       "id" TEXT NOT NULL,
       "isComplate" INTEGER NOT NULL,
@@ -114,7 +92,12 @@ const initTables = (db: Database.Database) => {
       "musicInfo" TEXT NOT NULL,
       "position" INTEGER NOT NULL,
       PRIMARY KEY("id")
-    )`)
+    );
+
+    INSERT INTO "main"."db_info" ("field_name", "field_value") VALUES ('version', '1');
+  `
+
+  db.exec(sql)
 }
 
 
@@ -143,7 +126,7 @@ export const init = (lxDataPath: string): boolean => {
   // if (dbFileExists) migrateData(db)
 
   // https://www.sqlite.org/pragma.html#pragma_optimize
-  db.exec('PRAGMA optimize;')
+  if (dbFileExists) db.exec('PRAGMA optimize;')
 
   // https://www.sqlite.org/lang_vacuum.html
   // db.exec('VACUUM "main"')
