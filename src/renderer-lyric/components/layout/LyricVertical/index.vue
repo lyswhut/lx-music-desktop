@@ -178,6 +178,9 @@ export default {
   width: 80%;
   height: 100%;
 }
+.lyric-text {
+  padding: 0.14em 0;
+}
 // .lrc-active {
 
 //   .lrc-line {
