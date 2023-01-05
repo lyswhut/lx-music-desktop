@@ -1,5 +1,5 @@
 <template>
-  <material-modal :show="props.modelValue" teleport="#view" width="60%" @close="emit('update:modelValue', $event)" @after-enter="$refs.input.focus()">
+  <material-modal :show="props.modelValue" teleport="#view" width="60%" bg-close @close="emit('update:modelValue', $event)" @after-enter="$refs.input.focus()">
     <main :class="$style.main">
       <h2>{{ $t('songlist__import_input_title') }}</h2>
       <div :class="$style.inputContent">
