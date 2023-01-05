@@ -3,7 +3,7 @@ let winX
 let winY
 let wasW
 let wasH
-let offset = 8
+export const offset = 8
 let minWidth = 80
 let minHeight = 50
 

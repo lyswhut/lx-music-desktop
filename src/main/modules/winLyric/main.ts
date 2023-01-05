@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
 import { debounce, isLinux } from '@common/utils'
-import { getLyricWindowBounds } from './utils'
+import { getLyricWindowBounds, offset } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
 
@@ -85,8 +85,8 @@ export const createWindow = () => {
   let isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
   let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
   if (x == null || y == null) {
-    x = screenWidth - width
-    y = screenHeight - height
+    x = screenWidth - width + offset
+    y = screenHeight - height + offset
   }
   if (isLockScreen) {
     let bounds = getLyricWindowBounds({ x, y, width, height }, { x: null, y: 0, w: width, h: height })
