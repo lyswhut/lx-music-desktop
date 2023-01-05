@@ -79,6 +79,7 @@
   },
   "build": {
     "appId": "cn.toside.music.desktop",
+    "beforePack": "./build-config/build-before-pack.js",
     "afterPack": "./build-config/build-after-pack.js",
     "protocols": {
       "name": "lx-music-protocol",
@@ -193,10 +194,7 @@
     "electron-app",
     "vuejs3"
   ],
-  "author": {
-    "name": "lyswhut",
-    "email": "lyswhut@qq.com"
-  },
+  "author": "lyswhut <lyswhut@qq.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/lyswhut/lx-music-desktop/issues"
