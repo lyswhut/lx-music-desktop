@@ -164,6 +164,7 @@ export default () => {
   const scrollLine = (line, oldLine) => {
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
+    if (isSetedLines) isSetedLines = false
     if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
 
     if (setting['desktopLyric.isDelayScroll']) {

@@ -197,6 +197,7 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
   const scrollLine = (line, oldLine) => {
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
+    if (isSetedLines) isSetedLines = false
     if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
 
     delayScrollTimeout = setTimeout(() => {
