@@ -20,7 +20,7 @@ import {
   setAllStatus,
   addPlayedList,
   clearPlayedList,
-  resetPlayerMusicInfo,
+  // resetPlayerMusicInfo,
 } from '@renderer/store/player/action'
 
 import { appSetting } from '@renderer/store/setting'
@@ -68,9 +68,12 @@ export default () => {
   }
   const handleEnded = () => {
     // setTimeout(() => {
-    if (window.lx.isPlayedStop) return setAllStatus(t('player__end'))
-    resetPlayerMusicInfo()
-    window.app_event.stop()
+    if (window.lx.isPlayedStop) {
+      setAllStatus(t('player__end'))
+      return
+    }
+    // resetPlayerMusicInfo()
+    // window.app_event.stop()
     setAllStatus(t('player__end'))
     void playNext(true)
     // })

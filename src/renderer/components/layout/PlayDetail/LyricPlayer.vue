@@ -142,9 +142,11 @@ export default {
     })
 
     onMounted(() => {
+      window.app_event.on('musicToggled', updateMusicInfo)
       window.app_event.on('lyricUpdated', updateMusicInfo)
     })
     onBeforeUnmount(() => {
+      window.app_event.off('musicToggled', updateMusicInfo)
       window.app_event.off('lyricUpdated', updateMusicInfo)
     })
 

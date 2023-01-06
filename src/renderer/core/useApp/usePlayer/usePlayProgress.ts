@@ -61,7 +61,7 @@ export default () => {
   const setProgress = (time: number, maxTime?: number) => {
     if (!musicInfo.id) return
     console.log('setProgress', time, maxTime)
-    restorePlayTime = time
+    if (time > 0) restorePlayTime = time
     if (mediaBuffer.playTime) {
       clearBufferTimeout()
       mediaBuffer.playTime = time
@@ -106,12 +106,6 @@ export default () => {
   const handleLoadeddata = () => {
     setMaxplayTime(getDuration())
 
-    console.log('handleLoadeddata', restorePlayTime)
-    if (restorePlayTime) {
-      setCurrentTime(restorePlayTime)
-      restorePlayTime = 0
-    }
-
     if (playMusicInfo.musicInfo && 'source' in playMusicInfo.musicInfo && !playMusicInfo.musicInfo.interval) {
       console.log(formatPlayTime2(playProgress.maxPlayTime))
 
@@ -128,12 +122,15 @@ export default () => {
   }
 
   const handleCanplay = () => {
-    console.log('handleCanplay', mediaBuffer.playTime)
+    console.log('handleCanplay', mediaBuffer.playTime, restorePlayTime)
     clearBufferTimeout()
     if (mediaBuffer.playTime) {
       let playTime = mediaBuffer.playTime
       mediaBuffer.playTime = 0
       setCurrentTime(playTime)
+    } else if (restorePlayTime) {
+      setCurrentTime(restorePlayTime)
+      restorePlayTime = 0
     }
   }
   const handleWating = () => {

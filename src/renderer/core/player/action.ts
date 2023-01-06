@@ -126,12 +126,11 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
       rlrc: lyricInfo.rlyric,
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
+    window.app_event.lyricUpdated()
   }).catch((err) => {
     console.log(err)
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setAllStatus(window.i18n.t('lyric__load_error'))
-  }).finally(() => {
-    window.app_event.lyricUpdated()
   })
 
   if (appSetting['player.togglePlayMethod'] == 'random') addPlayedList({ ...playMusicInfo as LX.Player.PlayMusicInfo })
@@ -161,7 +160,7 @@ const handlePlay = () => {
 
   if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
-  void setMusicUrl(musicInfo)
+  setMusicUrl(musicInfo)
 
   void getPicPath({ musicInfo, listId: playMusicInfo.isTempPlay ? null : playMusicInfo.listId }).then((url: string) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
@@ -178,12 +177,11 @@ const handlePlay = () => {
       rlrc: lyricInfo.rlyric,
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
+    window.app_event.lyricUpdated()
   }).catch((err) => {
     console.log(err)
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setAllStatus(window.i18n.t('lyric__load_error'))
-  }).finally(() => {
-    window.app_event.lyricUpdated()
   })
 }
 
@@ -221,11 +219,17 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
     return
   }
 
-  if (playMusicInfo.musicInfo == null) return handleToggleStop()
+  if (playMusicInfo.musicInfo == null) {
+    handleToggleStop()
+    return
+  }
 
   // console.log(playInfo.playerListId)
   const currentListId = playInfo.playerListId
-  if (!currentListId) return handleToggleStop()
+  if (!currentListId) {
+    handleToggleStop()
+    return
+  }
   const currentList = getList(currentListId)
 
   if (playedList.length) { // 移除已播放列表内不存在原列表的歌曲
@@ -263,7 +267,10 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
     playerMusicInfo: currentList[playInfo.playerPlayIndex],
   })
 
-  if (!filteredList.length) return handleToggleStop()
+  if (!filteredList.length) {
+    handleToggleStop()
+    return
+  }
   // let currentIndex: number = filteredList.indexOf(currentList[playInfo.playerPlayIndex])
   if (playerIndex == -1 && filteredList.length) playerIndex = 0
   let nextIndex = playerIndex
@@ -309,10 +316,16 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
  * 上一曲
  */
 export const playPrev = async(isAutoToggle = false): Promise<void> => {
-  if (playMusicInfo.musicInfo == null) return handleToggleStop()
+  if (playMusicInfo.musicInfo == null) {
+    handleToggleStop()
+    return
+  }
 
   const currentListId = playInfo.playerListId
-  if (!currentListId) return handleToggleStop()
+  if (!currentListId) {
+    handleToggleStop()
+    return
+  }
   const currentList = getList(currentListId)
 
   if (playedList.length) {
@@ -350,7 +363,10 @@ export const playPrev = async(isAutoToggle = false): Promise<void> => {
     playedList,
     playerMusicInfo: currentList[playInfo.playerPlayIndex],
   })
-  if (!filteredList.length) return handleToggleStop()
+  if (!filteredList.length) {
+    handleToggleStop()
+    return
+  }
 
   // let currentIndex = filteredList.indexOf(currentList[playInfo.playerPlayIndex])
   if (playerIndex == -1 && filteredList.length) playerIndex = 0
@@ -398,7 +414,7 @@ export const playPrev = async(isAutoToggle = false): Promise<void> => {
 export const play = () => {
   if (playMusicInfo.musicInfo == null) return
   if (isEmpty()) {
-    void setMusicUrl(playMusicInfo.musicInfo)
+    setMusicUrl(playMusicInfo.musicInfo)
     return
   }
   setPlay()
