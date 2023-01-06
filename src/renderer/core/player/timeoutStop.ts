@@ -2,7 +2,7 @@ import { ref, computed, ComputedRef } from '@common/utils/vueTools'
 import { isPlay } from '@renderer/store/player/state'
 import { appSetting } from '@renderer/store/setting'
 // import { interval, intervalCancel } from '@renderer/utils/ipc'
-import { stop } from './action'
+import { pause } from './action'
 
 const time = ref(-1)
 
@@ -25,7 +25,7 @@ const timeoutTools: {
   exit() {
     window.lx.isPlayedStop = true
     if (!appSetting['player.waitPlayEndStop'] && isPlay.value) {
-      stop()
+      pause()
     }
   },
   clearTimeout() {
