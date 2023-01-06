@@ -21,7 +21,7 @@ export const onSettingChanged = (listener: LX.IpcRendererEventListenerParams<Par
 }
 
 export const sendInited = () => {
-  return rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.inited)
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.inited)
 }
 
 export const getOtherSource = async(id: string): Promise<LX.Music.MusicInfoOnline[]> => {

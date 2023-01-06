@@ -4,9 +4,7 @@ import { join } from 'path'
 import fs from 'fs'
 import log from 'electron-log'
 
-interface Stores {
-  [key: string]: Store
-}
+type Stores = Record<string, Store>
 
 const stores: Stores = {}
 

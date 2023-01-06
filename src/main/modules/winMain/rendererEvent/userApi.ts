@@ -22,7 +22,7 @@ export default () => {
   })
 
   mainHandle<LX.UserApi.UserApiSetApiParams>(WIN_MAIN_RENDERER_EVENT_NAME.set_user_api, async({ params: apiId }) => {
-    return await setApi(apiId)
+    await setApi(apiId)
   })
 
   mainHandle<LX.UserApi.UserApiInfo[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_user_api_list, async() => {
@@ -34,14 +34,14 @@ export default () => {
   })
 
   mainHandle<LX.UserApi.UserApiSetAllowUpdateAlertParams>(WIN_MAIN_RENDERER_EVENT_NAME.user_api_set_allow_update_alert, async({ params: { id, enable } }) => {
-    return setAllowShowUpdateAlert(id, enable)
+    setAllowShowUpdateAlert(id, enable)
   })
 
   mainHandle<LX.UserApi.UserApiRequestParams>(WIN_MAIN_RENDERER_EVENT_NAME.request_user_api, async({ params }) => {
     return await request(params)
   })
   mainHandle<LX.UserApi.UserApiRequestCancelParams>(WIN_MAIN_RENDERER_EVENT_NAME.request_user_api_cancel, async({ params: requestKey }) => {
-    return cancelRequest(requestKey)
+    cancelRequest(requestKey)
   })
 }
 

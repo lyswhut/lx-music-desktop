@@ -55,7 +55,10 @@ export default () => {
     showWindow()
   })
   mainOn<boolean>(WIN_MAIN_RENDERER_EVENT_NAME.close, ({ params: isForce }) => {
-    if (isForce) return app.exit(0)
+    if (isForce) {
+      app.exit(0)
+      return
+    }
     global.lx.isTrafficLightClose = true
     closeWindow()
   })
@@ -79,7 +82,7 @@ export default () => {
 
 
   mainHandle(WIN_MAIN_RENDERER_EVENT_NAME.clear_cache, async() => {
-    return await clearCache()
+    await clearCache()
   })
 
   mainHandle<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_cache_size, async() => {

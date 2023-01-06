@@ -52,7 +52,9 @@ export default () => {
         case 'playListPart_v2':
           listData = configData.data
           break
-        default: return showImportTip(configData.type)
+        default:
+          showImportTip(configData.type)
+          return
       }
 
       const targetList = [defaultList, loveList, ...userLists].find(l => l.id == listData.id)

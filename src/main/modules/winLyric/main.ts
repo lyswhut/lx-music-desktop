@@ -202,7 +202,10 @@ export const alwaysOnTopTools: AlwaysOnTopTools = {
   startLoop() {
     this.clearLoop()
     this.timeout = setInterval(() => {
-      if (!isExistWindow()) return this.clearLoop()
+      if (!isExistWindow()) {
+        this.clearLoop()
+        return
+      }
       setAlwaysOnTop(true, 'screen-saver')
     }, 1000)
   },

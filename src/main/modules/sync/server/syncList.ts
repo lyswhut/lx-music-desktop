@@ -31,7 +31,10 @@ const getRemoteListData = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListDat
     socket.removeListener('list:sync', handleSuccess)
     console.log('getRemoteListData', 'handleSuccess')
     const data: LX.Sync.Data | null = JSON.parse(decryptMsg(socket.data.keyInfo, enData))
-    if (!data) return reject(new Error('Get remote list data failed'))
+    if (!data) {
+      reject(new Error('Get remote list data failed'))
+      return
+    }
     if (data.action != 'getData') return
     resolve(patchListData(data.data))
   }
@@ -101,10 +104,10 @@ const updateSnapshot = async(path: string, data: string) => {
   let writeFilePromise = writeFilePromises.get(path) ?? Promise.resolve()
   writeFilePromise = writeFilePromise.then(async() => {
     if (writeFilePromise !== writeFilePromises.get(path)) return
-    return await fsPromises.writeFile(path, data)
+    await fsPromises.writeFile(path, data)
   })
   writeFilePromises.set(path, writeFilePromise)
-  return await writeFilePromise.finally(() => {
+  await writeFilePromise.finally(() => {
     if (writeFilePromise !== writeFilePromises.get(path)) return
     writeFilePromises.delete(path)
   })
@@ -453,7 +456,7 @@ const checkSyncQueue = async(): Promise<void> => {
   if (!syncingId) return
   console.log('sync queue...')
   await wait()
-  return await checkSyncQueue()
+  await checkSyncQueue()
 }
 
 // export {
@@ -484,7 +487,7 @@ const _syncList = async(_io: Server, socket: LX.Sync.Socket) => {
 
 const removeSnapshot = async(keyInfo: LX.Sync.KeyInfo) => {
   const filePath = getSnapshotFilePath(keyInfo)
-  return await fsPromises.unlink(filePath)
+  await fsPromises.unlink(filePath)
 }
 
 export {

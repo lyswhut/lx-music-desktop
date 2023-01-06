@@ -49,7 +49,10 @@ export default () => {
   const addDelayNextTimeout = () => {
     clearDelayNextTimeout()
     delayNextTimeout = setTimeout(() => {
-      if (window.lx.isPlayedStop) return setAllStatus('')
+      if (window.lx.isPlayedStop) {
+        setAllStatus('')
+        return
+      }
       void playNext(true)
     }, 5000)
   }

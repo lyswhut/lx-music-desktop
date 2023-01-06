@@ -135,12 +135,13 @@ class Task extends EventEmitter {
         try {
           this.__initDownload(response)
         } catch (error: any) {
-          return this.__handleError(error)
+          this.__handleError(error)
+          return
         }
         this.status = STATUS.running
         response
           .on('data', this.__handleWriteData.bind(this))
-          .on('error', err => this.__handleError(err))
+          .on('error', err => { this.__handleError(err) })
           .on('end', () => {
             if (response.complete) {
               this.__handleComplete()
@@ -150,7 +151,7 @@ class Task extends EventEmitter {
             }
           })
       })
-      .on('error', err => this.__handleError(err))
+      .on('error', err => { this.__handleError(err) })
       .on('close', () => {
         void this.__closeWriteStream()
       })
@@ -159,7 +160,10 @@ class Task extends EventEmitter {
 
   __initDownload(response: http.IncomingMessage) {
     this.progress.total = response.headers['content-length'] ? parseInt(response.headers['content-length']) : 0
-    if (!this.progress.total) return this.__handleError(new Error('Content length is 0'))
+    if (!this.progress.total) {
+      this.__handleError(new Error('Content length is 0'))
+      return
+    }
     let options: any = {}
     let isResumable = this.options.forceResume ||
       response.headers['accept-ranges'] !== 'none' ||
@@ -170,11 +174,17 @@ class Task extends EventEmitter {
       options.flags = 'a'
       if (this.progress.downloaded) this.progress.total -= 10
     } else {
-      if (this.chunkInfo.startByte != '0') return this.__handleError(new Error('The resource cannot be resumed download.'))
+      if (this.chunkInfo.startByte != '0') {
+        this.__handleError(new Error('The resource cannot be resumed download.'))
+        return
+      }
     }
     this.progress.total += this.progress.downloaded
     this.statsEstimate.prevBytes = this.progress.downloaded
-    if (!this.chunkInfo.path) return this.__handleError(new Error('Chunk save Path is not set.'))
+    if (!this.chunkInfo.path) {
+      this.__handleError(new Error('Chunk save Path is not set.'))
+      return
+    }
     this.ws = fs.createWriteStream(this.chunkInfo.path, options)
 
     this.ws.on('finish', () => {
@@ -216,7 +226,10 @@ class Task extends EventEmitter {
 
   async __closeWriteStream() {
     return new Promise<void>((resolve, reject) => {
-      if (!this.ws) return resolve()
+      if (!this.ws) {
+        resolve()
+        return
+      }
       // console.log('close write stream')
       this.ws.close(err => {
         if (err) {
@@ -251,7 +264,10 @@ class Task extends EventEmitter {
             // this.__handleError(err)
             this.chunkInfo.startByte = '0'
             this.resumeLastChunk = null
-            if (unlinkErr && unlinkErr.code !== 'ENOENT') return this.__handleError(unlinkErr)
+            if (unlinkErr && unlinkErr.code !== 'ENOENT') {
+              this.__handleError(unlinkErr)
+              return
+            }
             void this.start()
           })
         })
@@ -259,7 +275,10 @@ class Task extends EventEmitter {
       }
     }
     // console.log('data', chunk)
-    if (this.status == STATUS.stopped || this.ws == null) return console.log('cancel write')
+    if (this.status == STATUS.stopped || this.ws == null) {
+      console.log('cancel write')
+      return
+    }
     this.__calculateProgress(chunk.length)
     this.ws.write(chunk, err => {
       if (!err) return

@@ -146,7 +146,7 @@ const broadcast = async(action: listAction, data: any, excludeIds: string[] = []
 export const sendListAction = async(action: LX.Sync.ActionList) => {
   console.log('sendListAction', action.action)
   // io.sockets
-  return await broadcast('list:action', JSON.stringify(action))
+  await broadcast('list:action', JSON.stringify(action))
 }
 
 export const registerListHandler = (_io: Server, socket: LX.Sync.Socket) => {

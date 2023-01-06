@@ -118,7 +118,9 @@ export const cancelRequest = (requestKey: string) => {
 }
 
 export const request = async({ requestKey, data }: LX.UserApi.UserApiRequestParams): Promise<any> => await new Promise((resolve, reject) => {
-  if (!userApi) return reject(new Error('user api is not load'))
+  if (!userApi) {
+    reject(new Error('user api is not load'))
+  }
 
   // const requestKey = `request__${Math.random().toString().substring(2)}`
   const timeout = timeouts.get(requestKey)

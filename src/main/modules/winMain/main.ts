@@ -242,13 +242,13 @@ export const setThumbarButtons = ({ empty, collect, play, next, prev }: LX.TaskB
 
 export const setThumbnailClip = (region: Electron.Rectangle) => {
   if (!browserWindow) return
-  return browserWindow.setThumbnailClip(region)
+  browserWindow.setThumbnailClip(region)
 }
 
 
 export const clearCache = async() => {
   if (!browserWindow) throw new Error('main window is undefined')
-  return await browserWindow.webContents.session.clearCache()
+  await browserWindow.webContents.session.clearCache()
 }
 
 export const getCacheSize = async() => {

@@ -91,7 +91,7 @@ export const insertMusicInfoList = (list: LX.DBService.MusicInfo[]) => {
   const musicInfoInsertStatement = createMusicInfoInsertStatement()
   const musicInfoOrderInsertStatement = createMusicInfoOrderInsertStatement()
   const db = getDB()
-  return db.transaction((musics: LX.DBService.MusicInfo[]) => {
+  db.transaction((musics: LX.DBService.MusicInfo[]) => {
     for (const music of musics) {
       musicInfoInsertStatement.run(music)
       musicInfoOrderInsertStatement.run({
@@ -238,7 +238,7 @@ export const removeMusicInfos = (listId: string, ids: string[]) => {
   const musicInfoDeleteStatement = createMusicInfoDeleteStatement()
   const musicInfoOrderDeleteStatement = createMusicInfoOrderDeleteStatement()
   const db = getDB()
-  return db.transaction((listId: string, ids: string[]) => {
+  db.transaction((listId: string, ids: string[]) => {
     for (const id of ids) {
       musicInfoDeleteStatement.run({ listId, id })
       musicInfoOrderDeleteStatement.run({ listId, id })

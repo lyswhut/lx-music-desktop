@@ -82,7 +82,9 @@ const migrateFile = async(name: string, targetName: string) => {
   if (!await checkPath(path) && await checkPath(oldPath)) {
     await fs.promises.copyFile(oldPath, path).catch(err => {
       log.error(err)
-    }).catch(err => log.error(err))
+    }).catch(err => {
+      log.error(err)
+    })
   }
 }
 
@@ -108,7 +110,9 @@ export const migrateDataJson = async() => {
   if (oldDataFile.listPosition) newData.listScrollPosition = oldDataFile.listPosition
   if (oldDataFile.listUpdateInfo) newData.listUpdateInfo = oldDataFile.listUpdateInfo
 
-  await fs.promises.writeFile(path, JSON.stringify(newData)).catch(err => log.error(err))
+  await fs.promises.writeFile(path, JSON.stringify(newData)).catch(err => {
+    log.error(err)
+  })
 }
 
 

@@ -33,12 +33,16 @@ export default () => {
   return async() => {
     await Promise.all([
       initUserApi(), // 自定义API
-    ]).catch(err => log.error(err))
+    ]).catch(err => {
+      log.error(err)
+    })
     void music.init() // 初始化音乐sdk
     unregister = registerAction((ids) => {
       window.app_event.myListUpdate(ids)
     })
     window.lxData.userLists = await getUserLists() // 获取用户列表
-    await initPrevPlayInfo().catch(err => log.error(err)) // 初始化上次的歌曲播放信息
+    await initPrevPlayInfo().catch(err => {
+      log.error(err)
+    }) // 初始化上次的歌曲播放信息
   }
 }

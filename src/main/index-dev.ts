@@ -17,8 +17,12 @@ electronDebug({
 // Install `vue-devtools`
 app.on('ready', () => {
   installExtension(VUEJS_DEVTOOLS)
-    .then((name: string) => console.log(`Added Extension:  ${name}`))
-    .catch((err: Error) => console.log('An error occurred: ', err))
+    .then((name: string) => {
+      console.log(`Added Extension:  ${name}`)
+    })
+    .catch((err: Error) => {
+      console.log('An error occurred: ', err)
+    })
 })
 
 // Require `main` process to boot app

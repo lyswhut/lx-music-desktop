@@ -65,9 +65,7 @@ declare namespace LX {
 
   interface HotKeyConfig {
     enable: boolean
-    keys: {
-      [key: string]: HotKey
-    }
+    keys: Record<string, HotKey>
   }
   interface HotKeyConfigAll {
     local: HotKeyConfig

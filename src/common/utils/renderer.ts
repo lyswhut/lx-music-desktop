@@ -45,7 +45,10 @@ const handleScrollY = (element: HTMLElement, to: number, duration = 300, fn = no
       element.scrollTop = val
     }
     if (currentTime < duration) {
-      if (cancel) return fn()
+      if (cancel) {
+        fn()
+        return
+      }
       window.setTimeout(animateScroll, increment)
     } else {
       fn()
@@ -117,7 +120,10 @@ const handleScrollX = (element: HTMLElement, to: number, duration = 300, fn = ()
       element.scrollLeft = val
     }
     if (currentTime < duration) {
-      if (cancel) return fn()
+      if (cancel) {
+        fn()
+        return
+      }
       window.setTimeout(animateScroll, increment)
     } else {
       fn()
@@ -192,7 +198,10 @@ const handleScrollXR = (element: HTMLElement, to: number, duration = 300, fn = (
       element.scrollLeft = val
     }
     if (currentTime < duration) {
-      if (cancel) return fn()
+      if (cancel) {
+        fn()
+        return
+      }
       window.setTimeout(animateScroll, increment)
     } else {
       fn()

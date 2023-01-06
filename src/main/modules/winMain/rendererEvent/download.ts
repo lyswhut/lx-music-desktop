@@ -13,7 +13,7 @@ export default () => {
     await global.lx.worker.dbService.downloadInfoUpdate(list)
   })
   mainHandle<string[]>(WIN_MAIN_RENDERER_EVENT_NAME.download_list_remove, async({ params: ids }) => {
-    return await global.lx.worker.dbService.downloadInfoRemove(ids)
+    await global.lx.worker.dbService.downloadInfoRemove(ids)
   })
   mainHandle(WIN_MAIN_RENDERER_EVENT_NAME.download_list_clear, async() => {
     await global.lx.worker.dbService.downloadInfoClear()

@@ -22,16 +22,26 @@ let mouseCheckTools: {
     let yDiff = Math.abs(this.y - this.preY)
     if (xDiff > 8) {
       if (this.x > this.preX) {
-        if (this.x + xDiff * 1.25 > window.innerWidth - 16) return setShow()
+        if (this.x + xDiff * 1.25 > window.innerWidth - 16) {
+          setShow()
+          return
+        }
       } else {
-        if (this.x - xDiff * 1.25 < 8) return setShow()
+        if (this.x - xDiff * 1.25 < 8) {
+          setShow()
+          return
+        }
       }
     }
     if (yDiff > 8) {
       if (this.y > this.preY) {
-        if (this.y + yDiff * 1.25 > window.innerHeight - 16) return setShow()
+        if (this.y + yDiff * 1.25 > window.innerHeight - 16) {
+          setShow()
+        }
       } else {
-        if (this.y - yDiff * 1.25 < 8) return setShow()
+        if (this.y - yDiff * 1.25 < 8) {
+          setShow()
+        }
       }
     }
 

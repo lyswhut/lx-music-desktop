@@ -16,9 +16,15 @@ export const dirname = (p: string): string => path.dirname(p)
  */
 export const checkPath = async(path: string): Promise<boolean> => {
   return await new Promise(resolve => {
-    if (!path) return resolve(false)
+    if (!path) {
+      resolve(false)
+      return
+    }
     fs.access(path, fs.constants.F_OK, err => {
-      if (err) return resolve(false)
+      if (err) {
+        resolve(false)
+        return
+      }
       resolve(true)
     })
   })
@@ -26,9 +32,15 @@ export const checkPath = async(path: string): Promise<boolean> => {
 
 export const getFileStats = async(path: string): Promise<fs.Stats | null> => {
   return await new Promise(resolve => {
-    if (!path) return resolve(null)
+    if (!path) {
+      resolve(null)
+      return
+    }
     fs.stat(path, (err, stats) => {
-      if (err) return resolve(null)
+      if (err) {
+        resolve(null)
+        return
+      }
       resolve(stats)
     })
   })
@@ -39,29 +51,37 @@ export const getFileStats = async(path: string): Promise<fs.Stats | null> => {
  * @param path
  * @returns
  */
-export const createDir = async(path: string): Promise<void> => {
-  return await new Promise((resolve, reject) => {
-    fs.access(path, fs.constants.F_OK | fs.constants.W_OK, err => {
-      if (err) {
-        if (err.code === 'ENOENT') {
-          fs.mkdir(path, { recursive: true }, err => {
-            if (err) return reject(err)
-            resolve()
-          })
-          return
-        }
-        return reject(err)
+export const createDir = async(path: string) => new Promise<void>((resolve, reject) => {
+  fs.access(path, fs.constants.F_OK | fs.constants.W_OK, err => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        fs.mkdir(path, { recursive: true }, err => {
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve()
+        })
+        return
       }
-      resolve()
-    })
+      reject(err)
+      return
+    }
+    resolve()
   })
-}
+})
 
 export const removeFile = async(path: string) => new Promise<void>((resolve, reject) => {
   fs.access(path, fs.constants.F_OK, err => {
-    if (err) return err.code == 'ENOENT' ? resolve() : reject(err)
+    if (err) {
+      err.code == 'ENOENT' ? resolve() : reject(err)
+      return
+    }
     fs.unlink(path, err => {
-      if (err) return reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       resolve()
     })
   })
@@ -79,7 +99,10 @@ export const toMD5 = (str: string) => crypto.createHash('md5').update(str).diges
 export const gzipData = async(str: string): Promise<Buffer> => {
   return await new Promise((resolve, reject) => {
     gzip(str, (err, result) => {
-      if (err) return reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       resolve(result)
     })
   })
@@ -88,7 +111,10 @@ export const gzipData = async(str: string): Promise<Buffer> => {
 export const gunzipData = async(buf: Buffer): Promise<string> => {
   return await new Promise((resolve, reject) => {
     gunzip(buf, (err, result) => {
-      if (err) return reject(err)
+      if (err) {
+        reject(err)
+        return
+      }
       resolve(result.toString())
     })
   })

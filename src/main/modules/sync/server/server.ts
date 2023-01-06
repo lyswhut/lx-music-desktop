@@ -142,7 +142,10 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
 
   httpServer.on('listening', () => {
     const addr = httpServer.address()
-    if (!addr) return reject(new Error('address is null'))
+    if (!addr) {
+      reject(new Error('address is null'))
+      return
+    }
     const bind = typeof addr == 'string' ? `pipe ${addr}` : `port ${addr.port}`
     console.info(`Listening on ${bind}`)
     resolve(null)
@@ -171,7 +174,7 @@ export const stopServer = async() => {
     return
   }
   console.log('stoping sync server...')
-  return await handleStopServer().then(() => {
+  await handleStopServer().then(() => {
     console.log('sync server stoped')
     status.status = false
     status.message = ''
@@ -189,7 +192,7 @@ export const startServer = async(port: number) => {
   if (status.status) await handleStopServer()
 
   console.log('starting sync server...')
-  return await handleStartServer(port).then(() => {
+  await handleStartServer(port).then(() => {
     console.log('sync server started')
     status.status = true
     status.message = ''

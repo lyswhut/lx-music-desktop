@@ -22,7 +22,10 @@ export const buildBgUrl = (originUrl: string, dataPath: string): string => {
 }
 
 export const getThemes = (callback: (themeInfo: LX.ThemeInfo) => void) => {
-  if (themeInfo.themes.length) return callback(themeInfo)
+  if (themeInfo.themes.length) {
+    callback(themeInfo)
+    return
+  }
   void getTheme().then(info => {
     themeInfo.themes = markRaw(info.themes)
     themeInfo.userThemes = shallowReactive(info.userThemes)

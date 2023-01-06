@@ -49,4 +49,6 @@ export const unregisterKeyEvent = () => {
   keyBind.unbindKey()
 }
 
-export const clearDownKeys = () => keyBind.clearDownKeys()
+export const clearDownKeys = () => {
+  keyBind.clearDownKeys()
+}

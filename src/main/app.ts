@@ -116,8 +116,14 @@ export const registerDeeplink = (startApp: () => void) => {
 export const listenerAppEvent = (startApp: () => void) => {
   app.on('web-contents-created', (event, contents) => {
     contents.on('will-navigate', (event, navigationUrl) => {
-      if (global.isDev) return console.log('navigation to url:', navigationUrl)
-      if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) return event.preventDefault()
+      if (global.isDev) {
+        console.log('navigation to url:', navigationUrl)
+        return
+      }
+      if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) {
+        event.preventDefault()
+        return
+      }
       console.log('navigation to url:', navigationUrl)
     })
     contents.setWindowOpenHandler(({ url }) => {
@@ -233,7 +239,7 @@ export const initAppSetting = async() => {
   if (!isInitialized) {
     const dbFileExists = await global.lx.worker.dbService.init(global.lxDataPath)
     global.lx.appSetting = (await initSetting()).setting
-    if (!dbFileExists) await migrateDBData().catch(err => log.error(err))
+    if (!dbFileExists) await migrateDBData().catch(err => { log.error(err) })
     initTheme()
   }
   // global.lx.theme = getTheme()

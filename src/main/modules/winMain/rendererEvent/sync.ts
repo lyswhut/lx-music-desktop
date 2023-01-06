@@ -9,7 +9,8 @@ export default () => {
   mainHandle<LX.Sync.SyncServiceActions, any>(WIN_MAIN_RENDERER_EVENT_NAME.sync_action, async({ params: data }) => {
     switch (data.action) {
       case 'enable':
-        return data.data.enable ? await startServer(parseInt(data.data.port)) : await stopServer()
+        data.data.enable ? await startServer(parseInt(data.data.port)) : await stopServer()
+        return
       case 'get_status':
         return getStatus()
       case 'generate_code':
