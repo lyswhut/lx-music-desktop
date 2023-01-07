@@ -14,6 +14,7 @@ const getDevices = async() => {
 
 export default () => {
   let prevDeviceLabel: string | null = null
+  let prevDeviceId = ''
 
   const setMediaDevice = async(mediaDeviceId: string) => {
     let label = prevDeviceLabel
@@ -30,9 +31,15 @@ export default () => {
 
     prevDeviceLabel = label
     // console.log(device)
-    setMediaDeviceId(mediaDeviceId).catch((err: any) => {
+    setMediaDeviceId(mediaDeviceId).then(() => {
+      prevDeviceId = mediaDeviceId
+      saveMediaDeviceId(mediaDeviceId)
+    }).catch((err: any) => {
       console.log(err)
-      saveMediaDeviceId('default')
+      setMediaDeviceId('default').finally(() => {
+        prevDeviceId = 'default'
+        saveMediaDeviceId('default')
+      })
     })
   }
 
@@ -60,13 +67,13 @@ export default () => {
     // @ts-expect-error
     handleDeviceChangeStopPlay(device, mediaDeviceId)
 
-    setMediaDeviceId(device!.deviceId).catch((err: any) => {
-      console.log(err)
-      saveMediaDeviceId('default')
-    })
+    void setMediaDevice(device!.deviceId)
   }
 
-  watch(() => appSetting['player.mediaDeviceId'], setMediaDevice)
+  watch(() => appSetting['player.mediaDeviceId'], (id) => {
+    if (prevDeviceId == id) return
+    void setMediaDevice(id)
+  })
 
 
   void setMediaDevice(appSetting['player.mediaDeviceId'])
