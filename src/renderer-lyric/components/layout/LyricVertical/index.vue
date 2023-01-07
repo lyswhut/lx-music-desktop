@@ -80,6 +80,7 @@ export default {
     }
     .shadow {
       color: transparent;
+      margin-left: -0.14em;
     }
     .line-content {
       line-height: 1.2;
