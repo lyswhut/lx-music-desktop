@@ -5,7 +5,7 @@
     :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart"
   >
     <div :class="$style.lyricSpace" />
-    <div ref="dom_lyric_text" :class="[$style.lyricText]" />
+    <div ref="dom_lyric_text" />
     <div :class="$style.lyricSpace" />
   </div>
 </template>
@@ -72,6 +72,9 @@ export default {
   }
 
   :global {
+    .font-lrc, .shadow {
+      padding: 0.14em 0.07em;
+    }
     .font-lrc {
       color: var(--color-lyric-unplay);
     }
@@ -178,9 +181,9 @@ export default {
   width: 80%;
   height: 100%;
 }
-.lyric-text {
-  padding: 0.14em 0;
-}
+// .lyric-text {
+
+// }
 // .lrc-active {
 
 //   .lrc-line {
