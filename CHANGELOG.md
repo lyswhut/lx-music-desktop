@@ -6,6 +6,22 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.0.3](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.2...v2.0.3) - 2023-01-08
+
+
+### 修复
+
+- 修复初始设置的桌面歌词窗口没有完全居右下角的问题
+- 修复Linux arm64系统下无法启动的问题（#1102）
+- 修复桌面歌词使用斜体出现截断的问题（#1106）
+- 修复某些情况下歌词的滚动问题
+- 修复禁用切歌时歌曲播放完毕后的歌曲信息显示问题
+- 修复修改播放设置-音频输出设置后，所做的更改没有被保存的问题
+
+### 优化
+
+- 点击打开歌单弹窗背景可以关闭弹窗（#1096）
+
 ## [2.0.2](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.1...v2.0.2) - 2023-01-02
 
 若你更新v2.0.0后，出现之前收藏的歌曲全部丢失或者歌曲无法添加到列表播放的问题，可以按以下方式解决：
