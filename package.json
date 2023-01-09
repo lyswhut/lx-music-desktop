@@ -214,7 +214,7 @@
     "@types/tunnel": "^0.0.3",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
-    "@volar/vue-language-plugin-pug": "^1.0.22",
+    "@volar/vue-language-plugin-pug": "^1.0.24",
     "babel-loader": "^9.1.2",
     "browserslist": "^4.21.4",
     "chalk": "^4.1.2",
