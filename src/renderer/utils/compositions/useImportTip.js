@@ -10,12 +10,15 @@ export default () => {
     switch (type) {
       case 'defautlList':
       case 'playList':
+      case 'playList_v2':
         message = t('list_import_tip__playlist')
         break
       case 'setting':
+      case 'setting_v2':
         message = t('list_import_tip__setting')
         break
       case 'allData':
+      case 'allData_v2':
         message = t('list_import_tip__alldata')
         break
       case 'playListPart':
