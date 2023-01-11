@@ -86,7 +86,6 @@ export default {
       line-height: 1.2;
       margin: 0 var(--line-gap);
       overflow-wrap: break-word;
-      letter-spacing: 5px;
 
       .font-lrc {
         cursor: grab;
@@ -97,6 +96,7 @@ export default {
         margin-right: var(--line-extended-gap);
       }
       &.line-mode {
+        letter-spacing: 5px;
         .font-lrc {
           transition: @transition-slow;
           transition-property: font-size, color;
@@ -124,7 +124,12 @@ export default {
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-size: 0 100%;
+          padding: 2px;
         }
+      }
+
+      &.font-mode .line .shadow span {
+        padding: 2px;
       }
     }
     // .shadow {
@@ -143,7 +148,7 @@ export default {
       // .stroke(2px, rgba(0, 0, 0, 0.025));
       transition: font-size @transition-slow;
     }
-    .font-mode .line .shadow {
+    .font-mode .line .shadow span {
       .stroke(1px, var(--color-lyric-shadow-font-mode));
       // .stroke(1px, rgba(0, 0, 0, 0.07));
       transition: font-size @transition-slow;

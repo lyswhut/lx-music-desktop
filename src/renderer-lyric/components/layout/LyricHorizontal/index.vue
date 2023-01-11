@@ -76,7 +76,7 @@ export default {
     }
     .shadow {
       color: transparent;
-      margin-left: -0.14em;
+      // margin-left: -0.14em;
     }
     .line-content {
       line-height: 1.2;
@@ -119,7 +119,15 @@ export default {
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-size: 0 100%;
+          padding-left: 1px;
+          padding-right: 1px;
+          padding-bottom: 1px;
         }
+      }
+     .line .shadow span {
+        padding-left: 1px;
+        padding-right: 1px;
+        padding-bottom: 1px;
       }
       // &.line-mode {
       //   .shadow {
@@ -138,7 +146,7 @@ export default {
       // .stroke(2px, rgba(0, 0, 0, 0.025));
       transition: font-size @transition-slow;
     }
-    .font-mode .line .shadow {
+    .font-mode .line .shadow span {
       .stroke(1px, var(--color-lyric-shadow-font-mode));
       transition: font-size @transition-slow;
       // text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3),  1px 1px 1px rgba(0, 0, 0, 0.3);
