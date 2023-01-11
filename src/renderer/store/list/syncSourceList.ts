@@ -22,7 +22,7 @@ const fetchList = async(id: string, source: LX.OnlineSource, sourceListId: strin
 export default async(targetListInfo: LX.List.UserListInfo) => {
   // console.log(targetListInfo)
   if (!targetListInfo.source || !targetListInfo.sourceListId) return
-  const list = await fetchList(targetListInfo.id, targetListInfo.source as LX.OnlineSource, targetListInfo.sourceListId)
+  const list = await fetchList(targetListInfo.id, targetListInfo.source, targetListInfo.sourceListId)
   // console.log(list)
   void overwriteListMusics({ listId: targetListInfo.id, musicInfos: list })
   const now = Date.now()

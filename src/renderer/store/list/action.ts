@@ -56,7 +56,7 @@ export const createUserList = async({ name, id = `userlist_${Date.now()}`, list 
   name?: string
   id?: string
   list?: LX.Music.MusicInfo[]
-  source?: LX.Source
+  source?: LX.OnlineSource
   sourceListId?: string
   position?: number
 }) => {

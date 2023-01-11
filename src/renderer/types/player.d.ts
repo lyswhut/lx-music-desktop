@@ -35,7 +35,7 @@ declare namespace LX {
       /**
        * 播放列表id
        */
-      listId: '__temp__'
+      listId: string
       /**
        * 歌曲信息
        */
