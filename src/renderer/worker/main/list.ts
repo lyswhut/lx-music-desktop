@@ -195,7 +195,7 @@ export const searchListMusic = (list: LX.Music.MusicInfo[], text: string) => {
     if (rxp.test(str)) result.push(mInfo)
   }
 
-  const sortedList: any[] = []
+  const sortedList: Array<{ num: number, data: LX.Music.MusicInfo }> = []
 
   for (const mInfo of result) {
     sortInsert(sortedList, {

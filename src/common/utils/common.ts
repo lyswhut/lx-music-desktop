@@ -176,7 +176,7 @@ export const similar = (a: string, b: string) => {
  * @param arr
  * @param data
  */
-export const sortInsert = (arr: Array<{ num: number, data: any }>, data: { num: number, data: any }) => {
+export const sortInsert = <T>(arr: Array<{ num: number, data: T }>, data: { num: number, data: T }) => {
   let key = data.num
   let left = 0
   let right = arr.length - 1
