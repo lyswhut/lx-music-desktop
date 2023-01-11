@@ -9,7 +9,7 @@ const changedListIds = new Set<string | null>()
 
 export default () => {
   const throttleListChange = throttle(() => {
-    const isSkip = !changedListIds.has(playInfo.playerListId) && !changedListIds.has(playMusicInfo.listId)
+    const isSkip = playMusicInfo.listId && !changedListIds.has(playInfo.playerListId) && !changedListIds.has(playMusicInfo.listId)
     changedListIds.clear()
     if (isSkip) return
 

@@ -65,6 +65,7 @@ import {
 } from '@renderer/store/player/action'
 import { appSetting } from '@renderer/store/setting'
 import { togglePlay, playNext, playPrev } from '@renderer/core/player'
+import { LIST_IDS } from '@common/constants'
 
 export default {
   name: 'CorePlayBar',
@@ -98,7 +99,7 @@ export default {
 
     const handleToMusicLocation = () => {
       const listId = playMusicInfo.listId
-      if (!listId || listId == '__temp__' || listId == 'download' || !playMusicInfo.musicInfo) return
+      if (!listId || listId == LIST_IDS.DOWNLOAD || !playMusicInfo.musicInfo) return
       if (playInfo.playIndex == -1) return
       router.push({
         path: '/list',

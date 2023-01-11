@@ -111,7 +111,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
   })
 
 
-  void getPicPath({ musicInfo, listId: playMusicInfo.isTempPlay ? null : playMusicInfo.listId }).then((url: string) => {
+  void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()
@@ -158,11 +158,11 @@ const handlePlay = () => {
 
   if (!musicInfo) return
 
-  if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
+  if (appSetting['player.togglePlayMethod'] == 'random' && playMusicInfo.listId) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
   setMusicUrl(musicInfo)
 
-  void getPicPath({ musicInfo, listId: playMusicInfo.isTempPlay ? null : playMusicInfo.listId }).then((url: string) => {
+  void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()

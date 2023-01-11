@@ -224,7 +224,7 @@ export const clearPlayedList = () => {
  * @param list 歌曲列表
  */
 export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
-  const topList: Array<{ listId: string, musicInfo: LX.Music.MusicInfo | LX.Download.ListItem }> = []
+  const topList: Array<Omit<LX.Player.TempPlayListItem, 'top'>> = []
   const bottomList = list.filter(({ isTop, ...musicInfo }) => {
     if (isTop) {
       topList.push(musicInfo)

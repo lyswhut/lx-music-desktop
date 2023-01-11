@@ -9,7 +9,7 @@ declare namespace LX {
       /**
         * 当前播放歌曲的列表 id
         */
-      listId: string
+      listId: string | null
       /**
         * 是否属于 “稍后播放”
         */
@@ -35,7 +35,7 @@ declare namespace LX {
       /**
        * 播放列表id
        */
-      listId: string
+      listId: string | null
       /**
        * 歌曲信息
        */

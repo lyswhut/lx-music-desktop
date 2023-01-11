@@ -107,7 +107,7 @@ export default () => {
     setMaxplayTime(getDuration())
 
     if (playMusicInfo.musicInfo && 'source' in playMusicInfo.musicInfo && !playMusicInfo.musicInfo.interval) {
-      console.log(formatPlayTime2(playProgress.maxPlayTime))
+      // console.log(formatPlayTime2(playProgress.maxPlayTime))
 
       if (playMusicInfo.listId) {
         void updateListMusics([{

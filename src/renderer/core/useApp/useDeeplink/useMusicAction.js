@@ -9,6 +9,7 @@ import { dataVerify, qualityFilter, sources } from './utils'
 import { focusWindow } from '@renderer/utils/ipc'
 import { playNext } from '@renderer/core/player/action'
 import { toNewMusicInfo } from '@common/utils/tools'
+import { LIST_IDS } from '@common/constants'
 
 const useSearchMusic = () => {
   const router = useRouter()
@@ -153,7 +154,7 @@ const usePlayMusic = () => {
     musicInfo = toNewMusicInfo(musicInfo)
     markRaw(musicInfo)
     const isPlaying = !!playMusicInfo.musicInfo
-    addTempPlayList([{ listId: '__temp__', musicInfo, isTop: true }])
+    addTempPlayList([{ listId: LIST_IDS.PLAY_LATER, musicInfo, isTop: true }])
     if (isPlaying) playNext()
   }
 }

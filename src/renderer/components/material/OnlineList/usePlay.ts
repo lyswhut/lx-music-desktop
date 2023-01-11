@@ -5,6 +5,7 @@ import { addTempPlayList } from '@renderer/store/player/action'
 import { appSetting } from '@renderer/store/setting'
 import { Ref } from '@common/utils/vueTools'
 import { playList } from '@renderer/core/player'
+import { LIST_IDS } from '@common/constants'
 
 export default ({ selectedList, props, removeAllSelect, emit }: {
   selectedList: Ref<LX.Music.MusicInfoOnline[]>
@@ -34,10 +35,10 @@ export default ({ selectedList, props, removeAllSelect, emit }: {
 
   const handlePlayMusicLater = (index: number, single: boolean) => {
     if (selectedList.value.length && !single) {
-      addTempPlayList(selectedList.value.map(s => ({ listId: '__temp__', musicInfo: s })))
+      addTempPlayList(selectedList.value.map(s => ({ listId: LIST_IDS.PLAY_LATER, musicInfo: s })))
       removeAllSelect()
     } else {
-      addTempPlayList([{ listId: '__temp__', musicInfo: props.list[index] }])
+      addTempPlayList([{ listId: LIST_IDS.PLAY_LATER, musicInfo: props.list[index] }])
     }
   }
 
