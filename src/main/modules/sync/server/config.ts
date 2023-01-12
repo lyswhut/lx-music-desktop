@@ -3,5 +3,6 @@ export const SYNC_CODE = {
   idPrefix: 'OjppZDo6',
   authMsg: 'lx-music auth::',
   msgAuthFailed: 'Auth failed',
+  msgBlockedIp: 'Blocked IP',
   msgConnect: 'lx-music connect',
 } as const
