@@ -79,9 +79,9 @@ export default {
               name: list.name,
               id: list.id,
               list: filterMusicList(list.list.map(m => toNewMusicInfo(m))),
-              position: list.position,
               source: list.source,
               sourceListId: list.sourceListId,
+              locationUpdateTime: list.locationUpdateTime ?? null,
             })
           }
         } catch (err) {
@@ -98,15 +98,15 @@ export default {
         try {
           const targetList = allLists.find(l => l.id == list.id)
           if (targetList) {
-            targetList.list = list.list.map(m => fixNewMusicInfoQuality(m))
+            targetList.list = filterMusicList(list.list).map(m => fixNewMusicInfoQuality(m))
           } else {
             allLists.push({
               name: list.name,
               id: list.id,
-              list: list.list.map(m => fixNewMusicInfoQuality(m)),
-              position: list.position,
+              list: filterMusicList(list.list).map(m => fixNewMusicInfoQuality(m)),
               source: list.source,
               sourceListId: list.sourceListId,
+              locationUpdateTime: list.locationUpdateTime ?? null,
             })
           }
         } catch (err) {

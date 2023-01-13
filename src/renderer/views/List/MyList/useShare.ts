@@ -51,6 +51,7 @@ export default () => {
           break
         case 'playListPart_v2':
           listData = configData.data
+          listData.list = filterMusicList(listData.list).map(m => fixNewMusicInfoQuality(m))
           break
         default:
           showImportTip(configData.type)
