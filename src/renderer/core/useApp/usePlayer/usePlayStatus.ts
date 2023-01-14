@@ -32,18 +32,18 @@ export default () => {
   }
 
   const handlePlay = () => {
-    if (buttons.empty) buttons.empty = false
+    buttons.empty &&= false
     buttons.play = true
     setButtons()
   }
   const handlePause = () => {
-    if (buttons.empty) buttons.empty = false
+    buttons.empty &&= false
     buttons.play = false
     setButtons()
   }
   const handleStop = () => {
     if (playMusicInfo.musicInfo != null) return
-    if (buttons.collect) buttons.collect = false
+    buttons.collect &&= false
     buttons.empty = true
     setButtons()
   }

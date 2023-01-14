@@ -64,7 +64,7 @@ export default {
     }
 
     const handleSearch = () => {
-      if (visibleList.value) visibleList.value = false
+      visibleList.value &&= false
       if (!searchText.value && route.path != '/search') {
         setSearchText('')
         return
@@ -83,13 +83,13 @@ export default {
       switch (action) {
         case 'focus':
           isFocused = true
-          if (!visibleList.value) visibleList.value = true
+          visibleList.value ||= true
           if (searchText.value) handleTipSearch()
           break
         case 'blur':
           isFocused = false
           setTimeout(() => {
-            if (visibleList.value) visibleList.value = false
+            visibleList.value &&= false
           }, 50)
           break
         case 'submit':

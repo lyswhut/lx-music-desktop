@@ -33,7 +33,7 @@ export default () => {
       if (window.lx.isPlayedStop) return
       const currentTime = getCurrentTime()
 
-      if (!mediaBuffer.playTime) mediaBuffer.playTime = currentTime
+      mediaBuffer.playTime ||= currentTime
       let skipTime = currentTime + getRandom(3, 6)
       if (skipTime > playProgress.maxPlayTime) skipTime = (playProgress.maxPlayTime - currentTime) / 2
       if (skipTime - mediaBuffer.playTime < 1 || playProgress.maxPlayTime - skipTime < 1) {
@@ -97,7 +97,7 @@ export default () => {
   }
 
   const handleError = () => {
-    if (!restorePlayTime) restorePlayTime = getCurrentTime() // 记录出错的播放时间
+    restorePlayTime ||= getCurrentTime() // 记录出错的播放时间
     console.log('handleError')
     prevProgressStatus = 'error'
     handleSetTaskBarState(playProgress.progress, prevProgressStatus)

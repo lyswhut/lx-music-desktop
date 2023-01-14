@@ -20,7 +20,7 @@ const winEvent = () => {
       return
     }
 
-    if (global.lx.isTrafficLightClose) global.lx.isTrafficLightClose = false
+    global.lx.isTrafficLightClose &&= false
     event.preventDefault()
     browserWindow!.hide()
   })

@@ -172,7 +172,7 @@ export const filterDuplicateMusic = async(list: LX.Music.MusicInfo[], isFilterVa
   if (isFilterVariant) {
     list.forEach((musicInfo, index) => {
       let musicInfoName = musicInfo.name.toLowerCase().replace(variantRxp, '').replace(variantRxp2, '')
-      if (!musicInfoName) musicInfoName = musicInfo.name.toLowerCase().replace(/\s+/g, '')
+      musicInfoName ||= musicInfo.name.toLowerCase().replace(/\s+/g, '')
       handleFilter(musicInfoName, index, musicInfo)
     })
   } else {

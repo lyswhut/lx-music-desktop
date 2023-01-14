@@ -137,10 +137,10 @@ export default {
     },
     handle_key_mod_down() {
       console.log('handle_key_mod_down')
-      if (!this.isModDown) this.isModDown = true
+      this.isModDown ||= true
     },
     handle_key_mod_up() {
-      if (this.isModDown) this.isModDown = false
+      this.isModDown &&= false
     },
     handle_key_mod_f_down() {
       if (this.visible) this.$refs.dom_input.focus()

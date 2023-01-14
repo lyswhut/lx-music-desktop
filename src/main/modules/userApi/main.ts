@@ -27,7 +27,7 @@ const winEvent = () => {
 
 export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   await closeWindow()
-  if (!dir) dir = global.isDev ? webpackUserApiPath : join(encodePath(__dirname), 'userApi')
+  dir ??= global.isDev ? webpackUserApiPath : join(encodePath(__dirname), 'userApi')
 
   if (!html) {
     html = await fs.promises.readFile(join(dir, 'renderer/user-api.html'), 'utf8')

@@ -125,14 +125,14 @@ export default {
       let lxlyric = props.lyricInfo.lxlyric
       if (offsetTagRxp.test(lyric)) {
         lyric = lyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
-        if (tlyric) tlyric = tlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
-        if (lxlyric) lxlyric = lxlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
-        if (rlyric) rlyric = rlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
+        tlyric &&= tlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
+        lxlyric &&= lxlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
+        rlyric &&= rlyric.replace(offsetTagAllRxp, `$1[offset:${offset}]`)
       } else {
-        lyric = `[offset:${offset}]\n` + lyric
-        if (tlyric) tlyric = `[offset:${offset}]\n` + tlyric
-        if (lxlyric) lxlyric = `[offset:${offset}]\n` + lxlyric
-        if (rlyric) rlyric = `[offset:${offset}]\n` + rlyric
+        lyric &&= `[offset:${offset}]\n` + lyric
+        tlyric &&= `[offset:${offset}]\n` + tlyric
+        lxlyric &&= `[offset:${offset}]\n` + lxlyric
+        rlyric &&= `[offset:${offset}]\n` + rlyric
       }
 
       const musicInfo = 'progress' in props.lyricInfo.musicInfo ? props.lyricInfo.musicInfo.meta.musicInfo : props.lyricInfo.musicInfo

@@ -53,7 +53,7 @@ void getSetting().then(setting => {
           break
         }
       }
-      if (langId == null) langId = 'en-us'
+      langId ??= 'en-us'
     }
     setting['common.langId'] = langId
     void updateSetting({ 'common.langId': langId })

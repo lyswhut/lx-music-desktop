@@ -191,12 +191,12 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
     userListsUpdatePosition(position, ids)
   }
   const list_music_add = ({ params: { id, musicInfos, addMusicLocationType } }: LX.IpcRendererEventParams<LX.List.ListActionMusicAdd>) => {
-    if (!addMusicLocationType) addMusicLocationType = appSetting['list.addMusicLocationType']
+    addMusicLocationType ??= appSetting['list.addMusicLocationType']
     const updatedListIds = listMusicAdd(id, musicInfos, addMusicLocationType)
     if (updatedListIds.length) onListChanged(updatedListIds)
   }
   const list_music_move = ({ params: { fromId, toId, musicInfos, addMusicLocationType } }: LX.IpcRendererEventParams<LX.List.ListActionMusicMove>) => {
-    if (!addMusicLocationType) addMusicLocationType = appSetting['list.addMusicLocationType']
+    addMusicLocationType ??= appSetting['list.addMusicLocationType']
     const updatedListIds = listMusicMove(fromId, toId, musicInfos, addMusicLocationType)
     if (updatedListIds.length) onListChanged(updatedListIds)
   }

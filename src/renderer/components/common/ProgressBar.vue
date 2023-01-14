@@ -56,7 +56,7 @@ export default {
     }
     const handleMsMove = event => {
       if (!msEvent.isMsDown) return
-      if (!dragging.value) dragging.value = true
+      dragging.value ||= true
 
       let progress = msEvent.msDownProgress + (event.clientX - msEvent.msDownX) / dom_progress.value.clientWidth
       if (progress > 1) progress = 1

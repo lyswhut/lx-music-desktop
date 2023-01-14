@@ -36,7 +36,7 @@ exports.createThemeColors = (rgbaColor, fontRgbaColor, isDark) => {
 const createFontColors = (rgbaColor, isDark) => {
   // rgb(238, 238, 238)
   // let prec = 'rgb(255, 255, 255)'
-  if (rgbaColor == null) rgbaColor = isDark ? 'rgb(229, 229, 229)' : 'rgb(33, 33, 33)'
+  rgbaColor ??= isDark ? 'rgb(229, 229, 229)' : 'rgb(33, 33, 33)'
   if (isDark) return createFontDarkColors(rgbaColor)
 
   let colors = {

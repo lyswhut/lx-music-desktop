@@ -141,7 +141,7 @@ module.exports = class FontPlayer {
       // lineText += text
 
       if (this.shadowContent) {
-        if (!lrcShadowContent) lrcShadowContent = document.createElement('div')
+        lrcShadowContent ??= document.createElement('div')
         const shadowDom = document.createElement('span')
         shadowDom.textContent = text
         lrcShadowContent.appendChild(shadowDom)

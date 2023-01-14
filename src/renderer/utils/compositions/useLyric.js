@@ -128,7 +128,7 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
   }
   const handleMove = (y) => {
     if (isMsDown.value) {
-      if (!isStopScroll.value) isStopScroll.value = true
+      isStopScroll.value ||= true
       if (cancelScrollFn) {
         cancelScrollFn()
         cancelScrollFn = null
@@ -150,7 +150,7 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
 
   const handleWheel = (event) => {
     console.log(event.deltaY)
-    if (!isStopScroll.value) isStopScroll.value = true
+    isStopScroll.value ||= true
     if (cancelScrollFn) {
       cancelScrollFn()
       cancelScrollFn = null
@@ -197,7 +197,7 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
   const scrollLine = (line, oldLine) => {
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
-    if (isSetedLines) isSetedLines = false
+    isSetedLines &&= false
     if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
 
     delayScrollTimeout = setTimeout(() => {

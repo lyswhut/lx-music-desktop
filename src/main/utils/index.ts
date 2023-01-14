@@ -113,7 +113,7 @@ export const updateSetting = (setting?: Partial<LX.AppSetting>, isInit: boolean 
 
   let originSetting: LX.AppSetting
   if (isInit) {
-    if (setting) setting = migrateSetting(setting)
+    setting &&= migrateSetting(setting)
     originSetting = { ...defaultSetting }
   } else originSetting = global.lx.appSetting
 
@@ -196,7 +196,7 @@ export const openDevTools = (webContents: Electron.WebContents) => {
 
 let userThemes: LX.Theme[]
 export const getAllThemes = () => {
-  if (!userThemes) userThemes = getStore(STORE_NAMES.THEME).get('themes') as LX.Theme[] | null ?? []
+  userThemes ??= getStore(STORE_NAMES.THEME).get('themes') as (LX.Theme[] | null) ?? []
   return {
     themes,
     userThemes,

@@ -67,12 +67,12 @@ const timeoutTools: {
 }
 
 export const startTimeoutStop = (time: number) => {
-  if (window.lx.isPlayedStop) window.lx.isPlayedStop = false
+  window.lx.isPlayedStop &&= false
   timeoutTools.start(time)
 }
 export const stopTimeoutStop = () => {
   console.warn('stopTimeoutStop')
-  if (window.lx.isPlayedStop) window.lx.isPlayedStop = false
+  window.lx.isPlayedStop &&= false
   timeoutTools.clearTimeout()
 }
 

@@ -39,7 +39,7 @@ const toDBMusicInfo = (musicInfos: LX.Music.MusicInfo[], listId: string, offset:
  * @returns
  */
 export const getAllUserList = (): LX.List.UserListInfo[] => {
-  if (userLists == null) userLists = queryAllUserList()
+  userLists ??= queryAllUserList()
 
   return userLists.map(list => {
     const { position, ...newList } = list
@@ -53,7 +53,7 @@ export const getAllUserList = (): LX.List.UserListInfo[] => {
  * @param lists 列表信息
  */
 export const createUserLists = (position: number, lists: LX.List.UserListInfo[]) => {
-  if (userLists == null) userLists = queryAllUserList()
+  userLists ??= queryAllUserList()
   if (position < 0 || position >= userLists.length) {
     const newLists: LX.DBService.UserListInfo[] = lists.map((list, index) => {
       return {
@@ -96,7 +96,7 @@ export const setUserLists = (lists: LX.List.UserListInfo[]) => {
  */
 export const removeUserLists = (ids: string[]) => {
   deleteUserLists(ids)
-  if (userLists) userLists = queryAllUserList()
+  userLists &&= queryAllUserList()
 }
 
 /**
@@ -117,7 +117,7 @@ export const updateUserLists = (lists: LX.List.UserListInfo[]) => {
     }
   }).filter(Boolean) as LX.DBService.UserListInfo[]
   updateUserListsFromDB(dbList)
-  if (userLists) userLists = queryAllUserList()
+  userLists &&= queryAllUserList()
 }
 
 /**
@@ -126,7 +126,7 @@ export const updateUserLists = (lists: LX.List.UserListInfo[]) => {
  * @param ids 列表ids
  */
 export const updateUserListsPosition = (position: number, ids: string[]) => {
-  if (userLists == null) userLists = queryAllUserList()
+  userLists ??= queryAllUserList()
 
   const newUserLists = [...userLists]
 

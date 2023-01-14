@@ -21,7 +21,7 @@ export default (name: string) => {
   }
 
   const handle_key_up = () => {
-    if (keyDown.value) keyDown.value = false
+    keyDown.value &&= false
   }
 
   onMounted(() => {

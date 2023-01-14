@@ -19,7 +19,7 @@ import { requestMsg } from '@renderer/utils/message'
 import { getRandom } from '@renderer/utils/index'
 // import { checkMusicFileAvailable } from '@renderer/utils/music'
 
-let isGettingUrl = false
+let gettingUrlId = ''
 const createDelayNextTimeout = (delay: number) => {
   let timeout: NodeJS.Timeout | null
   const clearDelayNextTimeout = () => {
@@ -86,7 +86,7 @@ const getMusicPlayUrl = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListIt
 
 export const setMusicUrl = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, isRefresh?: boolean) => {
   if (appSetting['player.autoSkipOnError']) addLoadTimeout()
-  isGettingUrl = true
+  gettingUrlId = musicInfo.id
   void getMusicPlayUrl(musicInfo, isRefresh).then((url) => {
     if (!url) return
     setResource(url)
@@ -96,8 +96,10 @@ export const setMusicUrl = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem
     window.app_event.error()
     if (appSetting['player.autoSkipOnError']) addDelayNextTimeout()
   }).finally(() => {
-    clearLoadTimeout()
-    if (musicInfo === playMusicInfo.musicInfo) isGettingUrl = false
+    if (musicInfo === playMusicInfo.musicInfo) {
+      gettingUrlId = ''
+      clearLoadTimeout()
+    }
   })
 }
 
@@ -139,14 +141,17 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
 
 // 处理音乐播放
 const handlePlay = () => {
-  if (window.lx.isPlayedStop) window.lx.isPlayedStop = false
-  if (isGettingUrl) isGettingUrl = false
+  window.lx.isPlayedStop &&= false
 
   if (window.lx.restorePlayInfo) {
     void handleRestorePlay(window.lx.restorePlayInfo)
     window.lx.restorePlayInfo = null
     return
   }
+  const musicInfo = playMusicInfo.musicInfo
+
+  if (!musicInfo || gettingUrlId == musicInfo.id) return
+  gettingUrlId &&= ''
 
   setStop()
   window.app_event.pause()
@@ -154,9 +159,6 @@ const handlePlay = () => {
   clearDelayNextTimeout()
   clearLoadTimeout()
 
-  const musicInfo = playMusicInfo.musicInfo
-
-  if (!musicInfo) return
 
   if (appSetting['player.togglePlayMethod'] == 'random' && playMusicInfo.listId) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
@@ -414,7 +416,7 @@ export const playPrev = async(isAutoToggle = false): Promise<void> => {
 export const play = () => {
   if (playMusicInfo.musicInfo == null) return
   if (isEmpty()) {
-    setMusicUrl(playMusicInfo.musicInfo)
+    if (playMusicInfo.musicInfo.id != gettingUrlId) setMusicUrl(playMusicInfo.musicInfo)
     return
   }
   setPlay()
@@ -441,7 +443,7 @@ export const stop = () => {
  * 播放、暂停播放切换
  */
 export const togglePlay = () => {
-  if (window.lx.isPlayedStop) window.lx.isPlayedStop = false
+  window.lx.isPlayedStop &&= false
   if (isPlay.value) {
     pause()
   } else {

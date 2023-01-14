@@ -25,7 +25,7 @@ export default (setting: any): Partial<LX.AppSetting> => {
     // 迁移列表滚动位置设置 ~0.18.3
     if (setting.list?.scroll) {
       let scroll = setting.list.scroll
-      if (setting.list.isSaveScrollLocation) setting.list.isSaveScrollLocation = scroll.enable
+      setting.list.isSaveScrollLocation &&= scroll.enable
       delete setting.list.scroll
     }
 

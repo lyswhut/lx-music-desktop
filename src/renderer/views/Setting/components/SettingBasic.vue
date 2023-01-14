@@ -127,9 +127,9 @@ export default {
     const autoTheme = reactive({})
     const updateAutoTheme = (info) => {
       let light = findTheme(info, appSetting['theme.lightId'])
-      if (!light) light = info.themes.find(theme => theme.id == 'green')
+      light ??= info.themes.find(theme => theme.id == 'green')
       let dark = findTheme(info, appSetting['theme.darkId'])
-      if (!dark) dark = info.themes.find(theme => theme.id == 'black')
+      dark ??= info.themes.find(theme => theme.id == 'black')
       autoTheme['--color-primary-theme-light'] = light.config.themeColors['--color-theme']
       autoTheme['--background-image-theme-light'] = light.isCustom
         ? light.config.extInfo['--background-image'] == 'none'

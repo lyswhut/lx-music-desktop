@@ -44,7 +44,7 @@ const saveViewPrevStateThrottle = throttle((state) => {
 }, 1000)
 
 const initPosition = async() => {
-  if (listPosition == null) listPosition = await getListPositionInfoFromData() ?? {}
+  listPosition ??= await getListPositionInfoFromData() ?? {}
 }
 export const getListPosition = async(id: string): Promise<number> => {
   await initPosition()
@@ -74,7 +74,7 @@ const saveListPrevSelectIdThrottle = throttle(() => {
   saveListPrevSelectIdFromData(listPrevSelectId)
 }, 200)
 export const getListPrevSelectId = async() => {
-  if (listPrevSelectId == null) listPrevSelectId = await getListPrevSelectIdFromData() ?? LIST_IDS.DEFAULT
+  listPrevSelectId ??= await getListPrevSelectIdFromData() ?? LIST_IDS.DEFAULT
   return listPrevSelectId ?? LIST_IDS.DEFAULT
 }
 export const saveListPrevSelectId = (id: string) => {
@@ -138,7 +138,7 @@ export const overwriteListUpdateInfo = async(ids: string[]) => {
 
 
 export const getSearchSetting = async() => {
-  if (!searchSetting) searchSetting = await getSearchSettingFromData()
+  searchSetting ??= await getSearchSettingFromData()
   return { ...searchSetting }
 }
 export const setSearchSetting = async(setting: Partial<typeof DEFAULT_SETTING['search']>) => {
@@ -154,7 +154,7 @@ export const setSearchSetting = async(setting: Partial<typeof DEFAULT_SETTING['s
 }
 
 export const getSongListSetting = async() => {
-  if (!songListSetting) songListSetting = await getSongListSettingFromData()
+  songListSetting ??= await getSongListSettingFromData()
   return { ...songListSetting }
 }
 export const setSongListSetting = async(setting: Partial<typeof DEFAULT_SETTING['songList']>) => {
@@ -164,7 +164,7 @@ export const setSongListSetting = async(setting: Partial<typeof DEFAULT_SETTING[
 }
 
 export const getLeaderboardSetting = async() => {
-  if (!leaderboardSetting) leaderboardSetting = await getLeaderboardSettingFromData()
+  leaderboardSetting ??= await getLeaderboardSettingFromData()
   return { ...leaderboardSetting }
 }
 export const setLeaderboardSetting = async(setting: Partial<typeof DEFAULT_SETTING['leaderboard']>) => {

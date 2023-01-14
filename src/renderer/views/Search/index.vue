@@ -35,8 +35,8 @@ const verifyQueryParams = async(to, from, next) => {
 
   if (_source == null || _type == null) {
     const setting = await getSearchSetting()
-    if (!_source) _source = setting.source
-    if (!_type) _type = setting.type
+    _source ??= setting.source
+    _type ??= setting.type
 
     next({
       path: to.path,

@@ -60,9 +60,9 @@ export default () => {
     let mediaDeviceId = appSetting['player.mediaDeviceId']
     const devices = await getDevices()
     let device = devices.find(device => device.deviceId === mediaDeviceId)
-    if (!device) device = devices.find(device => device.deviceId === 'default')
+    device ??= devices.find(device => device.deviceId === 'default')
     // @ts-expect-error
-    if (!device) device = { label: '', deviceId: '' }
+    device ??= { label: '', deviceId: '' }
 
     // @ts-expect-error
     handleDeviceChangeStopPlay(device, mediaDeviceId)

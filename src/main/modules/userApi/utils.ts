@@ -33,7 +33,7 @@ export const importApi = (script: string): LX.UserApi.UserApiInfo => {
     script,
     allowShowUpdateAlert: true,
   }
-  if (!userApis) userApis = []
+  userApis ??= []
   userApis.push(apiInfo)
   getStore(STORE_NAMES.USER_API).set('userApis', userApis)
   return apiInfo

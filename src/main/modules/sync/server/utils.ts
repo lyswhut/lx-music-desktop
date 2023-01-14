@@ -44,7 +44,7 @@ export const createClientKeyInfo = (deviceName: string): LX.Sync.KeyInfo => {
     deviceName,
   }
   const store = getStore(STORE_NAME)
-  if (!keyInfos) keyInfos = store.get('keys') as KeyInfos || {}
+  keyInfos ??= store.get('keys') as KeyInfos || {}
   if (Object.keys(keyInfos).length > 101) throw new Error('max keys')
 
   keyInfos[keyInfo.clientId] = keyInfo
