@@ -1,5 +1,11 @@
 <template>
-  <component :is="containerEl" ref="dom_scrollContainer" :class="containerClass" tabindex="0" style="outline: none; height: 100%; overflow-y: auto; position: relative; display: block; contain: strict;">
+  <component
+    :is="containerEl"
+    ref="dom_scrollContainer"
+    :class="containerClass"
+    tabindex="0"
+    style="outline: none; height: 100%; overflow-y: auto; position: relative; display: block; contain: strict; box-sizing: border-box; will-change: transform;"
+  >
     <component :is="contentEl" :class="contentClass" :style="contentStyle">
       <div v-for="item in views" :key="item.key" :style="item.style">
         <slot name="default" v-bind="{ item: item.item, index: item.index }" />
@@ -18,6 +24,24 @@ import {
   onMounted,
   onBeforeUnmount,
 } from 'vue'
+
+/**
+ * 生成防抖函数
+ * @param {*} fn
+ * @param {*} delay
+ */
+export const debounce = (fn, delay = 100) => {
+  let timer = null
+  let _args = null
+  return function(...args) {
+    _args = args
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      timer = null
+      fn.apply(this, _args)
+    }, delay)
+  }
+}
 
 const easeInOutQuad = (t, b, c, d) => {
   t /= d / 2
@@ -105,12 +129,14 @@ export default {
   setup(props, { emit }) {
     const views = ref([])
     const dom_scrollContainer = ref(null)
+    let isListScrolling = false
+    const isListScrollingRef = ref(false)
     let startIndex = -1
     let endIndex = -1
     let scrollTop = -1
     let cachedList = []
     let cancelScroll = null
-    let isScrolling = false
+    let isAutoScrolling = false
     let scrollToValue = 0
 
     const createList = (startIndex, endIndex) => {
@@ -171,7 +197,14 @@ export default {
       scrollTop = currentScrollTop
     }
 
+    const setStopScrollStatus = debounce(() => {
+      isListScrolling = false
+      isListScrollingRef.value = false
+    }, 200)
     const onScroll = event => {
+      if (!isListScrolling) isListScrolling = isListScrollingRef.value = true
+      setStopScrollStatus()
+
       const currentScrollTop = dom_scrollContainer.value.scrollTop
       if (Math.abs(currentScrollTop - scrollTop) > props.itemHeight * 0.6) {
         updateView(currentScrollTop)
@@ -189,15 +222,15 @@ export default {
           }
         }).then(() => {
           if (animate) {
-            isScrolling = true
+            isAutoScrolling = true
             scrollToValue = scrollTop
             cancelScroll = handleScroll(dom_scrollContainer.value, scrollTop, 300, () => {
               cancelScroll = null
-              isScrolling = false
+              isAutoScrolling = false
               onScrollEnd(true)
             }, () => {
               cancelScroll = null
-              isScrolling = false
+              isAutoScrolling = false
               onScrollEnd('canceled')
             })
           } else {
@@ -217,17 +250,21 @@ export default {
     }
 
     const getScrollTop = () => {
-      return isScrolling ? scrollToValue : dom_scrollContainer.value.scrollTop
+      return isAutoScrolling ? scrollToValue : dom_scrollContainer.value.scrollTop
     }
 
     const handleResize = () => {
       window.setTimeout(updateView)
     }
 
-    const contentStyle = computed(() => ({
-      display: 'block',
-      height: props.list.length * props.itemHeight + 'px',
-    }))
+    const contentStyle = computed(() => {
+      const style = {
+        display: 'block',
+        height: props.list.length * props.itemHeight + 'px',
+      }
+      if (isListScrollingRef.value) style['pointer-events'] = 'none'
+      return style
+    })
 
     const handleReset = list => {
       cachedList = Array(list.length)
