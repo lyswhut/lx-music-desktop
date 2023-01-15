@@ -6,6 +6,18 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.0.4](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.3...v2.0.4) - 2023-01-15
+
+
+### 修复
+
+- 修复备份文件导入指引无法识别v2配置的问题
+- 修复从搜索界面进入歌单详情后，若启用强迫症设置的清空功能会导致意外清空搜索框、搜索列表的问题
+- 修复桌面歌词在启用卡拉OK歌词后字体边缘可能被截断的问题（特别是纵向歌词某些字的边角被截断导致后面的阴影露出来或阴影不均匀的问题）
+- 修复桌面歌词启用歌词缩放后的阴影显示问题
+- 修复Linux armv7l系统（如树莓派）下无法启动的问题（与修复Linux arm64的方法一样采用内置预编译模块的方式修复）
+- 修复备份与恢复的列表导入列表信息设置逻辑问题与潜在导入问题
+
 ## [2.0.3](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.2...v2.0.3) - 2023-01-08
 
 
