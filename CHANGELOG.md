@@ -8,7 +8,7 @@ Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [2.0.5](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.4...v2.0.5) - 2023-01-18
 
-这应该是LX今年的最后一个版本，提前注大家新年快乐~😘
+这应该是LX今年的最后一个版本，提前祝大家新年快乐~😘
 
 ### 修复
 
