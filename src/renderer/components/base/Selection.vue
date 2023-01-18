@@ -143,6 +143,7 @@ export default {
   transition: background-color @transition-normal;
   height: @selection-height;
   // line-height: 27px;
+  line-height: 1.5;
   box-sizing: border-box;
   color: var(--color-button-font);
   border-radius: @form-radius;
