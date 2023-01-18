@@ -55,7 +55,7 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
       isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
       if (global.lx.appSetting['desktopLyric.isLockScreen']) {
         setBounds(getLyricWindowBounds(getBounds(), {
-          x: null,
+          x: 0,
           y: 0,
           w: global.lx.appSetting['desktopLyric.width'],
           h: global.lx.appSetting['desktopLyric.height'],
