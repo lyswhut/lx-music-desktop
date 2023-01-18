@@ -76,8 +76,8 @@ declare namespace LX {
 
 
     interface NewBounds {
-      x?: number | null
-      y?: number
+      x: number
+      y: number
       w: number
       h: number
     }

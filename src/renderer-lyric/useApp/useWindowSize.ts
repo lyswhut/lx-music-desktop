@@ -29,6 +29,7 @@ export default () => {
     let bounds: LX.DesktopLyric.NewBounds = {
       w: 0,
       h: 0,
+      x: 0,
       y: 0,
     }
     let temp

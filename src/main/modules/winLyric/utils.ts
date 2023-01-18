@@ -1,77 +1,52 @@
 // 设置窗口位置、大小
-let winX
-let winY
-let wasW
-let wasH
-export const offset = 8
-let minWidth = 80
-let minHeight = 50
+export const padding = 8
+export let minWidth = 80
+export let minHeight = 50
 
+
+// const updateBounds = (bounds: Bounds) => {
+//   bounds.x = bounds.x
+//   return bounds
+// }
+
+/**
+ *
+ * @param bounds 当前设置
+ * @param param 新设置（相对于当前设置）
+ * @returns
+ */
 export const getLyricWindowBounds = (bounds: Electron.Rectangle, { x = 0, y = 0, w = 0, h = 0 }: LX.DesktopLyric.NewBounds): Electron.Rectangle => {
   if (w < minWidth) w = minWidth
   if (h < minHeight) h = minHeight
 
   if (global.lx.appSetting['desktopLyric.isLockScreen']) {
     if (!global.envParams.workAreaSize) return bounds
-    wasW = (global.envParams.workAreaSize.width ?? 0) + offset
-    wasH = (global.envParams.workAreaSize.height ?? 0) + offset
+    const maxWinW = global.envParams.workAreaSize.width + padding * 2
+    const maxWinH = global.envParams.workAreaSize.height + padding * 2
 
-    if (w > wasW + offset) w = wasW + offset
-    if (h > wasH + offset) h = wasH + offset
-    if (x == null) {
-      if (bounds.x > wasW - w) {
-        x = wasW - w - bounds.x
-      } else if (bounds.x < -offset) {
-        x = bounds.x + offset
-      } else {
-        x = 0
-      }
-      if (bounds.y > wasH - h) {
-        y = wasH - h - bounds.y
-      } else if (bounds.y < -offset) {
-        y = bounds.y + offset
-      } else {
-        y = 0
-      }
-    }
-    winX = bounds.x + x
-    winY = bounds.y + y
+    if (w > maxWinW) w = maxWinW
+    if (h > maxWinH) h = maxWinH
 
-    if (x != 0) {
-      if (winX < -offset) {
-        winX = -offset
-      } else if (winX + w > wasW) {
-        winX = wasW - w
-      }
-    }
-    if (y != 0) {
-      if (winY < -offset) {
-        winY = -offset
-      } else if (winY + h > wasH) {
-        winY = wasH - h
-      }
-    }
+    const maxX = global.envParams.workAreaSize.width + padding - w
+    const minX = -padding
+    const maxY = global.envParams.workAreaSize.height + padding - h
+    const minY = -padding
 
-    x = winX
-    y = winY
+    x += bounds.x
+    y += bounds.y
 
-    if (x + w > wasW) w = wasW - x
-    if (y + h > wasH) h = wasH - y
+    if (x > maxX) x = maxX
+    else if (x < minX) x = minX
+
+    if (y > maxY) y = maxY
+    else if (y < minY) y = minY
   } else {
-    if (x == null) {
-      x = 0
-      y = 0
-    }
     y += bounds.y
     x += bounds.x
   }
 
-  bounds.width = w
-  bounds.height = h
-  bounds.x = x
-  bounds.y = y
   // console.log('util bounds', bounds)
-  return bounds
+  return { width: w, height: h, x, y }
 }
 
 

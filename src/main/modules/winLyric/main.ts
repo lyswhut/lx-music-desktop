@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
 import { debounce, isLinux } from '@common/utils'
-import { getLyricWindowBounds, offset } from './utils'
+import { getLyricWindowBounds, minHeight, minWidth, padding } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
 
@@ -81,15 +81,20 @@ export const createWindow = () => {
   let width = global.lx.appSetting['desktopLyric.width']
   let height = global.lx.appSetting['desktopLyric.height']
   let isAlwaysOnTop = global.lx.appSetting['desktopLyric.isAlwaysOnTop']
-  let isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
+  // let isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
   let isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
-  let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
+  // let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
   if (x == null || y == null) {
-    x = screenWidth - width + offset
-    y = screenHeight - height + offset
-  }
-  if (isLockScreen) {
-    let bounds = getLyricWindowBounds({ x, y, width, height }, { x: null, y: 0, w: width, h: height })
+    if (width < minWidth) width = minWidth
+    if (height < minHeight) height = minHeight
+    if (global.envParams.workAreaSize) {
+      x = global.envParams.workAreaSize.width + padding - width
+      y = global.envParams.workAreaSize.height + padding - height
+    } else {
+      x = y = -padding
+    }
+  } else {
+    let bounds = getLyricWindowBounds({ x, y, width, height }, { x: 0, y: 0, w: width, h: height })
     x = bounds.x
     y = bounds.y
     width = bounds.width
