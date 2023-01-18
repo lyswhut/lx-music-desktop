@@ -135,7 +135,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
     setAllStatus(window.i18n.t('lyric__load_error'))
   })
 
-  if (appSetting['player.togglePlayMethod'] == 'random') addPlayedList({ ...playMusicInfo as LX.Player.PlayMusicInfo })
+  if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...playMusicInfo as LX.Player.PlayMusicInfo })
 }
 
 
@@ -160,7 +160,7 @@ const handlePlay = () => {
   clearLoadTimeout()
 
 
-  if (appSetting['player.togglePlayMethod'] == 'random' && playMusicInfo.listId) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
+  if (appSetting['player.togglePlayMethod'] == 'random' && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
 
   setMusicUrl(musicInfo)
 
