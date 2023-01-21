@@ -4,7 +4,7 @@ import { decodeName, dateFormat2 } from '../../index'
 export default {
   _requestObj: null,
   _requestObj2: null,
-  async getComment({ hash }, page = 1, limit = 20) {
+  async getComment({ hash }, page = 1, limit = 50) {
     if (this._requestObj) this._requestObj.cancelHttp()
 
     const _requestObj = httpFetch(`http://comment.service.kugou.com/index.php?r=commentsv2/getCommentWithLike&code=fc4be23b4e972707f36b8a828a93ba8a&extdata=${hash}&p=${page}&pagesize=${limit}&ver=1.01&clientver=8373&appid=1001&kugouid=687373022&need_show_image=1`, {
@@ -15,7 +15,7 @@ export default {
     const { body, statusCode } = await _requestObj.promise
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取评论失败')
-    return { source: 'kg', comments: this.filterComment(body.list || []), total: body.count, page, limit, maxPage: Math.ceil(body.count / limit) || 1 }
+    return { source: 'kg', comments: this.filterComment(body.list || []), total: body.count, page, limit, maxPage: body.maxPage }
   },
   async getHotComment({ hash, songmid }, page = 1, limit = 100) {
     // console.log(songmid)
