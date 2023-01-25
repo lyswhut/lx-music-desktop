@@ -135,7 +135,7 @@ export default {
         rlyric &&= `[offset:${offset}]\n` + rlyric
       }
 
-      const musicInfo = 'progress' in props.lyricInfo.musicInfo ? props.lyricInfo.musicInfo.meta.musicInfo : props.lyricInfo.musicInfo
+      const musicInfo = 'progress' in props.lyricInfo.musicInfo ? props.lyricInfo.musicInfo.metadata.musicInfo : props.lyricInfo.musicInfo
 
       if (offset == originOffset.value) {
         removeLyric(musicInfo)
