@@ -26,6 +26,8 @@ export const setting = shallowReactive<LX.DesktopLyric.Config>({
   // 'desktopLyric.style.fontWeight': true,
   'desktopLyric.style.opacity': 95,
   'desktopLyric.style.ellipsis': false,
+  'desktopLyric.style.isFontWeightFont': false,
+  'desktopLyric.style.isFontWeightLine': false,
   'desktopLyric.style.isZoomActiveLrc': true,
   'common.langId': 'zh-cn',
   'player.isShowLyricTranslation': false,

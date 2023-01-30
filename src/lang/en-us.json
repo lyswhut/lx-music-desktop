@@ -446,6 +446,8 @@
   "setting__search_focus_search_box": "Automatically focus the search box on startup",
   "setting__search_history": "Search history",
   "setting__search_hot": "Top Searches",
+  "setting__setting__desktop_lyric_font_weight_font": "verbatim lyrics",
+  "setting__setting__desktop_lyric_font_weight_line": "progressive lyrics",
   "setting__sync": "Data synchronization",
   "setting__sync_address": "Synchronization service address: {address}",
   "setting__sync_auth_code": "Connection code: {code}",

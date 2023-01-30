@@ -305,6 +305,16 @@ declare global {
       'desktopLyric.style.isZoomActiveLrc': boolean
 
       /**
+       * 是否加粗逐字歌词字体
+       */
+      'desktopLyric.style.isFontWeightFont': boolean
+
+      /**
+       * 是否加粗逐行歌词字体
+       */
+      'desktopLyric.style.isFontWeightLine': boolean
+
+      /**
        * 是否启用双击列表里的歌曲时自动切换到当前列表播放（仅对歌单、排行榜有效）
        */
       'list.isClickPlayList': boolean

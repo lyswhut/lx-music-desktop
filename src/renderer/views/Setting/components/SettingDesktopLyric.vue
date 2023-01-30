@@ -27,6 +27,13 @@ dd
     base-checkbox(id="setting_desktop_lyric_fontWeight" :modelValue="appSetting['desktopLyric.style.fontWeight']" @update:modelValue="updateSetting({ 'desktopLyric.style.fontWeight': $event })" :label="$t('setting__desktop_lyric_font_weight')")
 
 dd
+  h3#setting__desktop_lyric_font_weight {{$t('setting__desktop_lyric_font_weight')}}
+  div
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_font" :modelValue="appSetting['desktopLyric.style.isFontWeightFont']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightFont': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_font')")
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_line" :modelValue="appSetting['desktopLyric.style.isFontWeightLine']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightLine': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_line')")
+
+
+dd
   h3#desktop_lyric_direction {{$t('setting__desktop_lyric_direction')}}
   div
     base-checkbox.gap-left(id="setting_desktop_lyric_direction_horizontal" :modelValue="appSetting['desktopLyric.direction']" @update:modelValue="updateSetting({ 'desktopLyric.direction': $event })" need value="horizontal" :label="$t('setting__desktop_lyric_direction_horizontal')")
@@ -81,13 +88,38 @@ import { appSetting, updateSetting } from '@renderer/store/setting'
 import { useI18n } from '@renderer/plugins/i18n'
 import { pickrTools } from '@renderer/utils/pickrTools'
 
+const defaultUnplayColors = [
+  'rgba(255, 255, 255, 1)',
+  'rgba(255, 236, 144, 1)',
+  'rgba(144, 255, 206, 1)',
+  'rgba(32, 255, 132, 1)',
+  'rgba(255, 226, 32, 1)',
+  'rgba(57, 203, 255, 1)',
+  'rgba(217, 57, 255, 1)',
+  'rgba(255, 57, 71, 1)',
+]
+const defaultPlayedColors = [
+  'rgba(255, 236, 144, 1)',
+  'rgba(144, 255, 206, 1)',
+  'rgba(32, 255, 132, 1)',
+  'rgba(255, 226, 32, 1)',
+  'rgba(57, 203, 255, 1)',
+  'rgba(7, 197, 86, 1)',
+  'rgba(25, 181, 254, 1)',
+  'rgba(217, 57, 255, 1)',
+  'rgba(255, 57, 71, 1)',
+]
+const defaultShadowColors = [
+  'rgba(0, 0, 0, 0.15)',
+]
+
 const useLyricUnplayColor = () => {
   const lyric_unplay_color_ref = ref(null)
   let tools
 
   const initLyricUnplayColor = (color, changed, reset) => {
     if (!lyric_unplay_color_ref.value) return
-    tools = pickrTools.create(lyric_unplay_color_ref.value, color, null, changed, reset)
+    tools = pickrTools.create(lyric_unplay_color_ref.value, color, defaultUnplayColors, changed, reset)
   }
   const destroyLyricUnplayColor = () => {
     if (!tools) return
@@ -112,12 +144,7 @@ const useLyricPlayedColor = () => {
 
   const initLyricPlayedColor = (color, changed, reset) => {
     if (!lyric_played_color_ref.value) return
-    tools = pickrTools.create(lyric_played_color_ref.value, color, [
-      'rgba(7, 197, 86, 1)',
-      'rgba(255, 250, 18, 1)',
-      'rgba(25, 181, 254, 1)',
-      'rgba(255, 18, 34, 1)',
-    ], changed, reset)
+    tools = pickrTools.create(lyric_played_color_ref.value, color, defaultPlayedColors, changed, reset)
   }
   const destroyLyricPlayedColor = () => {
     if (!tools) return
@@ -142,7 +169,7 @@ const useLyricShadowColor = () => {
 
   const initLyricShadowColor = (color, changed, reset) => {
     if (!lyric_shadow_color_ref.value) return
-    tools = pickrTools.create(lyric_shadow_color_ref.value, color, null, changed, reset)
+    tools = pickrTools.create(lyric_shadow_color_ref.value, color, defaultShadowColors, changed, reset)
   }
   const destroyLyricShadowColor = () => {
     if (!tools) return

@@ -1,7 +1,7 @@
 <template>
   <div
     ref="dom_lyric"
-    :class="[$style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }, { [$style.ellipsis]: ellipsis } ]"
+    :class="[$style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }, { [$style.ellipsis]: ellipsis }, { [$style.fontWeightFont]: isFontWeightFont }, { [$style.fontWeightLine]: isFontWeightLine } ]"
     :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart"
   >
     <div :class="$style.lyricSpace" />
@@ -19,7 +19,8 @@ export default {
   setup() {
     const isZoomActiveLrc = computed(() => setting['desktopLyric.style.isZoomActiveLrc'])
     const ellipsis = computed(() => setting['desktopLyric.style.ellipsis'])
-    // const fontWeight = computed(() => setting['desktopLyric.style.fontWeight'])
+    const isFontWeightFont = computed(() => setting['desktopLyric.style.isFontWeightFont'])
+    const isFontWeightLine = computed(() => setting['desktopLyric.style.isFontWeightLine'])
     const lrcStyles = computed(() => ({
       fontFamily: setting['desktopLyric.style.font'],
       fontSize: Math.trunc(setting['desktopLyric.style.fontSize']) + 'px',
@@ -41,7 +42,8 @@ export default {
       isZoomActiveLrc,
       lrcStyles,
       ellipsis,
-      // fontWeight,
+      isFontWeightFont,
+      isFontWeightLine,
 
       dom_lyric,
       dom_lyric_text,
@@ -70,6 +72,7 @@ export default {
   :global {
     .font-lrc, .shadow {
       padding: 0.08em 0.14em;
+      margin: -0.08em -0.14em;
     }
     .font-lrc {
       color: var(--color-lyric-unplay);
@@ -104,9 +107,9 @@ export default {
         transition: @transition-slow;
         transition-property: font-size, color;
       }
-      &.font-mode > .line {
-        font-weight: bold;
-      }
+      // &.font-mode > .line {
+      //   font-weight: bold;
+      // }
 
       &.font-mode > .line > .font-lrc {
         > span {
@@ -119,15 +122,21 @@ export default {
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-size: 0 100%;
-          padding-left: 1px;
-          padding-right: 1px;
-          padding-bottom: 1px;
+          padding-left: 0.12em;
+          padding-right: 0.12em;
+          padding-bottom: 0.12em;
+          margin-left: -0.11em;
+          margin-right: -0.11em;
+          margin-bottom: -0.12em;
         }
       }
      .line .shadow span {
-        padding-left: 1px;
-        padding-right: 1px;
-        padding-bottom: 1px;
+        padding-left: 0.12em;
+        padding-right: 0.12em;
+        padding-bottom: 0.12em;
+        margin-left: -0.11em;
+        margin-right: -0.11em;
+        margin-bottom: -0.12em;
       }
       // &.line-mode {
       //   .shadow {
@@ -140,7 +149,7 @@ export default {
     }
     .line-mode .font-lrc, .extended .font-lrc {
       // text-shadow: 0 0 2px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
-      .stroke2(var(--color-lyric-shadow));
+      .stroke3(var(--color-lyric-shadow));
       // .stroke2(rgba(0, 0, 0, 0.18));
       // .stroke(1px, rgba(0, 0, 0, 0.08));
       // .stroke(2px, rgba(0, 0, 0, 0.025));
@@ -228,13 +237,20 @@ export default {
     }
   }
 }
-// .font-weight {
-//   :global {
-//     .font-mode > .line {
-//       font-weight: bold;
-//     }
-//   }
-// }
+.font-weight-font {
+  :global {
+    .font-mode > .line {
+      font-weight: bold;
+    }
+  }
+}
+.font-weight-line {
+  :global {
+    .line-mode > .line {
+      font-weight: bold;
+    }
+  }
+}
 // .footer {
 //   flex: 0 0 100px;
 //   overflow: hidden;

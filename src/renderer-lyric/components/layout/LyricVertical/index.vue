@@ -1,7 +1,7 @@
 <template>
   <div
     ref="dom_lyric"
-    :class="[$style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }, { [$style.ellipsis]: ellipsis } ]"
+    :class="[$style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }, { [$style.ellipsis]: ellipsis }, { [$style.fontWeightFont]: isFontWeightFont }, { [$style.fontWeightLine]: isFontWeightLine } ]"
     :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart"
   >
     <div :class="$style.lyricSpace" />
@@ -19,6 +19,8 @@ export default {
   setup() {
     const isZoomActiveLrc = computed(() => setting['desktopLyric.style.isZoomActiveLrc'])
     const ellipsis = computed(() => setting['desktopLyric.style.ellipsis'])
+    const isFontWeightFont = computed(() => setting['desktopLyric.style.isFontWeightFont'])
+    const isFontWeightLine = computed(() => setting['desktopLyric.style.isFontWeightLine'])
     // const fontWeight = computed(() => setting['desktopLyric.style.fontWeight'])
     const lrcStyles = computed(() => ({
       fontFamily: setting['desktopLyric.style.font'],
@@ -41,7 +43,8 @@ export default {
       isZoomActiveLrc,
       lrcStyles,
       ellipsis,
-      // fontWeight,
+      isFontWeightFont,
+      isFontWeightLine,
 
       dom_lyric,
       dom_lyric_text,
@@ -74,13 +77,14 @@ export default {
   :global {
     .font-lrc, .shadow {
       padding: 0.14em 0.07em;
+      margin: -0.14em -0.07em;
     }
     .font-lrc {
       color: var(--color-lyric-unplay);
     }
     .shadow {
       color: transparent;
-      margin-left: -0.14em;
+      // margin-left: -0.14em;
     }
     .line-content {
       line-height: 1.2;
@@ -124,12 +128,14 @@ export default {
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-size: 0 100%;
-          padding: 2px;
+          padding: 0.14em;
+          margin: -0.08em;
         }
       }
 
       &.font-mode .line .shadow span {
-        padding: 2px;
+        padding: 0.14em;
+        margin: -0.08em;
       }
     }
     // .shadow {
@@ -143,7 +149,7 @@ export default {
     .line-mode .font-lrc, .extended .font-lrc {
       // text-shadow: 0 0 2px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.3);
       // .stroke2(rgba(0, 0, 0, 0.14));
-      .stroke2(var(--color-lyric-shadow));
+      .stroke4(var(--color-lyric-shadow));
       // .stroke(1px, rgba(0, 0, 0, 0.08));
       // .stroke(2px, rgba(0, 0, 0, 0.025));
       transition: font-size @transition-slow;

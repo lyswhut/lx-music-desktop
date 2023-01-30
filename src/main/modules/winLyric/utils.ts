@@ -76,6 +76,8 @@ export const watchConfigKeys = [
   // 'desktopLyric.style.fontWeight',
   'desktopLyric.style.opacity',
   'desktopLyric.style.ellipsis',
+  'desktopLyric.style.isFontWeightFont',
+  'desktopLyric.style.isFontWeightLine',
   'desktopLyric.style.isZoomActiveLrc',
   'common.langId',
   'player.isShowLyricTranslation',

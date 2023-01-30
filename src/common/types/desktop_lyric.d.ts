@@ -26,6 +26,8 @@ declare namespace LX {
       // 'desktopLyric.style.fontWeight': LX.AppSetting['desktopLyric.style.fontWeight']
       'desktopLyric.style.opacity': LX.AppSetting['desktopLyric.style.opacity']
       'desktopLyric.style.ellipsis': LX.AppSetting['desktopLyric.style.ellipsis']
+      'desktopLyric.style.isFontWeightFont': LX.AppSetting['desktopLyric.style.isFontWeightFont']
+      'desktopLyric.style.isFontWeightLine': LX.AppSetting['desktopLyric.style.isFontWeightLine']
       'desktopLyric.style.isZoomActiveLrc': LX.AppSetting['desktopLyric.style.isZoomActiveLrc']
       'common.langId': LX.AppSetting['common.langId']
       'player.isShowLyricTranslation': LX.AppSetting['player.isShowLyricTranslation']

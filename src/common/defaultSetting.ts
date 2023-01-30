@@ -58,7 +58,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.align': 'center',
   'desktopLyric.style.font': '',
   'desktopLyric.style.fontSize': 20,
-  'desktopLyric.style.lineGap': 14,
+  'desktopLyric.style.lineGap': 15,
   'desktopLyric.style.lyricUnplayColor': 'rgba(255, 255, 255, 1)',
   'desktopLyric.style.lyricPlayedColor': 'rgba(7, 197, 86, 1)',
   'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.15)',
@@ -66,6 +66,8 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.opacity': 95,
   'desktopLyric.style.ellipsis': false,
   'desktopLyric.style.isZoomActiveLrc': true,
+  'desktopLyric.style.isFontWeightFont': true,
+  'desktopLyric.style.isFontWeightLine': false,
 
   'list.isClickPlayList': false,
   'list.isShowSource': true,
@@ -117,7 +119,7 @@ const defaultSetting: LX.AppSetting = {
 // 使用新年皮肤
 if (new Date().getMonth() < 2) {
   defaultSetting['theme.id'] = 'happy_new_year'
-  defaultSetting['desktopLyric.style.lyricPlayedColor'] = 'rgba(255, 18, 34, 1)'
+  defaultSetting['desktopLyric.style.lyricPlayedColor'] = 'rgba(255, 57, 71, 1)'
 }
 
 
