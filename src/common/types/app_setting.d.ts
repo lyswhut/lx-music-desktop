@@ -69,6 +69,11 @@ declare global {
       'common.playBarProgressStyle': 'mini' | 'full' | 'middle'
 
       /**
+       * 尝试自动更新
+       */
+      'common.tryAutoUpdate': boolean
+
+      /**
        * 启动时自动播放歌曲
        */
       'player.startupAutoPlay': boolean

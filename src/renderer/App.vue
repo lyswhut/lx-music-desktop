@@ -7,7 +7,8 @@
       <layout-play-bar id="player" />
     </div>
     <layout-icons />
-    <layout-version-modal />
+    <layout-change-log-modal />
+    <layout-update-modal />
     <layout-pact-modal />
     <layout-sync-mode-modal />
     <layout-play-detail />

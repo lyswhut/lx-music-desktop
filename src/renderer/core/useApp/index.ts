@@ -65,7 +65,7 @@ export default () => {
       void initDeeplink(envParams)
       void initSyncService()
       handleListAutoUpdate()
-      if (window.lx.isDev) checkUpdate()
+      if (window.lx.isProd) checkUpdate()
 
       sendInited()
     })

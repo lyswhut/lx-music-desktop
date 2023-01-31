@@ -1,4 +1,4 @@
-import { nextTick, onBeforeUnmount } from '@common/utils/vueTools'
+import { nextTick, onBeforeUnmount, watch } from '@common/utils/vueTools'
 import {
   onUpdateAvailable,
   onUpdateDownloaded,
@@ -6,20 +6,34 @@ import {
   onUpdateNotAvailable,
   onUpdateProgress,
   getIgnoreVersion,
+  getLastStartInfo,
+  saveLastStartInfo,
 } from '@renderer/utils/ipc'
-import { compareVer } from '@common/utils'
-import { versionInfo } from '@renderer/store'
+import { compareVer, isWin } from '@common/utils'
+import { isShowChangeLog, versionInfo } from '@renderer/store'
 import { getVersionInfo } from '@renderer/utils/update'
+import { dialog } from '@renderer/plugins/Dialog'
+import { appSetting } from '@renderer/store/setting'
 
 export default () => {
+  let isShowedChangeLog = false
+
   // 更新超时定时器
-  let updateTimeout: number | null = window.setTimeout(() => {
-    updateTimeout = null
-    versionInfo.isTimeOut = true
-    void nextTick(() => {
-      showUpdateModal()
-    })
-  }, 60 * 30 * 1000)
+  let updateTimeout: number | null = null
+  if (window.lx.isProd && !(isWin && process.arch.includes('arm'))) {
+    updateTimeout = window.setTimeout(() => {
+      updateTimeout = null
+      void nextTick(() => {
+        showUpdateModal()
+        setTimeout(() => {
+          void dialog({
+            message: window.i18n.t('update__timeout_top'),
+            confirmButtonText: window.i18n.t('alert_button_text'),
+          })
+        }, 500)
+      })
+    }, 60 * 60 * 1000)
+  }
 
   const clearUpdateTimeout = () => {
     if (!updateTimeout) return
@@ -27,8 +41,25 @@ export default () => {
     updateTimeout = null
   }
 
-  const showUpdateModal = () => {
-    void (versionInfo.newVersion?.history
+  const handleShowChangeLog = () => {
+    isShowedChangeLog = true
+    void getLastStartInfo().then((version) => {
+      if (version == process.versions.app) return
+      saveLastStartInfo(process.versions.app)
+      if (compareVer(process.versions.app, version) < 0) {
+        void dialog({
+          message: window.i18n.t('update__downgrade_tip', { ver: `${version} → ${process.versions.app}` }),
+          confirmButtonText: window.i18n.t('update__ignore_confirm_tip_confirm'),
+        })
+        return
+      }
+      if (compareVer(process.versions.app, versionInfo.newVersion!.version) > 0) return
+      isShowChangeLog.value = true
+    })
+  }
+
+  const handleGetVersionInfo = async(): Promise<NonNullable<typeof versionInfo['newVersion']>> => {
+    return (versionInfo.newVersion?.history && !versionInfo.reCheck
       ? Promise.resolve(versionInfo.newVersion)
       : getVersionInfo().then(body => {
         versionInfo.newVersion = body
@@ -36,45 +67,77 @@ export default () => {
       })
     ).catch(() => {
       if (versionInfo.newVersion) return versionInfo.newVersion
-      versionInfo.isUnknow = true
       let result = {
         version: '0.0.0',
         desc: '',
       }
       versionInfo.newVersion = result
       return result
-    }).then((result: LX.VersionInfo) => {
+    })
+  }
+
+  let versionInfoPromise: null | ReturnType<typeof handleGetVersionInfo> = null
+
+  const showUpdateModal = (status?: LX.UpdateStatus) => {
+    if (versionInfoPromise) {
+      if (
+        // @ts-expect-error
+        versionInfoPromise.resolved &&
+        versionInfo.reCheck) {
+        versionInfoPromise = handleGetVersionInfo()
+      }
+    } else versionInfoPromise = handleGetVersionInfo()
+    void versionInfoPromise.then((result) => {
+      versionInfo.reCheck = false
+
       if (result.version == '0.0.0') {
-        versionInfo.isUnknow = true
+        versionInfo.isUnknown = true
+        versionInfo.status = 'error'
         versionInfo.showModal = true
         return
       }
+      versionInfo.isUnknown = false
       if (compareVer(versionInfo.version, result.version) != -1) {
-        versionInfo.isLatestVer = true
+        versionInfo.status = 'idle'
+        versionInfo.isLatest = true
+        handleShowChangeLog()
         return
       }
 
       return getIgnoreVersion().then((ignoreVersion) => {
+        versionInfo.isLatest = false
+        let preStatus = versionInfo.status
+        if (status) versionInfo.status = status
         if (result.version === ignoreVersion) return
-        // console.log(this.version)
         void nextTick(() => {
           versionInfo.showModal = true
+          if (status == 'error' && preStatus == 'downloading') {
+            setTimeout(() => {
+              void dialog({
+                message: window.i18n.t('update__error_top'),
+                confirmButtonText: window.i18n.t('alert_button_text'),
+              })
+            }, 500)
+          }
         })
       })
+    }).finally(() => {
+      // @ts-expect-error
+      versionInfoPromise!.resolved = true
     })
   }
 
   const rUpdateAvailable = onUpdateAvailable(({ params: info }) => {
-    versionInfo.isDownloading = true
-    void getVersionInfo().catch(() => ({
+    // versionInfo.isDownloading = true
+    console.log(info)
+    versionInfo.newVersion = {
       version: info.version,
-      desc: info.releaseNotes,
-    })).then(body => {
-      // console.log(body)
-      versionInfo.newVersion = body
-      void nextTick(() => {
-        versionInfo.showModal = true
-      })
+      desc: info.releaseNotes as string,
+    }
+    versionInfo.isLatest = false
+    if (appSetting['common.tryAutoUpdate']) versionInfo.status = 'downloading'
+    void nextTick(() => {
+      showUpdateModal()
     })
   })
   const rUpdateNotAvailable = onUpdateNotAvailable(({ params: info }) => {
@@ -83,13 +146,15 @@ export default () => {
       version: info.version,
       desc: info.releaseNotes as string,
     }
-    versionInfo.isLatestVer = true
+    versionInfo.isLatest = true
+    versionInfo.isUnknown = false
+    versionInfo.status = 'idle'
   })
-  const rUpdateError = onUpdateError(() => {
+  const rUpdateError = onUpdateError((params) => {
     clearUpdateTimeout()
-    versionInfo.isError = true
+    // versionInfo.status = 'error'
     void nextTick(() => {
-      showUpdateModal()
+      showUpdateModal('error')
     })
   })
   const rUpdateProgress = onUpdateProgress(({ params: progress }) => {
@@ -97,10 +162,17 @@ export default () => {
   })
   const rUpdateDownloaded = onUpdateDownloaded(({ params: info }) => {
     clearUpdateTimeout()
-    versionInfo.isDownloaded = true
+    // versionInfo.status = 'downloaded'
     void nextTick(() => {
-      showUpdateModal()
+      showUpdateModal('downloaded')
     })
+  })
+
+  watch(() => versionInfo.showModal, (visible) => {
+    if (visible || isShowedChangeLog || versionInfo.status == 'downloaded') return
+    setTimeout(() => {
+      handleShowChangeLog()
+    }, 1000)
   })
 
   onBeforeUnmount(() => {

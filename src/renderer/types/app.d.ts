@@ -18,7 +18,7 @@ interface Lx {
     main: MainTypes
     download: DownloadTypes
   }
-  isDev: boolean
+  isProd: boolean
   songListInfo: {
     fromName: string
     searchKey: string | null

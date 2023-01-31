@@ -68,6 +68,10 @@ export const checkUpdate = () => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.update_check)
 }
 
+export const downloadUpdate = () => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.update_download_update)
+}
+
 export const quitUpdate = () => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.quit_update)
 }
@@ -164,6 +168,17 @@ export const setTaskBarProgress = (progress: number, mode?: Electron.ProgressBar
     progress: progress < 0 ? progress : Math.max(0.01, progress),
     mode: mode ?? 'normal',
   })
+}
+
+export const saveLastStartInfo = (version: string) => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
+    path: DATA_KEYS.lastLastStartInfo,
+    data: version,
+  })
+}
+// 获取最后一次启动时的版本号
+export const getLastStartInfo = async() => {
+  return rendererInvoke<string, string>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.lastLastStartInfo)
 }
 
 export const savePlayInfo = (playInfo: LX.Player.SavedPlayInfo) => {

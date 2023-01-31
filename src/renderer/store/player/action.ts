@@ -202,7 +202,8 @@ export const setPlayMusicInfo = (listId: string | null, musicInfo: LX.Download.L
  * @param playMusicInfo playMusicInfo对象
  */
 export const addPlayedList = (playMusicInfo: LX.Player.PlayMusicInfo) => {
-  if (playedList.some(m => m.musicInfo === playMusicInfo.musicInfo)) return
+  const id = playMusicInfo.musicInfo.id
+  if (playedList.some(m => m.musicInfo.id === id)) return
   playedList.push(playMusicInfo)
 }
 /**

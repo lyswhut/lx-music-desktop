@@ -85,23 +85,19 @@ export const versionInfo = window.lxData.versionInfo = reactive<{
     history?: LX.VersionInfo[]
   } | null
   showModal: boolean
-  isError: boolean
-  isTimeOut: boolean
-  isUnknow: boolean
-  isDownloaded: boolean
-  isDownloading: boolean
-  isLatestVer: boolean
+  isUnknown: boolean
+  isLatest: boolean
+  reCheck: boolean
+  status: LX.UpdateStatus
   downloadProgress: ProgressInfo | null
 }>({
   version: pkg.version,
   newVersion: null,
   showModal: false,
-  isError: false,
-  isTimeOut: false,
-  isUnknow: false,
-  isDownloaded: false,
-  isDownloading: false,
-  isLatestVer: false,
+  reCheck: false,
+  isUnknown: false,
+  isLatest: false,
+  status: 'checking',
   downloadProgress: null,
 })
 export const userApi = reactive<{
@@ -115,6 +111,9 @@ export const userApi = reactive<{
   message: 'initing',
   apis: {},
 })
+
+export const isShowChangeLog = ref(false)
+
 
 export const isFullscreen = ref(false)
 watch(isFullscreen, isFullscreen => {
