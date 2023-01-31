@@ -4,6 +4,7 @@ module.exports = {
     'electron',
     'chalk',
     'del',
+    'comlink',
   ],
   // target: 'newest',
   // filter: [
