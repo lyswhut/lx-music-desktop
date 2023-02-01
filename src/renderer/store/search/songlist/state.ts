@@ -3,7 +3,7 @@ import music from '@renderer/utils/musicSdk'
 
 // import { deduplicationList } from '@common/utils/renderer'
 
-import { ListInfo } from '@renderer/store/songList/state'
+import { type ListInfo } from '@renderer/store/songList/state'
 
 export type { ListInfoItem } from '@renderer/store/songList/state'
 

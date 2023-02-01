@@ -1,4 +1,4 @@
-import { onMounted, useCssModule, Ref } from '@common/utils/vueTools'
+import { onMounted, useCssModule, type Ref } from '@common/utils/vueTools'
 
 
 export default ({ dom_lists_list }: {

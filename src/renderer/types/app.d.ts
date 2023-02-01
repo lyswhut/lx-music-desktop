@@ -1,6 +1,6 @@
-import { AppEventTypes, KeyEventTypes } from '@renderer/event'
-import { MainTypes, DownloadTypes } from '@renderer/worker/utils'
-import { I18n } from '@renderer/plugins/i18n'
+import { type AppEventTypes, type KeyEventTypes } from '@renderer/event'
+import { type MainTypes, type DownloadTypes } from '@renderer/worker/utils'
+import { type I18n } from '@renderer/plugins/i18n'
 // interface LX.EnvParams {
 //   deeplink?: string | null
 //   cmdParams: LX.CmdParams

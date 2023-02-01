@@ -1,5 +1,5 @@
 // import { throttle } from '@common/utils/common'
-import { Server } from 'socket.io'
+import { type Server } from 'socket.io'
 // import { sendSyncActionList } from '@main/modules/winMain'
 import { encryptMsg, decryptMsg } from '../server/utils'
 

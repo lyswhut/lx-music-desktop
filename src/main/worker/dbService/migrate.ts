@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3'
+import type Database from 'better-sqlite3'
 
 const migrateV1 = (db: Database.Database) => {
   const sql = `

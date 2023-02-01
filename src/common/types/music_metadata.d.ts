@@ -1,5 +1,5 @@
 import {
-  IAudioMetadata as iAudioMetadata,
+  type IAudioMetadata as iAudioMetadata,
 } from 'music-metadata'
 
 declare global {

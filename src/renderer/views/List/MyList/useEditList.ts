@@ -1,4 +1,4 @@
-import { ref, nextTick, useCssModule, Ref } from '@common/utils/vueTools'
+import { ref, nextTick, useCssModule, type Ref } from '@common/utils/vueTools'
 import { userLists } from '@renderer/store/list/state'
 import { updateUserList, createUserList } from '@renderer/store/list/action'
 

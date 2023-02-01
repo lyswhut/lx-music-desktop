@@ -3,7 +3,7 @@ import music from '@renderer/utils/musicSdk'
 import { deduplicationList, toNewMusicInfo } from '@renderer/utils'
 import { sortInsert, similar } from '@common/utils/common'
 
-import { sources, maxPages, listInfos, ListInfo } from './state'
+import { sources, maxPages, listInfos, type ListInfo } from './state'
 
 interface SearchResult {
   list: LX.Music.MusicInfo[]

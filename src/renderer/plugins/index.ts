@@ -1,5 +1,5 @@
 // import './axios'
-import { App } from 'vue'
+import { type App } from 'vue'
 import dialog from './Dialog'
 import './Tips'
 import svgIcon from './SvgIcon'

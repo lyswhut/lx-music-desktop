@@ -1,4 +1,4 @@
-import { createDownload, DownloaderType, Options as DownloadOptions } from '@common/utils/download'
+import { createDownload, type DownloaderType, type Options as DownloadOptions } from '@common/utils/download'
 // import music from '@renderer/utils/musicSdk'
 import { createDownloadInfo } from './utils'
 // import {

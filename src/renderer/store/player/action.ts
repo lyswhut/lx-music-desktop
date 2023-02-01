@@ -1,6 +1,6 @@
 // import { reactive, ref, shallowRef } from '@common/utils/vueTools'
 import {
-  PlayerMusicInfo,
+  type PlayerMusicInfo,
   musicInfo,
   isPlay,
   status,

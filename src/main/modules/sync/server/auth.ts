@@ -1,4 +1,4 @@
-import http from 'http'
+import type http from 'http'
 import { SYNC_CODE } from './config'
 import {
   aesEncrypt,

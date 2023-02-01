@@ -1,4 +1,4 @@
-import { onBeforeUnmount, ref, Ref, useCssModule } from '@common/utils/vueTools'
+import { onBeforeUnmount, ref, type Ref, useCssModule } from '@common/utils/vueTools'
 import { updateUserListPosition } from '@renderer/store/list/action'
 import { userLists } from '@renderer/store/list/state'
 import useDarg from '@renderer/utils/compositions/useDrag'

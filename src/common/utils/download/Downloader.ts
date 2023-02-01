@@ -3,8 +3,8 @@ import path from 'path'
 import { EventEmitter } from 'events'
 import { performance } from 'perf_hooks'
 import { STATUS } from './util'
-import http from 'http'
-import { request, Options as RequestOptions } from './request'
+import type http from 'http'
+import { request, type Options as RequestOptions } from './request'
 
 export interface Options {
   forceResume: boolean

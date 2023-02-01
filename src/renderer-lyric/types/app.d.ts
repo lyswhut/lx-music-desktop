@@ -1,4 +1,4 @@
-import { I18n } from '@lyric/plugins/i18n'
+import { type I18n } from '@lyric/plugins/i18n'
 
 declare global {
   interface Window {

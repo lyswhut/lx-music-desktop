@@ -1,4 +1,4 @@
-import { App, ref } from 'vue'
+import { type App, ref } from 'vue'
 import { messages } from './index'
 import type { Messages, Message } from './index'
 

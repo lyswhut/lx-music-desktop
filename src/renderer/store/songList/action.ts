@@ -2,15 +2,19 @@
 import { deduplicationList, toNewMusicInfo } from '@renderer/utils'
 import musicSdk from '@renderer/utils/musicSdk'
 import { markRaw, markRawList } from '@common/utils/vueTools'
-import type { ListDetailInfo, ListInfoItem, ListInfo } from './state'
 import {
   tags,
-  TagInfo,
   listInfo,
   listDetailInfo,
   selectListInfo,
   isVisibleListDetail,
   openSongListInputInfo,
+} from './state'
+import type {
+  ListDetailInfo,
+  ListInfoItem,
+  ListInfo,
+  TagInfo,
 } from './state'
 
 const cache = new Map<string, any>()

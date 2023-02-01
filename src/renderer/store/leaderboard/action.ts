@@ -2,7 +2,7 @@
 import { deduplicationList, toNewMusicInfo } from '@renderer/utils'
 import musicSdk from '@renderer/utils/musicSdk'
 import { markRaw, markRawList } from '@common/utils/vueTools'
-import { boards, Board, listDetailInfo, ListDetailInfo } from './state'
+import { boards, type Board, listDetailInfo, type ListDetailInfo } from './state'
 
 const cache = new Map<string, any>()
 

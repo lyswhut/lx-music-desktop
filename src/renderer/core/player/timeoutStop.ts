@@ -1,4 +1,4 @@
-import { ref, computed, ComputedRef } from '@common/utils/vueTools'
+import { ref, computed, type ComputedRef } from '@common/utils/vueTools'
 import { isPlay } from '@renderer/store/player/state'
 import { appSetting } from '@renderer/store/setting'
 // import { interval, intervalCancel } from '@renderer/utils/ipc'

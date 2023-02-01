@@ -1,7 +1,7 @@
-import Downloader, { Options as DownloaderOptions } from './Downloader'
+import Downloader, { type Options as DownloaderOptions } from './Downloader'
 import { getRequestAgent } from './util'
 import { sizeFormate } from '@common/utils'
-import http from 'http'
+import type http from 'http'
 
 // these are the default options
 // const options = {

@@ -1,5 +1,5 @@
-import { Event as App, Type as AppType } from './AppEvent'
-import { Event as List, Type as ListType } from './ListEvent'
+import { Event as App, type Type as AppType } from './AppEvent'
+import { Event as List, type Type as ListType } from './ListEvent'
 
 export type {
   AppType,

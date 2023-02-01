@@ -1,4 +1,4 @@
-import { workerDBSeriveTypes } from '@main/worker/dbService'
+import { type workerDBSeriveTypes } from '@main/worker/dbService'
 
 declare global {
   // interface WorkerDBSeriveTypes {

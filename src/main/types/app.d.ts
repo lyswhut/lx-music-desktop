@@ -1,8 +1,8 @@
 /* eslint-disable no-var */
 // import { Event as WinMainEvent } from '@main/modules/winMain/event'
 // import { Event as WinLyricEvent } from '@main/modules/winLyric/event'
-import { AppType, ListType } from '@main/event'
-import { DBSeriveTypes } from '@main/worker/utils'
+import { type AppType, type ListType } from '@main/event'
+import { type DBSeriveTypes } from '@main/worker/utils'
 
 interface Lx {
   appSetting: LX.AppSetting

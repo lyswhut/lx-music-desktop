@@ -1,6 +1,6 @@
 import http from 'http'
-import { Server, Socket } from 'socket.io'
-import { createHttpTerminator, HttpTerminator } from 'http-terminator'
+import { Server, type Socket } from 'socket.io'
+import { createHttpTerminator, type HttpTerminator } from 'http-terminator'
 import * as modules from '../modules'
 import { authCode, authConnect } from './auth'
 import { getAddress, getServerId, generateCode as handleGenerateCode, getClientKeyInfo, setClientKeyInfo } from './utils'

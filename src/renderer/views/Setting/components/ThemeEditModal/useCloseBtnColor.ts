@@ -1,5 +1,5 @@
 import { ref } from '@common/utils/vueTools'
-import { pickrTools, PickrTools } from '@renderer/utils/pickrTools'
+import { pickrTools, type PickrTools } from '@renderer/utils/pickrTools'
 
 export default () => {
   const close_btn_color_ref = ref(null)

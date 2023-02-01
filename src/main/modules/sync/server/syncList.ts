@@ -1,7 +1,7 @@
 import { promises as fsPromises } from 'fs'
 import { encryptMsg, decryptMsg, getSnapshotFilePath } from './utils'
 import { throttle } from '@common/utils'
-import { Server } from 'socket.io'
+import { type Server } from 'socket.io'
 import { sendCloseSelectMode, sendSelectMode } from '@main/modules/winMain'
 import { LIST_IDS } from '@common/constants'
 
@@ -98,7 +98,7 @@ const setRemotelList = async(socket: LX.Sync.Socket, listData: LX.Sync.ListData)
   }
 }
 
-const writeFilePromises: Map<string, Promise<void>> = new Map()
+const writeFilePromises = new Map<string, Promise<void>>()
 const updateSnapshot = async(path: string, data: string) => {
   console.log('updateSnapshot', path)
   let writeFilePromise = writeFilePromises.get(path) ?? Promise.resolve()
@@ -136,7 +136,7 @@ const handleMergeList = (
       newList = [...sourceList, ...targetList]
       break
   }
-  const map: Map<string | number, LX.Music.MusicInfo> = new Map()
+  const map = new Map<string | number, LX.Music.MusicInfo>()
   const ids: Array<string | number> = []
   switch (addMusicLocationType) {
     case 'top':
@@ -313,9 +313,9 @@ const mergeListDataFromSnapshot = (
   snapshotList: LX.Music.MusicInfo[],
   addMusicLocationType: LX.AddMusicLocationType,
 ): LX.Music.MusicInfo[] => {
-  const removedListIds: Set<string | number> = new Set()
-  const sourceListItemIds: Set<string | number> = new Set()
-  const targetListItemIds: Set<string | number> = new Set()
+  const removedListIds = new Set<string | number>()
+  const sourceListItemIds = new Set<string | number>()
+  const targetListItemIds = new Set<string | number>()
   for (const m of sourceList) sourceListItemIds.add(m.id)
   for (const m of targetList) targetListItemIds.add(m.id)
   if (snapshotList) {
@@ -325,7 +325,7 @@ const mergeListDataFromSnapshot = (
   }
 
   let newList
-  const map: Map<string | number, LX.Music.MusicInfo> = new Map()
+  const map = new Map<string | number, LX.Music.MusicInfo>()
   const ids = []
   switch (addMusicLocationType) {
     case 'top':
@@ -362,9 +362,9 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Socket, snapshot: 
   const localUserListData = createUserListDataObj(localListData)
   const remoteUserListData = createUserListDataObj(remoteListData)
   const snapshotUserListData = createUserListDataObj(snapshot)
-  const removedListIds: Set<string | number> = new Set()
-  const localUserListIds: Set<string | number> = new Set()
-  const remoteUserListIds: Set<string | number> = new Set()
+  const removedListIds = new Set<string | number>()
+  const localUserListIds = new Set<string | number>()
+  const remoteUserListIds = new Set<string | number>()
 
   for (const l of localListData.userList) localUserListIds.add(l.id)
   for (const l of remoteListData.userList) remoteUserListIds.add(l.id)

@@ -2,7 +2,7 @@ import { ref, reactive, shallowRef, markRaw, computed, watch } from '@common/uti
 import { windowSizeList as configWindowSizeList } from '@common/config'
 import { appSetting } from './setting'
 import pkg from '../../../package.json'
-import { ProgressInfo } from 'electron-updater'
+import { type ProgressInfo } from 'electron-updater'
 import music from '@renderer/utils/musicSdk'
 process.versions.app = pkg.version
 

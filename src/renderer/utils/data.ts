@@ -15,7 +15,7 @@ import {
   saveViewPrevState as saveViewPrevStateFromData,
 } from '@renderer/utils/ipc'
 import { throttle } from '@common/utils'
-import { DEFAULT_SETTING, LIST_IDS } from '@common/constants'
+import { type DEFAULT_SETTING, LIST_IDS } from '@common/constants'
 import { dateFormat } from './index'
 import { setUpdateTime } from '@renderer/store/list/action'
 

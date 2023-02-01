@@ -1,5 +1,5 @@
 import { ref } from '@common/utils/vueTools'
-import { pickrTools, PickrTools } from '@renderer/utils/pickrTools'
+import { pickrTools, type PickrTools } from '@renderer/utils/pickrTools'
 
 export default () => {
   const badge_primary_color_ref = ref(null)

@@ -1,6 +1,6 @@
 import { isMac } from '@common/utils'
 
-const downKeys: Set<string> = new Set()
+const downKeys = new Set<string>()
 
 export declare type KeyActionType = LX.KeyDownEevent['type']
 export declare type Keys = LX.KeyDownEevent['keys']

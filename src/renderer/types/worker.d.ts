@@ -1,5 +1,5 @@
-import { workerMainTypes } from '@renderer/worker/main/index'
-import { workerDownloadTypes } from '@renderer/worker/download/index'
+import { type workerMainTypes } from '@renderer/worker/main/index'
+import { type workerDownloadTypes } from '@renderer/worker/download/index'
 
 
 declare global {

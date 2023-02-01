@@ -1,6 +1,6 @@
 // import fs from 'fs'
 import { join } from 'path'
-import { WindowSize, windowSizeList } from '@common/config'
+import { type WindowSize, windowSizeList } from '@common/config'
 import { nativeImage } from 'electron'
 
 export const getWindowSizeInfo = (windowSizeId: number | string): WindowSize => {
