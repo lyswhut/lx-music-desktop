@@ -215,7 +215,7 @@ const useLyricColor = () => {
     const defaultSetting = {
       'desktopLyric.style.lyricUnplayColor': 'rgba(255, 255, 255, 1)',
       'desktopLyric.style.lyricPlayedColor': 'rgba(7, 197, 86, 1)',
-      'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.15)',
+      'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.18)',
     }
     updateSetting(defaultSetting)
     setLyricUnplayColor(defaultSetting['desktopLyric.style.lyricUnplayColor'])

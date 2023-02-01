@@ -62,7 +62,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.lineGap': 15,
   'desktopLyric.style.lyricUnplayColor': 'rgba(255, 255, 255, 1)',
   'desktopLyric.style.lyricPlayedColor': 'rgba(7, 197, 86, 1)',
-  'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.15)',
+  'desktopLyric.style.lyricShadowColor': 'rgba(0, 0, 0, 0.18)',
   // 'desktopLyric.style.fontWeight': false,
   'desktopLyric.style.opacity': 95,
   'desktopLyric.style.ellipsis': false,

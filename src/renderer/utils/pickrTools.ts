@@ -4,7 +4,7 @@ import '@simonwep/pickr/dist/themes/classic.min.css'
 
 export interface PickrTools {
   pickr: Pickr | null
-  create: (dom: HTMLElement, color: string, swatches: string[] | null, change: (color: string) => void, reset: () => void) => PickrTools
+  create: (dom: HTMLElement, color: string, swatches: string[] | null, change: (color: string) => void, reset?: () => void) => PickrTools
   destroy: () => void
   setColor: (color: string) => void
 }
@@ -72,10 +72,9 @@ export const pickrTools: PickrTools = {
     pickrTools.pickr.on('swatchselect', (color: any) => {
       swatchselectColor = color
     }).on('change', throttleChange).on('cancel', () => {
-      change(color)
       console.log('cancel')
-    }).on('cancel', () => {
-      reset()
+      change(color)
+      reset?.()
     })
 
     return pickrTools
