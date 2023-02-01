@@ -46,21 +46,27 @@ export default {
       if (!versionInfo.newVersion || !versionInfo.newVersion?.history) return info
       info.isLatest = compareVer(currentVer, versionInfo.newVersion.version) >= 0
 
-      for (const ver of versionInfo.newVersion.history) {
-        switch (compareVer(ver.version, currentVer)) {
-          case 0:
-            info.version = ver.version
-            info.desc = ver.desc
-            break
-          case -1:
-            if (lastStartVer && compareVer(lastStartVer, ver.version) < 0) info.history.push(ver)
-        }
-      }
+      const history = [{ version: versionInfo.newVersion.version, desc: versionInfo.newVersion.desc }, ...versionInfo.newVersion.history]
 
-      if (!info.version) {
-        if (currentVer == versionInfo.newVersion.version) {
-          info.version = versionInfo.newVersion.version
-          info.desc = versionInfo.newVersion.desc
+      if (lastStartVer) {
+        for (const ver of history) {
+          switch (compareVer(ver.version, currentVer)) {
+            case 0:
+              info.version = ver.version
+              info.desc = ver.desc
+              break
+            case -1:
+              if (compareVer(lastStartVer, ver.version) < 0) info.history.push(ver)
+          }
+        }
+      } else {
+        const verInfo = history.find(v => v.version == currentVer)
+        if (verInfo) {
+          info.version = verInfo.version
+          info.desc = verInfo.desc
+        } else {
+          info.desc = '未找到当前版本的更新日志'
+          info.version = currentVer
         }
       }
 

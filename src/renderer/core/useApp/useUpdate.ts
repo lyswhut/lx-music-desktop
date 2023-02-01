@@ -46,14 +46,21 @@ export default () => {
     void getLastStartInfo().then((version) => {
       if (version == process.versions.app) return
       saveLastStartInfo(process.versions.app)
-      if (compareVer(process.versions.app, version) < 0) {
-        void dialog({
-          message: window.i18n.t('update__downgrade_tip', { ver: `${version} → ${process.versions.app}` }),
-          confirmButtonText: window.i18n.t('update__ignore_confirm_tip_confirm'),
-        })
-        return
-      }
-      if (compareVer(process.versions.app, versionInfo.newVersion!.version) > 0) return
+      if (version) {
+        if (compareVer(process.versions.app, version) < 0) {
+          void dialog({
+            message: window.i18n.t('update__downgrade_tip', { ver: `${version} → ${process.versions.app}` }),
+            confirmButtonText: window.i18n.t('update__ignore_confirm_tip_confirm'),
+          })
+          return
+        }
+
+        if (compareVer(version, versionInfo.newVersion!.version) >= 0) return
+      } else if (
+        // 如果当前版本不在已发布的版本中，则不需要显示更新日志
+        ![{ version: versionInfo.newVersion!.version, desc: '' }, ...(versionInfo.newVersion!.history ?? [])]
+          .some(i => i.version == process.versions.app)
+      ) return
       isShowChangeLog.value = true
     })
   }

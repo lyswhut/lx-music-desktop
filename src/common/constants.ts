@@ -39,7 +39,7 @@ export const DATA_KEYS = {
   songListSetting: 'songListSetting',
   searchSetting: 'searchSetting',
 
-  lastLastStartInfo: 'lastLastStartInfo',
+  lastStartInfo: 'lastStartInfo',
 } as const
 
 export const DEFAULT_SETTING = {

@@ -1,6 +1,6 @@
 import { rendererSend, rendererInvoke, rendererOn, rendererOff } from '@common/rendererIpc'
 import { HOTKEY_RENDERER_EVENT_NAME, WIN_MAIN_RENDERER_EVENT_NAME, CMMON_EVENT_NAME } from '@common/ipcNames'
-import { ProgressInfo, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
+import { type ProgressInfo, type UpdateDownloadedEvent, type UpdateInfo } from 'electron-updater'
 import { markRaw } from '@common/utils/vueTools'
 import * as hotKeys from '@common/hotKey'
 import { APP_EVENT_NAMES, DATA_KEYS, DEFAULT_SETTING } from '@common/constants'
@@ -172,13 +172,13 @@ export const setTaskBarProgress = (progress: number, mode?: Electron.ProgressBar
 
 export const saveLastStartInfo = (version: string) => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
-    path: DATA_KEYS.lastLastStartInfo,
+    path: DATA_KEYS.lastStartInfo,
     data: version,
   })
 }
 // 获取最后一次启动时的版本号
 export const getLastStartInfo = async() => {
-  return rendererInvoke<string, string>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.lastLastStartInfo)
+  return rendererInvoke<string, string | null>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.lastStartInfo)
 }
 
 export const savePlayInfo = (playInfo: LX.Player.SavedPlayInfo) => {
