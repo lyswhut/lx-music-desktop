@@ -6,7 +6,7 @@ import { setWindowBounds } from '@lyric/utils/ipc'
 
 const getOffsetTop = (contentWidth, lineWidth) => {
   switch (setting['desktopLyric.scrollAlign']) {
-    case 'top': return contentWidth - lineWidth - lineWidth * 0.1
+    case 'top': return contentWidth - lineWidth
     default: return contentWidth * 0.5 - lineWidth / 2
   }
 }

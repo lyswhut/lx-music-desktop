@@ -72,7 +72,7 @@ export default {
   :global {
     .font-lrc, .shadow {
       padding: 0.08em 0.14em;
-      margin: -0.08em -0.14em;
+      margin: -0.08em 0;
     }
     .font-lrc {
       color: var(--color-lyric-unplay);
