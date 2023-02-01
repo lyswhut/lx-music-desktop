@@ -2,6 +2,8 @@ const { getNow, TimeoutTools } = require('./utils')
 
 const timeFieldExp = /^(?:\[[\d:.]+\])+/g
 const timeExp = /[\d:.]+/g
+const timeLabelRxp = /^(\[[\d:]+\.)0+(\d+\])/
+const timeLabelFixRxp = /(?:\.0+|0+)$/
 const tagRegMap = {
   title: 'ti',
   artist: 'ar',
@@ -24,8 +26,9 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
         const times = timeField.match(timeExp)
         if (times == null) continue
         for (let time of times) {
-          if (!time.includes('.')) time += '.0'
-          const timeStr = time.replace(/(?:\.0+|0+)$/, '')
+          if (time.includes('.')) time = time.replace(timeLabelRxp, '$1$2')
+          else time += '.0'
+          const timeStr = time.replace(timeLabelFixRxp, '')
           const targetLine = lrcLinesMap[timeStr]
           if (targetLine) targetLine.extendedLyrics.push(text)
         }
@@ -84,8 +87,9 @@ module.exports = class LinePlayer {
           const times = timeField.match(timeExp)
           if (times == null) continue
           for (let time of times) {
-            if (!time.includes('.')) time += '.0'
-            const timeStr = time.replace(/(?:\.0+|0+)$/, '')
+            if (time.includes('.')) time = time.replace(timeLabelRxp, '$1$2')
+            else time += '.0'
+            const timeStr = time.replace(timeLabelFixRxp, '')
             if (linesMap[timeStr]) {
               linesMap[timeStr].extendedLyrics.push(text)
               continue

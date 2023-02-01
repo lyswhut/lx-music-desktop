@@ -99,8 +99,8 @@ const parseTools = {
       lxlrcLines.push(`${startTimeStr}${newWords}`)
     }
     return {
-      lyric: lrcLines.join('\n'),
-      lxlyric: lxlrcLines.join('\n'),
+      lyricLines: lrcLines,
+      lxlyricLines: lxlrcLines,
     }
   },
   parseHeaderInfo(str) {
@@ -119,7 +119,15 @@ const parseTools = {
       }
     })
   },
-  parse(ylrc, lrc, tlrc, rlrc) {
+  fixTimeTag(lrcLines, targetLrcLines) {
+    const timeTagRxp = /^\[[\d:.]+\]/
+    return targetLrcLines.map((line, index) => {
+      const timeTag = timeTagRxp.exec(lrcLines[index])
+      if (!timeTag) return line
+      return line.replace(timeTagRxp, timeTag[0])
+    })
+  },
+  parse(ylrc, ytlrc, yrlrc, lrc, tlrc, rlrc) {
     const info = {
       lyric: '',
       tlyric: '',
@@ -129,16 +137,32 @@ const parseTools = {
     if (ylrc) {
       let lines = this.parseHeaderInfo(ylrc)
       if (lines) {
+        const result = this.parseLyric(lines)
+        if (ytlrc) {
+          const lines = this.parseHeaderInfo(ytlrc)
+          if (lines) {
+            if (lines.length == result.lyricLines.length) {
+              info.tlyric = this.fixTimeTag(result.lyricLines, lines).join('\n')
+            } else info.tlyric = lines.join('\n')
+          }
+        }
+        if (yrlrc) {
+          const lines = this.parseHeaderInfo(yrlrc)
+          if (lines) {
+            if (lines.length == result.lyricLines.length) {
+              info.rlyric = this.fixTimeTag(result.lyricLines, lines).join('\n')
+            } else info.rlyric = lines.join('\n')
+          }
+        }
+
         const timeRxp = /^\[[\d:.]+\]/
         const headers = lines.filter(l => timeRxp.test(l)).join('\n')
-        const result = this.parseLyric(lines)
-        info.lxlyric = result.lxlyric
-        info.lyric = `${headers}\n${result.lyric}`
-      } else if (lrc) {
-        lines = this.parseHeaderInfo(lrc)
-        if (lines) info.lyric = lines.join('\n')
+        info.lyric = `${headers}\n${result.lyricLines.join('\n')}`
+        info.lxlyric = result.lxlyricLines.join('\n')
+        return info
       }
-    } else if (lrc) {
+    }
+    if (lrc) {
       const lines = this.parseHeaderInfo(lrc)
       if (lines) info.lyric = lines.join('\n')
     }
@@ -203,7 +227,10 @@ export default songmid => {
   requestObj.promise = requestObj.promise.then(({ body }) => {
     // console.log(body)
     if (body.code !== 200 || !body?.lrc?.lyric) return Promise.reject(new Error('Get lyric failed'))
-    return parseTools.parse(body.yrc?.lyric, body.lrc.lyric, body.tlyric?.lyric, body.romalrc?.lyric)
+    const info = parseTools.parse(body.yrc?.lyric, body.ytlrc?.lyric, body.yromalrc?.lyric, body.lrc.lyric, body.tlyric?.lyric, body.romalrc?.lyric)
+    // console.log(info)
+    if (!info.lyric) return Promise.reject(new Error('Get lyric failed'))
+    return info
   })
   return requestObj
 }
