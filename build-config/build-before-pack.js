@@ -4,7 +4,7 @@ const path = require('path')
 const { Arch } = require('electron-builder')
 
 const fileNameMap = {
-  [Arch.arm64]: 'arm64',
+  [Arch.arm64]: 'arm64.glibc27',
   [Arch.armv7l]: 'armv7l',
 }
 
