@@ -65,9 +65,12 @@ const winEvent = () => {
     if (global.lx.appSetting['desktopLyric.isLock']) {
       browserWindow!.setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
     }
-    // linux下每次重开时貌似要重新设置置顶
-    if (isLinux && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
-      browserWindow!.setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
+    // linux下每次重开时貌似要重新设置任务栏显示
+    if (isLinux) {
+      // if (global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
+      //   browserWindow!.setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
+      // }
+      browserWindow!.setSkipTaskbar(!global.lx.appSetting['desktopLyric.isShowTaskbar'])
     }
     if (global.lx.appSetting['desktopLyric.isAlwaysOnTop'] && global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) alwaysOnTopTools.startLoop()
   })
