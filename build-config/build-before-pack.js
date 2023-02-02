@@ -11,6 +11,8 @@ const fileNameMap = {
 const replaceSqliteLib = async(arch) => {
   // console.log(await fs.readdir(path.join(context.appOutDir, './resources/')))
   // if (context.electronPlatformName != 'linux' || context.arch != Arch.arm64) return
+  // https://github.com/lyswhut/lx-music-desktop/issues/1102
+  // https://github.com/lyswhut/lx-music-desktop/issues/1161
   console.log('replace sqlite lib...')
   const filePath = path.join(__dirname, `./lib/better_sqlite3.linux.${fileNameMap[arch]}.node`)
   const targetPath = path.join(__dirname, '../node_modules/better-sqlite3/build/Release/better_sqlite3.node')
