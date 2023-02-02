@@ -10,9 +10,9 @@ import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
 import useDeeplink from './useDeeplink'
 import usePlayer from './usePlayer'
-import handleListAutoUpdate from './listAutoUpdate'
-import { useRouter } from '@common/utils/vueRouter'
 import useSettingSync from './useSettingSync'
+import { useRouter } from '@common/utils/vueRouter'
+import handleListAutoUpdate from './listAutoUpdate'
 
 
 export default () => {
@@ -64,10 +64,10 @@ export default () => {
       handleEnvParams(envParams) // 处理传入的启动参数
       void initDeeplink(envParams)
       void initSyncService()
+      sendInited()
+
       handleListAutoUpdate()
       if (window.lx.isProd) checkUpdate()
-
-      sendInited()
     })
   })
 }
