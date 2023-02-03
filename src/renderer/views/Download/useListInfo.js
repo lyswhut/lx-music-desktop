@@ -25,7 +25,7 @@ export default (activeTab) => {
       case 'finished':
         return listAll.value.filter(i => i.status == downloadStatus.COMPLETED)
       default:
-        return listAll.value
+        return [...listAll.value]
     }
   })
 
