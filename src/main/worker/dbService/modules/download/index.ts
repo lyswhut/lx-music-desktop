@@ -104,12 +104,8 @@ export const downloadInfoUpdate = (lists: LX.Download.ListItem[]) => {
 export const downloadInfoRemove = (ids: string[]) => {
   deleteDownloadList(ids)
   if (list) {
-    const listSet = new Set<string>()
-    for (const item of list) listSet.add(item.id)
-    for (const id of ids) listSet.delete(id)
-    const newList = list.filter(task => listSet.has(task.id))
-    list.splice(0, list.length)
-    for (const item of newList) list.push(item)
+    const idSet = new Set<string>(ids)
+    list = list.filter(task => !idSet.has(task.id))
   }
 }
 

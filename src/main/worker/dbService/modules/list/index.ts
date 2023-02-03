@@ -226,12 +226,8 @@ export const musicsRemove = (listId: string, ids: string[]) => {
   let targetList = getListMusics(listId)
   if (!targetList.length) return
   removeMusicInfos(listId, ids)
-  const listSet = new Set<string>()
-  for (const item of targetList) listSet.add(item.id)
-  for (const id of ids) listSet.delete(id)
-  const newList = targetList.filter(mInfo => listSet.has(mInfo.id))
-  targetList.splice(0, targetList.length)
-  arrPush(targetList, newList)
+  const idsSet = new Set<string>(ids)
+  musicLists.set(listId, targetList.filter(mInfo => !idsSet.has(mInfo.id)))
 }
 
 /**
@@ -267,12 +263,8 @@ export const musicsMove = (fromId: string, toId: string, musicInfos: LX.Music.Mu
       break
   }
 
-  listSet = new Set<string>()
-  for (const item of fromList) listSet.add(item.id)
-  for (const id of ids) listSet.delete(id)
-  const newList = fromList.filter(mInfo => listSet.has(mInfo.id))
-  fromList.splice(0, fromList.length)
-  arrPush(fromList, newList)
+  listSet = new Set<string>(ids)
+  musicLists.set(fromId, fromList.filter(mInfo => !listSet.has(mInfo.id)))
 }
 
 /**

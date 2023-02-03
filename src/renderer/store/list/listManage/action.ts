@@ -1,4 +1,4 @@
-import { shallowReactive, markRaw, markRawList, toRaw } from '@common/utils/vueTools'
+import { markRaw, markRawList, toRaw } from '@common/utils/vueTools'
 import {
   allMusicList,
   defaultList,
@@ -16,7 +16,7 @@ export const setUserLists = (lists: LX.List.UserListInfo[]) => {
 }
 
 export const setMusicList = (listId: string, musicList: LX.Music.MusicInfo[]) => {
-  const list = shallowReactive(markRawList(musicList))
+  const list = markRawList(musicList)
   allMusicList.set(listId, list)
   return list
 }
@@ -29,7 +29,7 @@ const overwriteMusicList = (id: string, list: LX.Music.MusicInfo[]) => {
     targetList.splice(0, targetList.length)
     arrPush(targetList, list)
   } else {
-    allMusicList.set(id, shallowReactive(list))
+    allMusicList.set(id, list)
   }
 }
 const removeMusicList = (id: string) => {
@@ -258,10 +258,8 @@ export const listMusicRemove = (listId: string, ids: string[]): string[] => {
   let targetList = allMusicList.get(listId)
   if (!targetList) return listId == loveList.id ? [listId] : []
 
-  const listSet = new Set<string>()
-  for (const item of targetList) listSet.add(item.id)
-  for (const id of ids) listSet.delete(id)
-  const newList = targetList.filter(mInfo => listSet.has(mInfo.id))
+  const idsSet = new Set<string>(ids)
+  const newList = targetList.filter(mInfo => !idsSet.has(mInfo.id))
   targetList.splice(0, targetList.length)
   arrPush(targetList, newList)
 

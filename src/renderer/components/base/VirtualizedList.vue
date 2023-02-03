@@ -279,8 +279,6 @@ export default {
     })
     watch(() => props.list, (list) => {
       handleReset(list)
-    }, {
-      deep: true,
     })
 
     onMounted(() => {

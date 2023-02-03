@@ -368,15 +368,13 @@ export const pauseDownloadTasks = async(list: LX.Download.ListItem[]) => {
 export const removeDownloadTasks = async(ids: string[]) => {
   await downloadTasksRemove(ids)
 
-  const listSet = new Set<string>()
-  for (const item of downloadList) listSet.add(item.id)
-  for (const id of ids) listSet.delete(id)
+  const idsSet = new Set<string>(ids)
   const newList = downloadList.filter(task => {
     if (runingTask.has(task.id)) {
       void window.lx.worker.download.removeTask(task.id)
       runingTask.delete(task.id)
     }
-    return listSet.has(task.id)
+    return !idsSet.has(task.id)
   })
   downloadList.splice(0, downloadList.length)
   arrPush(downloadList, newList)
