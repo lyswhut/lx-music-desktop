@@ -1,6 +1,8 @@
 const path = require('path')
 const ESLintPlugin = require('eslint-webpack-plugin')
 
+const isDev = process.env.NODE_ENV === 'development'
+
 module.exports = {
   target: 'electron-main',
   output: {
@@ -10,12 +12,13 @@ module.exports = {
     },
     path: path.join(__dirname, '../../dist'),
   },
-  externals: [
-    'font-list',
-    'better-sqlite3',
-    'bufferutil',
-    'utf-8-validate',
-  ],
+  externals: {
+    'font-list': 'font-list',
+    'better-sqlite3': 'better-sqlite3',
+    bufferutil: 'bufferutil',
+    'utf-8-validate': 'utf-8-validate',
+    'qrc_decode.node': isDev ? path.join(__dirname, '../../build/Release/qrc_decode.node') : path.join('../build/Release/qrc_decode.node'),
+  },
   resolve: {
     alias: {
       '@main': path.join(__dirname, '../../src/main'),

@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.1.0-beta.4",
+  "version": "2.1.0-beta.6",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -100,6 +100,7 @@
       "node_modules/node-gyp-build",
       "node_modules/bufferutil",
       "node_modules/utf-8-validate",
+      "build/Release/qrc_decode.node",
       "dist/**/*"
     ],
     "asar": {

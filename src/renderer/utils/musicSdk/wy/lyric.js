@@ -77,7 +77,13 @@ const parseTools = {
     for (let line of lines) {
       line = line.trim()
       let result = this.rxps.lineTime.exec(line)
-      if (!result) continue
+      if (!result) {
+        if (line.startsWith('[offset')) {
+          lxlrcLines.push(line)
+          lrcLines.push(line)
+        }
+        continue
+      }
 
       const startMsTime = parseInt(result[1])
       const startTimeStr = this.msFormat(startMsTime)
