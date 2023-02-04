@@ -58,7 +58,7 @@ module.exports = async(context) => {
     case Arch.arm64:
     case Arch.armv7l:
       if (fs.existsSync(bindingFilePath)) {
-        console.log('rename binding file...')
+        // console.log('rename binding file...')
         await fsPromises.rename(bindingFilePath, bindingBakFilePath)
       }
       await replaceSqliteLib(arch)
@@ -66,7 +66,7 @@ module.exports = async(context) => {
 
     default:
       if (fs.existsSync(bindingFilePath)) return
-      console.log('restore binding file...')
+      // console.log('restore binding file...')
       await fsPromises.rename(bindingBakFilePath, bindingFilePath)
       break
   }

@@ -66,7 +66,7 @@
     "build": "npm run clean:electron && npm run build:main && npm run build:renderer && npm run build:renderer-lyric && npm run build:renderer-scripts",
     "lint": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly src",
     "lint:fix": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly --fix src",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps && node build-config/post-install",
     "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:1081 npm run pack",
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:1081 npm i"
   },
@@ -230,7 +230,7 @@
     "electron-builder": "^24.0.0-alpha.11",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.284",
+    "electron-to-chromium": "^1.4.286",
     "electron-updater": "^6.0.0-alpha.8",
     "eslint": "^8.33.0",
     "eslint-config-standard": "^17.0.0",
@@ -241,7 +241,7 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-vue": "^9.9.0",
-    "eslint-webpack-plugin": "^3.2.0",
+    "eslint-webpack-plugin": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
@@ -257,7 +257,7 @@
     "svg-sprite-loader": "^6.0.11",
     "svg-transform-loader": "^2.0.13",
     "svgo-loader": "^4.0.0",
-    "terser": "^5.16.2",
+    "terser": "^5.16.3",
     "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
@@ -304,6 +304,7 @@
     },
     "svg-baker": {
       "postcss": "latest"
-    }
+    },
+    "http-cache-semantics": "latest"
   }
 }
