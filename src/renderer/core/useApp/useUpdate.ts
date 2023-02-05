@@ -118,11 +118,13 @@ export default () => {
         if (result.version === ignoreVersion) return
         void nextTick(() => {
           versionInfo.showModal = true
-          if (status == 'error' && preStatus == 'downloading') {
+          if (status == 'error' && preStatus == 'downloading' && !localStorage.getItem('update__download_failed_tip')) {
             setTimeout(() => {
               void dialog({
                 message: window.i18n.t('update__error_top'),
                 confirmButtonText: window.i18n.t('alert_button_text'),
+              }).finally(() => {
+                localStorage.setItem('update__download_failed_tip', '1')
               })
             }, 500)
           }
