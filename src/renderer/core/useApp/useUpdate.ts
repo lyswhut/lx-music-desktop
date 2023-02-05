@@ -46,6 +46,7 @@ export default () => {
     void getLastStartInfo().then((version) => {
       if (version == process.versions.app) return
       saveLastStartInfo(process.versions.app)
+      if (!appSetting['common.showChangeLog']) return
       if (version) {
         if (compareVer(process.versions.app, version) < 0) {
           void dialog({

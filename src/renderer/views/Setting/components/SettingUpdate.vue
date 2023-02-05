@@ -4,6 +4,8 @@ dd
   .gap-top
     base-checkbox(id="setting__update_tryAutoUpdate" :modelValue="appSetting['common.tryAutoUpdate']" @update:modelValue="updateSetting({'common.tryAutoUpdate': $event})" :label="$t('setting__update_try_auto_update')")
   .gap-top
+    base-checkbox(id="setting__update_showChangeLog" :modelValue="appSetting['common.showChangeLog']" @update:modelValue="updateSetting({'common.showChangeLog': $event})" :label="$t('setting__update_show_change_log')")
+  .gap-top
     p.small
       | {{$t('setting__update_latest_label')}}{{versionInfo.newVersion ? versionInfo.newVersion.version : $t('setting__update_unknown')}}
     p.small(@click="handleOpenDevTools") {{$t('setting__update_current_label')}}{{versionInfo.version}}

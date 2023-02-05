@@ -468,6 +468,7 @@
   "setting__update_new_version": "發現新版本，趕快去更新吧~🚀🚀",
   "setting__update_open_version_modal_btn": "打開更新窗口",
   "setting__update_progress": "狀態：",
+  "setting__update_show_change_log": "更新版本後的首次啟動時顯示更新日誌",
   "setting__update_try_auto_update": "發現新版本時嘗試自動下載更新",
   "setting__update_unknown": "未知",
   "song_list": "歌單",

@@ -467,6 +467,7 @@
   "setting__update_new_version": "Found a new version, hurry up and update~🚀🚀",
   "setting__update_open_version_modal_btn": "open update window",
   "setting__update_progress": "state:",
+  "setting__update_show_change_log": "Show changelog on first boot after version update",
   "setting__update_try_auto_update": "Attempt to download updates automatically when a new version is found",
   "setting__update_unknown": "Unknown",
   "song_list": "Playlists",

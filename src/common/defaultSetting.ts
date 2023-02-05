@@ -17,6 +17,7 @@ const defaultSetting: LX.AppSetting = {
   'common.controlBtnPosition': process.platform === 'darwin' ? 'left' : 'right',
   'common.playBarProgressStyle': 'mini',
   'common.tryAutoUpdate': true,
+  'common.showChangeLog': true,
 
   'player.startupAutoPlay': false,
   'player.togglePlayMethod': 'listLoop',

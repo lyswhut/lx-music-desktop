@@ -74,6 +74,11 @@ declare global {
       'common.tryAutoUpdate': boolean
 
       /**
+       * 更新版本后是否显示变更日志
+       */
+      'common.showChangeLog': boolean
+
+      /**
        * 启动时自动播放歌曲
        */
       'player.startupAutoPlay': boolean
