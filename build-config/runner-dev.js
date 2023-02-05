@@ -14,6 +14,8 @@ const mainConfig = require('./main/webpack.config.dev')
 const rendererConfig = require('./renderer/webpack.config.dev')
 const rendererLyricConfig = require('./renderer-lyric/webpack.config.dev')
 const rendererScriptConfig = require('./renderer-scripts/webpack.config.dev')
+const { Arch } = require('electron-builder')
+const replaceLib = require('./build-before-pack')
 
 let electronProcess = null
 let manualRestart = false
@@ -224,6 +226,7 @@ function init() {
   function handleFail(name) {
     spinners.fail(name, { text: name + ' compile fail!' })
   }
+  replaceLib({ electronPlatformName: process.platform, arch: Arch[process.arch] })
 
   Promise.all([
     startRenderer().then(() => handleSuccess('renderer')).catch((err) => {

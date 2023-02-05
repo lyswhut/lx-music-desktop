@@ -124,13 +124,14 @@ export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<
         case 'kw':
         case 'mg':
         case 'wy':
+        case 'tx':
           break
         default:
           return lrcInfo
       }
     } else if (lrcInfo.rlyric == null) {
       // 以下源支持 rlyric 重新获取
-      if (!['wy', 'kg'].includes(musicInfo.source)) return lrcInfo
+      if (!['wy', 'kg', 'tx'].includes(musicInfo.source)) return lrcInfo
     } else return lrcInfo
   }
   return null

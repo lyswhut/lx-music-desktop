@@ -26,7 +26,7 @@ const handleDecode = async(lrc: string, tlrc: string, rlrc: string) => {
     // const nativeBindingPath = isDev ? path.join(__dirname, '../build/Release/qrc_decode.node')
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const addon = require('qrc_decode.node')
-    console.log(addon)
+    // console.log(addon)
     qrc_decode = addon.qrc_decode
   }
 
