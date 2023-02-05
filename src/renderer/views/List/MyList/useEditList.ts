@@ -11,7 +11,7 @@ export default ({ dom_lists_list }: {
   const styles = useCssModule()
 
   const handleRename = (index: number) => {
-    console.log(index)
+    // console.log(index)
     const dom = dom_lists_list.value?.querySelectorAll('.user-list')[index]
     if (!dom) return
     void nextTick(() => {

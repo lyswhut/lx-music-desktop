@@ -11,6 +11,7 @@
           @input="$emit('update:modelValue', text)"
           @change="sendEvent('change')"
           @keyup.enter="handleSearch"
+          @keydown.arrow-down.arrow-up.prevent
           @keyup.arrow-down.prevent="handleKeyDown"
           @keyup.arrow-up.prevent="handleKeyUp"
           @contextmenu="handleContextMenu"

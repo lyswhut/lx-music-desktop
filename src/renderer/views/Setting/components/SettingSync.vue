@@ -15,7 +15,7 @@ dd
   h3#sync_port {{$t('setting__sync_port')}}
   div
     p
-      base-input.gap-left(:modelValue="appSetting['sync.port']" @update:modelValue="setSyncPort" :placeholder="$t('setting__sync_port_tip')")
+      base-input.gap-left(:modelValue="appSetting['sync.port']" type="number" @update:modelValue="setSyncPort" :placeholder="$t('setting__sync_port_tip')")
 </template>
 
 <script>

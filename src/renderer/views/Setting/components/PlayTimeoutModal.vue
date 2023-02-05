@@ -1,5 +1,5 @@
 <template lang="pug">
-material-modal(:show="modelValue" bg-close @close="handleCloseModal" @after-enter="$refs.dom_input.focus()" teleport="#view")
+material-modal(:show="modelValue" @close="handleCloseModal" @after-enter="$refs.dom_input.focus()" teleport="#view")
   main(:class="$style.main")
     h2 {{$t('play_timeout')}}
     div(:class="$style.content")
@@ -52,7 +52,7 @@ export default {
       if (rxp.test(text)) {
         text = RegExp.$1
         if (parseInt(text) > MAX_MIN) {
-          text = text.substring(0, text.length - 1)
+          text = MAX_MIN
         }
       } else {
         text = ''

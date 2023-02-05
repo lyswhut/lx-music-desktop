@@ -6,13 +6,14 @@
           <div :class="$style.form">
             <input
               ref="dom_input" v-model.trim="text" class="ignore-esc" :placeholder="placeholder" @input="handleDelaySearch"
-              @keyup.enter="handleTemplistClick(selectIndex)" @keyup.arrow-down.prevent.exact="handleKeyDown" @keyup.arrow-up.prevent.exact="handleKeyUp"
+              @keydown.arrow-down.arrow-up.prevent @keyup.arrow-down.prevent.exact="handleKeyDown" @keyup.arrow-up.prevent.exact="handleKeyUp"
+              @keyup.enter="handleTemplistClick(selectIndex)"
               @keyup.escape.prevent.exact="handleKeyEsc" @keydown.control.prevent="handle_key_mod_down" @keydown.meta.prevent="handle_key_mod_down"
               @keyup.control.prevent="handle_key_mod_up" @keyup.meta.prevent="handle_key_mod_up" @contextmenu="handleContextMenu"
             >
             <button type="button" @click="handleHide">
               <slot>
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 212.982 212.982" space="preserve">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 212.982 212.982" space="preserve">
                   <use xlink:href="#icon-delete" />
                 </svg>
               </slot>
@@ -191,10 +192,18 @@ export default {
     },
     handleContextMenu() {
       let str = clipboardReadText()
+      str = str.trim()
       str = str.replace(/\t|\r\n|\n|\r/g, ' ')
       str = str.replace(/\s+/g, ' ')
       let dom_input = this.$refs.dom_input
-      this.text = `${this.text.substring(0, dom_input.selectionStart)}${str}${this.text.substring(dom_input.selectionEnd, this.text.length)}`
+      const text = dom_input.value
+      // if (dom_input.selectionStart == dom_input.selectionEnd) {
+      const value = text.substring(0, dom_input.selectionStart) + str + text.substring(dom_input.selectionEnd, text.length)
+      // event.target.value = value
+      this.text = value
+      // } else {
+      //   clipboardWriteText(text.substring(dom_input.selectionStart, dom_input.selectionEnd))
+      // }
     },
     async handleSearch() {
       if (!this.text.length) return this.resultList = []
@@ -279,7 +288,7 @@ export default {
       border-bottom-right-radius: 4px;
       cursor: pointer;
       height: 100%;
-      padding: 6px 7px;
+      padding: 6px 9px;
       color: var(--color-button-font);
       transition: background-color .2s ease;
       opacity: 0.8;

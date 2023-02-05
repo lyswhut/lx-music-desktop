@@ -57,17 +57,17 @@
           </transition>
           {{ item.name }}
         </span>
-        <input
+        <base-input
           :class="$style.listsInput" type="text" :value="item.name"
-          :placeholder="item.name" @contextmenu.stop @keyup.enter="handleSaveListName(index, $event)" @blur="handleSaveListName(index, $event)"
-        >
+          :placeholder="item.name" @keyup.enter="handleSaveListName(index, $event)" @blur="handleSaveListName(index, $event)"
+        />
       </li>
       <transition enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="isNewListLeave = false" @after-enter="$refs.dom_listsNewInput.focus()">
         <li v-if="isShowNewList" :class="[$style.listsItem, $style.listsNew, {[$style.newLeave]: isNewListLeave}]">
-          <input
-            ref="dom_listsNewInput" :class="$style.listsInput" type="text" :placeholder="$t('lists__new_list_input')" @contextmenu.stop
+          <base-input
+            ref="dom_listsNewInput" :class="$style.listsInput" type="text" :placeholder="$t('lists__new_list_input')"
             @keyup.enter="handleCreateList" @blur="handleCreateList"
-          >
+          />
         </li>
       </transition>
     </ul>
@@ -378,20 +378,21 @@ export default {
 .listsInput {
   width: 100%;
   height: @lists-item-height;
-  border: none;
+  // border: none;
   padding: 0;
   // padding-bottom: 1px;
   line-height: @lists-item-height;
-  background: none;
-  outline: none;
+  background: none !important;
+  border-radius: 0;
+  // outline: none;
   font-size: 13px;
   display: none;
-  font-family: inherit;
+  // font-family: inherit;
 }
 
 .listsNew {
   padding: 0 10px;
-  background-color: var(--color-primary-background-hover);
+  background-color: var(--color-primary-background-hover) !important;
   .listsInput {
     display: block;
   }

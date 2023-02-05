@@ -8,7 +8,7 @@
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 42 42" space="preserve">
             <use xlink:href="#icon-addTo" />
           </svg>
-          <input :class="$style.newListInput" :value="newListName" type="text" :placeholder="$t('lists__new_list_input')" @keyup.enter="handleSaveList($event)" @blur="handleSaveList($event)">
+          <base-input :class="$style.newListInput" :value="newListName" :placeholder="$t('lists__new_list_input')" @keyup.enter="handleSaveList($event)" @blur="handleSaveList($event)" />
         </base-btn>
         <span v-for="i in spaceNum" :key="i" :class="$style.btn" />
       </div>
@@ -170,7 +170,7 @@ export default {
     handleSaveList(event) {
       let name = event.target.value
       this.newListName = event.target.value = ''
-      this.isEditing = false
+      // this.isEditing = false
       if (!name) return
       createUserList({ name })
     },
@@ -256,16 +256,14 @@ export default {
   top: 0;
   width: 100%;
   height: 34px;
-  border: none;
-  padding: 0;
   line-height: 34px;
-  background: none;
-  outline: none;
+  background: none !important;
   font-size: 14px;
   text-align: center;
   font-family: inherit;
   box-sizing: border-box;
   padding: 0 10px;
+  border-radius: 0;
   display: none;
 }
 
