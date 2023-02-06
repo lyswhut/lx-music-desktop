@@ -517,7 +517,8 @@ export default {
     if (id.includes('special/single/')) {
       id = id.replace(this.regExps.listDetailLink, '$1')
     } else if (/https?:/.test(id)) {
-      return this.getUserListDetail(id.replace(/^.*http/, 'http'), page)
+      // fix https://www.kugou.com/songlist/xxx/?uid=xxx&chl=qq_client&cover=http%3A%2F%2Fimge.kugou.com%xxx.jpg&iszlist=1
+      return this.getUserListDetail(id.replace(/^.*?http/, 'http'), page)
     } else if (/^\d+$/.test(id)) {
       return this.getUserListDetailByCode(id)
     } else if (id.startsWith('id_')) {
