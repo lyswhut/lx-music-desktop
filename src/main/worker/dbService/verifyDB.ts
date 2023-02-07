@@ -8,6 +8,10 @@ export default (db: Database.Database) => {
   for (const info of result) dbTableMap.set(info.name, info.sql.replace(rxp, ''))
   return Array.from(tables.entries()).every(([name, sql]) => {
     const dbSql = dbTableMap.get(name)
+    // if (!(dbSql && dbSql == sql.replace(rxp, ''))) {
+    //   console.log('dbSql：', dbSql, '\nsql：', sql.replace(rxp, ''))
+    // }
+    // return true
     return dbSql && dbSql == sql.replace(rxp, '')
   })
   // console.log(dbTableMap)
