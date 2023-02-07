@@ -111,9 +111,14 @@ export const createWindow = () => {
     width = bounds.width
     height = bounds.height
   }
+  global.lx.event_app.update_config({
+    'desktopLyric.x': x,
+    'desktopLyric.y': y,
+    'desktopLyric.width': width,
+    'desktopLyric.height': height,
+  })
 
   const { shouldUseDarkColors, theme } = global.lx.theme
-  isWinBoundsUdating = true
 
   /**
    * Initial window options
