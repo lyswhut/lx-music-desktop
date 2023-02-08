@@ -57,6 +57,14 @@ export const saveVolumeIsMute = (isMute: boolean) => {
   updateSetting({ 'player.isMute': isMute })
 }
 
+/**
+ * 设置播放速率
+ * @param rate 播放速率
+ */
+export const savePlaybackRate = (rate: number) => {
+  updateSetting({ 'player.playbackRate': rate })
+}
+
 
 /**
  * 设置是否开启桌面歌词

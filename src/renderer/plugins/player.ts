@@ -52,6 +52,16 @@ export const setLoopPlay = (isLoop: boolean) => {
   if (audio) audio.loop = isLoop
 }
 
+export const getPlaybackRate = (): number => {
+  return audio?.defaultPlaybackRate ?? 1
+}
+
+export const setPlaybackRate = (rate: number) => {
+  if (!audio) return
+  audio.defaultPlaybackRate = rate
+  audio.playbackRate = rate
+}
+
 export const getMute = (): boolean => {
   return audio?.muted ?? false
 }
@@ -81,9 +91,9 @@ export const getDuration = () => {
   return audio?.duration ?? 0
 }
 
-export const getPlaybackRate = () => {
-  return audio?.playbackRate ?? 1
-}
+// export const getPlaybackRate = () => {
+//   return audio?.playbackRate ?? 1
+// }
 
 type Noop = () => void
 

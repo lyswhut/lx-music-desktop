@@ -33,6 +33,10 @@ export const setLyricOffset = (offset: number) => {
   lrc.setOffset(offset)
 }
 
+export const setPlaybackRate = (rate: number) => {
+  lrc.setPlaybackRate(rate)
+}
+
 export const setLyric = () => {
   if (!musicInfo.id) return
   const extendedLyrics = []

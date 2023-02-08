@@ -8,6 +8,7 @@ module.exports = class Lyric {
     lyric = '',
     extendedLyrics = [],
     offset = 0,
+    rate = 1,
     lineContentClassName = 'line-content',
     lineClassName = 'line',
     shadowClassName = 'shadow',
@@ -25,6 +26,7 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.extendedLyrics = extendedLyrics
     this.offset = offset
+    this.rate = rate
     this.onPlay = onPlay
     this.onSetLyric = onSetLyric
     this.onUpdateLyric = onUpdateLyric
@@ -50,6 +52,7 @@ module.exports = class Lyric {
 
     this.linePlayer = new LinePlayer({
       offset: this.offset,
+      rate: this.rate,
       onPlay: this._handleLinePlayerOnPlay,
       onSetLyric: this._handleLinePlayerOnSetLyric,
     })
@@ -116,6 +119,7 @@ module.exports = class Lyric {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           time: line.time,
+          rate: this.rate,
           lyric: line.text,
           extendedLyrics: line.extendedLyrics,
           lineContentClassName: this.lineContentClassName,
@@ -141,6 +145,7 @@ module.exports = class Lyric {
       this._lines = lyricLines.map(line => {
         const fontPlayer = new FontPlayer({
           time: line.time,
+          rate: this.rate,
           lyric: line.text,
           extendedLyrics: line.extendedLyrics,
           lineContentClassName: this.lineContentClassName,
@@ -198,6 +203,17 @@ module.exports = class Lyric {
     this.lyric = lyric
     this.extendedLyrics = extendedLyrics
     this._init()
+  }
+
+  setPlaybackRate(rate) {
+    this.rate = rate
+    this.linePlayer.setPlaybackRate(rate)
+    this._initLines(this.initInfo.lines, this.initInfo.offset, true)
+    if (this.linePlayer.isPlay) {
+      const num = this.playingLineNum
+      this.playingLineNum = 0
+      this._handleLinePlayerOnPlay(num, '', this.linePlayer._currentTime())
+    } else this.playingLineNum = 0
   }
 
   setVertical(isVertical) {

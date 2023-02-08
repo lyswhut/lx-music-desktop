@@ -109,6 +109,11 @@ declare global {
       'player.isMute': boolean
 
       /**
+       * 播放速率
+       */
+      'player.playbackRate': number
+
+      /**
        * 音频输出设备id
        */
       'player.mediaDeviceId': string

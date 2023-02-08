@@ -218,6 +218,8 @@
   "player__play_toggle_mode_off": "Disable",
   "player__play_toggle_mode_random": "List Random",
   "player__play_toggle_mode_single_loop": "Single Loop",
+  "player__playback_rate": "Current playback rate:",
+  "player__playback_rate_reset_btn": "Reset",
   "player__playing": "Now playing...",
   "player__prev": "Prev",
   "player__refresh_url": "Music URL expired, refreshing...",

@@ -12,6 +12,7 @@ const parseTools = {
   rxps: {
     info: /^{"/,
     lineTime: /^\[(\d+),\d+\]/,
+    lineTime2: /^\[([\d:.]+)\]/,
     wordTime: /\(\d+,\d+\)/,
     wordTimeAll: /(\(\d+,\d+\))/g,
     timeLabelFixRxp: /(?:\.0+|0+)$/,
@@ -40,6 +41,10 @@ const parseTools = {
       if (!result) {
         if (line.startsWith('[offset')) {
           lxlrcLines.push(line)
+          lrcLines.push(line)
+        }
+        if (this.rxps.lineTime2.test(line)) {
+          // lxlrcLines.push(line)
           lrcLines.push(line)
         }
         continue
@@ -105,22 +110,21 @@ const parseTools = {
     const rlrcLines = rlrc.split('\n')
     let lrcLines = lrc.split('\n')
     // let temp = []
-    const timeTagRxp = /^\[([\d:.]+)\]/
     let newLrc = []
     rlrcLines.forEach((line) => {
-      const result = timeTagRxp.exec(line)
+      const result = this.rxps.lineTime2.exec(line)
       if (!result) return
-      const words = line.replace(timeTagRxp, '')
+      const words = line.replace(this.rxps.lineTime2, '')
       if (!words.trim()) return
       const t1 = this.getIntv(result[1])
 
       while (lrcLines.length) {
         const lrcLine = lrcLines.shift()
-        const lrcLineResult = timeTagRxp.exec(lrcLine)
+        const lrcLineResult = this.rxps.lineTime2.exec(lrcLine)
         if (!lrcLineResult) continue
         const t2 = this.getIntv(lrcLineResult[1])
         if (Math.abs(t1 - t2) < 10) {
-          newLrc.push(line.replace(timeTagRxp, lrcLineResult[0]))
+          newLrc.push(line.replace(this.rxps.lineTime2, lrcLineResult[0]))
           break
         }
         // temp.push(line)

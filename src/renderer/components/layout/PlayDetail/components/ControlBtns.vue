@@ -14,6 +14,7 @@ div(:class="$style.footerLeftControlBtns")
   button(:class="[$style.footerLeftControlBtn, {[$style.active]: isShowPlayComment}]" @click="toggleVisibleComment" :aria-label="$t('comment__show')")
     svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' width='95%' viewBox='0 0 24 24' space='preserve')
       use(xlink:href='#icon-comment')
+  common-playback-rate-btn
   common-volume-btn
   common-toggle-play-mode-btn
   button(:class="$style.footerLeftControlBtn" @click="isShowAddMusicTo = true" :aria-label="$t('player__add_music_to')")

@@ -28,6 +28,7 @@ const createAnimation = (dom, duration, isVertical) => new window.Animation(new 
 module.exports = class FontPlayer {
   constructor({
     time = 0,
+    rate = 1,
     lyric = '',
     lineContentClassName = 'line-content',
     lineClassName = 'line',
@@ -42,6 +43,8 @@ module.exports = class FontPlayer {
   }) {
     this.time = time
     this.lyric = lyric
+
+    this._rate = rate
 
     this.isVertical = isVertical
 
@@ -136,7 +139,7 @@ module.exports = class FontPlayer {
 
       const dom = document.createElement('span')
       dom.textContent = text
-      const animation = createAnimation(dom, time, this.isVertical)
+      const animation = createAnimation(dom, time / this._rate, this.isVertical)
       this.lrcContent.appendChild(dom)
       // lineText += text
 
@@ -186,7 +189,7 @@ module.exports = class FontPlayer {
   }
 
   _currentTime() {
-    return getNow() - this._performanceTime + this._startTime
+    return (getNow() - this._performanceTime) * this._rate + this._startTime
   }
 
   _findcurFontNum(curTime, startIndex = 0) {
@@ -201,7 +204,7 @@ module.exports = class FontPlayer {
     const currentTime = this._currentTime()
     const driftTime = currentTime - curFont.startTime
     if (currentTime > curFont.startTime + curFont.time) {
-      this._handlePlayFont(curFont, driftTime, true)
+      this._handlePlayFont(curFont, driftTime / this._rate, true)
       this.lineContent.classList.add('played')
       this.isPlay = false
       this.pause()
@@ -257,13 +260,13 @@ module.exports = class FontPlayer {
 
     if (driftTime >= 0 || this.curFontNum == 0) {
       let nextFont = this.fonts[this.curFontNum + 1]
-      this.delay = nextFont.startTime - curFont.startTime - driftTime
-      if (this.delay > 0) {
+      const delay = (nextFont.startTime - curFont.startTime - driftTime) / this._rate
+      if (delay > 0) {
         if (this.isPlay) {
           this.timeoutTools.start(() => {
             if (!this.isPlay) return
             this._refresh()
-          }, this.delay)
+          }, delay)
         }
         this._handlePlayFont(curFont, driftTime)
         return
@@ -340,6 +343,13 @@ module.exports = class FontPlayer {
       font.dom.style.backgroundSize = '100% 100%'
     }
     this.curFontNum = this.maxFontNum
+  }
+
+  setPlaybackRate(rate) {
+    this._rate = rate
+    if (!this.lines.length) return
+    if (!this.isPlay) return
+    this.play(this._currentTime())
   }
 
   reset() {

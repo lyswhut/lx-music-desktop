@@ -218,6 +218,8 @@
   "player__play_toggle_mode_off": "禁用",
   "player__play_toggle_mode_random": "列表隨機",
   "player__play_toggle_mode_single_loop": "單曲循環",
+  "player__playback_rate": "當前播放速率：",
+  "player__playback_rate_reset_btn": "重置",
   "player__playing": "播放中...",
   "player__prev": "上一首",
   "player__refresh_url": "URL過期，正在刷新URL...",

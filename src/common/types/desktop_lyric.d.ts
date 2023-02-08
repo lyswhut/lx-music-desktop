@@ -62,6 +62,7 @@ declare namespace LX {
     | LyricAction<'set_status', {
       isPlay: boolean
       line: number
+      rate: number
       played_time: number
     }>
     | LyricAction<'set_lyric', {
@@ -71,6 +72,7 @@ declare namespace LX {
       lxlrc: string | null
     }>
     | LyricAction<'set_offset', number>
+    | LyricAction<'set_playbackRate', number>
     | LyricAction<'set_play', number>
     | LyricAction<'set_pause'>
     | LyricAction<'set_stop'>

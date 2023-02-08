@@ -51,6 +51,14 @@ export class AppEvent extends Event {
   }
 
   /**
+   * 设置播放速率大小
+   * @param rate 播放速率
+   */
+  setPlaybackRate(rate: number) {
+    this.emit('setPlaybackRate', rate)
+  }
+
+  /**
    * 设置是否静音
    * @param isMute 是否静音
    */
