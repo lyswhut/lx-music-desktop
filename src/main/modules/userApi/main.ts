@@ -52,6 +52,7 @@ export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
       // worldSafeExecuteJavaScript: true,
       nodeIntegration: false,
       nodeIntegrationInWorker: false,
+      sandbox: false,
 
       spellcheck: false,
       autoplayPolicy: 'document-user-activation-required',
