@@ -1,7 +1,7 @@
 <template>
   <div
     ref="dom_lyric"
-    :class="[$style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }, { [$style.ellipsis]: ellipsis }, { [$style.fontWeightFont]: isFontWeightFont }, { [$style.fontWeightLine]: isFontWeightLine } ]"
+    :class="classNames"
     :style="lrcStyles" @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart"
   >
     <div :class="$style.lyricSpace" />
@@ -12,15 +12,27 @@
 
 <script>
 import { setting } from '@lyric/store/state'
-import { computed } from '@common/utils/vueTools'
+import { computed, useCssModule } from '@common/utils/vueTools'
 import useLyric from './useLyric'
 
 export default {
   setup() {
-    const isZoomActiveLrc = computed(() => setting['desktopLyric.style.isZoomActiveLrc'])
-    const ellipsis = computed(() => setting['desktopLyric.style.ellipsis'])
-    const isFontWeightFont = computed(() => setting['desktopLyric.style.isFontWeightFont'])
-    const isFontWeightLine = computed(() => setting['desktopLyric.style.isFontWeightLine'])
+    const styles = useCssModule()
+    // const isZoomActiveLrc = computed(() => setting['desktopLyric.style.isZoomActiveLrc'])
+    // const ellipsis = computed(() => setting['desktopLyric.style.ellipsis'])
+    // const isFontWeightFont = computed(() => setting['desktopLyric.style.isFontWeightFont'])
+    // const isFontWeightLine = computed(() => setting['desktopLyric.style.isFontWeightLine'])
+    // const isFontWeightExtended = computed(() => setting['desktopLyric.style.isFontWeightExtended'])
+    const classNames = computed(() => {
+      const name = [styles.lyric]
+      if (isMsDown.value) name.push(styles.draging)
+      if (setting['desktopLyric.style.isZoomActiveLrc']) name.push(styles.lrcActiveZoom)
+      if (setting['desktopLyric.style.ellipsis']) name.push(styles.ellipsis)
+      if (setting['desktopLyric.style.isFontWeightFont']) name.push(styles.fontWeightFont)
+      if (setting['desktopLyric.style.isFontWeightLine']) name.push(styles.fontWeightLine)
+      if (setting['desktopLyric.style.isFontWeightExtended']) name.push(styles.fontWeightExtended)
+      return name
+    })
     const lrcStyles = computed(() => ({
       fontFamily: setting['desktopLyric.style.font'],
       fontSize: Math.trunc(setting['desktopLyric.style.fontSize']) + 'px',
@@ -39,11 +51,8 @@ export default {
     } = useLyric()
 
     return {
-      isZoomActiveLrc,
+      classNames,
       lrcStyles,
-      ellipsis,
-      isFontWeightFont,
-      isFontWeightLine,
 
       dom_lyric,
       dom_lyric_text,
@@ -247,6 +256,13 @@ export default {
 .font-weight-line {
   :global {
     .line-mode > .line {
+      font-weight: bold;
+    }
+  }
+}
+.font-weight-extended {
+  :global {
+    .extended {
       font-weight: bold;
     }
   }

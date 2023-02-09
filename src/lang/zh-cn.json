@@ -452,6 +452,7 @@
   "setting__search_focus_search_box": "启动时自动聚焦搜索框",
   "setting__search_history": "显示历史搜索记录",
   "setting__search_hot": "显示热门搜索",
+  "setting__setting__desktop_lyric_font_weight_extended": "翻译、罗马音歌词",
   "setting__setting__desktop_lyric_font_weight_font": "逐字歌词",
   "setting__setting__desktop_lyric_font_weight_line": "逐行歌词",
   "setting__sync": "数据同步",

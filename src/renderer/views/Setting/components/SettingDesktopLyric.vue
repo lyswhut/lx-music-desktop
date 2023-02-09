@@ -31,6 +31,7 @@ dd
   div
     base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_font" :modelValue="appSetting['desktopLyric.style.isFontWeightFont']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightFont': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_font')")
     base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_line" :modelValue="appSetting['desktopLyric.style.isFontWeightLine']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightLine': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_line')")
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_extended" :modelValue="appSetting['desktopLyric.style.isFontWeightExtended']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightExtended': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_extended')")
 
 
 dd

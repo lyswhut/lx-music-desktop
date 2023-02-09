@@ -71,6 +71,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.isZoomActiveLrc': true,
   'desktopLyric.style.isFontWeightFont': true,
   'desktopLyric.style.isFontWeightLine': false,
+  'desktopLyric.style.isFontWeightExtended': false,
 
   'list.isClickPlayList': false,
   'list.isShowSource': true,
