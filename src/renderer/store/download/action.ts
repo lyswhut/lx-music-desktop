@@ -148,13 +148,18 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
       : Promise.resolve(null),
   ]
   void Promise.all(tasks).then(([imgUrl, lyrics]) => {
-    if (lyrics?.lyric) lyrics.lyric = fixKgLyric(lyrics.lyric)
+    let lyric: null | string = null
+    if (lyrics?.lyric) {
+      lyric = fixKgLyric(lyrics.lyric)
+      if (appSetting['download.isEmbedLyricT'] && lyrics.tlyric) lyric += '\n' + lyrics.tlyric + '\n'
+      if (appSetting['download.isEmbedLyricR'] && lyrics.rlyric) lyric += '\n' + lyrics.rlyric + '\n'
+    }
     void window.lx.worker.download.writeMeta(downloadInfo.metadata.filePath, {
       title: downloadInfo.metadata.musicInfo.name,
       artist: downloadInfo.metadata.musicInfo.singer,
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
-      lyrics: lyrics?.lyric ?? null,
+      lyrics: lyric,
     })
   })
 }

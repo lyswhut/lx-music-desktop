@@ -335,6 +335,7 @@
   "setting__download_data_embed": "Whether to embed the following content in the audio file",
   "setting__download_embed_lyric": "Embedding lyric",
   "setting__download_embed_pic": "Embedding cover",
+  "setting__download_embed_tlyric": "Also embed translated lyrics (if available)",
   "setting__download_enable": "Whether to enable download function",
   "setting__download_lyric": "Lyrics download",
   "setting__download_lyric_format": "Downloaded lyrics file encoding format",

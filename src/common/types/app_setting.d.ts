@@ -410,6 +410,16 @@ declare global {
       'download.isEmbedLyric': boolean
 
       /**
+       * 是否在音频文件中嵌入翻译歌词
+       */
+      'download.isEmbedLyricT': boolean
+
+      /**
+       * 是否在音频文件中嵌入罗马音歌词
+       */
+      'download.isEmbedLyricR': boolean
+
+      /**
        * 歌曲源不可用时，是否启用换源下载
        */
       'download.isUseOtherSource': boolean

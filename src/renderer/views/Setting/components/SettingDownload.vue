@@ -31,6 +31,10 @@ dd
     base-checkbox(id="setting_download_isEmbedPic" :modelValue="appSetting['download.isEmbedPic']" @update:modelValue="updateSetting({'download.isEmbedPic': $event})" :label="$t('setting__download_embed_pic')")
   .gap-top
     base-checkbox(id="setting_download_isEmbedLyric" :modelValue="appSetting['download.isEmbedLyric']" @update:modelValue="updateSetting({'download.isEmbedLyric': $event})" :label="$t('setting__download_embed_lyric')")
+  .gap-top
+    base-checkbox(id="setting_download_isEmbedLyricT" :disabled="!appSetting['download.isEmbedLyric']" :modelValue="appSetting['download.isEmbedLyricT']" @update:modelValue="updateSetting({'download.isEmbedLyricT': $event})" :label="$t('setting__download_embed_tlyric')")
+  .gap-top
+    base-checkbox(id="setting_download_isEmbedLyricR" :disabled="!appSetting['download.isEmbedLyric']" :modelValue="appSetting['download.isEmbedLyricR']" @update:modelValue="updateSetting({'download.isEmbedLyricR': $event})" :label="$t('setting__download_embed_rlyric')")
 dd(:aria-label="$t('setting__download_lyric_title')")
   h3#download_lyric {{$t('setting__download_lyric')}}
   .gap-top

@@ -89,6 +89,8 @@ const defaultSetting: LX.AppSetting = {
   'download.lrcFormat': 'utf8',
   'download.isEmbedPic': true,
   'download.isEmbedLyric': false,
+  'download.isEmbedLyricT': false,
+  'download.isEmbedLyricR': false,
   'download.isUseOtherSource': false,
 
   'search.isShowHotSearch': false,

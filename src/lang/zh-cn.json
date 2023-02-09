@@ -337,6 +337,8 @@
   "setting__download_data_embed": "是否将以下内容嵌入到音频文件中",
   "setting__download_embed_lyric": "歌词嵌入",
   "setting__download_embed_pic": "封面嵌入",
+  "setting__download_embed_rlyric": "同时嵌入罗马音歌词（如果有）",
+  "setting__download_embed_tlyric": "同时嵌入翻译歌词（如果有）",
   "setting__download_enable": "是否启用下载功能",
   "setting__download_lyric": "歌词下载",
   "setting__download_lyric_format": "下载的歌词文件编码格式",
