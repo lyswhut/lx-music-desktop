@@ -260,10 +260,10 @@ const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
         setProgress(downloadInfo, event.data)
         break
       case 'error':
-        handleError(downloadInfo, event.data.error == null
-          ? event.data.message ?? undefined
-          // @ts-expect-error
-          : window.i18n.t(event.data.error) + (event.data.message ?? ''))
+        handleError(downloadInfo, event.data.error
+          ? window.i18n.t(event.data.error) + (event.data.message ?? '')
+          : event.data.message,
+        )
         break
       default:
         break

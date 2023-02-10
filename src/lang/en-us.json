@@ -64,6 +64,7 @@
   "download_status_error_check_path": "There is an error in checking the download path, please check whether the set download directory is normal",
   "download_status_error_check_path_exist": "A file with the same name exists, skip download",
   "download_status_error_refresh_url": "Link is dead, link is being refreshed",
+  "download_status_error_response": "download failed:",
   "download_status_error_url_failed": "Failed to get music link",
   "download_status_error_write": "The song save location is occupied or does not have write permission, please try to change the song save directory or restart the software or restart the computer, the error details:",
   "download_status_start": "start download",

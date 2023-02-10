@@ -64,6 +64,7 @@
   "download_status_error_check_path": "檢查下載路徑出錯，請檢查設置的下載目錄是否正常",
   "download_status_error_check_path_exist": "存在同名文件，跳過下載",
   "download_status_error_refresh_url": "鏈接失效，正在刷新鏈接",
+  "download_status_error_response": "下載失敗：",
   "download_status_error_url_failed": "獲取音樂鏈接失敗",
   "download_status_error_write": "歌曲保存位置被佔用或沒有寫入權限，請嘗試更改歌曲保存目錄或重啟軟件或重啟電腦，錯誤詳情：",
   "download_status_start": "開始下載",

@@ -165,10 +165,20 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, s
       let retryNum = tryNum.get(downloadInfo.id) ?? 0
       tryNum.set(downloadInfo.id, ++retryNum)
       if (retryNum > 2) {
-        sendAction(downloadInfo.id, {
-          action: 'error',
-          data: {},
-        })
+        if (response.statusCode) {
+          sendAction(downloadInfo.id, {
+            action: 'error',
+            data: {
+              error: 'download_status_error_response',
+              message: String(response.statusCode),
+            },
+          })
+        } else {
+          sendAction(downloadInfo.id, {
+            action: 'error',
+            data: {},
+          })
+        }
         return
       }
       switch (response.statusCode) {
@@ -187,7 +197,7 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, s
       }
     },
     onStart() {
-      // sendAction(downloadInfo.id, { action: 'start' })
+      sendAction(downloadInfo.id, { action: 'start' })
       console.log('on start')
     },
     onProgress(status) {

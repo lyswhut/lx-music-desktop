@@ -64,6 +64,7 @@
   "download_status_error_check_path": "检查下载路径出错，请检查设置的下载目录是否正常",
   "download_status_error_check_path_exist": "存在同名文件，跳过下载",
   "download_status_error_refresh_url": "链接失效，正在刷新链接",
+  "download_status_error_response": "下载失败：",
   "download_status_error_url_failed": "获取音乐链接失败",
   "download_status_error_write": "歌曲保存位置被占用或没有写入权限，请尝试更改歌曲保存目录或重启软件或重启电脑，错误详情：",
   "download_status_start": "开始下载",
