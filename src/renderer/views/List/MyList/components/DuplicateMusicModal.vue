@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { shallowReactive, watch, toRaw, computed } from '@common/utils/vueTools'
+import { ref, watch, computed, markRawList } from '@common/utils/vueTools'
 import { playList } from '@renderer/core/player'
 import { getListMusics, removeListMusics } from '@renderer/store/list/action'
 import { isFullscreen } from '@renderer/store'
@@ -56,33 +56,31 @@ export default {
   },
   emits: ['update:visible'],
   setup(props) {
-    const duplicateList = shallowReactive([])
+    const duplicateList = ref([])
     const listItemHeight = computed(() => {
       return Math.ceil((isFullscreen.value ? getFontSizeWithScreen() : appSetting['common.fontSize']) * 3.2)
     })
 
     const handlePlay = (index) => {
-      const { index: musicInfoIndex } = duplicateList[index]
+      const { index: musicInfoIndex } = duplicateList.value[index]
       playList(props.listInfo.id, musicInfoIndex)
     }
     const handleFilterList = async() => {
       // console.time('filter')
-      duplicateList.splice(
-        0,
-        duplicateList.length,
-        ...(await window.lx.worker.main.filterDuplicateMusic(toRaw(await getListMusics(props.listInfo.id)))))
-
+      duplicateList.value = markRawList(await window.lx.worker.main.filterDuplicateMusic(await getListMusics(props.listInfo.id)))
+      // console.log(duplicateList.value)
       // console.timeEnd('filter')
     }
     const handleRemove = async(index) => {
-      const { musicInfo: targetMusicInfo } = duplicateList.splice(index, 1)[0]
+      const { musicInfo: targetMusicInfo } = duplicateList.value.splice(index, 1)[0]
+      duplicateList.value = [...duplicateList.value]
       await removeListMusics({ listId: props.listInfo.id, ids: [targetMusicInfo.id] })
       await handleFilterList()
     }
 
     watch(() => props.visible, (visible) => {
       if (visible) {
-        if (duplicateList.length) duplicateList.splice(0, duplicateList.length)
+        if (duplicateList.value.length) duplicateList.value = []
         handleFilterList()
       }
     })
