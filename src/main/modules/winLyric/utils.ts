@@ -84,6 +84,7 @@ export const watchConfigKeys = [
   'player.isShowLyricTranslation',
   'player.isShowLyricRoma',
   'player.isPlayLxlrc',
+  'player.playbackRate',
 ] as const
 
 export const buildLyricConfig = (appSetting: Partial<LX.AppSetting>): Partial<LX.DesktopLyric.Config> => {

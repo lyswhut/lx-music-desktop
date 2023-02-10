@@ -69,7 +69,6 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
         action: 'set_status',
         data: {
           isPlay: isPlay.value,
-          rate: appSetting['player.playbackRate'],
           line: lyric.line,
           played_time: getCurrentTime(),
         },
@@ -147,18 +146,10 @@ export const setLyricOffset = (offset: number) => {
 
 export const setPlaybackRate = (rate: number) => {
   lrc.setPlaybackRate(rate)
-  sendDesktopLyricInfo({
-    action: 'set_playbackRate',
-    data: rate,
-  })
 
   if (isPlay.value) {
     setTimeout(() => {
       const time = getCurrentTime()
-      sendDesktopLyricInfo({
-        action: 'set_play',
-        data: time,
-      })
       lrc.play(time)
     })
   }

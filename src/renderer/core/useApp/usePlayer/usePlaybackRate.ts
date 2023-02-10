@@ -3,19 +3,19 @@ import { setPlaybackRate as setPlayerPlaybackRate } from '@renderer/plugins/play
 
 import { debounce } from '@common/utils'
 // import { HOTKEY_PLAYER } from '@common/hotKey'
-import { playbackRate, setplaybackRate } from '@renderer/store/player/playbackRate'
+import { playbackRate, setPlaybackRate } from '@renderer/store/player/playbackRate'
 import { appSetting, savePlaybackRate } from '@renderer/store/setting'
 
 export default () => {
   const handleSavePlaybackRate = debounce(savePlaybackRate, 300)
 
-  setplaybackRate(appSetting['player.playbackRate'])
+  setPlaybackRate(appSetting['player.playbackRate'])
   setPlayerPlaybackRate(appSetting['player.playbackRate'])
 
 
   const handleSetPlaybackRate = (num: number) => {
     const rate = num < 0.5 ? 0.5 : num > 2 ? 2 : num
-    setplaybackRate(rate)
+    setPlaybackRate(rate)
   }
 
   // const handleSetPlaybackRateUp = (step = 0.02) => {
@@ -37,7 +37,7 @@ export default () => {
     setPlayerPlaybackRate(rate)
   })
   watch(() => appSetting['player.playbackRate'], rate => {
-    setplaybackRate(rate)
+    setPlaybackRate(rate)
   })
 
 

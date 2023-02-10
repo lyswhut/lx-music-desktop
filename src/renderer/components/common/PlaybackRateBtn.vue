@@ -1,6 +1,6 @@
 <template>
   <material-popup-btn :class="$style.btnContent">
-    <button :class="[$style.btn, { [$style.active]: playbackRate != 1 }]" :aria-label="`${$t('player__playback_rate')}x${playbackRate}`">
+    <button :class="[$style.btn, { [$style.active]: playbackRate != 1 }]" :aria-label="`${$t('player__playback_rate')}${playbackRate}x`">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
         <use xlink:href="#icon-plex" />
       </svg>
@@ -8,7 +8,7 @@
     <template #content>
       <div :class="$style.setting">
         <div :class="$style.info">
-          <span>x{{ playbackRate }}</span>
+          <span>{{ playbackRate }}x</span>
           <base-btn min @click="handleUpdatePlaybackRate(1)">{{ $t('player__playback_rate_reset_btn') }}</base-btn>
         </div>
         <base-slider-bar :value="playbackRate" :min="0.5" :max="2" @change="handleUpdatePlaybackRate" />

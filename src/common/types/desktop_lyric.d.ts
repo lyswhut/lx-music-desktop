@@ -34,6 +34,7 @@ declare namespace LX {
       'player.isShowLyricTranslation': LX.AppSetting['player.isShowLyricTranslation']
       'player.isShowLyricRoma': LX.AppSetting['player.isShowLyricRoma']
       'player.isPlayLxlrc': LX.AppSetting['player.isPlayLxlrc']
+      'player.playbackRate': LX.AppSetting['player.playbackRate']
     }
 
     type WinMainActions = 'get_info' | 'get_status' | 'get_analyser_data_array'
@@ -63,7 +64,6 @@ declare namespace LX {
     | LyricAction<'set_status', {
       isPlay: boolean
       line: number
-      rate: number
       played_time: number
     }>
     | LyricAction<'set_lyric', {

@@ -9,6 +9,7 @@ export const init = () => {
   lrc = new Lyric({
     shadowContent: true,
     activeLineClassName: 'active',
+    rate: setting['player.playbackRate'],
     isVertical: setting['desktopLyric.direction'] == 'vertical',
     onPlay(line, text) {
       setText(text, line)
