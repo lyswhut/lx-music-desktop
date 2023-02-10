@@ -120,9 +120,9 @@ export default {
         transition: @transition-slow;
         transition-property: font-size, color;
       }
-      &.font-mode > .line {
-        font-weight: bold;
-      }
+      // &.font-mode > .line {
+      //   font-weight: bold;
+      // }
 
       &.font-mode > .line > .font-lrc {
         > span {
@@ -245,13 +245,27 @@ export default {
     }
   }
 }
-// .font-weight {
-//   :global {
-//     .font-mode > .line {
-//       font-weight: bold;
-//     }
-//   }
-// }
+.font-weight-font {
+  :global {
+    .font-mode > .line {
+      font-weight: bold;
+    }
+  }
+}
+.font-weight-line {
+  :global {
+    .line-mode > .line {
+      font-weight: bold;
+    }
+  }
+}
+.font-weight-extended {
+  :global {
+    .extended {
+      font-weight: bold;
+    }
+  }
+}
 // .footer {
 //   flex: 0 0 100px;
 //   overflow: hidden;
