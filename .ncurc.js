@@ -8,7 +8,6 @@ module.exports = {
   ],
   // target: 'newest',
   // filter: [
-  //   /^vue/,
   //   'electron-builder',
   //   'electron-updater',
   // ],
