@@ -77,9 +77,9 @@ const winEvent = () => {
       browserWindow!.setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
     }
     // linux下每次重开时貌似要重新设置置顶
-    if (isLinux && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
-      browserWindow!.setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
-    }
+    // if (isLinux && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
+    //   browserWindow!.setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
+    // }
     if (global.lx.appSetting['desktopLyric.isAlwaysOnTop'] && global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) alwaysOnTopTools.startLoop()
   })
 }
