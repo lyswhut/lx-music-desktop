@@ -20,6 +20,7 @@ const decode = async(str: string): Promise<string> => {
 }
 
 
+// 感谢某位不愿透露姓名的大佬提供的C++算法源码，但由于作者不希望公开，所以将会以预构建二进制文件的形式加入代码仓库中
 const handleDecode = async(lrc: string, tlrc: string, rlrc: string) => {
   if (!qrc_decode) {
     // const nativeBindingPath = path.join(__dirname, '../build/Release/qrc_decode.node')
