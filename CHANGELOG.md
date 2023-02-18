@@ -6,6 +6,13 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.1.1](https://github.com/lyswhut/lx-music-desktop/compare/v2.1.0...v2.1.1) - 2023-02-18
+
+
+### 修复
+
+- 修复检查更新日志地址不正确的问题
+
 ## [2.1.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.0.5...v2.1.0) - 2023-02-18
 
 由于软件内功能在设计时只考虑简单便捷性，是否对新手友好并不是我们考虑的重点，功能的新增、变更会在更新日志中注明，不会在软件内做指引提示，

@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -195,7 +195,10 @@
     "electron-app",
     "vuejs3"
   ],
-  "author": "lyswhut <lyswhut@qq.com>",
+  "author": {
+    "name": "lyswhut",
+    "email": "lyswhut@qq.com"
+  },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/lyswhut/lx-music-desktop/issues"
