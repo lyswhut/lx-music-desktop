@@ -139,7 +139,7 @@ export default () => {
 
   const rUpdateAvailable = onUpdateAvailable(({ params: info }) => {
     // versionInfo.isDownloading = true
-    console.log(info)
+    // console.log(info)
     versionInfo.newVersion = {
       version: info.version,
       desc: info.releaseNotes as string,
@@ -152,13 +152,16 @@ export default () => {
   })
   const rUpdateNotAvailable = onUpdateNotAvailable(({ params: info }) => {
     clearUpdateTimeout()
-    versionInfo.newVersion = {
-      version: info.version,
-      desc: info.releaseNotes as string,
-    }
-    versionInfo.isLatest = true
-    versionInfo.isUnknown = false
-    versionInfo.status = 'idle'
+    // versionInfo.newVersion = {
+    //   version: info.version,
+    //   desc: info.releaseNotes as string,
+    // }
+    void handleGetVersionInfo().finally(() => {
+      versionInfo.isLatest = true
+      versionInfo.isUnknown = false
+      versionInfo.status = 'idle'
+      handleShowChangeLog()
+    })
   })
   const rUpdateError = onUpdateError((params) => {
     clearUpdateTimeout()
