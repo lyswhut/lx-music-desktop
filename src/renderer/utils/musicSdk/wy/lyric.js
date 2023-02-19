@@ -105,8 +105,8 @@ const parseTools = {
       lxlrcLines.push(`${startTimeStr}${newWords}`)
     }
     return {
-      lyricLines: lrcLines,
-      lxlyricLines: lxlrcLines,
+      lyric: lrcLines.join('\n'),
+      lxlyric: lxlrcLines.join('\n'),
     }
   },
   parseHeaderInfo(str) {
@@ -125,13 +125,40 @@ const parseTools = {
       }
     })
   },
-  fixTimeTag(lrcLines, targetLrcLines) {
-    const timeTagRxp = /^\[[\d:.]+\]/
-    return targetLrcLines.map((line, index) => {
-      const timeTag = timeTagRxp.exec(lrcLines[index])
-      if (!timeTag) return line
-      return line.replace(timeTagRxp, timeTag[0])
+  getIntv(interval) {
+    let [m, s, ms] = interval.split(/:|\./)
+    return parseInt(m) * 3600000 + parseInt(s) * 1000 + parseInt(ms)
+  },
+  fixTimeTag(lrc, targetlrc) {
+    let lrcLines = lrc.split('\n')
+    const targetlrcLines = targetlrc.split('\n')
+    const timeRxp = /^\[([\d:.]+)\]/
+    let temp = []
+    let newLrc = []
+    targetlrcLines.forEach((line) => {
+      const result = timeRxp.exec(line)
+      if (!result) return
+      const words = line.replace(timeRxp, '')
+      if (!words.trim()) return
+      const t1 = this.getIntv(result[1])
+
+      while (lrcLines.length) {
+        const lrcLine = lrcLines.shift()
+        const lrcLineResult = timeRxp.exec(lrcLine)
+        if (!lrcLineResult) continue
+        const t2 = this.getIntv(lrcLineResult[1])
+        if (Math.abs(t1 - t2) < 100) {
+          const lrc = line.replace(timeRxp, lrcLineResult[0]).trim()
+          if (!lrc) continue
+          newLrc.push(lrc)
+          break
+        }
+        temp.push(lrcLine)
+      }
+      lrcLines = [...temp, ...lrcLines]
+      temp = []
     })
+    return newLrc.join('\n')
   },
   parse(ylrc, ytlrc, yrlrc, lrc, tlrc, rlrc) {
     const info = {
@@ -147,24 +174,24 @@ const parseTools = {
         if (ytlrc) {
           const lines = this.parseHeaderInfo(ytlrc)
           if (lines) {
-            if (lines.length == result.lyricLines.length) {
-              info.tlyric = this.fixTimeTag(result.lyricLines, lines).join('\n')
-            } else info.tlyric = lines.join('\n')
+            // if (lines.length == result.lyricLines.length) {
+            info.tlyric = this.fixTimeTag(result.lyric, lines.join('\n'))
+            // } else info.tlyric = lines.join('\n')
           }
         }
         if (yrlrc) {
           const lines = this.parseHeaderInfo(yrlrc)
           if (lines) {
-            if (lines.length == result.lyricLines.length) {
-              info.rlyric = this.fixTimeTag(result.lyricLines, lines).join('\n')
-            } else info.rlyric = lines.join('\n')
+            // if (lines.length == result.lyricLines.length) {
+            info.rlyric = this.fixTimeTag(result.lyric, lines.join('\n'))
+            // } else info.rlyric = lines.join('\n')
           }
         }
 
         const timeRxp = /^\[[\d:.]+\]/
         const headers = lines.filter(l => timeRxp.test(l)).join('\n')
-        info.lyric = `${headers}\n${result.lyricLines.join('\n')}`
-        info.lxlyric = result.lxlyricLines.join('\n')
+        info.lyric = `${headers}\n${result.lyric}`
+        info.lxlyric = result.lxlyric
         return info
       }
     }

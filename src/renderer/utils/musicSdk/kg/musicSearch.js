@@ -70,7 +70,7 @@ export default {
       list.push(this.filterData(item))
       for (const childItem of item.group) {
         const key = item.audio_id + item.hash
-        if (ids.has(key)) return
+        if (ids.has(key)) continue
         ids.add(key)
         list.push(this.filterData(childItem))
       }
