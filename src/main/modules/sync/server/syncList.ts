@@ -71,8 +71,13 @@ const getLocalListData = async(): Promise<LX.Sync.ListData> => {
 
   return lists
 }
-const getSyncMode = async(keyInfo: LX.Sync.KeyInfo): Promise<LX.Sync.Mode> => await new Promise((resolve, reject) => {
-  let removeListener = sendSelectMode(keyInfo, (mode) => {
+const getSyncMode = async(socket: LX.Sync.Socket): Promise<LX.Sync.Mode> => await new Promise((resolve, reject) => {
+  const handleDisconnect = () => {
+    sendCloseSelectMode()
+    reject(new Error('disconnect'))
+  }
+  socket.on('disconnect', handleDisconnect)
+  let removeListener = sendSelectMode(socket.data.keyInfo, (mode) => {
     removeListener()
     resolve(mode)
   })
@@ -221,15 +226,8 @@ const overwriteList = (sourceListData: LX.Sync.ListData, targetListData: LX.Sync
 }
 
 const handleMergeListData = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListData | null> => {
-  let isSelectingMode = false
-  const handleDisconnect = () => {
-    if (!isSelectingMode) return
-    sendCloseSelectMode()
-  }
-  socket.on('disconnect', handleDisconnect)
-  isSelectingMode = true
-  const mode: LX.Sync.Mode = await getSyncMode(socket.data.keyInfo)
-  isSelectingMode = false
+  const mode: LX.Sync.Mode = await getSyncMode(socket)
+
   const [remoteListData, localListData] = await Promise.all([getRemoteListData(socket), getLocalListData()])
   console.log('handleMergeListData', 'remoteListData, localListData')
   let listData: LX.Sync.ListData
@@ -452,12 +450,12 @@ const syncList = async(socket: LX.Sync.Socket): Promise<LX.Sync.ListData | null>
   return await handleMergeListDataFromSnapshot(socket, patchListData(fileData))
 }
 
-const checkSyncQueue = async(): Promise<void> => {
-  if (!syncingId) return
-  console.log('sync queue...')
-  await wait()
-  await checkSyncQueue()
-}
+// const checkSyncQueue = async(): Promise<void> => {
+//   if (!syncingId) return
+//   console.log('sync queue...')
+//   await wait()
+//   await checkSyncQueue()
+// }
 
 // export {
 //   syncList = async(_io: Server, socket: LX.Sync.Socket) => {
@@ -475,7 +473,18 @@ const checkSyncQueue = async(): Promise<void> => {
 
 const _syncList = async(_io: Server, socket: LX.Sync.Socket) => {
   io = _io
-  await checkSyncQueue()
+  let disconnected = false
+  socket.on('disconnect', () => {
+    disconnected = true
+    if (syncingId == socket.data.keyInfo.clientId) syncingId = null
+  })
+
+  while (true) {
+    if (disconnected) throw new Error('disconnected')
+    if (!syncingId) break
+    await wait()
+  }
+
   syncingId = socket.data.keyInfo.clientId
   return await syncList(socket).then(newListData => {
     if (newListData) registerUpdateSnapshotTask(socket, { ...newListData })
