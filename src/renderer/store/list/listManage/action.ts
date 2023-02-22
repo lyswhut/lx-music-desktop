@@ -128,9 +128,8 @@ export const listDataOverwrite = ({ defaultList, loveList, userList, tempList }:
     overwriteMusicList(LIST_IDS.DEFAULT, defaultList)
     updatedListIds.push(LIST_IDS.DEFAULT)
   }
-  if (allMusicList.has(LIST_IDS.LOVE)) {
-    overwriteMusicList(LIST_IDS.LOVE, loveList)
-  }
+
+  overwriteMusicList(LIST_IDS.LOVE, loveList)
   updatedListIds.push(LIST_IDS.LOVE)
 
   if (tempList && allMusicList.has(LIST_IDS.TEMP)) {

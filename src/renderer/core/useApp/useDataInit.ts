@@ -8,6 +8,7 @@ import useInitUserApi from './useInitUserApi'
 import { play, playList } from '@renderer/core/player'
 import { onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
+import { playMusicInfo } from '@renderer/store/player/state'
 
 const initPrevPlayInfo = async() => {
   const info = await getPlayInfo()
@@ -18,7 +19,13 @@ const initPrevPlayInfo = async() => {
   window.lx.restorePlayInfo = info
   playList(info.listId, info.index)
 
-  if (appSetting['player.startupAutoPlay']) setTimeout(play)
+  if (appSetting['player.startupAutoPlay']) {
+    const musicInfo = playMusicInfo.musicInfo
+    if (!musicInfo) return
+    setTimeout(() => {
+      if (musicInfo.id == playMusicInfo.musicInfo?.id) play()
+    })
+  }
 }
 
 export default () => {

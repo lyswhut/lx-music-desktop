@@ -109,6 +109,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
   if (!musicInfo) return
 
   setImmediate(() => {
+    if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     window.app_event.setProgress(appSetting['player.isSavePlayTime'] ? restorePlayInfo.time : 0, restorePlayInfo.maxTime)
   })
 
