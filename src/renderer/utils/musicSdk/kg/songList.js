@@ -224,6 +224,7 @@ export default {
     // console.log(songInfo)
     let songList
     let info = songInfo.info
+    if (info.global_collection_id) return this.getUserListDetail2(info.global_collection_id)
     if (info.userid != null) {
       songList = await this.createHttp('http://www2.kugou.kugou.com/apps/kucodeAndShare/app/', {
         method: 'POST',
