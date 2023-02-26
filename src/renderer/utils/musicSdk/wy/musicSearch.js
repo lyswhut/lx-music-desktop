@@ -33,6 +33,14 @@ export default {
       const types = []
       const _types = {}
       let size
+
+      if (item.privilege.maxBrLevel == 'hires') {
+        size = item.hr ? sizeFormate(item.hr.size) : null
+        types.push({ type: 'flac24bit', size })
+        _types.flac24bit = {
+          size,
+        }
+      }
       switch (item.privilege.maxbr) {
         case 999000:
           size = item.sq ? sizeFormate(item.sq.size) : null

@@ -22,6 +22,13 @@ export default {
       if (privilege.id !== item.id) privilege = privileges.find(p => p.id === item.id)
       if (!privilege) return
 
+      if (privilege.maxBrLevel == 'hires') {
+        size = item.hr ? sizeFormate(item.hr.size) : null
+        types.push({ type: 'flac24bit', size })
+        _types.flac24bit = {
+          size,
+        }
+      }
       switch (privilege.maxbr) {
         case 999000:
           size = item.sq ? sizeFormate(item.sq.size) : null
