@@ -517,6 +517,10 @@ export default {
     id = id.toString()
     if (id.includes('special/single/')) {
       id = id.replace(this.regExps.listDetailLink, '$1')
+    } else if (/#[0-9]+#/.test(id)) {
+      // fix 酷狗码导入
+      let code = /#[0-9]+#/.exec(id)[0]
+      if (code != null) return this.getUserListDetailByCode(code.replace(/#/g, ''))
     } else if (/https?:/.test(id)) {
       // fix https://www.kugou.com/songlist/xxx/?uid=xxx&chl=qq_client&cover=http%3A%2F%2Fimge.kugou.com%xxx.jpg&iszlist=1
       return this.getUserListDetail(id.replace(/^.*?http/, 'http'), page)
@@ -756,7 +760,3 @@ export default {
       })
   },
 }
-
-// getList
-// getTags
-// getListDetail
