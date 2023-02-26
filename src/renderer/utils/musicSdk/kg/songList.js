@@ -221,7 +221,7 @@ export default {
       },
       body: { appid: 1001, clientver: 10053, mid: '7684a923fe6483296256d7e67545538b', clienttime: 730666688, key: '4eb7f9587236f6fe15cd6fc4d5064ded', data: id },
     })
-    //console.log(songInfo)
+    // console.log(songInfo)
     let songList
     let info = songInfo.info
     if (info.userid != null) {
@@ -234,10 +234,10 @@ export default {
         },
         body: { appid: 1001, clientver: 10053, mid: '7684a923fe6483296256d7e67545538b', clienttime: 730666688, key: '4eb7f9587236f6fe15cd6fc4d5064ded', data: { id: info.id, type: 3, userid: info.userid, collect_type: info.collect_type, page: 1, pagesize: info.count } },
       })
-      //console.log(songList)
+      // console.log(songList)
     }
     let result = await Promise.all(this.createTask((songList || songInfo.list).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
-    //console.log(result)
+    // console.log(result)
     return {
       list: this.filterData2(result) || [],
       page: 1,
