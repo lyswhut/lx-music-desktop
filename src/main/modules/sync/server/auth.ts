@@ -1,22 +1,17 @@
 import type http from 'http'
-import { SYNC_CODE } from './config'
-import {
-  aesEncrypt,
-  aesDecrypt,
-  createClientKeyInfo,
-  getClientKeyInfo,
-  setClientKeyInfo,
-  rsaEncrypt,
-} from './utils'
+import { SYNC_CODE } from '@common/constants'
 import querystring from 'node:querystring'
+import { getIP } from './utils'
+import { createClientKeyInfo, getClientKeyInfo, saveClientKeyInfo } from '../data'
+import { aesDecrypt, aesEncrypt, getComputerName, rsaEncrypt } from '../utils'
 
 const requestIps = new Map<string, number>()
 
-export const authCode = async(req: http.IncomingMessage, res: http.ServerResponse, authCode: string) => {
+export const authCode = async(req: http.IncomingMessage, res: http.ServerResponse, password: string) => {
   let code = 401
   let msg: string = SYNC_CODE.msgAuthFailed
 
-  let ip = req.socket.remoteAddress
+  let ip = getIP(req)
   // console.log(req.headers)
   if (typeof req.headers.m == 'string') {
     if (ip && (requestIps.get(ip) ?? 0) < 10) {
@@ -38,12 +33,12 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
             const deviceName = text.replace(SYNC_CODE.authMsg, '') || 'Unknown'
             if (deviceName != keyInfo.deviceName) {
               keyInfo.deviceName = deviceName
-              setClientKeyInfo(keyInfo)
+              saveClientKeyInfo(keyInfo)
             }
             msg = aesEncrypt(SYNC_CODE.helloMsg, keyInfo.key)
           }
         } else { // 连接码验证
-          let key = ''.padStart(16, Buffer.from(authCode).toString('hex'))
+          let key = ''.padStart(16, Buffer.from(password).toString('hex'))
           // const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
           key = Buffer.from(key).toString('base64')
           // console.log(req.headers.m, authCode, key)
@@ -59,7 +54,13 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
             const data = text.split('\n')
             const publicKey = `-----BEGIN PUBLIC KEY-----\n${data[1]}\n-----END PUBLIC KEY-----`
             const deviceName = data[2] || 'Unknown'
-            msg = rsaEncrypt(Buffer.from(JSON.stringify(createClientKeyInfo(deviceName))), publicKey)
+            const isMobile = data[3] == 'lx_music_mobile'
+            const keyInfo = createClientKeyInfo(deviceName, isMobile)
+            msg = rsaEncrypt(Buffer.from(JSON.stringify({
+              clientId: keyInfo.clientId,
+              key: keyInfo.key,
+              serverName: getComputerName(),
+            })), publicKey)
           }
         }
       }

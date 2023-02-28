@@ -1,16 +1,18 @@
-import http from 'http'
-import { Server, type Socket } from 'socket.io'
-import { createHttpTerminator, type HttpTerminator } from 'http-terminator'
-import * as modules from '../modules'
+import http, { type IncomingMessage } from 'node:http'
+import url from 'node:url'
+import { WebSocketServer } from 'ws'
+import * as modules from './modules'
 import { authCode, authConnect } from './auth'
-import { getAddress, getServerId, generateCode as handleGenerateCode, getClientKeyInfo, setClientKeyInfo } from './utils'
-import { syncList, removeSnapshot } from './syncList'
-import { log } from '@common/utils'
-import { sendStatus } from '@main/modules/winMain'
-import { SYNC_CODE } from './config'
+import syncList from './syncList'
+import log from '../log'
+import { SYNC_CLOSE_CODE, SYNC_CODE } from '@common/constants'
+import { decryptMsg, encryptMsg, generateCode as handleGenerateCode } from './utils'
+import { getAddress } from '../utils'
+import { sendServerStatus } from '@main/modules/winMain/index'
+import { getClientKeyInfo, getServerId, saveClientKeyInfo } from '../data'
 
 
-let status: LX.Sync.Status = {
+let status: LX.Sync.ServerStatus = {
   status: false,
   message: '',
   address: [],
@@ -27,7 +29,7 @@ const codeTools: {
   start() {
     this.stop()
     this.timeout = setInterval(() => {
-      void generateCode()
+      void handleGenerateCode()
     }, 60 * 3 * 1000)
   },
   stop() {
@@ -37,12 +39,45 @@ const codeTools: {
   },
 }
 
-const handleConnection = (io: Server, socket: LX.Sync.Socket) => {
-  console.log('connection')
+const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingMessage) => {
+  const queryData = url.parse(request.url as string, true).query as Record<string, string>
+
+  socket.onClose(() => {
+    // console.log('disconnect', reason)
+    status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
+    sendServerStatus(status)
+  })
+
+
+  //   // if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
+  const keyInfo = getClientKeyInfo(queryData.i)
+  if (!keyInfo) {
+    socket.close(SYNC_CLOSE_CODE.failed)
+    return
+  }
+  keyInfo.lastSyncDate = Date.now()
+  saveClientKeyInfo(keyInfo)
+  //   // socket.lx_keyInfo = keyInfo
+  socket.keyInfo = keyInfo
+  try {
+    await syncList(wss as LX.Sync.Server.SocketServer, socket)
+  } catch (err) {
+    // console.log(err)
+    log.warn(err)
+    return
+  }
+  status.devices.push(keyInfo)
+  // handleConnection(io, socket)
+  sendServerStatus(status)
+
+  // console.log('connection', keyInfo.deviceName)
+  log.info('connection', keyInfo.deviceName)
   // console.log(socket.handshake.query)
   for (const module of Object.values(modules)) {
-    module.registerListHandler(io, socket)
+    module.registerListHandler(wss as LX.Sync.Server.SocketServer, socket)
   }
+
+  socket.isReady = true
 }
 
 const handleUnconnection = () => {
@@ -64,11 +99,16 @@ const authConnection = (req: http.IncomingMessage, callback: (err: string | null
   })
 }
 
-let httpTerminator: HttpTerminator | null = null
-let io: Server | null = null
+let wss: LX.Sync.Server.SocketServer | null
+let httpServer: http.Server
 
-const handleStartServer = async(port = 9527) => await new Promise((resolve, reject) => {
-  const httpServer = http.createServer((req, res) => {
+function noop() {}
+function onSocketError(err: Error) {
+  console.error(err)
+}
+
+const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promise((resolve, reject) => {
+  httpServer = http.createServer((req, res) => {
     // console.log(req.url)
     let code
     let msg
@@ -93,46 +133,96 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
     res.writeHead(code)
     res.end(msg)
   })
-  httpTerminator = createHttpTerminator({
-    server: httpServer,
-  })
-  io = new Server(httpServer, {
-    path: '/sync',
-    serveClient: false,
-    connectTimeout: 10000,
-    pingTimeout: 30000,
-    maxHttpBufferSize: 1e9, // 1G
-    allowRequest: authConnection,
-    transports: ['websocket'],
+
+  wss = new WebSocketServer({
+    noServer: true,
   })
 
-  io.on('connection', async(_socket: Socket) => {
-    const socket = _socket as LX.Sync.Socket
-    socket.on('disconnect', reason => {
-      console.log('disconnect', reason)
-      status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
-      sendStatus(status)
-      if (!status.devices.length) handleUnconnection()
+  wss.on('connection', function(socket, request) {
+    socket.isReady = false
+    socket.on('pong', () => {
+      socket.isAlive = true
     })
-    if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
-    const keyInfo = getClientKeyInfo(socket.handshake.query.i)
-    if (!keyInfo || !io) return socket.disconnect(true)
-    keyInfo.connectionTime = Date.now()
-    setClientKeyInfo(keyInfo)
-    // socket.lx_keyInfo = keyInfo
-    socket.data.keyInfo = keyInfo
-    socket.data.isReady = false
-    try {
-      await syncList(io, socket)
-    } catch (err) {
-      // console.log(err)
-      log.warn(err)
-      return
+
+    // const events = new Map<keyof ActionsType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
+    // const events = new Map<keyof LX.Sync.ActionSyncType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
+    let events: Partial<{ [K in keyof LX.Sync.ActionSyncType]: Array<(data: LX.Sync.ActionSyncType[K]) => void> }> = {}
+    socket.addEventListener('message', ({ data }) => {
+      if (typeof data === 'string') {
+        let syncData: LX.Sync.ActionSync
+        try {
+          syncData = JSON.parse(decryptMsg(socket.keyInfo, data))
+        } catch (err) {
+          log.error('parse message error:', err)
+          socket.close(SYNC_CLOSE_CODE.failed)
+          return
+        }
+        const handlers = events[syncData.action]
+        if (handlers) {
+          // @ts-expect-error
+          for (const handler of handlers) handler(syncData.data)
+        }
+      }
+    })
+    socket.addEventListener('close', () => {
+      const err = new Error('closed')
+      for (const handler of Object.values(events).flat()) {
+        // @ts-expect-error
+        handler(err, null)
+      }
+      events = {}
+      if (!status.devices.length) handleUnconnection()
+      log.info('deconnection', socket.keyInfo.deviceName)
+    })
+    socket.onRemoteEvent = function(eventName, handler) {
+      let eventArr = events[eventName]
+      if (!eventArr) events[eventName] = eventArr = []
+      // let eventArr = events.get(eventName)
+      // if (!eventArr) events.set(eventName, eventArr = [])
+      eventArr.push(handler)
+
+      return () => {
+        eventArr!.splice(eventArr!.indexOf(handler), 1)
+      }
     }
-    status.devices.push(keyInfo)
-    handleConnection(io, socket)
-    socket.data.isReady = true
-    sendStatus(status)
+    socket.sendData = function(eventName, data, callback) {
+      socket.send(encryptMsg(socket.keyInfo, JSON.stringify({ action: eventName, data })), callback)
+    }
+    void handleConnection(socket, request)
+  })
+
+  httpServer.on('upgrade', function upgrade(request, socket, head) {
+    socket.on('error', onSocketError)
+    // This function is not defined on purpose. Implement it with your own logic.
+    authConnection(request, err => {
+      if (err) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+        socket.destroy()
+        return
+      }
+      socket.removeListener('error', onSocketError)
+
+      wss?.handleUpgrade(request, socket, head, function done(ws) {
+        wss?.emit('connection', ws, request)
+      })
+    })
+  })
+
+  const interval = setInterval(() => {
+    wss?.clients.forEach(ws => {
+      if (ws.isAlive == false) {
+        ws.terminate()
+        return
+      }
+
+      ws.isAlive = false
+      ws.ping(noop)
+      if (ws.keyInfo.isMobile) ws.send('ping', noop)
+    })
+  }, 30000)
+
+  wss.on('close', function close() {
+    clearInterval(interval)
   })
 
   httpServer.on('error', error => {
@@ -142,35 +232,41 @@ const handleStartServer = async(port = 9527) => await new Promise((resolve, reje
 
   httpServer.on('listening', () => {
     const addr = httpServer.address()
+    // console.log(addr)
     if (!addr) {
       reject(new Error('address is null'))
       return
     }
     const bind = typeof addr == 'string' ? `pipe ${addr}` : `port ${addr.port}`
-    console.info(`Listening on ${bind}`)
+    log.info(`Listening on ${ip} ${bind}`)
     resolve(null)
   })
 
-  httpServer.listen(port)
+  httpServer.listen(port, ip)
 })
 
-const handleStopServer = async() => {
-  if (!httpTerminator) return
-  if (!io) return
-  io.close()
-  await httpTerminator.terminate().catch(() => {})
-  io = null
-  httpTerminator = null
-}
+const handleStopServer = async() => new Promise<void>((resolve, reject) => {
+  if (!wss) return
+  wss.close()
+  wss = null
+  httpServer.close((err) => {
+    if (err) {
+      reject(err)
+      return
+    }
+    resolve()
+  })
+})
 
 export const stopServer = async() => {
+  console.log('stop')
   codeTools.stop()
   if (!status.status) {
     status.status = false
     status.message = ''
     status.address = []
     status.code = ''
-    sendStatus(status)
+    sendServerStatus(status)
     return
   }
   console.log('stoping sync server...')
@@ -184,14 +280,15 @@ export const stopServer = async() => {
     console.log(err)
     status.message = err.message
   }).finally(() => {
-    sendStatus(status)
+    sendServerStatus(status)
   })
 }
 
 export const startServer = async(port: number) => {
+  console.log('status.status', status.status)
   if (status.status) await handleStopServer()
 
-  console.log('starting sync server...')
+  log.info('starting sync server')
   await handleStartServer(port).then(() => {
     console.log('sync server started')
     status.status = true
@@ -207,18 +304,14 @@ export const startServer = async(port: number) => {
     status.address = []
     status.code = ''
   }).finally(() => {
-    sendStatus(status)
+    sendServerStatus(status)
   })
 }
 
-export const getStatus = (): LX.Sync.Status => status
+export const getStatus = (): LX.Sync.ServerStatus => status
 
 export const generateCode = async() => {
   status.code = handleGenerateCode()
-  sendStatus(status)
+  sendServerStatus(status)
   return status.code
-}
-
-export {
-  removeSnapshot,
 }

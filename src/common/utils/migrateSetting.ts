@@ -20,7 +20,7 @@ const oldThemeMap = {
 export default (setting: any): Partial<LX.AppSetting> => {
   setting = { ...setting }
 
-  // 迁移 v2 之前的配置
+  // 迁移 v2.0.0 之前的配置
   if (compareVer(setting.version, '2.0.0') < 0) {
     // 迁移列表滚动位置设置 ~0.18.3
     if (setting.list?.scroll) {
@@ -133,7 +133,16 @@ export default (setting: any): Partial<LX.AppSetting> => {
 
     setting['odc.isAutoClearSearchInput'] = setting.odc?.isAutoClearSearchInput
     setting['odc.isAutoClearSearchList'] = setting.odc?.isAutoClearSearchList
+
+    setting.version = '2.0.0'
   }
+
+  // 迁移 v2.2.0 之前的设置数据
+  if (compareVer(setting.version, '2.1.0') < 0) {
+    setting['sync.erver.port'] = setting['sync.port']
+    setting.version = '2.1.0'
+  }
+
 
   return setting
 }

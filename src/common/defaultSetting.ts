@@ -2,7 +2,7 @@ import { join } from 'path'
 import { homedir } from 'os'
 
 const defaultSetting: LX.AppSetting = {
-  version: '2.0.0',
+  version: '2.1.0',
 
   'common.windowSizeId': 3,
   'common.fontSize': 16,
@@ -108,8 +108,11 @@ const defaultSetting: LX.AppSetting = {
   // 'tray.isToTray': false,
   'tray.themeId': 0,
 
+  'sync.mode': 'server',
   'sync.enable': false,
-  'sync.port': '23332',
+  'sync.server.port': '23332',
+  'sync.server.maxSsnapshotNum': 5,
+  'sync.client.host': '',
 
   'theme.id': 'blue_plus',
   // 'theme.id': 'green',

@@ -23,7 +23,7 @@
         <dl :class="$style.btnGroup">
           <dt :class="$style.label">{{ $t('sync__other_label') }}</dt>
           <dd :class="$style.btns">
-            <base-btn :class="$style.btn" @click="handleSelectMode('none')">{{ $t('sync__overwrite_btn_none') }}</base-btn>
+            <!-- <base-btn :class="$style.btn" @click="handleSelectMode('none')">{{ $t('sync__overwrite_btn_none') }}</base-btn> -->
             <base-btn :class="$style.btn" @click="handleSelectMode('cancel')">{{ $t('sync__overwrite_btn_cancel') }}</base-btn>
           </dd>
         </dl>

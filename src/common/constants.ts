@@ -75,3 +75,24 @@ export const DOWNLOAD_STATUS = {
 } as const
 
 export const QUALITYS = ['flac24bit', 'flac', 'wav', 'ape', '320k', '192k', '128k'] as const
+
+export const SYNC_CODE = {
+  helloMsg: 'Hello~::^-^::~v3~',
+  idPrefix: 'OjppZDo6',
+  authMsg: 'lx-music auth::',
+  authFailed: 'Auth failed',
+  missingAuthCode: 'Missing auth code',
+  getServiceIdFailed: 'Get service id failed',
+  connectServiceFailed: 'Connect service failed',
+  connecting: 'Connecting...',
+  unknownServiceAddress: 'Unknown service address',
+  msgBlockedIp: 'Blocked IP',
+  msgConnect: 'lx-music connect',
+  msgAuthFailed: 'Auth failed',
+} as const
+
+export const SYNC_CLOSE_CODE = {
+  normal: 1000,
+  failed: 4100,
+} as const
+

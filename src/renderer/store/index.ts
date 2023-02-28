@@ -27,27 +27,51 @@ export const proxy: {
 }
 export const sync: {
   enable: boolean
-  port: string
+  mode: LX.AppSetting['sync.mode']
   isShowSyncMode: boolean
+  isShowAuthCodeModal: boolean
   deviceName: string
-  status: {
-    status: boolean
-    message: string
-    address: string[]
-    code: string
-    devices: LX.Sync.KeyInfo[]
+  server: {
+    port: string
+    status: {
+      status: boolean
+      message: string
+      address: string[]
+      code: string
+      devices: LX.Sync.ServerKeyInfo[]
+    }
+  }
+  client: {
+    host: string
+    status: {
+      status: boolean
+      message: string
+      address: string[]
+    }
   }
 } = reactive({
   enable: false,
-  port: '',
+  mode: 'server',
   isShowSyncMode: false,
+  isShowAuthCodeModal: false,
   deviceName: '',
-  status: {
-    status: false,
-    message: '',
-    address: [],
-    code: '',
-    devices: [],
+  server: {
+    port: '',
+    status: {
+      status: false,
+      message: '',
+      address: [],
+      code: '',
+      devices: [],
+    },
+  },
+  client: {
+    host: '',
+    status: {
+      status: false,
+      message: '',
+      address: [],
+    },
   },
 })
 

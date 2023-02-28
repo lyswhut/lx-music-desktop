@@ -32,25 +32,62 @@ export default () => {
     immediate: true,
   })
 
+  watch(() => appSetting['sync.mode'], (mode) => {
+    sync.mode = mode
+  })
+
   watch(() => appSetting['sync.enable'], enable => {
-    void sendSyncAction({
-      action: 'enable',
-      data: {
-        enable,
-        port: appSetting['sync.port'],
-      },
-    })
+    switch (appSetting['sync.mode']) {
+      case 'server':
+        if (appSetting['sync.server.port']) {
+          void sendSyncAction({
+            action: 'enable_server',
+            data: {
+              enable: appSetting['sync.enable'],
+              port: appSetting['sync.server.port'],
+            },
+          })
+        }
+        break
+      case 'client':
+        if (appSetting['sync.client.host']) {
+          void sendSyncAction({
+            action: 'enable_client',
+            data: {
+              enable: appSetting['sync.enable'],
+              host: appSetting['sync.client.host'],
+            },
+          })
+        }
+        break
+      default:
+        break
+    }
     sync.enable = enable
   })
-  watch(() => appSetting['sync.port'], port => {
-    void sendSyncAction({
-      action: 'enable',
-      data: {
-        enable: appSetting['sync.enable'],
-        port: appSetting['sync.port'],
-      },
-    })
-    sync.port = port
+  watch(() => appSetting['sync.server.port'], port => {
+    if (appSetting['sync.mode'] == 'server') {
+      void sendSyncAction({
+        action: 'enable_server',
+        data: {
+          enable: appSetting['sync.enable'],
+          port: appSetting['sync.server.port'],
+        },
+      })
+    }
+    sync.server.port = port
+  })
+  watch(() => appSetting['sync.client.host'], host => {
+    if (appSetting['sync.mode'] == 'client') {
+      void sendSyncAction({
+        action: 'enable_client',
+        data: {
+          enable: appSetting['sync.enable'],
+          host: appSetting['sync.client.host'],
+        },
+      })
+    }
+    sync.client.host = host
   })
 
   watch(() => appSetting['network.proxy.enable'], enable => {

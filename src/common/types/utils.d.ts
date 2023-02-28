@@ -5,3 +5,8 @@ type DeepPartial<T> = {
 }
 
 type Modify<T, R> = Omit<T, keyof R> & R
+
+// type UndefinedOrNever = undefined
+type Actions<T extends { action: string, data?: any }> = {
+  [U in T as U['action']]: 'data' extends keyof U ? U['data'] : undefined
+}
