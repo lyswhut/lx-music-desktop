@@ -110,9 +110,10 @@ function onSocketError(err: Error) {
 const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promise((resolve, reject) => {
   httpServer = http.createServer((req, res) => {
     // console.log(req.url)
+    const endUrl = `/${req.url?.split('/').at(-1) ?? ''}`
     let code
     let msg
-    switch (req.url) {
+    switch (endUrl) {
       case '/hello':
         code = 200
         msg = SYNC_CODE.helloMsg
