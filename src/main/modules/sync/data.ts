@@ -9,15 +9,15 @@ import log from './log'
 
 export const getSyncAuthKey = async(serverId: string) => {
   const store = getStore(STORE_NAMES.SYNC)
-  const keys = store.get('syncAuthKey_v3') as Record<string, LX.Sync.ClientKeyInfo> | null
+  const keys = store.get('syncAuthKey') as Record<string, LX.Sync.ClientKeyInfo> | null
   if (!keys) return null
   return keys[serverId] ?? null
 }
 export const setSyncAuthKey = async(serverId: string, info: LX.Sync.ClientKeyInfo) => {
   const store = getStore(STORE_NAMES.SYNC)
-  let keys: Record<string, LX.Sync.ClientKeyInfo> = (store.get('syncAuthKey_v3') as Record<string, LX.Sync.ClientKeyInfo> | null) ?? {}
+  let keys: Record<string, LX.Sync.ClientKeyInfo> = (store.get('syncAuthKey') as Record<string, LX.Sync.ClientKeyInfo> | null) ?? {}
   keys[serverId] = info
-  store.set('syncAuthKey_v3', keys)
+  store.set('syncAuthKey', keys)
 }
 
 let syncHost: string
