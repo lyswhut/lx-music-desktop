@@ -9,15 +9,15 @@ import log from './log'
 
 export const getSyncAuthKey = async(serverId: string) => {
   const store = getStore(STORE_NAMES.SYNC)
-  const keys = store.get('syncAuthKey') as Record<string, LX.Sync.ClientKeyInfo> | null
+  const keys = store.get('syncAuthKey_v3') as Record<string, LX.Sync.ClientKeyInfo> | null
   if (!keys) return null
   return keys[serverId] ?? null
 }
 export const setSyncAuthKey = async(serverId: string, info: LX.Sync.ClientKeyInfo) => {
   const store = getStore(STORE_NAMES.SYNC)
-  let keys: Record<string, LX.Sync.ClientKeyInfo> = (store.get('syncAuthKey') as Record<string, LX.Sync.ClientKeyInfo> | null) ?? {}
+  let keys: Record<string, LX.Sync.ClientKeyInfo> = (store.get('syncAuthKey_v3') as Record<string, LX.Sync.ClientKeyInfo> | null) ?? {}
   keys[serverId] = info
-  store.set('syncAuthKey', keys)
+  store.set('syncAuthKey_v3', keys)
 }
 
 let syncHost: string
@@ -73,7 +73,7 @@ const devicesInfo: DevicesInfo = { serverId: '', clients: {}, snapshotInfo: { la
 let deviceKeys: string[] = []
 const saveDevicesInfoThrottle = throttle(() => {
   const store = getStore(STORE_NAMES.SYNC)
-  store.set('keys', devicesInfo.clients)
+  store.set('clients', devicesInfo.clients)
 })
 
 const initDeviceInfo = () => {
@@ -82,7 +82,8 @@ const initDeviceInfo = () => {
   if (serverId) devicesInfo.serverId = serverId
   else {
     devicesInfo.serverId = randomBytes(4 * 4).toString('base64')
-    saveDevicesInfoThrottle()
+    const store = getStore(STORE_NAMES.SYNC)
+    store.set('serverId', devicesInfo.serverId)
   }
   const devices = store.get('clients') as DevicesInfo['clients'] | undefined
   if (devices) devicesInfo.clients = devices
@@ -155,6 +156,7 @@ export const saveSnapshotInfo = (info: SnapshotInfo) => {
 }
 
 export const getSnapshot = async(name: string) => {
+  console.log('getSnapshot', name)
   const filePath = path.join(global.lxDataPath, `snapshot_${name}`)
   let listData: LX.Sync.ListData
   try {
@@ -166,6 +168,7 @@ export const getSnapshot = async(name: string) => {
   return listData
 }
 export const saveSnapshot = async(name: string, data: string) => {
+  console.log('saveSnapshot', name)
   const filePath = path.join(global.lxDataPath, `snapshot_${name}`)
   return fs.promises.writeFile(filePath, data).catch((err) => {
     log.error(err)
@@ -173,6 +176,7 @@ export const saveSnapshot = async(name: string, data: string) => {
   })
 }
 export const removeSnapshot = async(name: string) => {
+  console.log('removeSnapshot', name)
   const filePath = path.join(global.lxDataPath, `snapshot_${name}`)
   return fs.promises.unlink(filePath).catch((err) => {
     log.error(err)

@@ -6,7 +6,7 @@ import { SYNC_CODE } from '@common/constants'
 
 export default () => {
   const handleSyncList = (event: LX.Sync.SyncMainWindowActions) => {
-    console.log(event)
+    // console.log(event)
     switch (event.action) {
       case 'select_mode':
         sync.deviceName = event.data

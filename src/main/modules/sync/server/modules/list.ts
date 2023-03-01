@@ -2,8 +2,8 @@
 // import { sendSyncActionList } from '@main/modules/winMain'
 import { SYNC_CLOSE_CODE } from '@common/constants'
 import { updateDeviceSnapshotKey } from '../../data'
-import { handleRemoteListAction } from '../../utils'
-import { createSnapshot, encryptMsg } from '../utils'
+import { handleRemoteListAction, registerListActionEvent } from '../../utils'
+import { createSnapshot, encryptMsg, getCurrentListInfoKey } from '../utils'
 
 let wss: LX.Sync.Server.SocketServer | null
 let removeListener: (() => void) | null
@@ -29,16 +29,16 @@ const broadcast = async(key: string, data: any, excludeIds: string[] = []) => {
   }
 }
 
-export const sendListAction = async(action: LX.Sync.ActionList) => {
+const sendListAction = async(action: LX.Sync.ActionList) => {
   console.log('sendListAction', action.action)
   // io.sockets
-  await broadcast('list:sync:action', action)
+  await broadcast(await getCurrentListInfoKey(), action)
 }
 
 export const registerListHandler = (_wss: LX.Sync.Server.SocketServer, socket: LX.Sync.Server.Socket) => {
   if (!wss) {
     wss = _wss
-    // removeListener = registerListActionEvent()
+    removeListener = registerListActionEvent(sendListAction)
   }
 
   socket.onRemoteEvent('list:sync:action', (action) => {

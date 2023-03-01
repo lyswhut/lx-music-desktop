@@ -523,7 +523,7 @@
   "sync__merge_tip_desc": "將兩邊的列表合併到一起，相同的歌曲將被去掉（去掉的是被合併者的歌曲），不同的歌曲將被添加。",
   "sync__other_label": "其他",
   "sync__other_tip": "其他:",
-  "sync__other_tip_desc": "“僅使用實時同步功能”將不修改雙方的列表，僅實時同步操作；“取消同步”將直接斷開雙方的連接。",
+  "sync__other_tip_desc": "“取消同步”將直接斷開雙方的連接。",
   "sync__overwrite": "完全覆蓋",
   "sync__overwrite_btn_cancel": "取消同步",
   "sync__overwrite_btn_local_remote": "本機列表 覆蓋 遠程列表",

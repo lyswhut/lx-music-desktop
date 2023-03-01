@@ -35,6 +35,7 @@ export default {
     const handleSubmit = () => {
       let code = verify()
       if (code == '') return
+      authCode.value = ''
       handleClose()
       sendSyncAction({
         action: 'enable_client',

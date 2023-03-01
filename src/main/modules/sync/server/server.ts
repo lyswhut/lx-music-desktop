@@ -19,6 +19,7 @@ let status: LX.Sync.ServerStatus = {
   code: '',
   devices: [],
 }
+let stopingServer = false
 
 const codeTools: {
   timeout: NodeJS.Timer | null
@@ -148,6 +149,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     // const events = new Map<keyof ActionsType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
     // const events = new Map<keyof LX.Sync.ActionSyncType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
     let events: Partial<{ [K in keyof LX.Sync.ActionSyncType]: Array<(data: LX.Sync.ActionSyncType[K]) => void> }> = {}
+    let closeEvents: Array<(err: Error) => (void | Promise<void>)> = []
     socket.addEventListener('message', ({ data }) => {
       if (typeof data === 'string') {
         let syncData: LX.Sync.ActionSync
@@ -167,11 +169,9 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     })
     socket.addEventListener('close', () => {
       const err = new Error('closed')
-      for (const handler of Object.values(events).flat()) {
-        // @ts-expect-error
-        handler(err, null)
-      }
+      for (const handler of closeEvents) void handler(err)
       events = {}
+      closeEvents = []
       if (!status.devices.length) handleUnconnection()
       log.info('deconnection', socket.keyInfo.deviceName)
     })
@@ -184,6 +184,12 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
 
       return () => {
         eventArr!.splice(eventArr!.indexOf(handler), 1)
+      }
+    }
+    socket.onClose = function(handler: typeof closeEvents[number]) {
+      closeEvents.push(handler)
+      return () => {
+        closeEvents.splice(closeEvents.indexOf(handler), 1)
       }
     }
     socket.sendData = function(eventName, data, callback) {
@@ -248,6 +254,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
 
 const handleStopServer = async() => new Promise<void>((resolve, reject) => {
   if (!wss) return
+  for (const client of wss.clients) client.close(SYNC_CLOSE_CODE.normal)
   wss.close()
   wss = null
   httpServer.close((err) => {
@@ -271,6 +278,9 @@ export const stopServer = async() => {
     return
   }
   console.log('stoping sync server...')
+  status.message = 'stoping...'
+  sendServerStatus(status)
+  stopingServer = true
   await handleStopServer().then(() => {
     console.log('sync server stoped')
     status.status = false
@@ -281,12 +291,14 @@ export const stopServer = async() => {
     console.log(err)
     status.message = err.message
   }).finally(() => {
+    stopingServer = false
     sendServerStatus(status)
   })
 }
 
 export const startServer = async(port: number) => {
   console.log('status.status', status.status)
+  if (stopingServer) return
   if (status.status) await handleStopServer()
 
   log.info('starting sync server')

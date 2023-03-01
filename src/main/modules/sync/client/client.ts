@@ -38,6 +38,7 @@ const handleConnection = (socket: LX.Sync.Client.Socket) => {
 
 const heartbeatTools = {
   failedNum: 0,
+  maxTryNum: 3,
   pingTimeout: null as NodeJS.Timeout | null,
   delayRetryTimeout: null as NodeJS.Timeout | null,
   handleOpen() {
@@ -64,16 +65,21 @@ const heartbeatTools = {
     // client = null
     if (!client) return
 
-    if (this.failedNum > 3) throw new Error('connect error')
+    if (++this.failedNum > this.maxTryNum) {
+      this.failedNum = 0
+      throw new Error('connect error')
+    }
 
     this.delayRetryTimeout = setTimeout(() => {
       this.delayRetryTimeout = null
       if (!client) return
       console.log(dateFormat(new Date()), 'reconnnect...')
+      sendSyncStatus({
+        status: false,
+        message: `Try reconnnect... (${this.failedNum}/${this.maxTryNum})`,
+      })
       connect(client.data.urlInfo, client.data.keyInfo)
     }, 2000)
-
-    this.failedNum++
   },
   clearTimeout() {
     if (this.delayRetryTimeout) {
@@ -176,23 +182,40 @@ export const connect = (urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.Client
         message: '',
       })
     }).catch(err => {
-      console.log(err)
-      log.r_error(err.stack)
-      sendSyncStatus({
-        status: false,
-        message: err.message,
-      })
+      if (err.message == 'closed') {
+        sendSyncStatus({
+          status: false,
+          message: '',
+        })
+      } else {
+        console.log(err)
+        log.r_error(err.stack)
+        sendSyncStatus({
+          status: false,
+          message: err.message,
+        })
+      }
     })
   })
-  client.addEventListener('close', () => {
-    sendSyncStatus({
-      status: false,
-      message: '',
-    })
+  client.addEventListener('close', ({ code }) => {
     const err = new Error('closed')
     for (const handler of closeEvents) void handler(err)
     closeEvents = []
     events = {}
+    switch (code) {
+      case SYNC_CLOSE_CODE.normal:
+      // case SYNC_CLOSE_CODE.failed:
+        sendSyncStatus({
+          status: false,
+          message: '',
+        })
+    }
+  })
+  client.addEventListener('error', ({ message }) => {
+    sendSyncStatus({
+      status: false,
+      message,
+    })
   })
 }
 
@@ -202,6 +225,7 @@ export const disconnect = async() => {
   client.close(SYNC_CLOSE_CODE.normal)
   client = null
   heartbeatTools.clearTimeout()
+  heartbeatTools.failedNum = 0
 }
 
 export const getStatus = (): LX.Sync.ClientStatus => status

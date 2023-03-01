@@ -28,7 +28,7 @@ export default (name: string, isIgnoredError = true, isShowErrorAlert = true): S
 
 
     const backPath = join(global.lxDataPath, name + '.json.bak')
-    fs.copyFileSync(join(global.lxDataPath, name + '.json'), backPath)
+    fs.renameSync(join(global.lxDataPath, name + '.json'), backPath)
     if (isShowErrorAlert) {
       dialog.showMessageBoxSync({
         type: 'error',

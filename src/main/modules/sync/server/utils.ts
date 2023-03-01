@@ -52,11 +52,6 @@ export const createSnapshot = async() => {
 
 
 export const getCurrentListInfoKey = async() => {
-  if (!snapshotInfo) snapshotInfo = getSnapshotInfo()
-  if (snapshotInfo.latest) {
-    return snapshotInfo.latest
-  }
-  snapshotInfo.latest = toMD5(JSON.stringify(await getLocalListData()))
-  saveSnapshotInfo(snapshotInfo)
-  return snapshotInfo.latest
+  // if (!snapshotInfo) snapshotInfo = getSnapshotInfo()
+  return createSnapshot()
 }
