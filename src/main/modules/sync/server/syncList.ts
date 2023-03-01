@@ -265,6 +265,7 @@ const handleSyncList = async(socket: LX.Sync.Server.Socket) => {
       if (requiredUpdateLocalListData) {
         key = await handleSetLocalListData(mergedList)
         await overwriteRemoteListData(mergedList, key, [socket.keyInfo.clientId])
+        if (!requiredUpdateRemoteListData) updateDeviceSnapshotKey(socket.keyInfo, key)
       }
       if (requiredUpdateRemoteListData) {
         if (!key) key = await getCurrentListInfoKey()
@@ -274,11 +275,13 @@ const handleSyncList = async(socket: LX.Sync.Server.Socket) => {
       await setRemotelList(socket, localListData, await getCurrentListInfoKey())
     }
   } else {
+    let key: string
     if (remoteListData.defaultList.length || remoteListData.loveList.length || remoteListData.userList.length) {
-      const key = await handleSetLocalListData(remoteListData)
-      updateDeviceSnapshotKey(socket.keyInfo, key)
+      key = await handleSetLocalListData(remoteListData)
       await overwriteRemoteListData(remoteListData, key, [socket.keyInfo.clientId])
     }
+    key ??= await getCurrentListInfoKey()
+    updateDeviceSnapshotKey(socket.keyInfo, key)
   }
 }
 
