@@ -157,7 +157,7 @@ export default {
         strMediaMid: item.file.media_mid,
         songmid: item.mid,
         img: (item.album.name === '' || item.album.name === '空')
-          ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0].mid}.jpg`
+          ? item.singer?.length ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0].mid}.jpg` : ''
           : `https://y.gtimg.cn/music/photo_new/T002R500x500M000${item.album.mid}.jpg`,
         lrc: null,
         otherSource: null,
