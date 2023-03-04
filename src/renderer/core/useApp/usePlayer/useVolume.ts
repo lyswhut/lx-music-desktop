@@ -26,10 +26,10 @@ export default () => {
     setVolume(_volume)
   }
 
-  const handleSetVolumeUp = (step = 0.02) => {
+  const handleSetVolumeUp = (step = 0.04) => {
     handleSetVolume(volume.value + step)
   }
-  const handleSetVolumeDown = (step = 0.02) => {
+  const handleSetVolumeDown = (step = 0.04) => {
     handleSetVolume(volume.value - step)
   }
 
