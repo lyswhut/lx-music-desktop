@@ -64,6 +64,7 @@ export default () => {
   })
   // 全屏
   mainHandle<boolean, boolean>(WIN_MAIN_RENDERER_EVENT_NAME.fullscreen, async({ params: isFullscreen }) => {
+    global.lx.event_app.main_window_fullscreen(isFullscreen)
     return setFullScreen(isFullscreen)
   })
 

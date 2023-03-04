@@ -320,6 +320,7 @@
   "setting__desktop_lyric_font": "歌詞字體",
   "setting__desktop_lyric_font_default": "默認",
   "setting__desktop_lyric_font_weight": "加粗字體",
+  "setting__desktop_lyric_fullscreen_hide": "全屏時自動關閉歌詞",
   "setting__desktop_lyric_hover_hide": "鼠標移入歌詞區域時降低歌詞透明度（此功能存在平台兼容性問題）",
   "setting__desktop_lyric_line_gap": "歌詞間距（{num}）",
   "setting__desktop_lyric_line_gap_add": "加大間距",

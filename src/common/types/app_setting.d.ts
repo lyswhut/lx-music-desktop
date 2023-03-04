@@ -220,6 +220,11 @@ declare global {
       'desktopLyric.audioVisualization': boolean
 
       /**
+       * 是否在全屏时隐藏歌词
+       */
+      'desktopLyric.fullscreenHide': boolean
+
+      /**
        * 桌面歌词窗口宽度
        */
       'desktopLyric.width': number

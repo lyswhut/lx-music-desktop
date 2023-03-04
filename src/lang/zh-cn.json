@@ -321,6 +321,7 @@
   "setting__desktop_lyric_font": "歌词字体",
   "setting__desktop_lyric_font_default": "默认",
   "setting__desktop_lyric_font_weight": "加粗字体",
+  "setting__desktop_lyric_fullscreen_hide": "全屏时自动关闭歌词",
   "setting__desktop_lyric_hover_hide": "鼠标移入歌词区域时降低歌词透明度（此功能存在平台兼容性问题）",
   "setting__desktop_lyric_line_gap": "歌词间距（{num}）",
   "setting__desktop_lyric_line_gap_add": "加大间距",

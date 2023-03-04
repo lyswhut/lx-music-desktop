@@ -88,6 +88,10 @@ export class Event extends EventEmitter {
   main_window_close() {
     this.emit('main_window_close')
   }
+
+  main_window_fullscreen(isFullscreen: boolean) {
+    this.emit('main_window_fullscreen', isFullscreen)
+  }
 }
 
 

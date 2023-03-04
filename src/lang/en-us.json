@@ -319,6 +319,7 @@
   "setting__desktop_lyric_font": "Lyric font",
   "setting__desktop_lyric_font_default": "Default",
   "setting__desktop_lyric_font_weight": "Bold font",
+  "setting__desktop_lyric_fullscreen_hide": "Automatically close lyrics when full screen",
   "setting__desktop_lyric_hover_hide": "Reduce the transparency of lyrics when the mouse moves into the lyrics area (this feature has platform compatibility issues)",
   "setting__desktop_lyric_line_gap": "Lyric spacing ({num})",
   "setting__desktop_lyric_line_gap_add": "Increase spacing",

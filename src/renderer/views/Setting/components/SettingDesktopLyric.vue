@@ -6,6 +6,8 @@ dd
   .gap-top
     base-checkbox(id="setting_desktop_lyric_lock" :modelValue="appSetting['desktopLyric.isLock']" @update:modelValue="updateSetting({ 'desktopLyric.isLock': $event })" :label="$t('setting__desktop_lyric_lock')")
   .gap-top
+    base-checkbox(id="setting_desktop_lyric_fullscreen_hide" :modelValue="appSetting['desktopLyric.fullscreenHide']" @update:modelValue="updateSetting({ 'desktopLyric.fullscreenHide': $event })" :label="$t('setting__desktop_lyric_fullscreen_hide')")
+  .gap-top
     base-checkbox(id="setting_desktop_lyric_audio_visualization" :modelValue="appSetting['desktopLyric.audioVisualization']" @update:modelValue="updateSetting({ 'desktopLyric.audioVisualization': $event })" :label="$t('setting__desktop_lyric_audio_visualization')")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_delayScroll" :modelValue="appSetting['desktopLyric.isDelayScroll']" @update:modelValue="updateSetting({ 'desktopLyric.isDelayScroll': $event })" :label="$t('setting__desktop_lyric_delay_scroll')")

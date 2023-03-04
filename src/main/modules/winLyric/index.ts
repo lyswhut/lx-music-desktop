@@ -6,6 +6,7 @@ import { closeWindow, createWindow, isExistWindow } from './main'
 // import main from './main'
 // import { Event, EVENT_NAMES } from './event'
 
+let isMainWidnowFullscreen = false
 
 export default () => {
   initRendererEvent()
@@ -13,16 +14,33 @@ export default () => {
   // global.app_event.winMain.
 
   global.lx.event_app.on('main_window_inited', () => {
+    isMainWidnowFullscreen = global.lx.appSetting['common.startInFullscreen']
+
     if (global.lx.appSetting['desktopLyric.enable']) {
-      if (isExistWindow()) sendMainWindowInitedEvent()
-      else createWindow()
+      if (global.lx.appSetting['desktopLyric.fullscreenHide'] && isMainWidnowFullscreen) {
+        closeWindow()
+      } else {
+        if (isExistWindow()) sendMainWindowInitedEvent()
+        else createWindow()
+      }
     }
   })
   global.lx.event_app.on('updated_config', (keys, setting) => {
     setLrcConfig(keys, setting)
+    if (keys.includes('desktopLyric.fullscreenHide') && global.lx.appSetting['desktopLyric.enable'] && isMainWidnowFullscreen) {
+      if (global.lx.appSetting['desktopLyric.fullscreenHide']) closeWindow()
+      else if (!isExistWindow()) createWindow()
+    }
   })
   global.lx.event_app.on('main_window_close', () => {
     closeWindow()
+  })
+  global.lx.event_app.on('main_window_fullscreen', (isFullscreen) => {
+    isMainWidnowFullscreen = isFullscreen
+    if (global.lx.appSetting['desktopLyric.enable'] && global.lx.appSetting['desktopLyric.fullscreenHide']) {
+      if (isFullscreen) closeWindow()
+      else if (!isExistWindow()) createWindow()
+    }
   })
 
 
