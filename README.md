@@ -50,12 +50,18 @@
 或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
 使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)
 
+目前本项目的原始发布地址只有**GitHub**及**蓝奏网盘**，其他渠道均为第三方转载发布，与本项目无关！
+
 #### Scheme URL支持
 
 从v1.17.0起支持 Scheme URL，可以使用此功能从浏览器等场景下调用LX Music，我们开发了一个[油猴脚本](https://github.com/lyswhut/lx-music-script#readme)配套使用，<br>
 脚本安装地址：<https://greasyfork.org/zh-CN/scripts/438148><br>
 
 若你想自己调用LX Music，可以看[Scheme URL支持](https://lyswhut.github.io/lx-music-doc/desktop/scheme-url)
+
+#### 数据同步服务
+
+从v2.2.0起，我们发布了一个独立版的[数据同步服务](https://github.com/lyswhut/lx-music-sync-server#readme)，如果你有服务器，可以将其部署到服务器上作为私人多端同步服务使用，详情看该项目说明
 
 #### 启动参数
 
@@ -111,6 +117,20 @@ npm run pack:linux
 
 常见问题已移至：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
 
+### 贡献代码
+
+本项目欢迎PR，但为了PR能顺利合并，需要注意以下几点：
+
+- 对于添加新功能的PR，建议在PR前先创建issue说明，以确认该功能是否确实需要
+- 对于修复Bug PR，请提供修复前后的说明及重现方式
+- 其他类型的PR则适当附上说明
+
+贡献代码步骤：
+
+1. 参照[源码使用方法](https://lyswhut.github.io/lx-music-doc/desktop/use-source-code)设置开发环境
+2. 克隆本仓库代码并切换到`dev`分支开发
+3. 提交PR
+
 ### 项目协议
 
 本项目基于 [Apache License 2.0](https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE) 许可证发行，以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。
@@ -127,4 +147,5 @@ npm run pack:linux
 若你使用了本项目，将代表你接受以上协议。
 
 音乐平台不易，请尊重版权，支持正版。<br>
-若对此有疑问请 mail to: lyswhut+qq.com (请将`+`替换成`@`)
+本项目仅用于对技术可行性的探索及研究，不接受任何商业（包括但不限于广告等）合作及捐赠。<br>
+若对此有疑问请 mail to: lyswhut+qq.com (请将`+`替换成`@`)<br>
