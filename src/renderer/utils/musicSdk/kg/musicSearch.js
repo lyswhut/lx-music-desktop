@@ -11,65 +11,72 @@ export default {
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    const searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
+    const searchRequest = httpFetch(`https://songsearch.kugou.com/song_search_v2?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&userid=0&clientver=&platform=WebFilter&filter=2&iscorrection=1&privilege_filter=0`)
     return searchRequest.promise.then(({ body }) => body)
   },
   filterData(rawData) {
     const types = []
     const _types = {}
-    if (rawData.filesize !== 0) {
-      let size = sizeFormate(rawData.filesize)
-      types.push({ type: '128k', size, hash: rawData.hash })
+    if (rawData.FileSize !== 0) {
+      let size = sizeFormate(rawData.FileSize)
+      types.push({ type: '128k', size, hash: rawData.FileHash })
       _types['128k'] = {
         size,
-        hash: rawData.hash,
+        hash: rawData.FileHash,
       }
     }
-    if (rawData['320filesize'] !== 0) {
-      let size = sizeFormate(rawData['320filesize'])
-      types.push({ type: '320k', size, hash: rawData['320hash'] })
+    if (rawData.HQFileSize !== 0) {
+      let size = sizeFormate(rawData.HQFileSize)
+      types.push({ type: '320k', size, hash: rawData.HQFileHash })
       _types['320k'] = {
         size,
-        hash: rawData['320hash'],
+        hash: rawData.HQFileHash,
       }
     }
-    if (rawData.sqfilesize !== 0) {
-      let size = sizeFormate(rawData.sqfilesize)
-      types.push({ type: 'flac', size, hash: rawData.sqhash })
+    if (rawData.SQFileSize !== 0) {
+      let size = sizeFormate(rawData.SQFileSize)
+      types.push({ type: 'flac', size, hash: rawData.SQFileHash })
       _types.flac = {
         size,
-        hash: rawData.sqhash,
+        hash: rawData.SQFileHash,
+      }
+    }
+    if (rawData.ResFileSize !== 0) {
+      let size = sizeFormate(rawData.ResFileSize)
+      types.push({ type: 'flac24bit', size, hash: rawData.ResFileHash })
+      _types.flac24bit = {
+        size,
+        hash: rawData.ResFileHash,
       }
     }
     return {
-      singer: decodeName(rawData.singername),
-      name: decodeName(rawData.songname),
-      albumName: decodeName(rawData.album_name),
-      albumId: rawData.album_id,
-      songmid: rawData.audio_id,
+      singer: decodeName(rawData.SingerName),
+      name: decodeName(rawData.SongName),
+      albumName: decodeName(rawData.AlbumName),
+      albumId: rawData.Albumid,
+      songmid: rawData.Audioid,
       source: 'kg',
-      interval: formatPlayTime(rawData.duration),
-      _interval: rawData.duration,
+      interval: formatPlayTime(rawData.Duration),
+      _interval: rawData.Duration,
       img: null,
       lrc: null,
       otherSource: null,
-      hash: rawData.hash,
+      hash: rawData.FileHash,
       types,
       _types,
       typeUrl: {},
     }
   },
   handleResult(rawData) {
-    // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
-      const key = item.audio_id + item.hash
+      const key = item.Audioid + item.FileHash
       if (ids.has(key)) return
       ids.add(key)
       list.push(this.filterData(item))
-      for (const childItem of item.group) {
-        const key = item.audio_id + item.hash
+      for (const childItem of item.Grp) {
+        const key = item.Audioid + item.FileHash
         if (ids.has(key)) continue
         ids.add(key)
         list.push(this.filterData(childItem))
@@ -82,8 +89,8 @@ export default {
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page, limit).then(result => {
-      if (!result || result.errcode !== 0) return this.search(str, page, limit, retryNum)
-      let list = this.handleResult(result.data.info)
+      if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum)
+      let list = this.handleResult(result.data.lists)
 
       if (list == null) return this.search(str, page, limit, retryNum)
 
