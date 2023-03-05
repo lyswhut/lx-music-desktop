@@ -24,8 +24,8 @@ export default {
 
     // https://y.qq.com/n/yqq/playlist/7217720898.html
     // https://i.y.qq.com/n2/m/share/details/taoge.html?platform=11&appshare=android_qq&appversion=9050006&id=7217720898&ADTAG=qfshare
-    listDetailLink1: /^.+(?:(?:\?|&)id=|ryqq\/playlist\/)(\d+)(?:&.*$|#.*$|$)/,
-    listDetailLink2: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
+    listDetailLink: /\/playlist\/(\d+)/,
+    listDetailLink2: /id=(\d+)/,
   },
   tagsUrl: 'https://u.y.qq.com/cgi-bin/musicu.fcg?loginUin=0&hostUin=0&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=wk_v15.json&needNewCode=0&data=%7B%22tags%22%3A%7B%22method%22%3A%22get_all_categories%22%2C%22param%22%3A%7B%22qq%22%3A%22%22%7D%2C%22module%22%3A%22playlist.PlaylistAllCategoriesServer%22%7D%7D',
   hotTagUrl: 'https://c.y.qq.com/node/pc/wk_v15/category_playlist.html',
@@ -188,13 +188,15 @@ export default {
 
   async getListId(id) {
     if ((/[?&:/]/.test(id))) {
-      let regx = /\/\/i\.y\.qq\.com/.test(id) ? this.regExps.listDetailLink1 : this.regExps.listDetailLink2
-      if (!regx.test(id)) {
+      if (!this.regExps.listDetailLink.test(id)) {
         id = await this.handleParseId(id)
-        regx = this.regExps.listDetailLink1
-        console.log(id)
       }
-      id = id.replace(regx, '$1')
+      let result = this.regExps.listDetailLink.exec(id)
+      if (!result) {
+        result = this.regExps.listDetailLink2.exec(id)
+        if (!result) throw new Error('failed')
+      }
+      id = result[1]
       // console.log(id)
     }
     return id
