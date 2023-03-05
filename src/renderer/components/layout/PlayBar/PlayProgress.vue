@@ -28,9 +28,10 @@ export default {
     const dom_btn = ref<HTMLElement | null>(null)
 
     const handleShowPopup = (evt) => {
-      if (visible.value) evt.stopPropagation()
-      if (visible.value) handlMsLeave()
-      else handlMsEnter()
+      if (visible.value) {
+        evt.stopPropagation()
+        handlMsLeave()
+      } else handlMsEnter()
     }
     const {
       nowPlayTimeStr,
