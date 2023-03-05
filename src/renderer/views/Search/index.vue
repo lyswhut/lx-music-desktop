@@ -12,8 +12,8 @@
   </div>
 </template>
 
-<script>
-import { useRoute, useRouter } from '@common/utils/vueRouter'
+<script setup>
+import { onBeforeRouteUpdate, useRoute, useRouter } from '@common/utils/vueRouter'
 import { searchText } from '@renderer/store/search/state'
 import { getSearchSetting, setSearchSetting } from '@renderer/utils/data'
 import { sources as _sources } from '@renderer/store/search/music'
@@ -57,70 +57,46 @@ const verifyQueryParams = async(to, from, next) => {
   setSearchSetting({ source: _source, type: _type })
 }
 
-export default {
-  components: {
-    MusicList,
-    SongListList,
-    BlankView,
-  },
-  beforeRouteEnter: verifyQueryParams,
-  beforeRouteUpdate: verifyQueryParams,
-  setup() {
-    const route = useRoute()
-    const router = useRouter()
-
-    const sources = _sources.map(id => {
-      return {
-        id,
-        label: sourceNames.value[id],
-      }
-    })
-    const handleSourceChange = (id) => {
-      router.replace({
-        path: route.path,
-        query: {
-          ...route.query,
-          source: id,
-          page: 1,
-        },
-      })
-    }
-
-    const searchTypes = computed(() => {
-      return [
-        { label: window.i18n.t('search__type_music'), id: 'music' },
-        { label: window.i18n.t('search__type_songlist'), id: 'songlist' },
-      ]
-    })
-    const handleTypeChange = (type) => {
-      router.replace({
-        path: route.path,
-        query: {
-          ...route.query,
-          type,
-          page: 1,
-        },
-      })
-    }
-
-
-    return {
-      sources,
-      source,
-      handleSourceChange,
-      searchTypes,
-      searchType,
-      handleTypeChange,
-      page,
-      searchText,
-    }
-  },
+const route = useRoute()
+const router = useRouter()
+router.beforeEach((to, from, next) => verifyQueryParams(to, from, next))
+onBeforeRouteUpdate((to, from, next) => verifyQueryParams(to, from, next))
+const sources = _sources.map(id => {
+  return {
+    id,
+    label: sourceNames.value[id],
+  }
+})
+const handleSourceChange = (id) => {
+  router.replace({
+    path: route.path,
+    query: {
+      ...route.query,
+      source: id,
+      page: 1,
+    },
+  })
 }
 
-
+const searchTypes = computed(() => {
+  return [
+    { label: window.i18n.t('search__type_music'), id: 'music' },
+    { label: window.i18n.t('search__type_songlist'), id: 'songlist' },
+  ]
+})
+const handleTypeChange = (type) => {
+  router.replace({
+    path: route.path,
+    query: {
+      ...route.query,
+      type,
+      page: 1,
+    },
+  })
+}
 </script>
 
-<style lang="less" module>
+<style lang="less" module scoped>
 .container {
   display: flex;
   flex-flow: column nowrap;
