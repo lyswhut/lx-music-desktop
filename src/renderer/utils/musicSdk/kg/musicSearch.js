@@ -15,7 +15,6 @@ export default {
     return searchRequest.promise.then(({ body }) => body)
   },
   filterData(rawData) {
-    // console.log(rawData)
     const types = []
     const _types = {}
     if (rawData.FileSize !== 0) {
@@ -69,7 +68,6 @@ export default {
     }
   },
   handleResult(rawData) {
-    // console.log(rawData)
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
@@ -91,7 +89,6 @@ export default {
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page, limit).then(result => {
-      // console.log(result)
       if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum)
       let list = this.handleResult(result.data.lists)
 
