@@ -147,8 +147,8 @@ export default {
       // types.reverse()
       return {
         singer: this.getSinger(item.singer),
-        name: item.title,
-        albumName: item.album.title,
+        name: item.name,
+        albumName: item.album.name,
         albumId: item.album.mid,
         source: 'tx',
         interval: formatPlayTime(item.interval),

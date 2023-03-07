@@ -72,12 +72,12 @@ export default (songmid) => {
     let albumId = ''
     let albumName = ''
     if (item.album) {
-      albumName = item.album.title
+      albumName = item.album.name
       albumId = item.album.mid
     }
     return {
       singer: getSinger(item.singer),
-      name: item.title,
+      name: item.name,
       albumName,
       albumId,
       source: 'tx',

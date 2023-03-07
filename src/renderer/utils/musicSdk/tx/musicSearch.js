@@ -22,25 +22,32 @@ export default {
       },
       body: {
         comm: {
-          ct: '19',
-          cv: '1859',
-          uin: '0',
+          ct: 11,
+          cv: '1003006',
+          v: '1003006',
+          os_ver: '12',
+          phonetype: '0',
+          devicelevel: '31',
+          tmeAppID: 'qqmusiclight',
+          nettype: 'NETWORK_WIFI',
         },
         req: {
-          method: 'DoSearchForQQMusicDesktop',
           module: 'music.search.SearchCgiService',
+          method: 'DoSearchForQQMusicLite',
           param: {
-            grp: 1,
-            num_per_page: limit,
-            page_num: page,
             query: str,
             search_type: 0,
+            num_per_page: limit,
+            page_num: page,
+            nqc_flag: 0,
+            grp: 1,
           },
         },
       },
     })
     // searchRequest = httpFetch(`http://ioscdn.kugou.com/api/v3/search/song?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${this.limit}&showtype=10&plat=2&version=7910&tag=1&correct=1&privilege=1&sver=5`)
     return searchRequest.promise.then(({ body }) => {
+      // console.log(body)
       if (body.code != this.successCode || body.req.code != this.successCode) return this.musicSearch(str, page, limit, ++retryNum)
       return body.req.data
     })
@@ -93,12 +100,12 @@ export default {
       let albumId = ''
       let albumName = ''
       if (item.album) {
-        albumName = item.album.title
+        albumName = item.album.name
         albumId = item.album.mid
       }
       list.push({
         singer: this.getSinger(item.singer),
-        name: item.title,
+        name: item.name,
         albumName,
         albumId,
         source: 'tx',
@@ -122,9 +129,9 @@ export default {
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page, limit).then(({ body, meta }) => {
-      let list = this.handleResult(body.song.list)
+      let list = this.handleResult(body.item_song)
 
-      this.total = meta.sum
+      this.total = meta.estimate_sum
       this.page = page
       this.allPage = Math.ceil(this.total / limit)
 
