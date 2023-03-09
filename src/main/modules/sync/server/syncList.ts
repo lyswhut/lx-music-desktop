@@ -219,6 +219,10 @@ const overwriteList = (sourceListData: LX.Sync.ListData, targetListData: LX.Sync
 const handleMergeListData = async(socket: LX.Sync.Server.Socket): Promise<[LX.Sync.ListData, boolean, boolean]> => {
   const mode: LX.Sync.Mode = await getSyncMode(socket)
 
+  if (mode == 'cancel') {
+    socket.close(SYNC_CLOSE_CODE.normal)
+    throw new Error('cancel')
+  }
   const [remoteListData, localListData] = await Promise.all([getRemoteListData(socket), getLocalListData()])
   console.log('handleMergeListData', 'remoteListData, localListData')
   let listData: LX.Sync.ListData
@@ -246,7 +250,7 @@ const handleMergeListData = async(socket: LX.Sync.Server.Socket): Promise<[LX.Sy
       requiredUpdateRemoteListData = false
       break
     // case 'none': return null
-    case 'cancel':
+    // case 'cancel':
     default:
       socket.close(SYNC_CLOSE_CODE.normal)
       throw new Error('cancel')

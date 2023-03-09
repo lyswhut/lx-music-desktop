@@ -87,7 +87,7 @@ const initDeviceInfo = () => {
   }
   const devices = store.get('clients') as DevicesInfo['clients'] | undefined
   if (devices) devicesInfo.clients = devices
-  deviceKeys = Object.values(devicesInfo.clients).map(device => device.key).filter(k => k)
+  deviceKeys = Object.values(devicesInfo.clients).map(device => device.snapshotKey).filter(k => k)
   const snapshotInfo = store.get('snapshotInfo') as DevicesInfo['snapshotInfo'] | undefined
   if (snapshotInfo) devicesInfo.snapshotInfo = snapshotInfo
 }
@@ -111,6 +111,7 @@ export const saveClientKeyInfo = (keyInfo: LX.Sync.ServerKeyInfo) => {
 }
 export const getClientKeyInfo = (clientId?: string): LX.Sync.ServerKeyInfo | null => {
   if (!clientId) return null
+  if (!devicesInfo.serverId) initDeviceInfo()
   return devicesInfo.clients[clientId] ?? null
 }
 export const getServerId = (): string => {
