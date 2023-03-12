@@ -141,7 +141,7 @@ export default {
         play_count: this.formatPlayCount(item.access_num),
         id: item.tid,
         author: item.creator_info.nick,
-        name: item.name,
+        name: item.title,
         time: item.modify_time ? dateFormat(item.modify_time * 1000, 'Y-M-D') : '',
         img: item.cover_url_medium,
         // grade: item.favorcnt / 10,
