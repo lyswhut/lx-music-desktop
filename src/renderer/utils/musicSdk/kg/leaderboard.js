@@ -61,8 +61,8 @@ export default {
       bangid: '31308',
     },
   ],
-  getUrl(p, id) {
-    return `http://www2.kugou.kugou.com/yueku/v9/rank/home/${p}-${id}.html`
+  getUrl(p, id, limit = 100) {
+    return `http://mobilecdnbj.kugou.com/api/v3/rank/song?version=9108&ranktype=1&plat=0&pagesize=${limit}&area_code=1&page=${p}&rankid=${id}&with_res_tag=1&show_portrait_mv=1`
   },
   regExps: {
     total: /total: '(\d+)',/,
@@ -93,41 +93,41 @@ export default {
           hash: item.hash,
         }
       }
-      if (item.filesize_320 !== 0) {
-        let size = sizeFormate(item.filesize_320)
-        types.push({ type: '320k', size, hash: item.hash_320 })
+      if (item['320filesize'] !== 0) {
+        let size = sizeFormate(item['320filesize'])
+        types.push({ type: '320k', size, hash: item['320hash'] })
         _types['320k'] = {
           size,
-          hash: item.hash_320,
+          hash: item['320hash'],
         }
       }
-      if (item.filesize_ape !== 0) {
-        let size = sizeFormate(item.filesize_ape)
-        types.push({ type: 'ape', size, hash: item.hash_ape })
-        _types.ape = {
-          size,
-          hash: item.hash_ape,
-        }
-      }
-      if (item.filesize_flac !== 0) {
-        let size = sizeFormate(item.filesize_flac)
-        types.push({ type: 'flac', size, hash: item.hash_flac })
+      if (item.sqfilesize !== 0) {
+        let size = sizeFormate(item.sqfilesize)
+        types.push({ type: 'flac', size, hash: item.sqhash })
         _types.flac = {
           size,
-          hash: item.hash_flac,
+          hash: item.sqhash,
+        }
+      }
+      if (item.filesize_high !== 0) {
+        let size = sizeFormate(item.filesize_high)
+        types.push({ type: 'flac24bit', size, hash: item.hash_high })
+        _types.flac = {
+          size,
+          hash: item.hash_high,
         }
       }
       return {
-        singer: decodeName(item.singername),
+        singer: decodeName(item.authors.map(e => e.author_name).toString()),
         name: decodeName(item.songname),
-        albumName: decodeName(item.album_name),
+        albumName: decodeName(item.remark),
         albumId: item.album_id,
         songmid: item.audio_id,
         source: 'kg',
-        interval: formatPlayTime(item.duration / 1000),
+        interval: formatPlayTime(item.duration),
         img: null,
         lrc: null,
-        hash: item.HASH,
+        hash: item.hash,
         otherSource: null,
         types,
         _types,
@@ -173,15 +173,14 @@ export default {
     }
   },
   getList(bangid, page) {
-    return this.getData(this.getUrl(page, bangid)).then(({ body: html }) => {
-      let total = html.match(this.regExps.total)
-      if (total) total = parseInt(RegExp.$1)
-      page = html.match(this.regExps.page)
-      if (page) page = parseInt(RegExp.$1)
-      let limit = html.match(this.regExps.limit)
-      if (limit) limit = parseInt(RegExp.$1)
-      let listData = html.match(this.regExps.listData)
-      if (listData) listData = this.filterData(JSON.parse(RegExp.$1))
+    return this.getData(this.getUrl(page, bangid)).then(({ body }) => {
+      // console.log(body)
+      let jsondata = JSON.parse(body.substring(23, body.length - 21))
+      let total = jsondata.data.total
+      let limit = 100
+      let page = Math.ceil(jsondata.data.total / limit) || 1
+      let listData = this.filterData(jsondata.data.info)
+      console.log(listData, 1)
       return {
         total,
         list: listData,
