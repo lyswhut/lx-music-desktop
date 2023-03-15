@@ -81,6 +81,13 @@ dd
   h3#desktop_lyric_font {{$t('setting__desktop_lyric_font')}}
   div
     base-selection.gap-teft(:list="fontList" :modelValue="appSetting['desktopLyric.style.font']" @update:modelValue="updateSetting({ 'desktopLyric.style.font': $event })" item-key="id" item-name="label")
+
+dd
+  h3#desktop_lyric_reset {{ $t('setting__desktop_lyric_reset') }}
+  div
+    p.gap-top
+      base-btn.btn(min @click="resetWindowSetting") {{$t('setting__desktop_lyric_reset_window')}}
+
 </template>
 
 <script>
@@ -266,6 +273,15 @@ export default {
       systemFontList.value = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
     })
 
+    const resetWindowSetting = () => {
+      updateSetting({
+        'desktopLyric.width': 450,
+        'desktopLyric.height': 300,
+        'desktopLyric.x': null,
+        'desktopLyric.y': null,
+      })
+    }
+
     return {
       appSetting,
       updateSetting,
@@ -274,6 +290,7 @@ export default {
       lyric_played_color_ref,
       lyric_shadow_color_ref,
       resetColor,
+      resetWindowSetting,
 
       fontList,
       isLinux,

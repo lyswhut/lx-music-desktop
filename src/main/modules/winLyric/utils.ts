@@ -95,3 +95,28 @@ export const buildLyricConfig = (appSetting: Partial<LX.AppSetting>): Partial<LX
   }
   return setting
 }
+
+export const initWindowSize = (x: LX.AppSetting['desktopLyric.x'], y: LX.AppSetting['desktopLyric.y'], width: LX.AppSetting['desktopLyric.width'], height: LX.AppSetting['desktopLyric.height']) => {
+  if (x == null || y == null) {
+    if (width < minWidth) width = minWidth
+    if (height < minHeight) height = minHeight
+    if (global.envParams.workAreaSize) {
+      x = global.envParams.workAreaSize.width + padding - width
+      y = global.envParams.workAreaSize.height + padding - height
+    } else {
+      x = y = -padding
+    }
+  } else {
+    let bounds = getLyricWindowBounds({ x, y, width, height }, { x: 0, y: 0, w: width, h: height })
+    x = bounds.x
+    y = bounds.y
+    width = bounds.width
+    height = bounds.height
+  }
+  return {
+    x,
+    y,
+    width,
+    height,
+  }
+}

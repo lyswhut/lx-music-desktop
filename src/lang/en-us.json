@@ -327,6 +327,8 @@
   "setting__desktop_lyric_lock": "Lock lyrics",
   "setting__desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the main screen",
   "setting__desktop_lyric_played_color": "color played",
+  "setting__desktop_lyric_reset": "Reset",
+  "setting__desktop_lyric_reset_window": "Reset window settings",
   "setting__desktop_lyric_scroll_align": "now playing lyrics scroll position",
   "setting__desktop_lyric_scroll_align_center": "Center",
   "setting__desktop_lyric_scroll_align_top": "Top",

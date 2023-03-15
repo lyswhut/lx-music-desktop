@@ -1,7 +1,7 @@
 import { isLinux } from '@common/utils'
 import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
 import { sendConfigChange } from './rendererEvent'
-import { buildLyricConfig, getLyricWindowBounds, watchConfigKeys } from './utils'
+import { buildLyricConfig, getLyricWindowBounds, initWindowSize, watchConfigKeys } from './utils'
 
 let isLock: boolean
 let isEnable: boolean
@@ -61,6 +61,14 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
           h: global.lx.appSetting['desktopLyric.height'],
         }))
       }
+    }
+    if (keys.includes('desktopLyric.x') && setting['desktopLyric.x'] == null) {
+      setBounds(initWindowSize(
+        global.lx.appSetting['desktopLyric.x'],
+        global.lx.appSetting['desktopLyric.y'],
+        global.lx.appSetting['desktopLyric.width'],
+        global.lx.appSetting['desktopLyric.height'],
+      ))
     }
   }
   if (keys.includes('desktopLyric.enable') && isEnable != global.lx.appSetting['desktopLyric.enable']) {

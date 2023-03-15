@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
 import { debounce, isLinux } from '@common/utils'
-import { getLyricWindowBounds, minHeight, minWidth, padding } from './utils'
+import { initWindowSize } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
 
@@ -9,11 +9,11 @@ import { encodePath } from '@common/utils/electron'
 // require('./rendererEvent')
 
 let browserWindow: Electron.BrowserWindow | null = null
-let isWinBoundsUdating = false
+let isWinBoundsUpdateing = false
 
 const saveBoundsConfig = debounce((config: Partial<LX.AppSetting>) => {
   global.lx.event_app.update_config(config)
-  if (isWinBoundsUdating) isWinBoundsUdating = false
+  if (isWinBoundsUpdateing) isWinBoundsUpdateing = false
 }, 500)
 
 const winEvent = () => {
@@ -32,8 +32,8 @@ const winEvent = () => {
 
   browserWindow.on('move', () => {
     // bounds = browserWindow.getBounds()
-    // console.log('move', isWinBoundsUdating)
-    if (isWinBoundsUdating) {
+    // console.log('move', isWinBoundsUpdateing)
+    if (isWinBoundsUpdateing) {
       const bounds = browserWindow!.getBounds()
       saveBoundsConfig({
         'desktopLyric.x': bounds.x,
@@ -95,27 +95,12 @@ export const createWindow = () => {
   // let isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
   let isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
   // let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
-  if (x == null || y == null) {
-    if (width < minWidth) width = minWidth
-    if (height < minHeight) height = minHeight
-    if (global.envParams.workAreaSize) {
-      x = global.envParams.workAreaSize.width + padding - width
-      y = global.envParams.workAreaSize.height + padding - height
-    } else {
-      x = y = -padding
-    }
-  } else {
-    let bounds = getLyricWindowBounds({ x, y, width, height }, { x: 0, y: 0, w: width, h: height })
-    x = bounds.x
-    y = bounds.y
-    width = bounds.width
-    height = bounds.height
-  }
+  const winSize = initWindowSize(x, y, width, height)
   global.lx.event_app.update_config({
-    'desktopLyric.x': x,
-    'desktopLyric.y': y,
-    'desktopLyric.width': width,
-    'desktopLyric.height': height,
+    'desktopLyric.x': winSize.x,
+    'desktopLyric.y': winSize.y,
+    'desktopLyric.width': winSize.width,
+    'desktopLyric.height': winSize.height,
   })
 
   const { shouldUseDarkColors, theme } = global.lx.theme
@@ -124,10 +109,10 @@ export const createWindow = () => {
    * Initial window options
    */
   browserWindow = new BrowserWindow({
-    height,
-    width,
-    x,
-    y,
+    height: winSize.height,
+    width: winSize.width,
+    x: winSize.x,
+    y: winSize.y,
     minWidth: 380,
     minHeight: 80,
     useContentSize: true,
@@ -183,7 +168,7 @@ export const getBounds = (): Electron.Rectangle => {
 
 export const setBounds = (bounds: Electron.Rectangle) => {
   if (!browserWindow) return
-  isWinBoundsUdating = true
+  isWinBoundsUpdateing = true
   browserWindow.setBounds(bounds)
 }
 
