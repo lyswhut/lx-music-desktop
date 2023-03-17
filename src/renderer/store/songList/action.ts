@@ -158,6 +158,7 @@ export const getListDetailAll = async(id: string, source: LX.OnlineSource, isRef
         return result
       }) ?? Promise.reject(new Error('source not found' + source))
   }
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   return await loadData(id, 1).then((result: ListDetailInfo) => {
     if (result.total <= result.limit) return result.list
 
