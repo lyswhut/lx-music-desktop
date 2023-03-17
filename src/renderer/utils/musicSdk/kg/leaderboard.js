@@ -120,7 +120,7 @@ export default {
       if (item.filesize_high !== 0) {
         let size = sizeFormate(item.filesize_high)
         types.push({ type: 'flac24bit', size, hash: item.hash_high })
-        _types.flac = {
+        _types.flac24bit = {
           size,
           hash: item.hash_high,
         }
@@ -190,6 +190,7 @@ export default {
     let total = body.data.total
     let limit = 100
     let listData = this.filterData(body.data.info)
+    // console.log(listData)
     return {
       total,
       list: listData,
