@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from '@common/utils/vueTools'
+import { ref } from '@common/utils/vueTools'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 import { isShowPlayerDetail } from '@renderer/store/player/state'
 
@@ -69,12 +69,12 @@ export default {
       visibleProgress.value = false
     }
 
-    onMounted(() => {
-      visible.value = true
-      requestAnimationFrame(() => {
-        visible.value = false
-      })
-    })
+    // onMounted(() => {
+    //   visible.value = true
+    //   requestAnimationFrame(() => {
+    //     visible.value = false
+    //   })
+    // })
 
     return {
       visible,
