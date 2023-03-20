@@ -68,13 +68,14 @@ export default ({ list, listAll }) => {
         removeAllSelect()
         if (lastSelectIndex != clickIndex) {
           let isNeedReverse = false
-          if (clickIndex < lastSelectIndex) {
-            let temp = lastSelectIndex
-            lastSelectIndex = clickIndex
+          let _lastSelectIndex = lastSelectIndex
+          if (clickIndex < _lastSelectIndex) {
+            let temp = _lastSelectIndex
+            _lastSelectIndex = clickIndex
             clickIndex = temp
             isNeedReverse = true
           }
-          selectedList.value = list.value.slice(lastSelectIndex, clickIndex + 1)
+          selectedList.value = list.value.slice(_lastSelectIndex, clickIndex + 1)
           if (isNeedReverse) selectedList.value.reverse()
         }
       } else {
