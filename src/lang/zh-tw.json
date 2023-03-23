@@ -463,7 +463,7 @@
   "setting__sync": "數據同步",
   "setting__sync_client_address": "當前設備地址：{address}",
   "setting__sync_client_host": "同步服務地址",
-  "setting__sync_client_host_tip": "請輸入同步服務地址",
+  "setting__sync_client_host_tip": "http://IP地址:端口號",
   "setting__sync_client_mode": "客戶端模式",
   "setting__sync_client_status": "狀態：{status}",
   "setting__sync_code_blocked_ip": "當前設備的IP已被服務端封禁！",

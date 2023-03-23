@@ -462,7 +462,7 @@
   "setting__sync": "Data synchronization",
   "setting__sync_client_address": "Current device address: {address}",
   "setting__sync_client_host": "Synchronization service address",
-  "setting__sync_client_host_tip": "Please enter the synchronization service address",
+  "setting__sync_client_host_tip": "http://IP:Port",
   "setting__sync_client_mode": "client mode",
   "setting__sync_client_status": "Status: {status}",
   "setting__sync_code_blocked_ip": "The IP of the current device has been blocked by the server!",
