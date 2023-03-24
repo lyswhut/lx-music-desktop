@@ -8,10 +8,10 @@
     <template #content>
       <div :class="$style.setting">
         <div :class="$style.info">
-          <span>{{ playbackRate }}x</span>
-          <base-btn min @click="handleUpdatePlaybackRate(1)">{{ $t('player__playback_rate_reset_btn') }}</base-btn>
+          <span>{{ playbackRate.toFixed(2) }}x</span>
+          <base-btn min @click="handleUpdatePlaybackRate(100)">{{ $t('player__playback_rate_reset_btn') }}</base-btn>
         </div>
-        <base-slider-bar :value="playbackRate" :min="0.5" :max="2" @change="handleUpdatePlaybackRate" />
+        <base-slider-bar :class="$style.slider" :value="playbackRate * 100" :min="60" :max="200" @change="handleUpdatePlaybackRate" />
       </div>
     </template>
   </material-popup-btn>
@@ -22,7 +22,7 @@
 import { playbackRate } from '@renderer/store/player/playbackRate'
 
 const handleUpdatePlaybackRate = (val) => {
-  window.app_event.setPlaybackRate(Math.round(val * 10) / 10)
+  window.app_event.setPlaybackRate(Math.round(val) / 100)
 }
 
 // const icon = computed(() => {
@@ -87,6 +87,7 @@ const handleUpdatePlaybackRate = (val) => {
   flex-flow: column nowrap;
   padding: 2px 3px;
   gap: 8px;
+  width: 300px;
 }
 
 .info {
@@ -98,6 +99,10 @@ const handleUpdatePlaybackRate = (val) => {
   span {
     line-height: 1;
   }
+}
+
+.slider {
+  width: 100%;
 }
 
 

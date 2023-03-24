@@ -16,7 +16,7 @@
             @update:model-value="saveVolumeIsMute($event)"
           />
         </div>
-        <base-slider-bar :value="volume" :min="0" :max="1" @change="handleUpdateVolume" />
+        <base-slider-bar :class="$style.slider" :value="volume" :min="0" :max="1" @change="handleUpdateVolume" />
       </div>
     </template>
   </material-popup-btn>
@@ -91,6 +91,7 @@ const icon = computed(() => {
   flex-flow: column nowrap;
   padding: 2px 3px;
   gap: 8px;
+  width: 140px;
 }
 
 .info {
@@ -104,5 +105,8 @@ const icon = computed(() => {
   }
 }
 
+.slider {
+  width: 100%;
+}
 
 </style>
