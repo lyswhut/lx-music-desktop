@@ -1,6 +1,8 @@
 import { join } from 'path'
 import { homedir } from 'os'
 
+const isMac = process.platform == 'darwin'
+
 const defaultSetting: LX.AppSetting = {
   version: '2.1.0',
 
@@ -14,7 +16,7 @@ const defaultSetting: LX.AppSetting = {
   'common.isShowAnimation': true,
   'common.randomAnimate': true,
   'common.isAgreePact': false,
-  'common.controlBtnPosition': process.platform === 'darwin' ? 'left' : 'right',
+  'common.controlBtnPosition': isMac ? 'left' : 'right',
   'common.playBarProgressStyle': 'mini',
   'common.tryAutoUpdate': true,
   'common.showChangeLog': true,
@@ -31,7 +33,7 @@ const defaultSetting: LX.AppSetting = {
   'player.isShowLyricTranslation': false,
   'player.isShowLyricRoma': false,
   'player.isS2t': false,
-  'player.isPlayLxlrc': false,
+  'player.isPlayLxlrc': !isMac,
   'player.isSavePlayTime': false,
   'player.audioVisualization': false,
   'player.waitPlayEndStop': true,
