@@ -33,25 +33,27 @@ export const clearList = () => {
 
 export const setList = (result: ListInfo, tagId: string, sortId: string, page: number) => {
   listInfo.list = markRaw([...result.list])
-  listInfo.total = result.total
+  if (page == 1 || (result.total && result.list.length)) listInfo.total = result.total
+  else listInfo.total = result.limit * page
   listInfo.limit = result.limit
   listInfo.page = page
   listInfo.source = result.source
   listInfo.tagId = tagId
   listInfo.sortId = sortId
   if (result.list.length) listInfo.noItemLabel = ''
-  else listInfo.noItemLabel = window.i18n.t('no_item')
+  else if (page == 1) listInfo.noItemLabel = window.i18n.t('no_item')
 }
 export const setListDetail = (result: ListDetailInfo, id: string, page: number) => {
   listDetailInfo.list = markRaw([...result.list])
   listDetailInfo.id = id
   listDetailInfo.source = result.source
-  listDetailInfo.total = result.total
+  if (page == 1 || (result.total && result.list.length)) listDetailInfo.total = result.total
+  else listDetailInfo.total = result.limit * page
   listDetailInfo.limit = result.limit
   listDetailInfo.page = page
   listDetailInfo.info = markRaw({ ...result.info })
   if (result.list.length) listDetailInfo.noItemLabel = ''
-  else listDetailInfo.noItemLabel = window.i18n.t('no_item')
+  else if (page == 1) listDetailInfo.noItemLabel = window.i18n.t('no_item')
 }
 
 export const setSelectListInfo = (info: ListInfoItem) => {

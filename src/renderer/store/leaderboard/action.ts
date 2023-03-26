@@ -14,12 +14,13 @@ export const setListDetail = (result: ListDetailInfo, id: string, page: number) 
   listDetailInfo.list = markRaw([...result.list])
   listDetailInfo.id = id
   listDetailInfo.source = result.source
-  listDetailInfo.total = result.total
+  if (page == 1 || (result.total && result.list.length)) listDetailInfo.total = result.total
+  else listDetailInfo.total = result.limit * page
   listDetailInfo.limit = result.limit
   listDetailInfo.page = page
 
   if (result.list.length) listDetailInfo.noItemLabel = ''
-  else listDetailInfo.noItemLabel = window.i18n.t('no_item')
+  else if (page == 1) listDetailInfo.noItemLabel = window.i18n.t('no_item')
 }
 export const clearListDetail = () => {
   listDetailInfo.list = []
