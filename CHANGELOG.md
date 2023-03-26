@@ -6,6 +6,41 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.2.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.1.2...v2.2.0) - 2023-03-26
+
+从v2.2.0起，我们发布了一个独立版的[数据同步服务](https://github.com/lyswhut/lx-music-sync-server#readme)，如果你有服务器，可以将其部署到服务器上作为私人多端同步服务使用，详情看该项目说明
+
+### 不兼容性变更说明
+
+- 同步功能，从这个版本起，数据同步功能至少需要移动端v1.0.0的版本才能连接，连接的地址格式也略有改变，详情看[文档说明](https://lyswhut.github.io/lx-music-doc/desktop/faq/sync)
+
+### 新增
+
+- 重构数据同步功能，新增客户端模式
+- 新增全屏时自动关闭歌词设置，默认开启，可以去设置-桌面歌词设置更改
+- 新增设置-桌面歌词设置-重置窗口设置功能，点击时会重置桌面歌词窗口大小及位置
+- 新增设置-其他-列表数据清理功能，点击时会清空已创建的所有列表及所有收藏的歌曲
+
+### 优化
+
+- 支持wy源flac hires歌曲类型的显示
+- 快捷键调整音量时每次加减2%音量改为4%（#1220）
+- 音量、播放模式等设置弹出式按钮在鼠标移到按钮上时将自动弹出设置内容，保留点击切换显示/隐藏
+- 支持kg源搜索列表、排行榜flac hires歌曲类型的显示（#1231, #1238 By @helloplhm-qwq, @Folltoshe）
+- 播放速率的粒度调整为0.01，范围0.6-2.0x
+
+### 修复
+
+- 修复同步连接的处理问题
+- 修复记住播放进度的情况下，使用Scheme URL打开应用播放的歌曲进度没有被重置的问题
+- 修复使用酷狗码无法打开某些类型的歌单的问题
+- 修复tx源某些歌单因为歌曲信息缺失导致打开失败的问题
+- 修复连续选择时的初始选择歌曲位置被意外改变的问题
+
+### 其他
+
+- 更新 Electron 到v22.3.4
+
 ## [2.1.2](https://github.com/lyswhut/lx-music-desktop/compare/v2.1.1...v2.1.2) - 2023-02-18
 
 
