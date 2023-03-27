@@ -29,21 +29,21 @@ const local: LX.HotKeyConfig = {
 const global: LX.HotKeyConfig = {
   enable: false,
   keys: {
-    MediaPlayPause: {
-      type: HOTKEY_PLAYER.toggle_play.type,
-      name: '',
-      action: HOTKEY_PLAYER.toggle_play.action,
-    },
-    MediaPreviousTrack: {
-      type: HOTKEY_PLAYER.prev.type,
-      name: '',
-      action: HOTKEY_PLAYER.prev.action,
-    },
-    MediaNextTrack: {
-      type: HOTKEY_PLAYER.next.type,
-      name: '',
-      action: HOTKEY_PLAYER.next.action,
-    },
+    // MediaPlayPause: {
+    //   type: HOTKEY_PLAYER.toggle_play.type,
+    //   name: '',
+    //   action: HOTKEY_PLAYER.toggle_play.action,
+    // },
+    // MediaPreviousTrack: {
+    //   type: HOTKEY_PLAYER.prev.type,
+    //   name: '',
+    //   action: HOTKEY_PLAYER.prev.action,
+    // },
+    // MediaNextTrack: {
+    //   type: HOTKEY_PLAYER.next.type,
+    //   name: '',
+    //   action: HOTKEY_PLAYER.next.action,
+    // },
     'mod+alt+f5': {
       type: HOTKEY_PLAYER.toggle_play.type,
       name: HOTKEY_PLAYER.toggle_play.name,
