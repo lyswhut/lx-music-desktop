@@ -40,15 +40,17 @@ const codeTools: {
   },
 }
 
+const checkDuplicateClient = (newSocket: LX.Sync.Server.Socket) => {
+  for (const client of [...wss!.clients]) {
+    if (client === newSocket || client.keyInfo.clientId != newSocket.keyInfo.clientId) continue
+    console.log('duplicate client', client.keyInfo.deviceName)
+    client.isReady = false
+    client.close(SYNC_CLOSE_CODE.normal)
+  }
+}
+
 const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingMessage) => {
   const queryData = url.parse(request.url as string, true).query as Record<string, string>
-
-  socket.onClose(() => {
-    // console.log('disconnect', reason)
-    status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
-    sendServerStatus(status)
-  })
-
 
   //   // if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
   const keyInfo = getClientKeyInfo(queryData.i)
@@ -60,6 +62,8 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
   saveClientKeyInfo(keyInfo)
   //   // socket.lx_keyInfo = keyInfo
   socket.keyInfo = keyInfo
+  checkDuplicateClient(socket)
+
   try {
     await syncList(wss as LX.Sync.Server.SocketServer, socket)
   } catch (err) {
@@ -68,6 +72,11 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
     return
   }
   status.devices.push(keyInfo)
+  socket.onClose(() => {
+    // console.log('disconnect', reason)
+    status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
+    sendServerStatus(status)
+  })
   // handleConnection(io, socket)
   sendServerStatus(status)
 
@@ -216,15 +225,15 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
   })
 
   const interval = setInterval(() => {
-    wss?.clients.forEach(ws => {
-      if (ws.isAlive == false) {
-        ws.terminate()
+    wss?.clients.forEach(socket => {
+      if (socket.isAlive == false) {
+        socket.terminate()
         return
       }
 
-      ws.isAlive = false
-      ws.ping(noop)
-      if (ws.keyInfo.isMobile) ws.send('ping', noop)
+      socket.isAlive = false
+      socket.ping(noop)
+      if (socket.keyInfo.isMobile) socket.send('ping', noop)
     })
   }, 30000)
 
