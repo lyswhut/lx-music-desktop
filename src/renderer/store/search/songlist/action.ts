@@ -36,22 +36,24 @@ let maxTotals: Partial<Record<LX.OnlineSource, number>> = {
 }
 const setLists = (results: SearchResult[], page: number, text: string): ListInfoItem[] => {
   let totals = []
-  // let limit = 0
+  let limit = 0
   let list = []
   for (const source of results) {
     list.push(...source.list)
     totals.push(source.total)
     maxTotals[source.source] = source.total
     maxPages[source.source] = Math.ceil(source.total / source.limit)
-    // limit = Math.max(source.limit, limit)
+    limit = Math.max(source.limit, limit)
   }
   markRawList(list)
 
   let listInfo = listInfos.all
-  listInfo.total = Math.max(...totals)
+  const total = Math.max(0, ...totals)
+  if (page == 1 || (total && list.length)) listInfo.total = total
+  else listInfo.total = limit * page
   listInfo.page = page
   listInfo.list = handleSortList(list, text)
-  if (text && !list.length) listInfo.noItemLabel = window.i18n.t('no_item')
+  if (text && !list.length && page == 1) listInfo.noItemLabel = window.i18n.t('no_item')
   else listInfo.noItemLabel = ''
   return listInfo.list
 }
@@ -60,10 +62,11 @@ const setList = (datas: SearchResult, page: number, text: string): ListInfoItem[
   // console.log(datas.source, datas.list)
   let listInfo = listInfos[datas.source] as SearchListInfo
   listInfo.list = markRawList(datas.list)
-  listInfo.total = datas.total
+  if (page == 1 || (datas.total && datas.list.length)) listInfo.total = datas.total
+  else listInfo.total = datas.limit * page
   listInfo.page = page
   listInfo.limit = datas.limit
-  if (text && !datas.list.length) listInfo.noItemLabel = window.i18n.t('no_item')
+  if (text && !datas.list.length && page == 1) listInfo.noItemLabel = window.i18n.t('no_item')
   else listInfo.noItemLabel = ''
   return listInfo.list
 }

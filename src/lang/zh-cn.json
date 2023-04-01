@@ -465,7 +465,7 @@
   "setting__sync": "数据同步",
   "setting__sync_client_address": "当前设备地址：{address}",
   "setting__sync_client_host": "同步服务地址",
-  "setting__sync_client_host_tip": "请输入同步服务地址",
+  "setting__sync_client_host_tip": "http://IP地址:端口号",
   "setting__sync_client_mode": "客户端模式",
   "setting__sync_client_status": "状态：{status}",
   "setting__sync_code_blocked_ip": "当前设备的IP已被服务端封禁！",

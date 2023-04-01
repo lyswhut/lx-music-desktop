@@ -154,7 +154,15 @@ export const initHotKey = async() => {
   let localConfig = electronStore_hotKey.get('local') as LX.HotKeyConfig | null
   let globalConfig = electronStore_hotKey.get('global') as LX.HotKeyConfig | null
 
-  if (!localConfig) {
+  if (globalConfig) {
+    // 移除v2.2.0及之前设置的全局媒体快捷键注册
+    if (globalConfig.keys.MediaPlayPause) {
+      delete globalConfig.keys.MediaPlayPause
+      delete globalConfig.keys.MediaNextTrack
+      delete globalConfig.keys.MediaPreviousTrack
+      electronStore_hotKey.set('global', globalConfig)
+    }
+  } else {
     // migrate hotKey
     const config = await migrateHotKey()
     if (config) {

@@ -104,7 +104,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
         type: 'asset',
         parser: {
           dataUrlCondition: {

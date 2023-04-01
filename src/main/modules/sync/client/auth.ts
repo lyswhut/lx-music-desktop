@@ -61,6 +61,7 @@ const codeAuth = async(urlInfo: LX.Sync.Client.UrlInfo, serverId: string, authCo
 
 const keyAuth = async(urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.ClientKeyInfo) => {
   const msg = aesEncrypt(SYNC_CODE.authMsg + getComputerName(), keyInfo.key)
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   return request(`${urlInfo.httpProtocol}//${urlInfo.hostPath}/ah`, { headers: { i: keyInfo.clientId, m: msg } }).then(({ text, code }) => {
     if (code != 200) throw new Error(SYNC_CODE.authFailed)
 

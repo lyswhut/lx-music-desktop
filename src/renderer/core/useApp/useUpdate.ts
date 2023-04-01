@@ -95,6 +95,7 @@ export default () => {
         versionInfoPromise = handleGetVersionInfo()
       }
     } else versionInfoPromise = handleGetVersionInfo()
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     void versionInfoPromise.then((result) => {
       versionInfo.reCheck = false
 

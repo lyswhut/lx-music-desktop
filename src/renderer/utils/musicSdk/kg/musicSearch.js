@@ -53,7 +53,7 @@ export default {
       singer: decodeName(rawData.SingerName),
       name: decodeName(rawData.SongName),
       albumName: decodeName(rawData.AlbumName),
-      albumId: rawData.Albumid,
+      albumId: rawData.AlbumID,
       songmid: rawData.Audioid,
       source: 'kg',
       interval: formatPlayTime(rawData.Duration),

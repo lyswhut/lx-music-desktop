@@ -42,6 +42,7 @@ export default () => {
                           musicInfo: songInfo,
                         },
                       },
+                    // eslint-disable-next-line @typescript-eslint/promise-function-async
                     }).then(res => {
                       // console.log(res)
                       if (!/^https?:/.test(res.data.url)) return Promise.reject(new Error('Get url failed'))

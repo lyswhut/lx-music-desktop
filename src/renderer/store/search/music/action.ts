@@ -34,25 +34,27 @@ const handleSortList = (list: LX.Music.MusicInfo[], keyword: string) => {
 
 const setLists = (results: SearchResult[], page: number, text: string): LX.Music.MusicInfo[] => {
   let pages = []
-  let total = 0
-  // let limit = 0
+  let totals = []
+  let limit = 0
   let list = []
   for (const source of results) {
     maxPages[source.source] = source.allPage
+    limit = Math.max(source.limit, limit)
     if (source.allPage < page) continue
     list.push(...source.list)
     pages.push(source.allPage)
-    total += source.total
-    // limit = Math.max(source.limit, limit)
+    totals.push(source.total)
   }
   list = deduplicationList(list.map(s => markRaw(toNewMusicInfo(s))))
   let listInfo = listInfos.all
-  listInfo.maxPage = Math.max(...pages)
-  listInfo.total = total
+  listInfo.maxPage = Math.max(0, ...pages)
+  const total = Math.max(0, ...totals)
+  if (page == 1 || (total && list.length)) listInfo.total = total
+  else listInfo.total = limit * page
   // listInfo.limit = limit
   listInfo.page = page
   listInfo.list = handleSortList(list, text)
-  if (text && !list.length) listInfo.noItemLabel = window.i18n.t('no_item')
+  if (text && !list.length && page == 1) listInfo.noItemLabel = window.i18n.t('no_item')
   else listInfo.noItemLabel = ''
   return listInfo.list
 }
@@ -61,11 +63,12 @@ const setList = (datas: SearchResult, page: number, text: string): LX.Music.Musi
   // console.log(datas.source, datas.list)
   let listInfo = listInfos[datas.source] as ListInfo
   listInfo.list = deduplicationList(datas.list.map(s => markRaw(toNewMusicInfo(s))))
-  listInfo.total = datas.total
+  if (page == 1 || (datas.total && datas.list.length)) listInfo.total = datas.total
+  else listInfo.total = datas.limit * page
   listInfo.maxPage = datas.allPage
   listInfo.page = page
   listInfo.limit = datas.limit
-  if (text && !datas.list.length) listInfo.noItemLabel = window.i18n.t('no_item')
+  if (text && !datas.list.length && page == 1) listInfo.noItemLabel = window.i18n.t('no_item')
   else listInfo.noItemLabel = ''
   return listInfo.list
 }

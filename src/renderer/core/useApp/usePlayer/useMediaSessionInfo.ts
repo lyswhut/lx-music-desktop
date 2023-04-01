@@ -1,19 +1,44 @@
 import { onBeforeUnmount } from '@common/utils/vueTools'
 import { getDuration, getPlaybackRate, getCurrentTime } from '@renderer/plugins/player'
-import { musicInfo } from '@renderer/store/player/state'
+import { isPlay, musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { playProgress } from '@renderer/store/player/playProgress'
-import { playNext, playPrev, stop } from '@renderer/core/player'
-// import { } from ''
+import { pause, play, playNext, playPrev, stop } from '@renderer/core/player'
 
 export default () => {
+  // 创建一个空白音频以保持对 Media Session 的注册
+  const emptyAudio = new Audio()
+  emptyAudio.autoplay = false
+  emptyAudio.src = require('@renderer/assets/medias/Silence02s.mp3')
+  emptyAudio.controls = false
+  emptyAudio.preload = 'auto'
+  emptyAudio.onplaying = () => {
+    emptyAudio.pause()
+  }
+  void emptyAudio.play()
+  let prevPicUrl = ''
+
   const updateMediaSessionInfo = () => {
+    if (musicInfo.id == null) {
+      navigator.mediaSession.metadata = null
+      return
+    }
     const mediaMetadata: MediaMetadata = {
       title: musicInfo.name,
       artist: musicInfo.singer,
       album: musicInfo.album,
       artwork: [],
     }
-    if (musicInfo.pic) mediaMetadata.artwork = [{ src: musicInfo.pic }]
+    if (musicInfo.pic) {
+      const pic = new Image()
+      pic.src = prevPicUrl = musicInfo.pic
+      pic.onload = () => {
+        if (prevPicUrl == pic.src) {
+          mediaMetadata.artwork = [{ src: pic.src }]
+          // @ts-expect-error
+          navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
+        }
+      }
+    } else prevPicUrl = ''
 
     // @ts-expect-error
     navigator.mediaSession.metadata = new window.MediaMetadata(mediaMetadata)
@@ -48,25 +73,27 @@ export default () => {
     navigator.mediaSession.playbackState = 'none'
   }
   const handleSetPlayInfo = () => {
-    updateMediaSessionInfo()
-    updatePositionState({
-      position: playProgress.nowPlayTime,
-      duration: playProgress.maxPlayTime,
+    emptyAudio.play().finally(() => {
+      updateMediaSessionInfo()
+      updatePositionState({
+        position: playProgress.nowPlayTime,
+        duration: playProgress.maxPlayTime,
+      })
+      handlePause()
     })
-    handlePause()
   }
 
   // const registerMediaSessionHandler = () => {
-  // navigator.mediaSession.setActionHandler('play', () => {
-  //   if (this.isPlay || !this.playMusicInfo) return
-  //   console.log('play')
-  //   this.startPlay()
-  // })
-  // navigator.mediaSession.setActionHandler('pause', () => {
-  //   if (!this.isPlay || !this.playMusicInfo) return
-  //   console.log('pause')
-  //   this.stopPlay()
-  // })
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (isPlay.value || !playMusicInfo) return
+    console.log('play')
+    play()
+  })
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (!isPlay.value || !playMusicInfo) return
+    console.log('pause')
+    pause()
+  })
   navigator.mediaSession.setActionHandler('stop', () => {
     console.log('stop')
     setStop()
@@ -107,6 +134,8 @@ export default () => {
   window.app_event.on('pause', handlePause)
   window.app_event.on('stop', handleStop)
   window.app_event.on('error', handlePause)
+  window.app_event.on('playerEmptied', handleSetPlayInfo)
+  // window.app_event.on('playerLoadstart', handleSetPlayInfo)
   window.app_event.on('musicToggled', handleSetPlayInfo)
   window.app_event.on('picUpdated', updateMediaSessionInfo)
 
@@ -117,6 +146,8 @@ export default () => {
     window.app_event.off('pause', handlePause)
     window.app_event.off('stop', handleStop)
     window.app_event.off('error', handlePause)
+    window.app_event.off('playerEmptied', handleSetPlayInfo)
+    // window.app_event.off('playerLoadstart', handleSetPlayInfo)
     window.app_event.off('musicToggled', handleSetPlayInfo)
     window.app_event.off('picUpdated', updateMediaSessionInfo)
   })
