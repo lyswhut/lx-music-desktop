@@ -25,7 +25,7 @@ export default {
     if (this._requestObj2) this._requestObj2.cancelHttp()
     let timestamp = Date.now()
     const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=0&p=${page}&pagesize=${limit}&uuid=0&ver=10`
-    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/v1/weightlist?${signatureWithParams(params)`, {
+    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/v1/weightlist?${signatureWithParams(params)}`, {
       headers: {
         'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
       },
