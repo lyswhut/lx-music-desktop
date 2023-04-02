@@ -575,7 +575,7 @@ export default {
         list: listData,
         page: 1,
         limit: 100,
-        total: listData.total,
+        total: listInfo.total,
         source: 'kg',
         info: {
           name: listInfo.name,
