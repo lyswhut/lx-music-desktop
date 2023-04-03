@@ -1,5 +1,4 @@
 // import '../../polyfill/array.find'
-
 import { httpFetch } from '../../request'
 import { sizeFormate, formatPlayTime } from '../../index'
 import { encode } from './util'
@@ -14,7 +13,7 @@ export default {
   musicSearch(str, page, limit) {
     const timestamp = Date.now()
     const encodeData = encode(str, timestamp)
-    const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?pageNo=${page}&pageSize=${limit}&sort=0&text=${str}&searchSwitch={"song":1,"album":0,"singer":0,"tagSong":0,"mvSong":0,"bestShow":0,"songlist":0,"lyricSong":0}&isCopyright=1&isCorrect=1`, {
+    const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?pageNo=${page}&pageSize=${limit}&sort=0&text=${encodeURI(str)}&searchSwitch={"song":1}&isCopyright=1&isCorrect=1`, {
       headers: {
         // sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
         // timestamp: 1578225871982,
@@ -48,64 +47,65 @@ export default {
     let ids = new Set()
     const list = []
     rawData.forEach(item => {
-      let data = item[0]
-      if (ids.has(data.id)) return
-      ids.add(data.id)
-      const types = []
-      const _types = {}
-      data.audioFormats && data.audioFormats.forEach(type => {
-        let size
-        switch (type.formatType) {
-          case 'PQ':
-            size = sizeFormate(type.asize ?? type.isize)
-            types.push({ type: '128k', size })
-            _types['128k'] = {
-              size,
-            }
-            break
-          case 'HQ':
-            size = sizeFormate(type.asize ?? type.isize)
-            types.push({ type: '320k', size })
-            _types['320k'] = {
-              size,
-            }
-            break
-          case 'SQ':
-            size = sizeFormate(type.asize ?? type.isize)
-            types.push({ type: 'flac', size })
-            _types.flac = {
-              size,
-            }
-            break
-          case 'ZQ':
-            size = sizeFormate(type.asize ?? type.isize)
-            types.push({ type: 'flac24bit', size })
-            _types.flac24bit = {
-              size,
-            }
-            break
-        }
-      })
+      item.forEach(data => {
+        if (ids.has(data.id)) return
+        ids.add(data.id)
+        const types = []
+        const _types = {}
+        data.audioFormats && data.audioFormats.forEach(type => {
+          let size
+          switch (type.formatType) {
+            case 'PQ':
+              size = sizeFormate(type.asize ?? type.isize)
+              types.push({ type: '128k', size })
+              _types['128k'] = {
+                size,
+              }
+              break
+            case 'HQ':
+              size = sizeFormate(type.asize ?? type.isize)
+              types.push({ type: '320k', size })
+              _types['320k'] = {
+                size,
+              }
+              break
+            case 'SQ':
+              size = sizeFormate(type.asize ?? type.isize)
+              types.push({ type: 'flac', size })
+              _types.flac = {
+                size,
+              }
+              break
+            case 'ZQ':
+              size = sizeFormate(type.asize ?? type.isize)
+              types.push({ type: 'flac24bit', size })
+              _types.flac24bit = {
+                size,
+              }
+              break
+          }
+        })
 
-      list.push({
-        singer: this.getSinger(data.singerList),
-        name: data.name,
-        albumName: data.album,
-        albumId: data.albumId,
-        songmid: data.copyrightId,
-        songId: data.songId,
-        copyrightId: data.copyrightId,
-        source: 'mg',
-        interval: formatPlayTime(data.duration),
-        img: data.img3,
-        lrc: null,
-        lrcUrl: data.lyricUrl,
-        mrcUrl: data.mrcurl,
-        trcUrl: data.trcUrl,
-        otherSource: null,
-        types,
-        _types,
-        typeUrl: {},
+        list.push({
+          singer: this.getSinger(data.singerList),
+          name: data.name,
+          albumName: data.album,
+          albumId: data.albumId,
+          songmid: data.copyrightId,
+          songId: data.songId,
+          copyrightId: data.copyrightId,
+          source: 'mg',
+          interval: formatPlayTime(data.duration),
+          img: data.img3,
+          lrc: null,
+          lrcUrl: data.lrcUrl,
+          mrcUrl: data.mrcurl,
+          trcUrl: data.trcUrl,
+          otherSource: null,
+          types,
+          _types,
+          typeUrl: {},
+        })
       })
     })
     return list
