@@ -11,9 +11,9 @@ import {
 /**
  * 查询下载歌曲列表
  */
-export const queryDownloadList = (): LX.DBService.DownloadMusicInfo[] => {
+export const queryDownloadList = () => {
   const queryStatement = createQueryStatement()
-  return queryStatement.all()
+  return queryStatement.all() as LX.DBService.DownloadMusicInfo[]
 }
 
 /**

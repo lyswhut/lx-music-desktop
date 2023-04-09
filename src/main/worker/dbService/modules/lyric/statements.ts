@@ -46,7 +46,7 @@ export const createRawLyricInsertStatement = () => {
  */
 export const createRawLyricClearStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     DELETE FROM "main"."lyric"
     WHERE "source"='${RAW_LYRIC}'
   `)
@@ -83,7 +83,7 @@ export const createRawLyricUpdateStatement = () => {
  */
 export const createRawLyricCountStatement = () => {
   const db = getDB()
-  return db.prepare(`SELECT COUNT(*) as count FROM "main"."lyric" WHERE "source"='${RAW_LYRIC}'`)
+  return db.prepare<[]>(`SELECT COUNT(*) as count FROM "main"."lyric" WHERE "source"='${RAW_LYRIC}'`)
 }
 
 
@@ -117,7 +117,7 @@ export const createEditedLyricInsertStatement = () => {
  */
 export const createEditedLyricClearStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     DELETE FROM "main"."lyric"
     WHERE "source"='${EDITED_LYRIC}'
   `)
@@ -153,5 +153,5 @@ export const createEditedLyricUpdateStatement = () => {
  */
 export const createEditedLyricCountStatement = () => {
   const db = getDB()
-  return db.prepare(`SELECT COUNT(*) as count FROM "main"."lyric" WHERE "source"='${EDITED_LYRIC}'`)
+  return db.prepare<[]>(`SELECT COUNT(*) as count FROM "main"."lyric" WHERE "source"='${EDITED_LYRIC}'`)
 }

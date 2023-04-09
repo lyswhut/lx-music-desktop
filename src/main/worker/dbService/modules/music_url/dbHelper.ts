@@ -13,9 +13,9 @@ import {
  * @param id 歌曲id
  * @returns url
  */
-export const queryMusicUrl = (id: string): string | null => {
+export const queryMusicUrl = (id: string) => {
   const queryStatement = createQueryStatement()
-  return queryStatement.get(id)?.url
+  return (queryStatement.get(id) as { url: string } | null)?.url ?? null
 }
 
 /**
@@ -71,5 +71,5 @@ export const clearMusicUrl = () => {
  */
 export const countMusicUrl = () => {
   const countStatement = createCountStatement()
-  return countStatement.get().count
+  return (countStatement.get() as { count: number }).count
 }

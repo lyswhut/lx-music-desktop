@@ -30,7 +30,7 @@ export const createInsertStatement = () => {
  */
 export const createClearStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     DELETE FROM "main"."music_url"
   `)
 }
@@ -65,5 +65,5 @@ export const createUpdateStatement = () => {
  */
 export const createCountStatement = () => {
   const db = getDB()
-  return db.prepare('SELECT COUNT(*) as count FROM "main"."music_url"')
+  return db.prepare<[]>('SELECT COUNT(*) as count FROM "main"."music_url"')
 }

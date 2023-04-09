@@ -33,7 +33,7 @@ export const createMusicInfoInsertStatement = () => {
  */
 export const createMusicInfoClearStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     DELETE FROM "main"."music_info_other_source"
   `)
 }
@@ -56,5 +56,5 @@ export const createMusicInfoDeleteStatement = () => {
  */
 export const createCountStatement = () => {
   const db = getDB()
-  return db.prepare('SELECT COUNT(*) as count FROM "main"."music_info_other_source"')
+  return db.prepare<[]>('SELECT COUNT(*) as count FROM "main"."music_info_other_source"')
 }

@@ -7,7 +7,7 @@ import { getDB } from '../../db'
  */
 export const createListQueryStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     SELECT "id", "name", "source", "sourceListId", "position", "locationUpdateTime"
     FROM "main"."my_list"
     `)
@@ -30,7 +30,7 @@ export const createListInsertStatement = () => {
  */
 export const createListClearStatement = () => {
   const db = getDB()
-  return db.prepare('DELETE FROM "main"."my_list"')
+  return db.prepare<[]>('DELETE FROM "main"."my_list"')
 }
 
 /**
@@ -100,7 +100,7 @@ export const createMusicInfoUpdateStatement = () => {
  */
 export const createMusicInfoClearStatement = () => {
   const db = getDB()
-  return db.prepare('DELETE FROM "main"."my_list_music_info"')
+  return db.prepare<[]>('DELETE FROM "main"."my_list_music_info"')
 }
 
 /**
@@ -162,7 +162,7 @@ export const createMusicInfoOrderInsertStatement = () => {
  */
 export const createMusicInfoOrderClearStatement = () => {
   const db = getDB()
-  return db.prepare('DELETE FROM "main"."my_list_music_info_order"')
+  return db.prepare<[]>('DELETE FROM "main"."my_list_music_info_order"')
 }
 
 /**

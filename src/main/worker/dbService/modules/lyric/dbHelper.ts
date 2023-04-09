@@ -20,9 +20,9 @@ import {
  * @param id 歌曲id
  * @returns 歌词信息
  */
-export const queryLyric = (id: string): LX.DBService.Lyricnfo[] => {
+export const queryLyric = (id: string) => {
   const lyricQueryStatement = createLyricQueryStatement()
-  return lyricQueryStatement.all(id)
+  return lyricQueryStatement.all(id) as LX.DBService.Lyricnfo[]
 }
 
 /**
@@ -30,9 +30,9 @@ export const queryLyric = (id: string): LX.DBService.Lyricnfo[] => {
  * @param id 歌曲id
  * @returns 歌词信息
  */
-export const queryRawLyric = (id: string): LX.DBService.Lyricnfo[] => {
+export const queryRawLyric = (id: string) => {
   const rawLyricQueryStatement = createRawLyricQueryStatement()
-  return rawLyricQueryStatement.all(id)
+  return rawLyricQueryStatement.all(id) as LX.DBService.Lyricnfo[]
 }
 
 /**
@@ -84,7 +84,7 @@ export const clearRawLyric = () => {
  */
 export const countRawLyric = () => {
   const countStatement = createRawLyricCountStatement()
-  return countStatement.get().count
+  return (countStatement.get() as { count: number }).count
 }
 
 
@@ -93,9 +93,9 @@ export const countRawLyric = () => {
  * @param id 歌曲id
  * @returns 歌词信息
  */
-export const queryEditedLyric = (id: string): LX.DBService.Lyricnfo[] => {
+export const queryEditedLyric = (id: string) => {
   const rawLyricQueryStatement = createEditedLyricQueryStatement()
-  return rawLyricQueryStatement.all(id)
+  return rawLyricQueryStatement.all(id) as LX.DBService.Lyricnfo[]
 }
 
 /**
@@ -148,5 +148,5 @@ export const clearEditedLyric = () => {
  */
 export const countEditedLyric = () => {
   const countStatement = createEditedLyricCountStatement()
-  return countStatement.get().count
+  return (countStatement.get() as { count: number }).count
 }
