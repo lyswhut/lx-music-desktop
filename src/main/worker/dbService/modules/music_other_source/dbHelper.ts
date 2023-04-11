@@ -13,9 +13,9 @@ import {
  * @param id 歌曲id
  * @returns 歌曲信息
  */
-export const queryMusicInfo = (id: string): LX.DBService.MusicInfoOtherSource[] => {
+export const queryMusicInfo = (id: string) => {
   const musicInfoQueryStatement = createMusicInfoQueryStatement()
-  return musicInfoQueryStatement.all(id)
+  return musicInfoQueryStatement.all(id) as LX.DBService.MusicInfoOtherSource[]
 }
 
 /**
@@ -55,5 +55,5 @@ export const clearMusicInfo = () => {
  */
 export const countMusicInfo = () => {
   const countStatement = createCountStatement()
-  return countStatement.get().count
+  return (countStatement.get() as { count: number }).count
 }

@@ -6,7 +6,7 @@ import { getDB } from '../../db'
  */
 export const createQueryStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     SELECT "id", "isComplate", "status", "statusText", "progress_downloaded", "progress_total", "url", "quality", "ext", "fileName", "filePath", "musicInfo", "position"
     FROM download_list
     ORDER BY "position" ASC
@@ -30,7 +30,7 @@ export const createInsertStatement = () => {
  */
 export const createClearStatement = () => {
   const db = getDB()
-  return db.prepare(`
+  return db.prepare<[]>(`
     DELETE FROM "main"."download_list"
   `)
 }

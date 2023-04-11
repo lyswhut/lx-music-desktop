@@ -29,7 +29,7 @@ export default (db: Database.Database) => {
   // PRAGMA user_version = x
   // console.log(db.prepare('PRAGMA user_version').get().user_version)
   // https://github.com/WiseLibs/better-sqlite3/issues/668#issuecomment-1145285728
-  const version = db.prepare('SELECT "field_value" FROM "main"."db_info" WHERE "field_name" = ?').get('version').field_value
+  const version = (db.prepare<[string]>('SELECT "field_value" FROM "main"."db_info" WHERE "field_name" = ?').get('version') as { field_value: string }).field_value
   switch (version) {
     case '1':
       migrateV1(db)
