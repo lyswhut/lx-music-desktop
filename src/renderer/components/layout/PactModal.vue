@@ -18,14 +18,14 @@
       </div>
       <div v-if="!isAgreePact" :class="$style.btns">
         <base-btn :class="$style.btn" @click="handleClose(true)">{{ $t('not_agree') }}</base-btn>
-        <base-btn :class="$style.btn" :disabled="!btnEnable" @click="handleClick()">{{ $t('agree') }} {{ timeStr }}</base-btn>
+        <base-btn :class="$style.btn" :disabled="!btnEnable" @click="handleClick">{{ $t('agree') }} {{ timeStr }}</base-btn>
       </div>
     </main>
   </material-modal>
 </template>
 
 <script>
-import { quitApp } from '@renderer/utils/ipc'
+import { checkUpdate, quitApp } from '@renderer/utils/ipc'
 import { openUrl } from '@common/utils/electron'
 import { isShowPact } from '@renderer/store'
 import { appSetting, saveAgreePact } from '@renderer/store/setting'
@@ -75,6 +75,8 @@ export default {
         this.$dialog({
           message: Buffer.from('e69cace8bdafe4bbb6e5ae8ce585a8e5858de8b4b9e4b894e5bc80e6ba90efbc8ce5a682e69e9ce4bda0e698afe88ab1e992b1e8b4ade4b9b0e79a84efbc8ce8afb7e79bb4e68ea5e7bb99e5b7aee8af84efbc810a0a5468697320736f667477617265206973206672656520616e64206f70656e20736f757263652e', 'hex').toString(),
           confirmButtonText: Buffer.from('e5a5bde79a8420284f4b29', 'hex').toString(),
+        }).then(() => {
+          checkUpdate()
         })
       }, 2e3)
     },
