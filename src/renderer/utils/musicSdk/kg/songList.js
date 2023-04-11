@@ -568,9 +568,9 @@ export default {
     const requestObj_listDetail = httpFetch(link)
     return requestObj_listDetail.promise.then(async({ body }) => {
       if (!body.data.info) return this.getListDetail(id, page, ++tryNum)
-      let listData = body.data.info
+      let listData = await Promise.all(this.createTask(body.data.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
       let listInfo = await this.getSpecialListInfo(id)
-      listData = this.filterDatav9(listData)
+      listData = this.filterData2(listData)
       return {
         list: listData,
         page: 1,
@@ -736,6 +736,14 @@ export default {
         _types.flac = {
           size,
           hash: item.audio_info.hash_flac,
+        }
+      }
+      if (item.audio_info.filesize_high !== '0') {
+        let size = sizeFormate(parseInt(item.audio_info.filesize_high))
+        types.push({ type: 'flac24bit', size, hash: item.audio_info.hash_high })
+        _types.flac24bit = {
+          size,
+          hash: item.audio_info.hash_high,
         }
       }
       list.push({

@@ -1,9 +1,6 @@
-// import '../../polyfill/array.find'
 import { httpFetch } from '../../request'
 import { sizeFormate, formatPlayTime } from '../../index'
-import { encode } from './util'
-// import { debug } from '../../utils/env'
-// import { formatSinger } from './util'
+import { sign } from './util'
 
 export default {
   limit: 20,
@@ -11,27 +8,21 @@ export default {
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    const timestamp = Date.now()
-    const encodeData = encode(str, timestamp)
+    const time = Date.now()
+    const signData = sign(str, time)
     const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?pageNo=${page}&pageSize=${limit}&sort=0&text=${encodeURI(str)}&searchSwitch={"song":1}&isCopyright=1&isCorrect=1`, {
       headers: {
-        // sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
-        // timestamp: 1578225871982,
-        // appId: 'yyapp2',
-        // mode: 'android',
-        // ua: 'Android_migu',
-        // version: '6.9.4',
-        // osVersion: 'android 10.0',
         uiVersion: 'A_music_3.6.1',
-        deviceId: encodeData.deviceId,
-        timestamp: timestamp.toString(),
-        sign: encodeData.sign,
-        'User-Agent': 'Mozilla/5.0 (Linux; U; Android 11.0.0; zh-cn; MI 11 Build/OPR1.170623.032) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
+        deviceId: signData.deviceId,
+        timestamp: time.toString(),
+        sign: signData.sign,
         channel: '0146921',
+        'User-Agent': 'Mozilla/5.0 (Linux; U; Android 11.0.0; zh-cn; MI 11 Build/OPR1.170623.032) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
       },
     })
     // searchRequest = httpFetch(`http://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?ua=Android_migu&version=5.0.1&text=${encodeURIComponent(str)}&pageNo=${page}&pageSize=${limit}&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A0%2C%22mvSong%22%3A0%2C%22songlist%22%3A0%2C%22bestShow%22%3A1%7D`, {
     // searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
+    // 旧版接口
     // searchRequest = httpFetch(`https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=${page}&pageSize=${limit}&searchSwitch={%22song%22:1,%22album%22:0,%22singer%22:0,%22tagSong%22:0,%22mvSong%22:0,%22songlist%22:0,%22bestShow%22:0}&sort=0&text=${encodeURIComponent(str)}`)
     return searchRequest.promise.then(({ body }) => body)
   },
@@ -76,7 +67,7 @@ export default {
                 size,
               }
               break
-            case 'ZQ':
+            case 'ZQ24':
               size = sizeFormate(type.asize ?? type.isize)
               types.push({ type: 'flac24bit', size })
               _types.flac24bit = {
