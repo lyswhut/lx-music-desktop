@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import musicSearch from './musicSearchOld'
+import musicSearch from './musicSearch'
 import { decrypt } from './mrc'
 
 const mrcTools = {
