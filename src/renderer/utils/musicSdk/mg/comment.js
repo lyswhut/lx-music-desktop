@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import getSongId from './songId'
+import { getSongId } from './songId'
 import { dateFormat2 } from '../../index'
 
 export default {
@@ -29,7 +29,7 @@ export default {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     if (!musicInfo.songId) {
-      let id = await this.getSongId(musicInfo)
+      let id = await getSongId(musicInfo)
       if (!id) throw new Error('获取评论失败')
       musicInfo.songId = id
     }
