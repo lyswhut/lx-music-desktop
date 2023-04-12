@@ -235,11 +235,21 @@ contextBridge.exposeInMainWorld('lx', {
       },
     },
     zlib: {
-      inflate(...args) {
-        return zlib.inflateSync(...args)
+      inflate(buf) {
+        return new Promise((resolve, reject) => {
+          zlib.inflate(buf, (err, data) => {
+            if (err) reject(new Error(err.message))
+            else resolve(data)
+          })
+        })
       },
-      deflate(...args) {
-        return zlib.deflateSync(...args)
+      deflate(data) {
+        return new Promise((resolve, reject) => {
+          zlib.deflate(data, (err, buf) => {
+            if (err) reject(new Error(err.message))
+            else resolve(buf)
+          })
+        })
       },
     },
   },

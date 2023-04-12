@@ -6,13 +6,13 @@ export default {
     if (this._requestObj) this._requestObj.cancelHttp()
     if (retryNum > 2) return Promise.reject(new Error('try max num'))
 
-    const _requestObj = httpFetch('http://jadeite.migu.cn:7090/music_search/v2/search/hotword')
+    const _requestObj = httpFetch('http://jadeite.migu.cn:7090/music_search/v3/search/hotword')
     const { body, statusCode } = await _requestObj.promise
     if (statusCode != 200 || body.code !== '000000') throw new Error('获取热搜词失败')
     // console.log(body, statusCode)
-    return { source: 'mg', list: this.filterList(body.data) }
+    return { source: 'mg', list: this.filterList(body.data.hotwords[0].hotwordList) }
   },
   filterList(rawList) {
-    return rawList.map(item => item.word)
+    return rawList.filter(item => item.resourceType == 'song').map(item => item.word)
   },
 }

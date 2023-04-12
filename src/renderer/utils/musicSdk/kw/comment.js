@@ -35,7 +35,7 @@ export default {
     return rawList.map(item => {
       let data = {
         id: item.id,
-        text: item.msg.split('\n'),
+        text: item.msg,
         time: item.time,
         timeStr: dateFormat2(new Date(item.time).getTime()),
         userName: decodeURIComponent(item.u_name),
@@ -48,7 +48,7 @@ export default {
         ? {
             id: item.id,
             rootId: item.reply.id,
-            text: item.reply.msg.split('\n'),
+            text: item.reply.msg,
             time: item.reply.time,
             timeStr: dateFormat2(new Date(item.reply.time).getTime()),
             userName: decodeURIComponent(item.reply.u_name),

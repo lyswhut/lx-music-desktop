@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName, dateFormat2 } from '../../index'
-import { signatureWithParams } from './util'
+import { signatureParams } from './util'
 
 export default {
   _requestObj: null,
@@ -10,7 +10,7 @@ export default {
 
     let timestamp = Date.now()
     const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=0&p=${page}&pagesize=${limit}&uuid=0&ver=10`
-    const _requestObj = httpFetch(`http://m.comment.service.kugou.com/v1/cmtlist?${signatureWithParams(params)}`, {
+    const _requestObj = httpFetch(`http://m.comment.service.kugou.com/v1/cmtlist?${params}&signature=${signatureParams(params)}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.24',
       },
@@ -25,7 +25,7 @@ export default {
     if (this._requestObj2) this._requestObj2.cancelHttp()
     let timestamp = Date.now()
     const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=0&p=${page}&pagesize=${limit}&uuid=0&ver=10`
-    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/v1/weightlist?${signatureWithParams(params)}`, {
+    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/v1/weightlist?${params}&signature=${signatureParams(params)}`, {
       headers: {
         'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
       },
@@ -57,7 +57,7 @@ export default {
     return rawList.map(item => {
       let data = {
         id: item.id,
-        text: decodeName(item.content || '').split('\n'),
+        text: decodeName(item.content || ''),
         images: item.images ? item.images.map(i => i.url) : [],
         location: item.location,
         time: item.addtime,
@@ -73,7 +73,7 @@ export default {
       return item.pcontent
         ? {
             id: item.id,
-            text: decodeName(item.pcontent).split('\n'),
+            text: decodeName(item.pcontent),
             time: null,
             userName: item.puser,
             avatar: null,

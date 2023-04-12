@@ -19,31 +19,11 @@ export const decodeLyric = str => new Promise((resolve, reject) => {
 //   console.log(str)
 // })
 
-export const signature = (params, apiver = 9) => {
+export const signatureParams = (params, apiver = 9) => {
   let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
   if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
   let param_list = params.split('&')
   param_list.sort()
   let sign_params = `${keyparam}${param_list.join('')}${keyparam}`
   return toMD5(sign_params)
-}
-
-export const signatureWithParams = (params, apiver = 9) => {
-  let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
-  if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
-  let param_list = params.split('&')
-  param_list.sort()
-  let sign_params = `${keyparam}${param_list.join('')}${keyparam}`
-  return `${params}&signature=${toMD5(sign_params)}`
-}
-
-export const signatureWithUrl = (url, apiver = 9) => {
-  let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
-  if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
-  let burl = url.split('?')[0]
-  let params = url.replace(burl, '').substring(1)
-  let param_list = params.split('&')
-  param_list.sort()
-  let sign_params = `${keyparam}${param_list.join('')}${keyparam}`
-  return `${url}&signature=${toMD5(sign_params)}`
 }

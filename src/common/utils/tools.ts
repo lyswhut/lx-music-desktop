@@ -2,7 +2,7 @@
 
 export const toNewMusicInfo = (oldMusicInfo: any): LX.Music.MusicInfo => {
   const meta: Record<string, any> = {
-    songId: oldMusicInfo.songmid, // 歌曲ID，mg源为copyrightId，local为文件路径
+    songId: oldMusicInfo.songmid, // 歌曲ID，local为文件路径
     albumName: oldMusicInfo.albumName, // 歌曲专辑名称
     picUrl: oldMusicInfo.img, // 歌曲图片链接
   }

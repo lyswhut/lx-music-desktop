@@ -179,7 +179,7 @@ export default {
     return rawList.map(item => {
       let data = {
         id: item.commentId,
-        text: item.content ? applyEmoji(item.content).split('\n') : '',
+        text: item.content ? applyEmoji(item.content) : '',
         time: item.time ? item.time : '',
         timeStr: item.time ? dateFormat2(item.time) : '',
         userName: item.user.nickname,
@@ -194,7 +194,7 @@ export default {
         ? {
             id: item.commentId,
             rootId: replyData.beRepliedCommentId,
-            text: replyData.content ? applyEmoji(replyData.content).split('\n') : '',
+            text: replyData.content ? applyEmoji(replyData.content) : '',
             time: item.time,
             timeStr: null,
             userName: replyData.user.nickname,

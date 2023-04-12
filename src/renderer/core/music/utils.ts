@@ -266,7 +266,7 @@ export const getOnlineOtherSourcePicUrl = async({ musicInfos, onToggleSource, is
 
   let reqPromise
   try {
-    reqPromise = musicSdk[musicInfo.source].getPic(toOldMusicInfo(musicInfo)).promise
+    reqPromise = musicSdk[musicInfo.source].getPic(toOldMusicInfo(musicInfo))
   } catch (err: any) {
     reqPromise = Promise.reject(err)
   }
@@ -296,7 +296,7 @@ export const handleGetOnlinePicUrl = async({ musicInfo, isRefresh, onToggleSourc
   // console.log(musicInfo.source)
   let reqPromise
   try {
-    reqPromise = musicSdk[musicInfo.source].getPic(toOldMusicInfo(musicInfo)).promise
+    reqPromise = musicSdk[musicInfo.source].getPic(toOldMusicInfo(musicInfo))
   } catch (err) {
     reqPromise = Promise.reject(err)
   }
