@@ -2,6 +2,7 @@
 
 本文档已迁移到：<https://lyswhut.github.io/lx-music-doc/desktop/faq>
 
+<!--
 在阅读本常见问题后，仍然无法解决你的问题，请提交issue或者加企鹅群`830125506`反馈（无事勿加，入群先看群公告），反馈时请**注明**已阅读常见问题！
 
 ## ~~软件为什么没有桌面歌词与自定义列表功能~~
@@ -562,4 +563,4 @@ const cancelHttp = window.lx.request(url, options, callback)
 - `window.lx.utils.crypto.randomBytes`：生成随机字符串 `randomBytes(size)`
 - `window.lx.utils.crypto.rsaEncrypt`：RSA加密 `rsaEncrypt(buffer, key)`
 
-目前仅提供以上工具方法，如果需要其他方法可以开issue讨论。
+目前仅提供以上工具方法，如果需要其他方法可以开issue讨论。 -->
