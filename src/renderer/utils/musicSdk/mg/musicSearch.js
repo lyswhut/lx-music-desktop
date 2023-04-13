@@ -2,6 +2,13 @@ import { httpFetch } from '../../request'
 import { sizeFormate, formatPlayTime } from '../../index'
 import { toMD5 } from '../utils'
 
+const sign = (time, str) => {
+  const deviceId = '963B7AA0D21511ED807EE5846EC87D20'
+  const signatureMd5 = '6cdc72a439cef99a3418d2a78aa28c73'
+  const sign = toMD5(`${str}${signatureMd5}yyapp2d16148780a1dcc7408e06336b98cfd50${deviceId}${time}`)
+  return { sign, deviceId }
+}
+
 export default {
   limit: 20,
   total: 0,
@@ -11,6 +18,9 @@ export default {
   // 旧版API
   // musicSearch(str, page, limit) {
   //   const searchRequest = httpFetch(`http://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?ua=Android_migu&version=5.0.1&text=${encodeURIComponent(str)}&pageNo=${page}&pageSize=${limit}&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A0%2C%22mvSong%22%3A0%2C%22songlist%22%3A0%2C%22bestShow%22%3A1%7D`, {
+  // searchRequest = httpFetch(`http://pd.musicapp.migu.cn/MIGUM2.0/v1.0/content/search_all.do?ua=Android_migu&version=5.0.1&text=${encodeURIComponent(str)}&pageNo=${page}&pageSize=${limit}&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A0%2C%22mvSong%22%3A0%2C%22songlist%22%3A0%2C%22bestShow%22%3A1%7D`, {
+  // searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
+  // searchRequest = httpFetch(`https://app.c.nf.migu.cn/MIGUM2.0/v1.0/content/search_all.do?isCopyright=1&isCorrect=1&pageNo=${page}&pageSize=${limit}&searchSwitch={%22song%22:1,%22album%22:0,%22singer%22:0,%22tagSong%22:0,%22mvSong%22:0,%22songlist%22:0,%22bestShow%22:0}&sort=0&text=${encodeURIComponent(str)}`)
   //   // searchRequest = httpFetch(`http://jadeite.migu.cn:7090/music_search/v2/search/searchAll?sid=4f87090d01c84984a11976b828e2b02c18946be88a6b4c47bcdc92fbd40762db&isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
   //     headers: {
   //       // sign: 'c3b7ae985e2206e97f1b2de8f88691e2',
@@ -101,8 +111,8 @@ export default {
 
   musicSearch(str, page, limit) {
     const time = Date.now().toString()
-    const signData = this.signWithSearch(time, str)
-    const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?pageNo=${page}&pageSize=${limit}&sort=0&text=${encodeURI(str)}&searchSwitch={"song":1}&isCopyright=1&isCorrect=1`, {
+    const signData = sign(time, str)
+    const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
       headers: {
         uiVersion: 'A_music_3.6.1',
         deviceId: signData.deviceId,
@@ -121,29 +131,14 @@ export default {
     })
     return arr.join('、')
   },
-  async getMusicInfo(copyrightIds) {
-    return httpFetch('https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?resourceType=2', {
-      method: 'POST',
-      formData: { resourceId: copyrightIds },
-    }).promise.then(({ body }) => {
-      if (body.code !== '000000') return Promise.reject(new Error('Failed to get music info.'))
-      return body.resource
-    })
-  },
-  signWithSearch(time, str) {
-    const deviceId = '963B7AA0D21511ED807EE5846EC87D16'
-    const signatureMd5 = '6cdc72a439cef99a3418d2a78aa28c73'
-    const sign = toMD5(`${str}${signatureMd5}yyapp2d16148780a1dcc7408e06336b98cfd50${deviceId}${time}`)
-    return { sign, deviceId }
-  },
   filterData(rawData) {
     // console.log(rawData)
-    const list = new Map()
+    const list = []
     const ids = new Set()
 
     rawData.forEach(item => {
       item.forEach(data => {
-        if (ids.has(data.copyrightId) || !data.songId || !data.copyrightId) return
+        if (!data.songId || !data.copyrightId || ids.has(data.copyrightId)) return
         ids.add(data.copyrightId)
 
         const types = []
@@ -182,22 +177,23 @@ export default {
           }
         })
 
-        list.set(data.songId, {
+        let img = data.img3 || data.img2 || data.img1 || null
+        if (img && !/https?:/.test(data.img3)) img = 'http://d.musicapp.migu.cn' + img
+
+        list.push({
           singer: this.getSinger(data.singerList),
           name: data.name,
           albumName: data.album,
           albumId: data.albumId,
-          songmid: data.copyrightId,
-          songId: data.songId,
+          songmid: data.songId,
           copyrightId: data.copyrightId,
           source: 'mg',
           interval: formatPlayTime(data.duration),
-          img: /https?:/.test(data.img3) ? data.img3 : 'http://d.musicapp.migu.cn' + data.img3,
+          img,
           lrc: null,
           lrcUrl: data.lrcUrl,
           mrcUrl: data.mrcurl,
           trcUrl: data.trcUrl,
-          otherSource: null,
           types,
           _types,
           typeUrl: {},
@@ -206,47 +202,29 @@ export default {
     })
     return list
   },
-  async handleResult(rawData) {
-    // console.log(rawData)
-    const list = []
-    const datas = this.filterData(rawData)
-    if (!datas) throw new Error('Failed to filter data')
-    const songInfo = await this.getMusicInfo([...datas.keys()].join('|'))
-    songInfo.forEach(item => {
-      let data = datas.get(item.songId)
-      if (!data) return
-      list.push({
-        ...data,
-        lrcUrl: item.lrcUrl,
-        mrcUrl: item.mrcUrl,
-        trcUrl: item.trcUrl,
-      })
-    })
-    return list
-  },
   search(str, page = 1, limit, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page, limit).then(async result => {
+    return this.musicSearch(str, page, limit).then(result => {
       // console.log(result)
       if (!result || result.code !== '000000') return Promise.reject(new Error(result ? result.info : '搜索失败'))
-      const songResultData = result.songResultData || { result: [], totalCount: 0 }
+      const songResultData = result.songResultData || { resultList: [], totalCount: 0 }
 
-      let list = await this.handleResult(songResultData.resultList)
+      let list = this.filterData(songResultData.resultList)
       if (list == null) return this.search(str, page, limit, retryNum)
 
       this.total = parseInt(songResultData.totalCount)
       this.page = page
       this.allPage = Math.ceil(this.total / limit)
 
-      return Promise.resolve({
+      return {
         list,
         allPage: this.allPage,
         limit,
         total: this.total,
         source: 'mg',
-      })
+      }
     })
   },
 }

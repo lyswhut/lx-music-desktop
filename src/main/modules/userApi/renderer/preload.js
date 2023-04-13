@@ -253,7 +253,7 @@ contextBridge.exposeInMainWorld('lx', {
       },
     },
   },
-  version: '1.2.1',
+  version: '1.3.0',
   // removeEvent(eventName, handler) {
   //   if (!eventNames.includes(eventName)) return Promise.reject(new Error('The event is not supported: ' + eventName))
   //   let handlers

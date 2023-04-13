@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { getSongId } from './songId'
+import getSongId from './songId'
 import { dateFormat2 } from '../../index'
 
 export default {
