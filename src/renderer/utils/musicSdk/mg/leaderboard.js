@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { sizeFormate } from '../../index'
+import { filterMusicInfoData } from './musicInfo'
 
 
 // const boardList = [{ id: 'mg__27553319', name: '咪咕尖叫新歌榜', bangid: '27553319' }, { id: 'mg__27186466', name: '咪咕尖叫热歌榜', bangid: '27186466' }, { id: 'mg__27553408', name: '咪咕尖叫原创榜', bangid: '27553408' }, { id: 'mg__23189800', name: '咪咕港台榜', bangid: '23189800' }, { id: 'mg__23189399', name: '咪咕内地榜', bangid: '23189399' }, { id: 'mg__19190036', name: '咪咕欧美榜', bangid: '19190036' }, { id: 'mg__23189813', name: '咪咕日韩榜', bangid: '23189813' }, { id: 'mg__23190126', name: '咪咕彩铃榜', bangid: '23190126' }, { id: 'mg__15140045', name: '咪咕KTV榜', bangid: '15140045' }, { id: 'mg__15140034', name: '咪咕网络榜', bangid: '15140034' }, { id: 'mg__23217754', name: 'MV榜', bangid: '23217754' }, { id: 'mg__23218151', name: '新专辑榜', bangid: '23218151' }, { id: 'mg__21958042', name: 'iTunes榜', bangid: '21958042' }, { id: 'mg__21975570', name: 'billboard榜', bangid: '21975570' }, { id: 'mg__22272815', name: '台湾Hito中文榜', bangid: '22272815' }, { id: 'mg__22272904', name: '中国TOP排行榜', bangid: '22272904' }, { id: 'mg__22272943', name: '韩国Melon榜', bangid: '22272943' }, { id: 'mg__22273437', name: '英国UK榜', bangid: '22273437' }]
@@ -81,83 +81,6 @@ export default {
     const requestObj = httpFetch(url)
     return requestObj.promise
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
-  filterData(rawData) {
-    // console.log(JSON.stringify(rawData))
-    // console.log(rawData)
-    let ids = new Set()
-    const list = []
-    rawData.forEach(({ objectInfo: item }) => {
-      if (ids.has(item.copyrightId)) return
-      ids.add(item.copyrightId)
-
-      const types = []
-      const _types = {}
-      item.newRateFormats && item.newRateFormats.forEach(type => {
-        let size
-        switch (type.formatType) {
-          case 'PQ':
-            size = sizeFormate(type.size ?? type.androidSize)
-            types.push({ type: '128k', size })
-            _types['128k'] = {
-              size,
-            }
-            break
-          case 'HQ':
-            size = sizeFormate(type.size ?? type.androidSize)
-            types.push({ type: '320k', size })
-            _types['320k'] = {
-              size,
-            }
-            break
-          case 'SQ':
-            size = sizeFormate(type.size ?? type.androidSize)
-            types.push({ type: 'flac', size })
-            _types.flac = {
-              size,
-            }
-            break
-          case 'ZQ':
-            size = sizeFormate(type.size ?? type.androidSize)
-            types.push({ type: 'flac24bit', size })
-            _types.flac24bit = {
-              size,
-            }
-            break
-        }
-      })
-
-      const intervalTest = /(\d\d:\d\d)$/.test(item.length)
-
-      list.push({
-        singer: this.getSinger(item.artists),
-        name: item.songName,
-        albumName: item.album,
-        albumId: item.albumId,
-        songmid: item.copyrightId,
-        songId: item.songId,
-        copyrightId: item.copyrightId,
-        source: 'mg',
-        interval: intervalTest ? RegExp.$1 : null,
-        img: item.albumImgs && item.albumImgs.length ? item.albumImgs[0].img : null,
-        lrc: null,
-        lrcUrl: item.lrcUrl,
-        mrcUrl: item.mrcUrl,
-        trcUrl: item.trcUrl,
-        otherSource: null,
-        types,
-        _types,
-        typeUrl: {},
-      })
-    })
-    return list
-  },
   filterBoardsData(rawList) {
     // console.log(rawList)
     let list = []
@@ -205,7 +128,7 @@ export default {
     return this.getData(this.getUrl(bangid, page)).then(({ statusCode, body }) => {
       // console.log(body)
       if (statusCode !== 200 || body.code !== this.successCode) return this.getList(bangid, page, retryNum)
-      const list = this.filterData(body.columnInfo.contents)
+      const list = filterMusicInfoData(body.columnInfo.contents.map(m => m.objectInfo))
       return {
         total: list.length,
         list,

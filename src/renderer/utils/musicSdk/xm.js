@@ -36,9 +36,7 @@ const xm = {
     // return lyric.getLyric(songInfo)
   },
   getPic(songInfo) {
-    return {
-      promise: Promise.reject(new Error('fail')),
-    }
+    return Promise.reject(new Error('fail'))
     // return pic.getPic(songInfo)
   },
   // getMusicDetailPageUrl(songInfo) {

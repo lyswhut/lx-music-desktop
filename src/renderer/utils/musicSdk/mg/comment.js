@@ -1,25 +1,15 @@
 import { httpFetch } from '../../request'
-import album from './album'
+import getSongId from './songId'
 import { dateFormat2 } from '../../index'
 
 export default {
   _requestObj: null,
   _requestObj2: null,
   _requestObj3: null,
-  async getSongId(musicInfo) {
-    if (this._requestObj3) this._requestObj3.cancelHttp()
-    this.requestObj3 = album.getAlbum(musicInfo)
-    const list = await this.requestObj3.promise
-    const copyrightId = musicInfo.copyrightId
-    let info = list.find(s => s.copyrightId == copyrightId)
-    const songmid = musicInfo.songmid
-    if (!info) info = list.find(s => s.songId == songmid)
-    return info ? info.songId : null
-  },
   async getComment(musicInfo, page = 1, limit = 10) {
     if (this._requestObj) this._requestObj.cancelHttp()
     if (!musicInfo.songId) {
-      let id = await this.getSongId(musicInfo)
+      let id = await getSongId(musicInfo)
       if (!id) throw new Error('获取评论失败')
       musicInfo.songId = id
     }
@@ -39,7 +29,7 @@ export default {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     if (!musicInfo.songId) {
-      let id = await this.getSongId(musicInfo)
+      let id = await getSongId(musicInfo)
       if (!id) throw new Error('获取评论失败')
       musicInfo.songId = id
     }
@@ -71,7 +61,7 @@ export default {
   filterComment(rawList) {
     return rawList.map(item => ({
       id: item.commentId,
-      text: item.body.split('\n'),
+      text: item.body,
       time: item.createTime,
       timeStr: dateFormat2(new Date(item.createTime).getTime()),
       userName: item.author.name,
@@ -81,7 +71,7 @@ export default {
       replyNum: item.replyTotal,
       reply: item.replyCommentList.map(c => ({
         id: c.commentId,
-        text: c.body.split('\n'),
+        text: c.body,
         time: c.createTime,
         timeStr: dateFormat2(new Date(c.createTime).getTime()),
         userName: c.author.name,

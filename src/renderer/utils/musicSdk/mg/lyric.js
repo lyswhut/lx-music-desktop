@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import musicSearch from './musicSearch'
+import { getMusicInfo } from './musicInfo'
 import { decrypt } from './mrc'
 
 const mrcTools = {
@@ -75,11 +75,8 @@ const mrcTools = {
   },
   getMusicInfo(songInfo) {
     return songInfo.mrcUrl == null
-      ? musicSearch.search(`${songInfo.name} ${songInfo.singer || ''}`.trim(), 1, { limit: 25 }).then(({ list }) => {
-        const targetSong = list.find(s => s.songmid == songInfo.songmid)
-        return targetSong ? { lrcUrl: targetSong.lrcUrl, mrcUrl: targetSong.mrcUrl, trcUrl: targetSong.trcUrl } : Promise.reject('获取歌词失败')
-      })
-      : Promise.resolve({ lrcUrl: songInfo.lrcUrl, mrcUrl: songInfo.mrcUrl, trcUrl: songInfo.trcUrl })
+      ? getMusicInfo(songInfo.copyrightId)
+      : songInfo
   },
   getLyric(songInfo) {
     return {

@@ -18,9 +18,7 @@ const api_messoer = {
     return requestObj
   },
   getPic(songInfo) {
-    return {
-      promise: Promise.resolve(`https://y.gtimg.cn/music/photo_new/T002R500x500M000${songInfo.albumId}.jpg`),
-    }
+    return Promise.resolve(`https://y.gtimg.cn/music/photo_new/T002R500x500M000${songInfo.albumId}.jpg`)
   },
 }
 

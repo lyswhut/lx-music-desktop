@@ -16,8 +16,7 @@ const bd = {
   },
   getPic(songInfo) {
     const requestObj = this.getMusicInfo(songInfo)
-    requestObj.promise = requestObj.promise.then(info => info.pic_premium)
-    return requestObj
+    return requestObj.promise.then(info => info.pic_premium)
   },
   getLyric(songInfo) {
     const requestObj = this.getMusicInfo(songInfo)

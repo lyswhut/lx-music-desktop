@@ -14,8 +14,7 @@ div(:class="$style.container")
               svg(:class="$style.likesIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-thumbs-up')
               | {{item.likedCount}}
-          div.select(:class="$style.comment_text")
-            p(v-for="text in item.text") {{text}}
+          p.select(:class="$style.comment_text") {{item.text}}
           div(v-if="item.images?.length" :class="$style.comment_images")
             img(v-for="url in item.images" :src="url" loading="lazy" decoding="async")
       comment-floor(v-if="item.reply && item.reply.length" :class="$style.reply_floor" :comments="item.reply")
@@ -121,11 +120,10 @@ export default {
   text-align: justify;
   font-size: 14px;
   padding-top: 5px;
-  p {
-    line-height: 1.5;
-    word-break: break-all;
-    overflow-wrap: break-word;
-  }
+  line-height: 1.5;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 .comment_images {
   display: flex;

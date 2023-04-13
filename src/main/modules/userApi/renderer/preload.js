@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 const needle = require('needle')
+const zlib = require('zlib')
 const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = require('crypto')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 
@@ -233,8 +234,26 @@ contextBridge.exposeInMainWorld('lx', {
         return Buffer.from(buf, 'binary').toString(format)
       },
     },
+    zlib: {
+      inflate(buf) {
+        return new Promise((resolve, reject) => {
+          zlib.inflate(buf, (err, data) => {
+            if (err) reject(new Error(err.message))
+            else resolve(data)
+          })
+        })
+      },
+      deflate(data) {
+        return new Promise((resolve, reject) => {
+          zlib.deflate(data, (err, buf) => {
+            if (err) reject(new Error(err.message))
+            else resolve(buf)
+          })
+        })
+      },
+    },
   },
-  version: '1.2.0',
+  version: '1.3.0',
   // removeEvent(eventName, handler) {
   //   if (!eventNames.includes(eventName)) return Promise.reject(new Error('The event is not supported: ' + eventName))
   //   let handlers

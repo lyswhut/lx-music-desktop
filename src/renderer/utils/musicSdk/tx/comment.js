@@ -124,40 +124,75 @@ export default {
       maxPage: Math.ceil(comment.commenttotal / limit) || 1,
     }
   },
-  async getHotComment(mInfo, page = 1, limit = 100) {
+  async getHotComment(mInfo, page = 1, limit = 20) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     const songId = await this.getSongId(mInfo)
-
-    const _requestObj2 = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
-      method: 'POST',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    // const _requestObj2 = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
+    //   method: 'POST',
+    //   headers: {
+    //     'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    //   },
+    //   form: {
+    //     uin: '0',
+    //     format: 'json',
+    //     cid: '205360772',
+    //     reqtype: '2',
+    //     biztype: '1',
+    //     topid: songId,
+    //     cmd: '9',
+    //     needmusiccrit: '1',
+    //     pagenum: page - 1,
+    //     pagesize: limit,
+    //   },
+    // })
+    const _requestObj2 = httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
+      method: 'post',
+      body: {
+        comm: {
+          cv: 4747474,
+          ct: 24,
+          format: 'json',
+          inCharset: 'utf-8',
+          outCharset: 'utf-8',
+          notice: 0,
+          platform: 'yqq.json',
+          needNewCode: 1,
+          uin: 0,
+          // g_tk_new_20200303: 2101046530,
+          // g_tk: 2101046530,
+        },
+        req: {
+          module: 'music.globalComment.CommentRead',
+          method: 'GetHotCommentList',
+          param: {
+            BizType: 1,
+            BizId: String(songId),
+            LastCommentSeqNo: '',
+            PageSize: limit,
+            PageNum: page - 1,
+            HotType: 1,
+            WithAirborne: 0,
+            PicEnable: 1,
+          },
+        },
       },
-      form: {
-        uin: '0',
-        format: 'json',
-        cid: '205360772',
-        reqtype: '2',
-        biztype: '1',
-        topid: songId,
-        cmd: '9',
-        needmusiccrit: '1',
-        pagenum: page - 1,
-        pagesize: limit,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.0.0',
+        referer: 'https://y.qq.com/',
       },
     })
     const { body, statusCode } = await _requestObj2.promise
-    if (statusCode != 200 || body.code !== 0) throw new Error('获取热门评论失败')
-    // console.log(body, statusCode)
-    const comment = body.comment
+    // console.log('body', body)
+    if (statusCode != 200 || body.code !== 0 || body.req.code !== 0) throw new Error('获取热门评论失败')
+    const comment = body.req.data.CommentList
     return {
       source: 'tx',
-      comments: this.filterComment(comment.commentlist),
-      total: comment.commenttotal,
+      comments: this.filterHotComment(comment.Comments),
+      total: comment.Total,
       page,
       limit,
-      maxPage: Math.ceil(comment.commenttotal / limit) || 1,
+      maxPage: Math.ceil(comment.Total / limit) || 1,
     }
   },
   replaceEmoji(msg) {
@@ -186,7 +221,7 @@ export default {
       return {
         id: `${item.rootcommentid}_${item.commentid}`,
         rootId: item.rootcommentid,
-        text: item.rootcommentcontent ? this.replaceEmoji(item.rootcommentcontent).replace(/\\n/g, '\n').split('\n') : [],
+        text: item.rootcommentcontent ? this.replaceEmoji(item.rootcommentcontent).replace(/\\n/g, '\n') : '',
         time: item.rootcommentid == item.commentid ? time : null,
         timeStr: item.rootcommentid == item.commentid ? timeStr : null,
         userName: item.rootcommentnick ? item.rootcommentnick.substring(1) : '',
@@ -198,7 +233,7 @@ export default {
             // let index = c.subcommentid.lastIndexOf('_')
             return {
               id: `sub_${item.rootcommentid}_${c.subcommentid}`,
-              text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n').split('\n'),
+              text: this.replaceEmoji(c.subcommentcontent).replace(/\\n/g, '\n'),
               time: c.subcommentid == item.commentid ? time : null,
               timeStr: c.subcommentid == item.commentid ? timeStr : null,
               userName: c.replynick.substring(1),
@@ -210,5 +245,52 @@ export default {
           : [],
       }
     })
+  },
+  filterHotComment(rawList) {
+    // console.log(rawList)
+    return rawList.map(item => {
+      // let time = String(item.PubTime).length < 10 ? null : parseInt(item.PubTime + '000')
+      // let timeStr = time ? dateFormat2(time) : null
+      // if (item.SubComments) {
+      //   let firstItem = item.SubComments[0]
+      //   firstItem.avatarurl = item.avatarurl
+      //   firstItem.praisenum = item.praisenum
+      //   item.avatarurl = null
+      //   item.praisenum = null
+      //   item.SubComments.reverse()
+      // }
+      return {
+        id: `${item.SeqNo}_${item.EncryptUin}`,
+        rootId: item.SeqNo,
+        text: item.Content ? this.replaceEmoji(item.Content).replace(/\\n/g, '\n') : '',
+        time: this.formatTime(item.PubTime),
+        timeStr: item.PubTime ? dateFormat2(this.formatTime(item.PubTime)) : null,
+        userName: item.Nick ? item.Nick.substring(1) : '',
+        images: item.Pic ? [item.Pic] : [],
+        avatar: item.Avatar,
+        location: item.Location ? ('来自' + item.Location) : '',
+        userId: item.EncryptUin,
+        likedCount: item.PraiseNum,
+        reply: item.SubComments
+          ? item.SubComments.map(c => {
+            // let index = c.subcommentid.lastIndexOf('_')
+            return {
+              id: `sub_${item.SeqNo}_${c.EncryptUin}`,
+              text: this.replaceEmoji(c.Content).replace(/\\n/g, '\n'),
+              time: this.formatTime(c.PubTime),
+              timeStr: item.PubTime ? dateFormat2(this.formatTime(c.PubTime)) : null,
+              userName: c.Nick.substring(1),
+              avatar: c.Avatar,
+              images: item.Pic ? [item.Pic] : [],
+              userId: c.EncryptUin,
+              likedCount: c.PraiseNum,
+            }
+          })
+          : [],
+      }
+    })
+  },
+  formatTime(time) {
+    return String(time).length < 10 ? null : parseInt(time + '000')
   },
 }
