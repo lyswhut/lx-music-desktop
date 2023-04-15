@@ -90,7 +90,6 @@ export default {
   },
   async getComment(mInfo, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
-
     const songId = await this.getSongId(mInfo)
 
     const _requestObj = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
@@ -117,7 +116,7 @@ export default {
     const comment = body.comment
     return {
       source: 'tx',
-      comments: this.filterComment(comment.commentlist),
+      comments: this.filterNewComment(comment.commentlist),
       total: comment.commenttotal,
       page,
       limit,
@@ -125,9 +124,6 @@ export default {
     }
   },
   async getHotComment(mInfo, page = 1, limit = 20) {
-    if (this._requestObj2) this._requestObj2.cancelHttp()
-
-    const songId = await this.getSongId(mInfo)
     // const _requestObj2 = httpFetch('http://c.y.qq.com/base/fcgi-bin/fcg_global_comment_h5.fcg', {
     //   method: 'POST',
     //   headers: {
@@ -146,8 +142,11 @@ export default {
     //     pagesize: limit,
     //   },
     // })
+    if (this._requestObj2) this._requestObj2.cancelHttp()
+    const songId = await this.getSongId(mInfo)
+
     const _requestObj2 = httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
-      method: 'post',
+      method: 'POST',
       body: {
         comm: {
           cv: 4747474,
@@ -159,8 +158,6 @@ export default {
           platform: 'yqq.json',
           needNewCode: 1,
           uin: 0,
-          // g_tk_new_20200303: 2101046530,
-          // g_tk: 2101046530,
         },
         req: {
           module: 'music.globalComment.CommentRead',
@@ -180,6 +177,7 @@ export default {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.0.0',
         referer: 'https://y.qq.com/',
+        origin: 'https://y.qq.com',
       },
     })
     const { body, statusCode } = await _requestObj2.promise
@@ -195,20 +193,9 @@ export default {
       maxPage: Math.ceil(comment.Total / limit) || 1,
     }
   },
-  replaceEmoji(msg) {
-    let rxp = /^\[em\](e\d+)\[\/em\]$/
-    let result = msg.match(/\[em\]e\d+\[\/em\]/g)
-    if (!result) return msg
-    result = Array.from(new Set(result))
-    for (let item of result) {
-      let code = item.replace(rxp, '$1')
-      msg = msg.replace(new RegExp(item.replace('[em]', '\\[em\\]').replace('[/em]', '\\[\\/em\\]'), 'g'), emojis[code] || '')
-    }
-    return msg
-  },
-  filterComment(rawList) {
+  filterNewComment(rawList) {
     return rawList.map(item => {
-      let time = String(item.time).length < 10 ? null : parseInt(item.time + '000')
+      let time = this.formatTime(item.time)
       let timeStr = time ? dateFormat2(time) : null
       if (item.middlecommentcontent) {
         let firstItem = item.middlecommentcontent[0]
@@ -247,23 +234,12 @@ export default {
     })
   },
   filterHotComment(rawList) {
-    // console.log(rawList)
     return rawList.map(item => {
-      // let time = String(item.PubTime).length < 10 ? null : parseInt(item.PubTime + '000')
-      // let timeStr = time ? dateFormat2(time) : null
-      // if (item.SubComments) {
-      //   let firstItem = item.SubComments[0]
-      //   firstItem.avatarurl = item.avatarurl
-      //   firstItem.praisenum = item.praisenum
-      //   item.avatarurl = null
-      //   item.praisenum = null
-      //   item.SubComments.reverse()
-      // }
       return {
-        id: `${item.SeqNo}_${item.EncryptUin}`,
+        id: `${item.SeqNo}_${item.CmId}`,
         rootId: item.SeqNo,
         text: item.Content ? this.replaceEmoji(item.Content).replace(/\\n/g, '\n') : '',
-        time: this.formatTime(item.PubTime),
+        time: item.PubTime ? this.formatTime(item.PubTime) : null,
         timeStr: item.PubTime ? dateFormat2(this.formatTime(item.PubTime)) : null,
         userName: item.Nick ? item.Nick.substring(1) : '',
         images: item.Pic ? [item.Pic] : [],
@@ -273,15 +249,14 @@ export default {
         likedCount: item.PraiseNum,
         reply: item.SubComments
           ? item.SubComments.map(c => {
-            // let index = c.subcommentid.lastIndexOf('_')
             return {
-              id: `sub_${item.SeqNo}_${c.EncryptUin}`,
+              id: `sub_${c.SeqNo}_${c.CmId}`,
               text: this.replaceEmoji(c.Content).replace(/\\n/g, '\n'),
-              time: this.formatTime(c.PubTime),
-              timeStr: item.PubTime ? dateFormat2(this.formatTime(c.PubTime)) : null,
-              userName: c.Nick.substring(1),
+              time: c.PubTime ? this.formatTime(c.PubTime) : null,
+              timeStr: c.PubTime ? dateFormat2(this.formatTime(c.PubTime)) : null,
+              userName: c.Nick ? c.Nick.substring(1) : '',
               avatar: c.Avatar,
-              images: item.Pic ? [item.Pic] : [],
+              images: c.Pic ? [c.Pic] : [],
               userId: c.EncryptUin,
               likedCount: c.PraiseNum,
             }
@@ -289,6 +264,17 @@ export default {
           : [],
       }
     })
+  },
+  replaceEmoji(msg) {
+    let rxp = /^\[em\](e\d+)\[\/em\]$/
+    let result = msg.match(/\[em\]e\d+\[\/em\]/g)
+    if (!result) return msg
+    result = Array.from(new Set(result))
+    for (let item of result) {
+      let code = item.replace(rxp, '$1')
+      msg = msg.replace(new RegExp(item.replace('[em]', '\\[em\\]').replace('[/em]', '\\[\\/em\\]'), 'g'), emojis[code] || '')
+    }
+    return msg
   },
   formatTime(time) {
     return String(time).length < 10 ? null : parseInt(time + '000')
