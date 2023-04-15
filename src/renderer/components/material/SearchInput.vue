@@ -203,9 +203,10 @@ export default {
   transition: box-shadow .4s ease, background-color @transition-normal;
   display: flex;
   flex-flow: column nowrap;
-  background-color: var(--color-primary-light-600-alpha-100);
+  background-color: var(--color-primary-light-300-alpha-700);
 
   &.active {
+    background-color: var(--color-primary-light-600-alpha-100);
     box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
     .form {
       input {

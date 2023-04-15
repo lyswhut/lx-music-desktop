@@ -5,12 +5,13 @@
 - 增加kg歌单歌曲flac24bit显示（@helloplhm-qwq）
 - 增加tx源热门评论图片显示（@Folltoshe）
 - 优化更新弹窗弹出时机
+- 优化搜索框背景配色，使其适应高透明主题
 
 ### 修复
 
 - 修复启用全局快捷键时与Media Session注册冲突的问题，启用全局快捷键时，不再注册媒体控制快捷键
-- 修复搜索不显示时长的问题（@Folltoshe）
-- 修复评论加载失败的问题（@Folltoshe）
+- 修复mg搜索不显示时长的问题（@Folltoshe）
+- 修复mg评论加载失败的问题（@Folltoshe）
 
 ### 其他
 
