@@ -75,6 +75,10 @@ export default {
       return gid
     })
   },
+  async getListDetailBySpecialId(id) {
+    const globalSpecialId = await this.getGlobalSpecialId(id)
+    return this.getUserListDetailByGid(globalSpecialId)
+  },
   getInfoUrl(tagId) {
     return tagId
       ? `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&cdn=cdn&t=5&c=${tagId}`
