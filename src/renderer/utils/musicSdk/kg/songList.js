@@ -53,15 +53,14 @@ export default {
     listDetailLink: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
   async getGlobalSpecialId(specialId) {
-    return httpFetch(`https://m.kugou.com/plist/list/${specialId}/?json=true`, {
+    return httpFetch(`http://mobilecdnbj.kugou.com/api/v5/special/info?specialid=${specialId}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36 EdgA/104.0.1293.70',
       },
-      follow_max: 2,
     }).promise.then(({ body }) => {
       // console.log(body)
-      if (!body.info.list.global_specialid) Promise.reject(new Error('Failed to get global collection id.'))
-      return body.info.list.global_specialid
+      if (!body.data.list.global_specialid) Promise.reject(new Error('Failed to get global collection id.'))
+      return body.data.list.global_specialid
     })
   },
   // async getListInfoBySpecialId(special_id, retry = 0) {
@@ -88,16 +87,16 @@ export default {
   //     }
   //   })
   // },
-  // async getSongListDetailByGlobalSpecialId(id, page, limit = 100, retry = 0) {
-  //   if (++retry > 2) throw new Error('failed')
-  //   console.log(id)
-  //   const params = `specialid=0&need_sort=1&module=CloudMusic&clientver=11409&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=1&area_code=1&appid=1005`
-  //   return httpFetch(`http://pubsongscdn.tx.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params)}`).promise.then(({ body }) => {
-  //     // console.log(body)
-  //     if (body.data?.info == null) return this.getSongListDetailByGlobalSpecialId(id, page, limit, retry)
-  //     return body.data.info
-  //   })
-  // },
+  async getSongListDetailByGlobalSpecialId(id, page, limit = 100, retry = 0) {
+    if (++retry > 2) throw new Error('failed')
+    console.log(id)
+    const params = `specialid=0&need_sort=1&module=CloudMusic&clientver=11409&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=1&area_code=1&appid=1005`
+    return httpFetch(`http://pubsongscdn.tx.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params)}`).promise.then(({ body }) => {
+      // console.log(body)
+      if (body.data?.info == null) return this.getSongListDetailByGlobalSpecialId(id, page, limit, retry)
+      return body.data.info
+    })
+  },
   async getListDetailBySpecialId(id) {
     const globalSpecialId = await this.getGlobalSpecialId(id)
     // const limit = 100
@@ -408,14 +407,13 @@ export default {
       const limit = total > 300 ? 300 : total
       total -= limit
       page += 1
-      const params = 'appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&page=' + page + '&pagesize=' + limit + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-'
-      tasks.push(this.createHttp(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 5)}`, {
+      const params = `specialid=0&need_sort=1&module=CloudMusic&clientver=11409&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=1&area_code=1&appid=1005`
+      tasks.push(this.createHttp(`http://pubsongscdn.tx.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params)}`, {
         headers: {
           mid: '1586163263991',
           Referer: 'https://m3ws.kugou.com/share/index.php',
           'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
           dfid: '-',
-          clienttime: '1586163263991',
         },
       }).then(data => data.info))
     }
@@ -446,9 +444,9 @@ export default {
       info: {
         name: info.specialname,
         img: info.imgurl && info.imgurl.replace('{size}', 240),
-        // desc: body.result.info.list_desc,
+        desc: info.intro,
         author: info.nickname,
-        // play_count: this.formatPlayCount(info.count),
+        play_count: this.formatPlayCount(info.playcount),
       },
     }
   },
