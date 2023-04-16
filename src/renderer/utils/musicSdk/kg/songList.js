@@ -53,15 +53,14 @@ export default {
     listDetailLink: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
   async getGlobalSpecialId(specialId) {
-    return httpFetch(`https://m.kugou.com/plist/list/${specialId}/?json=true`, {
+    return httpFetch(`http://mobilecdnbj.kugou.com/api/v5/special/info?specialid=${specialId}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36 EdgA/104.0.1293.70',
       },
-      follow_max: 2,
     }).promise.then(({ body }) => {
       // console.log(body)
-      if (!body.info.list.global_specialid) Promise.reject(new Error('Failed to get global collection id.'))
-      return body.info.list.global_specialid
+      if (!body.data.global_specialid) Promise.reject(new Error('Failed to get global collection id.'))
+      return body.data.global_specialid
     })
   },
   // async getListInfoBySpecialId(special_id, retry = 0) {
@@ -446,9 +445,9 @@ export default {
       info: {
         name: info.specialname,
         img: info.imgurl && info.imgurl.replace('{size}', 240),
-        // desc: body.result.info.list_desc,
+        desc: info.intro,
         author: info.nickname,
-        // play_count: this.formatPlayCount(info.count),
+        play_count: this.formatPlayCount(info.playcount),
       },
     }
   },
