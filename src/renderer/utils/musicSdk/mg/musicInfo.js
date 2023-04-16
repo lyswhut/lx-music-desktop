@@ -3,7 +3,7 @@ import { sizeFormate } from '../../index'
 
 const getSinger = (singers) => {
   let arr = []
-  singers.forEach(singer => {
+  singers?.forEach(singer => {
     arr.push(singer.name)
   })
   return arr.join('、')
@@ -14,7 +14,7 @@ export const filterMusicInfoData = (rawList) => {
   let ids = new Set()
   const list = []
   rawList.forEach(item => {
-    if (ids.has(item.songId)) return
+    if (!item.songId || ids.has(item.songId)) return
     ids.add(item.songId)
     const types = []
     const _types = {}
