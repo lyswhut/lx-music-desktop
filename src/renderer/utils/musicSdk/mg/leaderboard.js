@@ -15,7 +15,6 @@ const boardList = [
   { id: 'mg__23190126', name: '彩铃榜', bangid: '23190126', webId: 'coloring' },
   { id: 'mg__15140045', name: 'KTV榜', bangid: '15140045', webId: 'ktv' },
   { id: 'mg__15140034', name: '网络榜', bangid: '15140034', webId: 'network' },
-  { id: 'mg__23217754', name: 'MV榜', bangid: '23217754', webId: 'mv' },
   // { id: 'mg__21958042', name: '美国iTunes榜', bangid: '21958042', webId: 'itunes' },
   // { id: 'mg__21975570', name: '美国billboard榜', bangid: '21975570', webId: 'billboard' },
   // { id: 'mg__22272815', name: '台湾Hito中文榜', bangid: '22272815', webId: 'hito' },
