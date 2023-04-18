@@ -117,25 +117,25 @@ export default {
   },
 
   /**
-   * 使用specialId获取GlobalSpecialId
+   * 使用SpecialId获取CollectionId
    * @param {*} specialId
    */
-  async getSpecialIdById(specialId) {
+  async getCollectionIdBySpecialId(specialId) {
     return httpFetch(`http://mobilecdnbj.kugou.com/api/v5/special/info?specialid=${specialId}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36 EdgA/104.0.1293.70',
       },
     }).promise.then(({ body }) => {
-      console.log('getSpecialIdById', body)
+      // console.log('getCollectionIdBySpecialId', body)
       if (!body.data.global_specialid) return Promise.reject(new Error('Failed to get global collection id.'))
       return body.data.global_specialid
     })
   },
   /**
-   * 使用Url获取globalSpecialId
+   * 使用重定向Url获取CollectionId
    * @param {*} url
    */
-  async getSpecialIdByUrl(url) {
+  async getCollectionIdByUrl(url) {
     return httpFetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36 EdgA/104.0.1293.70',
@@ -149,11 +149,31 @@ export default {
     })
   },
 
+  /**
+   * 获取歌手
+   * @param {*} list
+   * @param {*} join
+   */
+  getSinger(list, join = '、') {
+    const singers = []
+    list.forEach(item => {
+      if (!item.name) return
+      singers.push(item.name)
+    })
+    return singers ? singers.join(join) : ''
+  },
+
   getInfoUrl(tagId) {
     return tagId
       ? `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&cdn=cdn&t=5&c=${tagId}`
       : 'http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_smarty=1&'
   },
+  /**
+   * 获取歌单URL
+   * @param {*} sortId
+   * @param {*} tagId
+   * @param {*} page
+   */
   getSongListUrl(sortId, tagId, page) {
     if (tagId == null) tagId = ''
     return `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_ajax=1&cdn=cdn&t=${sortId}&c=${tagId}&p=${page}`
@@ -271,20 +291,12 @@ export default {
       }
     })
   },
-  getSinger(list) {
-    const singers = []
-    list.forEach(item => {
-      if (!item.name) return
-      singers.push(item.name)
-    })
-    return singers ? singers.join('、') : ''
-  },
   /**
    * 通过CollectionId获取歌单
    * @param {*} id
    */
-  async getUserListDetailByCollectionId(id, page = 1, limit = 200) {
-    if (!id || id.length > 1000) return Promise.reject(new Error('Get list failed.'))
+  async getUserListDetailByCollectionId(id, page = 1, limit = 300) {
+    if (!id || id.length > 1000) return Promise.reject(new Error('ID error.'))
     const listInfo = await this.getUserListInfoByCollectionId(id)
 
     const params = `specialid=0&need_sort=1&module=CloudMusic&clientver=11589&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=0&area_code=1&appid=1005`
@@ -294,10 +306,10 @@ export default {
       },
     }).then(body => {
       if (!body.info) return Promise.reject(new Error('Get list failed.'))
-      const songs = this.filterListByCollectionId(body.info)
+      const songList = this.filterCollectionIdList(body.info)
 
       return {
-        list: songs || [],
+        list: songList || [],
         page,
         limit,
         total: listInfo.total,
@@ -316,8 +328,13 @@ export default {
    * 过滤GlobalSpecialId歌单数据
    * @param {*} rawData
    */
-  filterListByCollectionId(rawData) {
-    return rawData.map(item => {
+  filterCollectionIdList(rawData) {
+    let ids = new Set()
+    let list = []
+    rawData.forEach(item => {
+      if (!item) return
+      if (ids.has(item.hash)) return
+      ids.add(item.hash)
       const types = []
       const _types = {}
 
@@ -325,38 +342,38 @@ export default {
         let size = sizeFormate(data.size)
         switch (data.level) {
           case 2:
-            types.push({ type: '128k', size, hash: item.hash })
+            types.push({ type: '128k', size, hash: data.hash })
             _types['128k'] = {
               size,
-              hash: item.hash,
+              hash: data.hash,
             }
             break
           case 4:
-            types.push({ type: '320k', size, hash: item.hash })
+            types.push({ type: '320k', size, hash: data.hash })
             _types['320k'] = {
               size,
-              hash: item.hash,
+              hash: data.hash,
             }
             break
           case 5:
-            types.push({ type: 'flac', size, hash: item.hash })
+            types.push({ type: 'flac', size, hash: data.hash })
             _types.flac = {
               size,
-              hash: item.hash,
+              hash: data.hash,
             }
             break
           case 6:
-            types.push({ type: 'flac24bit', size, hash: item.hash })
+            types.push({ type: 'flac24bit', size, hash: data.hash })
             _types.flac24bit = {
               size,
-              hash: item.hash,
+              hash: data.hash,
             }
             break
         }
       })
       const singers = this.getSinger(item.singerinfo)
 
-      return {
+      list.push({
         singer: singers ? decodeName(singers) : decodeName(item.name).split(' - ')[0].replace(/&/g, '、'),
         name: decodeName(item.name).split(' - ')[1],
         albumName: decodeName(item.albuminfo.name),
@@ -371,8 +388,9 @@ export default {
         types,
         _types,
         typeUrl: {},
-      }
+      })
     })
+    return list
   },
   /**
    * 通过酷狗码获取歌单
@@ -393,9 +411,14 @@ export default {
     if (!codeData) return Promise.reject(new Error('Get list failed.'))
     const codeInfo = codeData.info
 
-    if (codeInfo.global_collection_id) {
-      return this.getUserListDetailByCollectionId(codeInfo.global_collection_id, page)
-    } else if (codeInfo.userid != null) {
+    switch (codeInfo.type) {
+      case 2:
+        if (!codeInfo.global_collection_id) return this.getListDetailBySpecialId(codeInfo.id, page)
+        break
+    }
+    if (codeInfo.global_collection_id) return this.getUserListDetailByCollectionId(codeInfo.global_collection_id, page)
+
+    if (codeInfo.userid != null) {
       const songList = await this.createHttp('http://www2.kugou.kugou.com/apps/kucodeAndShare/app/', {
         method: 'POST',
         headers: {
@@ -420,6 +443,16 @@ export default {
         },
       }
     }
+  },
+
+  /**
+   * 通过SpecialId获取歌单
+   * @param {*} id
+   * @param {*} page
+   */
+  async getListDetailBySpecialId(id, page = 1) {
+    const globalSpecialId = await this.getCollectionIdBySpecialId(id)
+    return this.getUserListDetailByCollectionId(globalSpecialId, page)
   },
 
   async getUserListDetail3(chain, page) {
@@ -521,6 +554,7 @@ export default {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
       },
     }).promise
+    // console.log(body)
     let result = body.match(/var\sphpParam\s=\s({.+?});/)
     if (result) result = JSON.parse(result[1])
     this.cache.set(chain, result)
@@ -596,7 +630,6 @@ export default {
       },
     })
 
-    // console.log(info)
     let result = await Promise.all(this.createTask(info.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
     // console.log(info, songInfo)
     return this.filterData2(result)
@@ -618,17 +651,18 @@ export default {
       } else if (!link.includes('song.html')) return this.getUserListDetail3(link.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
     }
 
-    const requestObj_listDetailLink = httpFetch(link, {
+    const requestLink = httpFetch(link, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
         Referer: link,
       },
     })
-    const { headers: { location }, statusCode, body } = await requestObj_listDetailLink.promise
+    const { headers: { location }, statusCode, body } = await requestLink.promise
     // console.log(body, location)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
     if (location) {
-      // console.log(location)
+      // 概念版分享链接 https://t1.kugou.com/xxx
+      if (location.includes('global_specialid')) return this.getUserListDetailByCollectionId(location.replace(/^.*?global_specialid=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
       if (location.includes('global_collection_id')) return this.getUserListDetailByCollectionId(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
       if (location.includes('chain=')) return this.getUserListDetail3(location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
       if (location.includes('.html')) {
@@ -642,7 +676,6 @@ export default {
           return this.getUserListDetail(link, page, ++retryNum)
         } else return this.getUserListDetail3(location.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
       }
-      // console.log('location', location)
       return this.getUserListDetail(location, page, ++retryNum)
     }
     if (typeof body == 'string') return this.getUserListDetailByCollectionId(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'), page)
@@ -659,16 +692,8 @@ export default {
     id = id.toString()
 
     if (id.includes('special/single/')) id = id.replace(this.regExps.listDetailLink, '$1')
-    if (/https?:/.test(id)) {
-      // 酷狗概念版 https://t1.kugou.com/xxx
-      if (id.includes('t1.kugou.com')) {
-        const globalSpecialId = await this.getSpecialIdByUrl(id)
-        return this.getUserListDetailByCollectionId(globalSpecialId, page)
-      } else {
-        // fix https://www.kugou.com/songlist/xxx/?uid=xxx&chl=qq_client&cover=http%3A%2F%2Fimge.kugou.com%xxx.jpg&iszlist=1
-        return this.getUserListDetail(id.replace(/^.*?http/, 'http'), page)
-      }
-    }
+    // fix https://www.kugou.com/songlist/xxx/?uid=xxx&chl=qq_client&cover=http%3A%2F%2Fimge.kugou.com%xxx.jpg&iszlist=1
+    if (/https?:/.test(id)) return this.getUserListDetail(id.replace(/^.*?http/, 'http'), page)
     if (/^\d+$/.test(id)) return this.getUserListDetailByCode(id, page)
     if (id.startsWith('id_')) id = id.replace('id_', '')
 
@@ -855,32 +880,33 @@ export default {
   },
 
   search(text, page, limit = 20) {
+    const params = `userid=1384394652&req_custom=1&appid=1005&req_multi=1&version=11589&page=${page}&filter=0&pagesize=${limit}&order=0&clienttime=1681779443&iscorrection=1&searchsong=0&keyword=${text}&mid=288799920684148686226285199951543865551&dfid=3eSBsO1u97EY1zeIZd40hH4p&clientver=11589&platform=AndroidFilter`
+    const url = encodeURI(`http://complexsearchretry.kugou.com/v1/search/special?${params}&signature=${signatureParams(params, 1)}`)
+    return this.createHttp(url).then(body => {
+      // console.log(body)
+      return {
+        list: body.lists.map(item => {
+          return {
+            play_count: this.formatPlayCount(item.total_play_count),
+            id: 'id_' + item.gid,
+            author: item.nickname,
+            name: item.specialname,
+            time: dateFormat(item.publish_time, 'Y-M-D'),
+            img: item.img,
+            grade: item.grade,
+            desc: item.intro,
+            total: item.song_count,
+            source: 'kg',
+          }
+        }),
+        limit,
+        total: body.total,
+        source: 'kg',
+      }
+    })
     // http://msearchretry.kugou.com/api/v3/search/special?version=9209&keyword=%E5%91%A8%E6%9D%B0%E4%BC%A6&pagesize=20&filter=0&page=1&sver=2&with_res_tag=0
-    // return httpFetch(`http://ioscdn.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&correct=1&sver=5`)
-    return httpFetch(`http://msearchretry.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&filter=0&version=7910&sver=2`)
-      .promise.then(({ body }) => {
-        if (body.errcode != 0) throw new Error('filed')
-        // console.log(body.data.info)
-        return {
-          list: body.data.info.map(item => {
-            return {
-              play_count: this.formatPlayCount(item.playcount),
-              id: 'id_' + item.specialid,
-              author: item.nickname,
-              name: item.specialname,
-              time: dateFormat(item.publishtime, 'Y-M-D'),
-              img: item.imgurl,
-              grade: item.grade,
-              desc: item.intro,
-              total: item.songcount,
-              source: 'kg',
-            }
-          }),
-          limit,
-          total: body.data.total,
-          source: 'kg',
-        }
-      })
+    // http://ioscdn.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&correct=1&sver=5
+    // http://msearchretry.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&filter=0&version=7910&sver=2
   },
 }
 
