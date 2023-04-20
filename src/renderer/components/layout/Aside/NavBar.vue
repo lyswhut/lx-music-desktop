@@ -137,8 +137,8 @@ export default {
   // padding: 18px 3px;
   // margin: 5px 0;
   // border-left: 5px solid transparent;
-  transition: @transition-normal;
-  transition-property: color;
+  transition: @transition-fast;
+  transition-property: background-color, opacity;
   color: var(--color-nav-font);
   cursor: pointer;
   font-size: 11.5px;
@@ -148,17 +148,30 @@ export default {
   align-items: center;
   justify-content: center;
 
-  transition: 0.3s ease;
-  transition-property: background-color, opacity;
   // border-radius: @radius-border;
   .mixin-ellipsis-1;
+  &:before {
+    .mixin-after;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background-color: var(--color-primary-dark-200-alpha-700);
+    border-radius: 4px;
+    transform: translateX(-100%);
+    transition: transform @transition-fast;
+  }
 
   &.active {
     // border-left-color: @color-theme-active;
-    background-color: var(--color-primary-light-400-alpha-600);
+    background-color: var(--color-primary-light-300-alpha-700);
+
+    &:before {
+      transform: translateX(0);
+    }
 
     &:hover {
-      background-color: var(--color-primary-light-300-alpha-600);
+      background-color: var(--color-primary-light-300-alpha-800);
     }
   }
 
@@ -168,12 +181,12 @@ export default {
 
     &:not(.active) {
       opacity: .8;
-      background-color: var(--color-primary-light-500-alpha-600);
+      background-color: var(--color-primary-light-400-alpha-700);
     }
   }
   &:active:not(.active) {
     opacity: .6;
-    background-color: var(--color-primary-light-200-alpha-600);
+    background-color: var(--color-primary-light-300-alpha-600);
   }
 }
 
