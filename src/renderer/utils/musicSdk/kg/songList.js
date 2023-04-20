@@ -415,6 +415,8 @@ export default {
       case 2:
         if (!codeInfo.global_collection_id) return this.getListDetailBySpecialId(codeInfo.id, page)
         break
+      case 3:
+        return this.getListDetailByAlbumId(codeInfo.id, page)
     }
     if (codeInfo.global_collection_id) return this.getUserListDetailByCollectionId(codeInfo.global_collection_id, page)
 
@@ -453,6 +455,49 @@ export default {
   async getListDetailBySpecialId(id, page = 1) {
     const globalSpecialId = await this.getCollectionIdBySpecialId(id)
     return this.getUserListDetailByCollectionId(globalSpecialId, page)
+  },
+
+  /**
+   * 通过AlbumId获取专辑
+   * @param {*} id
+   * @param {*} page
+   */
+  async getListDetailByAlbumId(id, page = 1, limit = 200) {
+    console.log(id)
+    const albumInfoRequest = await this.createHttp('http://kmrserviceretry.kugou.com/container/v1/album?dfid=1tT5He3kxrNC4D29ad1MMb6F&mid=22945702112173152889429073101964063697&userid=0&appid=1005&clientver=11589', {
+      method: 'POST',
+      body: {
+        appid: 1005,
+        clienttime: 1681833686,
+        clientver: 11589,
+        data: [{ album_id: id }],
+        fields: 'language,grade_count,intro,mix_intro,heat,category,sizable_cover,cover,album_name,type,quality,publish_company,grade,special_tag,author_name,publish_date,language_id,album_id,exclusive,is_publish,trans_param,authors,album_tag',
+        isBuy: 0,
+        key: 'e6f3306ff7e2afb494e89fbbda0becbf',
+        mid: '22945702112173152889429073101964063697',
+        show_album_tag: 0,
+      },
+    })
+    const albumInfo = albumInfoRequest[0]
+
+    const albumList = await this.createHttp(`http://mobiles.kugou.com/api/v3/album/song?version=9108&albumid=${id}&plat=0&pagesize=${limit}&area_code=0&page=${page}&with_res_tag=0`)
+    if (!albumList.info) return Promise.reject(new Error('Get album list failed.'))
+
+    let result = await Promise.all(this.createTask(albumList.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    return {
+      list: this.filterData2(result) || [],
+      page,
+      limit,
+      total: albumList.total,
+      source: 'kg',
+      info: {
+        name: albumInfo.album_name,
+        img: albumInfo.sizable_cover.replace('{size}', 240),
+        desc: albumInfo.intro,
+        author: albumInfo.author_name,
+        // play_count: this.formatPlayCount(info.count),
+      },
+    }
   },
 
   async getUserListDetail3(chain, page) {
@@ -656,10 +701,17 @@ export default {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
         Referer: link,
       },
+      follow_max: 2,
     })
     const { headers: { location }, statusCode, body } = await requestLink.promise
-    // console.log(body, location)
+    // console.log(body, location, statusCode)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
+    if (typeof body == 'string') {
+      if (body.includes('"global_collection_id":')) return this.getUserListDetailByCollectionId(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'), page)
+      if (body.includes('"albumid":')) return this.getListDetailByAlbumId(body.replace(/^[\s\S]+?"albumid":(\w+)[\s\S]+?$/, '$1'), page)
+      if (body.includes('"album_id":') && link.includes('album/info')) return this.getListDetailByAlbumId(body.replace(/^[\s\S]+?"album_id":(\w+)[\s\S]+?$/, '$1'), page)
+      if (body.includes('list_id = "') && link.includes('album/info')) return this.getListDetailByAlbumId(body.replace(/^[\s\S]+?list_id = "(\w+)"[\s\S]+?$/, '$1'), page)
+    }
     if (location) {
       // 概念版分享链接 https://t1.kugou.com/xxx
       if (location.includes('global_specialid')) return this.getUserListDetailByCollectionId(location.replace(/^.*?global_specialid=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
@@ -678,7 +730,6 @@ export default {
       }
       return this.getUserListDetail(location, page, ++retryNum)
     }
-    if (typeof body == 'string') return this.getUserListDetailByCollectionId(body.replace(/^[\s\S]+?"global_collection_id":"(\w+)"[\s\S]+?$/, '$1'), page)
     if (body.errcode !== 0) return this.getUserListDetail(link, page, ++retryNum)
     return this.getUserListDetailByLink(body, link)
   },
