@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - beta
-      - master
-      - dev
-      - patch-6
 
 jobs:
   Windows:
@@ -62,7 +59,39 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-x86-Setup
-          path: build/*x86 Setup.exe
+          path: build/* x86 Setup.exe
+
+      - name: Build Package 7z x86
+        run: npm run pack:win:7z:x86
+      - name: Upload Artifact 7z x86
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-win_x86-green
+          path: build/*win_x86 green.7z
+
+      - name: Build Package Setup arm64
+        run: npm run pack:win:setup:arm64
+      - name: Upload Artifact Setup arm64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-arm64-Setup
+          path: build/* arm64 Setup.exe
+
+      - name: Build Package 7z arm64
+        run: npm run pack:win:7z:arm64
+      - name: Upload Artifact 7z arm64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-win_arm64-green
+          path: build/*win_arm64 green.7z
+
+      - name: Build Package Setup x86_64
+        run: npm run pack:win:setup:x86_64
+      - name: Upload Artifact Setup x86_64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-x86_64-Setup
+          path: build/*x86_64 Setup.exe
 
       - name: Generate file MD5
         run: |
@@ -176,6 +205,22 @@ jobs:
           name: lx-music-desktop-deb-arm64
           path: build/* arm64.deb
 
+      - name: Build Package deb armv7l
+        run: npm run pack:linux:deb:armv7l
+      - name: Upload Artifact deb armv7l
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-deb-armv7l
+          path: build/* armv7l.deb
+
+      - name: Build Package x64 appImage
+        run: npm run pack:linux:appImage
+      - name: Upload Artifact x64 appImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-x64-appImage
+          path: build/* x64.AppImage
+
       - name: Build Package x64 rpm
         run: npm run pack:linux:rpm
       - name: Upload Artifact x64 rpm
@@ -184,7 +229,15 @@ jobs:
           name: lx-music-desktop-x64-rpm
           path: build/* x64.rpm
 
+      - name: Build Package x64 pacman
+        run: npm run pack:linux:pacman
+      - name: Upload Artifact x64 pacman
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-x64-pacman
+          path: build/* x64.pacman
+
       - name: Generate file MD5
         run: |
           cd build
-          md5sum *.deb *.rpm
+          md5sum *.deb *.rpm *.pacman *.AppImage
