@@ -18,7 +18,7 @@ export default {
   allPage: 1,
   musicSearch(str, page, limit) {
     let params = `userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword={keyword}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`
-    const searchRequest = httpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?${searchParams(params, keyword)}`)
+    const searchRequest = httpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?${searchParams(params, str)}`)
     return searchRequest.promise.then(({ body }) => body)
   },
   filterData(rawData) {
