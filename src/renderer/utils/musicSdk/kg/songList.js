@@ -413,7 +413,7 @@ export default {
 
     switch (codeInfo.type) {
       case 2:
-        if (!codeInfo.global_collection_id) return this.getListDetailBySpecialId(codeInfo.id, page)
+        if (!codeInfo.global_collection_id) return this.getUserListDetailBySpecialId(codeInfo.id, page)
         break
       case 3:
         return this.getListDetailByAlbumId(codeInfo.id, page)
@@ -452,7 +452,7 @@ export default {
    * @param {*} id
    * @param {*} page
    */
-  async getListDetailBySpecialId(id, page = 1) {
+  async getUserListDetailBySpecialId(id, page = 1) {
     const globalSpecialId = await this.getCollectionIdBySpecialId(id)
     return this.getUserListDetailByCollectionId(globalSpecialId, page)
   },
@@ -746,9 +746,10 @@ export default {
     // fix https://www.kugou.com/songlist/xxx/?uid=xxx&chl=qq_client&cover=http%3A%2F%2Fimge.kugou.com%xxx.jpg&iszlist=1
     if (/https?:/.test(id)) return this.getUserListDetail(id.replace(/^.*?http/, 'http'), page)
     if (/^\d+$/.test(id)) return this.getUserListDetailByCode(id, page)
-    if (id.startsWith('id_')) id = id.replace('id_', '')
+    if (id.startsWith('gid_')) return this.getUserListDetailByCollectionId(id.replace('gid_', ''), page)
+    if (id.startsWith('id_')) return this.getUserListDetailBySpecialId(id.replace('id_', ''), page)
 
-    return this.getUserListDetailByCollectionId(id, page)
+    return new Error('Failed.')
   },
 
   filterData(rawList) {
@@ -939,7 +940,7 @@ export default {
         list: body.lists.map(item => {
           return {
             play_count: this.formatPlayCount(item.total_play_count),
-            id: 'id_' + item.gid,
+            id: item.gid ? `gid_${item.gid}` : `id_${item.specialid}`,
             author: item.nickname,
             name: item.specialname,
             time: dateFormat(item.publish_time, 'Y-M-D'),
