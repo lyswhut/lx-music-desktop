@@ -1,9 +1,7 @@
 const { getNow, TimeoutTools } = require('./utils')
 
 const timeFieldExp = /^(?:\[[\d:.]+\])+/g
-const timeExp = /[\d:.]+/g
-const timeLabelRxp = /^(\[[\d:]+\.)0+(\d+\])/
-const timeLabelFixRxp = /(?:\.0+|0+)$/
+const timeExp = /\d{1,3}(:\d{1,3}){0,2}(?:\.\d{1,3})/g
 const tagRegMap = {
   title: 'ti',
   artist: 'ar',
@@ -13,6 +11,15 @@ const tagRegMap = {
 }
 
 const timeoutTools = new TimeoutTools()
+
+const t_rxp_1 = /^0+(\d+)/
+const t_rxp_2 = /:0+(\d+)/g
+const t_rxp_3 = /\.0+(\d+)/
+const formatTimeLabel = (label) => {
+  return label.replace(t_rxp_1, '$1')
+    .replace(t_rxp_2, ':$1')
+    .replace(t_rxp_3, '.$1')
+}
 
 const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
   const extendedLines = extendedLyric.split(/\r\n|\n|\r/)
@@ -26,9 +33,7 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
         const times = timeField.match(timeExp)
         if (times == null) continue
         for (let time of times) {
-          if (time.includes('.')) time = time.replace(timeLabelRxp, '$1$2')
-          else time += '.0'
-          const timeStr = time.replace(timeLabelFixRxp, '')
+          const timeStr = formatTimeLabel(time)
           const targetLine = lrcLinesMap[timeStr]
           if (targetLine) targetLine.extendedLyrics.push(text)
         }
@@ -88,19 +93,16 @@ module.exports = class LinePlayer {
           const times = timeField.match(timeExp)
           if (times == null) continue
           for (let time of times) {
-            if (time.includes('.')) time = time.replace(timeLabelRxp, '$1$2')
-            else time += '.0'
-            const timeStr = time.replace(timeLabelFixRxp, '')
+            const timeStr = formatTimeLabel(time)
             if (linesMap[timeStr]) {
               linesMap[timeStr].extendedLyrics.push(text)
               continue
             }
             const timeArr = timeStr.split(':')
-            if (timeArr.length < 3) timeArr.unshift(0)
-            if (timeArr[2].indexOf('.') > -1) {
-              timeArr.push(...timeArr[2].split('.'))
-              timeArr.splice(2, 1)
-            } else if (!timeArr[2]) timeArr[2] = '0'
+            if (timeArr.length > 3) continue
+            else if (timeArr.length < 3) for (let i = 3 - timeArr.length; i--;) timeArr.unshift('0')
+            if (timeArr[2].indexOf('.') > -1) timeArr.splice(2, 1, ...timeArr[2].split('.'))
+
             linesMap[timeStr] = {
               time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(timeArr[3] || 0),
               text,
