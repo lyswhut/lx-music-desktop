@@ -15,7 +15,7 @@ const timeoutTools = new TimeoutTools()
 const t_rxp_1 = /^0+(\d+)/
 const t_rxp_2 = /:0+(\d+)/g
 const t_rxp_3 = /\.0+(\d+)/
-const formaterTimeLabel = (label) => {
+const formatTimeLabel = (label) => {
   return label.replace(t_rxp_1, '$1')
     .replace(t_rxp_2, ':$1')
     .replace(t_rxp_3, '.$1')
@@ -33,7 +33,7 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
         const times = timeField.match(timeExp)
         if (times == null) continue
         for (let time of times) {
-          const timeStr = formaterTimeLabel(time)
+          const timeStr = formatTimeLabel(time)
           const targetLine = lrcLinesMap[timeStr]
           if (targetLine) targetLine.extendedLyrics.push(text)
         }
@@ -93,7 +93,7 @@ module.exports = class LinePlayer {
           const times = timeField.match(timeExp)
           if (times == null) continue
           for (let time of times) {
-            const timeStr = formaterTimeLabel(time)
+            const timeStr = formatTimeLabel(time)
             if (linesMap[timeStr]) {
               linesMap[timeStr].extendedLyrics.push(text)
               continue

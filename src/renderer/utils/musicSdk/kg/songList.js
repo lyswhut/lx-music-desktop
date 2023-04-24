@@ -97,12 +97,53 @@ export default {
   //     return body.data.info
   //   })
   // },
-  async getListDetailBySpecialId(id) {
-    const globalSpecialId = await this.getGlobalSpecialId(id)
+  parseHtmlDesc(html) {
+    const prefix = '<div class="pc_specail_text pc_singer_tab_content" id="specailIntroduceWrap">'
+    let index = html.indexOf(prefix)
+    if (index < 0) return null
+    const afterStr = html.substring(index + prefix.length)
+    index = afterStr.indexOf('</div>')
+    if (index < 0) return null
+    return decodeName(afterStr.substring(0, index))
+  },
+  async getListDetailBySpecialId(id, page, tryNum = 0) {
+    if (tryNum > 2) throw new Error('try max num')
+
+    const { body } = await httpFetch(this.getSongListDetailUrl(id)).promise
+    let listData = body.match(this.regExps.listData)
+    let listInfo = body.match(this.regExps.listInfo)
+    if (!listData) return this.getListDetailBySpecialId(id, page, ++tryNum)
+    let list = await this.getMusicInfos(JSON.parse(listData[1]))
+    // listData = this.filterData(JSON.parse(listData[1]))
+    let name
+    let pic
+    if (listInfo) {
+      name = listInfo[1]
+      pic = listInfo[2]
+    }
+    let desc = this.parseHtmlDesc(body)
+
+
+    return {
+      list,
+      page: 1,
+      limit: 10000,
+      total: list.length,
+      source: 'kg',
+      info: {
+        name,
+        img: pic,
+        desc,
+        // author: body.result.info.userinfo.username,
+        // play_count: this.formatPlayCount(body.result.listen_num),
+      },
+    }
+
+    // const globalSpecialId = await this.getGlobalSpecialId(id)
     // const limit = 100
     // const listData = await this.getSongListDetailByGlobalSpecialId(globalSpecialId, page, limit)
     // if (!Array.isArray(listData))
-    return this.getUserListDetail2(globalSpecialId)
+    // return this.getUserListDetail2(globalSpecialId)
     // return {
     //   list: this.filterDatav9(listData),
     //   page,
@@ -127,9 +168,9 @@ export default {
     if (tagId == null) tagId = ''
     return `http://www2.kugou.kugou.com/yueku/v9/special/getSpecial?is_ajax=1&cdn=cdn&t=${sortId}&c=${tagId}&p=${page}`
   },
-  // getSongListDetailUrl(id) {
-  //   return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
-  // },
+  getSongListDetailUrl(id) {
+    return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
+  },
 
   /**
    * 格式化播放数量
@@ -276,6 +317,15 @@ export default {
       },
     }).then(data => data.map(s => s[0])))
   },
+  async getMusicInfos(list) {
+    return this.filterData2(
+      await Promise.all(
+        this.createTask(
+          this.deDuplication(list)
+            .map(item => ({ hash: item.hash })),
+        ))
+        .then(([...datas]) => datas.flat()))
+  },
 
   async getUserListDetailByCode(id) {
     const songInfo = await this.createHttp('http://t.kugou.com/command/', {
@@ -312,12 +362,12 @@ export default {
       })
       // console.log(songList)
     }
-    let result = await Promise.all(this.createTask((songList || songInfo.list).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    let list = await this.getMusicInfos(songList || songInfo.list)
     return {
-      list: this.filterData2(result) || [],
+      list,
       page: 1,
       limit: info.count,
-      total: info.count,
+      total: list.length,
       source: 'kg',
       info: {
         name: info.name,
@@ -339,13 +389,13 @@ export default {
       if (songInfo.global_collection_id) return this.getUserListDetail2(songInfo.global_collection_id)
       else return this.getUserListDetail4(songInfo, chain, page).catch(() => this.getUserListDetail5(chain))
     }
-    let result = await Promise.all(this.createTask(songInfo.list.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    let list = await this.getMusicInfos(songInfo.list)
     // console.log(info, songInfo)
     return {
-      list: this.filterData2(result) || [],
+      list,
       page: 1,
       limit: this.listDetailLimit,
-      total: songInfo.count,
+      total: list.length,
       source: 'kg',
       info: {
         name: songInfo.info.name,
@@ -383,13 +433,13 @@ export default {
       }).then(data => data.list.info))
     }
     let result = await Promise.all(tasks).then(([...datas]) => datas.flat())
-    result = await Promise.all(this.createTask(this.deDuplication(result).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    result = await this.getMusicInfos(result)
     // console.log(result)
     return {
-      list: this.filterData2(result) || [],
+      list: result,
       page,
       limit: this.listDetailLimit,
-      total: listInfo.count,
+      total: result.length,
       source: 'kg',
       info: {
         name: listInfo.name,
@@ -434,13 +484,13 @@ export default {
       },
     })
     const songInfo = await this.createGetListDetail2Task(id, info.songcount)
-    let result = await Promise.all(this.createTask(this.deDuplication(songInfo).map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
-    // console.log(info, songInfo, result)
+    let list = await this.getMusicInfos(songInfo)
+    // console.log(info, songInfo, list)
     return {
-      list: this.filterData2(result) || [],
+      list,
       page: 1,
       limit: this.listDetailLimit,
-      total: info.songcount,
+      total: list.length,
       source: 'kg',
       info: {
         name: info.specialname,
@@ -476,9 +526,9 @@ export default {
     let result = body.match(/var\sdataFromSmarty\s=\s(\[.+?\])/)
     if (result) result = JSON.parse(result[1])
     this.cache.set(chain, result)
-    result = await Promise.all(this.createTask(result.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    result = await this.getMusicInfos(result)
     // console.log(info, songInfo)
-    return this.filterData2(result)
+    return result
   },
 
   async getUserListDetail4(songInfo, chain, page) {
@@ -491,7 +541,7 @@ export default {
       list: list || [],
       page,
       limit,
-      total: listInfo.songcount,
+      total: list.length ?? 0,
       source: 'kg',
       info: {
         name: listInfo.specialname,
@@ -512,7 +562,7 @@ export default {
       list: list || [],
       page: 1,
       limit: this.listDetailLimit,
-      total: listInfo.songcount,
+      total: list.length ?? 0,
       source: 'kg',
       info: {
         name: listInfo.specialname,
@@ -535,9 +585,9 @@ export default {
     })
 
     // console.log(info)
-    let result = await Promise.all(this.createTask(info.info.map(item => ({ hash: item.hash })))).then(([...datas]) => datas.flat())
+    let result = await this.getMusicInfos(info.info)
     // console.log(info, songInfo)
-    return this.filterData2(result)
+    return result
   },
 
   async getUserListDetail(link, page, retryNum = 0) {
