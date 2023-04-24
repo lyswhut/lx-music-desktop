@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
-import { signatureParams } from './util'
+import { signatureParams, createHttpFetch } from './util'
 import { getMusicInfosByList } from './musicInfo'
 
 // import infSign from './vendors/infSign.min'
@@ -47,6 +47,7 @@ export default {
     },
   ],
   cache: new Map(),
+  CollectionIdListInfoCache: new Map(),
   regExps: {
     listData: /global\.data = (\[.+\]);/,
     listInfo: /global = {[\s\S]+?name: "(.+)"[\s\S]+?pic: "(.+)"[\s\S]+?};/,
@@ -54,40 +55,19 @@ export default {
     listDetailLink: /^.+\/(\d+)\.html(?:\?.*|&.*$|#.*$|$)/,
   },
 
-  async createHttp(url, options, retryNum = 0) {
-    if (retryNum > 2) throw new Error('try max num')
-    let result
-    try {
-      result = await httpFetch(url, options).promise
-    } catch (err) {
-      console.log(err)
-      return this.createHttp(url, options, ++retryNum)
-    }
-    // console.log(result.statusCode, result.body)
-    if (result.statusCode !== 200 ||
-      (
-        (result.body.error_code !== undefined
-          ? result.body.error_code
-          : result.body.errcode !== undefined
-            ? result.body.errcode
-            : result.body.err_code
-        ) !== 0)
-    ) return this.createHttp(url, options, ++retryNum)
-    if (result.body.data) return result.body.data
-    if (Array.isArray(result.body.info)) return result.body
-    return result.body.info
-  },
-
   /**
-   * 获取SpecialId歌单详情
+   * 获取SpecialId歌单
    * @param {*} id
    */
-  async getListInfoBySpecialId(id, tryNum = 0) {
+  async getUserListDetailBySpecialId(id, page, tryNum = 0) {
     if (tryNum > 2) throw new Error('try max num')
 
     const { body } = await httpFetch(this.getSongListDetailUrl(id)).promise
+    let listData = body.match(this.regExps.listData)
     let listInfo = body.match(this.regExps.listInfo)
-    if (!listInfo) return this.getListDetailBySpecialId(id, ++tryNum)
+    if (!listData) return this.getListDetailBySpecialId(id, page, ++tryNum)
+    let list = await getMusicInfosByList(JSON.parse(listData[1]))
+    // listData = this.filterData(JSON.parse(listData[1]))
     let name
     let pic
     if (listInfo) {
@@ -96,12 +76,20 @@ export default {
     }
     let desc = this.parseHtmlDesc(body)
 
+
     return {
-      name,
-      image: pic,
-      desc,
-      // author: body.result.info.userinfo.username,
-      // play_count: this.formatPlayCount(body.result.listen_num),
+      list,
+      page: 1,
+      limit: 10000,
+      total: list.length,
+      source: 'kg',
+      info: {
+        name,
+        img: pic,
+        desc,
+        // author: body.result.info.userinfo.username,
+        // play_count: this.formatPlayCount(body.result.listen_num),
+      },
     }
   },
   parseHtmlDesc(html) {
@@ -256,43 +244,16 @@ export default {
     })
   },
 
-  createTask(hashs) {
-    let data = {
-      appid: 1001,
-      clienttime: 639437935,
-      clientver: 9020,
-      fields:
-        'album_info,author_name,audio_info,ori_audio_name',
-      is_publish: '1',
-      key: '0475af1457cd3363c7b45b871e94428a',
-      mid: '21511157a05844bd085308bc76ef3342',
-      show_privilege: 1,
-    }
-    let list = hashs
-    let tasks = []
-    while (list.length) {
-      tasks.push(Object.assign({ data: list.slice(0, 100) }, data))
-      if (list.length < 100) break
-      list = list.slice(100)
-    }
-    let url = 'http://kmr.service.kugou.com/v2/album_audio/audio'
-    return tasks.map(task => this.createHttp(url, {
-      method: 'POST',
-      body: task,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-      },
-    }).then(data => data.map(s => s[0])))
-  },
-
   /**
    * 通过CollectionId获取歌单详情
    * @param {*} id
    */
   async getUserListInfoByCollectionId(id) {
     if (!id || id.length > 1000) return Promise.reject(new Error('get list error'))
+    if (this.CollectionIdListInfoCache.has(id)) return this.CollectionIdListInfoCache.get(id)
+
     const params = `appid=1058&specialid=0&global_specialid=${id}&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-`
-    return this.createHttp(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
+    return createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
       headers: {
         mid: '1586163242519',
         Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -301,7 +262,7 @@ export default {
         clienttime: '1586163242519',
       },
     }).then(body => {
-      return {
+      let info = {
         type: body.type,
         userName: body.nickname,
         userAvatar: body.user_avatar,
@@ -312,41 +273,44 @@ export default {
         total: body.songcount,
         playCount: body.playcount,
       }
+
+      this.CollectionIdListInfoCache.set(id, info)
+      return info
     })
   },
   /**
    * 通过SpecialId获取歌单
    * @param {*} id
    */
-  async getUserListDetailBySpecialId(id, page = 1, limit = 300) {
-    if (!id || id.length > 1000) return Promise.reject(new Error('get list error.'))
-    const listInfo = await this.getListInfoBySpecialId(id)
+  // async getUserListDetailBySpecialId(id, page = 1, limit = 300) {
+  //   if (!id || id.length > 1000) return Promise.reject(new Error('get list error.'))
+  //   const listInfo = await this.getListInfoBySpecialId(id)
 
-    const params = `specialid=${id}&need_sort=1&module=CloudMusic&clientver=11589&pagesize=${limit}&userid=0&page=${page}&type=0&area_code=1&appid=1005`
-    return this.createHttp(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 2)}`, {
-      headers: {
-        'User-Agent': 'Android10-AndroidPhone-11589-201-0-playlist-wifi',
-      },
-    }).then(body => {
-      if (!body.info) return Promise.reject(new Error('Get list failed.'))
-      const songList = this.filterCollectionIdList(body.info)
+  //   const params = `specialid=${id}&need_sort=1&module=CloudMusic&clientver=11589&pagesize=${limit}&userid=0&page=${page}&type=0&area_code=1&appid=1005`
+  //   return createHttpFetch(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 2)}`, {
+  //     headers: {
+  //       'User-Agent': 'Android10-AndroidPhone-11589-201-0-playlist-wifi',
+  //     },
+  //   }).then(body => {
+  //     if (!body.info) return Promise.reject(new Error('Get list failed.'))
+  //     const songList = this.filterCollectionIdList(body.info)
 
-      return {
-        list: songList || [],
-        page,
-        limit,
-        total: songList.length,
-        source: 'kg',
-        info: {
-          name: listInfo.name,
-          img: listInfo.image,
-          desc: listInfo.desc,
-          // author: listInfo.userName,
-          // play_count: this.formatPlayCount(listInfo.playCount),
-        },
-      }
-    })
-  },
+  //     return {
+  //       list: songList || [],
+  //       page,
+  //       limit,
+  //       total: body.count,
+  //       source: 'kg',
+  //       info: {
+  //         name: listInfo.name,
+  //         img: listInfo.image,
+  //         desc: listInfo.desc,
+  //         // author: listInfo.userName,
+  //         // play_count: this.formatPlayCount(listInfo.playCount),
+  //       },
+  //     }
+  //   })
+  // },
   /**
    * 通过CollectionId获取歌单
    * @param {*} id
@@ -356,7 +320,7 @@ export default {
     const listInfo = await this.getUserListInfoByCollectionId(id)
 
     const params = `need_sort=1&module=CloudMusic&clientver=11589&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=0&area_code=1&appid=1005`
-    return this.createHttp(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 2)}`, {
+    return createHttpFetch(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 2)}`, {
       headers: {
         'User-Agent': 'Android10-AndroidPhone-11589-201-0-playlist-wifi',
       },
@@ -455,7 +419,7 @@ export default {
    */
   async getUserListDetailByCode(id, page = 1) {
     // type 1单曲，2歌单，3电台，4酷狗码，5别人的播放队列
-    const codeData = await this.createHttp('http://t.kugou.com/command/', {
+    const codeData = await createHttpFetch('http://t.kugou.com/command/', {
       method: 'POST',
       headers: {
         'KG-RC': 1,
@@ -477,7 +441,7 @@ export default {
     if (codeInfo.global_collection_id) return this.getUserListDetailByCollectionId(codeInfo.global_collection_id, page)
 
     if (codeInfo.userid != null) {
-      const songList = await this.createHttp('http://www2.kugou.kugou.com/apps/kucodeAndShare/app/', {
+      const songList = await createHttpFetch('http://www2.kugou.kugou.com/apps/kucodeAndShare/app/', {
         method: 'POST',
         headers: {
           'KG-RC': 1,
@@ -506,7 +470,7 @@ export default {
   },
 
   async getUserListDetail3(chain, page) {
-    const songInfo = await this.createHttp(`http://m.kugou.com/schain/transfer?pagesize=${this.listDetailLimit}&chain=${chain}&su=1&page=${page}&n=0.7928855356604456`, {
+    const songInfo = await createHttpFetch(`http://m.kugou.com/schain/transfer?pagesize=${this.listDetailLimit}&chain=${chain}&su=1&page=${page}&n=0.7928855356604456`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
       },
@@ -542,7 +506,7 @@ export default {
       const limit = total > 90 ? 90 : total
       total -= limit
       page += 1
-      tasks.push(this.createHttp(link.replace(/pagesize=\d+/, 'pagesize=' + limit).replace(/page=\d+/, 'page=' + page), {
+      tasks.push(createHttpFetch(link.replace(/pagesize=\d+/, 'pagesize=' + limit).replace(/page=\d+/, 'page=' + page), {
         headers: {
           'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
           Referer: link,
@@ -575,7 +539,7 @@ export default {
       total -= limit
       page += 1
       const params = 'appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&page=' + page + '&pagesize=' + limit + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-'
-      tasks.push(this.createHttp(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 5)}`, {
+      tasks.push(createHttpFetch(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 5)}`, {
         headers: {
           mid: '1586163263991',
           Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -591,7 +555,7 @@ export default {
     let id = global_collection_id
     if (id.length > 1000) throw new Error('get list error')
     const params = 'appid=1058&specialid=0&global_specialid=' + id + '&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-'
-    let info = await this.createHttp(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
+    let info = await createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
       headers: {
         mid: '1586163242519',
         Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -883,7 +847,7 @@ export default {
   search(text, page, limit = 20) {
     const params = `userid=1384394652&req_custom=1&appid=1005&req_multi=1&version=11589&page=${page}&filter=0&pagesize=${limit}&order=0&clienttime=1681779443&iscorrection=1&searchsong=0&keyword=${text}&mid=288799920684148686226285199951543865551&dfid=3eSBsO1u97EY1zeIZd40hH4p&clientver=11589&platform=AndroidFilter`
     const url = encodeURI(`http://complexsearchretry.kugou.com/v1/search/special?${params}&signature=${signatureParams(params, 1)}`)
-    return this.createHttp(url).then(body => {
+    return createHttpFetch(url).then(body => {
       // console.log(body)
       return {
         list: body.lists.map(item => {

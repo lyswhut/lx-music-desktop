@@ -1,15 +1,12 @@
-// import '../../polyfill/array.find'
-
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { signatureParams } from './util'
 // import { debug } from '../../utils/env'
-// import { formatSinger } from './util'
 
-const searchParams = (params, keyword) => {
-  let signature = signatureParams(params.replace('{keyword}', keyword))
-  return `${params.replace('{keyword}', encodeURIComponent(keyword))}&signature=${signature}`
-}
+// const searchParams = (params, keyword) => {
+//   let signature = signatureParams(params.replace('{keyword}', keyword))
+//   return `${params.replace('{keyword}', encodeURIComponent(keyword))}&signature=${signature}`
+// }
 
 export default {
   limit: 30,
@@ -17,78 +14,75 @@ export default {
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    let params = `userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword={keyword}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`
-    const searchRequest = httpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?${searchParams(params, str)}`)
+    const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
+    const searchRequest = httpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`)
     return searchRequest.promise.then(({ body }) => body)
   },
-  filterData(rawData) {
-    const types = []
-    const _types = {}
-    if (rawData.FileSize !== 0) {
-      let size = sizeFormate(rawData.FileSize)
-      types.push({ type: '128k', size, hash: rawData.FileHash })
-      _types['128k'] = {
-        size,
-        hash: rawData.FileHash,
-      }
-    }
-    if (rawData.HQFileSize !== 0) {
-      let size = sizeFormate(rawData.HQFileSize)
-      types.push({ type: '320k', size, hash: rawData.HQFileHash })
-      _types['320k'] = {
-        size,
-        hash: rawData.HQFileHash,
-      }
-    }
-    if (rawData.SQFileSize !== 0) {
-      let size = sizeFormate(rawData.SQFileSize)
-      types.push({ type: 'flac', size, hash: rawData.SQFileHash })
-      _types.flac = {
-        size,
-        hash: rawData.SQFileHash,
-      }
-    }
-    if (rawData.ResFileSize !== 0) {
-      let size = sizeFormate(rawData.ResFileSize)
-      types.push({ type: 'flac24bit', size, hash: rawData.ResFileHash })
-      _types.flac24bit = {
-        size,
-        hash: rawData.ResFileHash,
-      }
-    }
-    return {
-      singer: decodeName(rawData.SingerName),
-      name: decodeName(rawData.SongName),
-      albumName: decodeName(rawData.AlbumName),
-      albumId: rawData.AlbumID,
-      songmid: rawData.Audioid,
-      source: 'kg',
-      interval: formatPlayTime(rawData.Duration),
-      _interval: rawData.Duration,
-      img: null,
-      lrc: null,
-      otherSource: null,
-      hash: rawData.FileHash,
-      types,
-      _types,
-      typeUrl: {},
-    }
-  },
-  handleResult(rawData) {
+  filterSongData(rawData) {
     let ids = new Set()
     const list = []
-    rawData.forEach(item => {
-      const key = item.Audioid + item.FileHash
-      if (ids.has(key)) return
-      ids.add(key)
-      list.push(this.filterData(item))
-      for (const childItem of item.Grp) {
-        const key = item.Audioid + item.FileHash
-        if (ids.has(key)) continue
-        ids.add(key)
-        list.push(this.filterData(childItem))
+
+    const filterList = (raw) => {
+      if (ids.has(raw.Audioid)) return
+      ids.add(raw.Audioid)
+      const types = []
+      const _types = {}
+      if (raw.FileSize !== 0) {
+        let size = sizeFormate(raw.FileSize)
+        types.push({ type: '128k', size, hash: raw.FileHash })
+        _types['128k'] = {
+          size,
+          hash: raw.FileHash,
+        }
       }
+      if (raw.HQ) {
+        let size = sizeFormate(raw.HQ.FileSize)
+        types.push({ type: '320k', size, hash: raw.HQ.Hash })
+        _types['320k'] = {
+          size,
+          hash: raw.HQ.Hash,
+        }
+      }
+      if (raw.SQ) {
+        let size = sizeFormate(raw.SQ.FileSize)
+        types.push({ type: 'flac', size, hash: raw.SQ.Hash })
+        _types.flac = {
+          size,
+          hash: raw.SQ.Hash,
+        }
+      }
+      if (raw.Res) {
+        let size = sizeFormate(raw.Res.FileSize)
+        types.push({ type: 'flac24bit', size, hash: raw.Res.Hash })
+        _types.flac24bit = {
+          size,
+          hash: raw.Res.Hash,
+        }
+      }
+      list.push({
+        singer: decodeName(raw.SingerName),
+        name: decodeName(raw.OriSongName),
+        albumName: decodeName(raw.AlbumName),
+        albumId: raw.AlbumID,
+        songmid: raw.Audioid,
+        source: 'kg',
+        interval: formatPlayTime(raw.Duration),
+        _interval: raw.Duration,
+        img: null,
+        lrc: null,
+        otherSource: null,
+        hash: raw.FileHash,
+        types,
+        _types,
+        typeUrl: {},
+      })
+    }
+
+    rawData.forEach(item => {
+      filterList(item)
+      if (item.Grp) item.Grp.forEach(e => filterList(e))
     })
+
     return list
   },
   search(str, page = 1, limit, retryNum = 0) {
@@ -97,7 +91,8 @@ export default {
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
     return this.musicSearch(str, page, limit).then(result => {
       if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum)
-      let list = this.handleResult(result.data.lists)
+      // console.log(result)
+      let list = this.filterSongData(result.data.lists)
 
       if (list == null) return this.search(str, page, limit, retryNum)
 

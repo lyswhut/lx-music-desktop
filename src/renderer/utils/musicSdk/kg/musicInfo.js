@@ -1,4 +1,5 @@
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
+import { createHttpFetch } from './util'
 
 const createGetMusicInfoTask = (hashs) => {
   let data = {
@@ -20,7 +21,7 @@ const createGetMusicInfoTask = (hashs) => {
     list = list.slice(100)
   }
   let url = 'http://kmr.service.kugou.com/v2/album_audio/audio'
-  return tasks.map(task => this.createHttp(url, {
+  return tasks.map(task => createHttpFetch(url, {
     method: 'POST',
     body: task,
     headers: {
