@@ -131,23 +131,6 @@ export default {
       return body.data.global_specialid
     })
   },
-  /**
-   * 使用重定向Url获取CollectionId
-   * @param {*} url
-   */
-  async getCollectionIdByUrl(url) {
-    return httpFetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Mobile Safari/537.36 EdgA/104.0.1293.70',
-      },
-      follow_max: 0,
-    }).promise.then(({ headers }) => {
-      if (!headers.location) return Promise.reject(new Error('Failed to get lite global collection id.'))
-      const globalSpecialId = headers.location.replace(/^.*?global_specialid=(\w+)(?:&.*$|#.*$|$)/, '$1')
-      if (!globalSpecialId) return Promise.reject(new Error('Failed to get lite global collection id.'))
-      return globalSpecialId
-    })
-  },
 
   /**
    * 获取歌手
