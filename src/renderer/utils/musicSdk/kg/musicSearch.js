@@ -78,21 +78,22 @@ export default {
     if (limit == null) limit = this.limit
 
     const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
-    const searchResult = await createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`)
+    return createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`).then(body => {
+      if (!body) return Promise.reject(new Error('search failed.'))
+      let list = this.filterSongData(body.lists)
+      if (list == null) return this.search(str, page, limit, retryNum)
 
-    let list = this.filterSongData(searchResult.lists)
-    if (!list) return this.search(str, page, limit, retryNum)
+      this.total = body.total
+      this.page = page
+      this.allPage = Math.ceil(this.total / limit)
 
-    this.total = searchResult.total
-    this.page = page
-    this.allPage = Math.ceil(this.total / limit)
-
-    return Promise.resolve({
-      list,
-      allPage: this.allPage,
-      limit,
-      total: this.total,
-      source: 'kg',
+      return Promise.resolve({
+        list,
+        allPage: this.allPage,
+        limit,
+        total: this.total,
+        source: 'kg',
+      })
     })
   },
 }
