@@ -113,7 +113,9 @@ export default {
     const { body, statusCode } = await _requestObj.promise
     if (statusCode != 200 || body.code !== 0) throw new Error('获取评论失败')
     // console.log(body, statusCode)
+
     const comment = body.comment
+
     return {
       source: 'tx',
       comments: this.filterNewComment(comment.commentlist),
@@ -183,7 +185,9 @@ export default {
     const { body, statusCode } = await _requestObj2.promise
     // console.log('body', body)
     if (statusCode != 200 || body.code !== 0 || body.req.code !== 0) throw new Error('获取热门评论失败')
+
     const comment = body.req.data.CommentList
+
     return {
       source: 'tx',
       comments: this.filterHotComment(comment.Comments),
@@ -244,7 +248,7 @@ export default {
         userName: item.Nick ? item.Nick.substring(1) : '',
         images: item.Pic ? [item.Pic] : [],
         avatar: item.Avatar,
-        location: item.Location ? ('来自' + item.Location) : '',
+        location: item.Location,
         userId: item.EncryptUin,
         likedCount: item.PraiseNum,
         reply: item.SubComments

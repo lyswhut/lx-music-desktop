@@ -20,6 +20,7 @@
   "comment__show": "Song comments",
   "comment__title": "{name} comment",
   "comment__unavailable": "This song does not support getting comments",
+  "comment__location": "From {location}",
   "confirm_button_text": "Yes",
   "copy_tip": " (Click to copy)",
   "date_format_hour": "{num} hours ago",

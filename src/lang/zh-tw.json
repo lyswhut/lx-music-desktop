@@ -20,6 +20,7 @@
   "comment__show": "歌曲評論",
   "comment__title": "{name} 的評論",
   "comment__unavailable": "此歌曲不支持獲取評論",
+  "comment__location": "來自 {location}",
   "confirm_button_text": "是的",
   "copy_tip": "（點擊複製）",
   "date_format_hour": "{num}小時前",
