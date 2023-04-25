@@ -35,7 +35,7 @@ export const signatureParams = (params, apiver = 9) => {
 }
 
 /**
- * 创建一个Http请求
+ * 创建一个适用于KG的Http请求
  * @param {*} url
  * @param {*} options
  * @param {*} retryNum
