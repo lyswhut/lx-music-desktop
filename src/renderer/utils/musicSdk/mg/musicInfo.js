@@ -1,5 +1,5 @@
-import { httpFetch } from '../../request'
 import { sizeFormate } from '../../index'
+import { createHttpFetch } from './util'
 
 const getSinger = (singers) => {
   let arr = []
@@ -9,7 +9,24 @@ const getSinger = (singers) => {
   return arr.join('、')
 }
 
-export const filterMusicInfoData = (rawList) => {
+const createGetMusicInfosTask = (ids, resType = 2) => {
+  let list = ids
+  let tasks = []
+  while (list.length) {
+    tasks.push(list.slice(0, 100))
+    if (list.length < 100) break
+    list = list.slice(100)
+  }
+  let url = `https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?resourceType=${resType}`
+  return tasks.map(task => createHttpFetch(url, {
+    method: 'POST',
+    form: {
+      resourceId: task.join('|'),
+    },
+  }).then(data => data.resource))
+}
+
+export const filterMusicInfoList = (rawList) => {
   // console.log(rawList)
   let ids = new Set()
   const list = []
@@ -74,27 +91,13 @@ export const filterMusicInfoData = (rawList) => {
       typeUrl: {},
     })
   })
-  // console.log(list)
   return list
 }
 
-export const getMusicInfos = (copyrightIds, retry = 0) => {
-  if (++retry > 2) return Promise.reject(new Error('Failed to get music info try max'))
-  return httpFetch('https://c.musicapp.migu.cn/MIGUM2.0/v1.0/content/resourceinfo.do?resourceType=2', {
-    method: 'POST',
-    form: {
-      resourceId: copyrightIds.join('|'),
-    },
-  }).promise.then(({ body }) => {
-    if (!body) return getMusicInfos(copyrightIds, retry)
-    if (body.code !== '000000') return Promise.reject(new Error('Failed to get music info'))
-    return filterMusicInfoData(body.resource)
-  })
+export const getMusicInfo = async(copyrightId) => {
+  return getMusicInfos([copyrightId]).then(data => data[0])
 }
 
-export const getMusicInfo = (copyrightId) => {
-  return getMusicInfos([copyrightId]).then(([musicInfo]) => {
-    if (musicInfo) return musicInfo
-    throw new Error('failed')
-  })
+export const getMusicInfos = async(copyrightIds) => {
+  return filterMusicInfoList(await Promise.all(createGetMusicInfosTask(copyrightIds)).then(data => data))
 }

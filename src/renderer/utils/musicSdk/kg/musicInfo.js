@@ -1,13 +1,12 @@
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { createHttpFetch } from './util'
 
-const createGetMusicInfoTask = (hashs) => {
+const createGetMusicInfosTask = (hashs) => {
   let data = {
     appid: 1001,
     clienttime: 639437935,
     clientver: 9020,
-    fields:
-      'album_info,author_name,audio_info,ori_audio_name',
+    fields: 'album_info,author_name,audio_info,ori_audio_name',
     is_publish: '1',
     key: '0475af1457cd3363c7b45b871e94428a',
     mid: '21511157a05844bd085308bc76ef3342',
@@ -101,8 +100,12 @@ export const filterMusicInfoList = (rawList) => {
   return list
 }
 
+export const getMusicInfo = async(hash) => {
+  return getMusicInfos([hash]).then(data => data[0])
+}
+
 export const getMusicInfos = async(hashs) => {
-  return filterMusicInfoList(await Promise.all(createGetMusicInfoTask(hashs)).then(data => data.flat()))
+  return filterMusicInfoList(await Promise.all(createGetMusicInfosTask(hashs)).then(data => data.flat()))
 }
 
 export const getMusicInfosByList = (list) => {

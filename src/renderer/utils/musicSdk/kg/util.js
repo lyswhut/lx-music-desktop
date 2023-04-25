@@ -15,7 +15,6 @@ export const decodeLyric = str => new Promise((resolve, reject) => {
     resolve(result.toString())
   })
 })
-
 // s.content[0].lyricContent.forEach(([str]) => {
 //   console.log(str)
 // })
@@ -23,15 +22,13 @@ export const decodeLyric = str => new Promise((resolve, reject) => {
 /**
  * 签名
  * @param {*} params
- * @param {*} apiver
+ * @param {*} apiVer
  */
-export const signatureParams = (params, apiver = 9) => {
-  let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
-  if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
-  let param_list = params.split('&')
-  param_list.sort()
-  let sign_params = `${keyparam}${param_list.join('')}${keyparam}`
-  return toMD5(sign_params)
+export const signatureParams = (params, apiVer = 9) => {
+  let keyParam = 'OIlwieks28dk2k092lksi2UIkp'
+  if (apiVer === 5) keyParam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
+  let signParams = `${keyParam}${params.split('&').sort().join('')}${keyParam}`
+  return toMD5(signParams)
 }
 
 /**
