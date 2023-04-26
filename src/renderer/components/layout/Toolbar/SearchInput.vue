@@ -22,7 +22,7 @@ export default {
     const visibleList = ref(false)
     const tipList = ref([])
     let isFocused = false
-    let prevTempSearchSource = ''
+    let prevTipSearchSource = ''
 
     const route = useRoute()
     const router = useRouter()
@@ -44,19 +44,19 @@ export default {
       handleTipSearch()
     })
 
-
     const tipSearch = debounce(async() => {
-      if (searchText.value === '' && prevTempSearchSource) {
+      if (searchText.value === '' && prevTipSearchSource) {
         tipList.value = []
-        music[prevTempSearchSource].tempSearch.cancelTempSearch()
+        music[prevTipSearchSource].tipSearch.cancelTipSearch()
         return
       }
-      const { temp_source } = await getSearchSetting()
-      prevTempSearchSource = temp_source
-      music[prevTempSearchSource].tempSearch.search(searchText.value).then(list => {
+      const { source, temp_source } = await getSearchSetting()
+      prevTipSearchSource = source
+      if (source === 'all') prevTipSearchSource = temp_source
+      music[prevTipSearchSource].tipSearch.search(searchText.value).then(list => {
         tipList.value = list
       }).catch(() => {})
-    }, 50)
+    }, 100)
 
     const handleTipSearch = () => {
       if (!visibleList.value && isFocused) visibleList.value = true

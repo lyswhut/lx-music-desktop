@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import tempSearch from './tempSearch'
+import tipSearch from './tipSearch'
 import musicSearch from './musicSearch'
 import { formatSinger, getToken } from './util'
 import leaderboard from './leaderboard'
@@ -32,7 +32,7 @@ const kw = {
   //   // })
   // },
 
-  tempSearch,
+  tipSearch,
   musicSearch,
   leaderboard,
   songList,
