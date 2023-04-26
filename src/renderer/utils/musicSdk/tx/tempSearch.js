@@ -6,11 +6,15 @@ export default {
     relWord: /RELWORD=(.+)/,
   },
   requestObj: null,
+  cancelTempSearch() {
+    if (this.requestObj && this.requestObj.cancelHttp) this.requestObj.cancelHttp()
+  },
   tempSearch(str) {
     this.cancelTempSearch()
-    this.requestObj = httpFetch(`https://c.y.qq.com/splcloud/fcgi-bin/smartbox_new.fcg?is_xml=0&format=json&key=${encodeURIComponent(str)}&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0`, {
+    this.requestObj = httpFetch(`https://c.y.qq.com/splcloud/fcgi-bin/smartbox_new.fcg?_=1682514997109&cv=4747474&ct=24&format=json&inCharset=utf-8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=1&uin=0&g_tk_new_20200303=5381&g_tk=5381&hostUin=0&is_xml=0&key=${encodeURIComponent(str)}`, {
       headers: {
-        Referer: 'https://y.qq.com/portal/player.html',
+        origin: 'https://y.qq.com/',
+        referer: 'https://y.qq.com/',
       },
     })
     return this.requestObj.promise.then(({ statusCode, body }) => {
@@ -20,9 +24,6 @@ export default {
   },
   handleResult(rawData) {
     return rawData.map(info => `${info.name} - ${info.singer}`)
-  },
-  cancelTempSearch() {
-    if (this.requestObj && this.requestObj.cancelHttp) this.requestObj.cancelHttp()
   },
   async search(str) {
     return this.tempSearch(str).then(result => this.handleResult(result.song.itemlist))
