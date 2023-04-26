@@ -1,13 +1,5 @@
-import { sizeFormate } from '../../index'
+import { sizeFormate, getSingerName } from '../../index'
 import { createHttpFetch } from './util'
-
-const getSinger = (singers) => {
-  let arr = []
-  singers?.forEach(singer => {
-    arr.push(singer.name)
-  })
-  return arr.join('、')
-}
 
 const createGetMusicInfosTask = (ids, resType = 2) => {
   let list = ids
@@ -72,7 +64,7 @@ export const filterMusicInfoList = (rawList) => {
     const intervalTest = /(\d\d:\d\d)$/.test(item.length)
 
     list.push({
-      singer: getSinger(item.artists),
+      singer: getSingerName(item.artists, 'name'),
       name: item.songName,
       albumName: item.album,
       albumId: item.albumId,

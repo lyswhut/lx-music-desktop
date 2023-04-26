@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
 import { signatureParams, createHttpFetch } from './util'
 import { getMusicInfosByList } from './musicInfo'
 import album from './album'
@@ -170,19 +170,6 @@ export default {
     return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
   },
 
-  /**
-  * 格式化歌手
-  * @param {*} list
-  * @param {*} join
-  */
-  getSinger(list, joinText = '、') {
-    const singers = []
-    list.forEach(item => {
-      if (!item.name) return
-      singers.push(item.name)
-    })
-    return singers ? singers.join(joinText) : ''
-  },
   /**
    * 格式化播放数量
    * @param {*} num
@@ -424,10 +411,9 @@ export default {
             break
         }
       })
-      const singers = this.getSinger(item.singerinfo)
 
       list.push({
-        singer: singers ? decodeName(singers) : decodeName(item.name).split(' - ')[0].replace(/&/g, '、'),
+        singer: getSingerName(item.singerinfo, 'name') || decodeName(item.name).split(' - ')[0].replace(/&/g, '、'),
         name: decodeName(item.name).split(' - ')[1],
         albumName: decodeName(item.albuminfo.name),
         albumId: item.albuminfo.id,

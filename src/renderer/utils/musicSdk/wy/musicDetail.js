@@ -1,16 +1,9 @@
 import { httpFetch } from '../../request'
 import { weapi } from './utils/crypto'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { formatPlayTime, sizeFormate, getSingerName } from '../../index'
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/song_detail.js
 
 export default {
-  getSinger(singers) {
-    let arr = []
-    singers?.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
   filterList({ songs, privileges }) {
     // console.log(songs, privileges)
     const list = []
@@ -71,7 +64,7 @@ export default {
         })
       } else {
         list.push({
-          singer: this.getSinger(item.ar),
+          singer: getSingerName(item.ar, 'name'),
           name: item.name ?? '',
           albumName: item.al?.name,
           albumId: item.al?.id,

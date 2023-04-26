@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
 
 export default {
   _requestObj_tags: null,
@@ -232,13 +232,6 @@ export default {
       },
     }
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
   filterListDetail(rawList) {
     // console.log(rawList)
     return rawList.map(item => {
@@ -274,7 +267,7 @@ export default {
       }
       // types.reverse()
       return {
-        singer: this.getSinger(item.singer),
+        singer: getSingerName(item.singer, 'name'),
         name: item.name,
         albumName: item.album.name,
         albumId: item.album.mid,

@@ -1,6 +1,6 @@
 // import { httpFetch } from '../../request'
 // import { weapi } from './utils/crypto'
-import { sizeFormate, formatPlayTime } from '../../index'
+import { sizeFormate, formatPlayTime, getSingerName } from '../../index'
 // import musicDetailApi from './musicDetail'
 import { eapiRequest } from './utils/index'
 
@@ -18,13 +18,6 @@ export default {
       offset: limit * (page - 1),
     })
     return searchRequest.promise.then(({ body }) => body)
-  },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
   },
   handleResult(rawList) {
     // console.log(rawList)
@@ -66,7 +59,7 @@ export default {
       types.reverse()
 
       return {
-        singer: this.getSinger(item.ar),
+        singer: getSingerName(item.ar, 'name'),
         name: item.name,
         albumName: item.al.name,
         albumId: item.al.id,

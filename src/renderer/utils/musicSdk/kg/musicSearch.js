@@ -6,93 +6,105 @@ export default {
   total: 0,
   page: 0,
   allPage: 1,
-  filterSongData(rawData) {
+  musicSearch(str, page, limit) {
+    const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
+    return createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`, {
+      headers: {
+        'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
+      },
+    }).then(body => body)
+  },
+  filterList(raw) {
     let ids = new Set()
     const list = []
 
-    const filterList = (raw) => {
-      if (ids.has(raw.Audioid)) return
-      ids.add(raw.Audioid)
+    raw.forEach(item => {
+      if (ids.has(item.Audioid)) return
+      ids.add(item.Audioid)
+
       const types = []
       const _types = {}
-      if (raw.FileSize !== 0) {
-        let size = sizeFormate(raw.FileSize)
-        types.push({ type: '128k', size, hash: raw.FileHash })
+      if (item.FileSize !== 0) {
+        let size = sizeFormate(item.FileSize)
+        types.push({ type: '128k', size, hash: item.FileHash })
         _types['128k'] = {
           size,
-          hash: raw.FileHash,
+          hash: item.FileHash,
         }
       }
-      if (raw.HQ) {
-        let size = sizeFormate(raw.HQ.FileSize)
-        types.push({ type: '320k', size, hash: raw.HQ.Hash })
+      if (item.HQ) {
+        let size = sizeFormate(item.HQ.FileSize)
+        types.push({ type: '320k', size, hash: item.HQ.Hash })
         _types['320k'] = {
           size,
-          hash: raw.HQ.Hash,
+          hash: item.HQ.Hash,
         }
       }
-      if (raw.SQ) {
-        let size = sizeFormate(raw.SQ.FileSize)
-        types.push({ type: 'flac', size, hash: raw.SQ.Hash })
+      if (item.SQ) {
+        let size = sizeFormate(item.SQ.FileSize)
+        types.push({ type: 'flac', size, hash: item.SQ.Hash })
         _types.flac = {
           size,
-          hash: raw.SQ.Hash,
+          hash: item.SQ.Hash,
         }
       }
-      if (raw.Res) {
-        let size = sizeFormate(raw.Res.FileSize)
-        types.push({ type: 'flac24bit', size, hash: raw.Res.Hash })
+      if (item.Res) {
+        let size = sizeFormate(item.Res.FileSize)
+        types.push({ type: 'flac24bit', size, hash: item.Res.Hash })
         _types.flac24bit = {
           size,
-          hash: raw.Res.Hash,
+          hash: item.Res.Hash,
         }
       }
       list.push({
-        singer: decodeName(raw.SingerName),
-        name: decodeName(raw.OriSongName),
-        albumName: decodeName(raw.AlbumName),
-        albumId: raw.AlbumID,
-        songmid: raw.Audioid,
+        singer: decodeName(item.SingerName),
+        name: decodeName(item.OriSongName),
+        albumName: decodeName(item.AlbumName),
+        albumId: item.AlbumID,
+        songmid: item.Audioid,
         source: 'kg',
-        interval: formatPlayTime(raw.Duration),
-        _interval: raw.Duration,
+        interval: formatPlayTime(item.Duration),
+        _interval: item.Duration,
         img: null,
         lrc: null,
         otherSource: null,
-        hash: raw.FileHash,
+        hash: item.FileHash,
         types,
         _types,
         typeUrl: {},
       })
-    }
-
-    rawData.forEach(item => {
-      filterList(item)
-      if (item.Grp) item.Grp.forEach(e => filterList(e))
     })
 
     return list
   },
-  async search(str, page = 1, limit, retryNum = 0) {
+  handleResult(rawData) {
+    const rawList = []
+    rawData.forEach(item => {
+      rawList.push(item)
+      if (item.Grp) item.Grp.forEach(e => rawList.push(e))
+    })
+
+    return this.filterList(rawList)
+  },
+  search(str, page = 1, limit, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit == null) limit = this.limit
 
-    const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
-    const searchResult = await createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`)
+    return this.musicSearch(str, page, limit).then(data => {
+      let list = this.handleResult(data.lists)
+      if (!list) return this.search(str, page, limit, retryNum)
 
-    let list = this.filterSongData(searchResult.lists)
-    if (!list) return this.search(str, page, limit, retryNum)
+      this.total = data.total
+      this.page = page
+      this.allPage = Math.ceil(this.total / limit)
 
-    this.total = searchResult.total
-    this.page = page
-    this.allPage = Math.ceil(this.total / limit)
-
-    return Promise.resolve({
-      list,
-      allPage: this.allPage,
-      limit,
-      total: this.total,
-      source: 'kg',
+      return Promise.resolve({
+        list,
+        allPage: this.allPage,
+        limit,
+        total: this.total,
+        source: 'kg',
+      })
     })
   },
 }

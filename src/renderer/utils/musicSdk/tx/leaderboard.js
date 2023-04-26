@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate } from '../../index'
+import { formatPlayTime, sizeFormate, getSingerName } from '../../index'
 
 let boardList = [{ id: 'tx__4', name: '流行指数榜', bangid: '4' }, { id: 'tx__26', name: '热歌榜', bangid: '26' }, { id: 'tx__27', name: '新歌榜', bangid: '27' }, { id: 'tx__62', name: '飙升榜', bangid: '62' }, { id: 'tx__58', name: '说唱榜', bangid: '58' }, { id: 'tx__57', name: '喜力电音榜', bangid: '57' }, { id: 'tx__28', name: '网络歌曲榜', bangid: '28' }, { id: 'tx__5', name: '内地榜', bangid: '5' }, { id: 'tx__3', name: '欧美榜', bangid: '3' }, { id: 'tx__59', name: '香港地区榜', bangid: '59' }, { id: 'tx__16', name: '韩国榜', bangid: '16' }, { id: 'tx__60', name: '抖快榜', bangid: '60' }, { id: 'tx__29', name: '影视金曲榜', bangid: '29' }, { id: 'tx__17', name: '日本榜', bangid: '17' }, { id: 'tx__52', name: '腾讯音乐人原创榜', bangid: '52' }, { id: 'tx__36', name: 'K歌金曲榜', bangid: '36' }, { id: 'tx__61', name: '台湾地区榜', bangid: '61' }, { id: 'tx__63', name: 'DJ舞曲榜', bangid: '63' }, { id: 'tx__64', name: '综艺新歌榜', bangid: '64' }, { id: 'tx__65', name: '国风热歌榜', bangid: '65' }, { id: 'tx__67', name: '听歌识曲榜', bangid: '67' }, { id: 'tx__72', name: '动漫音乐榜', bangid: '72' }, { id: 'tx__73', name: '游戏音乐榜', bangid: '73' }, { id: 'tx__75', name: '有声榜', bangid: '75' }, { id: 'tx__131', name: '校园音乐人排行榜', bangid: '131' }]
 
@@ -104,13 +104,6 @@ export default {
     const requestDataObj = httpFetch(url)
     return requestDataObj.promise
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
   filterData(rawList) {
     // console.log(rawList)
     return rawList.map(item => {
@@ -146,7 +139,7 @@ export default {
       }
       // types.reverse()
       return {
-        singer: this.getSinger(item.singer),
+        singer: getSingerName(item.singer, 'name'),
         name: item.name,
         albumName: item.album.name,
         albumId: item.album.mid,

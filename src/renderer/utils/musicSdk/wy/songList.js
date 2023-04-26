@@ -5,7 +5,7 @@
 
 import { weapi, linuxapi } from './utils/crypto'
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
 import musicDetailApi from './musicDetail'
 import { eapiRequest } from './utils/index'
 
@@ -39,13 +39,6 @@ export default {
     if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
     if (num > 10000) return parseInt(num / 1000) / 10 + '万'
     return num
-  },
-  getSinger(singers) {
-    let arr = []
-    singers?.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
   },
 
   async handleParseId(link, retryNum = 0) {
@@ -198,7 +191,7 @@ export default {
         })
       } else {
         list.push({
-          singer: this.getSinger(item.ar),
+          singer: getSingerName(item.ar, 'name'),
           name: item.name ?? '',
           albumName: item.al?.name,
           albumId: item.al?.id,

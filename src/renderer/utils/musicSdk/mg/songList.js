@@ -85,7 +85,7 @@ export default {
       // console.log(JSON.stringify(body))
       // console.log(body)
       return {
-        list: filterMusicInfoData(body.list),
+        list: filterMusicInfoList(body.list),
         page,
         limit: this.limit_song,
         total: body.totalCount,
