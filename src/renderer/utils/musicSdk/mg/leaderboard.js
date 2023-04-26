@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { filterMusicInfoData } from './musicInfo'
+import { filterMusicInfoList } from './musicInfo'
 
 
 // const boardList = [{ id: 'mg__27553319', name: '咪咕尖叫新歌榜', bangid: '27553319' }, { id: 'mg__27186466', name: '咪咕尖叫热歌榜', bangid: '27186466' }, { id: 'mg__27553408', name: '咪咕尖叫原创榜', bangid: '27553408' }, { id: 'mg__23189800', name: '咪咕港台榜', bangid: '23189800' }, { id: 'mg__23189399', name: '咪咕内地榜', bangid: '23189399' }, { id: 'mg__19190036', name: '咪咕欧美榜', bangid: '19190036' }, { id: 'mg__23189813', name: '咪咕日韩榜', bangid: '23189813' }, { id: 'mg__23190126', name: '咪咕彩铃榜', bangid: '23190126' }, { id: 'mg__15140045', name: '咪咕KTV榜', bangid: '15140045' }, { id: 'mg__15140034', name: '咪咕网络榜', bangid: '15140034' }, { id: 'mg__23217754', name: 'MV榜', bangid: '23217754' }, { id: 'mg__23218151', name: '新专辑榜', bangid: '23218151' }, { id: 'mg__21958042', name: 'iTunes榜', bangid: '21958042' }, { id: 'mg__21975570', name: 'billboard榜', bangid: '21975570' }, { id: 'mg__22272815', name: '台湾Hito中文榜', bangid: '22272815' }, { id: 'mg__22272904', name: '中国TOP排行榜', bangid: '22272904' }, { id: 'mg__22272943', name: '韩国Melon榜', bangid: '22272943' }, { id: 'mg__22273437', name: '英国UK榜', bangid: '22273437' }]
@@ -144,7 +144,7 @@ export default {
     return this.getData(this.getUrl(bangid, page)).then(({ statusCode, body }) => {
       // console.log(body)
       if (statusCode !== 200 || body.code !== this.successCode) return this.getList(bangid, page, retryNum)
-      const list = filterMusicInfoData(body.columnInfo.contents.map(m => m.objectInfo))
+      const list = filterMusicInfoList(body.columnInfo.contents.map(m => m.objectInfo))
       return {
         total: list.length,
         list,

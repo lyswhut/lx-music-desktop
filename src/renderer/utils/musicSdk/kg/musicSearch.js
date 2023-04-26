@@ -10,7 +10,8 @@ export default {
     const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
     return createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`, {
       headers: {
-        'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+        referer: 'https://kugou.com',
       },
     }).then(body => body)
   },
@@ -32,7 +33,7 @@ export default {
           hash: item.FileHash,
         }
       }
-      if (item.HQ) {
+      if (item.HQ != undefined) {
         let size = sizeFormate(item.HQ.FileSize)
         types.push({ type: '320k', size, hash: item.HQ.Hash })
         _types['320k'] = {
@@ -40,7 +41,7 @@ export default {
           hash: item.HQ.Hash,
         }
       }
-      if (item.SQ) {
+      if (item.SQ != undefined) {
         let size = sizeFormate(item.SQ.FileSize)
         types.push({ type: 'flac', size, hash: item.SQ.Hash })
         _types.flac = {
@@ -48,7 +49,7 @@ export default {
           hash: item.SQ.Hash,
         }
       }
-      if (item.Res) {
+      if (item.Res != undefined) {
         let size = sizeFormate(item.Res.FileSize)
         types.push({ type: 'flac24bit', size, hash: item.Res.Hash })
         _types.flac24bit = {
@@ -81,7 +82,7 @@ export default {
     const rawList = []
     rawData.forEach(item => {
       rawList.push(item)
-      if (item.Grp) item.Grp.forEach(e => rawList.push(e))
+      item.Grp.forEach(e => rawList.push(e))
     })
 
     return this.filterList(rawList)
