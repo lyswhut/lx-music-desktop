@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, toMD5 } from '../../index'
+import { formatPlayTime, toMD5, formatPlayCount } from '../../index'
 import CryptoJS from 'crypto-js'
 
 export default {
@@ -161,19 +161,9 @@ export default {
     })
   },
 
-
-  /**
-   * 格式化播放数量
-   * @param {*} num
-   */
-  formatPlayCount(num) {
-    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
-    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
-    return num
-  },
   filterList(rawData) {
     return rawData.map(item => ({
-      play_count: this.formatPlayCount(item.listen_num),
+      playCountInfo: formatPlayCount(item.listen_num),
       id: item.list_id,
       author: item.username,
       name: item.title,
@@ -206,7 +196,7 @@ export default {
           img: body.result.info.list_pic,
           desc: body.result.info.list_desc,
           author: body.result.info.userinfo.username,
-          play_count: this.formatPlayCount(body.result.listen_num),
+          playCountInfo: formatPlayCount(body.result.listen_num),
         },
       }
     })

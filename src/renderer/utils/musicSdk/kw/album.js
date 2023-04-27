@@ -96,7 +96,7 @@ export default {
           img: body.img || body.hts_img,
           desc: decodeName(body.info),
           author: decodeName(body.artist),
-          // play_count: this.formatPlayCount(body.playnum),
+          // playCountInfo: this.formatPlayCount(body.playnum),
         },
       }
     })
@@ -122,7 +122,7 @@ export default {
   //       //     img: data.pic,
   //       //     desc: data.albuminfo,
   //       //     author: data.artist,
-  //       //     play_count: this.formatPlayCount(data.playCnt),
+  //       //     playCountInfo: this.formatPlayCount(data.playCnt),
   //       //   },
   //       // }
   //     })

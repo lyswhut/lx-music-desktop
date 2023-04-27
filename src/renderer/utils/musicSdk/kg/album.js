@@ -29,7 +29,7 @@ export default {
       image: albumInfo.sizable_cover.replace('{size}', 240),
       desc: albumInfo.intro,
       authorName: albumInfo.author_name,
-      // play_count: this.formatPlayCount(info.count),
+      // playCountInfo: this.formatPlayCount(info.count),
     }
   },
   /**
@@ -56,7 +56,7 @@ export default {
         img: info.image,
         desc: info.desc,
         author: info.authorName,
-        // play_count: this.formatPlayCount(info.count),
+        // playCountInfo: this.formatPlayCount(info.count),
       },
     }
   },

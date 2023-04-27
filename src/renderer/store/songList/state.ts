@@ -35,10 +35,15 @@ export declare interface TagInfo<Source extends LX.OnlineSource = LX.OnlineSourc
 
 type Tags = Partial<Record<LX.OnlineSource, TagInfo>>
 
+interface PlayCountInfo {
+  count: number,
+  language: string
+}
+
 export const tags = shallowReactive<Tags>({})
 
 export declare interface ListInfoItem {
-  playCountInfo: { count: number, language: string }
+  playCountInfo: PlayCountInfo
   id: string
   author: string
   name: string
@@ -75,7 +80,7 @@ export declare interface ListDetailInfo {
     img?: string
     desc?: string
     author?: string
-    play_count?: string
+    playCountInfo?: PlayCountInfo
   }
   noItemLabel: string
 }

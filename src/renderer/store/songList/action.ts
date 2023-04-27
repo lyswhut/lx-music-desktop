@@ -62,7 +62,7 @@ export const setSelectListInfo = (info: ListInfoItem) => {
   selectListInfo.id = info.id
   selectListInfo.img = info.img
   selectListInfo.name = info.name
-  selectListInfo.play_count = info.play_count
+  selectListInfo.playCountInfo = info.playCountInfo
   selectListInfo.source = info.source
 }
 export const clearListDetail = () => {
