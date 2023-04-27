@@ -1,6 +1,6 @@
-import { sizeFormate, formatPlayTime, getSingerName } from '../../index'
-import { toMD5 } from '../utils'
-import { createHttpFetch } from './util'
+import { sizeFormate, formatPlayTime } from '../../index'
+import { createHttpFetch } from './utils'
+import { formatSingerName, toMD5 } from '../utils'
 
 const searchSign = (timeStr, str, deviceId) => {
   const key = '6cdc72a439cef99a3418d2a78aa28c73'
@@ -76,7 +76,7 @@ export default {
       if (img && !/https?:/.test(item.img3)) img = 'http://d.musicapp.migu.cn' + img
 
       list.push({
-        singer: getSingerName(item.singerList, 'name'),
+        singer: formatSingerName(item.singerList, 'name'),
         name: item.name,
         albumName: item.album,
         albumId: item.albumId,

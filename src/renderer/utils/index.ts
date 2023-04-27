@@ -1,25 +1,9 @@
-import { dateFormat, decodeName } from '@common/utils/common'
+import { dateFormat } from '@common/utils/common'
 
 export * from '@common/utils/renderer'
 export * from '@common/utils/nodejs'
 export * from '@common/utils/common'
 export * from '@common/utils/tools'
-
-/**
- * 获取歌手
- * @param singers 歌手数组
- * @param obj 读取的数据
- * @param join 插入的字符
- */
-export const getSingerName = (singers: [], obj = 'name', join = '、') => {
-  const singer: string[] = []
-  singers.forEach(item => {
-    let name  = item[obj]
-    if (!name) return
-    singer.push(name)
-  })
-  return decodeName(singer.join(join))
-}
 
 /**
  * 时间格式化

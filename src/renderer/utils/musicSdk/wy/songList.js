@@ -5,9 +5,10 @@
 
 import { weapi, linuxapi } from './utils/crypto'
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
+import { formatPlayTime, sizeFormate, dateFormat } from '../../index'
 import musicDetailApi from './musicDetail'
 import { eapiRequest } from './utils/index'
+import { formatSingerName } from '../utils'
 
 export default {
   _requestObj_tags: null,
@@ -191,7 +192,7 @@ export default {
         })
       } else {
         list.push({
-          singer: getSingerName(item.ar, 'name'),
+          singer: formatSingerName(item.ar, 'name'),
           name: item.name ?? '',
           albumName: item.al?.name,
           albumId: item.al?.id,
@@ -225,7 +226,7 @@ export default {
       }),
     })
     return this._requestObj_list.promise.then(({ body }) => {
-      console.log(body)
+      // console.log(body)
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return {
         list: this.filterList(body.playlists),

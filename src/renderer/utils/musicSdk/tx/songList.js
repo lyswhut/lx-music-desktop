@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { formatSingerName } from '../utils'
 
 export default {
   _requestObj_tags: null,
@@ -267,7 +268,7 @@ export default {
       }
       // types.reverse()
       return {
-        singer: getSingerName(item.singer, 'name'),
+        singer: formatSingerName(item.singer, 'name'),
         name: item.name,
         albumName: item.album.name,
         albumId: item.album.mid,

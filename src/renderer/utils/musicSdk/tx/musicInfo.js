@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate, getSingerName } from '../../index'
+import { formatPlayTime, sizeFormate } from '../../index'
+import { formatSingerName } from '../utils'
 
 export default (songmid) => {
   const requestObj = httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
@@ -68,7 +69,7 @@ export default (songmid) => {
       albumId = item.album.mid
     }
     return {
-      singer: getSingerName(item.singer, 'name'),
+      singer: formatSingerName(item.singer, 'name'),
       name: item.name,
       albumName,
       albumId,

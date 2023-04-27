@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat, getSingerName } from '../../index'
+import { formatSingerName } from '../utils'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
 import { signatureParams, createHttpFetch } from './util'
 import { getMusicInfosByList } from './musicInfo'
 import album from './album'
@@ -413,7 +414,7 @@ export default {
       })
 
       list.push({
-        singer: getSingerName(item.singerinfo, 'name') || decodeName(item.name).split(' - ')[0].replace(/&/g, '、'),
+        singer: formatSingerName(item.singerinfo, 'name') || decodeName(item.name).split(' - ')[0].replace(/&/g, '、'),
         name: decodeName(item.name).split(' - ')[1],
         albumName: decodeName(item.albuminfo.name),
         albumId: item.albuminfo.id,

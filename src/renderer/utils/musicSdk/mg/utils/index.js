@@ -1,4 +1,4 @@
-import { httpFetch } from '../../request'
+import { httpFetch } from '../../../request'
 
 /**
  * 创建一个适用于MG的Http请求

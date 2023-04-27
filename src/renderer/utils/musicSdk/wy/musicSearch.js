@@ -1,8 +1,9 @@
 // import { httpFetch } from '../../request'
 // import { weapi } from './utils/crypto'
-import { sizeFormate, formatPlayTime, getSingerName } from '../../index'
 // import musicDetailApi from './musicDetail'
+import { sizeFormate, formatPlayTime } from '../../index'
 import { eapiRequest } from './utils/index'
+import { formatSingerName } from '../utils'
 
 export default {
   limit: 30,
@@ -59,7 +60,7 @@ export default {
       types.reverse()
 
       return {
-        singer: getSingerName(item.ar, 'name'),
+        singer: formatSingerName(item.ar, 'name'),
         name: item.name,
         albumName: item.al.name,
         albumId: item.al.id,
