@@ -78,6 +78,8 @@
   "history_search": "History Searches",
   "import": "Import",
   "leaderboard": "Charts",
+  "list__name_default": "Temp List",
+  "list__name_love": "My Love",
   "list__add_to": "Add to ...",
   "list__collect": "Collect",
   "list__copy_name": "Copy name",
