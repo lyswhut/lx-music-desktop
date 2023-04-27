@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { formatSingerName } from '../utils'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
 import { signatureParams, createHttpFetch } from './util'
 import { getMusicInfosByList } from './musicInfo'
 import album from './album'
@@ -122,7 +122,7 @@ export default {
         img: pic,
         desc,
         // author: body.result.info.userinfo.username,
-        // play_count: this.formatPlayCount(body.result.listen_num),
+        // playCountInfo: formatPlayCount(body.result.listen_num),
       },
     }
   },
@@ -171,15 +171,6 @@ export default {
     return `http://www2.kugou.kugou.com/yueku/v9/special/single/${id}-5-9999.html`
   },
 
-  /**
-   * 格式化播放数量
-   * @param {*} num
-   */
-  formatPlayCount(num) {
-    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
-    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
-    return num
-  },
   filterInfoHotTag(rawData) {
     const result = []
     if (rawData.status !== 1) return result
@@ -212,7 +203,7 @@ export default {
   },
   filterSongList(rawData) {
     return rawData.map(item => ({
-      play_count: item.total_play_count || this.formatPlayCount(item.play_count),
+      playCountInfo: item.total_playCountInfo || formatPlayCount(item.playCountInfo),
       id: 'id_' + item.specialid,
       author: item.nickname,
       name: item.specialname,
@@ -327,7 +318,7 @@ export default {
   //         img: listInfo.image,
   //         desc: listInfo.desc,
   //         // author: listInfo.userName,
-  //         // play_count: this.formatPlayCount(listInfo.playCount),
+  //         // playCountInfo: formatPlayCount(listInfo.playCount),
   //       },
   //     }
   //   })
@@ -360,7 +351,7 @@ export default {
           img: listInfo.imageUrl && listInfo.imageUrl.replace('{size}', 240),
           desc: listInfo.desc,
           author: listInfo.userName,
-          play_count: this.formatPlayCount(listInfo.playCount),
+          playCountInfo: formatPlayCount(listInfo.playCount),
         },
       }
     })
@@ -483,7 +474,7 @@ export default {
           img: (codeInfo.img_size && codeInfo.img_size.replace('{size}', 240)) || codeInfo.img,
           // desc: body.result.info.list_desc,
           author: codeInfo.username,
-          // play_count: this.formatPlayCount(info.count),
+          // playCountInfo: formatPlayCount(info.count),
         },
       }
     }
@@ -512,7 +503,7 @@ export default {
         img: songInfo.info.img,
         // desc: body.result.info.list_desc,
         author: songInfo.info.username,
-        // play_count: this.formatPlayCount(info.count),
+        // playCountInfo: formatPlayCount(info.count),
       },
     }
   },
@@ -547,7 +538,7 @@ export default {
         img: listInfo.pic && listInfo.pic.replace('{size}', 240),
         // desc: body.result.info.list_desc,
         author: listInfo.list_create_username,
-        // play_count: this.formatPlayCount(listInfo.count),
+        // playCountInfo: formatPlayCount(listInfo.count),
       },
     }
   },
@@ -598,7 +589,7 @@ export default {
         img: info.imgurl && info.imgurl.replace('{size}', 240),
         desc: info.intro,
         author: info.nickname,
-        play_count: this.formatPlayCount(info.playcount),
+        playCountInfo: formatPlayCount(info.playcount),
       },
     }
   },
@@ -650,7 +641,7 @@ export default {
         img: listInfo.imgurl && listInfo.imgurl.replace('{size}', 240),
         // desc: body.result.info.list_desc,
         author: listInfo.nickname,
-        // play_count: this.formatPlayCount(info.count),
+        // playCountInfo: formatPlayCount(info.count),
       },
     }
   },
@@ -671,7 +662,7 @@ export default {
         img: listInfo.imgurl && listInfo.imgurl.replace('{size}', 240),
         // desc: body.result.info.list_desc,
         author: listInfo.nickname,
-        // play_count: this.formatPlayCount(info.count),
+        // playCountInfo: formatPlayCount(info.count),
       },
     }
   },
@@ -786,7 +777,7 @@ export default {
       return {
         list: body.lists.map(item => {
           return {
-            play_count: this.formatPlayCount(item.total_play_count),
+            playCountInfo: formatPlayCount(item.total_playCountInfo),
             id: item.gid ? `gid_${item.gid}` : `id_${item.specialid}`,
             author: item.nickname,
             name: item.specialname,

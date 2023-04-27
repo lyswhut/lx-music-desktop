@@ -5,7 +5,7 @@
 
 import { weapi, linuxapi } from './utils/crypto'
 import { httpFetch } from '../../request'
-import { formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
 import musicDetailApi from './musicDetail'
 import { eapiRequest } from './utils/index'
 import { formatSingerName } from '../utils'
@@ -31,15 +31,6 @@ export default {
   regExps: {
     listDetailLink: /^.+(?:\?|&)id=(\d+)(?:&.*$|#.*$|$)/,
     listDetailLink2: /^.+\/playlist\/(\d+)\/\d+\/.+$/,
-  },
-  /**
-   * 格式化播放数量
-   * @param {*} num
-   */
-  formatPlayCount(num) {
-    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
-    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
-    return num
   },
 
   async handleParseId(link, retryNum = 0) {
@@ -124,7 +115,7 @@ export default {
       total: body.playlist.trackIds.length,
       source: 'wy',
       info: {
-        play_count: this.formatPlayCount(body.playlist.playCount),
+        playCountInfo: formatPlayCount(body.playlist.playCount),
         name: body.playlist.name,
         img: body.playlist.coverImgUrl,
         desc: body.playlist.description,
@@ -240,7 +231,7 @@ export default {
   filterList(rawData) {
     // console.log(rawData)
     return rawData.map(item => ({
-      play_count: this.formatPlayCount(item.playCount),
+      playCountInfo: formatPlayCount(item.playCount),
       id: item.id,
       author: item.creator.nickname,
       name: item.name,

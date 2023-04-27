@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { formatPlayTime, decodeName } from '../../index'
+import { formatPlayTime, decodeName, formatPlayCount } from '../../index'
 import { formatSinger, objStr2JSON } from './util'
 import album from './album'
 
@@ -120,19 +120,9 @@ export default {
     })
   },
 
-
-  /**
-   * 格式化播放数量
-   * @param {*} num
-   */
-  formatPlayCount(num) {
-    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
-    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
-    return num
-  },
   filterList(rawData) {
     return rawData.map(item => ({
-      play_count: this.formatPlayCount(item.listencnt),
+      playCountInfo: formatPlayCount(item.listencnt),
       id: `digest-${item.digest}__${item.id}`,
       author: item.uname,
       name: item.name,
@@ -150,7 +140,7 @@ export default {
     rawData.forEach(item => {
       if (!item.label) return
       list.push(...item.list.map(item => ({
-        play_count: item.play_count && this.formatPlayCount(item.listencnt),
+        playCountInfo: item.playCountInfo && formatPlayCount(item.listencnt),
         id: `digest-${item.digest}__${item.id}`,
         author: item.uname,
         name: item.name,
@@ -182,7 +172,7 @@ export default {
           img: body.pic,
           desc: body.info,
           author: body.uname,
-          play_count: this.formatPlayCount(body.playnum),
+          playCountInfo: formatPlayCount(body.playnum),
         },
       }
     })
@@ -213,7 +203,7 @@ export default {
           img: body.pic,
           desc: body.info,
           author: body.uname,
-          play_count: this.formatPlayCount(body.playnum),
+          playCountInfo: formatPlayCount(body.playnum),
         },
       }
     })
@@ -298,7 +288,7 @@ export default {
       img: infoData.data.pic,
       desc: infoData.data.description,
       author: infoData.data.creatorName,
-      play_count: infoData.data.playNum,
+      playCountInfo: infoData.data.playNum,
     }
   },
   async getListDetailMusicListByBDUserPub(id) {
@@ -317,7 +307,7 @@ export default {
       img: infoData.data.userInfo.headImg,
       desc: '',
       author: infoData.data.userInfo.nickname,
-      play_count: '',
+      playCountInfo: '',
     }
   },
   async getListDetailMusicListByBDList(id, source, page, tryNum = 0) {
@@ -362,7 +352,7 @@ export default {
       img: '',
       desc: '',
       author: '',
-      play_count: '',
+      playCountInfo: '',
     }
     // console.log(listData)
     return listData
@@ -466,7 +456,7 @@ export default {
         return {
           list: body.abslist.map(item => {
             return {
-              play_count: this.formatPlayCount(item.playcnt),
+              playCountInfo: formatPlayCount(item.playcnt),
               id: item.playlistid,
               author: decodeName(item.nickname),
               name: decodeName(item.name),

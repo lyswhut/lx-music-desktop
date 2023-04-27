@@ -5,6 +5,18 @@ export * from '@common/utils/nodejs'
 export * from '@common/utils/common'
 export * from '@common/utils/tools'
 
+
+/**
+ * 格式化播放数量
+ * @param {*} num 数字
+ */
+export const formatPlayCount = (num: number): { count: number, language: string } => {
+  if (num > 100000000) return {count: parseInt((num / 10000000).toString()) / 10,language: 'play_count_billion'}
+  if (num > 10000) return {count: parseInt((num / 1000).toString()) / 10,language: 'play_count_million'}
+  return { count: num, language: 'play_count_none' }
+}
+
+
 /**
  * 时间格式化
  */
