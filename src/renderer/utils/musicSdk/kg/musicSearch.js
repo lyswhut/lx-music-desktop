@@ -15,7 +15,7 @@ export default {
     const list = []
 
     raw.forEach(item => {
-      if (ids.has(item.Audioid)) return
+      if (ids.has(item.Audioid) || !item.Audioid) return
       ids.add(item.Audioid)
 
       const types = []
@@ -77,7 +77,8 @@ export default {
 
     raw.forEach(item => {
       handleList.push(item)
-      for (e in item.Grp) {
+      if (item.Grp.length === 0) return
+      for (const e in item.Grp) {
         handleList.push(e)
       }
     })
