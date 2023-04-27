@@ -38,7 +38,7 @@ type Tags = Partial<Record<LX.OnlineSource, TagInfo>>
 export const tags = shallowReactive<Tags>({})
 
 export declare interface ListInfoItem {
-  play_count: string
+  playCountInfo: { count: number, language: string }
   id: string
   author: string
   name: string
@@ -106,7 +106,7 @@ export const listDetailInfo = reactive<ListDetailInfo>({
 })
 
 export const selectListInfo = markRaw<ListInfoItem>({
-  play_count: '',
+  playCountInfo: { count: 0, language: 'play_count_none' },
   id: '',
   author: '',
   name: '',
