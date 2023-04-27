@@ -18,4 +18,4 @@
 
 - 自定义源API utils对象新增`zlib.inflate`与`zlib.deflate`方法，API版本更新到 v1.3.0
 - 更新kg、tx、wy等平台排行榜列表
-- 更新 electron 到 v22.3.6
+- 更新 electron 到 v22.3.7
