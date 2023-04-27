@@ -1,5 +1,5 @@
+import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
-import { signatureParams, createHttpFetch } from './util'
 
 export default {
   limit: 30,
@@ -7,13 +7,8 @@ export default {
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    const sign = signatureParams(`userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&keyword=${str}&dfid=-&clientver=11409&platform=AndroidFilter&tag=`, 3)
-    return createHttpFetch(`https://gateway.kugou.com/complexsearch/v3/search/song?userid=0&area_code=1&appid=1005&dopicfull=1&page=${page}&token=0&privilegefilter=0&requestid=0&pagesize=${limit}&user_labels=&clienttime=0&sec_aggre=1&iscorrection=1&uuid=0&mid=0&dfid=-&clientver=11409&platform=AndroidFilter&tag=&keyword=${encodeURIComponent(str)}&signature=${sign}`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-        referer: 'https://kugou.com',
-      },
-    }).then(body => body)
+    const searchRequest = httpFetch(`https://songsearch.kugou.com/song_search_v2?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&userid=0&clientver=&platform=WebFilter&filter=2&iscorrection=1&privilege_filter=0`)
+    return searchRequest.promise.then(({ body }) => body)
   },
   filterList(raw) {
     let ids = new Set()
@@ -33,33 +28,33 @@ export default {
           hash: item.FileHash,
         }
       }
-      if (item.HQ != undefined) {
-        let size = sizeFormate(item.HQ.FileSize)
-        types.push({ type: '320k', size, hash: item.HQ.Hash })
+      if (item.HQFileSize !== 0) {
+        let size = sizeFormate(item.HQFileSize)
+        types.push({ type: '320k', size, hash: item.HQFileHash })
         _types['320k'] = {
           size,
-          hash: item.HQ.Hash,
+          hash: item.HQFileHash,
         }
       }
-      if (item.SQ != undefined) {
-        let size = sizeFormate(item.SQ.FileSize)
-        types.push({ type: 'flac', size, hash: item.SQ.Hash })
+      if (item.SQFileSize !== 0) {
+        let size = sizeFormate(item.SQFileSize)
+        types.push({ type: 'flac', size, hash: item.SQFileHash })
         _types.flac = {
           size,
-          hash: item.SQ.Hash,
+          hash: item.SQFileHash,
         }
       }
-      if (item.Res != undefined) {
-        let size = sizeFormate(item.Res.FileSize)
-        types.push({ type: 'flac24bit', size, hash: item.Res.Hash })
+      if (item.ResFileSize !== 0) {
+        let size = sizeFormate(item.ResFileSize)
+        types.push({ type: 'flac24bit', size, hash: item.ResFileHash })
         _types.flac24bit = {
           size,
-          hash: item.Res.Hash,
+          hash: item.ResFileHash,
         }
       }
       list.push({
         singer: decodeName(item.SingerName),
-        name: decodeName(item.OriSongName),
+        name: decodeName(item.SongName),
         albumName: decodeName(item.AlbumName),
         albumId: item.AlbumID,
         songmid: item.Audioid,
@@ -75,27 +70,30 @@ export default {
         typeUrl: {},
       })
     })
-
     return list
   },
-  handleResult(rawData) {
-    const rawList = []
-    rawData.forEach(item => {
-      rawList.push(item)
-      item.Grp.forEach(e => rawList.push(e))
-    })
+  handleResult(raw) {
+    const handleList = []
 
-    return this.filterList(rawList)
+    raw.forEach(item => {
+      handleList.push(item)
+      for (e in item.Grp) {
+        handleList.push(e)
+      }
+    })
+    return this.filterList(handleList)
   },
   search(str, page = 1, limit, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit == null) limit = this.limit
+    // http://newlyric.kuwo.cn/newlyric.lrc?62355680
+    return this.musicSearch(str, page, limit).then(result => {
+      if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum)
+      let list = this.handleResult(result.data.lists)
 
-    return this.musicSearch(str, page, limit).then(data => {
-      let list = this.handleResult(data.lists)
-      if (!list) return this.search(str, page, limit, retryNum)
+      if (list == null) return this.search(str, page, limit, retryNum)
 
-      this.total = data.total
+      this.total = result.data.total
       this.page = page
       this.allPage = Math.ceil(this.total / limit)
 
