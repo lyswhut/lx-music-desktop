@@ -5,8 +5,10 @@ import musicSearch from './musicSearch'
 import { apis } from '../api-source'
 import hotSearch from './hotSearch'
 import comment from './comment'
+import tipSearch from './tipSearch'
 
 const tx = {
+  tipSearch,
   leaderboard,
   songList,
   musicSearch,

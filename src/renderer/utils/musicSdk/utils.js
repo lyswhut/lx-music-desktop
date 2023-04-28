@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import dns from 'dns'
+import { decodeName } from '@common/utils/common'
 
 export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
 
@@ -21,9 +22,36 @@ export const getHostIp = hostname => {
   })
 }
 
+
 export const dnsLookup = (hostname, options, callback) => {
   const result = getHostIp(hostname)
   if (result) return callback(null, result.address, result.family)
 
   dns.lookup(hostname, options, callback)
+}
+
+
+/**
+ * 格式化歌手
+ * @param singers 歌手数组
+ * @param obj 读取的数据
+ * @param join 插入的字符
+ */
+export const formatSingerName = (singers, obj = 'name', join = '、') => {
+  if (typeof singers === 'string') {
+    try {
+      singers = JSON.parse(singers)
+    } catch (err) {
+      return decodeName(singers)
+    }
+  }
+  if (!Array.isArray(singers)) return decodeName(singers)
+
+  const singer = []
+  singers.forEach(item => {
+    let name = item[obj]
+    if (!name) return
+    singer.push(name)
+  })
+  return decodeName(singer.join(join))
 }

@@ -1,9 +1,6 @@
-// import '../../polyfill/array.find'
-
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
-// import { debug } from '../../utils/env'
-// import { formatSinger } from './util'
+import { formatSingerName } from '../utils'
 
 export default {
   limit: 50,
@@ -52,13 +49,6 @@ export default {
       return body.req.data
     })
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
   handleResult(rawList) {
     // console.log(rawList)
     const list = []
@@ -104,7 +94,7 @@ export default {
         albumId = item.album.mid
       }
       list.push({
-        singer: this.getSinger(item.singer),
+        singer: formatSingerName(item.singer, 'name'),
         name: item.name,
         albumName,
         albumId,
