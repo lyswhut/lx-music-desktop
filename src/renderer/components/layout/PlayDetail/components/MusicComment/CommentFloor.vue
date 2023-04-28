@@ -7,9 +7,11 @@ div(:class="$style.container")
           img( :class="$style.avatar" :src="item.avatar || commentDefImg" @error="handleUserImg")
         div(:class="$style.right")
           div(:class="$style.info")
-            div.select(:class="$style.name") {{item.userName}}
-            time(:class="$style.label" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
-            div(:class="$style.label" v-if="item.location") {{item.location}}
+            div(:class="$style.baseInfo")
+              div.select(:class="$style.name") {{item.userName}}
+              div(:class="$style.metaInfo")
+                time(:class="$style.label" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
+                div(:class="[$style.label, $style.location]" v-if="item.location") {{$t('comment__location', { location: item.location })}}
             div(:class="$style.likes" v-if="item.likedCount != null")
               svg(:class="$style.likesIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-thumbs-up')
@@ -88,9 +90,32 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-end;
   min-width: 0;
-  line-height: 1.3;
-  gap: 6px;
+  font-size: inherit;
+  vertical-align: baseline;
   color: var(--color-450);
+}
+.baseInfo {
+  display: table-cell;
+  height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: normal !important;
+  text-align: justify;
+  min-width: 0;
+  line-height: 1.6;
+  color: var(--color-450);
+}
+.metaInfo {
+  position: relative;
+  display: inline-block;
+  .label {
+    float: left;
+  }
+  .location{
+    margin-left: 10px;
+  }
 }
 .name {
   flex: 0 1 auto;

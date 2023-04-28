@@ -30,7 +30,7 @@
           <transition name="list-active">
             <svg-icon v-if="defaultList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
           </transition>
-          {{ defaultList.name }}
+          {{ $t(defaultList.name) }}
         </span>
       </li>
       <li
@@ -42,7 +42,7 @@
           <transition name="list-active">
             <svg-icon v-if="loveList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
           </transition>
-          {{ loveList.name }}
+          {{ $t(loveList.name) }}
         </span>
       </li>
       <li
