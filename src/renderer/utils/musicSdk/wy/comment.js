@@ -147,24 +147,20 @@ export default {
     cursorTools.setCursor(songmid, body.data.cursor, cursorInfo.orderType, cursorInfo.offset, page)
     return { source: 'wy', comments: this.filterComment(body.data.comments), total: body.data.totalCount, page, limit, maxPage: Math.ceil(body.data.totalCount / limit) || 1 }
   },
-  async getHotComment({ songmid }, page = 1, limit = 10) {
-    // 这个API每次最多获取10个
-    if (limit > 10) limit = 10
+  async getHotComment({ songmid }, page = 1, limit = 20) {
     const id = idPrefix + songmid
 
     if (this._requestObj2) this._requestObj2.cancelHttp()
     const _requestObj2 = httpFetch(`https://music.163.com/weapi/v1/resource/hotcomments/${id}`, {
       method: 'POST',
       headers: {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-        origin: 'https://music.163.com',
         Refere: 'http://music.163.com/',
       },
       form: weapi({
         rid: id,
         beforeTime: Date.now().toString(),
         offset: page === 1 ? 0 : (page - 1) * limit,
-        pageSize: limit,
+        limit,
       }),
     })
 
