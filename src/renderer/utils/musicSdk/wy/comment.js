@@ -152,7 +152,7 @@ export default {
 
     const id = 'R_SO_4_' + songmid
 
-    const _requestObj2 = httpFetch('https://music.163.com/weapi/comment/resource/comments/get', {
+    const _requestObj2 = httpFetch(`https://music.163.com/weapi/v1/resource/hotcomments/${id}`, {
       method: 'post',
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
@@ -160,20 +160,16 @@ export default {
         Refere: 'http://music.163.com/',
       },
       form: weapi({
-        cursor: Date.now().toString(),
-        offset: 0,
-        orderType: 1,
-        pageNo: page,
-        pageSize: limit,
         rid: id,
-        threadId: id,
+        limit,
+        offset: limit * page,
+        beforeTime: Date.now().toString(),
       }),
     })
     const { body, statusCode } = await _requestObj2.promise
     if (statusCode != 200 || body.code !== 200) throw new Error('获取热门评论失败')
-    // console.log(body)
-    const total = body.data.hotComments?.length ?? 0
-    return { source: 'wy', comments: this.filterComment(body.data.hotComments), total, page, limit, maxPage: 1 }
+    const total = body.total ?? 0
+    return { source: 'wy', comments: this.filterComment(body.hotComments), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   filterComment(rawList) {
     return rawList.map(item => {
@@ -182,6 +178,7 @@ export default {
         text: item.content ? applyEmoji(item.content) : '',
         time: item.time ? item.time : '',
         timeStr: item.time ? dateFormat2(item.time) : '',
+        location: item.ipLocation?.location,
         userName: item.user.nickname,
         avatar: item.user.avatarUrl,
         userId: item.user.userId,
@@ -197,6 +194,7 @@ export default {
             text: replyData.content ? applyEmoji(replyData.content) : '',
             time: item.time,
             timeStr: null,
+            location: replyData.ipLocation?.location,
             userName: replyData.user.nickname,
             avatar: replyData.user.avatarUrl,
             userId: replyData.user.userId,
