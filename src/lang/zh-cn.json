@@ -191,8 +191,6 @@
   "pagination__next": "下一页",
   "pagination__page": "第 {num} 页",
   "pagination__prev": "上一页",
-  "count_million": "{count} 万",
-  "count_billion": "{count} 亿",
   "play_timeout": "定时暂停",
   "play_timeout_close": "关闭",
   "play_timeout_confirm": "确认",

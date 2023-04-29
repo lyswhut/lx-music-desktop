@@ -191,8 +191,6 @@
   "pagination__next": "Next page",
   "pagination__page": "Page {num}",
   "pagination__prev": "Previous page",
-  "count_million": "{count} Million",
-  "count_billion": "{count} Billion",
   "play_timeout": "Timed pause",
   "play_timeout_close": "Close",
   "play_timeout_confirm": "Confirm",
