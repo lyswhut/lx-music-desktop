@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
-import { decodeName, formatPlayTime, sizeFormate, dateFormat } from '../../index'
+import { decodeName, formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
+import { formatSingerName } from '../utils'
 
 export default {
   _requestObj_tags: null,
@@ -125,20 +126,10 @@ export default {
     })
   },
 
-
-  /**
-   * 格式化播放数量
-   * @param {*} num
-   */
-  formatPlayCount(num) {
-    if (num > 100000000) return parseInt(num / 10000000) / 10 + '亿'
-    if (num > 10000) return parseInt(num / 1000) / 10 + '万'
-    return num
-  },
   filterList(data, page) {
     return {
       list: data.v_playlist.map(item => ({
-        play_count: this.formatPlayCount(item.access_num),
+        play_count: formatPlayCount(item.access_num),
         id: item.tid,
         author: item.creator_info.nick,
         name: item.title,
@@ -159,7 +150,7 @@ export default {
     // console.log(content.v_item)
     return {
       list: content.v_item.map(({ basic }) => ({
-        play_count: this.formatPlayCount(basic.play_cnt),
+        play_count: formatPlayCount(basic.play_cnt),
         id: basic.tid,
         author: basic.creator.nick,
         name: basic.title,
@@ -228,16 +219,9 @@ export default {
         img: cdlist.logo,
         desc: decodeName(cdlist.desc).replace(/<br>/g, '\n'),
         author: cdlist.nickname,
-        play_count: this.formatPlayCount(cdlist.visitnum),
+        play_count: formatPlayCount(cdlist.visitnum),
       },
     }
-  },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
   },
   filterListDetail(rawList) {
     // console.log(rawList)
@@ -274,7 +258,7 @@ export default {
       }
       // types.reverse()
       return {
-        singer: this.getSinger(item.singer),
+        singer: formatSingerName(item.singer, 'name'),
         name: item.name,
         albumName: item.album.name,
         albumId: item.album.mid,
@@ -319,7 +303,7 @@ export default {
         return {
           list: body.data.list.map(item => {
             return {
-              play_count: this.formatPlayCount(item.listennum),
+              play_count: formatPlayCount(item.listennum),
               id: item.dissid,
               author: item.creator.name,
               name: item.dissname,

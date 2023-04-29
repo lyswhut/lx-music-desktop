@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { sizeFormate, formatPlayTime } from '../../index'
 import { toMD5 } from '../utils'
+import { formatSingerName } from '@renderer/utils/musicSdk/utils'
 
 const sign = (time, str) => {
   const deviceId = '963B7AA0D21511ED807EE5846EC87D20'
@@ -124,13 +125,6 @@ export default {
     })
     return searchRequest.promise.then(({ body }) => body)
   },
-  getSinger(singers) {
-    let arr = []
-    singers.forEach(singer => {
-      arr.push(singer.name)
-    })
-    return arr.join('、')
-  },
   filterData(rawData) {
     // console.log(rawData)
     const list = []
@@ -181,7 +175,7 @@ export default {
         if (img && !/https?:/.test(data.img3)) img = 'http://d.musicapp.migu.cn' + img
 
         list.push({
-          singer: this.getSinger(data.singerList),
+          singer: formatSingerName(data.singerList),
           name: data.name,
           albumName: data.album,
           albumId: data.albumId,

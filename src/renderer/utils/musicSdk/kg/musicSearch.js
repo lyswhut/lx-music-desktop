@@ -1,9 +1,6 @@
-// import '../../polyfill/array.find'
-
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
-// import { debug } from '../../utils/env'
-// import { formatSinger } from './util'
+import { formatSingerName } from '@renderer/utils/musicSdk/utils'
 
 export default {
   limit: 30,
@@ -50,7 +47,7 @@ export default {
       }
     }
     return {
-      singer: decodeName(rawData.SingerName),
+      singer: decodeName(formatSingerName(rawData.Singers, 'name')),
       name: decodeName(rawData.SongName),
       albumName: decodeName(rawData.AlbumName),
       albumId: rawData.AlbumID,

@@ -6,8 +6,10 @@ import pic from './pic'
 import lyric from './lyric'
 import hotSearch from './hotSearch'
 import comment from './comment'
+// import tipSearch from './tipSearch'
 
 const kg = {
+  // tipSearch,
   leaderboard,
   songList,
   musicSearch,

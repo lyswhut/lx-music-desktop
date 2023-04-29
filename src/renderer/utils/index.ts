@@ -6,6 +6,17 @@ export * from '@common/utils/common'
 export * from '@common/utils/tools'
 
 /**
+ * 格式化播放数量
+ * @param {*} num 数字
+ */
+export const formatPlayCount = (num: number): string => {
+  if (num > 100000000) return `${Math.trunc(num / 10000000) / 10}亿`
+  if (num > 10000) return `${Math.trunc(num / 1000) / 10}万`
+  return String(num)
+}
+
+
+/**
  * 时间格式化
  */
 export const dateFormat2 = (time: number): string => {

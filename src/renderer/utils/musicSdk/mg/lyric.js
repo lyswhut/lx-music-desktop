@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { getMusicInfo } from './musicInfo'
-import { decrypt } from './mrc'
+import { decrypt } from './utils/mrc'
 
 const mrcTools = {
   rxps: {
