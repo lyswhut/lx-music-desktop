@@ -7,9 +7,11 @@ div(:class="$style.container")
           img( :class="$style.avatar" :src="item.avatar || commentDefImg" @error="handleUserImg")
         div(:class="$style.right")
           div(:class="$style.info")
-            div.select(:class="$style.name") {{item.userName}}
-            time(:class="$style.label" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
-            div(:class="$style.label" v-if="item.location") {{item.location}}
+            div(:class="$style.baseInfo")
+              div.select(:class="$style.name") {{item.userName}}
+              div(:class="$style.metaInfo")
+                time(:class="$style.label" v-if="item.timeStr") {{timeFormat(item.timeStr)}}
+                div(:class="$style.label" v-if="item.location") {{$t('comment__location', { location: item.location })}}
             div(:class="$style.likes" v-if="item.likedCount != null")
               svg(:class="$style.likesIcon" version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 512 512' space='preserve')
                 use(xlink:href='#icon-thumbs-up')
@@ -86,11 +88,26 @@ export default {
 .info {
   display: flex;
   flex-flow: row nowrap;
-  align-items: flex-end;
-  min-width: 0;
+  gap: 15px;
+  width: 100%;
+  height: 40px;
   line-height: 1.3;
-  gap: 6px;
   color: var(--color-450);
+}
+.baseInfo {
+  height: 100%;
+  flex: auto;
+  display: flex;
+  min-width: 0;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+.metaInfo {
+  display: flex;
+  flex-flow: row nowrap;
+  min-width: 0;
+  gap: 10px;
+  overflow: hidden;
 }
 .name {
   flex: 0 1 auto;
@@ -104,11 +121,11 @@ export default {
   // margin-left: 5px;
 }
 .likes {
-  flex: 1 0 auto;
-  margin-left: 10px;
+  flex: none;
   font-size: 11px;
-  align-self: flex-end;
   text-align: right;
+  padding-top: 3px;
+  align-self: flex-start;
 }
 .likesIcon {
   width: 12px;
@@ -119,7 +136,6 @@ export default {
 .comment_text {
   text-align: justify;
   font-size: 14px;
-  padding-top: 5px;
   line-height: 1.5;
   word-break: break-all;
   overflow-wrap: break-word;

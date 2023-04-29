@@ -5,12 +5,14 @@ export const allMusicList: Map<string, LX.Music.MusicInfo[]> = markRaw(new Map()
 
 export const defaultList = markRaw<LX.List.MyDefaultListInfo>({
   id: LIST_IDS.DEFAULT,
-  name: '试听列表',
+  name: 'list__name_default',
+  // name: '试听列表',
 })
 
 export const loveList = markRaw<LX.List.MyLoveListInfo>({
   id: LIST_IDS.LOVE,
-  name: '我的收藏',
+  name: 'list__name_love',
+  // name: '我的收藏',
 })
 export const tempList = markRaw<LX.List.MyTempListInfo>({
   id: LIST_IDS.TEMP,
