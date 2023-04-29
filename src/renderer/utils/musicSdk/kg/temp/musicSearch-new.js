@@ -1,3 +1,4 @@
+import { formatSingerName } from '@renderer/utils/musicSdk/utils'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { signatureParams, createHttpFetch } from './util'
 
@@ -58,8 +59,8 @@ export default {
         }
       }
       list.push({
-        singer: decodeName(item.SingerName),
-        name: decodeName(item.OriSongName),
+        singer: decodeName(formatSingerName(item.Singers)),
+        name: decodeName(item.SongName),
         albumName: decodeName(item.AlbumName),
         albumId: item.AlbumID,
         songmid: item.Audioid,

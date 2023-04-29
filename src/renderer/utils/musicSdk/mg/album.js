@@ -27,7 +27,7 @@ export default {
         desc: listInfo.desc,
         author: listInfo.author,
         play_count: listInfo.play_count,
-      }
+      },
     }
   },
   /**
@@ -46,6 +46,6 @@ export default {
       author: info.singer,
       play_count: formatPlayCount(info.opNumItem.playNum),
       total: info.totalCount,
-  }
+    }
   },
 }

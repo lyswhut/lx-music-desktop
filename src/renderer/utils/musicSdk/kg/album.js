@@ -38,12 +38,12 @@ export default {
    * @param {*} page
    */
   async getAlbumDetail(id, page = 1, limit = 200) {
-    const info = await this.getAlbumInfo(id)
-
     const albumList = await createHttpFetch(`http://mobiles.kugou.com/api/v3/album/song?version=9108&albumid=${id}&plat=0&pagesize=${limit}&area_code=0&page=${page}&with_res_tag=0`)
     if (!albumList.info) return Promise.reject(new Error('Get album list failed.'))
 
     let result = await getMusicInfosByList(albumList.info)
+
+    const info = await this.getAlbumInfo(id)
 
     return {
       list: result || [],

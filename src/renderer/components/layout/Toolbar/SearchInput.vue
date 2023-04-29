@@ -48,12 +48,12 @@ export default {
     const tipSearch = debounce(async() => {
       if (searchText.value === '' && prevTempSearchSource) {
         tipList.value = []
-        music[prevTempSearchSource].tempSearch.cancelTempSearch()
+        music[prevTempSearchSource].tipSearch.cancelTipSearch()
         return
       }
       const { temp_source } = await getSearchSetting()
       prevTempSearchSource = temp_source
-      music[prevTempSearchSource].tempSearch.search(searchText.value).then(list => {
+      music[prevTempSearchSource].tipSearch.search(searchText.value).then(list => {
         tipList.value = list
       }).catch(() => {})
     }, 50)

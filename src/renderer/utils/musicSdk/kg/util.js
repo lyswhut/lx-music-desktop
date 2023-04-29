@@ -20,25 +20,18 @@ export const decodeLyric = str => new Promise((resolve, reject) => {
 //   console.log(str)
 // })
 
-
-const signatureKey = { app: 'OIlwieks28dk2k092lksi2UIkp', web: 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt' }
 /**
  * 签名
  * @param {*} params
  * @param {*} apiver
  */
 export const signatureParams = (params, apiver = 9) => {
-  let key = signatureKey.app
-  if (apiver === 5) key = signatureKey.web
-
-  if (typeof params === 'object') {
-    if (!Array.isArray(params)) throw new Error('params error.')
-    params = params.sort()
-  } else if (typeof params === 'string') {
-    params = params.split('&').sort()
-  } else throw new Error('params error.')
-
-  return toMD5(`${key}${params.join('')}${key}`)
+  let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
+  if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
+  let param_list = params.split('&')
+  param_list.sort()
+  let sign_params = `${keyparam}${param_list.join('')}${keyparam}`
+  return toMD5(sign_params)
 }
 
 /**
@@ -59,12 +52,9 @@ export const createHttpFetch = async(url, options, retryNum = 0) => {
   // console.log(result.statusCode, result.body)
   if (result.statusCode !== 200 ||
     (
-      (result.body.error_code !== undefined
-        ? result.body.error_code
-        : result.body.errcode !== undefined
-          ? result.body.errcode
-          : result.body.err_code
-      ) !== 0)
+      result.body.error_code ??
+      result.body.errcode ??
+      result.body.err_code) != 0
   ) return createHttpFetch(url, options, ++retryNum)
   if (result.body.data) return result.body.data
   if (Array.isArray(result.body.info)) return result.body

@@ -9,10 +9,10 @@ export * from '@common/utils/tools'
  * 格式化播放数量
  * @param {*} num 数字
  */
-export const formatPlayCount = (num: number): { count: number, lang: string } => {
-  if (num > 100000000) return {count: parseInt((num / 10000000).toString()) / 10, lang: 'play_count_billion'}
-  if (num > 10000) return {count: parseInt((num / 1000).toString()) / 10, lang: 'play_count_million'}
-  return { count: num, lang: 'play_count_none' }
+export const formatPlayCount = (num: number): string => {
+  if (num > 100000000) return `${Math.trunc(num / 10000000) / 10}亿`
+  if (num > 10000) return `${Math.trunc(num / 1000) / 10}万`
+  return String(num)
 }
 
 

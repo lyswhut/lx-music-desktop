@@ -1,5 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
+import { formatSingerName } from '@renderer/utils/musicSdk/utils'
 
 export default {
   limit: 30,
@@ -10,79 +11,75 @@ export default {
     const searchRequest = httpFetch(`https://songsearch.kugou.com/song_search_v2?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&userid=0&clientver=&platform=WebFilter&filter=2&iscorrection=1&privilege_filter=0`)
     return searchRequest.promise.then(({ body }) => body)
   },
-  filterList(raw) {
+  filterData(rawData) {
+    const types = []
+    const _types = {}
+    if (rawData.FileSize !== 0) {
+      let size = sizeFormate(rawData.FileSize)
+      types.push({ type: '128k', size, hash: rawData.FileHash })
+      _types['128k'] = {
+        size,
+        hash: rawData.FileHash,
+      }
+    }
+    if (rawData.HQFileSize !== 0) {
+      let size = sizeFormate(rawData.HQFileSize)
+      types.push({ type: '320k', size, hash: rawData.HQFileHash })
+      _types['320k'] = {
+        size,
+        hash: rawData.HQFileHash,
+      }
+    }
+    if (rawData.SQFileSize !== 0) {
+      let size = sizeFormate(rawData.SQFileSize)
+      types.push({ type: 'flac', size, hash: rawData.SQFileHash })
+      _types.flac = {
+        size,
+        hash: rawData.SQFileHash,
+      }
+    }
+    if (rawData.ResFileSize !== 0) {
+      let size = sizeFormate(rawData.ResFileSize)
+      types.push({ type: 'flac24bit', size, hash: rawData.ResFileHash })
+      _types.flac24bit = {
+        size,
+        hash: rawData.ResFileHash,
+      }
+    }
+    return {
+      singer: decodeName(formatSingerName(rawData.Singers, 'name')),
+      name: decodeName(rawData.SongName),
+      albumName: decodeName(rawData.AlbumName),
+      albumId: rawData.AlbumID,
+      songmid: rawData.Audioid,
+      source: 'kg',
+      interval: formatPlayTime(rawData.Duration),
+      _interval: rawData.Duration,
+      img: null,
+      lrc: null,
+      otherSource: null,
+      hash: rawData.FileHash,
+      types,
+      _types,
+      typeUrl: {},
+    }
+  },
+  handleResult(rawData) {
     let ids = new Set()
     const list = []
-
-    raw.forEach(item => {
-      if (ids.has(item.Audioid) || !item.Audioid) return
-      ids.add(item.Audioid)
-
-      const types = []
-      const _types = {}
-      if (item.FileSize !== 0) {
-        let size = sizeFormate(item.FileSize)
-        types.push({ type: '128k', size, hash: item.FileHash })
-        _types['128k'] = {
-          size,
-          hash: item.FileHash,
-        }
+    rawData.forEach(item => {
+      const key = item.Audioid + item.FileHash
+      if (ids.has(key)) return
+      ids.add(key)
+      list.push(this.filterData(item))
+      for (const childItem of item.Grp) {
+        const key = item.Audioid + item.FileHash
+        if (ids.has(key)) continue
+        ids.add(key)
+        list.push(this.filterData(childItem))
       }
-      if (item.HQFileSize !== 0) {
-        let size = sizeFormate(item.HQFileSize)
-        types.push({ type: '320k', size, hash: item.HQFileHash })
-        _types['320k'] = {
-          size,
-          hash: item.HQFileHash,
-        }
-      }
-      if (item.SQFileSize !== 0) {
-        let size = sizeFormate(item.SQFileSize)
-        types.push({ type: 'flac', size, hash: item.SQFileHash })
-        _types.flac = {
-          size,
-          hash: item.SQFileHash,
-        }
-      }
-      if (item.ResFileSize !== 0) {
-        let size = sizeFormate(item.ResFileSize)
-        types.push({ type: 'flac24bit', size, hash: item.ResFileHash })
-        _types.flac24bit = {
-          size,
-          hash: item.ResFileHash,
-        }
-      }
-      list.push({
-        singer: decodeName(item.SingerName),
-        name: decodeName(item.SongName),
-        albumName: decodeName(item.AlbumName),
-        albumId: item.AlbumID,
-        songmid: item.Audioid,
-        source: 'kg',
-        interval: formatPlayTime(item.Duration),
-        _interval: item.Duration,
-        img: null,
-        lrc: null,
-        otherSource: null,
-        hash: item.FileHash,
-        types,
-        _types,
-        typeUrl: {},
-      })
     })
     return list
-  },
-  handleResult(raw) {
-    const handleList = []
-
-    raw.forEach(item => {
-      handleList.push(item)
-      if (item.Grp.length === 0) return
-      for (const e in item.Grp) {
-        handleList.push(e)
-      }
-    })
-    return this.filterList(handleList)
   },
   search(str, page = 1, limit, retryNum = 0) {
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
