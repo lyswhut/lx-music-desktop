@@ -29,7 +29,7 @@ export const signatureParams = (params, apiver = 9, post_data = '') => {
   let keyparam = 'OIlwieks28dk2k092lksi2UIkp'
   if (apiver === 5) keyparam = 'NVPh5oo715z5DIWAeQlhMDsWXXQV4hwt'
   let param_list = params.split('&')
-  if (opst_data && typeof post_data === 'object') post_data = JSON.stringify(post_data)
+  if (post_data && typeof post_data === 'object') post_data = JSON.stringify(post_data)
   param_list.sort()
   let sign_params = `${keyparam}${param_list.join('')}${post_data}${keyparam}`
   return toMD5(sign_params)
