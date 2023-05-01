@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
+          npm ci
 
       - name: Build src code
         run: npm run build:src
@@ -81,7 +81,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
+          npm ci
 
       - name: Build src code
         run: npm run build:src
@@ -130,7 +130,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
+          npm ci
 
       - name: Build src code
         run: npm run build:src
