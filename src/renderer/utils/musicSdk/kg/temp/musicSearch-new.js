@@ -1,6 +1,6 @@
-import { formatSingerName } from '@renderer/utils/musicSdk/utils'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { signatureParams, createHttpFetch } from './util'
+import { formatSingerName } from '../../utils'
 
 export default {
   limit: 30,

@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
-import { formatSingerName } from '@renderer/utils/musicSdk/utils'
+import { formatSingerName } from '../utils'
+
 
 export default {
   limit: 30,

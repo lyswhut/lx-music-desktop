@@ -119,7 +119,7 @@ export default {
     this._requestObj_list = httpFetch(
       this.getListUrl(sortId, tagId, page),
     )
-    console.log(this.getListUrl(sortId, tagId, page))
+    // console.log(this.getListUrl(sortId, tagId, page))
     return this._requestObj_list.promise.then(({ body }) => {
       if (body.code !== this.successCode) return this.getList(sortId, tagId, page, ++tryNum)
       return tagId ? this.filterList2(body.playlist.data, page) : this.filterList(body.playlist.data, page)

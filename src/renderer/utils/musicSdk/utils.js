@@ -37,13 +37,7 @@ export const dnsLookup = (hostname, options, callback) => {
  * @param join 歌手分割字符
  */
 export const formatSingerName = (singers, nameKey = 'name', join = '、') => {
-  if (typeof singers == 'string') {
-    try {
-      singers = JSON.parse(singers)
-    } catch (err) {
-      return decodeName(singers)
-    }
-  } else if (Array.isArray(singers)) {
+  if (Array.isArray(singers)) {
     const singer = []
     singers.forEach(item => {
       let name = item[nameKey]
