@@ -22,6 +22,7 @@ import { watch, ref, onBeforeUnmount } from '@common/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { addListMusics, moveListMusics, createUserList, getMusicExistListIds } from '@renderer/store/list/action'
 import useKeyDown from '@renderer/utils/compositions/useKeyDown'
+import { useI18n } from '@/lang'
 
 export default {
   props: {
@@ -63,6 +64,7 @@ export default {
   emits: ['update:show'],
   setup(props) {
     const keyModDown = useKeyDown('mod')
+    const t = useI18n()
     const lists = ref([])
 
     const currentMusicInfo = ref({})
@@ -81,8 +83,8 @@ export default {
 
     const getList = () => {
       lists.value = [
-        defaultList,
-        loveList,
+        { ...defaultList, name: t(defaultList.name) },
+        { ...loveList, name: t(loveList.name) },
         ...userLists,
       ].filter(l => !props.excludeListId.includes(l.id)).map(l => ({ ...l, isExist: false }))
       checkMusicExist(currentMusicInfo.value)

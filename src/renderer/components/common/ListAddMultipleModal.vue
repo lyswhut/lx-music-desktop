@@ -21,6 +21,7 @@ import { computed } from '@common/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { addListMusics, moveListMusics, createUserList } from '@renderer/store/list/action'
 import useKeyDown from '@renderer/utils/compositions/useKeyDown'
+import { useI18n } from '@/lang'
 
 export default {
   props: {
@@ -64,11 +65,12 @@ export default {
   emits: ['update:show', 'confirm'],
   setup(props) {
     const keyModDown = useKeyDown('mod')
+    const t = useI18n()
 
     const lists = computed(() => {
       return [
-        defaultList,
-        loveList,
+        { ...defaultList, name: t(defaultList.name) },
+        { ...loveList, name: t(loveList.name) },
         ...userLists,
       ].filter(l => !props.excludeListId.includes(l.id))
     })
