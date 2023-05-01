@@ -2,6 +2,7 @@ import { join } from 'path'
 import { homedir } from 'os'
 
 const isMac = process.platform == 'darwin'
+const isWin = process.platform == 'win32'
 
 const defaultSetting: LX.AppSetting = {
   version: '2.1.0',
@@ -33,7 +34,7 @@ const defaultSetting: LX.AppSetting = {
   'player.isShowLyricTranslation': false,
   'player.isShowLyricRoma': false,
   'player.isS2t': false,
-  'player.isPlayLxlrc': !isMac,
+  'player.isPlayLxlrc': isWin,
   'player.isSavePlayTime': false,
   'player.audioVisualization': false,
   'player.waitPlayEndStop': true,
@@ -71,10 +72,10 @@ const defaultSetting: LX.AppSetting = {
   // 'desktopLyric.style.fontWeight': false,
   'desktopLyric.style.opacity': 95,
   'desktopLyric.style.ellipsis': false,
-  'desktopLyric.style.isZoomActiveLrc': true,
+  'desktopLyric.style.isZoomActiveLrc': false,
   'desktopLyric.style.isFontWeightFont': true,
-  'desktopLyric.style.isFontWeightLine': false,
-  'desktopLyric.style.isFontWeightExtended': false,
+  'desktopLyric.style.isFontWeightLine': true,
+  'desktopLyric.style.isFontWeightExtended': true,
 
   'list.isClickPlayList': false,
   'list.isShowSource': true,
