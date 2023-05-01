@@ -4,6 +4,7 @@ const path = require('path')
 const { Arch } = require('electron-builder')
 
 const better_sqlite3_fileNameMap = {
+  [Arch.x64]: 'electron-v110-linux-x64',
   [Arch.arm64]: 'electron-v110-linux-arm64',
   [Arch.armv7l]: 'electron-v110-linux-arm',
 }
@@ -55,6 +56,7 @@ module.exports = async(context) => {
   const bindingFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp')
   const bindingBakFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp.bak')
   switch (arch) {
+    case Arch.x64:
     case Arch.arm64:
     case Arch.armv7l:
       if (fs.existsSync(bindingFilePath)) {
