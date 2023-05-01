@@ -6,6 +6,13 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.2.2](https://github.com/lyswhut/lx-music-desktop/compare/v2.2.1...v2.2.2) - 2023-05-01
+
+### 修复
+
+- 修复在低版本Linux amd64系统上无法启动的问题（glibc版本要求过高导致的，采用内置预编译二进制文件的方式解决）
+- 修复添加歌曲弹窗默认列表名字显示问题
+
 ## [2.2.1](https://github.com/lyswhut/lx-music-desktop/compare/v2.2.0...v2.2.1) - 2023-05-01
 
 ### 优化
