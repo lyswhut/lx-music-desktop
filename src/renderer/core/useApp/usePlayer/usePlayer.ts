@@ -31,6 +31,7 @@ import useWatchList from './useWatchList'
 import { HOTKEY_PLAYER } from '@common/hotKey'
 import { playNext, pause, playPrev, togglePlay } from '@renderer/core/player'
 import usePlaybackRate from './usePlaybackRate'
+import useSoundEffect from './useSoundEffect'
 
 
 export default () => {
@@ -41,6 +42,7 @@ export default () => {
   usePlayEvent()
   useLyric()
   useVolume()
+  useSoundEffect()
   usePlaybackRate()
   useWatchList()
 

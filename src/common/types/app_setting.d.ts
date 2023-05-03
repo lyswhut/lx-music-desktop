@@ -164,6 +164,76 @@ declare global {
       'player.waitPlayEndStopTime': string
 
       /**
+       * 环境音效文件名
+       */
+      'player.soundEffect.convolution.fileName': string | null
+
+      /**
+       * 均衡器 31hz 值
+       */
+      'player.soundEffect.biquadFilter.hz31': number
+
+      /**
+       * 均衡器 62hz 值
+       */
+      'player.soundEffect.biquadFilter.hz62': number
+
+      /**
+       * 均衡器 125hz 值
+       */
+      'player.soundEffect.biquadFilter.hz125': number
+
+      /**
+       * 均衡器 250hz 值
+       */
+      'player.soundEffect.biquadFilter.hz250': number
+
+      /**
+       * 均衡器 500hz 值
+       */
+      'player.soundEffect.biquadFilter.hz500': number
+
+      /**
+       * 均衡器 1000hz 值
+       */
+      'player.soundEffect.biquadFilter.hz1000': number
+
+      /**
+       * 均衡器 2000hz 值
+       */
+      'player.soundEffect.biquadFilter.hz2000': number
+
+      /**
+       * 均衡器 4000hz 值
+       */
+      'player.soundEffect.biquadFilter.hz4000': number
+
+      /**
+       * 均衡器 8000hz 值
+       */
+      'player.soundEffect.biquadFilter.hz8000': number
+
+      /**
+       * 均衡器 16000hz 值
+       */
+      'player.soundEffect.biquadFilter.hz16000': number
+
+      /**
+       * 3D立体环绕是否启用
+       */
+      'player.soundEffect.panner.enable': boolean
+
+      /**
+       * 3D立体环绕声音距离
+       */
+      'player.soundEffect.panner.soundR': number
+
+      /**
+       * 3D立体环绕速度
+       */
+      'player.soundEffect.panner.speed': number
+
+      /**
        * 是否启用音频加载失败时自动切歌
        */
       'player.autoSkipOnError': boolean

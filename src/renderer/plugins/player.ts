@@ -2,6 +2,57 @@ let audio: HTMLAudioElement | null = null
 let audioContext: AudioContext
 let mediaSource: MediaElementAudioSourceNode
 let analyser: AnalyserNode
+// https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext
+// https://benzleung.gitbooks.io/web-audio-api-mini-guide/content/chapter5-1.html
+export const freqs = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] as const
+type Freqs = (typeof freqs)[number]
+let biquads: Map<`hz${Freqs}`, BiquadFilterNode>
+export const convolutions = [
+  {
+    name: 'telephone', // 电话
+    mainGain: 0.0,
+    sendGain: 3.0,
+    source: 'filter-telephone.wav',
+  },
+  {
+    name: 'spreader', // 室内
+    mainGain: 1.0,
+    sendGain: 2.5,
+    source: 'spreader50-65ms.wav',
+  },
+  {
+    name: 'feedback_spring', // 山洞
+    mainGain: 0.0,
+    sendGain: 2.4,
+    source: 'feedback-spring.wav',
+  },
+  {
+    name: 'church', // 教堂
+    mainGain: 1.8,
+    sendGain: 0.9,
+    source: 's2_r4_bd.wav',
+  },
+  {
+    name: 'kitchen', // 厨房
+    mainGain: 0.6,
+    sendGain: 3.0,
+    source: 'kitchen-true-stereo.wav',
+  },
+  {
+    name: 'bedroom', // 大厅
+    mainGain: 0.6,
+    sendGain: 2.1,
+    source: 'living-bedroom-leveled.wav',
+  },
+] as const
+let convolver: ConvolverNode
+let convolverSourceGainNode: GainNode
+let convolverOutputGainNode: GainNode
+let convolverDynamicsCompressor: DynamicsCompressorNode
+let gainNode: GainNode
+let panner: PannerNode
+export const soundR = 0.5
+
 
 export const createAudio = () => {
   if (audio) return
@@ -11,18 +62,152 @@ export const createAudio = () => {
   audio.preload = 'auto'
 }
 
-export const getAnalyser = (): AnalyserNode | null => {
-  if (!audio) throw new Error('audio not defined')
+const initAnalyser = () => {
+  analyser = audioContext.createAnalyser()
+  analyser.fftSize = 256
+}
 
-  if (audioContext == null) {
-    audioContext = new window.AudioContext()
-    mediaSource = audioContext.createMediaElementSource(audio)
-    analyser = audioContext.createAnalyser()
-    analyser.fftSize = 256
-    mediaSource.connect(analyser)
-    analyser.connect(audioContext.destination)
+const initBiquadFilter = () => {
+  biquads = new Map()
+  let i
+
+  for (const item of freqs) {
+    const filter = audioContext.createBiquadFilter()
+    biquads.set(`hz${item}`, filter)
+    filter.type = 'peaking'
+    filter.frequency.value = item
+    filter.Q.value = 1.4
+    filter.gain.value = 0
   }
+
+  for (i = 1; i < freqs.length; i++) {
+    (biquads.get(`hz${freqs[i - 1]}`) as BiquadFilterNode).connect(biquads.get(`hz${freqs[i]}`) as BiquadFilterNode)
+  }
+}
+
+const initConvolver = () => {
+  convolverSourceGainNode = audioContext.createGain()
+  convolverOutputGainNode = audioContext.createGain()
+  convolverDynamicsCompressor = audioContext.createDynamicsCompressor()
+  convolver = audioContext.createConvolver()
+  convolver.connect(convolverOutputGainNode)
+  convolverSourceGainNode.connect(convolverDynamicsCompressor)
+  convolverOutputGainNode.connect(convolverDynamicsCompressor)
+}
+
+const initPanner = () => {
+  panner = audioContext.createPanner()
+}
+
+const initGain = () => {
+  gainNode = audioContext.createGain()
+}
+
+const initAdvancedAudioFeatures = () => {
+  if (audioContext) return
+  if (!audio) throw new Error('audio not defined')
+  audioContext = new window.AudioContext()
+  mediaSource = audioContext.createMediaElementSource(audio)
+
+  initAnalyser()
+  mediaSource.connect(analyser)
+  // analyser.connect(audioContext.destination)
+
+  initBiquadFilter()
+  analyser.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
+
+  initConvolver()
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  lastBiquadFilter.connect(convolverSourceGainNode)
+  lastBiquadFilter.connect(convolver)
+
+  initPanner()
+  convolverDynamicsCompressor.connect(panner)
+
+  initGain()
+  panner.connect(gainNode)
+
+  gainNode.connect(audioContext.destination)
+}
+
+export const getAudioContext = () => {
+  initAdvancedAudioFeatures()
+  return audioContext
+}
+
+
+export const getAnalyser = (): AnalyserNode | null => {
+  initAdvancedAudioFeatures()
   return analyser
+}
+
+export const getBiquadFilter = () => {
+  initAdvancedAudioFeatures()
+  return biquads
+}
+
+// let isConvolverConnected = false
+export const setConvolver = (buffer: AudioBuffer | null, sendGain: number, mainGain: number) => {
+  initAdvancedAudioFeatures()
+  convolver.buffer = buffer
+  if (buffer) {
+    convolverOutputGainNode.gain.value = sendGain
+    convolverSourceGainNode.gain.value = mainGain
+  } else {
+    convolverOutputGainNode.gain.value = 0
+    convolverSourceGainNode.gain.value = 1
+  }
+}
+
+let pannerInfo = {
+  x: 0,
+  y: 0,
+  z: 0,
+  soundR: 0.5,
+  rad: 0,
+  speed: 1,
+  intv: null as NodeJS.Timeout | null,
+}
+const setPannerXYZ = (nx: number, ny: number, nz: number) => {
+  pannerInfo.x = nx
+  pannerInfo.y = ny
+  pannerInfo.z = nz
+  // console.log(pannerInfo)
+  panner.positionX.value = nx * pannerInfo.soundR
+  panner.positionY.value = ny * pannerInfo.soundR
+  panner.positionZ.value = nz * pannerInfo.soundR
+}
+export const setPannerSoundR = (r: number) => {
+  pannerInfo.soundR = r
+}
+
+export const setPannerSpeed = (speed: number) => {
+  pannerInfo.speed = speed
+  if (pannerInfo.intv) startPanner()
+}
+export const stopPanner = () => {
+  if (pannerInfo.intv) {
+    clearInterval(pannerInfo.intv)
+    pannerInfo.intv = null
+    pannerInfo.rad = 0
+  }
+  panner.positionX.value = 0
+  panner.positionY.value = 0
+  panner.positionZ.value = 0
+}
+
+export const startPanner = () => {
+  initAdvancedAudioFeatures()
+  if (pannerInfo.intv) {
+    clearInterval(pannerInfo.intv)
+    pannerInfo.intv = null
+    pannerInfo.rad = 0
+  }
+  pannerInfo.intv = setInterval(() => {
+    pannerInfo.rad += 1
+    if (pannerInfo.rad > 360) pannerInfo.rad -= 360
+    setPannerXYZ(Math.sin(pannerInfo.rad * Math.PI / 180), Math.cos(pannerInfo.rad * Math.PI / 180), Math.cos(pannerInfo.rad * Math.PI / 180))
+  }, pannerInfo.speed * 10)
 }
 
 export const hasInitedAnalyser = (): boolean => audioContext != null
