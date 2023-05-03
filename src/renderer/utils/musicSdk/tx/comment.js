@@ -244,7 +244,7 @@ export default {
         userName: item.Nick ? item.Nick.substring(1) : '',
         images: item.Pic ? [item.Pic] : [],
         avatar: item.Avatar,
-        location: item.Location ? ('来自' + item.Location) : '',
+        location: item.Location ? item.Location : '',
         userId: item.EncryptUin,
         likedCount: item.PraiseNum,
         reply: item.SubComments

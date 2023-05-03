@@ -1,6 +1,6 @@
 <template>
   <material-popup-btn :class="$style.btnContent">
-    <button :class="$style.btn" :aria-label="'音效设置'">
+    <button :class="$style.btn" :aria-label="$t('player__sound_effect')">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="90%" viewBox="0 0 24 24" space="preserve">
         <use xlink:href="#icon-tune-variant" />
       </svg>
