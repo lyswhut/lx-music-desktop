@@ -230,7 +230,7 @@
   "player__sound_effect_biquad_filter": "Equalizer",
   "player__sound_effect_biquad_filter_reset_btn": "Reset equalizer",
   "player__sound_effect_convolution": "Ambient sound",
-  "player__sound_effect_convolution_bedroom": "Hall",
+  "player__sound_effect_convolution_wc": "Bathroom",
   "player__sound_effect_convolution_church": "Church",
   "player__sound_effect_convolution_feedback_spring": "Cave",
   "player__sound_effect_convolution_kitchen": "Kitchen",

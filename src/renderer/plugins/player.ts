@@ -39,7 +39,7 @@ export const convolutions = [
     source: 'kitchen-true-stereo.wav',
   },
   {
-    name: 'bedroom', // 大厅
+    name: 'wc', // 厕所
     mainGain: 0.6,
     sendGain: 2.1,
     source: 'living-bedroom-leveled.wav',

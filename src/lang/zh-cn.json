@@ -230,7 +230,7 @@
   "player__sound_effect_biquad_filter": "均衡器",
   "player__sound_effect_biquad_filter_reset_btn": "重置均衡器",
   "player__sound_effect_convolution": "环境音效",
-  "player__sound_effect_convolution_bedroom": "大厅",
+  "player__sound_effect_convolution_wc": "厕所",
   "player__sound_effect_convolution_church": "教堂",
   "player__sound_effect_convolution_feedback_spring": "山洞",
   "player__sound_effect_convolution_kitchen": "厨房",
