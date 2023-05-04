@@ -169,6 +169,16 @@ declare global {
       'player.soundEffect.convolution.fileName': string | null
 
       /**
+       * 环境音效原始输出增益
+       */
+      'player.soundEffect.convolution.mainGain': number
+
+      /**
+       * 环境音效输出增益
+       */
+      'player.soundEffect.convolution.sendGain': number
+
+      /**
        * 均衡器 31hz 值
        */
       'player.soundEffect.biquadFilter.hz31': number

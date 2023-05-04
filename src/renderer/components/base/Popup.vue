@@ -56,6 +56,7 @@ const popupStyle = reactive({
 
 const arrowHeight = 9
 const arrowWidth = 8
+const sidePadding = 50
 
 watch(() => props.visible, (visible) => {
   if (!visible || !dom_content.value || !props.btnEl) return
@@ -63,24 +64,24 @@ watch(() => props.visible, (visible) => {
   const maxHeight = document.body.clientHeight
   const elTop = rect.top - window.lx.rootOffset
   const bottomTopVal = elTop + rect.height
-  const contentHeight = dom_content.value.scrollHeight + arrowHeight + 10
+  const contentHeight = dom_content.value.scrollHeight + arrowHeight + sidePadding
   if (bottomTopVal + contentHeight < maxHeight || (contentHeight > elTop && elTop <= maxHeight - bottomTopVal)) {
     isShowTop.value = false
     popupStyle.top = bottomTopVal + arrowHeight + 'px'
-    popupStyle.maxHeight = maxHeight - bottomTopVal - arrowHeight - 10 + 'px'
+    popupStyle.maxHeight = maxHeight - bottomTopVal - arrowHeight - sidePadding + 'px'
   } else {
     isShowTop.value = true
-    let maxContentHeight = elTop - arrowHeight - 10
-    popupStyle.top = (elTop - (elTop < contentHeight ? elTop : contentHeight) + 10) + 'px'
+    let maxContentHeight = elTop - arrowHeight - sidePadding
+    popupStyle.top = (elTop - (elTop < contentHeight ? elTop : contentHeight) + sidePadding) + 'px'
     popupStyle.maxHeight = maxContentHeight + 'px'
   }
 
   const maxWidth = document.body.clientWidth - 20
   let center = dom_content.value.clientWidth / 2
   let left = rect.left + rect.width / 2 - window.lx.rootOffset - center
-  if (left < 10) {
-    center -= 10 - left
-    left = 10
+  if (left < sidePadding) {
+    center -= sidePadding - left
+    left = sidePadding
   } else if (left + dom_content.value.clientWidth > maxWidth) {
     let newLeft = maxWidth - dom_content.value.clientWidth
     center = center + left - newLeft

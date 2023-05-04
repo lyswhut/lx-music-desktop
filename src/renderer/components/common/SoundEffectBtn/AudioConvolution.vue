@@ -1,17 +1,31 @@
 <template>
   <div :class="$style.contnet">
     <h3 class="player__sound_effect_title">{{ $t('player__sound_effect_convolution') }}</h3>
-    <div :class="$style.convolutionList">
-      <base-checkbox
-        v-for="item in convolutions"
-        :id="`player__convolution_${item.name}`"
-        :key="item.name"
-        :class="$style.checkbox"
-        :model-value="appSetting['player.soundEffect.convolution.fileName']"
-        :label="$t(`player__sound_effect_convolution_${item.name}`)"
-        :value="item.source"
-        @update:model-value="updateConvolution($event)"
-      />
+    <div :class="$style.convolution">
+      <div :class="$style.convolutionList">
+        <base-checkbox
+          v-for="item in convolutions"
+          :id="`player__convolution_${item.name}`"
+          :key="item.name"
+          :class="$style.checkbox"
+          :model-value="appSetting['player.soundEffect.convolution.fileName']"
+          :label="$t(`player__sound_effect_convolution_file_${item.name}`)"
+          :value="item.source"
+          @update:model-value="updateConvolution($event)"
+        />
+      </div>
+      <div :class="$style.sliderList">
+        <div :class="$style.sliderItem">
+          <span :class="$style.label">{{ $t('player__sound_effect_convolution_main_gain') }}</span>
+          <base-slider-bar :class="$style.slider" :value="appSetting['player.soundEffect.convolution.mainGain']" :min="0" :max="50" @change="handleUpdateMainGain" />
+          <span :class="[$style.value]">{{ appSetting['player.soundEffect.convolution.mainGain'] * 10 }}%</span>
+        </div>
+        <div :class="$style.sliderItem">
+          <span :class="$style.label">{{ $t('player__sound_effect_convolution_send_gain') }}</span>
+          <base-slider-bar :class="$style.slider" :value="appSetting['player.soundEffect.convolution.sendGain']" :min="0" :max="50" @change="handleUpdateSendGain" />
+          <span :class="[$style.value]">{{ appSetting['player.soundEffect.convolution.sendGain'] * 10 }}%</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -22,9 +36,24 @@ import { appSetting, updateSetting } from '@renderer/store/setting'
 import { convolutions } from '@renderer/plugins/player'
 
 const updateConvolution = val => {
-  console.log(val)
-  updateSetting({ 'player.soundEffect.convolution.fileName': val })
+  const target = convolutions.find(c => c.source == val)
+  const setting = {
+    'player.soundEffect.convolution.fileName': val,
+  }
+  if (target) {
+    setting['player.soundEffect.convolution.mainGain'] = target.mainGain * 10
+    setting['player.soundEffect.convolution.sendGain'] = target.sendGain * 10
+  }
+  updateSetting(setting)
 }
+
+const handleUpdateMainGain = (value) => {
+  updateSetting({ 'player.soundEffect.convolution.mainGain': Math.round(value) })
+}
+const handleUpdateSendGain = (value) => {
+  updateSetting({ 'player.soundEffect.convolution.sendGain': Math.round(value) })
+}
+
 
 </script>
 
@@ -35,6 +64,12 @@ const updateConvolution = val => {
   flex-flow: column nowrap;
   gap: 3px;
 }
+.convolution {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 15px;
+  width: 100%;
+}
 .convolutionList {
   display: flex;
   flex-flow: row wrap;
@@ -44,5 +79,35 @@ const updateConvolution = val => {
 .checkbox {
   margin-right: 10px;
   font-size: 12px;
+}
+
+.sliderList {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 15px;
+  width: 100%;
+}
+.sliderItem {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
+}
+.slider {
+  flex: auto;
+}
+.label {
+  flex: none;
+  // width: 50px;
+  font-size: 12px;
+}
+.value {
+  flex: none;
+  width: 40px;
+  font-size: 12px;
+  text-align: center;
+
+  &.active {
+    color: var(--color-primary-font);
+  }
 }
 </style>

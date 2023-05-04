@@ -1,7 +1,6 @@
 import { watch } from '@common/utils/vueTools'
 import {
   freqs,
-  convolutions,
   getAudioContext,
   getBiquadFilter,
   setConvolver,
@@ -9,6 +8,8 @@ import {
   setPannerSpeed,
   startPanner,
   stopPanner,
+  setConvolverMainGain,
+  setConvolverSendGain,
 } from '@renderer/plugins/player'
 
 import { appSetting } from '@renderer/store/setting'
@@ -62,8 +63,7 @@ export default () => {
   }
   if (appSetting['player.soundEffect.convolution.fileName']) {
     void loadBuffer(appSetting['player.soundEffect.convolution.fileName']).then((buffer) => {
-      const target = convolutions.find(c => c.source == appSetting['player.soundEffect.convolution.fileName'])
-      setConvolver(buffer, target!.sendGain, target!.mainGain)
+      setConvolver(buffer, appSetting['player.soundEffect.convolution.mainGain'] / 10, appSetting['player.soundEffect.convolution.sendGain'] / 10)
     })
   }
 
@@ -85,13 +85,18 @@ export default () => {
     setTimeout(() => {
       if (fileName) {
         void loadBuffer(fileName).then((buffer) => {
-          const target = convolutions.find(c => c.source == fileName)
-          setConvolver(buffer, target!.sendGain, target!.mainGain)
+          setConvolver(buffer, appSetting['player.soundEffect.convolution.mainGain'] / 10, appSetting['player.soundEffect.convolution.sendGain'] / 10)
         })
       } else {
         setConvolver(null, 0, 0)
       }
     })
+  })
+  watch(() => appSetting['player.soundEffect.convolution.mainGain'], (mainGain) => {
+    setConvolverMainGain(mainGain / 10)
+  })
+  watch(() => appSetting['player.soundEffect.convolution.sendGain'], (sendGain) => {
+    setConvolverSendGain(sendGain / 10)
   })
   watch(() => appSetting['player.soundEffect.biquadFilter.hz31'], (hz31) => {
     const bfs = getBiquadFilter()

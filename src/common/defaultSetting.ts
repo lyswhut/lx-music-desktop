@@ -41,6 +41,8 @@ const defaultSetting: LX.AppSetting = {
   'player.waitPlayEndStopTime': '',
   'player.autoSkipOnError': true,
   'player.soundEffect.convolution.fileName': '',
+  'player.soundEffect.convolution.mainGain': 10,
+  'player.soundEffect.convolution.sendGain': 0,
   'player.soundEffect.biquadFilter.hz31': 0,
   'player.soundEffect.biquadFilter.hz62': 0,
   'player.soundEffect.biquadFilter.hz125': 0,

@@ -29,7 +29,7 @@ dd(:aria-label="$t('setting__play_mediaDevice_title')")
 
 <script>
 import { ref, onBeforeUnmount, watch } from '@common/utils/vueTools'
-import { hasInitedAnalyser } from '@renderer/plugins/player'
+import { hasInitedAdvancedAudioFeatures } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
@@ -56,7 +56,7 @@ export default {
 
     const mediaDeviceId = ref(appSetting['player.mediaDeviceId'])
     const handleMediaDeviceIdChnage = async() => {
-      if (hasInitedAnalyser()) {
+      if (hasInitedAdvancedAudioFeatures()) {
         await dialog({
           message: t('setting__play_media_device_error_tip'),
           confirmButtonText: t('alert_button_text'),
