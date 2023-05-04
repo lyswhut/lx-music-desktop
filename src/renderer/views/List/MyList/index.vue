@@ -18,7 +18,7 @@
     <ul ref="dom_lists_list" class="scroll" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}, {[$style.clicked]: rightClickItemIndex == -2}, {[$style.fetching]: fetchingListStatus[defaultList.id]}]"
-        :aria-label="defaultList.name" :aria-selected="defaultList.id == listId"
+        :aria-label="$t(defaultList.name)" :aria-selected="defaultList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -2)" @click="handleListToggle(defaultList.id)"
       >
         <!-- <div v-if="defaultList.id == listId" :class="$style.activeIcon">
@@ -35,7 +35,7 @@
       </li>
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: loveList.id == listId}, {[$style.clicked]: rightClickItemIndex == -1}, {[$style.fetching]: fetchingListStatus[loveList.id]}]"
-        :aria-label="loveList.name" :aria-selected="loveList.id == listId"
+        :aria-label="$t(loveList.name)" :aria-selected="loveList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)"
       >
         <span :class="$style.listsLabel">
