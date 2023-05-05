@@ -1,4 +1,5 @@
 import { httpFetch } from '../../request'
+import { requestMsg } from '../../message'
 import { headers, timeout } from '../options'
 import { dnsLookup } from '../utils'
 
@@ -12,7 +13,11 @@ const api_temp = {
       family: 4,
     })
     requestObj.promise = requestObj.promise.then(({ body }) => {
-      return body.code === 0 ? Promise.resolve({ type, url: body.data }) : Promise.reject(new Error(body.msg))
+      switch (body.code) {
+        case 0: return Promise.resolve({ type, url: body.data })
+        case 429: return Promise.reject(new Error(requestMsg.tooManyRequests))
+        default: return Promise.reject(new Error(body.msg))
+      }
     })
     return requestObj
   },

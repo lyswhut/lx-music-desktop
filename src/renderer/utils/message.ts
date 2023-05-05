@@ -5,4 +5,5 @@ export const requestMsg = {
   // unachievable: '哦No😱...接口无法访问了！已帮你切换到临时接口，重试下看能不能播放吧~',
   notConnectNetwork: '无法连接到服务器',
   cancelRequest: '取消http请求',
+  tooManyRequests: '服务器繁忙',
 } as const
