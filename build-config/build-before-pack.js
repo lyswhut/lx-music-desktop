@@ -52,7 +52,7 @@ const replaceQrcDecodeLib = async(platform, arch) => {
 module.exports = async(context) => {
   const { electronPlatformName, arch } = context
   await replaceQrcDecodeLib(electronPlatformName, arch)
-  if (electronPlatformName !== 'linux') return
+  if (electronPlatformName !== 'linux' || process.env.FORCE) return
   const bindingFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp')
   const bindingBakFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp.bak')
   switch (arch) {
