@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.contnet">
-    <div :class="$style.header">
-      <h3 class="player__sound_effect_title">{{ $t('player__sound_effect_panner') }}</h3>
+    <div class="player__sound_effect_title" :class="$style.header">
+      <h3>{{ $t('player__sound_effect_panner') }}</h3>
       <base-checkbox
         id="player__sound_effect_panner_enabled"
         :class="$style.checkbox"
@@ -12,14 +12,14 @@
     </div>
     <div :class="$style.eqList">
       <div :class="$style.eqItem">
-        <span :class="$style.label">{{ $t('player__sound_effect_panner_sound_r') }}</span>
-        <base-slider-bar :class="$style.slider" :value="appSetting['player.soundEffect.panner.soundR']" :min="1" :max="30" @change="handleUpdateSoundR" />
-        <span :class="[$style.value, { [$style.active]: appSetting['player.soundEffect.panner.soundR'] != 5 }]">{{ appSetting['player.soundEffect.panner.soundR'] }}</span>
-      </div>
-      <div :class="$style.eqItem">
         <span :class="$style.label">{{ $t('player__sound_effect_panner_sound_speed') }}</span>
         <base-slider-bar :class="$style.slider" :value="appSetting['player.soundEffect.panner.speed']" :min="1" :max="50" @change="handleUpdateSpeed" />
         <span :class="[$style.value, { [$style.active]: appSetting['player.soundEffect.panner.speed'] != 25 }]">{{ appSetting['player.soundEffect.panner.speed'] }}</span>
+      </div>
+      <div :class="$style.eqItem">
+        <span :class="$style.label">{{ $t('player__sound_effect_panner_sound_r') }}</span>
+        <base-slider-bar :class="$style.slider" :value="appSetting['player.soundEffect.panner.soundR']" :min="1" :max="30" @change="handleUpdateSoundR" />
+        <span :class="[$style.value, { [$style.active]: appSetting['player.soundEffect.panner.soundR'] != 5 }]">{{ appSetting['player.soundEffect.panner.soundR'] }}</span>
       </div>
     </div>
   </div>
@@ -53,9 +53,19 @@ const handleUpdateSpeed = (value) => {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 .contnet {
+  padding-top: 15px;
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   gap: 8px;
+  &:before {
+    .mixin-after;
+    position: absolute;
+    top: 0;
+    height: 1px;
+    width: 100%;
+    border-top: 1px dashed var(--color-primary-light-100-alpha-700);
+  }
 }
 .header {
   display: flex;
@@ -63,7 +73,7 @@ const handleUpdateSpeed = (value) => {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 5px;
-  padding-top: 5px;
+  // padding-top: 5px;
 }
 .eqList {
   display: flex;

@@ -12,5 +12,6 @@
   ],
   "i18n-ally.sortKeys": true,
   "javascript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "vue.codeActions.enabled": false
 }

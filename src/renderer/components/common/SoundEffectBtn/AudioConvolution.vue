@@ -27,13 +27,19 @@
         </div>
       </div>
     </div>
+    <div :class="['scroll', $style.saveList]">
+      <base-btn v-for="item in userPresetList" :key="item.id" min @click="handleSetPreset(item)" @contextmenu="handleRemovePreset(item.id)">{{ item.name }}</base-btn>
+      <AddConvolutionPresetBtn />
+    </div>
   </div>
 </template>
 
 <script setup>
-// import { ref } from '@common/utils/vueTools'
+import { ref, onMounted } from '@common/utils/vueTools'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { convolutions } from '@renderer/plugins/player'
+import AddConvolutionPresetBtn from './AddConvolutionPresetBtn'
+import { getUserConvolutionPresetList, removeUserConvolutionPreset } from '@renderer/store/soundEffect'
 
 const updateConvolution = val => {
   const target = convolutions.find(c => c.source == val)
@@ -54,6 +60,24 @@ const handleUpdateSendGain = (value) => {
   updateSetting({ 'player.soundEffect.convolution.sendGain': Math.round(value) })
 }
 
+const handleSetPreset = (item) => {
+  updateSetting({
+    'player.soundEffect.convolution.fileName': item.source,
+    'player.soundEffect.convolution.mainGain': item.mainGain,
+    'player.soundEffect.convolution.sendGain': item.sendGain,
+  })
+}
+const userPresetList = ref([])
+const handleRemovePreset = id => {
+  removeUserConvolutionPreset(id)
+}
+
+onMounted(() => {
+  getUserConvolutionPresetList().then(list => {
+    userPresetList.value = list
+  })
+})
+
 
 </script>
 
@@ -63,6 +87,7 @@ const handleUpdateSendGain = (value) => {
   display: flex;
   flex-flow: column nowrap;
   gap: 3px;
+  min-height: 0;
 }
 .convolution {
   display: flex;
@@ -110,4 +135,11 @@ const handleUpdateSendGain = (value) => {
     color: var(--color-primary-font);
   }
 }
+.saveList {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 10px;
+  gap: 10px;
+}
+
 </style>

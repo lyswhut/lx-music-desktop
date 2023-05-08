@@ -10,6 +10,7 @@ export const STORE_NAMES = {
   LRC_RAW: 'lyrics',
   LRC_EDITED: 'lyrics_edited',
   THEME: 'theme',
+  SOUND_EFFECT: 'sound_effect',
 } as const
 
 export const APP_EVENT_NAMES = {

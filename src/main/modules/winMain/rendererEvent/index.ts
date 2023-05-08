@@ -9,6 +9,7 @@ import sync from './sync'
 import data from './data'
 import music from './music'
 import download from './download'
+import soundEffect from './soundEffect'
 import { sendEvent } from '../main'
 
 export * from './app'
@@ -33,6 +34,7 @@ export default () => {
   data()
   music()
   download()
+  soundEffect()
 
   global.lx.event_app.on('updated_config', (keys, setting) => {
     sendConfigChange(setting)
