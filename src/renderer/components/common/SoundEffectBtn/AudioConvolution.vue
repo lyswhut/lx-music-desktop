@@ -29,7 +29,7 @@
     </div>
     <div :class="['scroll', $style.saveList]">
       <base-btn v-for="item in userPresetList" :key="item.id" min @click="handleSetPreset(item)" @contextmenu="handleRemovePreset(item.id)">{{ item.name }}</base-btn>
-      <AddConvolutionPresetBtn />
+      <AddConvolutionPresetBtn v-if="userPresetList.length < 31" />
     </div>
   </div>
 </template>

@@ -15,7 +15,7 @@
       <!-- <base-btn min @click="handleSetPreset(item)">{{ $t(`player__sound_effect_biquad_filter_preset_slow`) }}</base-btn> -->
       <base-btn v-for="item in freqsPreset" :key="item.name" min @click="handleSetPreset(item)">{{ $t(`player__sound_effect_biquad_filter_preset_${item.name}`) }}</base-btn>
       <base-btn v-for="item in userPresetList" :key="item.id" min @click="handleSetPreset(item)" @contextmenu="handleRemovePreset(item.id)">{{ item.name }}</base-btn>
-      <AddEQPresetBtn />
+      <AddEQPresetBtn v-if="userPresetList.length < 31" />
     </div>
     <!-- <div :class="$style.footer">
       <base-btn min @click="handleReset">{{ $t('player__sound_effect_biquad_filter_reset_btn') }}</base-btn>
