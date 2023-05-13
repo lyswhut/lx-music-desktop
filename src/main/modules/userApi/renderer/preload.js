@@ -140,11 +140,15 @@ const handleShowUpdateAlert = (data, resolve, reject) => {
 
 contextBridge.exposeInMainWorld('lx', {
   EVENT_NAMES,
-  request(url, { method = 'get', timeout, headers, body, form, formData }, callback) {
+  request(url, { method = 'get', timeout, headers, body, form, formData, bodyBinaryBase64 }, callback) {
     let options = { headers }
     let data
     if (body) {
       data = body
+    } else if (bodyBinaryBase64) {
+      try {
+        data = Buffer.from(bodyBinaryBase64, 'base64')
+      } catch {}
     } else if (form) {
       data = form
       // data.content_type = 'application/x-www-form-urlencoded'
@@ -253,7 +257,7 @@ contextBridge.exposeInMainWorld('lx', {
       },
     },
   },
-  version: '1.3.0',
+  version: '1.4.0',
   // removeEvent(eventName, handler) {
   //   if (!eventNames.includes(eventName)) return Promise.reject(new Error('The event is not supported: ' + eventName))
   //   let handlers
