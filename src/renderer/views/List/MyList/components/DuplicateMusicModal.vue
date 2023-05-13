@@ -1,7 +1,7 @@
 <template>
   <material-modal :show="visible" bg-close teleport="#view" width="60%" max-width="900px" @close="$emit('update:visible', false)">
     <div :class="$style.header">
-      <h2>{{ listInfo.name }}</h2>
+      <h2>{{ listName }}</h2>
     </div>
     <base-virtualized-list
       v-if="duplicateList.length" v-slot="{ item, index }" :list="duplicateList" key-name="id" :class="$style.list" style="contain: none;"
@@ -42,6 +42,8 @@ import { getListMusics, removeListMusics } from '@renderer/store/list/action'
 import { isFullscreen } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 import { getFontSizeWithScreen } from '@renderer/utils'
+import { LIST_IDS } from '@common/constants'
+import { useI18n } from '@/lang'
 
 export default {
   props: {
@@ -56,6 +58,7 @@ export default {
   },
   emits: ['update:visible'],
   setup(props) {
+    const t = useI18n()
     const duplicateList = ref([])
     const listItemHeight = computed(() => {
       return Math.ceil((isFullscreen.value ? getFontSizeWithScreen() : appSetting['common.fontSize']) * 3.2)
@@ -85,12 +88,23 @@ export default {
       }
     })
 
+    const listName = computed(() => {
+      switch (props.listInfo.id) {
+        case LIST_IDS.DEFAULT:
+        case LIST_IDS.LOVE:
+          return t(props.listInfo.name)
+
+        default: return props.listInfo.name
+      }
+    })
+
     return {
       listItemHeight,
       duplicateList,
       handleFilterList,
       handleRemove,
       handlePlay,
+      listName,
     }
   },
 }
