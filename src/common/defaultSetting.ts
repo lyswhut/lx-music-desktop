@@ -134,8 +134,8 @@ const defaultSetting: LX.AppSetting = {
   'sync.server.maxSsnapshotNum': 5,
   'sync.client.host': '',
 
-  'theme.id': 'blue_plus',
-  // 'theme.id': 'green',
+  // 'theme.id': 'blue_plus',
+  'theme.id': 'green',
   'theme.lightId': 'green',
   'theme.darkId': 'black',
 
