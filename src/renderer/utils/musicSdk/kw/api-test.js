@@ -23,10 +23,10 @@ const api_test = {
       lookup: dnsLookup,
       family: 4,
     })
-    requestObj.promise = requestObj.promise.then(({ body }) => {
+    requestObj.promise = requestObj.promise.then(({ statusCode, body }) => {
+      if (statusCode == 429) return Promise.reject(new Error(requestMsg.tooManyRequests))
       switch (body.code) {
         case 0: return Promise.resolve({ type, url: body.data })
-        case 429: return Promise.reject(new Error(requestMsg.tooManyRequests))
         default: return Promise.reject(new Error(requestMsg.fail))
       }
     })
