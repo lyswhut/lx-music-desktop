@@ -37,6 +37,8 @@ class Task extends EventEmitter {
   progress = { total: 0, downloaded: 0, speed: 0, progress: 0 }
   statsEstimate = { time: 0, bytes: 0, prevBytes: 0 }
   requestInstance: http.ClientRequest | null = null
+  maxRedirectNum = 2
+  private redirectNum = 0
 
 
   constructor(url: string, savePath: string, filename: string, options: Partial<Options> = {}) {
@@ -59,6 +61,7 @@ class Task extends EventEmitter {
 
   async __init() {
     const { path, startByte, endByte } = this.chunkInfo
+    this.redirectNum = 0
     this.progress.downloaded = 0
     this.progress.progress = 0
     this.progress.speed = 0
@@ -112,6 +115,7 @@ class Task extends EventEmitter {
 
   __httpFetch(url: string, options: Options['requestOptions']) {
     // console.log(options)
+    let redirected = false
     this.requestInstance = request(url, options)
       .on('response', response => {
         if (response.statusCode !== 200 && response.statusCode !== 206) {
@@ -123,6 +127,15 @@ class Task extends EventEmitter {
               this.progress.downloaded = 0
               if (err) this.__handleError(err)
             })
+            return
+          }
+          if ((response.statusCode == 301 || response.statusCode == 302) && response.headers.location && this.redirectNum < this.maxRedirectNum) {
+            console.log('current url:', url)
+            console.log('redirect to:', response.headers.location)
+            redirected = true
+            this.redirectNum++
+            const location = response.headers.location
+            this.__httpFetch(location, options)
             return
           }
           this.status = STATUS.failed
@@ -153,6 +166,7 @@ class Task extends EventEmitter {
       })
       .on('error', err => { this.__handleError(err) })
       .on('close', () => {
+        if (redirected) return
         void this.__closeWriteStream()
       })
       .end()
