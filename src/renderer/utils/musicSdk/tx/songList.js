@@ -130,7 +130,7 @@ export default {
     return {
       list: data.v_playlist.map(item => ({
         play_count: formatPlayCount(item.access_num),
-        id: item.tid,
+        id: String(item.tid),
         author: item.creator_info.nick,
         name: item.title,
         time: item.modify_time ? dateFormat(item.modify_time * 1000, 'Y-M-D') : '',
@@ -151,7 +151,7 @@ export default {
     return {
       list: content.v_item.map(({ basic }) => ({
         play_count: formatPlayCount(basic.play_cnt),
-        id: basic.tid,
+        id: String(basic.tid),
         author: basic.creator.nick,
         name: basic.title,
         // time: basic.publish_time,
@@ -304,7 +304,7 @@ export default {
           list: body.data.list.map(item => {
             return {
               play_count: formatPlayCount(item.listennum),
-              id: item.dissid,
+              id: String(item.dissid),
               author: item.creator.name,
               name: item.dissname,
               time: dateFormat(item.createtime, 'Y-M-D'),

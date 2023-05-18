@@ -174,7 +174,7 @@ export default {
   filterList(rawData) {
     return rawData.map(item => ({
       play_count: this.formatPlayCount(item.listen_num),
-      id: item.list_id,
+      id: String(item.list_id),
       author: item.username,
       name: item.title,
       // time: item.publish_time,

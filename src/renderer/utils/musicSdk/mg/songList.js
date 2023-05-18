@@ -210,7 +210,7 @@ export default {
     // console.log(rawData)
     return rawData.map(item => ({
       play_count: formatPlayCount(item.playCount),
-      id: item.playListId,
+      id: String(item.playListId),
       author: item.createName,
       name: item.playListName,
       time: dateFormat(item.createTime, 'Y-M-D'),

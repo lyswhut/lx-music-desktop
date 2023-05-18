@@ -232,7 +232,7 @@ export default {
     // console.log(rawData)
     return rawData.map(item => ({
       play_count: formatPlayCount(item.playCount),
-      id: item.id,
+      id: String(item.id),
       author: item.creator.nickname,
       name: item.name,
       time: item.createTime ? dateFormat(item.createTime, 'Y-M-D') : '',

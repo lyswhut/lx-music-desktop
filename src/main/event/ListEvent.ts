@@ -14,6 +14,18 @@ import { EventEmitter } from 'events'
 //   musicOverwrite,
 // } from '@main/workers/dbService/modules/list'
 
+// 兼容v2.3.0之前版本插入数字类型的ID导致其意外在末尾追加 .0 的问题，确保所有ID都是字符串类型
+const fixListIdType = (lists: LX.List.UserListInfo[] | LX.List.UserListInfoFull[]) => {
+  for (const list of lists) {
+    if (typeof list.sourceListId == 'number') {
+      list.sourceListId = String(list.sourceListId)
+      if (typeof list.id == 'number') {
+        list.id = String(list.id)
+      }
+    }
+  }
+}
+
 export class Event extends EventEmitter {
   list_changed() {
     this.emit('list_changed')
@@ -25,6 +37,7 @@ export class Event extends EventEmitter {
    * @param isRemote 是否属于远程操作
    */
   async list_data_overwrite(listData: MakeOptional<LX.List.ListDataFull, 'tempList'>, isRemote: boolean = false) {
+    fixListIdType(listData.userList)
     await global.lx.worker.dbService.listDataOverwrite(listData)
     this.emit('list_data_overwrite', listData, isRemote)
     this.list_changed()
@@ -37,6 +50,7 @@ export class Event extends EventEmitter {
    * @param isRemote 是否属于远程操作
    */
   async list_create(position: number, lists: LX.List.UserListInfo[], isRemote: boolean = false) {
+    fixListIdType(lists)
     await global.lx.worker.dbService.createUserLists(position, lists)
     this.emit('list_create', position, lists, isRemote)
     this.list_changed()
