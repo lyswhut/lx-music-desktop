@@ -1,7 +1,7 @@
 import { reactive, markRaw, ref, shallowReactive } from '@common/utils/vueTools'
 import music from '@renderer/utils/musicSdk'
 
-export declare interface SortInfo {
+export interface SortInfo {
   name: string
   id: string
 }
@@ -16,18 +16,18 @@ for (const source of music.sources) {
   sortList[source.id as LX.OnlineSource] = songList.sortList as SortInfo[]
 }
 
-export declare interface TagInfoItem<T extends LX.OnlineSource = LX.OnlineSource> {
+export interface TagInfoItem<T extends LX.OnlineSource = LX.OnlineSource> {
   parent_id: string
   parent_name: string
   id: string
   name: string
   source: T
 }
-export declare interface TagInfoTypeItem<T extends LX.OnlineSource = LX.OnlineSource> {
+export interface TagInfoTypeItem<T extends LX.OnlineSource = LX.OnlineSource> {
   name: string
   list: Array<TagInfoItem<T>>
 }
-export declare interface TagInfo<Source extends LX.OnlineSource = LX.OnlineSource> {
+export interface TagInfo<Source extends LX.OnlineSource = LX.OnlineSource> {
   tags: Array<TagInfoTypeItem<Source>>
   hotTag: Array<TagInfoItem<Source>>
   source: Source
@@ -38,7 +38,7 @@ type Tags = Partial<Record<LX.OnlineSource, TagInfo>>
 export const tags = shallowReactive<Tags>({})
 
 
-export declare interface ListInfoItem {
+export interface ListInfoItem {
   play_count: string
   id: string
   author: string
@@ -50,7 +50,7 @@ export declare interface ListInfoItem {
   source: LX.OnlineSource
   total?: string
 }
-export declare interface ListInfo {
+export interface ListInfo {
   list: ListInfoItem[]
   total: number
   page: number
@@ -62,7 +62,7 @@ export declare interface ListInfo {
   sortId: string
 }
 
-export declare interface ListDetailInfo {
+export interface ListDetailInfo {
   list: LX.Music.MusicInfoOnline[]
   source: LX.OnlineSource
   desc: string | null

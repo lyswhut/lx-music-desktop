@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink'
 
-export declare type MainTypes = Comlink.Remote<LX.WorkerMainTypes>
+export type MainTypes = Comlink.Remote<LX.WorkerMainTypes>
 
 export const createMainWorker = () => {
   const worker: Worker = new Worker(new URL(
@@ -20,7 +20,7 @@ export const createMainWorker = () => {
 //   // })
 // }
 
-export declare type DownloadTypes = Comlink.Remote<LX.WorkerDownloadTypes>
+export type DownloadTypes = Comlink.Remote<LX.WorkerDownloadTypes>
 export const createDownloadWorker = () => {
   const worker: Worker = new Worker(new URL(
     /* webpackChunkName: 'renderer.download.worker' */

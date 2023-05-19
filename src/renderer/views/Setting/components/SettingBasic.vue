@@ -1,22 +1,22 @@
 <template lang="pug">
-dt#basic {{$t('setting__basic')}}
+dt#basic {{ $t('setting__basic') }}
 dd
-  h3#basic_theme {{$t('setting__basic_theme')}}
+  h3#basic_theme {{ $t('setting__basic_theme') }}
   div
     ul(:class="$style.theme")
-      li(v-for="theme in defaultThemes" :key="theme.id" :aria-label="$t('theme_' + theme.id)" @click="toggleTheme(theme)" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]")
+      li(v-for="theme in defaultThemes" :key="theme.id" :aria-label="$t('theme_' + theme.id)" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)")
         div(:class="$style.bg")
-        span(:class="$style.label") {{$t('theme_' + theme.id)}}
-      li(v-for="theme in userThemes" :key="theme.id" :aria-label="theme.name" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]")
+        span(:class="$style.label") {{ $t('theme_' + theme.id) }}
+      li(v-for="theme in userThemes" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
         div(:class="$style.bg")
-        span(:class="$style.label") {{theme.name}}
-      li(:aria-label="$t('theme_auto_tip')" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]")
+        span(:class="$style.label") {{ theme.name }}
+      li(:aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
         div(:class="$style.bg")
           div(:class="$style.bgContent")
             div(:class="$style.light")
             div(:class="$style.dark")
-        span(:class="$style.label") {{$t('theme_auto')}}
-      li(:aria-label="$t('theme_add')" @click="handleEditTheme()" :class="[$style.themeItem, $style.add]")
+        span(:class="$style.label") {{ $t('theme_auto') }}
+      li(:aria-label="$t('theme_add')" :class="[$style.themeItem, $style.add]" @click="handleEditTheme()")
         div(:class="$style.bg")
           div(:class="$style.bgContent")
             svg-icon(:class="$style.icon" name="plus")
@@ -25,69 +25,78 @@ dd
 dd
   div
     .gap-top.top
-      base-checkbox(id="setting_show_animate" :modelValue="appSetting['common.isShowAnimation']" @update:modelValue="updateSetting({'common.isShowAnimation': $event})" :label="$t('setting__basic_show_animation')")
+      base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({'common.isShowAnimation': $event})")
     .gap-top
-      base-checkbox(id="setting_animate" :modelValue="appSetting['common.randomAnimate']" @update:modelValue="updateSetting({'common.randomAnimate': $event})" :label="$t('setting__basic_animation')")
+      base-checkbox(id="setting_animate" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({'common.randomAnimate': $event})")
     .gap-top
-      base-checkbox(id="setting_start_in_fullscreen" :modelValue="appSetting['common.startInFullscreen']" @update:modelValue="updateSetting({'common.startInFullscreen': $event})" :label="$t('setting__basic_start_in_fullscreen')")
+      base-checkbox(id="setting_start_in_fullscreen" :model-value="appSetting['common.startInFullscreen']" :label="$t('setting__basic_start_in_fullscreen')" @update:model-value="updateSetting({'common.startInFullscreen': $event})")
     .gap-top
-      base-checkbox(id="setting_to_tray" :modelValue="appSetting['tray.enable']" @update:modelValue="updateSetting({'tray.enable': $event})" :label="$t('setting__basic_to_tray')")
-    p.gap-top
+      base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
+    .p.gap-top
       base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
 dd
-  h3#basic_source {{$t('setting__basic_source')}}
+  h3#basic_source {{ $t('setting__basic_source') }}
   div
     .gap-top(v-for="item in apiSources" :key="item.id")
-      base-checkbox(:id="`setting_api_source_${item.id}`" name="setting_api_source"
-        need :modelValue="appSetting['common.apiSource']" @update:modelValue="updateSetting({'common.apiSource': $event})" :disabled="item.disabled" :value="item.id" :label="item.label")
-    p.gap-top
+      base-checkbox(
+        :id="`setting_api_source_${item.id}`" name="setting_api_source"
+        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
+    .p.gap-top
       base-btn.btn(min @click="isShowUserApiModal = true") {{$t('setting__basic_source_user_api_btn')}}
 
 dd
-  h3#basic_window_size {{$t('setting__basic_window_size')}}
+  h3#basic_window_size {{ $t('setting__basic_window_size') }}
   div
-    base-checkbox.gap-left(v-for="(item, index) in windowSizeList" :id="`setting_window_size_${item.id}`" name="setting_window_size"
-      need :modelValue="appSetting['common.windowSizeId']" @update:modelValue="updateSetting({'common.windowSizeId': $event})" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" :key="item.id")
+    base-checkbox.gap-left(
+      v-for="item in windowSizeList" :id="`setting_window_size_${item.id}`" :key="item.id"
+      name="setting_window_size" need :model-value="appSetting['common.windowSizeId']" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" @update:model-value="updateSetting({'common.windowSizeId': $event})")
 
 dd
-  h3#basic_font_size {{$t('setting__basic_font_size')}}
+  h3#basic_font_size {{ $t('setting__basic_font_size') }}
   div
-    //- base-selection.gap-teft(:list="fontSizeList" :modelValue="appSetting['common.fontSize']" @update:modelValue="updateSetting({'common.fontSize': $event})")
-    base-checkbox.gap-left(v-for="item in fontSizeList" :key="item.id" :id="`setting_basic_font_size_${item.id}`"
-      name="setting_basic_font_size" need :modelValue="appSetting['common.fontSize']" @update:modelValue="updateSetting({'common.fontSize': $event})"
-      :value="item.id" :label="item.label" :disabled="isFullscreen")
+    //- base-selection.gap-teft(:list="fontSizeList" :modelValue="appSetting['common.fontSize']" @update:model-value="updateSetting({'common.fontSize': $event})")
+    base-checkbox.gap-left(
+      v-for="item in fontSizeList" :id="`setting_basic_font_size_${item.id}`" :key="item.id"
+      name="setting_basic_font_size" need :model-value="appSetting['common.fontSize']" :value="item.id"
+      :label="item.label" :disabled="isFullscreen" @update:model-value="updateSetting({'common.fontSize': $event})")
 
 dd
-  h3#basic_font {{$t('setting__basic_font')}}
+  h3#basic_font {{ $t('setting__basic_font') }}
   div
-    base-selection.gap-teft(:list="fontList" :modelValue="appSetting['common.font']" @update:modelValue="updateSetting({'common.font': $event})" item-key="id" item-name="label")
+    base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
 
 dd
-  h3#basic_lang {{$t('setting__basic_lang')}}
+  h3#basic_lang {{ $t('setting__basic_lang') }}
   div
-    base-checkbox.gap-left(v-for="item in langList" :key="item.locale" :id="`setting_lang_${item.locale}`" name="setting_lang"
-      need :modelValue="appSetting['common.langId']" @update:modelValue="updateSetting({'common.langId': $event})" :value="item.locale" :label="item.name")
+    base-checkbox.gap-left(
+v-for="item in langList" :id="`setting_lang_${item.locale}`" :key="item.locale" name="setting_lang"
+      need :model-value="appSetting['common.langId']" :value="item.locale" :label="item.name" @update:model-value="updateSetting({'common.langId': $event})")
 
 dd
-  h3#basic_sourcename {{$t('setting__basic_sourcename')}}
+  h3#basic_sourcename {{ $t('setting__basic_sourcename') }}
   div
-    base-checkbox.gap-left(v-for="item in sourceNameTypes" :key="item.id" :id="`setting_abasic_sourcename_${item.id}`"
-      name="setting_basic_sourcename" need :modelValue="appSetting['common.sourceNameType']" @update:modelValue="updateSetting({'common.sourceNameType': $event})" :value="item.id" :label="item.label")
+    base-checkbox.gap-left(
+v-for="item in sourceNameTypes" :id="`setting_abasic_sourcename_${item.id}`" :key="item.id"
+      name="setting_basic_sourcename" need :model-value="appSetting['common.sourceNameType']" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.sourceNameType': $event})")
 dd
-  h3#basic_control_btn_position {{$t('setting__basic_control_btn_position')}}
+  h3#basic_control_btn_position {{ $t('setting__basic_control_btn_position') }}
   div
-    base-checkbox.gap-left(v-for="item in controlBtnPositionList" :key="item.id" :id="`setting_basic_control_btn_position_${item.id}`"
-      name="setting_basic_control_btn_position" need :modelValue="appSetting['common.controlBtnPosition']" @update:modelValue="updateSetting({'common.controlBtnPosition': $event})" :value="item.id" :label="item.name")
+    base-checkbox.gap-left(
+v-for="item in controlBtnPositionList" :id="`setting_basic_control_btn_position_${item.id}`" :key="item.id"
+      name="setting_basic_control_btn_position" need :model-value="appSetting['common.controlBtnPosition']" :value="item.id" :label="item.name" @update:model-value="updateSetting({'common.controlBtnPosition': $event})")
 dd
-  h3#basic_playbar_progress_style {{$t('setting__basic_playbar_progress_style')}}
+  h3#basic_playbar_progress_style {{ $t('setting__basic_playbar_progress_style') }}
   div
-    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
-      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')")
-    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
-      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')")
-    base-checkbox.gap-left(id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
-      need :modelValue="appSetting['common.playBarProgressStyle']" @update:modelValue="updateSetting({'common.playBarProgressStyle': $event})" value="full" :label="$t('setting__basic_playbar_progress_style_full')")
+    base-checkbox.gap-left(
+id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
+      need :model-value="appSetting['common.playBarProgressStyle']" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+    base-checkbox.gap-left(
+id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
+      need :model-value="appSetting['common.playBarProgressStyle']" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+    base-checkbox.gap-left(
+id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
+      need :model-value="appSetting['common.playBarProgressStyle']" value="full" :label="$t('setting__basic_playbar_progress_style_full')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
 
 ThemeSelectorModal(v-model="isShowThemeSelectorModal")
 ThemeEditModal(v-model="isShowThemeEditModal" :theme-id="editThemeId" @submit="handleRefreshTheme")

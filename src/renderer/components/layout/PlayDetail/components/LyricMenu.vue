@@ -83,7 +83,7 @@ export default {
       required: true,
     },
   },
-  emits: ['updateLyric', 'update:modelValue'],
+  emits: ['updateLyric', 'update:model-value'],
   setup(props, { emit }) {
     // const appSetting = useRefGetter('appSetting')
     // const playDetailSetting = useRefGetter('playDetailSetting')
@@ -98,7 +98,7 @@ export default {
     const location = computed(() => props.xy)
 
     const onHide = () => {
-      emit('update:modelValue', false)
+      emit('update:model-value', false)
     }
 
     const setFontAlign = val => {

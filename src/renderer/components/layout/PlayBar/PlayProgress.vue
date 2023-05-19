@@ -25,7 +25,7 @@ export default {
   setup() {
     const visible = ref(false)
     const visibleProgress = ref(false)
-    const dom_btn = ref<HTMLElement | null>(null)
+    const dom_btn = ref(null)
 
     const handleShowPopup = (evt) => {
       if (visible.value) {

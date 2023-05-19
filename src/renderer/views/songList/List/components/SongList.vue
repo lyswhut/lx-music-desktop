@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, defineExpose } from '@common/utils/vueTools'
+import { ref } from '@common/utils/vueTools'
 import type { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
 // import LX from '@renderer/types/lx'
 import { useRoute, useRouter } from '@common/utils/vueRouter'

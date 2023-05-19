@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, shallowReactive, ref, defineExpose } from '@common/utils/vueTools'
+import { watch, shallowReactive, ref } from '@common/utils/vueTools'
 import { getBoardsList, setBoard } from '@renderer/store/leaderboard/action'
 import { boards, Board } from '@renderer/store/leaderboard/state'
 import useMenu from './useMenu'

@@ -2,11 +2,11 @@ import { isMac } from '@common/utils'
 
 const downKeys = new Set<string>()
 
-export declare type KeyActionType = LX.KeyDownEevent['type']
-export declare type Keys = LX.KeyDownEevent['keys']
-export declare type Key = LX.KeyDownEevent['key']
-export declare type EventKey = LX.KeyDownEevent['eventKey']
-export declare type Event = LX.KeyDownEevent['event']
+export type KeyActionType = LX.KeyDownEevent['type']
+export type Keys = LX.KeyDownEevent['keys']
+export type Key = LX.KeyDownEevent['key']
+export type EventKey = LX.KeyDownEevent['eventKey']
+export type Event = LX.KeyDownEevent['event']
 
 const handleEvent = (type: KeyActionType, event: LX.KeyEvent, keys: Keys, isEditing: boolean) => {
   let eventKey = event.key

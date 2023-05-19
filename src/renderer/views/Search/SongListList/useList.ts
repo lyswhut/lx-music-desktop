@@ -6,7 +6,7 @@ import { addHistoryWord } from '@renderer/store/search/action'
 import type { SearchListInfo, ListInfoItem } from '@renderer/store/search/songlist'
 import { search as searchSongList, listInfos } from '@renderer/store/search/songlist'
 
-export declare type SearchSource = LX.OnlineSource | 'all'
+export type SearchSource = LX.OnlineSource | 'all'
 
 export default () => {
   const listRef = ref<any>(null)

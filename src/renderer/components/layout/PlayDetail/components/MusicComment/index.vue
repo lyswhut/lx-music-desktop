@@ -1,37 +1,37 @@
 <template lang="pug">
-div.comment(:class="$style.comment" ref="dom_container")
+div.comment(ref="dom_container" :class="$style.comment")
   div(:class="$style.commentHeader")
-    h3 {{$t('comment__title', { name: title })}}
+    h3 {{ $t('comment__title', { name: title }) }}
     div(:class="$style.commentHeaderBtns")
-      div(:class="$style.commentHeaderBtn" @click="handleShowComment" :aria-label="$t('comment__refresh')")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' style='transform: rotate(45deg);' viewBox='0 0 24 24' space='preserve')
-          use(xlink:href='#icon-refresh')
+      div(:class="$style.commentHeaderBtn" :aria-label="$t('comment__refresh')" @click="handleShowComment")
+        svg(version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" viewBox="0 0 24 24" space="preserve")
+          use(xlink:href="#icon-refresh")
       div(:class="$style.commentHeaderBtn" @click="$emit('close')")
-        svg(version='1.1' xmlns='http://www.w3.org/2000/svg' xlink='http://www.w3.org/1999/xlink' viewBox='0 0 24 24' space='preserve')
-          use(xlink:href='#icon-close')
+        svg(version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" space="preserve")
+          use(xlink:href="#icon-close")
 
   div(:class="$style.commentMain")
     template(v-if="available")
       header(:class="$style.tab_header")
-        button(type="button" @click="handleToggleTab('hot')" :class="[$style.commentType, { [$style.active]: tabActiveId == 'hot' }]") {{$t('comment__hot_title')}} ({{hotComment.total}})
-        button(type="button" @click="handleToggleTab('new')" :class="[$style.commentType, { [$style.active]: tabActiveId == 'new' }]") {{$t('comment__new_title')}} ({{newComment.total}})
-      main(:class="$style.tab_main" ref="dom_tabMain")
+        button(type="button" :class="[$style.commentType, { [$style.active]: tabActiveId == 'hot' }]" @click="handleToggleTab('hot')") {{ $t('comment__hot_title') }} ({{ hotComment.total }})
+        button(type="button" :class="[$style.commentType, { [$style.active]: tabActiveId == 'new' }]" @click="handleToggleTab('new')") {{ $t('comment__new_title') }} ({{ newComment.total }})
+      main(ref="dom_tabMain" :class="$style.tab_main")
         div(:class="$style.tab_content")
-          div.scroll(:class="$style.tab_content_scroll" ref="dom_commentHot")
-            p(:class="$style.commentLabel" style="cursor: pointer;" v-if="hotComment.isLoadError" @click="handleGetHotComment(currentMusicInfo, hotComment.nextPage, hotComment.limit)") {{$t('comment__hot_load_error')}}
-            p(:class="$style.commentLabel" v-else-if="hotComment.isLoading && !hotComment.list.length") {{$t('comment__hot_loading')}}
+          div.scroll(ref="dom_commentHot" :class="$style.tab_content_scroll")
+            p(v-if="hotComment.isLoadError" :class="$style.commentLabel" style="cursor: pointer;" @click="handleGetHotComment(currentMusicInfo, hotComment.nextPage, hotComment.limit)") {{ $t('comment__hot_load_error') }}
+            p(v-else-if="hotComment.isLoading && !hotComment.list.length" :class="$style.commentLabel") {{ $t('comment__hot_loading') }}
             comment-floor(v-if="!hotComment.isLoadError && hotComment.list.length" :class="[$style.commentFloor, hotComment.isLoading ? $style.loading : null]" :comments="hotComment.list")
-            p(:class="$style.commentLabel" v-else-if="!hotComment.isLoadError && !hotComment.isLoading") {{$t('comment__no_content')}}
+            p(v-else-if="!hotComment.isLoadError && !hotComment.isLoading" :class="$style.commentLabel") {{ $t('comment__no_content') }}
             div(:class="$style.pagination")
-              material-pagination(:count="hotComment.total" :btnLength="5" :limit="hotComment.limit" :page="hotComment.page" @btn-click="handleToggleHotCommentPage")
+              material-pagination(:count="hotComment.total" :btn-length="5" :limit="hotComment.limit" :page="hotComment.page" @btn-click="handleToggleHotCommentPage")
         div(:class="$style.tab_content")
-          div.scroll(:class="$style.tab_content_scroll" ref="dom_commentNew")
-            p(:class="$style.commentLabel" style="cursor: pointer;" v-if="newComment.isLoadError" @click="handleGetNewComment(currentMusicInfo, newComment.nextPage, newComment.limit)") {{$t('comment__new_load_error')}}
-            p(:class="$style.commentLabel" v-else-if="newComment.isLoading && !newComment.list.length") {{$t('comment__new_loading')}}
+          div.scroll(ref="dom_commentNew" :class="$style.tab_content_scroll")
+            p(v-if="newComment.isLoadError" :class="$style.commentLabel" style="cursor: pointer;" @click="handleGetNewComment(currentMusicInfo, newComment.nextPage, newComment.limit)") {{ $t('comment__new_load_error') }}
+            p(v-else-if="newComment.isLoading && !newComment.list.length" :class="$style.commentLabel") {{ $t('comment__new_loading') }}
             comment-floor(v-if="!newComment.isLoadError && newComment.list.length" :class="[$style.commentFloor, newComment.isLoading ? $style.loading : null]" :comments="newComment.list")
-            p(:class="$style.commentLabel" v-else-if="!newComment.isLoadError && !newComment.isLoading") {{$t('comment__no_content')}}
+            p(v-else-if="!newComment.isLoadError && !newComment.isLoading" :class="$style.commentLabel") {{ $t('comment__no_content') }}
             div(:class="$style.pagination")
-              material-pagination(:count="newComment.total" :btnLength="5" :limit="newComment.limit" :page="newComment.page" @btn-click="handleToggleCommentPage")
+              material-pagination(:count="newComment.total" :btn-length="5" :limit="newComment.limit" :page="newComment.page" @btn-click="handleToggleCommentPage")
     div(v-else :class="$style.unavailable")
       p {{$t('comment__unavailable')}}
 </template>

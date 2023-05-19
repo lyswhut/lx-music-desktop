@@ -10,6 +10,6 @@ console.log('hello main worker')
 
 exposeWorker(Object.assign({}, common, list, music))
 
-export declare type workerMainTypes = typeof common
+export type workerMainTypes = typeof common
   & typeof list
   & typeof music

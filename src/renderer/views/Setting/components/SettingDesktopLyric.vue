@@ -1,91 +1,91 @@
 <template lang="pug">
-dt#desktop_lyric {{$t('setting__desktop_lyric')}}
+dt#desktop_lyric {{ $t('setting__desktop_lyric') }}
 dd
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_enable" :modelValue="appSetting['desktopLyric.enable']" @update:modelValue="updateSetting({ 'desktopLyric.enable': $event })" :label="$t('setting__desktop_lyric_enable')")
+    base-checkbox(id="setting_desktop_lyric_enable" :model-value="appSetting['desktopLyric.enable']" :label="$t('setting__desktop_lyric_enable')" @update:model-value="updateSetting({ 'desktopLyric.enable': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_lock" :modelValue="appSetting['desktopLyric.isLock']" @update:modelValue="updateSetting({ 'desktopLyric.isLock': $event })" :label="$t('setting__desktop_lyric_lock')")
+    base-checkbox(id="setting_desktop_lyric_lock" :model-value="appSetting['desktopLyric.isLock']" :label="$t('setting__desktop_lyric_lock')" @update:model-value="updateSetting({ 'desktopLyric.isLock': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_fullscreen_hide" :modelValue="appSetting['desktopLyric.fullscreenHide']" @update:modelValue="updateSetting({ 'desktopLyric.fullscreenHide': $event })" :label="$t('setting__desktop_lyric_fullscreen_hide')")
+    base-checkbox(id="setting_desktop_lyric_fullscreen_hide" :model-value="appSetting['desktopLyric.fullscreenHide']" :label="$t('setting__desktop_lyric_fullscreen_hide')" @update:model-value="updateSetting({ 'desktopLyric.fullscreenHide': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_audio_visualization" :modelValue="appSetting['desktopLyric.audioVisualization']" @update:modelValue="updateSetting({ 'desktopLyric.audioVisualization': $event })" :label="$t('setting__desktop_lyric_audio_visualization')")
+    base-checkbox(id="setting_desktop_lyric_audio_visualization" :model-value="appSetting['desktopLyric.audioVisualization']" :label="$t('setting__desktop_lyric_audio_visualization')" @update:model-value="updateSetting({ 'desktopLyric.audioVisualization': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_delayScroll" :modelValue="appSetting['desktopLyric.isDelayScroll']" @update:modelValue="updateSetting({ 'desktopLyric.isDelayScroll': $event })" :label="$t('setting__desktop_lyric_delay_scroll')")
+    base-checkbox(id="setting_desktop_lyric_delayScroll" :model-value="appSetting['desktopLyric.isDelayScroll']" :label="$t('setting__desktop_lyric_delay_scroll')" @update:model-value="updateSetting({ 'desktopLyric.isDelayScroll': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_alwaysOnTop" :modelValue="appSetting['desktopLyric.isAlwaysOnTop']" @update:modelValue="updateSetting({ 'desktopLyric.isAlwaysOnTop': $event })" :label="$t('setting__desktop_lyric_always_on_top')")
+    base-checkbox(id="setting_desktop_lyric_alwaysOnTop" :model-value="appSetting['desktopLyric.isAlwaysOnTop']" :label="$t('setting__desktop_lyric_always_on_top')" @update:model-value="updateSetting({ 'desktopLyric.isAlwaysOnTop': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_showTaskbar" :modelValue="appSetting['desktopLyric.isShowTaskbar']" @update:modelValue="updateSetting({ 'desktopLyric.isShowTaskbar': $event })" :label="$t('setting__desktop_lyric_show_taskbar')")
+    base-checkbox(id="setting_desktop_lyric_showTaskbar" :model-value="appSetting['desktopLyric.isShowTaskbar']" :label="$t('setting__desktop_lyric_show_taskbar')" @update:model-value="updateSetting({ 'desktopLyric.isShowTaskbar': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" :modelValue="appSetting['desktopLyric.isAlwaysOnTopLoop']" @update:modelValue="updateSetting({ 'desktopLyric.isAlwaysOnTopLoop': $event })" :label="$t('setting__desktop_lyric_always_on_top_loop')")
+    base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" :model-value="appSetting['desktopLyric.isAlwaysOnTopLoop']" :label="$t('setting__desktop_lyric_always_on_top_loop')" @update:model-value="updateSetting({ 'desktopLyric.isAlwaysOnTopLoop': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_lockScreen" :modelValue="appSetting['desktopLyric.isLockScreen']" @update:modelValue="updateSetting({ 'desktopLyric.isLockScreen': $event })" :label="$t('setting__desktop_lyric_lock_screen')")
+    base-checkbox(id="setting_desktop_lyric_lockScreen" :model-value="appSetting['desktopLyric.isLockScreen']" :label="$t('setting__desktop_lyric_lock_screen')" @update:model-value="updateSetting({ 'desktopLyric.isLockScreen': $event })")
   .gap-top(v-if="!isLinux")
-    base-checkbox(id="setting_desktop_lyric_hoverHide" :modelValue="appSetting['desktopLyric.isHoverHide']" @update:modelValue="updateSetting({ 'desktopLyric.isHoverHide': $event })" :label="$t('setting__desktop_lyric_hover_hide')")
+    base-checkbox(id="setting_desktop_lyric_hoverHide" :model-value="appSetting['desktopLyric.isHoverHide']" :label="$t('setting__desktop_lyric_hover_hide')" @update:model-value="updateSetting({ 'desktopLyric.isHoverHide': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_ellipsis" :modelValue="appSetting['desktopLyric.style.ellipsis']" @update:modelValue="updateSetting({ 'desktopLyric.style.ellipsis': $event })" :label="$t('setting__desktop_lyric_ellipsis')")
+    base-checkbox(id="setting_desktop_lyric_ellipsis" :model-value="appSetting['desktopLyric.style.ellipsis']" :label="$t('setting__desktop_lyric_ellipsis')" @update:model-value="updateSetting({ 'desktopLyric.style.ellipsis': $event })")
   .gap-top
-    base-checkbox(id="setting_desktop_lyric_zoom" :modelValue="appSetting['desktopLyric.style.isZoomActiveLrc']" @update:modelValue="updateSetting({ 'desktopLyric.style.isZoomActiveLrc': $event })" :label="$t('desktop_lyric__lrc_active_zoom_on')")
+    base-checkbox(id="setting_desktop_lyric_zoom" :model-value="appSetting['desktopLyric.style.isZoomActiveLrc']" :label="$t('desktop_lyric__lrc_active_zoom_on')" @update:model-value="updateSetting({ 'desktopLyric.style.isZoomActiveLrc': $event })")
   //- .gap-top
-    base-checkbox(id="setting_desktop_lyric_fontWeight" :modelValue="appSetting['desktopLyric.style.fontWeight']" @update:modelValue="updateSetting({ 'desktopLyric.style.fontWeight': $event })" :label="$t('setting__desktop_lyric_font_weight')")
+    base-checkbox(id="setting_desktop_lyric_fontWeight" :modelValue="appSetting['desktopLyric.style.fontWeight']" @update:model-value="updateSetting({ 'desktopLyric.style.fontWeight': $event })" :label="$t('setting__desktop_lyric_font_weight')")
 
 dd
-  h3#setting__desktop_lyric_font_weight {{$t('setting__desktop_lyric_font_weight')}}
+  h3#setting__desktop_lyric_font_weight {{ $t('setting__desktop_lyric_font_weight') }}
   div
-    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_font" :modelValue="appSetting['desktopLyric.style.isFontWeightFont']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightFont': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_font')")
-    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_line" :modelValue="appSetting['desktopLyric.style.isFontWeightLine']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightLine': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_line')")
-    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_extended" :modelValue="appSetting['desktopLyric.style.isFontWeightExtended']" @update:modelValue="updateSetting({ 'desktopLyric.style.isFontWeightExtended': $event })" :label="$t('setting__setting__desktop_lyric_font_weight_extended')")
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_font" :model-value="appSetting['desktopLyric.style.isFontWeightFont']" :label="$t('setting__setting__desktop_lyric_font_weight_font')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightFont': $event })")
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_line" :model-value="appSetting['desktopLyric.style.isFontWeightLine']" :label="$t('setting__setting__desktop_lyric_font_weight_line')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightLine': $event })")
+    base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_extended" :model-value="appSetting['desktopLyric.style.isFontWeightExtended']" :label="$t('setting__setting__desktop_lyric_font_weight_extended')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightExtended': $event })")
 
 
 dd
-  h3#desktop_lyric_direction {{$t('setting__desktop_lyric_direction')}}
+  h3#desktop_lyric_direction {{ $t('setting__desktop_lyric_direction') }}
   div
-    base-checkbox.gap-left(id="setting_desktop_lyric_direction_horizontal" :modelValue="appSetting['desktopLyric.direction']" @update:modelValue="updateSetting({ 'desktopLyric.direction': $event })" need value="horizontal" :label="$t('setting__desktop_lyric_direction_horizontal')")
-    base-checkbox.gap-left(id="setting_desktop_lyric_direction_vertical" :modelValue="appSetting['desktopLyric.direction']" @update:modelValue="updateSetting({ 'desktopLyric.direction': $event })" need value="vertical" :label="$t('setting__desktop_lyric_direction_vertical')")
+    base-checkbox.gap-left(id="setting_desktop_lyric_direction_horizontal" :model-value="appSetting['desktopLyric.direction']" need value="horizontal" :label="$t('setting__desktop_lyric_direction_horizontal')" @update:model-value="updateSetting({ 'desktopLyric.direction': $event })")
+    base-checkbox.gap-left(id="setting_desktop_lyric_direction_vertical" :model-value="appSetting['desktopLyric.direction']" need value="vertical" :label="$t('setting__desktop_lyric_direction_vertical')" @update:model-value="updateSetting({ 'desktopLyric.direction': $event })")
 
 dd
-  h3#desktop_lyric_scroll_align {{$t('setting__desktop_lyric_scroll_align')}}
+  h3#desktop_lyric_scroll_align {{ $t('setting__desktop_lyric_scroll_align') }}
   div
-    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_top" :modelValue="appSetting['desktopLyric.scrollAlign']" @update:modelValue="updateSetting({ 'desktopLyric.scrollAlign': $event })" need value="top" :label="$t('setting__desktop_lyric_scroll_align_top')")
-    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_center" :modelValue="appSetting['desktopLyric.scrollAlign']" @update:modelValue="updateSetting({ 'desktopLyric.scrollAlign': $event })" need value="center" :label="$t('setting__desktop_lyric_scroll_align_center')")
+    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_top" :model-value="appSetting['desktopLyric.scrollAlign']" need value="top" :label="$t('setting__desktop_lyric_scroll_align_top')" @update:model-value="updateSetting({ 'desktopLyric.scrollAlign': $event })")
+    base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_center" :model-value="appSetting['desktopLyric.scrollAlign']" need value="center" :label="$t('setting__desktop_lyric_scroll_align_center')" @update:model-value="updateSetting({ 'desktopLyric.scrollAlign': $event })")
 
 dd
-  h3#desktop_lyric_align {{$t('setting__desktop_lyric_align')}}
+  h3#desktop_lyric_align {{ $t('setting__desktop_lyric_align') }}
   div
-    base-checkbox.gap-left(id="setting_desktop_lyric_align_left" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="left" :label="$t('setting__desktop_lyric_align_left')")
-    base-checkbox.gap-left(id="setting_desktop_lyric_align_center" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="center" :label="$t('setting__desktop_lyric_align_center')")
-    base-checkbox.gap-left(id="setting_desktop_lyric_align_right" :modelValue="appSetting['desktopLyric.style.align']" @update:modelValue="updateSetting({ 'desktopLyric.style.align': $event })" need value="right" :label="$t('setting__desktop_lyric_align_right')")
+    base-checkbox.gap-left(id="setting_desktop_lyric_align_left" :model-value="appSetting['desktopLyric.style.align']" need value="left" :label="$t('setting__desktop_lyric_align_left')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
+    base-checkbox.gap-left(id="setting_desktop_lyric_align_center" :model-value="appSetting['desktopLyric.style.align']" need value="center" :label="$t('setting__desktop_lyric_align_center')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
+    base-checkbox.gap-left(id="setting_desktop_lyric_align_right" :model-value="appSetting['desktopLyric.style.align']" need value="right" :label="$t('setting__desktop_lyric_align_right')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
 
 dd
-  h3#desktop_lyric_line_gap {{$t('setting__desktop_lyric_line_gap', { num: appSetting['desktopLyric.style.lineGap'] })}}
+  h3#desktop_lyric_line_gap {{ $t('setting__desktop_lyric_line_gap', { num: appSetting['desktopLyric.style.lineGap'] }) }}
   div
-    p
-      base-btn.btn(min @click="changeLineGap(-1)") {{$t('setting__desktop_lyric_line_gap_dec')}}
+    .p
+      base-btn.btn(min @click="changeLineGap(-1)") {{ $t('setting__desktop_lyric_line_gap_dec') }}
       base-btn.btn(min @click="changeLineGap(1)") {{$t('setting__desktop_lyric_line_gap_add')}}
 dd
-  h3#desktop_lyric_color {{$t('setting__desktop_lyric_color')}}
+  h3#desktop_lyric_color {{ $t('setting__desktop_lyric_color') }}
   div
-    p.gap-top
+    .p.gap-top
       div(:class="$style.groupContent")
         div(:class="$style.item")
-          div(ref="lyric_unplay_color_ref", :class="$style.color")
+          div(ref="lyric_unplay_color_ref" :class="$style.color")
           div(:class="$style.label") {{ $t('setting__desktop_lyric_unplay_color') }}
         div(:class="$style.item")
-          div(ref="lyric_played_color_ref", :class="$style.color")
+          div(ref="lyric_played_color_ref" :class="$style.color")
           div(:class="$style.label") {{ $t('setting__desktop_lyric_played_color') }}
         div(:class="$style.item")
-          div(ref="lyric_shadow_color_ref", :class="$style.color")
+          div(ref="lyric_shadow_color_ref" :class="$style.color")
           div(:class="$style.label") {{ $t('setting__desktop_lyric_shadow_color') }}
-    p.gap-top
+    .p.gap-top
       base-btn.btn(min @click="resetColor") {{$t('setting__desktop_lyric_color_reset')}}
 dd
-  h3#desktop_lyric_font {{$t('setting__desktop_lyric_font')}}
+  h3#desktop_lyric_font {{ $t('setting__desktop_lyric_font') }}
   div
-    base-selection.gap-teft(:list="fontList" :modelValue="appSetting['desktopLyric.style.font']" @update:modelValue="updateSetting({ 'desktopLyric.style.font': $event })" item-key="id" item-name="label")
+    base-selection.gap-teft(:list="fontList" :model-value="appSetting['desktopLyric.style.font']" item-key="id" item-name="label" @update:model-value="updateSetting({ 'desktopLyric.style.font': $event })")
 
 dd
   h3#desktop_lyric_reset {{ $t('setting__desktop_lyric_reset') }}
   div
-    p.gap-top
+    .p.gap-top
       base-btn.btn(min @click="resetWindowSetting") {{$t('setting__desktop_lyric_reset_window')}}
 
 </template>

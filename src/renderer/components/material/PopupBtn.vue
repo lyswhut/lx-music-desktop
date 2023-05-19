@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineExpose } from '@common/utils/vueTools'
+import { ref } from '@common/utils/vueTools'
 
 const visible = ref(false)
 const dom_btn = ref<HTMLElement | null>(null)

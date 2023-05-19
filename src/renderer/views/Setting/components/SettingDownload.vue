@@ -1,53 +1,56 @@
 <template lang="pug">
-dt#download {{$t('setting__download')}}
+dt#download {{ $t('setting__download') }}
 dd
   .gap-top
-    base-checkbox(id="setting_download_enable" :modelValue="appSetting['download.enable']" @update:modelValue="updateSetting({'download.enable': $event})" :label="$t('setting__download_enable')")
+    base-checkbox(id="setting_download_enable" :model-value="appSetting['download.enable']" :label="$t('setting__download_enable')" @update:model-value="updateSetting({'download.enable': $event})")
   .gap-top
-    base-checkbox(id="setting_download_skip_exist_file" :modelValue="appSetting['download.skipExistFile']" @update:modelValue="updateSetting({'download.skipExistFile': $event})" :label="$t('setting__download_skip_exist_file')")
+    base-checkbox(id="setting_download_skip_exist_file" :model-value="appSetting['download.skipExistFile']" :label="$t('setting__download_skip_exist_file')" @update:model-value="updateSetting({'download.skipExistFile': $event})")
 dd(:aria-label="$t('setting__download_path_title')")
-  h3#download_path {{$t('setting__download_path')}}
+  h3#download_path {{ $t('setting__download_path') }}
   div
-    p
-      | {{$t('setting__download_path_label')}}
-      span.auto-hidden.hover(:class="$style.savePath" @click="openDirInExplorer(appSetting['download.savePath'])" :aria-label="$t('setting__download_path_open_label')") {{appSetting['download.savePath']}}
-    p
+    .p
+      | {{ $t('setting__download_path_label') }}
+      span.auto-hidden.hover(:class="$style.savePath" :aria-label="$t('setting__download_path_open_label')" @click="openDirInExplorer(appSetting['download.savePath'])") {{ appSetting['download.savePath'] }}
+    .p
       base-btn.btn(min @click="handleChangeSavePath") {{$t('setting__download_path_change_btn')}}
 dd
   h3#download_use_other_source
-    | {{$t('setting__download_use_other_source')}}
+    | {{ $t('setting__download_use_other_source') }}
     svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__download_use_other_source_tip')")
   div
-    base-checkbox(id="setting_download_isUseOtherSource" :modelValue="appSetting['download.isUseOtherSource']" @update:modelValue="updateSetting({'download.isUseOtherSource': $event})" :label="$t('setting__is_enable')")
+    base-checkbox(id="setting_download_isUseOtherSource" :model-value="appSetting['download.isUseOtherSource']" :label="$t('setting__is_enable')" @update:model-value="updateSetting({'download.isUseOtherSource': $event})")
   div
 dd(:aria-label="$t('setting__download_name_title')")
-  h3#download_name {{$t('setting__download_name')}}
+  h3#download_name {{ $t('setting__download_name') }}
   div
-    base-checkbox.gap-left(:id="`setting_download_musicName_${item.value}`" name="setting_download_musicName" :value="item.value" :key="item.value" need
-        :modelValue="appSetting['download.fileName']" @update:modelValue="updateSetting({'download.fileName': $event})" v-for="item in musicNames" :label="item.name")
+    base-checkbox.gap-left(
+v-for="item in musicNames" :id="`setting_download_musicName_${item.value}`" :key="item.value" name="setting_download_musicName" :value="item.value"
+        need :model-value="appSetting['download.fileName']" :label="item.name" @update:model-value="updateSetting({'download.fileName': $event})")
 dd
-  h3#download_data_embed {{$t('setting__download_data_embed')}}
+  h3#download_data_embed {{ $t('setting__download_data_embed') }}
   .gap-top
-    base-checkbox(id="setting_download_isEmbedPic" :modelValue="appSetting['download.isEmbedPic']" @update:modelValue="updateSetting({'download.isEmbedPic': $event})" :label="$t('setting__download_embed_pic')")
+    base-checkbox(id="setting_download_isEmbedPic" :model-value="appSetting['download.isEmbedPic']" :label="$t('setting__download_embed_pic')" @update:model-value="updateSetting({'download.isEmbedPic': $event})")
   .gap-top
-    base-checkbox(id="setting_download_isEmbedLyric" :modelValue="appSetting['download.isEmbedLyric']" @update:modelValue="updateSetting({'download.isEmbedLyric': $event})" :label="$t('setting__download_embed_lyric')")
+    base-checkbox(id="setting_download_isEmbedLyric" :model-value="appSetting['download.isEmbedLyric']" :label="$t('setting__download_embed_lyric')" @update:model-value="updateSetting({'download.isEmbedLyric': $event})")
   .gap-top
-    base-checkbox(id="setting_download_isEmbedLyricT" :disabled="!appSetting['download.isEmbedLyric']" :modelValue="appSetting['download.isEmbedLyricT']" @update:modelValue="updateSetting({'download.isEmbedLyricT': $event})" :label="$t('setting__download_embed_tlyric')")
+    base-checkbox(id="setting_download_isEmbedLyricT" :disabled="!appSetting['download.isEmbedLyric']" :model-value="appSetting['download.isEmbedLyricT']" :label="$t('setting__download_embed_tlyric')" @update:model-value="updateSetting({'download.isEmbedLyricT': $event})")
   .gap-top
-    base-checkbox(id="setting_download_isEmbedLyricR" :disabled="!appSetting['download.isEmbedLyric']" :modelValue="appSetting['download.isEmbedLyricR']" @update:modelValue="updateSetting({'download.isEmbedLyricR': $event})" :label="$t('setting__download_embed_rlyric')")
+    base-checkbox(id="setting_download_isEmbedLyricR" :disabled="!appSetting['download.isEmbedLyric']" :model-value="appSetting['download.isEmbedLyricR']" :label="$t('setting__download_embed_rlyric')" @update:model-value="updateSetting({'download.isEmbedLyricR': $event})")
 dd(:aria-label="$t('setting__download_lyric_title')")
-  h3#download_lyric {{$t('setting__download_lyric')}}
+  h3#download_lyric {{ $t('setting__download_lyric') }}
   .gap-top
-    base-checkbox(id="setting_download_isDownloadLrc" :modelValue="appSetting['download.isDownloadLrc']" @update:modelValue="updateSetting({'download.isDownloadLrc': $event})" :label="$t('setting__is_enable')")
+    base-checkbox(id="setting_download_isDownloadLrc" :model-value="appSetting['download.isDownloadLrc']" :label="$t('setting__is_enable')" @update:model-value="updateSetting({'download.isDownloadLrc': $event})")
   .gap-top
-    base-checkbox(id="setting_download_isDownloadTLrc" :disabled="!appSetting['download.isDownloadLrc']" :modelValue="appSetting['download.isDownloadTLrc']" @update:modelValue="updateSetting({'download.isDownloadTLrc': $event})" :label="$t('setting__download_tlyric')")
+    base-checkbox(id="setting_download_isDownloadTLrc" :disabled="!appSetting['download.isDownloadLrc']" :model-value="appSetting['download.isDownloadTLrc']" :label="$t('setting__download_tlyric')" @update:model-value="updateSetting({'download.isDownloadTLrc': $event})")
   .gap-top
-    base-checkbox(id="setting_download_isDownloadRLrc" :disabled="!appSetting['download.isDownloadLrc']" :modelValue="appSetting['download.isDownloadRLrc']" @update:modelValue="updateSetting({'download.isDownloadRLrc': $event})" :label="$t('setting__download_rlyric')")
+    base-checkbox(id="setting_download_isDownloadRLrc" :disabled="!appSetting['download.isDownloadLrc']" :model-value="appSetting['download.isDownloadRLrc']" :label="$t('setting__download_rlyric')" @update:model-value="updateSetting({'download.isDownloadRLrc': $event})")
 dd
-  h3#download_lyric_format {{$t('setting__download_lyric_format')}}
+  h3#download_lyric_format {{ $t('setting__download_lyric_format') }}
   div
-    base-checkbox.gap-left(v-for="item in lrcFormatList" :key="item.id" :id="`setting_download_lrcFormat_${item.id}`"
-      name="setting_download_lrcFormat" need :modelValue="appSetting['download.lrcFormat']" @update:modelValue="updateSetting({'download.lrcFormat': $event})" :value="item.id" :label="item.name")
+    base-checkbox.gap-left(
+      v-for="item in lrcFormatList" :id="`setting_download_lrcFormat_${item.id}`" :key="item.id"
+      name="setting_download_lrcFormat" need :model-value="appSetting['download.lrcFormat']" :value="item.id" :label="item.name"
+      @update:model-value="updateSetting({'download.lrcFormat': $event})")
 </template>
 
 <script>

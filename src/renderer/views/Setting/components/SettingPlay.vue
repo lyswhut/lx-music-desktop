@@ -1,30 +1,30 @@
 <template lang="pug">
-dt#play {{$t('setting__play')}}
+dt#play {{ $t('setting__play') }}
 dd
   .gap-top
-    base-checkbox(id="setting_player_startup_auto_play" :modelValue="appSetting['player.startupAutoPlay']" @update:modelValue="updateSetting({'player.startupAutoPlay': $event})" :label="$t('setting__play_startup_auto_play')")
+    base-checkbox(id="setting_player_startup_auto_play" :model-value="appSetting['player.startupAutoPlay']" :label="$t('setting__play_startup_auto_play')" @update:model-value="updateSetting({'player.startupAutoPlay': $event})")
   .gap-top
-    base-checkbox(id="setting_player_save_play_time" :modelValue="appSetting['player.isSavePlayTime']" @update:modelValue="updateSetting({'player.isSavePlayTime': $event})" :label="$t('setting__play_save_play_time')")
+    base-checkbox(id="setting_player_save_play_time" :model-value="appSetting['player.isSavePlayTime']" :label="$t('setting__play_save_play_time')" @update:model-value="updateSetting({'player.isSavePlayTime': $event})")
   .gap-top
-    base-checkbox(id="setting_player_lyric_transition" :modelValue="appSetting['player.isShowLyricTranslation']" @update:modelValue="updateSetting({'player.isShowLyricTranslation': $event})" :label="$t('setting__play_lyric_transition')")
+    base-checkbox(id="setting_player_lyric_transition" :model-value="appSetting['player.isShowLyricTranslation']" :label="$t('setting__play_lyric_transition')" @update:model-value="updateSetting({'player.isShowLyricTranslation': $event})")
   .gap-top
-    base-checkbox(id="setting_player_lyric_roma" :modelValue="appSetting['player.isShowLyricRoma']" @update:modelValue="updateSetting({'player.isShowLyricRoma': $event})" :label="$t('setting__play_lyric_roma')")
+    base-checkbox(id="setting_player_lyric_roma" :model-value="appSetting['player.isShowLyricRoma']" :label="$t('setting__play_lyric_roma')" @update:model-value="updateSetting({'player.isShowLyricRoma': $event})")
   .gap-top
-    base-checkbox(id="setting_player_auto_skip_on_error" :modelValue="appSetting['player.autoSkipOnError']" @update:modelValue="updateSetting({'player.autoSkipOnError': $event})" :label="$t('setting__play_auto_skip_on_error')")
+    base-checkbox(id="setting_player_auto_skip_on_error" :model-value="appSetting['player.autoSkipOnError']" :label="$t('setting__play_auto_skip_on_error')" @update:model-value="updateSetting({'player.autoSkipOnError': $event})")
   .gap-top
-    base-checkbox(id="setting_player_lyric_s2t" :modelValue="appSetting['player.isS2t']" @update:modelValue="updateSetting({'player.isS2t': $event})" :label="$t('setting__play_lyric_s2t')")
+    base-checkbox(id="setting_player_lyric_s2t" :model-value="appSetting['player.isS2t']" :label="$t('setting__play_lyric_s2t')" @update:model-value="updateSetting({'player.isS2t': $event})")
   .gap-top
-    base-checkbox(id="setting_player_lyric_play_lxlrc" :modelValue="appSetting['player.isPlayLxlrc']" @update:modelValue="updateSetting({'player.isPlayLxlrc': $event})" :label="$t('setting__play_lyric_lxlrc')")
+    base-checkbox(id="setting_player_lyric_play_lxlrc" :model-value="appSetting['player.isPlayLxlrc']" :label="$t('setting__play_lyric_lxlrc')" @update:model-value="updateSetting({'player.isPlayLxlrc': $event})")
   .gap-top
-    base-checkbox(id="setting_player_highQuality" :modelValue="appSetting['player.highQuality']" @update:modelValue="updateSetting({'player.highQuality': $event})" :label="$t('setting__play_quality')")
+    base-checkbox(id="setting_player_highQuality" :model-value="appSetting['player.highQuality']" :label="$t('setting__play_quality')" @update:model-value="updateSetting({'player.highQuality': $event})")
   .gap-top
-    base-checkbox(id="setting_player_showTaskProgess" :modelValue="appSetting['player.isShowTaskProgess']" @update:modelValue="updateSetting({'player.isShowTaskProgess': $event})" :label="$t('setting__play_task_bar')")
+    base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
   .gap-top
-    base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :modelValue="appSetting['player.isMediaDeviceRemovedStopPlay']" @update:modelValue="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})" :label="$t('setting__play_mediaDevice_remove_stop_play')")
+    base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :model-value="appSetting['player.isMediaDeviceRemovedStopPlay']" :label="$t('setting__play_mediaDevice_remove_stop_play')" @update:model-value="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})")
 dd(:aria-label="$t('setting__play_mediaDevice_title')")
-  h3#play_mediaDevice {{$t('setting__play_mediaDevice')}}
+  h3#play_mediaDevice {{ $t('setting__play_mediaDevice') }}
   div
-    base-selection.gap-left(:list="mediaDevices" v-model="mediaDeviceId" @change="handleMediaDeviceIdChnage" item-key="deviceId" item-name="label")
+    base-selection.gap-left(v-model="mediaDeviceId" :list="mediaDevices" item-key="deviceId" item-name="label" @change="handleMediaDeviceIdChnage")
 </template>
 
 <script>

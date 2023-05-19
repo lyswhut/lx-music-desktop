@@ -6,7 +6,7 @@
  */
 
 import { app } from 'electron'
-import * as electronDebug from 'electron-debug'
+import electronDebug from 'electron-debug'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 // Install `electron-debug` with `devtron`
 electronDebug({

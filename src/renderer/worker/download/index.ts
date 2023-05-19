@@ -9,5 +9,5 @@ console.log('hello download worker')
 
 exposeWorker(Object.assign({}, common, download))
 
-export declare type workerDownloadTypes = typeof common &
+export type workerDownloadTypes = typeof common &
   typeof download

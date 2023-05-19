@@ -17,6 +17,7 @@ const { Worker, isMainThread, parentPort } = require('worker_threads')
 
 
 function build() {
+  console.time('build')
   del.sync(['dist/**', 'build/**'])
 
   const spinners = new Spinnies({ color: 'blue' })
@@ -36,6 +37,7 @@ function build() {
     process.stdout.write('\x1B[2J\x1B[0f')
     console.log(`\n\n${results}`)
     console.log(`${okayLog}take it away ${chalk.yellow('`electron-builder`')}\n`)
+    console.timeEnd('build')
     process.exit()
   }
 

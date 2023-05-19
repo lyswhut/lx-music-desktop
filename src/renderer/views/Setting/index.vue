@@ -257,7 +257,7 @@ export default {
       font-size: 12px;
       margin: 25px 0 15px;
     }
-    p {
+    .p {
       padding: 3px 0;
       line-height: 1.3;
       .btn {

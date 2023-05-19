@@ -1,16 +1,16 @@
 <template lang="pug">
-dt#network {{$t('setting__network')}}
+dt#network {{ $t('setting__network') }}
 dd
-  h3#network_proxy_title {{$t('setting__network_proxy_title')}}
+  h3#network_proxy_title {{ $t('setting__network_proxy_title') }}
   div
-    p
-      base-checkbox(id="setting_network_proxy_enable" :modelValue="appSetting['network.proxy.enable']" @update:modelValue="updateSetting({'network.proxy.enable': $event})" :label="$t('setting__is_enable')")
-    p
-      base-input.gap-left(:modelValue="appSetting['network.proxy.host']" @update:modelValue="setHost" :placeholder="proxy.envProxy ? proxy.envProxy.host : $t('setting__network_proxy_host')")
-      base-input.gap-left(:modelValue="appSetting['network.proxy.port']" @update:modelValue="setPort" :placeholder="proxy.envProxy ? proxy.envProxy.port : $t('setting__network_proxy_port')")
-    p
-      base-input.gap-left(:modelValue="appSetting['network.proxy.username']" @update:modelValue="setUserName" :placeholder="$t('setting__network_proxy_username')")
-      base-input.gap-left(:modelValue="appSetting['network.proxy.password']" @update:modelValue="setPassword" type="password" :placeholder="$t('setting__network_proxy_password')")
+    .p
+      base-checkbox(id="setting_network_proxy_enable" :model-value="appSetting['network.proxy.enable']" :label="$t('setting__is_enable')" @update:model-value="updateSetting({'network.proxy.enable': $event})")
+    .p
+      base-input.gap-left(:model-value="appSetting['network.proxy.host']" :placeholder="proxy.envProxy ? proxy.envProxy.host : $t('setting__network_proxy_host')" @update:model-value="setHost")
+      base-input.gap-left(:model-value="appSetting['network.proxy.port']" :placeholder="proxy.envProxy ? proxy.envProxy.port : $t('setting__network_proxy_port')" @update:model-value="setPort")
+    .p
+      base-input.gap-left(:model-value="appSetting['network.proxy.username']" :placeholder="$t('setting__network_proxy_username')" @update:model-value="setUserName")
+      base-input.gap-left(:model-value="appSetting['network.proxy.password']" type="password" :placeholder="$t('setting__network_proxy_password')" @update:model-value="setPassword")
 
 </template>
 

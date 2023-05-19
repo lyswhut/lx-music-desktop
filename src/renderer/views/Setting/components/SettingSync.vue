@@ -1,39 +1,40 @@
 <template lang="pug">
 dt#sync
-  | {{$t('setting__sync')}}
-  button(class="help-btn" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq/sync')" :aria-label="$t('setting__sync_tip')")
+  | {{ $t('setting__sync') }}
+  button(class="help-btn" :aria-label="$t('setting__sync_tip')" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq/sync')")
     svg-icon(name="help-circle-outline")
 dd
-  base-checkbox(id="setting_sync_enable" :modelValue="appSetting['sync.enable']" @update:modelValue="updateSetting({ 'sync.enable': $event })" :label="$t('setting__sync_enable')")
+  base-checkbox(id="setting_sync_enable" :model-value="appSetting['sync.enable']" :label="$t('setting__sync_enable')" @update:model-value="updateSetting({ 'sync.enable': $event })")
 
 dd
-  h3#sync_mode {{$t('setting__sync_mode')}}
+  h3#sync_mode {{ $t('setting__sync_mode') }}
   div
-    base-checkbox.gap-left(id="setting_sync_mode_server" :disabled="sync.enable" :modelValue="appSetting['sync.mode']" @update:modelValue="updateSetting({ 'sync.mode': $event })" need value="server" :label="$t('setting__sync_mode_server')")
-    base-checkbox.gap-left(id="setting_sync_mode_client" :disabled="sync.enable" :modelValue="appSetting['sync.mode']" @update:modelValue="updateSetting({ 'sync.mode': $event })" need value="client" :label="$t('setting__sync_mode_client')")
+    base-checkbox.gap-left(id="setting_sync_mode_server" :disabled="sync.enable" :model-value="appSetting['sync.mode']" need value="server" :label="$t('setting__sync_mode_server')" @update:model-value="updateSetting({ 'sync.mode': $event })")
+    base-checkbox.gap-left(id="setting_sync_mode_client" :disabled="sync.enable" :model-value="appSetting['sync.mode']" need value="client" :label="$t('setting__sync_mode_client')" @update:model-value="updateSetting({ 'sync.mode': $event })")
 
 
 dd(v-if="sync.mode == 'client'")
-  h3 {{$t('setting__sync_client_mode')}}
+  h3 {{ $t('setting__sync_client_mode') }}
   div
-    p.small {{$t('setting__sync_client_status', { status: clientStatus })}}
-    p.small {{$t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' })}}
-    p
-      p.small {{$t('setting__sync_client_host')}}
+    .p.small {{ $t('setting__sync_client_status', { status: clientStatus }) }}
+    .p.small {{ $t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' }) }}
+    .p
+      .p.small {{ $t('setting__sync_client_host') }}
       div
-        base-input.gap-left(:class="$style.hostInput" :modelValue="appSetting['sync.client.host']" :disabled="sync.enable" @update:modelValue="setSyncClientHost" :placeholder="$t('setting__sync_client_host_tip')")
+        base-input.gap-left(:class="$style.hostInput" :model-value="appSetting['sync.client.host']" :disabled="sync.enable" :placeholder="$t('setting__sync_client_host_tip')" @update:model-value="setSyncClientHost")
 dd(v-else)
-  h3 {{syncEnableServerTitle}}
+  h3 {{ syncEnableServerTitle }}
   div
-    p.small {{$t('setting__sync_server_auth_code', { code: sync.server.status.code || '' })}}
-    p.small {{$t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' })}}
-    p.small {{$t('setting__sync_server_device', { devices: syncDevices })}}
-    p
-      base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{$t('setting__sync_server_refresh_code')}}
-    p
-      p.small {{$t('setting__sync_server_port')}}
+    .p.small {{ $t('setting__sync_server_auth_code', { code: sync.server.status.code || '' }) }}
+    .p.small {{ $t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' }) }}
+    .p.small {{ $t('setting__sync_server_device', { devices: syncDevices }) }}
+    .p
+      base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
+    .p
+      .p.small {{ $t('setting__sync_server_port') }}
       div
-        base-input.gap-left(:class="$style.portInput" :modelValue="appSetting['sync.server.port']" :disabled="sync.enable" type="number" @update:modelValue="setSyncServerPort" :placeholder="$t('setting__sync_server_port_tip')")
+        base-input.gap-left(:class="$style.portInput" :model-value="appSetting['sync.server.port']" :disabled="sync.enable" type="number" :placeholder="$t('setting__sync_server_port_tip')" @update:model-value="setSyncServerPort")
+
 
 </template>
 

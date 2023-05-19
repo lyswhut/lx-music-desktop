@@ -17,11 +17,7 @@ import {
   type ComputedRef,
   type Ref,
   type ShallowRef,
-  defineProps,
-  defineEmits,
-  defineComponent,
   shallowReactive,
-  defineExpose,
   withDefaults,
 } from 'vue'
 // import { useStore } from 'vuex'
@@ -75,11 +71,7 @@ export {
   unref,
   onMounted,
   markRaw,
-  defineProps,
-  defineEmits,
-  defineComponent,
   shallowReactive,
-  defineExpose,
   withDefaults,
 }
 

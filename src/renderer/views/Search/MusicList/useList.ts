@@ -8,7 +8,7 @@ import { addHistoryWord } from '@renderer/store/search/action'
 import { search as searchMusic, listInfos, type ListInfo } from '@renderer/store/search/music'
 import { assertApiSupport } from '@renderer/store/utils'
 
-export declare type SearchSource = LX.OnlineSource | 'all'
+export type SearchSource = LX.OnlineSource | 'all'
 
 export default () => {
   const listRef = ref<any>(null)

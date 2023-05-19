@@ -1,52 +1,52 @@
 <template lang="pug">
-material-modal(:show="versionInfo.showModal" @close="handleClose" max-width="60%")
-  main(:class="$style.main" v-if="versionInfo.isLatest")
+material-modal(:show="versionInfo.showModal" max-width="60%" @close="handleClose")
+  main(v-if="versionInfo.isLatest" :class="$style.main")
     h2 🎉 已是最新版本 🎉
     div.scroll.select(:class="$style.info")
       div(:class="$style.current")
-        h3 最新版本：{{versionInfo.newVersion?.version}}
-        h3 当前版本：{{versionInfo.version}}
+        h3 最新版本：{{ versionInfo.newVersion?.version }}
+        h3 当前版本：{{ versionInfo.version }}
         h3 版本变化：
         pre(:class="$style.desc" v-text="versionInfo.newVersion?.desc")
     div(:class="$style.footer")
       div(:class="$style.btns")
         base-btn(v-if="versionInfo.status == 'checking'" :class="$style.btn" disabled) 检查更新中...
         base-btn(v-else :class="$style.btn" @click="handleCheckUpdate") 重新检查更新
-  main(:class="$style.main" v-else-if="versionInfo.isUnknown")
+  main(v-else-if="versionInfo.isUnknown" :class="$style.main")
     h2 ❓ 获取最新版本信息失败 ❓
     div.scroll.select(:class="$style.info")
       div(:class="$style.current")
-        h3 当前版本：{{versionInfo.version}}
+        h3 当前版本：{{ versionInfo.version }}
         div(:class="$style.desc")
           p 更新信息获取失败，可能是无法访问Github导致的，请手动检查更新！
           p
             | 检查方法：打开
-            base-btn(min @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" aria-label="点击打开") 软件发布页
+            base-btn(min aria-label="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')") 软件发布页
             | 或
-            base-btn(min @click="handleOpenUrl('https://www.lanzoui.com/b0bf2cfa/')" aria-label="点击打开") 网盘
+            base-btn(min aria-label="点击打开" @click="handleOpenUrl('https://www.lanzoui.com/b0bf2cfa/')") 网盘
             | (密码：
-            strong.hover(@click="handleCopy('glqw')" aria-label="点击复制") glqw
+            strong.hover(aria-label="点击复制" @click="handleCopy('glqw')") glqw
             | )查看它们的
             strong 版本号
-            | 与当前版本({{versionInfo.version}})对比是否一样，
+            | 与当前版本({{ versionInfo.version }})对比是否一样，
           p 若一样则不必理会该弹窗，直接关闭即可，否则请手动下载新版本更新。
     div(:class="$style.footer")
       div(:class="$style.btns")
         base-btn(v-if="versionInfo.status == 'error'" :class="$style.btn" @click="handleCheckUpdate") 重新检查更新
         base-btn(v-else :class="$style.btn" disabled) 检查更新中...
-  main(:class="$style.main" v-else-if="versionInfo.status == 'downloaded'")
+  main(v-else-if="versionInfo.status == 'downloaded'" :class="$style.main")
     h2 🚀程序更新🚀
 
     div.scroll.select(:class="$style.info")
       div(:class="$style.current")
-        h3 最新版本：{{versionInfo.newVersion?.version}}
-        h3 当前版本：{{versionInfo.version}}
+        h3 最新版本：{{ versionInfo.newVersion?.version }}
+        h3 当前版本：{{ versionInfo.version }}
         h3 版本变化：
         pre(:class="$style.desc" v-text="versionInfo.newVersion?.desc")
-      div(:class="[$style.history, $style.desc]" v-if="history.length")
+      div(v-if="history.length" :class="[$style.history, $style.desc]")
         h3 历史版本：
-        div(:class="$style.item" v-for="ver in history")
-          h4 v{{ver.version}}
+        div(v-for="(ver, index) in history" :key="index" :class="$style.item")
+          h4 v{{ ver.version }}
           pre(v-text="ver.desc")
     div(:class="$style.footer")
       div(:class="$style.desc")
@@ -58,37 +58,37 @@ material-modal(:show="versionInfo.showModal" @close="handleClose" max-width="60%
           strong 关闭程序时
           | 自动更新~
       div(:class="$style.btns")
-        base-btn(:class="$style.btn" @click.onec="handleRestartClick") 立即重启更新
-  main(:class="$style.main" v-else)
+        base-btn(:class="$style.btn" @click="handleRestartClick") 立即重启更新
+  main(v-else :class="$style.main")
     h2 🌟发现新版本🌟
     div.scroll.select(:class="$style.info")
       div(:class="$style.current")
-        h3 最新版本：{{versionInfo.newVersion?.version}}
-        h3 当前版本：{{versionInfo.version}}
+        h3 最新版本：{{ versionInfo.newVersion?.version }}
+        h3 当前版本：{{ versionInfo.version }}
         h3 版本变化：
         pre(:class="$style.desc" v-text="versionInfo.newVersion?.desc")
-      div(:class="[$style.history, $style.desc]" v-if="history.length")
+      div(v-if="history.length" :class="[$style.history, $style.desc]")
         h3 历史版本：
-        div(:class="$style.item" v-for="ver in history")
-          h4 v{{ver.version}}
+        div(v-for="(ver, index) in history" :key="index" :class="$style.item")
+          h4 v{{ ver.version }}
           pre(v-text="ver.desc")
 
     div(:class="$style.footer")
       div(:class="$style.desc")
         p 发现有新版本啦，你可以尝试使用自动更新或手动更新，
         p 手动更新可以去&nbsp;
-          strong.hover.underline(@click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')" aria-label="点击打开") 软件发布页
+          strong.hover.underline(aria-label="点击打开" @click="handleOpenUrl('https://github.com/lyswhut/lx-music-desktop/releases')") 软件发布页
           | &nbsp;或&nbsp;
-          strong.hover.underline(@click="handleOpenUrl('https://www.lanzoui.com/b0bf2cfa/')" aria-label="点击打开") 网盘
+          strong.hover.underline(aria-label="点击打开" @click="handleOpenUrl('https://www.lanzoui.com/b0bf2cfa/')") 网盘
           | (密码：
-          strong.hover(@click="handleCopy('glqw')" aria-label="点击复制") glqw
+          strong.hover(aria-label="点击复制" @click="handleCopy('glqw')") glqw
           | )&nbsp;下载
         p 注：国内Windows/MAC用户推荐到网盘下载，若遇到问题可以看
-          strong.hover.underline(@click="handleOpenUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq')" aria-label="点击打开") 常见问题
-        p(v-if="progress") 当前下载进度：{{progress}}
+          strong.hover.underline(aria-label="点击打开" @click="handleOpenUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq')") 常见问题
+        p(v-if="progress") 当前下载进度：{{ progress }}
         p(v-else) &nbsp;
       div(:class="$style.btns")
-        base-btn(:class="$style.btn2" @click="handleIgnoreClick") {{ isIgnored ? '取消忽略' : '忽略更新该版本'}}
+        base-btn(:class="$style.btn2" @click="handleIgnoreClick") {{ isIgnored ? '取消忽略' : '忽略更新该版本' }}
         base-btn(v-if="versionInfo.status == 'downloading'" :class="$style.btn2" disabled) 下载更新中...
         base-btn(v-else :class="$style.btn2" @click="handleDonwloadClick") 下载更新
 </template>

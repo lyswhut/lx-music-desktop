@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, defineProps } from '@common/utils/vueTools'
+import { watch } from '@common/utils/vueTools'
 import { searchText } from '@renderer/store/search/state'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 import useList, { SearchSource } from './useList'

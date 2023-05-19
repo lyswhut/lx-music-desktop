@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount, reactive, defineEmits } from '@common/utils/vueTools'
+import { ref, watch, onMounted, onBeforeUnmount, reactive } from '@common/utils/vueTools'
 
 // https://github.com/vuejs/core/issues/2855#issuecomment-768388962
 import {

@@ -48,13 +48,13 @@ export default {
       default: 'name',
     },
   },
-  emits: ['update:modelValue', 'menu-click'],
+  emits: ['update:model-value', 'menu-click'],
   setup(props, { emit }) {
     const visible = computed(() => props.modelValue)
     const location = computed(() => props.xy)
 
     const onHide = () => {
-      emit('update:modelValue', false)
+      emit('update:model-value', false)
       menuClick(null)
     }
 

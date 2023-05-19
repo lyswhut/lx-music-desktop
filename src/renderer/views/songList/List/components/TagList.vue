@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { watch, shallowReactive, ref, onMounted, onBeforeUnmount, computed, reactive } from '@common/utils/vueTools'
 import { setTags, getTags } from '@renderer/store/songList/action'
-import { tags, TagInfoTypeItem } from '@renderer/store/songList/state'
+import { tags, type TagInfoTypeItem } from '@renderer/store/songList/state'
 import LX from '@renderer/types/lx'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 import { useI18n } from '@renderer/plugins/i18n'

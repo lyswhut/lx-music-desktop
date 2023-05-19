@@ -42,7 +42,7 @@ export default {
       default: '',
     },
   },
-  emits: ['update:modelValue', 'change'],
+  emits: ['update:model-value', 'change'],
   data() {
     return {
       show: false,
@@ -84,7 +84,7 @@ export default {
     handleClick(item) {
       // console.log(this.modelValue)
       if (item === this.modelValue) return
-      this.$emit('update:modelValue', this.itemKey ? item[this.itemKey] : item)
+      this.$emit('update:model-value', this.itemKey ? item[this.itemKey] : item)
       this.$emit('change', item)
     },
     handleShow() {

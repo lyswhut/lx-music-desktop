@@ -51,7 +51,7 @@ const loadBuffer = async(name: string) => new Promise<AudioBuffer>((resolve, rej
 })
 
 export default () => {
-  console.log(appSetting['player.soundEffect.panner.enable'])
+  // console.log(appSetting['player.soundEffect.panner.enable'])
   if (appSetting['player.soundEffect.panner.enable']) startPanner()
   setPannerSoundR(appSetting['player.soundEffect.panner.soundR'] / 10)
   setPannerSpeed(2 * (appSetting['player.soundEffect.panner.speed'] / 10))

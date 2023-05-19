@@ -37,11 +37,11 @@ export default {
       default: '',
     },
   },
-  emits: ['update:modelValue', 'change'],
+  emits: ['update:model-value', 'change'],
   setup(props, { emit }) {
     const handleToggle = id => {
       if (id == props.modelValue) return
-      emit('update:modelValue', id)
+      emit('update:model-value', id)
       emit('change', id)
     }
 

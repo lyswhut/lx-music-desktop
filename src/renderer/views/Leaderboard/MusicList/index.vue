@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, defineProps, defineExpose } from '@common/utils/vueTools'
+import { watch } from '@common/utils/vueTools'
 import LX from '@renderer/types/lx'
 import useList from './useList'
 

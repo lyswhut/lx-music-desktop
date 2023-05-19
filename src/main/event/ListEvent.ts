@@ -185,4 +185,4 @@ declare class EventType extends Event {
   once<K extends keyof EventMethods>(event: K, listener: EventMethods[K]): this
   off<K extends keyof EventMethods>(event: K, listener: EventMethods[K]): this
 }
-export declare type Type = Omit<EventType, keyof Omit<EventEmitter, 'on' | 'off' | 'once'>>
+export type Type = Omit<EventType, keyof Omit<EventEmitter, 'on' | 'off' | 'once'>>

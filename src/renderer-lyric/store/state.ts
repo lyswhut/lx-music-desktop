@@ -80,7 +80,7 @@ export const setting = shallowReactive<LX.DesktopLyric.Config>({
 //   },
 // ])
 
-// export declare type Status = 'playing' | 'paused' | 'stopped'
+// export type Status = 'playing' | 'paused' | 'stopped'
 
 // export const status = ref<Status>('stopped')
 export const isPlay = ref(false)

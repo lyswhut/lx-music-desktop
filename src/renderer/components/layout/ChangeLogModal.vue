@@ -1,24 +1,24 @@
 <template lang="pug">
-material-modal(:show="isShowChangeLog" @close="isShowChangeLog = false" max-width="60%")
+material-modal(:show="isShowChangeLog" max-width="60%" @close="isShowChangeLog = false")
   main(:class="$style.main")
     h2 当前版本更新日志
     div.scroll.select(:class="$style.info")
       div(:class="$style.current")
-        h3 当前版本：{{versionInfo.version}}
+        h3 当前版本：{{ versionInfo.version }}
         template(v-if="info.desc")
           h3 版本变化：
           pre(:class="$style.desc" v-text="info.desc")
-      div(:class="[$style.history, $style.desc]" v-if="info.history.length")
+      div(v-if="info.history.length" :class="[$style.history, $style.desc]")
         h3 历史版本：
-        div(:class="$style.item" v-for="ver in info.history")
-          h4 v{{ver.version}}
+        div(v-for="(ver, index) in info.history" :key="index" :class="$style.item")
+          h4 v{{ ver.version }}
           pre(v-text="ver.desc")
 
     div(:class="$style.footer")
       div(:class="$style.desc")
         p 📢&nbsp;为了减少疑问，我们墙裂建议阅读版本更新日志来了解当前所用版本的变化！
         p 📢&nbsp;若遇到问题可以去设置-关于查看常见问题
-        p(v-if="!info.isLatest") 🚀&nbsp;发现新版本（v{{versionInfo.newVersion.version}}），建议 去设置-软件更新 更新新版本
+        p(v-if="!info.isLatest") 🚀&nbsp;发现新版本（v{{ versionInfo.newVersion.version }}），建议 去设置-软件更新 更新新版本
 </template>
 
 <script>

@@ -1,17 +1,17 @@
 <template lang="pug">
-material-modal(:show="modelValue" @close="handleCloseModal" @after-enter="$refs.dom_input.focus()" teleport="#view")
+material-modal(:show="modelValue" teleport="#view" @close="handleCloseModal" @after-enter="$refs.dom_input.focus()")
   main(:class="$style.main")
-    h2 {{$t('play_timeout')}}
+    h2 {{ $t('play_timeout') }}
     div(:class="$style.content")
       div(:class="[$style.row, $style.inputGroup]")
-        base-input(:class="$style.input" ref="dom_input" v-model="time" type="number")
-        p(:class="$style.inputLabel") {{$t('play_timeout_unit')}}
+        base-input(ref="dom_input" v-model="time" :class="$style.input" type="number")
+        p(:class="$style.inputLabel") {{ $t('play_timeout_unit') }}
       div(:class="$style.row")
-        base-checkbox(id="play_timeout_end" :modelValue="appSetting['player.waitPlayEndStop']" @update:modelValue="updateSetting({'player.waitPlayEndStop': $event})" :label="$t('play_timeout_end')")
+        base-checkbox(id="play_timeout_end" :model-value="appSetting['player.waitPlayEndStop']" :label="$t('play_timeout_end')" @update:model-value="updateSetting({'player.waitPlayEndStop': $event})")
       div(:class="[$style.row, $style.tip, { [$style.show]: !!timeLabel }]")
         p {{$t('play_timeout_tip', { time: timeLabel })}}
     div(:class="$style.footer")
-        base-btn(:class="$style.footerBtn" @click="handleCancel") {{$t(timeLabel ? 'play_timeout_stop' : 'play_timeout_close')}}
+        base-btn(:class="$style.footerBtn" @click="handleCancel") {{ $t(timeLabel ? 'play_timeout_stop' : 'play_timeout_close') }}
         base-btn(:class="$style.footerBtn" @click="handleConfirm") {{$t(timeLabel ? 'play_timeout_update' : 'play_timeout_confirm')}}
 </template>
 
@@ -31,13 +31,13 @@ export default {
       default: false,
     },
   },
-  emits: ['update:modelValue'],
+  emits: ['update:model-value'],
   setup(props, { emit }) {
     const { timeLabel } = useTimeout()
     const time = ref(appSetting['player.waitPlayEndStopTime'])
 
     const handleCloseModal = () => {
-      emit('update:modelValue', false)
+      emit('update:model-value', false)
     }
     const handleCancel = () => {
       if (timeLabel.value) {

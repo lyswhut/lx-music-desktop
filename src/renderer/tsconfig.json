@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "preserve",
-    "module": "esnext",
-    "moduleResolution": "nodenext",
+    "isolatedModules": true,
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@common/*": ["common/*"],
       "@renderer/*": ["renderer/*"],
@@ -12,14 +10,14 @@
       "@/*": ["./*"],
     },
     "typeRoots": [                                       /* Specify multiple folders that act like './node_modules/@types'. */
-      "./types"
+      "renderer/types"
     ],
   },
-  "vueCompilerOptions": {
-    "plugins": [
-      "@volar/vue-language-plugin-pug"
-    ]
-  }
+  // "vueCompilerOptions": {
+  //   "plugins": [
+  //     "@volar/vue-language-plugin-pug"
+  //   ]
+  // }
   // "include": [
 	//   "./**/*.ts",
 	//   // "./**/*.js",
