@@ -53,6 +53,7 @@ export const createAudio = () => {
   audio.controls = false
   audio.autoplay = true
   audio.preload = 'auto'
+  audio.crossOrigin = 'anonymous'
 }
 
 const initAnalyser = () => {
