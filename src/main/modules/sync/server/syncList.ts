@@ -110,10 +110,10 @@ const setRemotelList = async(socket: LX.Sync.Server.Socket, listData: LX.Sync.Li
   })
 })
 
-type UserDataObj = Record<string, LX.List.UserListInfoFull>
+type UserDataObj = Map<string, LX.List.UserListInfoFull>
 const createUserListDataObj = (listData: LX.Sync.ListData): UserDataObj => {
-  const userListDataObj: UserDataObj = {}
-  for (const list of listData.userList) userListDataObj[list.id] = list
+  const userListDataObj: UserDataObj = new Map()
+  for (const list of listData.userList) userListDataObj.set(list.id, list)
   return userListDataObj
 }
 
@@ -171,7 +171,7 @@ const mergeList = (sourceListData: LX.Sync.ListData, targetListData: LX.Sync.Lis
 
   targetListData.userList.forEach((list, index) => {
     const targetUpdateTime = list?.locationUpdateTime ?? 0
-    const sourceList = userListDataObj[list.id]
+    const sourceList = userListDataObj.get(list.id)
     if (sourceList) {
       sourceList.list = handleMergeList(sourceList.list, list.list, addMusicLocationType)
 
@@ -205,7 +205,7 @@ const overwriteList = (sourceListData: LX.Sync.ListData, targetListData: LX.Sync
   newListData.userList = [...sourceListData.userList]
 
   targetListData.userList.forEach((list, index) => {
-    if (userListDataObj[list.id]) return
+    if (userListDataObj.has(list.id)) return
     if (list?.locationUpdateTime) {
       newListData.userList.splice(index, 0, list)
     } else {
@@ -367,10 +367,10 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
   let newUserList: LX.List.UserListInfoFull[] = []
   for (const list of localListData.userList) {
     if (removedListIds.has(list.id)) continue
-    const remoteList = remoteUserListData[list.id]
+    const remoteList = remoteUserListData.get(list.id)
     let newList: LX.List.UserListInfoFull
     if (remoteList) {
-      newList = { ...list, list: mergeListDataFromSnapshot(list.list, remoteList.list, snapshotUserListData[list.id].list, addMusicLocationType) }
+      newList = { ...list, list: mergeListDataFromSnapshot(list.list, remoteList.list, snapshotUserListData.get(list.id)?.list ?? [], addMusicLocationType) }
     } else {
       newList = { ...list }
     }
@@ -380,8 +380,8 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
   remoteListData.userList.forEach((list, index) => {
     if (removedListIds.has(list.id)) return
     const remoteUpdateTime = list?.locationUpdateTime ?? 0
-    if (localUserListData[list.id]) {
-      const localUpdateTime = localUserListData[list.id]?.locationUpdateTime ?? 0
+    if (localUserListData.has(list.id)) {
+      const localUpdateTime = localUserListData.get(list.id)?.locationUpdateTime ?? 0
       if (localUpdateTime >= remoteUpdateTime) return
       // 调整位置
       const [newList] = newUserList.splice(newUserList.findIndex(l => l.id == list.id), 1)
