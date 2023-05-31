@@ -39,6 +39,14 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+        // parser: {
+        //   worker: [
+        //     '*context.audioWorklet.addModule()',
+        //     '*audioWorklet.addModule()',
+        //     // *addModule() is not valid syntax
+        //     // '...',
+        //   ],
+        // },
       },
       {
         test: /\.tsx?$/,

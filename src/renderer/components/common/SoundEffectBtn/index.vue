@@ -8,12 +8,13 @@
     <!-- <main :class="$style.main"> -->
     <!-- <h2 :class="$style.title">{{ $t('theme_edit_modal__title') }}</h2> -->
     <div :class="$style.content">
-      <div :class="$style.row">
+      <div :class="['scroll', $style.row]">
         <AudioConvolution />
-        <AudioPanner />
+        <PitchShifter />
       </div>
-      <div :class="$style.row">
+      <div :class="['scroll', $style.row]">
         <BiquadFilter />
+        <AudioPanner />
       </div>
     </div>
     <!-- </main> -->
@@ -31,6 +32,7 @@ import { ref } from '@common/utils/vueTools'
 import BiquadFilter from './BiquadFilter'
 import AudioPanner from './AudioPanner'
 import AudioConvolution from './AudioConvolution'
+import PitchShifter from './PitchShifter.vue'
 
 defineProps({
   teleport: {
@@ -97,9 +99,9 @@ const visible = ref(false)
 .content {
   display: flex;
   flex-flow: row nowrap;
-  padding: 0 15px;
+  padding: 0 5px;
   margin: 15px 0;
-  gap: 30px;
+  gap: 10px;
   position: relative;
   min-height: 0;
 
@@ -129,6 +131,7 @@ const visible = ref(false)
   display: flex;
   gap: 15px;
   flex-flow: column nowrap;
+  padding: 0 10px;
 }
 
 </style>

@@ -249,6 +249,11 @@ declare global {
       'player.soundEffect.panner.speed': number
 
       /**
+       * 升降声调
+       */
+      'player.soundEffect.pitchShifter.playbackRate': number
+
+      /**
        * 是否启用音频加载失败时自动切歌
        */
       'player.autoSkipOnError': boolean

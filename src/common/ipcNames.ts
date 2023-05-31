@@ -94,6 +94,8 @@ const modules = {
     save_sound_effect_eq_preset: 'save_sound_effect_eq_preset',
     get_sound_effect_convolution_preset: 'get_sound_effect_convolution_preset',
     save_sound_effect_convolution_preset: 'save_sound_effect_convolution_preset',
+    get_sound_effect_pitch_shifter_preset: 'get_sound_effect_pitch_shifter_preset',
+    save_sound_effect_pitch_shifter_preset: 'save_sound_effect_pitch_shifter_preset',
     get_hot_key: 'get_hot_key',
 
     import_user_api: 'import_user_api',

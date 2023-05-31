@@ -10,6 +10,7 @@ import {
   stopPanner,
   setConvolverMainGain,
   setConvolverSendGain,
+  setPitchShifter,
 } from '@renderer/plugins/player'
 
 import { appSetting } from '@renderer/store/setting'
@@ -65,6 +66,9 @@ export default () => {
     void loadBuffer(appSetting['player.soundEffect.convolution.fileName']).then((buffer) => {
       setConvolver(buffer, appSetting['player.soundEffect.convolution.mainGain'] / 10, appSetting['player.soundEffect.convolution.sendGain'] / 10)
     })
+  }
+  if (appSetting['player.soundEffect.pitchShifter.playbackRate'] != 1) {
+    setPitchShifter(appSetting['player.soundEffect.pitchShifter.playbackRate'])
   }
 
 
@@ -137,6 +141,10 @@ export default () => {
   watch(() => appSetting['player.soundEffect.biquadFilter.hz16000'], (hz16000) => {
     const bfs = getBiquadFilter()
     bfs.get('hz16000')!.gain.value = hz16000
+  })
+
+  watch(() => appSetting['player.soundEffect.pitchShifter.playbackRate'], (playbackRate) => {
+    setPitchShifter(playbackRate)
   })
 
 

@@ -307,6 +307,13 @@ export const saveUserSoundEffectConvolutionPresetList = (list: LX.SoundEffect.Co
   rendererSend<LX.SoundEffect.ConvolutionPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_convolution_preset, list)
 }
 
+export const getUserSoundEffectPitchShifterPresetList = async() => {
+  return await rendererInvoke<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_pitch_shifter_preset)
+}
+
+export const saveUserSoundEffectPitchShifterPresetList = (list: LX.SoundEffect.PitchShifterPreset[]) => {
+  rendererSend<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_pitch_shifter_preset, list)
+}
 
 export const allHotKeys = markRaw({
   local: [

@@ -1,5 +1,5 @@
 import { reactive, toRaw } from '@common/utils/vueTools'
-import { getUserSoundEffectConvolutionPresetList, getUserSoundEffectEQPresetList, saveUserSoundEffectConvolutionPresetList, saveUserSoundEffectEQPresetList } from '@renderer/utils/ipc'
+import { getUserSoundEffectConvolutionPresetList, getUserSoundEffectEQPresetList, getUserSoundEffectPitchShifterPresetList, saveUserSoundEffectConvolutionPresetList, saveUserSoundEffectEQPresetList, saveUserSoundEffectPitchShifterPresetList } from '@renderer/utils/ipc'
 
 let userEqPresetList: LX.SoundEffect.EQPreset[] | null = null
 
@@ -53,4 +53,31 @@ export const removeUserConvolutionPreset = async(id: string) => {
   if (index < 0) return
   userConvolutionPresetList.splice(index, 1)
   saveUserSoundEffectConvolutionPresetList(toRaw(userConvolutionPresetList))
+}
+
+
+let userPitchShifterPresetList: LX.SoundEffect.PitchShifterPreset[] | null = null
+export const getUserPitchShifterPresetList = async() => {
+  if (userEqPresetList == null) {
+    userPitchShifterPresetList = reactive(await getUserSoundEffectPitchShifterPresetList())
+  }
+  return userPitchShifterPresetList
+}
+export const saveUserPitchShifterPreset = async(preset: LX.SoundEffect.PitchShifterPreset) => {
+  if (userPitchShifterPresetList == null) {
+    userPitchShifterPresetList = reactive(await getUserSoundEffectPitchShifterPresetList())
+  }
+  const target = userPitchShifterPresetList.find(p => p.id == preset.id)
+  if (target) Object.assign(target, preset)
+  else userPitchShifterPresetList.push(preset)
+  saveUserSoundEffectPitchShifterPresetList(toRaw(userPitchShifterPresetList))
+}
+export const removeUserPitchShifterPreset = async(id: string) => {
+  if (userPitchShifterPresetList == null) {
+    userPitchShifterPresetList = reactive(await getUserSoundEffectPitchShifterPresetList())
+  }
+  const index = userPitchShifterPresetList.findIndex(p => p.id == id)
+  if (index < 0) return
+  userPitchShifterPresetList.splice(index, 1)
+  saveUserSoundEffectPitchShifterPresetList(toRaw(userPitchShifterPresetList))
 }

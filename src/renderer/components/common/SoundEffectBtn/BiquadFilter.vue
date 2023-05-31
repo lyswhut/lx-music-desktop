@@ -11,7 +11,7 @@
         <span :class="$style.value">{{ appSetting[`player.soundEffect.biquadFilter.hz${v}`] }}db</span>
       </div>
     </div>
-    <div :class="['scroll', $style.saveList]">
+    <div :class="$style.saveList">
       <!-- <base-btn min @click="handleSetPreset(item)">{{ $t(`player__sound_effect_biquad_filter_preset_slow`) }}</base-btn> -->
       <base-btn v-for="item in freqsPreset" :key="item.name" min @click="handleSetPreset(item)">{{ $t(`player__sound_effect_biquad_filter_preset_${item.name}`) }}</base-btn>
       <base-btn v-for="item in userPresetList" :key="item.id" min @click="handleSetPreset(item)" @contextmenu="handleRemovePreset(item.id)">{{ item.name }}</base-btn>
@@ -83,6 +83,7 @@ onMounted(() => {
   flex-flow: column nowrap;
   gap: 8px;
   min-height: 0;
+  flex: none;
 }
 .header {
   display: flex;

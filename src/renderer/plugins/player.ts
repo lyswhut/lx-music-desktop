@@ -38,12 +38,19 @@ export const convolutions = [
   { name: 'feedback_spring', mainGain: 1.8, sendGain: 0.8, source: 'feedback-spring.wav' },
   // { name: 'tim_omni_rear_blend', mainGain: 1.8, sendGain: 0.8, source: 'tim-omni-rear-blend.wav' },
 ] as const
+// 半音
+export const semitones = [-1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5, 3, 3.5] as const
+
 let convolver: ConvolverNode
 let convolverSourceGainNode: GainNode
 let convolverOutputGainNode: GainNode
 let convolverDynamicsCompressor: DynamicsCompressorNode
 let gainNode: GainNode
 let panner: PannerNode
+let pitchShifterNode: AudioWorkletNode
+let pitchShifterNodeAudioParam: AudioParam
+let pitchShifterNodeLoadStatus: 'none' | 'loading' | 'unconnect' | 'connected' = 'none'
+let pitchShifterNodeTempValue = 1
 export const soundR = 0.5
 
 
@@ -101,26 +108,21 @@ const initAdvancedAudioFeatures = () => {
   if (audioContext) return
   if (!audio) throw new Error('audio not defined')
   audioContext = new window.AudioContext()
-  mediaSource = audioContext.createMediaElementSource(audio)
 
   initAnalyser()
-  mediaSource.connect(analyser)
-  // analyser.connect(audioContext.destination)
-
   initBiquadFilter()
-  analyser.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
-
   initConvolver()
+  initPanner()
+  initGain()
+  // source -> analyser -> biquadFilter -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
+  mediaSource = audioContext.createMediaElementSource(audio)
+  mediaSource.connect(analyser)
+  analyser.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
   const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
   lastBiquadFilter.connect(convolverSourceGainNode)
   lastBiquadFilter.connect(convolver)
-
-  initPanner()
   convolverDynamicsCompressor.connect(panner)
-
-  initGain()
   panner.connect(gainNode)
-
   gainNode.connect(audioContext.destination)
 }
 
@@ -215,6 +217,70 @@ export const startPanner = () => {
     if (pannerInfo.rad > 360) pannerInfo.rad -= 360
     setPannerXYZ(Math.sin(pannerInfo.rad * Math.PI / 180), Math.cos(pannerInfo.rad * Math.PI / 180), Math.cos(pannerInfo.rad * Math.PI / 180))
   }, pannerInfo.speed * 10)
+}
+
+const loadPitchShifterNode = () => {
+  pitchShifterNodeLoadStatus = 'loading'
+  initAdvancedAudioFeatures()
+  // source -> analyser -> biquadFilter -> audioWorklet(pitch shifter) -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
+  void audioContext.audioWorklet.addModule(new URL(
+    /* webpackChunkName: 'pitch_shifter.audioWorklet' */
+    '@renderer/utils/pitch-shifter/phase-vocoder.js',
+    import.meta.url,
+  )).then(() => {
+    console.log('pitch shifter audio worklet loaded')
+    pitchShifterNode = new AudioWorkletNode(audioContext, 'phase-vocoder-processor')
+    let audioParam = pitchShifterNode.parameters.get('pitchFactor')
+    if (!audioParam) return
+    pitchShifterNodeAudioParam = audioParam
+    pitchShifterNodeLoadStatus = 'unconnect'
+    if (pitchShifterNodeTempValue == 1) return
+
+    connectPitchShifterNode()
+  })
+}
+const connectPitchShifterNode = () => {
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  lastBiquadFilter.disconnect()
+  lastBiquadFilter.connect(pitchShifterNode)
+
+  pitchShifterNode.connect(convolver)
+  pitchShifterNode.connect(convolverSourceGainNode)
+  // convolverDynamicsCompressor.disconnect(panner)
+  // convolverDynamicsCompressor.connect(pitchShifterNode)
+  // pitchShifterNode.connect(panner)
+  pitchShifterNodeLoadStatus = 'connected'
+  pitchShifterNodeAudioParam.value = pitchShifterNodeTempValue
+}
+// const disconnectPitchShifterNode = () => {
+//   const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+//   lastBiquadFilter.disconnect()
+//   lastBiquadFilter.connect(convolver)
+//   lastBiquadFilter.connect(convolverSourceGainNode)
+//   pitchShifterNodeLoadStatus = 'unconnect'
+// }
+export const setPitchShifter = (val: number) => {
+  // console.log('setPitchShifter', val)
+  pitchShifterNodeTempValue = val
+  // if (val == 1 && pitchShifterNodeLoadStatus == 'connected') {
+  //   disconnectPitchShifterNode()
+  //   return
+  // }
+  switch (pitchShifterNodeLoadStatus) {
+    case 'loading':
+      break
+    case 'none':
+      loadPitchShifterNode()
+      break
+    case 'connected':
+      // a: 1 = 半音
+      // value = 2 ** (a / 12)
+      pitchShifterNodeAudioParam.value = val
+      break
+    case 'unconnect':
+      connectPitchShifterNode()
+      break
+  }
 }
 
 export const hasInitedAdvancedAudioFeatures = (): boolean => audioContext != null
