@@ -133,8 +133,8 @@ module.exports = class FontPlayer {
     // let lineText = ''
     let lrcShadowContent
     for (const font of fonts) {
+      if (!timeRxp.test(font)) return this._handleLineParse()
       text = font.replace(timeRxp, '')
-      if (RegExp.$2 == '') return this._handleLineParse()
       const time = parseInt(RegExp.$2)
 
       const dom = document.createElement('span')
