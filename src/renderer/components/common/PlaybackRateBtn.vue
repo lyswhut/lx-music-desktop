@@ -9,9 +9,17 @@
       <div :class="$style.setting">
         <div :class="$style.info">
           <span>{{ playbackRate.toFixed(2) }}x</span>
-          <base-btn min @click="handleUpdatePlaybackRate(100)">{{ $t('player__playback_rate_reset_btn') }}</base-btn>
+          <div :class="$style.control">
+            <base-checkbox
+              id="player__playback_preserves_pitch"
+              :model-value="appSetting['player.preservesPitch']"
+              :label="$t('player__playback_preserves_pitch')"
+              @update:model-value="updatePreservesPitch"
+            />
+            <base-btn min @click="handleUpdatePlaybackRate(100)">{{ $t('player__playback_rate_reset_btn') }}</base-btn>
+          </div>
         </div>
-        <base-slider-bar :class="$style.slider" :value="playbackRate * 100" :min="60" :max="200" @change="handleUpdatePlaybackRate" />
+        <base-slider-bar :class="$style.slider" :value="playbackRate * 100" :min="50" :max="200" @change="handleUpdatePlaybackRate" />
       </div>
     </template>
   </material-popup-btn>
@@ -20,9 +28,15 @@
 <script setup>
 // import { computed } from '@common/utils/vueTools'
 import { playbackRate } from '@renderer/store/player/playbackRate'
+import { appSetting, updateSetting } from '@renderer/store/setting'
 
 const handleUpdatePlaybackRate = (val) => {
   window.app_event.setPlaybackRate(Math.round(val) / 100)
+}
+
+
+const updatePreservesPitch = (enabled) => {
+  updateSetting({ 'player.preservesPitch': enabled })
 }
 
 // const icon = computed(() => {
@@ -99,6 +113,11 @@ const handleUpdatePlaybackRate = (val) => {
   span {
     line-height: 1;
   }
+}
+.control {
+  align-items: center;
+  display: flex;
+  gap: 10px;
 }
 
 .slider {

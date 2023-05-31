@@ -254,6 +254,11 @@ export const setPlaybackRate = (rate: number) => {
   audio.playbackRate = rate
 }
 
+export const setPreservesPitch = (preservesPitch: boolean) => {
+  if (!audio) return
+  audio.preservesPitch = preservesPitch
+}
+
 export const getMute = (): boolean => {
   return audio?.muted ?? false
 }

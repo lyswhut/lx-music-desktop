@@ -114,6 +114,11 @@ declare global {
       'player.playbackRate': number
 
       /**
+       * 是否自动调整音频的音高以补偿对播放速率设置所做的更改
+       */
+      'player.preservesPitch': boolean
+
+      /**
        * 音频输出设备id
        */
       'player.mediaDeviceId': string
