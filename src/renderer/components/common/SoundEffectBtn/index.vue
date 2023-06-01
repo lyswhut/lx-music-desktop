@@ -11,10 +11,10 @@
       <div :class="['scroll', $style.row]">
         <AudioConvolution />
         <PitchShifter />
+        <AudioPanner />
       </div>
       <div :class="['scroll', $style.row]">
         <BiquadFilter />
-        <AudioPanner />
       </div>
     </div>
     <!-- </main> -->

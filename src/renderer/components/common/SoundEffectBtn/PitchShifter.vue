@@ -10,20 +10,20 @@
         <base-slider-bar :class="$style.slider" :value="playbackRate * 100" :min="50" :max="150" @change="handleUpdatePlaybackRate" />
       </div>
     </div>
-    <div :class="$style.saveList">
+    <!-- <div :class="$style.saveList">
       <base-btn v-for="num in semitones" :key="num" min @click="handleSetSemitones(num)">{{ $t(`player__sound_effect_pitch_shifter_preset_semitones`, { num: num > 0 ? `+${num}` : num }) }}</base-btn>
       <base-btn v-for="item in userPresetList" :key="item.id" min @click="handleSetPreset(item.playbackRate)" @contextmenu="handleRemovePreset(item.id)">{{ item.name }}</base-btn>
       <AddPitchShifterPresetBtn v-if="userPresetList.length < 31" />
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from '@common/utils/vueTools'
+import { computed } from '@common/utils/vueTools'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-import AddPitchShifterPresetBtn from './AddPitchShifterPresetBtn.vue'
-import { getUserPitchShifterPresetList, removeUserPitchShifterPreset } from '@renderer/store/soundEffect'
-import { semitones } from '@renderer/plugins/player'
+// import AddPitchShifterPresetBtn from './AddPitchShifterPresetBtn.vue'
+// import { getUserPitchShifterPresetList, removeUserPitchShifterPreset } from '@renderer/store/soundEffect'
+// import { semitones } from '@renderer/plugins/player'
 
 // const setting = reactive({
 //   enabled: false,
@@ -38,10 +38,10 @@ const handleSetPreset = (value) => {
   updateSetting({ 'player.soundEffect.pitchShifter.playbackRate': value })
 }
 
-const handleSetSemitones = (value) => {
-  // https://zpl.fi/pitch-shifting-in-web-audio-api/
-  handleSetPreset(2 ** (value / 12))
-}
+// const handleSetSemitones = (value) => {
+//   // https://zpl.fi/pitch-shifting-in-web-audio-api/
+//   handleSetPreset(2 ** (value / 12))
+// }
 
 const handleUpdatePlaybackRate = (value) => {
   value = parseFloat((Math.round(value) / 100).toFixed(2))
@@ -49,17 +49,17 @@ const handleUpdatePlaybackRate = (value) => {
 }
 
 
-const userPresetList = ref([])
+// const userPresetList = ref([])
 
-const handleRemovePreset = id => {
-  removeUserPitchShifterPreset(id)
-}
+// const handleRemovePreset = id => {
+//   removeUserPitchShifterPreset(id)
+// }
 
-onMounted(() => {
-  getUserPitchShifterPresetList().then(list => {
-    userPresetList.value = list
-  })
-})
+// onMounted(() => {
+//   getUserPitchShifterPresetList().then(list => {
+//     userPresetList.value = list
+//   })
+// })
 
 
 </script>

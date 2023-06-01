@@ -18,10 +18,10 @@ export default () => {
     getStore(STORE_NAMES.SOUND_EFFECT).set('convolutionPreset', params)
   })
 
-  mainHandle<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_pitch_shifter_preset, async() => {
-    return getStore(STORE_NAMES.SOUND_EFFECT).get('pitchShifterPreset') as LX.SoundEffect.PitchShifterPreset[] | null ?? []
-  })
-  mainOn<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_pitch_shifter_preset, ({ params }) => {
-    getStore(STORE_NAMES.SOUND_EFFECT).set('pitchShifterPreset', params)
-  })
+  // mainHandle<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_pitch_shifter_preset, async() => {
+  //   return getStore(STORE_NAMES.SOUND_EFFECT).get('pitchShifterPreset') as LX.SoundEffect.PitchShifterPreset[] | null ?? []
+  // })
+  // mainOn<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_pitch_shifter_preset, ({ params }) => {
+  //   getStore(STORE_NAMES.SOUND_EFFECT).set('pitchShifterPreset', params)
+  // })
 }

@@ -21,10 +21,10 @@ declare namespace LX {
       mainGain: number
       sendGain: number
     }
-    interface PitchShifterPreset {
-      id: string
-      name: string
-      playbackRate: number
-    }
+    // interface PitchShifterPreset {
+    //   id: string
+    //   name: string
+    //   playbackRate: number
+    // }
   }
 }
