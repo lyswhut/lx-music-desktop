@@ -20,7 +20,7 @@ module.exports = {
       type: 'commonjs2',
     },
     path: path.join(__dirname, '../../dist'),
-    publicPath: 'auto',
+    publicPath: '',
   },
   resolve: {
     alias: {
@@ -39,14 +39,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        // parser: {
-        //   worker: [
-        //     '*context.audioWorklet.addModule()',
-        //     '*audioWorklet.addModule()',
-        //     // *addModule() is not valid syntax
-        //     // '...',
-        //   ],
-        // },
       },
       {
         test: /\.tsx?$/,
@@ -56,6 +48,12 @@ module.exports = {
           options: {
             appendTsSuffixTo: [/\.vue$/],
           },
+        },
+        parser: {
+          worker: [
+            '*audioContext.audioWorklet.addModule()',
+            '...',
+          ],
         },
       },
       {

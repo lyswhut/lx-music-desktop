@@ -1,12 +1,13 @@
 const WEBAUDIO_BLOCK_SIZE = 128
 
 /** Overlap-Add Node */
-class OLAProcessor extends window.AudioWorkletProcessor {
+class OLAProcessor extends globalThis.AudioWorkletProcessor {
   constructor(options) {
     super(options)
 
     this.nbInputs = options.numberOfInputs
     this.nbOutputs = options.numberOfOutputs
+    this.paused = true
 
     this.blockSize = options.processorOptions.blockSize
     // TODO for now, the only support hop size is the size of a web audio block
@@ -88,7 +89,8 @@ class OLAProcessor extends window.AudioWorkletProcessor {
   /** Read next web audio block to input buffers **/
   readInputs(inputs) {
     // when playback is paused, we may stop receiving new samples
-    if (inputs[0].length && inputs[0][0].length == 0) {
+    // if (inputs[0].length && inputs[0][0].length == 0) {
+    if (!inputs[0].length || !inputs[0][0].length || inputs[0][0][0] == 0) {
       for (let i = 0; i < this.nbInputs; i++) {
         for (let j = 0; j < this.inputBuffers[i].length; j++) {
           this.inputBuffers[i][j].fill(0, this.blockSize)
@@ -155,7 +157,8 @@ class OLAProcessor extends window.AudioWorkletProcessor {
   }
 
   process(inputs, outputs, params) {
-    this.reallocateChannelsIfNeeded(inputs, outputs)
+    // if (!inputs[0].length || !inputs[0][0].length || inputs[0][0][0] == 0) return true
+    // this.reallocateChannelsIfNeeded(inputs, outputs)
 
     this.readInputs(inputs)
     this.shiftInputBuffers()

@@ -12,7 +12,7 @@ module.exports = {
       type: 'commonjs2',
     },
     path: path.join(__dirname, '../../dist'),
-    publicPath: 'auto',
+    publicPath: '',
   },
   resolve: {
     alias: {
