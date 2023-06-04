@@ -1,9 +1,10 @@
+// https://github.com/olvb/phaze/issues/26#issuecomment-1573938170
 // https://github.com/olvb/phaze
 import FFT from './fft'
 import OLAProcessor from './ola-processor'
 
 
-const BUFFERED_BLOCK_SIZE = 4096
+const DEFAULT_BUFFERED_BLOCK_SIZE = 4096
 
 function genHannWindow(length) {
   let win = new Float32Array(length)
@@ -18,13 +19,17 @@ class PhaseVocoderProcessor extends OLAProcessor {
     return [{
       name: 'pitchFactor',
       defaultValue: 1.0,
-    }]
+      automationRate: 'k-rate',
+    }, /* ,
+    {
+      name: 'pitchCents',
+      defaultValue: 0.0,
+      automationRate: 'k-rate'
+        } */]
   }
 
   constructor(options) {
-    options.processorOptions = {
-      blockSize: BUFFERED_BLOCK_SIZE,
-    }
+    (options.processorOptions ??= {}).blockSize ??= DEFAULT_BUFFERED_BLOCK_SIZE
     super(options)
 
     this.fftSize = this.blockSize
@@ -43,9 +48,8 @@ class PhaseVocoderProcessor extends OLAProcessor {
   }
 
   processOLA(inputs, outputs, parameters) {
-    // no automation, take last value
-    // const pitchFactor = parameters.pitchFactor[parameters.pitchFactor.length - 1]
-    const pitchFactor = parameters.pitchFactor[0]
+    // k-rate automation, param arrays only have single value
+    const pitchFactor = parameters.pitchFactor[0]/*  || Math.pow(2, (parameters.pitchCents[0]/12)) */
 
     for (let i = 0; i < this.nbInputs; i++) {
       for (let j = 0; j < inputs[i].length; j++) {

@@ -219,27 +219,33 @@ export const startPanner = () => {
   }, pannerInfo.speed * 10)
 }
 
-const loadPitchShifterNode = () => {
-  pitchShifterNodeLoadStatus = 'loading'
-  initAdvancedAudioFeatures()
-  // source -> analyser -> biquadFilter -> audioWorklet(pitch shifter) -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
-  void audioContext.audioWorklet.addModule(new URL(
-    /* webpackChunkName: 'pitch_shifter.audioWorklet' */
-    './pitch-shifter/phase-vocoder.js',
-    import.meta.url,
-  )).then(() => {
-    console.log('pitch shifter audio worklet loaded')
-    pitchShifterNode = new AudioWorkletNode(audioContext, 'phase-vocoder-processor')
-    let pitchFactorParam = pitchShifterNode.parameters.get('pitchFactor')
-    if (!pitchFactorParam) return
-    pitchShifterNodePitchFactor = pitchFactorParam
-    pitchShifterNodeLoadStatus = 'unconnect'
-    if (pitchShifterNodeTempValue == 1) return
-
-    connectPitchShifterNode()
-  })
+let isConnected = true
+const connectNode = () => {
+  if (isConnected) return
+  console.log('connect Node')
+  analyser?.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
+  isConnected = true
+  if (pitchShifterNodeTempValue == 1 && pitchShifterNodeLoadStatus == 'connected') {
+    disconnectPitchShifterNode()
+  }
+}
+const disconnectNode = () => {
+  if (!isConnected) return
+  console.log('disconnect Node')
+  analyser?.disconnect()
+  isConnected = false
+  if (pitchShifterNodeTempValue == 1 && pitchShifterNodeLoadStatus == 'connected') {
+    disconnectPitchShifterNode()
+  }
 }
 const connectPitchShifterNode = () => {
+  console.log('connect Pitch Shifter Node')
+  audio!.addEventListener('playing', connectNode)
+  audio!.addEventListener('pause', disconnectNode)
+  audio!.addEventListener('waiting', disconnectNode)
+  audio!.addEventListener('emptied', disconnectNode)
+  if (audio!.paused) disconnectNode()
+
   const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
   lastBiquadFilter.disconnect()
   lastBiquadFilter.connect(pitchShifterNode)
@@ -252,20 +258,45 @@ const connectPitchShifterNode = () => {
   pitchShifterNodeLoadStatus = 'connected'
   pitchShifterNodePitchFactor.value = pitchShifterNodeTempValue
 }
-// const disconnectPitchShifterNode = () => {
-//   const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
-//   lastBiquadFilter.disconnect()
-//   lastBiquadFilter.connect(convolver)
-//   lastBiquadFilter.connect(convolverSourceGainNode)
-//   pitchShifterNodeLoadStatus = 'unconnect'
-// }
+const disconnectPitchShifterNode = () => {
+  console.log('disconnect Pitch Shifter Node')
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  lastBiquadFilter.disconnect()
+  lastBiquadFilter.connect(convolver)
+  lastBiquadFilter.connect(convolverSourceGainNode)
+  pitchShifterNodeLoadStatus = 'unconnect'
+
+  audio!.removeEventListener('playing', connectNode)
+  audio!.removeEventListener('pause', disconnectNode)
+  audio!.removeEventListener('waiting', disconnectNode)
+  audio!.removeEventListener('emptied', disconnectNode)
+  connectNode()
+}
+const loadPitchShifterNode = () => {
+  pitchShifterNodeLoadStatus = 'loading'
+  initAdvancedAudioFeatures()
+  // source -> analyser -> biquadFilter -> audioWorklet(pitch shifter) -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
+  void audioContext.audioWorklet.addModule(new URL(
+    /* webpackChunkName: 'pitch_shifter.audioWorklet' */
+    './pitch-shifter/phase-vocoder.js',
+    import.meta.url,
+  )).then(() => {
+    console.log('pitch shifter audio worklet loaded')
+    // https://github.com/olvb/phaze/issues/26#issuecomment-1574629971
+    pitchShifterNode = new AudioWorkletNode(audioContext, 'phase-vocoder-processor', { outputChannelCount: [2] })
+    let pitchFactorParam = pitchShifterNode.parameters.get('pitchFactor')
+    if (!pitchFactorParam) return
+    pitchShifterNodePitchFactor = pitchFactorParam
+    pitchShifterNodeLoadStatus = 'unconnect'
+    if (pitchShifterNodeTempValue == 1) return
+
+    connectPitchShifterNode()
+  })
+}
+
 export const setPitchShifter = (val: number) => {
   // console.log('setPitchShifter', val)
   pitchShifterNodeTempValue = val
-  // if (val == 1 && pitchShifterNodeLoadStatus == 'connected') {
-  //   disconnectPitchShifterNode()
-  //   return
-  // }
   switch (pitchShifterNodeLoadStatus) {
     case 'loading':
       break
