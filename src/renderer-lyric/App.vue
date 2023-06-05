@@ -12,14 +12,14 @@
         <common-audio-visualizer v-if="setting['desktopLyric.audioVisualization']" />
       </transition>
     </div>
-    <div class="resize-left" @mousedown.self="handleMouseDown('left', $event)" @touchstart.self="handleTouchDown('left', $event)" />
-    <div class="resize-top" @mousedown.self="handleMouseDown('top', $event)" @touchstart.self="handleTouchDown('top', $event)" />
-    <div class="resize-right" @mousedown.self="handleMouseDown('right', $event)" @touchstart.self="handleTouchDown('right', $event)" />
-    <div class="resize-bottom" @mousedown.self="handleMouseDown('bottom', $event)" @touchstart.self="handleTouchDown('bottom', $event)" />
-    <div class="resize-top-left" @mousedown.self="handleMouseDown('top-left', $event)" @touchstart.self="handleTouchDown('top-left', $event)" />
-    <div class="resize-top-right" @mousedown.self="handleMouseDown('top-right', $event)" @touchstart.self="handleTouchDown('top-right', $event)" />
-    <div class="resize-bottom-left" @mousedown.self="handleMouseDown('bottom-left', $event)" @touchstart.self="handleTouchDown('bottom-left', $event)" />
-    <div class="resize-bottom-right" @mousedown.self="handleMouseDown('bottom-right', $event)" @touchstart.self="handleTouchDown('bottom-right', $event)" />
+    <div class="resize resize-left" @mousedown.self="handleMouseDown('left', $event)" @touchstart.self="handleTouchDown('left', $event)" />
+    <div class="resize resize-top" @mousedown.self="handleMouseDown('top', $event)" @touchstart.self="handleTouchDown('top', $event)" />
+    <div class="resize resize-right" @mousedown.self="handleMouseDown('right', $event)" @touchstart.self="handleTouchDown('right', $event)" />
+    <div class="resize resize-bottom" @mousedown.self="handleMouseDown('bottom', $event)" @touchstart.self="handleTouchDown('bottom', $event)" />
+    <div class="resize resize-top-left" @mousedown.self="handleMouseDown('top-left', $event)" @touchstart.self="handleTouchDown('top-left', $event)" />
+    <div class="resize resize-top-right" @mousedown.self="handleMouseDown('top-right', $event)" @touchstart.self="handleTouchDown('top-right', $event)" />
+    <div class="resize resize-bottom-left" @mousedown.self="handleMouseDown('bottom-left', $event)" @touchstart.self="handleTouchDown('bottom-left', $event)" />
+    <div class="resize resize-bottom-right" @mousedown.self="handleMouseDown('bottom-right', $event)" @touchstart.self="handleTouchDown('bottom-right', $event)" />
     <layout-icons />
   </div>
 </template>
@@ -70,7 +70,6 @@ body {
 }
 
 #container {
-  padding: 8px;
   box-sizing: border-box;
   height: 100%;
   transition: opacity .3s ease;
@@ -85,12 +84,16 @@ body {
   }
 }
 
+@resize-width: 6px;
+.resize {
+  z-index: 2;
+}
 .resize-left {
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
-  width: 10px;
+  width: @resize-width;
   cursor: ew-resize;
   // background-color: rgba(0, 0, 0, 1);
 }
@@ -99,14 +102,14 @@ body {
   right: 0;
   top: 0;
   height: 100%;
-  width: 10px;
+  width: @resize-width;
   cursor: ew-resize;
 }
 .resize-top {
   position: absolute;
   left: 0;
   top: 0;
-  height: 10px;
+  height: 4px;
   width: 100%;
   cursor: ns-resize;
 }
@@ -114,7 +117,7 @@ body {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 10px;
+  height: @resize-width;
   width: 100%;
   cursor: ns-resize;
 }
@@ -122,8 +125,8 @@ body {
   position: absolute;
   left: 0;
   top: 0;
-  width: 14px;
-  height: 14px;
+  width: @resize-width;
+  height: @resize-width;
   cursor: nwse-resize;
   // background-color: rgba(0, 0, 0, 1);
 }
@@ -131,26 +134,17 @@ body {
   position: absolute;
   right: 0;
   top: 0;
-  width: 14px;
-  height: 14px;
+  width: @resize-width;
+  height: @resize-width;
   cursor: nesw-resize;
-  // background-color: rgba(0, 0, 0, 1);
-}
-.resize-top-left {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 14px;
-  height: 14px;
-  cursor: nwse-resize;
   // background-color: rgba(0, 0, 0, 1);
 }
 .resize-bottom-left {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 14px;
-  height: 14px;
+  width: @resize-width;
+  height: @resize-width;
   cursor: nesw-resize;
   // background-color: rgba(0, 0, 0, 1);
 }
@@ -158,8 +152,8 @@ body {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 14px;
-  height: 14px;
+  width: @resize-width;
+  height: @resize-width;
   cursor: nwse-resize;
   // background-color: rgba(0, 0, 0, 1);
 }
