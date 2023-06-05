@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { BrowserWindow } from 'electron'
-import { debounce, isLinux } from '@common/utils'
+import { debounce, isLinux, isWin } from '@common/utils'
 import { initWindowSize } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
@@ -41,7 +41,7 @@ const winEvent = () => {
         'desktopLyric.width': bounds.width,
         'desktopLyric.height': bounds.height,
       })
-    } else {
+    } else if (isWin) { // Linux 不允许将窗口设置出屏幕之外，MacOS未知，故只在Windows下执行强制设置
       // 非主动调整窗口触发的窗口位置变化将重置回设置值
       browserWindow!.setBounds({
         x: global.lx.appSetting['desktopLyric.x'] ?? 0,
