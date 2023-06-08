@@ -75,7 +75,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.height': 300,
   'desktopLyric.x': null,
   'desktopLyric.y': null,
-  'desktopLyric.isLockScreen': true,
+  'desktopLyric.isLockScreen': isWin,
   'desktopLyric.isDelayScroll': true,
   'desktopLyric.scrollAlign': 'center',
   'desktopLyric.isHoverHide': false,
