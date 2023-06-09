@@ -40,11 +40,11 @@ export const eapiRequest = (url, data) => {
  */
 export const createEapiFetch = async(url, data, retryNum = 0) => {
   if (retryNum > 2) throw new Error('try max num')
-  const formData = eapi(url, data)
+  const fromData = eapi(url, data)
 
   let result
   try {
-    result = await buildEapiRequest(formData).promise
+    result = await buildEapiRequest(fromData).promise
   } catch (err) {
     console.log(err)
     return createEapiFetch(url, data, ++retryNum)

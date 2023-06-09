@@ -54,3 +54,11 @@ export const createEapiFetch = async(url, data, retryNum = 0) => {
   if (result.body.data) return result.body.data
   return result.body
 }
+
+getSinger(singers) {
+  let arr = []
+  singers?.forEach(singer => {
+    arr.push(singer.name)
+  })
+  return arr.join('、')
+}

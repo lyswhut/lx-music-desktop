@@ -1,14 +1,14 @@
 import { httpFetch } from '../../../request'
 import { eapi } from './crypto'
 
-const buildEapiRequest = (formData) => {
+const buildEapiRequest = (data) => {
   return httpFetch('http://interface.music.163.com/eapi/batch', {
     method: 'POST',
     headers: {
       'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
       origin: 'https://music.163.com',
     },
-    form: formData,
+    form: data,
   })
 }
 
@@ -40,16 +40,16 @@ export const eapiRequest = (url, data) => {
  */
 export const createEapiFetch = async(url, data, retryNum = 0) => {
   if (retryNum > 2) throw new Error('try max num')
-  const formData = eapi(url, data)
+  const fromData = eapi(url, data)
 
   let result
   try {
-    result = await buildEapiRequest(formData).promise
+    result = await buildEapiRequest(fromData).promise
   } catch (err) {
     console.log(err)
     return createEapiFetch(url, data, ++retryNum)
   }
-
+  // console.log(result.statusCode, result.body)
   if (result.statusCode !== 200 || result.body.code != 200) return createEapiFetch(url, data, ++retryNum)
   if (result.body.data) return result.body.data
   return result.body

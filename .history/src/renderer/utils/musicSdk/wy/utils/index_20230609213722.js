@@ -1,17 +1,6 @@
 import { httpFetch } from '../../../request'
 import { eapi } from './crypto'
 
-const buildEapiRequest = (formData) => {
-  return httpFetch('http://interface.music.163.com/eapi/batch', {
-    method: 'POST',
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-      origin: 'https://music.163.com',
-    },
-    form: formData,
-  })
-}
-
 export const eapiRequest = (url, data) => {
   return httpFetch('http://interface.music.163.com/eapi/batch', {
     method: 'post',
@@ -33,24 +22,28 @@ export const eapiRequest = (url, data) => {
 }
 
 /**
- * 创建一个适用于WY的Eapi请求
+ * 创建一个适用于KG的Http请求
  * @param {*} url
  * @param {*} options
  * @param {*} retryNum
  */
-export const createEapiFetch = async(url, data, retryNum = 0) => {
+export const createHttpFetch = async(url, options, retryNum = 0) => {
   if (retryNum > 2) throw new Error('try max num')
-  const formData = eapi(url, data)
-
   let result
   try {
-    result = await buildEapiRequest(formData).promise
+    result = await httpFetch(url, options).promise
   } catch (err) {
     console.log(err)
-    return createEapiFetch(url, data, ++retryNum)
+    return createHttpFetch(url, options, ++retryNum)
   }
-
-  if (result.statusCode !== 200 || result.body.code != 200) return createEapiFetch(url, data, ++retryNum)
+  // console.log(result.statusCode, result.body)
+  if (result.statusCode !== 200 ||
+    (
+      result.body.error_code ??
+      result.body.errcode ??
+      result.body.err_code) != 0
+  ) return createHttpFetch(url, options, ++retryNum)
   if (result.body.data) return result.body.data
-  return result.body
+  if (Array.isArray(result.body.info)) return result.body
+  return result.body.info
 }

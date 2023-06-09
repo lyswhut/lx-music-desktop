@@ -28,7 +28,7 @@ export default {
     })
   },
   /**
-   * 获取歌手专辑列表
+   * 获取歌手歌曲列表
    * @param {*} id
    * @param {*} page
    * @param {*} limit
@@ -48,12 +48,6 @@ export default {
       }
     })
   },
-  /**
-   * 获取歌手歌曲列表
-   * @param {*} id
-   * @param {*} page
-   * @param {*} limit
-   */
   async getSongList(id, page = 1, limit = 100) {
     if (id == 0) throw new Error('歌手不存在')
     const body = await createHttpFetch(`http://mobiles.kugou.com/api/v5/singer/song?singerid=${id}&page=${page}&pagesize=${limit}`)
