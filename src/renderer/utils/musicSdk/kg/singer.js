@@ -26,8 +26,8 @@ export default {
       info: {
         name: body.data.singername,
         desc: body.data.intro,
-        img: body.data.imgurl.replace('{size}', '480')
-      }
+        img: body.data.imgurl.replace('{size}', '480'),
+      },
     }
   },
   async getSingerSongList(singerid, page, limit) {
@@ -55,5 +55,5 @@ export default {
       albums: this.filterAlbum(body.data.info),
       singerid,
     }
-  }
+  },
 }
