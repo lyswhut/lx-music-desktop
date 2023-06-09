@@ -431,6 +431,10 @@ export default {
 
       return {
         singer: formatSinger(decodeName(item.artist)),
+        singerList: [{
+          name: formatSinger(decodeName(item.artist)),
+          id: item.artistid,
+        }],
         name: decodeName(item.name),
         albumName: decodeName(item.album),
         albumId: item.albumid,

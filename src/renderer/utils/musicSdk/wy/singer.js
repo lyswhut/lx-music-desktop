@@ -17,7 +17,7 @@ export default {
                     name: body.artist.name,
                     desc: body.artist.briefDesc,
                     avatar: body.user.avatarUrl,
-                    gender: body.user.gender === 1 ? '1' : '2',
+                    gender: body.user.gender === 1 ? 'man' : 'woman',
                 },
                 count: {
                     music: body.artist.musicSize,
@@ -39,7 +39,7 @@ export default {
             limit,
             offset: limit * page
         }).then(body => {
-            if (!body.songs) throw new Error("get singer songs faild.")
+            if (!body.songs) throw new Error("get singer song list faild.")
 
             const list = this.filterSongList(body.songs)
             return {
@@ -63,7 +63,7 @@ export default {
             limit,
             offset: limit * page
         }).then(body => {
-            if (!body.hotAlbums) throw new Error("get singer songs faild.")
+            if (!body.hotAlbums) throw new Error("get singer album list faild.")
 
             const list = this.filterAlbumList(body.hotAlbums)
             return {
