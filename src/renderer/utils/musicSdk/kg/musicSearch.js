@@ -1,7 +1,7 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate } from '../../index'
 import { formatSingerName } from '../utils'
-
+import { formatSingerList } from './util'
 
 export default {
   limit: 30,
@@ -49,6 +49,7 @@ export default {
     }
     return {
       singer: decodeName(formatSingerName(rawData.Singers, 'name')),
+      singerList: formatSingerList(rawData.Singers),
       name: decodeName(rawData.SongName),
       albumName: decodeName(rawData.AlbumName),
       albumId: rawData.AlbumID,

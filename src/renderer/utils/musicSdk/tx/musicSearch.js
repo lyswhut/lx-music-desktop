@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate } from '../../index'
 import { formatSingerName } from '../utils'
+import { formatSingerList } from './util'
 
 export default {
   limit: 50,
@@ -95,6 +96,7 @@ export default {
       }
       list.push({
         singer: formatSingerName(item.singer, 'name'),
+        singerList: formatSingerList(item.singer),
         name: item.name,
         albumName,
         albumId,
