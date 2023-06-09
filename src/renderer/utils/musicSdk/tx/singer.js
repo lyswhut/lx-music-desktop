@@ -36,7 +36,7 @@ export default {
         module: 'musichall.song_list_server',
         method: 'GetSingerSongList',
         param: {
-          singerMid: '0025NhlN2yWrP4',
+          singerMid: id,
           order: 1,
           begin: 0,
           num: 1,
