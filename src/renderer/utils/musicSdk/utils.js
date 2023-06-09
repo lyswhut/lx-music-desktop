@@ -61,7 +61,7 @@ export const formatSingerList = (singers, nameKey = 'name', idKey = 'id', midKey
     const mid = s[midKey]
 
     const info = {}
-    if (name) info.name = name
+    if (name) info.name = decodeName(name)
     if (id) info.id = id
     if (mid) info.mid = mid
 
