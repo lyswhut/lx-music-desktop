@@ -60,12 +60,13 @@ export const formatSingerList = (singers, nameKey = 'name', idKey = 'id', midKey
     const id = s[idKey]
     const mid = s[midKey]
 
-    const info = {}
+    let info = {}
     if (name) info.name = name
-    if (id) info.id = id
-    if (mid) info.mid = mid
-
-    list.push(info)
+    list.push({
+      
+      id: s[idKey],
+      mid: s[midKey] ?? null,
+    })
   })
   return list
 }

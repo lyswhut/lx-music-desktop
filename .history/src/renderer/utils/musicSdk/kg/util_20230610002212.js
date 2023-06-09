@@ -60,3 +60,18 @@ export const createHttpFetch = async(url, options, retryNum = 0) => {
   if (Array.isArray(result.body.info)) return result.body
   return result.body.info
 }
+
+/**
+ * 处理歌手列表
+ * @param {Array} rawList
+ */
+export const formatSingerList = (rawList, keyID = 'id', keyName = 'name') => {
+  let returnList = []
+  rawList.forEach((s) => {
+    returnList.push({
+      name: s[keyName],
+      id: String(s[keyID]),
+    })
+  })
+  return returnList
+}

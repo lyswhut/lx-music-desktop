@@ -50,7 +50,7 @@ export default {
       singer: decodeName(formatSingerName(rawData.Singers, 'name')),
       singerList: formatSingerList(rawData.Singers),
       name: decodeName(rawData.SongName),
-      albumName: decodeName(rawData.AlbumName),
+      albumName: decodeName(rawData.AlbumName, 'name', 'id'),
       albumId: rawData.AlbumID,
       songmid: rawData.Audioid,
       source: 'kg',

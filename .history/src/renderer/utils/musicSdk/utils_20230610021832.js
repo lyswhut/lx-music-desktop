@@ -49,6 +49,7 @@ export const formatSingerName = (singers, nameKey = 'name', join = '、') => {
   return decodeName(String(singers ?? ''))
 }
 
+
 /**
  * 处理歌手列表
  * @param singers 歌手数组

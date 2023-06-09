@@ -128,7 +128,7 @@ export default {
       }
       return {
         singer: formatSingerName(item.authors, 'author_name'),
-        singerList: formatSingerList(item.authors, 'author_name', 'author_id'),
+        singerList: formatSingerList(item.authors, 'author_id', 'author_name'),
         name: decodeName(item.songname),
         albumName: decodeName(item.remark),
         albumId: item.album_id,
