@@ -1,7 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
-import { formatSingerName } from '../utils'
-import { formatSingerList } from './util'
+import { formatSingerName, formatSingerList } from '../utils'
 
 export default {
   _requestObj_tags: null,

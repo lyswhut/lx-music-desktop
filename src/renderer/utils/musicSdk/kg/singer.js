@@ -18,7 +18,7 @@ export default {
             name: body.singername,
             desc: body.intro,
             avatar: body.imgurl.replace('{size}', 480),
-            gender: body.grade === 1 ? '1' : '2',
+            gender: body.grade === 1 ? 'man' : 'woman',
         },
         count: {
             music: body.songcount,
@@ -33,10 +33,10 @@ export default {
    * @param {*} page
    * @param {*} limit
    */
-  getAlbumList(id, page, limit) {
+  getAlbumList(id, page = 1, limit = 10) {
     if (id == 0) throw new Error('歌手不存在')
     return createHttpFetch(`http://mobiles.kugou.com/api/v5/singer/album?singerid=${id}&page=${page}&pagesize=${limit}`).then(body => {
-      if (!body.info) throw new Error('get singer album faild.')
+      if (!body.info) throw new Error('get singer album list faild.')
 
       const list = this.filterAlbumList(body.info)
       return {
