@@ -5,6 +5,11 @@ export const getMusicInfo = (id) => {
   return httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
     method: 'POST',
     body: {
+      comm: {
+        ct: '19',
+        cv: '1859',
+        uin: '0',
+      },
       req: {
         module: 'music.pf_song_detail_svr',
         method: 'get_song_detail_yqq',
