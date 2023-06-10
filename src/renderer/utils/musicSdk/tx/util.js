@@ -1,43 +1,58 @@
 import { httpFetch } from '../../request'
+import { formatPlayTime, sizeFormate } from '../../index'
+import { formatSingerName } from '../utils'
 
-/**
- * 创建一个适用于TX的Http请求
- * @param {*} url
- * @param {*} options
- * @param {*} retryNum
- */
-export const createMusicuFetch = async(data, options, retryNum = 0) => {
-  if (retryNum > 2) throw new Error('try max num')
-
-  let request
-  try {
-    request = await httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
-      method: 'POST',
-      body: {
-        comm: {
-          cv: 4747474,
-          ct: 24,
-          format: 'json',
-          inCharset: 'utf-8',
-          outCharset: 'utf-8',
-          uin: 0,
-        },
-        ...data,
-      },
-      headers: {
-        'User-Angent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
-      },
-    }).promise
-  } catch (err) {
-    console.log(err)
-    return createMusicuFetch(data, options, ++retryNum)
+export const filterMusicInfoItem = item => {
+  const types = []
+  const _types = {}
+  if (item.file.size_128mp3 != 0) {
+    let size = sizeFormate(item.file.size_128mp3)
+    types.push({ type: '128k', size })
+    _types['128k'] = {
+      size,
+    }
   }
-  if (request.statusCode !== 200 || request.body.code != 0) return createMusicuFetch(data, options, ++retryNum)
+  if (item.file.size_320mp3 !== 0) {
+    let size = sizeFormate(item.file.size_320mp3)
+    types.push({ type: '320k', size })
+    _types['320k'] = {
+      size,
+    }
+  }
+  if (item.file.size_flac !== 0) {
+    let size = sizeFormate(item.file.size_flac)
+    types.push({ type: 'flac', size })
+    _types.flac = {
+      size,
+    }
+  }
+  if (item.file.size_hires !== 0) {
+    let size = sizeFormate(item.file.size_hires)
+    types.push({ type: 'flac24bit', size })
+    _types.flac24bit = {
+      size,
+    }
+  }
 
-  const result = {}
-  Object.keys(data).forEach(item => {
-    if (request.body[item].code != 0) return
-    result[item] = request.body[item].data
-  })
-  return result
+  const albumId = item.album.id ?? ''
+  const albumMid = item.album.mid ?? ''
+  const albumName = item.album.name ?? ''
+  return {
+    source: 'tx',
+    singer: formatSingerName(item.singer, 'name'),
+    name: item.name,
+    albumName,
+    albumId,
+    albumMid,
+    interval: formatPlayTime(item.interval),
+    songId: item.id,
+    songmid: item.mid,
+    strMediaMid: item.file.media_mid,
+    img: (albumId === '' || albumId === '空')
+      ? item.singer?.length ? `https://y.gtimg.cn/music/photo_new/T001R500x500M000${item.singer[0].mid}.jpg` : ''
+      : `https://y.gtimg.cn/music/photo_new/T002R500x500M000${albumMid}.jpg`,
+    types,
+    _types,
+    typeUrl: {},
+  }
 }

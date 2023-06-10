@@ -1,5 +1,42 @@
-import { createMusicuFetch } from './util'
-import { filterMusicInfoItem } from './musicInfo'
+import { createMusicuFetch, filterMusicInfoItem } from './util'
+import { httpFetch } from '../../request'
+
+/**
+ * 创建一个适用于TX的Http请求
+ * @param {*} url
+ * @param {*} options
+ * @param {*} retryNum
+ */
+const createMusicuFetch = async(data, options, retryNum = 0) => {
+  if (retryNum > 2) throw new Error('try max num')
+
+  let result
+  try {
+    result = await httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
+      method: 'POST',
+      body: {
+        comm: {
+          cv: 4747474,
+          ct: 24,
+          format: 'json',
+          inCharset: 'utf-8',
+          outCharset: 'utf-8',
+          uin: 0,
+        },
+        ...data,
+      },
+      headers: {
+        'User-Angent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+      },
+    }).promise
+  } catch (err) {
+    console.log(err)
+    return createMusicuFetch(data, options, ++retryNum)
+  }
+  if (result.statusCode !== 200 || result.body.code != 0) return createMusicuFetch(data, options, ++retryNum)
+
+  return result.body
+}
 
 export default {
   /**
@@ -43,11 +80,11 @@ export default {
         },
       },
     }).then(body => {
-      if (!body.req_1 || !body.req_2 || !body.req_3) throw new Error('get singer info faild.')
+      if (body.req_1.code != 0 || body.req_2 != 0 || body.req_3 != 0) throw new Error('get singer info faild.')
 
-      const info = body.req_1.singer_list[0]
-      const music = body.req_3
-      const album = body.req_3
+      const info = body.req_1.data.singer_list[0]
+      const music = body.req_3.data
+      const album = body.req_3.data
       return {
         source: 'tx',
         id: info.basic_info.singer_mid,
@@ -86,15 +123,15 @@ export default {
         },
       },
     }).then(body => {
-      if (!body.req) throw new Error('get singer album faild.')
+      if (body.req.code != 0) throw new Error('get singer album faild.')
 
-      const list = this.filterAlbumList(body.req.albumList)
+      const list = this.filterAlbumList(body.req.data.albumList)
       return {
         source: 'tx',
         list,
         limit,
         page,
-        total: body.req.total,
+        total: body.req.data.total,
       }
     })
   },
@@ -118,15 +155,15 @@ export default {
         },
       },
     }).then(body => {
-      if (!body.req) throw new Error('get singer song list faild.')
+      if (body.req.code != 0) throw new Error('get singer song list faild.')
 
-      const list = this.filterSongList(body.req.songList)
+      const list = this.filterSongList(body.req.data.songList)
       return {
         source: 'tx',
         list,
         limit,
         page,
-        total: body.req.totalNum,
+        total: body.req.data.totalNum,
       }
     })
   },
