@@ -20,25 +20,3 @@ export const eapiRequest = (url, data) => {
   // })
   // return requestObj
 }
-
-/**
- * 创建一个Eapi请求
- * @param {*} url
- * @param {*} options
- * @param {*} retryNum
- */
-export const createEapiFetch = async(url, data, retryNum = 0) => {
-  if (retryNum > 2) throw new Error('try max num')
-
-  let result
-  try {
-    result = await eapiRequest(url, data).promise
-  } catch (err) {
-    console.log(err)
-    return createEapiFetch(url, data, ++retryNum)
-  }
-
-  if (result.statusCode !== 200 || result.body.code != 200) return createEapiFetch(url, data, ++retryNum)
-  if (result.body.data) return result.body.data
-  return result.body
-}

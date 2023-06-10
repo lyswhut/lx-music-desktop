@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { filterMusicInfoItem } from './musicInfo'
+import { filterMusicInfoItem } from './util'
 
 export default {
   limit: 50,
