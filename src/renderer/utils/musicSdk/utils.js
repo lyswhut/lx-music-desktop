@@ -48,24 +48,3 @@ export const formatSingerName = (singers, nameKey = 'name', join = '、') => {
   }
   return decodeName(String(singers ?? ''))
 }
-
-/**
- * 处理歌手列表
- * @param singers 歌手数组
- */
-export const formatSingerList = (singers, nameKey = 'name', idKey = 'id', midKey = 'mid') => {
-  const list = []
-  singers.forEach((s) => {
-    const name = s[nameKey]
-    const id = s[idKey]
-    const mid = s[midKey]
-
-    const info = {}
-    if (name) info.name = decodeName(name)
-    if (id) info.id = id
-    if (mid) info.mid = mid
-
-    list.push(info)
-  })
-  return list
-}
