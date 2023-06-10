@@ -124,10 +124,6 @@ export default {
       // types.reverse()
       return {
         singer: formatSinger(decodeName(item.artist)),
-        singetList: [{
-          name: formatSinger(decodeName(item.artist)),
-          id: item.artistid,
-        }],
         name: decodeName(item.name),
         albumName: decodeName(item.album),
         albumId: item.albumid,
