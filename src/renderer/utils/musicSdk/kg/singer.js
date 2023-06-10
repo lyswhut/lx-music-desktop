@@ -15,15 +15,15 @@ export default {
         source: 'kg',
         id: body.singerid,
         info: {
-            name: body.singername,
-            desc: body.intro,
-            avatar: body.imgurl.replace('{size}', 480),
-            gender: body.grade === 1 ? 'man' : 'woman',
+          name: body.singername,
+          desc: body.intro,
+          avatar: body.imgurl.replace('{size}', 480),
+          gender: body.grade === 1 ? 'man' : 'woman',
         },
         count: {
-            music: body.songcount,
-            album: body.albumcount,
-        }
+          music: body.songcount,
+          album: body.albumcount,
+        },
       }
     })
   },
@@ -83,4 +83,3 @@ export default {
     })
   },
 }
-

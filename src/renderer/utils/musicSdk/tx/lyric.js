@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { getMusicInfo } from './musicInfo'
+import getMusicInfo from './musicInfo'
 import { rendererInvoke } from '@common/rendererIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 

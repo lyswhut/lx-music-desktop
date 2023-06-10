@@ -99,6 +99,7 @@ export default {
 
       const types = []
       const _types = {}
+      let size
       item.privilege.chargeInfoList.forEach(i => {
         switch (i.rate) {
           case 128000:
@@ -116,7 +117,7 @@ export default {
           case 999000:
             size = item.sqMusic ? sizeFormate(item.sqMusic.size) : null
             types.push({ type: 'flac', size })
-            _typesflac = {
+            _types.flac = {
               size,
             }
           case 1999000:
