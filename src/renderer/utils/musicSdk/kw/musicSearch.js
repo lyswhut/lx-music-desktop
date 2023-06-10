@@ -81,10 +81,6 @@ export default {
       result.push({
         name: decodeName(info.SONGNAME),
         singer: formatSinger(decodeName(info.ARTIST)),
-        singerList: [{
-          name: formatSinger(decodeName(info.ARTIST)),
-          id: info.ARTISTID,
-        }],
         source: 'kw',
         // img = (info.album.name === '' || info.album.name === '空')
         //   ? `http://player.kuwo.cn/webmusic/sj/dtflagdate?flag=6&rid=MUSIC_160911.jpg`
