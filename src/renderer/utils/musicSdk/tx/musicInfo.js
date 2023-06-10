@@ -1,7 +1,7 @@
 import { filterMusicInfoItem } from './util'
 import { httpFetch } from '../../request'
 
-export const getMusicInfo = (id) => {
+export const getMusicInfo = id => {
   return httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
     method: 'POST',
     body: {
