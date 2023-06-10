@@ -43,7 +43,7 @@ export default {
         },
       },
     }).then(body => {
-      if (body.req_1 != 0 || body.req_2 != 0 || body.req_3 != 0) throw new Error('get singer info faild.')
+      if (!body.req_1 || !body.req_2 || !body.req_3) throw new Error('get singer info faild.')
 
       const info = body.req_1.singer_list[0]
       const music = body.req_3
