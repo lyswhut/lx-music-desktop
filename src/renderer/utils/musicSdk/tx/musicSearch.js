@@ -54,7 +54,6 @@ export default {
       if (!item.file?.media_mid) return
       list.push(filterMusicInfoItem(item))
     })
-    // console.log(list)
     return list
   },
   search(str, page = 1, limit) {

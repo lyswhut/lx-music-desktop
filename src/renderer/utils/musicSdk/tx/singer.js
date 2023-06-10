@@ -1,5 +1,5 @@
-import { createMusicuFetch, createMusicuFetchs } from './util'
-import { filterMusicInfo } from './musicInfo'
+import { createMusicuFetch } from './util'
+import { filterMusicInfoItem } from './musicInfo'
 
 export default {
   /**
@@ -7,7 +7,7 @@ export default {
    * @param {*} id
    */
   getInfo(id) {
-    return createMusicuFetchs({
+    return createMusicuFetch({
       req_1: {
         module: 'music.musichallSinger.SingerInfoInter',
         method: 'GetSingerDetail',
@@ -43,11 +43,11 @@ export default {
         },
       },
     }).then(body => {
-      if (body.req_1.code != 0 || body.req_2.code != 0 || body.req_3.code != 0) throw new Error('get singer info faild.')
+      if (body.req_1 != 0 || body.req_2 != 0 || body.req_3 != 0) throw new Error('get singer info faild.')
 
-      const info = body.req_1.data.singer_list[0]
-      const music = body.req_3.data
-      const album = body.req_3.data
+      const info = body.req_1.singer_list[0]
+      const music = body.req_3
+      const album = body.req_3
       return {
         source: 'tx',
         id: info.basic_info.singer_mid,
@@ -73,26 +73,28 @@ export default {
   getAlbumList(id, page = 1, limit = 10) {
     if (page === 1) page = 0
     return createMusicuFetch({
-      module: 'music.musichallAlbum.AlbumListServer',
-      method: 'GetAlbumList',
-      param: {
-        singerMid: id,
-        order: 0,
-        begin: page * limit,
-        num: limit,
-        songNumTag: 0,
-        singerID: 0,
+      req: {
+        module: 'music.musichallAlbum.AlbumListServer',
+        method: 'GetAlbumList',
+        param: {
+          singerMid: id,
+          order: 0,
+          begin: page * limit,
+          num: limit,
+          songNumTag: 0,
+          singerID: 0,
+        },
       },
     }).then(body => {
-      if (!body.albumList) throw new Error('get singer album faild.')
+      if (!body.req) throw new Error('get singer album faild.')
 
-      const list = this.filterAlbumList(body.albumList)
+      const list = this.filterAlbumList(body.req.albumList)
       return {
         source: 'tx',
         list,
         limit,
         page,
-        total: body.total,
+        total: body.req.total,
       }
     })
   },
@@ -105,24 +107,26 @@ export default {
   async getSongList(id, page = 1, limit = 100) {
     if (page === 1) page = 0
     return createMusicuFetch({
-      module: 'musichall.song_list_server',
-      method: 'GetSingerSongList',
-      param: {
-        singerMid: id,
-        order: 1,
-        begin: page * limit,
-        num: limit,
+      req: {
+        module: 'musichall.song_list_server',
+        method: 'GetSingerSongList',
+        param: {
+          singerMid: id,
+          order: 1,
+          begin: page * limit,
+          num: limit,
+        },
       },
     }).then(body => {
-      if (!body.albumList) throw new Error('get singer song list faild.')
+      if (!body.req) throw new Error('get singer song list faild.')
 
-      const list = this.filterSongList(body.songList)
+      const list = this.filterSongList(body.req.songList)
       return {
         source: 'tx',
         list,
         limit,
         page,
-        total: body.totalNum,
+        total: body.req.totalNum,
       }
     })
   },
@@ -142,11 +146,9 @@ export default {
     })
   },
   filterSongList(raw) {
-    const list = []
-    raw.forEach(item => {
-      list.push(filterMusicInfo(item.songInfo))
+    raw.map(item => {
+      return filterMusicInfoItem(item.songInfo)
     })
-    return list
   }
 }
 

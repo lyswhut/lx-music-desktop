@@ -1,8 +1,8 @@
 import { formatPlayTime, sizeFormate } from '../../index'
-import { formatSingerName, formatSingerList } from '../utils'
+import { formatSingerName } from '../utils'
 import { createMusicuFetch } from './util'
 
-export const filterMusicInfoItem = (item) => {
+export const filterMusicInfoItem = item => {
   const types = []
   const _types = {}
   if (item.file.size_128mp3 != 0) {
@@ -40,7 +40,6 @@ export const filterMusicInfoItem = (item) => {
   return {
     source: 'tx',
     singer: formatSingerName(item.singer, 'name'),
-    singerList: formatSingerList(item.singer),
     name: item.name,
     albumName,
     albumId,
@@ -60,16 +59,18 @@ export const filterMusicInfoItem = (item) => {
 
 export const getMusicInfo = (id) => {
   return createMusicuFetch({
-    module: 'music.pf_song_detail_svr',
-    method: 'get_song_detail_yqq',
-    param: {
-      song_type: 0,
-      song_mid: id,
+    req: {
+      module: 'music.pf_song_detail_svr',
+      method: 'get_song_detail_yqq',
+      param: {
+        song_type: 0,
+        song_mid: id,
+      },
     },
   }).then(body => {
-    if (!body) throw new Error('get music info faild.')
+    if (!body.req) throw new Error('get music info faild.')
 
-    const item = body.track_info
+    const item = body.req.track_info
     if (!item.file?.media_mid) return null
 
     return filterMusicInfoItem(item)
