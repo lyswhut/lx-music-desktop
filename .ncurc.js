@@ -7,6 +7,7 @@ module.exports = {
     'comlink',
     'vue',
     'eslint-plugin-n',
+    '@types/ws',
   ],
 
   // target: 'newest',
