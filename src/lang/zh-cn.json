@@ -266,6 +266,7 @@
   "player__sound_effect_pitch_shifter": "音调升降调节",
   "player__sound_effect_pitch_shifter_preset_semitones": "{num} 半音",
   "player__sound_effect_pitch_shifter_reset_btn": "重置",
+  "player__sound_effect_pitch_shifter_tip": "由于升降调需要实时处理音频数据，这会导致额外的CPU占用\n\n已知问题：\n如果CPU资源不够时将处理导致任务堆积而出现声音异常，这时需要暂停播放一段时间等堆积的任务处理完毕再播放",
   "player__stop": "暂停播放",
   "player__volume": "当前音量：",
   "player__volume_mute_label": "静音",
