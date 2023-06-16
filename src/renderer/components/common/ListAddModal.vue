@@ -172,7 +172,7 @@ export default {
     handleSaveList(event) {
       let name = event.target.value
       this.newListName = event.target.value = ''
-      // this.isEditing = false
+      this.isEditing = false
       if (!name) return
       createUserList({ name })
     },
