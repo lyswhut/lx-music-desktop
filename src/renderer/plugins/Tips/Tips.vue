@@ -84,6 +84,7 @@ export default {
   pointer-events: none;
   // text-align: justify;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  white-space: pre;
 }
 
 :global(.tips-fade-enter-active), :global(.tips-fade-leave-active) {

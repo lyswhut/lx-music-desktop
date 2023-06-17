@@ -267,6 +267,7 @@
   "player__sound_effect_pitch_shifter": "Pitch adjustment",
   "player__sound_effect_pitch_shifter_preset_semitones": "{num} semitones",
   "player__sound_effect_pitch_shifter_reset_btn": "Reset",
+  "player__sound_effect_pitch_shifter_tip": "Since ups and downs need to process audio data in real time, this will cause additional CPU usage\n\nKnown issues:\nIf the CPU resources are not enough, the processing will cause the task to accumulate and the sound will be abnormal. At this time, it is necessary to pause the playback for a period of time and wait for the accumulated tasks to be processed before playing.",
   "player__stop": "Paused",
   "player__volume": "Volume: ",
   "player__volume_mute_label": "Mute",
