@@ -299,8 +299,10 @@ export default {
         if (body.code != this.successCode) throw new Error('failed')
         return {
           list: body.songListResultData.result.map(item => {
+            let num = parseInt(item.playNum)
+            if (isNaN(num)) num = 0
             return {
-              play_count: formatPlayCount(item.playcount),
+              play_count: formatPlayCount(num),
               id: item.id,
               // author: item.createName,
               name: item.name,
