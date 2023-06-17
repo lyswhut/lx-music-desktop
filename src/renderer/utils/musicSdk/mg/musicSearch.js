@@ -2,7 +2,7 @@ import { httpFetch } from '../../request'
 import { sizeFormate, formatPlayTime } from '../../index'
 import { toMD5, formatSingerName } from '../utils'
 
-const sign = (time, str) => {
+export const createSignature = (time, str) => {
   const deviceId = '963B7AA0D21511ED807EE5846EC87D20'
   const signatureMd5 = '6cdc72a439cef99a3418d2a78aa28c73'
   const sign = toMD5(`${str}${signatureMd5}yyapp2d16148780a1dcc7408e06336b98cfd50${deviceId}${time}`)
@@ -111,7 +111,7 @@ export default {
 
   musicSearch(str, page, limit) {
     const time = Date.now().toString()
-    const signData = sign(time, str)
+    const signData = createSignature(time, str)
     const searchRequest = httpFetch(`https://jadeite.migu.cn/music_search/v3/search/searchAll?isCorrect=1&isCopyright=1&searchSwitch=%7B%22song%22%3A1%2C%22album%22%3A0%2C%22singer%22%3A0%2C%22tagSong%22%3A1%2C%22mvSong%22%3A0%2C%22bestShow%22%3A1%2C%22songlist%22%3A0%2C%22lyricSong%22%3A0%7D&pageSize=${limit}&text=${encodeURIComponent(str)}&pageNo=${page}&sort=0`, {
       headers: {
         uiVersion: 'A_music_3.6.1',
