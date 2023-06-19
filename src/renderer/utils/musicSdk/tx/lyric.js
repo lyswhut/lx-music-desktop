@@ -148,12 +148,12 @@ const parseTools = {
       const words = line.replace(timeTagRxp, '')
       if (!words.trim()) return
       const tag = result[0].replace(/\d]/, '').replace(this.rxps.timeLabelFixRxp, '')
-
+      let mstag = result[0].replace(/\d]/, '').split('.')[1]
       while (lrcLines.length) {
         const lrcLine = lrcLines.shift()
         const lrcLineResult = timeTagRxp.exec(lrcLine)
         if (!lrcLineResult) continue
-        if (lrcLineResult[0].includes(tag)) {
+        if (lrcLineResult[0].includes(tag) || Math.abs(lrcLineResult[0].replace(/\d]/, '').split('.')[1] - mstag) < 100) {
           newLrc.push(line.replace(timeTagRxp, lrcLineResult[0]))
           break
         }
