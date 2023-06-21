@@ -100,8 +100,10 @@ const parseTools = {
     return str.replace(/^[\S\s]*?LyricContent="/, '').replace(/"\/>[\S\s]*?$/, '')
   },
   getIntv(interval) {
-    let [m, s, ms] = interval.split(/:|\./)
-
+    if (!interval.includes('.')) interval += '.0'
+    let arr = interval.split(/:|\./)
+    while (arr.length < 3) arr.unshift('0')
+    const [m, s, ms] = arr
     return parseInt(m) * 3600000 + parseInt(s) * 1000 + parseInt(ms)
   },
   fixRlrcTimeTag(rlrc, lrc) {
@@ -123,7 +125,7 @@ const parseTools = {
         const lrcLineResult = this.rxps.lineTime2.exec(lrcLine)
         if (!lrcLineResult) continue
         const t2 = this.getIntv(lrcLineResult[1])
-        if (Math.abs(t1 - t2) < 10) {
+        if (Math.abs(t1 - t2) < 100) {
           newLrc.push(line.replace(this.rxps.lineTime2, lrcLineResult[0]))
           break
         }
@@ -140,21 +142,25 @@ const parseTools = {
     const tlrcLines = tlrc.split('\n')
     let lrcLines = lrc.split('\n')
     // let temp = []
-    const timeTagRxp = /^\[[\d:.]+\]/
     let newLrc = []
     tlrcLines.forEach((line) => {
-      const result = timeTagRxp.exec(line)
+      const result = this.rxps.lineTime2.exec(line)
       if (!result) return
-      const words = line.replace(timeTagRxp, '')
+      const words = line.replace(this.rxps.lineTime2, '')
       if (!words.trim()) return
-      const tag = result[0].replace(/\d]/, '').replace(this.rxps.timeLabelFixRxp, '')
+      let time = result[1]
+      if (time.includes('.')) {
+        time += ''.padStart(3 - time.split('.')[1].length, '0')
+      }
+      const t1 = this.getIntv(time)
 
       while (lrcLines.length) {
         const lrcLine = lrcLines.shift()
-        const lrcLineResult = timeTagRxp.exec(lrcLine)
+        const lrcLineResult = this.rxps.lineTime2.exec(lrcLine)
         if (!lrcLineResult) continue
-        if (lrcLineResult[0].includes(tag)) {
-          newLrc.push(line.replace(timeTagRxp, lrcLineResult[0]))
+        const t2 = this.getIntv(lrcLineResult[1])
+        if (Math.abs(t1 - t2) < 100) {
+          newLrc.push(line.replace(this.rxps.lineTime2, lrcLineResult[0]))
           break
         }
         // temp.push(line)

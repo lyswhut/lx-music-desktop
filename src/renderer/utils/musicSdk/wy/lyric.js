@@ -126,7 +126,10 @@ const parseTools = {
     })
   },
   getIntv(interval) {
-    let [m, s, ms] = interval.split(/:|\./)
+    if (!interval.includes('.')) interval += '.0'
+    let arr = interval.split(/:|\./)
+    while (arr.length < 3) arr.unshift('0')
+    const [m, s, ms] = arr
     return parseInt(m) * 3600000 + parseInt(s) * 1000 + parseInt(ms)
   },
   fixTimeTag(lrc, targetlrc) {
