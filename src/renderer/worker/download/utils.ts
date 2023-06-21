@@ -1,6 +1,7 @@
 import { DOWNLOAD_STATUS, QUALITYS } from '@common/constants'
 import { filterFileName } from '@common/utils/common'
 import { joinPath } from '@common/utils/nodejs'
+import { mergeLyrics } from './lrcTool'
 import fs from 'fs'
 
 /**
@@ -9,8 +10,9 @@ import fs from 'fs'
  * @param {*} lrc
  * @param {*} format
  */
-export const saveLrc = async(filePath: string, lrc: string, format: LX.LyricFormat) => {
+export const saveLrc = async(lrcData: { lrc: string, tlrc: string | null, rlrc: string | null }, filePath: string, format: LX.LyricFormat) => {
   const iconv = await import('iconv-lite')
+  const lrc = mergeLyrics(lrcData.lrc, lrcData.tlrc, lrcData.rlrc)
   switch (format) {
     case 'gbk':
       fs.writeFile(filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), err => {

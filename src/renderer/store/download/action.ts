@@ -148,19 +148,22 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
       : Promise.resolve(null),
   ]
   void Promise.all(tasks).then(([imgUrl, lyrics]) => {
-    let lyric: null | string = null
-    if (lyrics?.lyric) {
-      lyric = fixKgLyric(lyrics.lyric)
-      if (appSetting['download.isEmbedLyricT'] && lyrics.tlyric) lyric += '\n' + lyrics.tlyric + '\n'
-      if (appSetting['download.isEmbedLyricR'] && lyrics.rlyric) lyric += '\n' + lyrics.rlyric + '\n'
+    const lrcData = {
+      lrc: '',
+      tlrc: null as string | null,
+      rlrc: null as string | null,
+    }
+    if (lyrics) {
+      lrcData.lrc = lyrics.lyric
+      if (appSetting['download.isEmbedLyricT'] && lyrics.tlyric) lrcData.tlrc = lyrics.tlyric
+      if (appSetting['download.isEmbedLyricR'] && lyrics.rlyric) lrcData.rlrc = lyrics.rlyric
     }
     void window.lx.worker.download.writeMeta(downloadInfo.metadata.filePath, {
       title: downloadInfo.metadata.musicInfo.name,
       artist: downloadInfo.metadata.musicInfo.singer,
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
-      lyrics: lyric,
-    })
+    }, lrcData)
   })
 }
 
@@ -177,11 +180,13 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
   }).then(lrcs => {
     if (lrcs.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
-      let lyric = lrcs.lyric
-      if (appSetting['download.isDownloadTLrc'] && lrcs.tlyric) lyric += '\n' + lrcs.tlyric + '\n'
-      if (appSetting['download.isDownloadRLrc'] && lrcs.rlyric) lyric += '\n' + lrcs.rlyric + '\n'
-      void window.lx.worker.download.saveLrc(downloadInfo.metadata.filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'),
-        lyric, appSetting['download.lrcFormat'])
+      const lrcData = {
+        lrc: lrcs.lyric,
+        tlrc: appSetting['download.isDownloadTLrc'] && lrcs.tlyric ? lrcs.tlyric : null,
+        rlrc: appSetting['download.isDownloadRLrc'] && lrcs.rlyric ? lrcs.rlyric : null,
+      }
+      void window.lx.worker.download.saveLrc(lrcData, downloadInfo.metadata.filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'),
+        appSetting['download.lrcFormat'])
     }
   })
 }
