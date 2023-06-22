@@ -49,7 +49,7 @@ export default {
     }
     return {
       singer: decodeName(formatSingerName(rawData.Singers, 'name')),
-      name: decodeName(rawData.SongName),
+      name: decodeName(rawData.OriSongName),
       albumName: decodeName(rawData.AlbumName),
       albumId: rawData.AlbumID,
       songmid: rawData.Audioid,
