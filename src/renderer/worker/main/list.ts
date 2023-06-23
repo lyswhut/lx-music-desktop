@@ -82,7 +82,7 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
 export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'disorder', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
   // console.log(sortType, fieldName, localeId)
   // const locale = new Intl.Locale(localeId)
-  if (sortType ==disorder' && (fieldName =='name' || fieldName == 'singer' || fieldName =='albumName' || fieldName =='interval' || fieldName =='source')){
+  if (sortType == 'disorder' && (fieldName =='name' || fieldName == 'singer' || fieldName =='albumName' || fieldName =='interval' || fieldName =='source')){
         
     let change_num:number[]=[]
         
