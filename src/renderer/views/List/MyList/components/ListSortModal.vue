@@ -57,7 +57,7 @@
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_type_disorder" v-model="sortType" name="list_sort_modal_type"
-              need="need" value=disorder" :label="$t('list_sort_modal_by_disorder')"
+              need="need" value="disorder" :label="$t('list_sort_modal_by_disorder')"
             />
           </li>
         </ul>
