@@ -285,7 +285,7 @@
     "bufferutil": "^4.0.7",
     "comlink": "~4.3.1",
     "crypto-js": "^4.1.1",
-    "electron-font-manager": "github:lyswhut/electron-font-manager#60348260de557753c870cc671c56da6f58fd0ef7",
+    "electron-font-manager": "github:lyswhut/electron-font-manager#6d2f5ecf850c4fe34812b9394913680462ee0dae",
     "electron-log": "^4.4.8",
     "electron-store": "^8.1.0",
     "font-list": "^1.5.0",
