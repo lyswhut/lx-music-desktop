@@ -79,10 +79,10 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
  * @param localeId 排序语言
  * @returns
  */
-export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
+export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'disorder', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
   // console.log(sortType, fieldName, localeId)
   // const locale = new Intl.Locale(localeId)
-  if (sortType == 'unorder' && (fieldName =='name' || fieldName == 'singer' || fieldName =='albumName' || fieldName =='interval' || fieldName =='source')){
+  if (sortType ==disorder' && (fieldName =='name' || fieldName == 'singer' || fieldName =='albumName' || fieldName =='interval' || fieldName =='source')){
         
     let change_num:number[]=[]
         
