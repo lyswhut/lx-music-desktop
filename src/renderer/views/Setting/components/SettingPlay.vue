@@ -16,11 +16,17 @@ dd
   .gap-top
     base-checkbox(id="setting_player_lyric_play_lxlrc" :model-value="appSetting['player.isPlayLxlrc']" :label="$t('setting__play_lyric_lxlrc')" @update:model-value="updateSetting({'player.isPlayLxlrc': $event})")
   .gap-top
-    base-checkbox(id="setting_player_highQuality" :model-value="appSetting['player.highQuality']" :label="$t('setting__play_quality')" @update:model-value="updateSetting({'player.highQuality': $event})")
-  .gap-top
     base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
   .gap-top
     base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :model-value="appSetting['player.isMediaDeviceRemovedStopPlay']" :label="$t('setting__play_mediaDevice_remove_stop_play')" @update:model-value="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})")
+  .gap-top
+    base-checkbox(id="setting__play_quality_auto_lower_quality_on_error" :model-value="appSetting['player.autoLowerQualityOnError']" :label="$t('setting__play_quality_auto_lower_quality_on_error')" @update:model-value="updateSetting({'player.autoLowerQualityOnError': $event})")
+
+dd(:aria-label="$t('setting__play_quality_first_title')")
+  h3#play_firstPlayQuality {{ $t('setting__play_quality_first') }}
+  div
+    base-selection.gap-left(:list="playQualityList" item-key="qualityId" item-name="label" :model-value="appSetting['player.firstPlayQuality']" @update:model-value="updateSetting({'player.firstPlayQuality': $event})")
+
 dd(:aria-label="$t('setting__play_mediaDevice_title')")
   h3#play_mediaDevice {{ $t('setting__play_mediaDevice') }}
   div
@@ -33,7 +39,7 @@ import { hasInitedAdvancedAudioFeatures } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-
+import { QUALITYS_SUPPORT } from '@common/constants'
 
 export default {
   name: 'SettingPlay',
@@ -83,12 +89,35 @@ export default {
     })
 
 
+    const getQualityTypeName = (quality) => {
+      switch (quality) {
+        case 'flac24bit':
+          return t('download__lossless') + ' FLAC Hires'
+        case 'flac':
+        case 'ape':
+        case 'wav':
+          return t('download__lossless') + ' ' + quality.toUpperCase()
+        case '320k':
+          return t('download__high_quality') + ' ' + quality.toUpperCase()
+        case '192k':
+        case '128k':
+          return t('download__normal') + ' ' + quality.toUpperCase()
+      }
+    }
+
+    const playQualityList = ref([])
+    QUALITYS_SUPPORT.forEach(item => {
+      playQualityList.value.push({ qualityId: item, label: getQualityTypeName(item) })
+    })
+
+
     return {
       appSetting,
       updateSetting,
       mediaDevices,
       mediaDeviceId,
       handleMediaDeviceIdChnage,
+      playQualityList,
     }
   },
 }

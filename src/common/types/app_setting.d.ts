@@ -89,9 +89,14 @@ declare global {
       'player.togglePlayMethod': 'listLoop' | 'random' | 'list' | 'singleLoop' | 'none'
 
       /**
-       * 是否优先播放320k音质
+       * 优先播放音质
        */
-      'player.highQuality': boolean
+      'player.firstPlayQuality': LX.Quality
+
+      /**
+       * 获取当前音质错误时自动降低音质
+       */
+      'player.autoLowerQualityOnError': boolean
 
       /**
        * 是否显示任务栏进度条
