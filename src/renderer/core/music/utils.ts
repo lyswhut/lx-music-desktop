@@ -10,6 +10,7 @@ import {
 import { appSetting } from '@renderer/store/setting'
 import { langS2T, toNewMusicInfo, toOldMusicInfo } from '@renderer/utils'
 import { requestMsg } from '@renderer/utils/message'
+import { QUALITYS } from '@common/constants'
 
 
 const getOtherSourcePromises = new Map()
@@ -138,16 +139,33 @@ export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<
   return null
 }
 
-export const getPlayQuality = (highQuality: boolean, musicInfo: LX.Music.MusicInfoOnline): LX.Quality => {
-  let type: LX.Quality = '128k'
-  let list = qualityList.value[musicInfo.source]
-  if (highQuality && musicInfo.meta._qualitys['320k'] && list && list.includes('320k')) type = '320k'
-  return type
+const sliceQualityList = (startQuality: LX.Quality, skipNow?: boolean) => {
+  let startNum = QUALITYS.indexOf(startQuality)
+  if (skipNow) startNum = QUALITYS.indexOf(startQuality) + 1
+
+  const list = QUALITYS.slice(startNum)
+  return list
 }
 
-export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggleSource, isRefresh, retryedSource = [] }: {
+export const getPlayQuality = (musicInfo: LX.Music.MusicInfoOnline): LX.Quality => {
+  let list = qualityList.value[musicInfo.source]
+  let firstPlayQuality: LX.Quality = appSetting['player.firstPlayQuality']
+
+  if (!list) return firstPlayQuality
+  if (!list.includes(firstPlayQuality)) firstPlayQuality = list[list.length - 1]
+
+  const rangeType = sliceQualityList(firstPlayQuality)
+  for (const quality of rangeType) {
+    if (musicInfo.meta._qualitys[quality]) return quality
+  }
+
+  return '128k'
+}
+
+export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggleSource, isRefresh, retryedSource = [], rawQuality = '128k' }: {
   musicInfos: LX.Music.MusicInfoOnline[]
   quality?: LX.Quality
+  rawQuality?: LX.Quality
   onToggleSource: (musicInfo?: LX.Music.MusicInfoOnline) => void
   isRefresh: boolean
   retryedSource?: LX.OnlineSource[]
@@ -164,14 +182,23 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     if (!assertApiSupport(musicInfo.source)) continue
-    itemQuality = quality ?? getPlayQuality(appSetting['player.highQuality'], musicInfo)
+    itemQuality = quality ?? getPlayQuality(musicInfo)
     if (!musicInfo.meta._qualitys[itemQuality]) continue
 
     console.log('try toggle to: ', musicInfo.source, musicInfo.name, musicInfo.singer, musicInfo.interval)
     onToggleSource(musicInfo)
     break
   }
-  if (!musicInfo || !itemQuality) throw new Error(window.i18n.t('toggle_source_failed'))
+
+  if (!musicInfo || !itemQuality) {
+    const rangeType = sliceQualityList(rawQuality, true)
+    if (appSetting['player.autoLowerQualityOnError'] && rawQuality != '128k' && rangeType.length > 0) {
+      for (const type of rangeType) {
+        if (musicInfo.meta._qualitys[type]) return getOnlineOtherSourceMusicUrl({ musicInfos, quality: type, onToggleSource, isRefresh, retryedSource, rawQuality })
+      }
+    }
+    throw new Error(window.i18n.t('toggle_source_failed'))
+  }
 
   const cachedUrl = await getStoreMusicUrl(musicInfo, itemQuality)
   if (cachedUrl && !isRefresh) return { url: cachedUrl, musicInfo, quality: itemQuality, isFromCache: true }
@@ -190,16 +217,17 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   }).catch((err: any) => {
     if (err.message == requestMsg.tooManyRequests) throw err
     console.log(err)
-    return getOnlineOtherSourceMusicUrl({ musicInfos, quality, onToggleSource, isRefresh, retryedSource })
+    return getOnlineOtherSourceMusicUrl({ musicInfos, quality, onToggleSource, isRefresh, retryedSource, rawQuality })
   })
 }
 
 /**
  * 获取在线音乐URL
  */
-export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSource, isRefresh, allowToggleSource }: {
+export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSource, isRefresh, allowToggleSource, rawQuality }: {
   musicInfo: LX.Music.MusicInfoOnline
   quality?: LX.Quality
+  rawQuality?: LX.Quality
   isRefresh: boolean
   allowToggleSource: boolean
   onToggleSource: (musicInfo?: LX.Music.MusicInfoOnline) => void
@@ -209,8 +237,9 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
   quality: LX.Quality
   isFromCache: boolean
 }> => {
-  // console.log(musicInfo.source)
-  const targetQuality = quality ?? getPlayQuality(appSetting['player.highQuality'], musicInfo)
+  const targetQuality = quality ?? getPlayQuality(musicInfo)
+  rawQuality = rawQuality ?? targetQuality
+  console.log(targetQuality, rawQuality)
 
   let reqPromise
   try {
@@ -218,12 +247,29 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
   } catch (err: any) {
     reqPromise = Promise.reject(err)
   }
+
   return reqPromise.then(({ url, type }: { url: string, type: LX.Quality }) => {
     return { musicInfo, url, quality: type, isFromCache: false }
   }).catch(async(err: any) => {
     console.log(err)
+
+    const rangeType = sliceQualityList(targetQuality, true)
+    if (targetQuality != '128k' && rangeType.length > 0 && appSetting['player.autoLowerQualityOnError']) {
+      for (const type of rangeType) {
+        if (musicInfo.meta._qualitys[type]) return handleGetOnlineMusicUrl({
+          musicInfo,
+          quality: type,
+          onToggleSource,
+          isRefresh,
+          allowToggleSource,
+          rawQuality
+        })
+      }
+    }
+
     if (!allowToggleSource || err.message == requestMsg.tooManyRequests) throw err
     onToggleSource()
+
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     return await getOtherSource(musicInfo).then(otherSource => {
       console.log('find otherSource', otherSource)
@@ -231,7 +277,8 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
         return getOnlineOtherSourceMusicUrl({
           musicInfos: [...otherSource],
           onToggleSource,
-          quality,
+          quality: rawQuality ?? quality,
+          rawQuality: rawQuality ?? quality,
           isRefresh,
           retryedSource: [musicInfo.source],
         })
