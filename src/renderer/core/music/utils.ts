@@ -162,9 +162,9 @@ export const getPlayQuality = (musicInfo: LX.Music.MusicInfoOnline): LX.Quality 
   return '128k'
 }
 
-export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggleSource, isRefresh, retryedSource = [] }: {
+export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality = '128k', onToggleSource, isRefresh, retryedSource = [] }: {
   musicInfos: LX.Music.MusicInfoOnline[]
-  quality?: LX.Quality | null
+  quality?: LX.Quality
   onToggleSource: (musicInfo?: LX.Music.MusicInfoOnline) => void
   isRefresh: boolean
   retryedSource?: LX.OnlineSource[]
@@ -175,22 +175,21 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   isFromCache: boolean
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
-  let itemQuality: LX.Quality | null = null
+
   // eslint-disable-next-line no-cond-assign
   while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     if (!assertApiSupport(musicInfo.source)) continue
-    itemQuality = quality ?? getPlayQuality(musicInfo)
-    if (!musicInfo.meta._qualitys[itemQuality]) continue
+    if (!musicInfo.meta._qualitys[quality]) continue
 
     console.log('try toggle to: ', musicInfo.source, musicInfo.name, musicInfo.singer, musicInfo.interval)
     onToggleSource(musicInfo)
     break
   }
 
-  if (!musicInfo || !itemQuality) {
-    if (appSetting['player.autoLowerQualityOnError'] && quality && quality != '128k') {
+  if (!musicInfo) {
+    if (appSetting['player.autoLowerQualityOnError'] && quality != '128k') {
       const rangeType = sliceQualityList(quality, true)
       const type = rangeType[0]
       if (rangeType.length > 0 && type) return getOnlineOtherSourceMusicUrl({ musicInfos, quality: type, onToggleSource, isRefresh, retryedSource: [] })
@@ -198,12 +197,12 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
     throw new Error(window.i18n.t('toggle_source_failed'))
   }
 
-  const cachedUrl = await getStoreMusicUrl(musicInfo, itemQuality)
-  if (cachedUrl && !isRefresh) return { url: cachedUrl, musicInfo, quality: itemQuality, isFromCache: true }
+  const cachedUrl = await getStoreMusicUrl(musicInfo, quality)
+  if (cachedUrl && !isRefresh) return { url: cachedUrl, musicInfo, quality, isFromCache: true }
 
   let reqPromise
   try {
-    reqPromise = musicSdk[musicInfo.source].getMusicUrl(toOldMusicInfo(musicInfo), itemQuality).promise
+    reqPromise = musicSdk[musicInfo.source].getMusicUrl(toOldMusicInfo(musicInfo), quality).promise
   } catch (err: any) {
     reqPromise = Promise.reject(err)
   }
@@ -215,7 +214,7 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   }).catch((err: any) => {
     if (err.message == requestMsg.tooManyRequests) throw err
     console.log(err)
-    return getOnlineOtherSourceMusicUrl({ musicInfos, quality: quality ?? itemQuality, onToggleSource, isRefresh, retryedSource })
+    return getOnlineOtherSourceMusicUrl({ musicInfos, quality, onToggleSource, isRefresh, retryedSource })
   })
 }
 
@@ -275,7 +274,7 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
         return getOnlineOtherSourceMusicUrl({
           musicInfos: [...otherSource],
           onToggleSource,
-          quality: rawQuality ?? quality,
+          quality: rawQuality ?? targetQuality,
           isRefresh,
           retryedSource: [musicInfo.source],
         })
