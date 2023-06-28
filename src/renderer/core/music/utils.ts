@@ -162,10 +162,9 @@ export const getPlayQuality = (musicInfo: LX.Music.MusicInfoOnline): LX.Quality 
   return '128k'
 }
 
-export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggleSource, isRefresh, retryedSource = [], rawQuality = '128k' }: {
+export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggleSource, isRefresh, retryedSource = [] }: {
   musicInfos: LX.Music.MusicInfoOnline[]
-  quality?: LX.Quality
-  rawQuality?: LX.Quality
+  quality?: LX.Quality | null
   onToggleSource: (musicInfo?: LX.Music.MusicInfoOnline) => void
   isRefresh: boolean
   retryedSource?: LX.OnlineSource[]
@@ -191,11 +190,10 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   }
 
   if (!musicInfo || !itemQuality) {
-    const rangeType = sliceQualityList(rawQuality, true)
-    if (appSetting['player.autoLowerQualityOnError'] && rawQuality != '128k' && rangeType.length > 0) {
-      for (const type of rangeType) {
-        if (musicInfo.meta._qualitys[type]) return getOnlineOtherSourceMusicUrl({ musicInfos, quality: type, onToggleSource, isRefresh, retryedSource, rawQuality })
-      }
+    if (appSetting['player.autoLowerQualityOnError'] && quality && quality != '128k') {
+      const rangeType = sliceQualityList(quality, true)
+      const type = rangeType[0]
+      if (rangeType.length > 0 && type) return getOnlineOtherSourceMusicUrl({ musicInfos, quality: type, onToggleSource, isRefresh, retryedSource: [] })
     }
     throw new Error(window.i18n.t('toggle_source_failed'))
   }
@@ -217,7 +215,7 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   }).catch((err: any) => {
     if (err.message == requestMsg.tooManyRequests) throw err
     console.log(err)
-    return getOnlineOtherSourceMusicUrl({ musicInfos, quality, onToggleSource, isRefresh, retryedSource, rawQuality })
+    return getOnlineOtherSourceMusicUrl({ musicInfos, quality: quality ?? itemQuality, onToggleSource, isRefresh, retryedSource })
   })
 }
 
@@ -278,7 +276,6 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
           musicInfos: [...otherSource],
           onToggleSource,
           quality: rawQuality ?? quality,
-          rawQuality: rawQuality ?? quality,
           isRefresh,
           retryedSource: [musicInfo.source],
         })
