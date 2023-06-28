@@ -77,6 +77,8 @@ export const DOWNLOAD_STATUS = {
 
 export const QUALITYS = ['flac24bit', 'flac', 'wav', 'ape', '320k', '192k', '128k'] as const
 
+export const QUALITYS_SUPPORT = ['128k', '320k', 'flac', 'flac24bit'] as const
+
 export const SYNC_CODE = {
   helloMsg: 'Hello~::^-^::~v3~',
   idPrefix: 'OjppZDo6',
