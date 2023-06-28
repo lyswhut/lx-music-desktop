@@ -176,12 +176,15 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality = '128k'
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
 
+  if (musicInfos.length <= 0) throw new Error(window.i18n.t('toggle_source_failed'))
+
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
-    if (retryedSource.includes(musicInfo.source)) continue
-    retryedSource.push(musicInfo.source)
-    if (!assertApiSupport(musicInfo.source)) continue
-    if (!musicInfo.meta._qualitys[quality]) continue
+  for (const info of musicInfos) {
+    if (retryedSource.includes(info.source)) continue
+    retryedSource.push(info.source)
+    if (!assertApiSupport(info.source)) continue
+    if (!info.meta._qualitys[quality]) continue
+    musicInfo = info
 
     console.log('try toggle to: ', musicInfo.source, musicInfo.name, musicInfo.singer, musicInfo.interval)
     onToggleSource(musicInfo)
