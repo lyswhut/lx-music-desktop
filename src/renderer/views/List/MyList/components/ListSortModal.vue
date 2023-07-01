@@ -2,7 +2,7 @@
   <material-modal :show="visible" teleport="#view" bg-close @close="closeModal" @after-leave="handleAfterLeave">
     <main :class="$style.main">
       <div :class="$style.header">
-        <h2>{{ listInfo.name }}</h2>
+        <h2>{{ listName }}</h2>
       </div>
       <section>
         <h3 :class="$style.title">{{ $t('list_sort_modal_by_field') }}</h3>
@@ -65,9 +65,11 @@
 </template>
 
 <script>
-import { ref } from '@common/utils/vueTools'
+import { ref, computed } from '@common/utils/vueTools'
 // import { dialog } from '@renderer/plugins/Dialog'
 import { getListMusics, updateListMusicsPosition } from '@renderer/store/list/action'
+import { useI18n } from '@/lang'
+import { LIST_IDS } from '@common/constants'
 
 
 export default {
@@ -83,7 +85,7 @@ export default {
   },
   emits: ['update:visible'],
   setup(props, { emit }) {
-    // const { t } = useI18n()
+    const t = useI18n()
     const sortField = ref('')
     const sortType = ref('')
     const closeModal = () => {
@@ -111,12 +113,25 @@ export default {
       closeModal()
       updateListMusicsPosition({ listId: props.listInfo.id, position: 0, ids: list.map(m => m.id) })
     }
+
+    const listName = computed(() => {
+      switch (props.listInfo.id) {
+        case LIST_IDS.DEFAULT:
+          return t(props.listInfo.name)
+        case LIST_IDS.LOVE:
+          return t(props.listInfo.name)
+        default:
+          return props.listInfo.name
+      }
+    })
+
     return {
       sortField,
       sortType,
       closeModal,
       handleSort,
       handleAfterLeave,
+      listName,
     }
   },
 }
