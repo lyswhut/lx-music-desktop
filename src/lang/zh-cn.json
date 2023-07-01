@@ -130,6 +130,7 @@
   "list_sort_modal_by_time": "时长",
   "list_sort_modal_by_type": "排序类别",
   "list_sort_modal_by_up": "升序",
+  "list_sort_modal_by_disorder": "随机乱序",
   "list_sort_modal_tip_confirm": "你确定要这么做吗？",
   "list_update_modal__auto_update": "自动更新",
   "list_update_modal__tips": "💡 每次启动软件时将会自动更新已勾选“自动更新”的列表",
