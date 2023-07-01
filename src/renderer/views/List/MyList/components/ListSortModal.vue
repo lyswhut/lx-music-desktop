@@ -22,7 +22,7 @@
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_album" v-model="sortField" name="list_sort_modal_field"
-              need="need" value="album" :label="$t('list_sort_modal_by_album')"
+              need="need" value="albumName" :label="$t('list_sort_modal_by_album')"
             />
           </li>
           <li :class="$style.listItem">
