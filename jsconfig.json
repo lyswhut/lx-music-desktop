@@ -9,5 +9,10 @@
       "@common/*": ["src/common/*"],
     }
   },
+  "vueCompilerOptions": {
+    "plugins": [
+      "@vue/language-plugin-pug"
+    ]
+  },
   "exclude": ["node_modules", "build", "dist"]
 }
