@@ -5,8 +5,6 @@ const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = re
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
 import pkg from '../../../../../package.json'
 
-console.log(process.env.version)
-
 for (const key of Object.keys(process.env)) {
   if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]
 }
