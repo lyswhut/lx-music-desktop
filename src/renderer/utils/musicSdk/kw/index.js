@@ -1,7 +1,7 @@
 import { httpFetch } from '../../request'
 import tipSearch from './tipSearch'
 import musicSearch from './musicSearch'
-import { formatSinger, getToken } from './util'
+import { formatSinger } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
 import pic from './pic'
@@ -94,9 +94,9 @@ const kw = {
     return `http://www.kuwo.cn/play_detail/${songInfo.songmid}`
   },
 
-  init() {
-    return getToken()
-  },
+  // init() {
+  //   return getToken()
+  // },
 }
 
 export default kw
