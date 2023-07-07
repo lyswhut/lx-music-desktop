@@ -1,5 +1,6 @@
-import { decodeName } from '../../index'
-import { tokenRequest } from './util'
+// import { decodeName } from '../../index'
+// import { tokenRequest } from './util'
+import { httpFetch } from '../../request'
 
 export default {
   regExps: {
@@ -7,24 +8,25 @@ export default {
   },
   requestObj: null,
   async tipSearchBySong(str) {
+    // 报错403，加了referer还是有问题（直接换一个
+    // this.requestObj = await tokenRequest(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`)
+
     this.cancelTipSearch()
-    this.requestObj = await tokenRequest(`http://www.kuwo.cn/api/www/search/searchKey?key=${encodeURIComponent(str)}`)
-    return this.requestObj.promise.then(({ body }) => {
-      // console.log(body)
-      if (body.code !== 200) return Promise.reject(new Error('请求失败'))
-      return body
+    this.requestObj = httpFetch(`https://tips.kuwo.cn/t.s?corp=kuwo&newver=3&p2p=1&notrace=0&c=mbox&w=${encodeURIComponent(str)}&encoding=utf8&rformat=json`, {
+      Referer: 'http://www.kuwo.cn/',
+    })
+    return this.requestObj.promise.then(({ body, statusCode }) => {
+      if (statusCode != 200 || !body.WORDITEMS) return Promise.reject(new Error('请求失败'))
+      return body.WORDITEMS
     })
   },
   handleResult(rawData) {
-    return rawData.map(info => {
-      let matchResult = info.match(this.regExps.relWord)
-      return matchResult ? decodeName(matchResult[1]) : ''
-    })
+    return rawData.map(item => item.RELWORD)
   },
   cancelTipSearch() {
     if (this.requestObj && this.requestObj.cancelHttp) this.requestObj.cancelHttp()
   },
   async search(str) {
-    return this.tipSearchBySong(str).then(result => this.handleResult(result.data))
+    return this.tipSearchBySong(str).then(result => this.handleResult(result))
   },
 }
