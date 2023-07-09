@@ -3,7 +3,7 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
 // import { debug } from '../../utils/env'
-import { formatSinger } from './util'
+import { formatSinger } from './utils'
 
 export default {
   regExps: {

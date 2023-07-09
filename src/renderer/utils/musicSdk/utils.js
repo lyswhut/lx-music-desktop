@@ -48,3 +48,32 @@ export const formatSingerName = (singers, nameKey = 'name', join = '、') => {
   }
   return decodeName(String(singers ?? ''))
 }
+
+/**
+ * 音质排序
+ * @param {*} array
+ */
+export const sortQualityArray = array => {
+  const qualityMap = {
+    flac24bit: 4,
+    flac: 3,
+    '320k': 2,
+    '128k': 1,
+  }
+  const rawQualityArray = []
+  const newQualityArray = []
+
+  array.forEach((item, index) => {
+    const type = qualityMap[item.type]
+    if (!type) return
+    rawQualityArray.push({ type, index })
+  })
+
+  rawQualityArray.sort((a, b) => a.type - b.type)
+
+  rawQualityArray.forEach(item => {
+    newQualityArray.push(array[item.index])
+  })
+
+  return newQualityArray
+}
