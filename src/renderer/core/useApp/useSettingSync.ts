@@ -27,7 +27,7 @@ export default () => {
   })
 
   watch(() => appSetting['common.font'], (val) => {
-    document.documentElement.style.fontFamily = val
+    document.documentElement.style.fontFamily = /\s/.test(val) ? `"${val}"` : val
   }, {
     immediate: true,
   })

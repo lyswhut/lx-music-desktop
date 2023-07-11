@@ -8,6 +8,7 @@ module.exports = {
     'vue',
     'eslint-plugin-n',
     '@types/ws',
+    'eslint-config-standard-with-typescript',
   ],
 
   // target: 'newest',
@@ -25,5 +26,6 @@ module.exports = {
   // filter: [
   //   'eslint-plugin-n',
   //   'electron',
+  //   'eslint-config-standard-with-typescript',
   // ],
 }
