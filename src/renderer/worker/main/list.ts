@@ -1,6 +1,6 @@
 // import { throttle } from '@common/utils'
 
-import { filterFileName, sortInsert, similar, arrPushByPosition } from '@common/utils/common'
+import { filterFileName, sortInsert, similar, arrPushByPosition, arrShuffle } from '@common/utils/common'
 import { joinPath, saveStrToFile } from '@common/utils/nodejs'
 import { createLocalMusicInfo } from '@renderer/utils/music'
 
@@ -79,45 +79,14 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
  * @param localeId 排序语言
  * @returns
  */
-export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'disorder', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
+export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'random', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
   // console.log(sortType, fieldName, localeId)
   // const locale = new Intl.Locale(localeId)
-  if (sortType == 'disorder' && (fieldName =='name' || fieldName == 'singer' || fieldName =='albumName' || fieldName =='interval' || fieldName =='source')){
-
-    let change_num:number[]=[]
-
-    for(let i:number = 0;i<list.length;i++){
-      if(change_num.length == 0){
-          let r_num:number = Math.floor(Math.random()*list.length) 
-          change_num.push(r_num)
-      }
-      else{
-          let sign:boolean = false
-          do{
-              let r_num:number = Math.floor(Math.random()*list.length) 
-              for(let j:number = 0 ; j<change_num.length; j++){
-                  if(change_num[j] == r_num){
-                      break;
-                  }
-                  if (j == change_num.length-1){
-                      change_num.push(r_num)
-                      sign = true
-                  }
-              }
-          }while(!sign)
-
-      }
-
-    }
-
-    let list2:LX.Music.MusicInfo[]=[]
-    for(let k:number = 0;k<change_num.length;k++){
-        list2.push(list[change_num[k]])
-    }
-    return list2
-  }
-  else{
-    if (sortType == 'up') {
+  switch (sortType) {
+    case 'random':
+      arrShuffle(list)
+      break
+    case 'up':
       if (fieldName == 'interval') {
         list.sort((a, b) => {
           if (a.interval == null) {
@@ -144,7 +113,8 @@ export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up
             break
         }
       }
-    } else {
+      break
+    case 'down':
       if (fieldName == 'interval') {
         list.sort((a, b) => {
           if (a.interval == null) {
@@ -171,11 +141,9 @@ export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up
             break
         }
       }
-    }
-    return list
-
+      break
   }
-  
+  return list
 }
 
 const variantRxp = /(\(|（).+(\)|）)/g

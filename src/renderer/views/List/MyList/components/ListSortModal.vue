@@ -10,31 +10,31 @@
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_name" v-model="sortField" name="list_sort_modal_field" :aria-label="$t('list_sort_modal_by_name')"
-              need="need" value="name" :label="$t('list_sort_modal_by_name')"
+              need="need" value="name" :disabled="disabledSortFislds" :label="$t('list_sort_modal_by_name')"
             />
           </li>
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_singer" v-model="sortField" name="list_sort_modal_field"
-              need="need" value="singer" :label="$t('list_sort_modal_by_singer')"
+              need="need" value="singer" :disabled="disabledSortFislds" :label="$t('list_sort_modal_by_singer')"
             />
           </li>
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_album" v-model="sortField" name="list_sort_modal_field"
-              need="need" value="albumName" :label="$t('list_sort_modal_by_album')"
+              need="need" value="albumName" :disabled="disabledSortFislds" :label="$t('list_sort_modal_by_album')"
             />
           </li>
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_time" v-model="sortField" name="list_sort_modal_field"
-              need="need" value="interval" :label="$t('list_sort_modal_by_time')"
+              need="need" value="interval" :disabled="disabledSortFislds" :label="$t('list_sort_modal_by_time')"
             />
           </li>
           <li :class="$style.listItem">
             <base-checkbox
               id="list_sort_modal_field_source" v-model="sortField" name="list_sort_modal_field"
-              need="need" value="source" :label="$t('list_sort_modal_by_source')"
+              need="need" value="source" :disabled="disabledSortFislds" :label="$t('list_sort_modal_by_source')"
             />
           </li>
         </ul>
@@ -56,8 +56,8 @@
           </li>
           <li :class="$style.listItem">
             <base-checkbox
-              id="list_sort_modal_type_disorder" v-model="sortType" name="list_sort_modal_type"
-              need="need" value="disorder" :label="$t('list_sort_modal_by_disorder')"
+              id="list_sort_modal_type_random" v-model="sortType" name="list_sort_modal_type"
+              need="need" value="random" :label="$t('list_sort_modal_by_random')"
             />
           </li>
         </ul>
@@ -102,7 +102,7 @@ export default {
       sortType.value = ''
     }
     const verify = () => {
-      return !!sortField.value && !!sortType.value
+      return !!sortType.value && (!!sortField.value || sortType.value == 'random')
     }
     const handleSort = async() => {
       if (!verify()) return
@@ -131,9 +131,14 @@ export default {
       }
     })
 
+    const disabledSortFislds = computed(() => {
+      return sortType.value == 'random'
+    })
+
     return {
       sortField,
       sortType,
+      disabledSortFislds,
       closeModal,
       handleSort,
       handleAfterLeave,
