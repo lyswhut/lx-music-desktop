@@ -125,6 +125,7 @@
   "list_sort_modal_by_down": "Descending",
   "list_sort_modal_by_field": "Sort field",
   "list_sort_modal_by_name": "Song name",
+  "list_sort_modal_by_random": "Random",
   "list_sort_modal_by_singer": "Singer name",
   "list_sort_modal_by_source": "Song source",
   "list_sort_modal_by_time": "Duration",

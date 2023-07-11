@@ -1,6 +1,6 @@
 // import { throttle } from '@common/utils'
 
-import { filterFileName, sortInsert, similar, arrPushByPosition } from '@common/utils/common'
+import { filterFileName, sortInsert, similar, arrPushByPosition, arrShuffle } from '@common/utils/common'
 import { joinPath, saveStrToFile } from '@common/utils/nodejs'
 import { createLocalMusicInfo } from '@renderer/utils/music'
 
@@ -79,63 +79,69 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
  * @param localeId 排序语言
  * @returns
  */
-export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
+export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'random', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
   // console.log(sortType, fieldName, localeId)
   // const locale = new Intl.Locale(localeId)
-  if (sortType == 'up') {
-    if (fieldName == 'interval') {
-      list.sort((a, b) => {
-        if (a.interval == null) {
-          return b.interval == null ? 0 : -1
-        } else return b.interval == null ? 1 : getIntv(a) - getIntv(b)
-      })
-    } else {
-      switch (fieldName) {
-        case 'name':
-        case 'singer':
-        case 'source':
-          list.sort((a, b) => {
-            if (a[fieldName] == null) {
-              return b[fieldName] == null ? 0 : -1
-            } else return b[fieldName] == null ? 1 : a[fieldName].localeCompare(b[fieldName], localeId)
-          })
-          break
-        case 'albumName':
-          list.sort((a, b) => {
-            if (a.meta.albumName == null) {
-              return b.meta.albumName == null ? 0 : -1
-            } else return b.meta.albumName == null ? 1 : a.meta.albumName.localeCompare(b.meta.albumName, localeId)
-          })
-          break
+  switch (sortType) {
+    case 'random':
+      arrShuffle(list)
+      break
+    case 'up':
+      if (fieldName == 'interval') {
+        list.sort((a, b) => {
+          if (a.interval == null) {
+            return b.interval == null ? 0 : -1
+          } else return b.interval == null ? 1 : getIntv(a) - getIntv(b)
+        })
+      } else {
+        switch (fieldName) {
+          case 'name':
+          case 'singer':
+          case 'source':
+            list.sort((a, b) => {
+              if (a[fieldName] == null) {
+                return b[fieldName] == null ? 0 : -1
+              } else return b[fieldName] == null ? 1 : a[fieldName].localeCompare(b[fieldName], localeId)
+            })
+            break
+          case 'albumName':
+            list.sort((a, b) => {
+              if (a.meta.albumName == null) {
+                return b.meta.albumName == null ? 0 : -1
+              } else return b.meta.albumName == null ? 1 : a.meta.albumName.localeCompare(b.meta.albumName, localeId)
+            })
+            break
+        }
       }
-    }
-  } else {
-    if (fieldName == 'interval') {
-      list.sort((a, b) => {
-        if (a.interval == null) {
-          return b.interval == null ? 0 : 1
-        } else return b.interval == null ? -1 : getIntv(b) - getIntv(a)
-      })
-    } else {
-      switch (fieldName) {
-        case 'name':
-        case 'singer':
-        case 'source':
-          list.sort((a, b) => {
-            if (a[fieldName] == null) {
-              return b[fieldName] == null ? 0 : 1
-            } else return b[fieldName] == null ? -1 : b[fieldName].localeCompare(a[fieldName], localeId)
-          })
-          break
-        case 'albumName':
-          list.sort((a, b) => {
-            if (a.meta.albumName == null) {
-              return b.meta.albumName == null ? 0 : 1
-            } else return b.meta.albumName == null ? -1 : b.meta.albumName.localeCompare(a.meta.albumName, localeId)
-          })
-          break
+      break
+    case 'down':
+      if (fieldName == 'interval') {
+        list.sort((a, b) => {
+          if (a.interval == null) {
+            return b.interval == null ? 0 : 1
+          } else return b.interval == null ? -1 : getIntv(b) - getIntv(a)
+        })
+      } else {
+        switch (fieldName) {
+          case 'name':
+          case 'singer':
+          case 'source':
+            list.sort((a, b) => {
+              if (a[fieldName] == null) {
+                return b[fieldName] == null ? 0 : 1
+              } else return b[fieldName] == null ? -1 : b[fieldName].localeCompare(a[fieldName], localeId)
+            })
+            break
+          case 'albumName':
+            list.sort((a, b) => {
+              if (a.meta.albumName == null) {
+                return b.meta.albumName == null ? 0 : 1
+              } else return b.meta.albumName == null ? -1 : b.meta.albumName.localeCompare(a.meta.albumName, localeId)
+            })
+            break
+        }
       }
-    }
+      break
   }
   return list
 }
