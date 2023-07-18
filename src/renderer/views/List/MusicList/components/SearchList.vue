@@ -168,14 +168,20 @@ export default {
       })
     },
     handleKeyDown() {
-      if (!this.resultList.length) return
-      this.selectIndex = this.selectIndex + 1 < this.resultList.length ? this.selectIndex + 1 : 0
-      this.handleScrollList()
+      if (this.resultList.length) {
+        this.selectIndex = this.selectIndex + 1 < this.resultList.length ? this.selectIndex + 1 : 0
+        this.handleScrollList()
+      } else if (this.selectIndex > -1) {
+        this.selectIndex = -1
+      }
     },
     handleKeyUp() {
-      if (!this.resultList.length) return
-      this.selectIndex = this.selectIndex - 1 < -1 ? this.resultList.length - 1 : this.selectIndex - 1
-      this.handleScrollList()
+      if (this.resultList.length) {
+        this.selectIndex = this.selectIndex - 1 < -1 ? this.resultList.length - 1 : this.selectIndex - 1
+        this.handleScrollList()
+      } else if (this.selectIndex > -1) {
+        this.selectIndex = -1
+      }
     },
     handleScrollList() {
       if (this.selectIndex < 0) return

@@ -162,10 +162,18 @@ export default {
       })
     },
     handleKeyDown() {
-      this.selectIndex = this.selectIndex + 1 < this.list.length ? this.selectIndex + 1 : 0
+      if (this.list.length) {
+        this.selectIndex = this.selectIndex + 1 < this.list.length ? this.selectIndex + 1 : 0
+      } else if (this.selectIndex > -1) {
+        this.selectIndex = -1
+      }
     },
     handleKeyUp() {
-      this.selectIndex = this.selectIndex - 1 < -1 ? this.list.length - 1 : this.selectIndex - 1
+      if (this.list.length) {
+        this.selectIndex = this.selectIndex - 1 < -1 ? this.list.length - 1 : this.selectIndex - 1
+      } else if (this.selectIndex > -1) {
+        this.selectIndex = -1
+      }
     },
     handleContextMenu() {
       let str = clipboardReadText()
