@@ -248,7 +248,6 @@ export default {
               size: info.size,
             }
             break
-          case '192':
           case '128':
             types.push({ type: '128k', size: info.size })
             _types['128k'] = {
@@ -417,7 +416,6 @@ export default {
                 size: info[4].toLocaleUpperCase(),
               }
               break
-            case '192':
             case '128':
               types.push({ type: '128k', size: info[4] })
               _types['128k'] = {
