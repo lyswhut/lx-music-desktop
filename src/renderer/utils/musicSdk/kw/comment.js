@@ -56,11 +56,11 @@ export default {
         text: item.msg,
         time: item.time,
         timeStr: dateFormat2(Number(item.time) * 1000),
-        userName: decodeURIComponent(item.u_name),
+        userName: item.u_name,
         avatar: item.u_pic,
         userId: item.u_id,
         likedCount: item.like_num,
-        images: item.mpic ? [decodeURIComponent(item.mpic)] : [],
+        images: item.mpic ? [item.mpic] : [],
         reply: item.child_comments
           ? item.child_comments.map(i => {
             return {
@@ -68,11 +68,11 @@ export default {
               text: i.msg,
               time: i.time,
               timeStr: dateFormat2(Number(i.time) * 1000),
-              userName: decodeURIComponent(i.u_name),
+              userName: i.u_name,
               avatar: i.u_pic,
               userId: i.u_id,
               likedCount: i.like_num,
-              images: i.mpic ? [decodeURIComponent(i.mpic)] : [],
+              images: i.mpic ? [i.mpic] : [],
             }
           })
           : [],
