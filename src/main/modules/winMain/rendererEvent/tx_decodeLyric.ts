@@ -1,4 +1,4 @@
-import { inflate } from 'zlib'
+import { createInflate, constants as zlibConstants } from 'node:zlib'
 // import path from 'path'
 import { mainHandle } from '@common/mainIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
@@ -8,15 +8,29 @@ import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
 let qrc_decode: (buf: Buffer, len: number) => Buffer
 
+const inflate = async(lrcBuf: Buffer) => new Promise<string>((resolve, reject) => {
+  const buffer_builder: Buffer[] = []
+  const decompress_stream = createInflate()
+    .on('data', (chunk) => {
+      buffer_builder.push(chunk)
+    })
+    .on('close', () => {
+      resolve(Buffer.concat(buffer_builder).toString())
+    })
+    .on('error', (err: any) => {
+      // console.log(err)
+      if (err.errno !== zlibConstants.Z_BUF_ERROR) { // EOF: expected
+        reject(err)
+      }
+    })
+  // decompress_stream.write(lrcBuf)
+  decompress_stream.end(lrcBuf)
+})
+
 const decode = async(str: string): Promise<string> => {
   if (!str) return ''
   const buf = Buffer.from(str, 'hex')
-  return new Promise((resolve, reject) => {
-    inflate(qrc_decode(buf, buf.length), (err, lrc) => {
-      if (err) reject(err)
-      else resolve(lrc.toString())
-    })
-  })
+  return inflate(qrc_decode(buf, buf.length))
 }
 
 
