@@ -18,7 +18,7 @@ import { appSetting } from '@renderer/store/setting'
 const cache = new Map<string, AudioBuffer>()
 const loadBuffer = async(name: string) => new Promise<AudioBuffer>((resolve, reject) => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const path = require('@static/medias/filters/' + name) as string
+  const path = require('@renderer/assets/medias/filters/' + name) as string
   if (cache.has(path)) {
     resolve(cache.get(path) as AudioBuffer)
     return
