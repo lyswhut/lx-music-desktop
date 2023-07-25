@@ -1,5 +1,5 @@
 <template>
-  <div :class="[$style.sliderContent, className]">
+  <div :class="[$style.sliderContent, { [$style.disabled]: disabled }, className]">
     <div :class="[$style.slider ]">
       <div ref="dom_sliderBar" :class="$style.sliderBar" :style="{ transform: `scaleX(${(value - min) / (max - min) || 0})` }" />
     </div>
@@ -29,6 +29,10 @@ export default {
       type: Number,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['change'],
   setup(props, { emit }) {
@@ -40,6 +44,8 @@ export default {
     const dom_sliderBar = ref(null)
 
     const handleSliderMsDown = event => {
+      if (props.disabled) return
+
       sliderEvent.isMsDown = true
       sliderEvent.msDownX = event.clientX
 
@@ -55,7 +61,7 @@ export default {
       sliderEvent.isMsDown = false
     }
     const handleSliderMsMove = event => {
-      if (!sliderEvent.isMsDown) return
+      if (!sliderEvent.isMsDown || props.disabled) return
       let value = (sliderEvent.msDownValue + (event.clientX - sliderEvent.msDownX) / dom_sliderBar.value.clientWidth) * (props.max - props.min) + props.min
       if (value > props.max) value = props.max
       else if (value < props.min) value = props.min
@@ -93,6 +99,12 @@ export default {
   &:hover {
     opacity: 1;
   }
+  &.disabled {
+    opacity: .3;
+    .sliderMask {
+      cursor: default;
+    }
+  }
 }
 
 .slider {
@@ -129,7 +141,7 @@ export default {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
-.slider-mask {
+.sliderMask {
   position: absolute;
   top: 0;
   width: 100%;

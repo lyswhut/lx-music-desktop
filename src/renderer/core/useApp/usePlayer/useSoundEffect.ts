@@ -97,9 +97,11 @@ export default () => {
     })
   })
   watch(() => appSetting['player.soundEffect.convolution.mainGain'], (mainGain) => {
+    if (!appSetting['player.soundEffect.convolution.fileName']) return
     setConvolverMainGain(mainGain / 10)
   })
   watch(() => appSetting['player.soundEffect.convolution.sendGain'], (sendGain) => {
+    if (!appSetting['player.soundEffect.convolution.fileName']) return
     setConvolverSendGain(sendGain / 10)
   })
   watch(() => appSetting['player.soundEffect.biquadFilter.hz31'], (hz31) => {
