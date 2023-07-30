@@ -29,7 +29,8 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
     if (result) {
       const timeField = result[0]
       const text = line.replace(timeFieldExp, '').trim()
-      if (text) {
+      // https://github.com/lyswhut/lx-music-desktop/issues/1499
+      if (text && text != '//') {
         const times = timeField.match(timeExp)
         if (times == null) continue
         for (let time of times) {
