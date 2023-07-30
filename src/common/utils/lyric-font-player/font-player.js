@@ -69,8 +69,8 @@ module.exports = class FontPlayer {
 
     this.lineContent = null
 
-    this.timeoutTools = new TimeoutTools(80)
-    this.waitPlayTimeout = new TimeoutTools(80)
+    this.timeoutTools = new TimeoutTools(50)
+    this.waitPlayTimeout = new TimeoutTools(50)
 
     this._init()
   }
