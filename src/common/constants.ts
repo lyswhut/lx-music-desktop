@@ -50,8 +50,8 @@ export const DEFAULT_SETTING = {
   },
 
   songList: {
-    source: 'kg',
-    sortId: '5',
+    source: 'kw',
+    sortId: 'new',
     tagId: '',
   },
 
