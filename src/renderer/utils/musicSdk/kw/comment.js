@@ -60,7 +60,7 @@ export default {
         avatar: item.u_pic,
         userId: item.u_id,
         likedCount: item.like_num,
-        images: item.mpic ? [item.mpic] : [],
+        images: item.mpic ? [decodeURIComponent(item.mpic)] : [],
         reply: item.child_comments
           ? item.child_comments.map(i => {
             return {
