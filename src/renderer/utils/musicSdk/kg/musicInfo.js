@@ -3,14 +3,17 @@ import { createHttpFetch } from './util'
 
 const createGetMusicInfosTask = (hashs) => {
   let data = {
-    appid: 1001,
-    clienttime: 639437935,
-    clientver: 9020,
-    fields: 'album_info,author_name,audio_info,ori_audio_name',
-    is_publish: '1',
-    key: '0475af1457cd3363c7b45b871e94428a',
-    mid: '21511157a05844bd085308bc76ef3342',
+    area_code: '1',
     show_privilege: 1,
+    show_album_info: '1',
+    is_publish: '',
+    appid: 1005,
+    clientver: 11451,
+    mid: '1',
+    dfid: '-',
+    clienttime: Date.now(),
+    key: 'OIlwieks28dk2k092lksi2UIkp',
+    fields: 'album_info,author_name,audio_info,ori_audio_name,base,songname',
   }
   let list = hashs
   let tasks = []
@@ -19,12 +22,17 @@ const createGetMusicInfosTask = (hashs) => {
     if (list.length < 100) break
     list = list.slice(100)
   }
-  let url = 'http://kmr.service.kugou.com/v2/album_audio/audio'
+  let url = 'http://gateway.kugou.com/v3/album_audio/audio'
   return tasks.map(task => createHttpFetch(url, {
     method: 'POST',
     body: task,
     headers: {
-      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
+      'KG-THash': '13a3164',
+      'KG-RC': '1',
+      'KG-Fake': '0',
+      'KG-RF': '00869891',
+      'User-Agent': 'Android712-AndroidPhone-11451-376-0-FeeCacheUpdate-wifi',
+      'x-router': 'kmr.service.kugou.com',
     },
   }).then(data => data.map(s => s[0])))
 }
@@ -73,7 +81,7 @@ export const filterMusicInfoList = (rawList) => {
     }
     list.push({
       singer: decodeName(item.author_name),
-      name: decodeName(item.ori_audio_name),
+      name: decodeName(item.songname),
       albumName: decodeName(item.album_info.album_name),
       albumId: item.album_info.album_id,
       songmid: item.audio_info.audio_id,
