@@ -32,7 +32,7 @@ const createGetMusicInfosTask = (hashs) => {
       'KG-Fake': '0',
       'KG-RF': '00869891',
       'User-Agent': 'Android712-AndroidPhone-11451-376-0-FeeCacheUpdate-wifi',
-      'x-router': 'kmr.service.kugou.com'
+      'x-router': 'kmr.service.kugou.com',
     },
   }).then(data => data.map(s => s[0])))
 }
