@@ -77,7 +77,7 @@ export default (songmid) => {
     }
     return {
       singer: getSinger(item.singer),
-      name: item.name,
+      name: item.title,
       albumName,
       albumId,
       source: 'tx',

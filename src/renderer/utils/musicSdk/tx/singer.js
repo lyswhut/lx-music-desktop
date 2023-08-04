@@ -41,7 +41,7 @@ export const filterMusicInfoItem = item => {
   return {
     source: 'tx',
     singer: formatSingerName(item.singer, 'name'),
-    name: item.name,
+    name: item.title,
     albumName,
     albumId,
     albumMid,

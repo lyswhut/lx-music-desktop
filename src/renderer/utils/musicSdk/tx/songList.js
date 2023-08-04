@@ -259,7 +259,7 @@ export default {
       // types.reverse()
       return {
         singer: formatSingerName(item.singer, 'name'),
-        name: item.name,
+        name: item.title,
         albumName: item.album.name,
         albumId: item.album.mid,
         source: 'tx',
