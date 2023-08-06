@@ -3,6 +3,7 @@ const needle = require('needle')
 const zlib = require('zlib')
 const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = require('crypto')
 const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
+import pkg from '../../../../../package.json'
 
 for (const key of Object.keys(process.env)) {
   if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]
@@ -227,6 +228,12 @@ contextBridge.exposeInMainWorld('lx', {
       },
     },
     buffer: {
+      alloc(size, fill, encode) {
+        return Buffer.alloc(size, fill, encode)
+      },
+      concat(list, length) {
+        return Buffer.concat(list, length)
+      },
       from(...args) {
         return Buffer.from(...args)
       },
@@ -253,7 +260,10 @@ contextBridge.exposeInMainWorld('lx', {
       },
     },
   },
-  version: '1.3.0',
+  application: {
+    version: pkg.version,
+  },
+  version: '1.4.0',
   // removeEvent(eventName, handler) {
   //   if (!eventNames.includes(eventName)) return Promise.reject(new Error('The event is not supported: ' + eventName))
   //   let handlers
