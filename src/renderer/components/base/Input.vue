@@ -52,7 +52,7 @@ export default {
     //   default: true,
     // },
   },
-  emits: ['update:model-value', 'submit', 'change'],
+  emits: ['update:modelValue', 'submit', 'change'],
   methods: {
     handleInput(event) {
       let value = event.target.value
@@ -60,7 +60,7 @@ export default {
         value = value.trim()
         event.target.value = value
       }
-      this.$emit('update:model-value', value)
+      this.$emit('update:modelValue', value)
     },
     focus() {
       this.$refs.dom_input.focus()
@@ -78,7 +78,7 @@ export default {
       // if (dom_input.selectionStart == dom_input.selectionEnd) {
       const value = text.substring(0, dom_input.selectionStart) + str + text.substring(dom_input.selectionEnd, text.length)
       event.target.value = value
-      this.$emit('update:model-value', value)
+      this.$emit('update:modelValue', value)
       // } else {
       //   clipboardWriteText(text.substring(dom_input.selectionStart, dom_input.selectionEnd))
       // }

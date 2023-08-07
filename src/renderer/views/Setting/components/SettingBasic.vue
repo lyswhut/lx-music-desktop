@@ -20,7 +20,7 @@ dd
         div(:class="$style.bg")
           div(:class="$style.bgContent")
             svg-icon(:class="$style.icon" name="plus")
-        span(:class="$style.label") {{$t('theme_add')}}
+        span(:class="$style.label") {{ $t('theme_add') }}
 
 dd
   div
@@ -33,7 +33,7 @@ dd
     .gap-top
       base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
     .p.gap-top
-      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{$t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : ''  }}
 
 dd
   h3#basic_source {{ $t('setting__basic_source') }}
@@ -43,7 +43,7 @@ dd
         :id="`setting_api_source_${item.id}`" name="setting_api_source"
         need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
     .p.gap-top
-      base-btn.btn(min @click="isShowUserApiModal = true") {{$t('setting__basic_source_user_api_btn')}}
+      base-btn.btn(min @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
 
 dd
   h3#basic_window_size {{ $t('setting__basic_window_size') }}
@@ -55,7 +55,7 @@ dd
 dd
   h3#basic_font_size {{ $t('setting__basic_font_size') }}
   div
-    //- base-selection.gap-teft(:list="fontSizeList" :modelValue="appSetting['common.fontSize']" @update:model-value="updateSetting({'common.fontSize': $event})")
+    //- base-selection.gap-teft(:list="fontSizeList" :model-value="appSetting['common.fontSize']" @update:model-value="updateSetting({'common.fontSize': $event})")
     base-checkbox.gap-left(
       v-for="item in fontSizeList" :id="`setting_basic_font_size_${item.id}`" :key="item.id"
       name="setting_basic_font_size" need :model-value="appSetting['common.fontSize']" :value="item.id"
@@ -107,16 +107,16 @@ user-api-modal(v-model="isShowUserApiModal")
 <script>
 import { computed, ref, watch, reactive, shallowReactive } from '@common/utils/vueTools'
 import { windowSizeList, userApi, isFullscreen, themeId } from '@renderer/store'
-import { langList, useI18n } from '@/lang'
+import { langList, useI18n } from '@root/lang'
 import { getSystemFonts } from '@renderer/utils/ipc'
 import apiSourceInfo from '@renderer/utils/musicSdk/api-source-info'
 import { useTimeout } from '@renderer/core/player/timeoutStop'
 import { dialog } from '@renderer/plugins/Dialog'
 
-import ThemeSelectorModal from './ThemeSelectorModal'
-import ThemeEditModal from './ThemeEditModal'
-import PlayTimeoutModal from './PlayTimeoutModal'
-import UserApiModal from './UserApiModal'
+import ThemeSelectorModal from './ThemeSelectorModal.vue'
+import ThemeEditModal from './ThemeEditModal/index.vue'
+import PlayTimeoutModal from './PlayTimeoutModal.vue'
+import UserApiModal from './UserApiModal.vue'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { getThemes, applyTheme, findTheme, buildBgUrl } from '@renderer/store/utils'
 

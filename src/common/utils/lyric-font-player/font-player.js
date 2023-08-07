@@ -1,4 +1,4 @@
-const { getNow, TimeoutTools } = require('./utils')
+import { getNow, TimeoutTools } from './utils'
 
 // const fontFormateRxp = /(?=<\d+,\d+>).*?/g
 const fontSplitRxp = /(?=<\d+,\d+>).*?/g
@@ -25,7 +25,7 @@ const createAnimation = (dom, duration, isVertical) => new window.Animation(new 
 // https://jsfiddle.net/ceqpnbky/
 // https://jsfiddle.net/ceqpnbky/1/
 
-module.exports = class FontPlayer {
+export default class FontPlayer {
   constructor({
     time = 0,
     rate = 1,

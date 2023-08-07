@@ -1,9 +1,9 @@
 <template>
   <ul :class="[$style.list, $style[align]]" role="tablist">
     <li
-      v-for="item in list" :key="item[itemKey]" :class="[$style.listItem, {[$style.active]: modelValue == item[itemKey]}]" tabindex="-1"
-      role="tab" :aria-label="item[itemLabel]" ignore-tip :aria-selected="modelValue == item[itemKey]"
-      @click="handleToggle(item[itemKey])"
+      v-for="item in list"
+      :key="item[itemKey]" :class="[$style.listItem, {[$style.active]: modelValue == item[itemKey]}]" tabindex="-1" role="tab"
+      :aria-label="item[itemLabel]" ignore-tip :aria-selected="modelValue == item[itemKey]" @click="handleToggle(item[itemKey])"
     >
       <span :class="$style.label">{{ item[itemLabel] }}</span>
     </li>
@@ -37,11 +37,11 @@ export default {
       default: '',
     },
   },
-  emits: ['update:model-value', 'change'],
+  emits: ['update:modelValue', 'change'],
   setup(props, { emit }) {
     const handleToggle = id => {
       if (id == props.modelValue) return
-      emit('update:model-value', id)
+      emit('update:modelValue', id)
       emit('change', id)
     }
 

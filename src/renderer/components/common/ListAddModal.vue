@@ -22,7 +22,7 @@ import { watch, ref, onBeforeUnmount } from '@common/utils/vueTools'
 import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { addListMusics, moveListMusics, createUserList, getMusicExistListIds } from '@renderer/store/list/action'
 import useKeyDown from '@renderer/utils/compositions/useKeyDown'
-import { useI18n } from '@/lang'
+import { useI18n } from '@root/lang'
 
 export default {
   props: {
@@ -207,7 +207,7 @@ export default {
   color: var(--color-primary);
 }
 
-.btn-content {
+.btnContent {
   flex: auto;
   max-height: 100%;
   padding-right: 15px;

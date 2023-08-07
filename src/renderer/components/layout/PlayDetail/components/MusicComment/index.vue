@@ -33,14 +33,14 @@ div.comment(ref="dom_container" :class="$style.comment")
             div(:class="$style.pagination")
               material-pagination(:count="newComment.total" :btn-length="5" :limit="newComment.limit" :page="newComment.page" @btn-click="handleToggleCommentPage")
     div(v-else :class="$style.unavailable")
-      p {{$t('comment__unavailable')}}
+      p {{ $t('comment__unavailable') }}
 </template>
 
 <script>
 import { appSetting } from '@renderer/store/setting'
 import { toOldMusicInfo } from '@renderer/utils'
 import music from '@renderer/utils/musicSdk'
-import CommentFloor from './CommentFloor'
+import CommentFloor from './CommentFloor.vue'
 
 export default {
   name: 'MusicComment',

@@ -1,4 +1,4 @@
-import { join, dirname } from 'path'
+import path from 'node:path'
 import { existsSync, mkdirSync, renameSync } from 'fs'
 import { app, shell, screen, nativeTheme, dialog } from 'electron'
 import { URL_SCHEME_RXP } from '@common/constants'
@@ -10,22 +10,19 @@ import { createAppEvent, createListEvent } from '@main/event'
 import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
 import { migrateDBData } from './utils/migrate'
-import { openDirInExplorer } from '@common/utils/electron'
+import { encodePath, openDirInExplorer } from '@common/utils/electron'
 
 export const initGlobalData = () => {
-  global.isDev = process.env.NODE_ENV !== 'production'
   const envParams = parseEnvParams()
   global.envParams = {
     cmdParams: envParams.cmdParams,
     deeplink: envParams.deeplink,
   }
 
-  if (global.isDev) {
-    // eslint-disable-next-line no-undef
-    global.staticPath = webpackStaticPath
-  } else {
-    global.staticPath = join(__dirname, '/static')
-  }
+  global.staticPath =
+    process.env.NODE_ENV !== 'production'
+      ? __STATIC_PATH__
+      : path.join(encodePath(__dirname), '../static')
 }
 
 export const initSingleInstanceHandle = () => {
@@ -75,10 +72,10 @@ export const applyElectronEnvParams = () => {
 export const setUserDataPath = () => {
   // windows平台下如果应用目录下存在 portable 文件夹则将数据存在此文件下
   if (process.platform == 'win32') {
-    const portablePath = join(dirname(app.getPath('exe')), '/portable')
+    const portablePath = path.join(path.dirname(app.getPath('exe')), '/portable')
     if (existsSync(portablePath)) {
       app.setPath('appData', portablePath)
-      const appDataPath = join(portablePath, '/userData')
+      const appDataPath = path.join(portablePath, '/userData')
       if (!existsSync(appDataPath)) mkdirSync(appDataPath)
       app.setPath('userData', appDataPath)
     }
@@ -86,12 +83,12 @@ export const setUserDataPath = () => {
 
   const userDataPath = app.getPath('userData')
   global.lxOldDataPath = userDataPath
-  global.lxDataPath = join(userDataPath, 'LxDatas')
+  global.lxDataPath = path.join(userDataPath, 'LxDatas')
   if (!existsSync(global.lxDataPath)) mkdirSync(global.lxDataPath)
 }
 
 export const registerDeeplink = (startApp: () => void) => {
-  if (global.isDev && process.platform === 'win32') {
+  if (process.env.NODE_ENV !== 'production' && process.platform === 'win32') {
     // Set the path of electron.exe and your app.
     // These two additional parameters are only available on windows.
     // console.log(process.execPath, process.argv)
@@ -117,8 +114,8 @@ export const registerDeeplink = (startApp: () => void) => {
 export const listenerAppEvent = (startApp: () => void) => {
   app.on('web-contents-created', (event, contents) => {
     contents.on('will-navigate', (event, navigationUrl) => {
-      if (global.isDev) {
-        console.log('navigation to url:', navigationUrl)
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('navigation to url:', navigationUrl.length > 130 ? navigationUrl.substring(0, 130) + '...' : navigationUrl)
         return
       }
       if (!navigationUrlWhiteList.some(url => url.test(navigationUrl))) {
@@ -240,13 +237,13 @@ export const initAppSetting = async() => {
   if (!isInitialized) {
     let dbFileExists = await global.lx.worker.dbService.init(global.lxDataPath)
     if (dbFileExists === null) {
-      const backPath = join(global.lxDataPath, `lx.data.db.${Date.now()}.bak`)
+      const backPath = path.join(global.lxDataPath, `lx.data.db.${Date.now()}.bak`)
       dialog.showMessageBoxSync({
         type: 'warning',
         message: 'Database verify failed',
         detail: `数据库表结构校验失败，我们将把有问题的数据库备份到：${backPath}\n若此问题导致你的数据丢失，你可以尝试从备份文件找回它们。\n\nThe database table structure verification failed, we will back up the problematic database to: ${backPath}\nIf this problem causes your data to be lost, you can try to retrieve them from the backup file.`,
       })
-      renameSync(join(global.lxDataPath, 'lx.data.db'), backPath)
+      renameSync(path.join(global.lxDataPath, 'lx.data.db'), backPath)
       openDirInExplorer(backPath)
       dbFileExists = await global.lx.worker.dbService.init(global.lxDataPath)
     }

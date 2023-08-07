@@ -105,8 +105,8 @@
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
-import SearchList from './components/SearchList'
-import MusicSortModal from './components/MusicSortModal'
+import SearchList from './components/SearchList.vue'
+import MusicSortModal from './components/MusicSortModal.vue'
 import useListInfo from './useListInfo'
 import useList from './useList'
 import useMenu from './useMenu'
@@ -396,7 +396,7 @@ export default {
   flex: auto;
 }
 
-.no-item {
+.noItem {
   position: relative;
   height: 100%;
   display: flex;

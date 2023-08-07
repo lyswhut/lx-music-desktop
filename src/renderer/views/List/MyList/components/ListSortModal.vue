@@ -74,7 +74,7 @@
 import { ref, computed } from '@common/utils/vueTools'
 // import { dialog } from '@renderer/plugins/Dialog'
 import { getListMusics, updateListMusicsPosition } from '@renderer/store/list/action'
-import { useI18n } from '@/lang'
+import { useI18n } from '@root/lang'
 import { LIST_IDS } from '@common/constants'
 
 

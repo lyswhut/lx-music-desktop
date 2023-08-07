@@ -1,5 +1,5 @@
 // import fs from 'fs'
-import { join } from 'path'
+import path from 'node:path'
 import { type WindowSize, windowSizeList } from '@common/config'
 import { nativeImage } from 'electron'
 
@@ -8,7 +8,7 @@ export const getWindowSizeInfo = (windowSizeId: number | string): WindowSize => 
 }
 
 const getIconPath = (name: string): Electron.NativeImage => {
-  return nativeImage.createFromPath(join(global.staticPath, 'images/taskbar', name + '.png'))
+  return nativeImage.createFromPath(path.join(global.staticPath, 'images/taskbar', name + '.png'))
 }
 
 export const createTaskBarButtons = ({

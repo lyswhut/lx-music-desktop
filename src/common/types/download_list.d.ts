@@ -1,4 +1,4 @@
-import { type Message } from '@/lang'
+import { type Message } from '@root/lang'
 
 // interface DownloadList {
 

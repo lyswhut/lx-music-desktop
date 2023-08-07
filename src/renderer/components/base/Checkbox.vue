@@ -51,7 +51,7 @@ export default {
       default: false,
     },
   },
-  emits: ['update:model-value', 'change'],
+  emits: ['update:modelValue', 'change'],
   data() {
     return {
       checked: false,
@@ -80,7 +80,7 @@ export default {
           modelValue = checked
         } else modelValue = checked ? this.value : ''
       }
-      this.$emit('update:model-value', modelValue)
+      this.$emit('update:modelValue', modelValue)
       this.$emit('change', modelValue)
     },
     setValue(value) {

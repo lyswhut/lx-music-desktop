@@ -285,7 +285,7 @@ export default {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
-.song-list {
+.songList {
   overflow: hidden;
   height: 100%;
   display: flex;

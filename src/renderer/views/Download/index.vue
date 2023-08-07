@@ -267,7 +267,7 @@ export default {
   flex: auto;
 }
 
-.no-item {
+.noItem {
   position: relative;
   height: 100%;
   display: flex;

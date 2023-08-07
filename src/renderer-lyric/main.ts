@@ -6,7 +6,7 @@ import mountComponents from './components'
 
 import App from './App.vue'
 
-import '@/common/error'
+import '@root/common/error'
 import { getSetting, onMainWindowInited, onSettingChanged, sendConnectMainWindowEvent } from './utils/ipc'
 import { initSetting, mergeSetting } from './store/action'
 import { init as initMainWindowChannel } from './core/mainWindowChannel'

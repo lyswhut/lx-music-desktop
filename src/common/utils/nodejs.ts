@@ -1,8 +1,8 @@
-import fs from 'fs'
-import crypto from 'crypto'
-import { gzip, gunzip } from 'zlib'
+import fs from 'node:fs'
+import crypto from 'node:crypto'
+import { gzip, gunzip } from 'node:zlib'
+import path from 'node:path'
 import { log } from '@common/utils'
-import path from 'path'
 
 export const joinPath = (...paths: string[]): string => path.join(...paths)
 

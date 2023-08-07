@@ -104,7 +104,7 @@ export const loadApi = async(apiId: string) => {
 
   // // const path = require('path')
   // // // eslint-disable-next-line no-undef
-  // // userApi.script = require('fs').readFileSync(join(global.isDev ? __userApi : __dirname, 'renderer/test-api.js')).toString()
+  // // userApi.script = require('fs').readFileSync(join(process.env.NODE_ENV !== 'production' ? __userApi : __dirname, 'renderer/test-api.js')).toString()
   // console.log('load api', userApi.name)
   // mainSend(global.modules.userApiWindow, USER_API_RENDERER_EVENT_NAME.init, { userApi })
 }

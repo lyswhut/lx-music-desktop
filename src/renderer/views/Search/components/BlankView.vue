@@ -90,26 +90,26 @@ const handleSearch = (text) => {
   flex-flow: column nowrap;
   // justify-content: center;
 }
-.noitem-list-container {
+.noitemListContainer {
   padding: 3% 15px 15px;
   // margin-top: -20px;
   min-height: 300px;
   max-height: 94.7%;
 }
-.noitem-list {
-  +.noitem-list {
+.noitemList {
+  +.noitemList {
     margin-top: 15px;
   }
 }
-.noitem-hot-search-list {
+.noitemHotSearchList {
   min-height: 106px;
 }
-.noitem-list-title {
+.noitemListTitle {
   color: var(--color-font);
   padding: 5px 5px 8px;
   font-size: 14px;
 }
-.noitem-list-item {
+.noitemListItem {
   display: inline-block;
   margin: 3px 5px;
   background-color: var(--color-button-background);
@@ -128,7 +128,7 @@ const handleSearch = (text) => {
     background-color: var(--color-button-background-active);
   }
 }
-.history-clear-btn {
+.historyClearBtn {
   padding: 0 5px;
   margin-left: 5px;
   color: var(--color-font-label);

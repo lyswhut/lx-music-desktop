@@ -82,9 +82,9 @@
 import { openUrl } from '@common/utils/electron'
 
 import musicSdk from '@renderer/utils/musicSdk'
-import DuplicateMusicModal from './components/DuplicateMusicModal'
-import ListSortModal from './components/ListSortModal'
-import ListUpdateModal from './components/ListUpdateModal'
+import DuplicateMusicModal from './components/DuplicateMusicModal.vue'
+import ListSortModal from './components/ListSortModal.vue'
+import ListUpdateModal from './components/ListUpdateModal.vue'
 
 import { defaultList, loveList, userLists, fetchingListStatus } from '@renderer/store/list/state'
 import { removeUserList } from '@renderer/store/list/action'

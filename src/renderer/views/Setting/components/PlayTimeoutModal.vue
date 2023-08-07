@@ -9,10 +9,10 @@ material-modal(:show="modelValue" teleport="#view" @close="handleCloseModal" @af
       div(:class="$style.row")
         base-checkbox(id="play_timeout_end" :model-value="appSetting['player.waitPlayEndStop']" :label="$t('play_timeout_end')" @update:model-value="updateSetting({'player.waitPlayEndStop': $event})")
       div(:class="[$style.row, $style.tip, { [$style.show]: !!timeLabel }]")
-        p {{$t('play_timeout_tip', { time: timeLabel })}}
+        p {{ $t('play_timeout_tip', { time: timeLabel }) }}
     div(:class="$style.footer")
         base-btn(:class="$style.footerBtn" @click="handleCancel") {{ $t(timeLabel ? 'play_timeout_stop' : 'play_timeout_close') }}
-        base-btn(:class="$style.footerBtn" @click="handleConfirm") {{$t(timeLabel ? 'play_timeout_update' : 'play_timeout_confirm')}}
+        base-btn(:class="$style.footerBtn" @click="handleConfirm") {{ $t(timeLabel ? 'play_timeout_update' : 'play_timeout_confirm') }}
 </template>
 
 <script>
@@ -31,13 +31,13 @@ export default {
       default: false,
     },
   },
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
   setup(props, { emit }) {
     const { timeLabel } = useTimeout()
     const time = ref(appSetting['player.waitPlayEndStopTime'])
 
     const handleCloseModal = () => {
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
     const handleCancel = () => {
       if (timeLabel.value) {

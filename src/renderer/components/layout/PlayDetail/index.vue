@@ -44,7 +44,7 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
           div.description(:class="$style.description")
             p {{ $t('player__music_name') }}{{ musicInfo.name }}
             p {{ $t('player__music_singer') }}{{ musicInfo.singer }}
-            p(v-if="musicInfo.album") {{ $t('player__music_album') }}{{musicInfo.album}}
+            p(v-if="musicInfo.album") {{ $t('player__music_album') }}{{ musicInfo.album }}
 
       transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
         LyricPlayer(v-if="visibled")
@@ -70,9 +70,9 @@ import {
   setShowPlayComment,
   setShowPlayLrcSelectContentLrc,
 } from '@renderer/store/player/action'
-import LyricPlayer from './LyricPlayer'
-import PlayBar from './PlayBar'
-import MusicComment from './components/MusicComment'
+import LyricPlayer from './LyricPlayer.vue'
+import PlayBar from './PlayBar.vue'
+import MusicComment from './components/MusicComment/index.vue'
 import { registerAutoHideMounse, unregisterAutoHideMounse } from './autoHideMounse'
 import { appSetting } from '@renderer/store/setting'
 import { closeWindow, maxWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'

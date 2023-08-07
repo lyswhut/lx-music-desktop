@@ -12,7 +12,7 @@ dd(:aria-label="$t('setting__download_path_title')")
       | {{ $t('setting__download_path_label') }}
       span.auto-hidden.hover(:class="$style.savePath" :aria-label="$t('setting__download_path_open_label')" @click="openDirInExplorer(appSetting['download.savePath'])") {{ appSetting['download.savePath'] }}
     .p
-      base-btn.btn(min @click="handleChangeSavePath") {{$t('setting__download_path_change_btn')}}
+      base-btn.btn(min @click="handleChangeSavePath") {{ $t('setting__download_path_change_btn') }}
 dd
   h3#download_use_other_source
     | {{ $t('setting__download_use_other_source') }}
@@ -105,7 +105,7 @@ export default {
 </script>
 
 <style lang="less" module>
-.save-path {
-  font-size: 12px;
-}
+// .savePath {
+//   font-size: 12px;
+// }
 </style>

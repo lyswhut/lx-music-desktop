@@ -157,7 +157,7 @@ export default {
       default: '',
     },
   },
-  emits: ['update:model-value', 'submit'],
+  emits: ['update:modelValue', 'submit'],
   setup(props, { emit }) {
     const themeName = ref('')
     const isDark = ref(false)
@@ -417,7 +417,7 @@ export default {
     }
     const handleCancel = () => {
       handlePreview(false)
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
     // 保存
     const handleSubmit = async() => {
@@ -440,7 +440,7 @@ export default {
       handlePreview(false)
       await saveTheme(theme)
       emit('submit')
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
     // 删除
     const handleRemove = async() => {
@@ -475,7 +475,7 @@ export default {
       if (index > -1) themeInfo.userThemes.splice(index, 1)
       handlePreview(false)
       emit('submit')
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
     // 另存为
     const handleSaveNew = async() => {
@@ -498,7 +498,7 @@ export default {
       handlePreview(false)
       await saveTheme(theme)
       emit('submit')
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
 
     return {

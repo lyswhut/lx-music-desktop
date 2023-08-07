@@ -1,4 +1,4 @@
-const { getNow, TimeoutTools } = require('./utils')
+import { getNow, TimeoutTools } from './utils'
 
 const timeFieldExp = /^(?:\[[\d:.]+\])+/g
 const timeExp = /\d{1,3}(:\d{1,3}){0,2}(?:\.\d{1,3})/g
@@ -43,7 +43,7 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
   }
 }
 
-module.exports = class LinePlayer {
+export default class LinePlayer {
   constructor({ offset = 0, rate = 1, onPlay = function() { }, onSetLyric = function() { } } = {}) {
     this.tags = {}
     this.lines = null

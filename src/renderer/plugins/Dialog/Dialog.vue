@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Modal from '@renderer/components/material/Modal'
-import Btn from '@renderer/components/base/Btn'
+import Modal from '@renderer/components/material/Modal.vue'
+import Btn from '@renderer/components/base/Btn.vue'
 import { useI18n } from '@renderer/plugins/i18n'
 import { computed } from '@common/utils/vueTools'
 export default {

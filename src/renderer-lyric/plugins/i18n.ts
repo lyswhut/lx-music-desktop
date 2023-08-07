@@ -1,5 +1,5 @@
-import type { I18n } from '@/lang'
-import { createI18n, i18nPlugin, useI18n } from '@/lang'
+import type { I18n } from '@root/lang'
+import { createI18n, i18nPlugin, useI18n } from '@root/lang'
 
 window.i18n = createI18n()
 

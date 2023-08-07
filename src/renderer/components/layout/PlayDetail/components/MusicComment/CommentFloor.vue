@@ -11,11 +11,11 @@ div(:class="$style.container")
               div.select(:class="$style.name") {{ item.userName }}
               div(:class="$style.metaInfo")
                 time(v-if="item.timeStr" :class="$style.label") {{ timeFormat(item.timeStr) }}
-                div(v-if="item.location" :class="$style.label") {{$t('comment__location', { location: item.location })}}
+                div(v-if="item.location" :class="$style.label") {{ $t('comment__location', { location: item.location }) }}
             div(v-if="item.likedCount != null" :class="$style.likes")
               svg(:class="$style.likesIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" space="preserve")
                 use(xlink:href="#icon-thumbs-up")
-              | {{item.likedCount}}
+              | {{ item.likedCount }}
           p.select(:class="$style.comment_text") {{ item.text }}
           div(v-if="item.images?.length" :class="$style.comment_images")
             img(v-for="(url, index) in item.images" :key="index" :src="url" loading="lazy" decoding="async")

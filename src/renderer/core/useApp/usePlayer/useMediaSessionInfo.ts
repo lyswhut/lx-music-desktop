@@ -3,12 +3,13 @@ import { getDuration, getPlaybackRate, getCurrentTime } from '@renderer/plugins/
 import { isPlay, musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { playProgress } from '@renderer/store/player/playProgress'
 import { pause, play, playNext, playPrev, stop } from '@renderer/core/player'
+import silenceAudio from '@renderer/assets/medias/Silence02s.mp3'
 
 export default () => {
   // 创建一个空白音频以保持对 Media Session 的注册
   const emptyAudio = new Audio()
   emptyAudio.autoplay = false
-  emptyAudio.src = require('@renderer/assets/medias/Silence02s.mp3')
+  emptyAudio.src = silenceAudio
   emptyAudio.controls = false
   emptyAudio.preload = 'auto'
   emptyAudio.onplaying = () => {

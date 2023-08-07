@@ -54,7 +54,7 @@ watch(() => props.source, async(source) => {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-.tag-list {
+.tagList {
   font-size: 12px;
   position: relative;
 

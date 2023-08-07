@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName, formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
-import infSign from './vendors/infSign.min'
+import infSign from '@renderer/utils/musicSdk/kg/vendors/infSign.min'
 import { signatureParams } from './util'
 
 const handleSignature = (id, page, limit) => new Promise((resolve, reject) => {

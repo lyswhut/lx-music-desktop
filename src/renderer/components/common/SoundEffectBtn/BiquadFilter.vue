@@ -27,7 +27,7 @@
 import { onMounted, ref } from '@common/utils/vueTools'
 import { freqs, freqsPreset } from '@renderer/plugins/player'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-import AddEQPresetBtn from './AddEQPresetBtn'
+import AddEQPresetBtn from './AddEQPresetBtn.vue'
 import { getUserEQPresetList, removeUserEQPreset } from '@renderer/store/soundEffect'
 
 const labels = freqs.map(num => num < 1000 ? num : `${num / 1000}k`)

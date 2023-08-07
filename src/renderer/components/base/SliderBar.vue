@@ -1,6 +1,6 @@
 <template>
   <div :class="[$style.sliderContent, { [$style.disabled]: disabled }, className]">
-    <div :class="[$style.slider ]">
+    <div :class="[$style.slider]">
       <div ref="dom_sliderBar" :class="$style.sliderBar" :style="{ transform: `scaleX(${(value - min) / (max - min) || 0})` }" />
     </div>
     <div :class="$style.sliderMask" @mousedown="handleSliderMsDown" />
@@ -86,7 +86,7 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-.slider-content {
+.sliderContent {
   flex: none;
   position: relative;
   width: 100px;
@@ -125,7 +125,7 @@ export default {
 //   opacity: .5;
 // }
 
-.slider-bar {
+.sliderBar {
   position: absolute;
   left: 0;
   top: 0;

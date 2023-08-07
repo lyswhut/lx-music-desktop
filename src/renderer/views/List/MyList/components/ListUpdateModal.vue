@@ -214,7 +214,7 @@ export default {
   color: var(--color-font);
 }
 
-.no-item {
+.noItem {
   position: relative;
   height: 200px;
   display: flex;

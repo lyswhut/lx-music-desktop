@@ -1,6 +1,5 @@
 import log from 'electron-log'
 
-log.transports.file.level = 'info'
 
 export const isLinux = process.platform == 'linux'
 export const isWin = process.platform == 'win32'

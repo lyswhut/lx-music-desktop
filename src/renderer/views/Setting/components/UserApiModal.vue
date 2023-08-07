@@ -21,7 +21,7 @@ material-modal(:show="modelValue" bg-close teleport="#view" @close="handleClose"
       p {{ $t('user_api__note') }}
     div(:class="$style.footer")
       base-btn(:class="$style.footerBtn" @click="handleImport") {{ $t('user_api__btn_import') }}
-      //- base-btn(:class="$style.footerBtn" @click="handleExport") {{$t('user_api__btn_export')}}
+      //- base-btn(:class="$style.footerBtn" @click="handleExport") {{ $t('user_api__btn_export') }}
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
       default: false,
     },
   },
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
   setup() {
     return {
       userApi,
@@ -89,7 +89,7 @@ export default {
       userApi.list = await removeUserApi([api.id])
     },
     handleClose() {
-      this.$emit('update:model-value', false)
+      this.$emit('update:modelValue', false)
     },
     handleOpenUrl(url) {
       openUrl(url)

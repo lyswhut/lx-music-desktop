@@ -1,6 +1,6 @@
 import { Tray, Menu, nativeImage } from 'electron'
 import { isWin } from '@common/utils'
-import { join } from 'path'
+import path from 'node:path'
 import {
   hideWindow as hideMainWindow,
   isExistWindow as isExistMainWindow,
@@ -45,7 +45,7 @@ export const createTray = () => {
 
   themeId = global.lx.appSetting['tray.themeId']
   let theme = themeList.find(item => item.id === themeId) ?? themeList[0]
-  const iconPath = join(global.staticPath, 'images/tray', theme.fileName + '.png')
+  const iconPath = path.join(global.staticPath, 'images/tray', theme.fileName + '.png')
 
   // 托盘
   tray = new Tray(nativeImage.createFromPath(iconPath))
@@ -140,7 +140,7 @@ export const createMenu = () => {
 export const setTrayImage = (themeId: number) => {
   if (!tray) return
   let theme = themeList.find(item => item.id === themeId) ?? themeList[0]
-  const iconPath = join(global.staticPath, 'images/tray', theme.fileName + '.png')
+  const iconPath = path.join(global.staticPath, 'images/tray', theme.fileName + '.png')
   tray.setImage(nativeImage.createFromPath(iconPath))
 }
 

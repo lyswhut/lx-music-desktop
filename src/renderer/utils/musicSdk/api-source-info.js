@@ -1,6 +1,6 @@
 // Support qualitys: 128k 320k flac wav
 
-module.exports = [
+export default [
   {
     id: 'test',
     name: '测试接口',

@@ -9,8 +9,8 @@
 <script setup>
 import { isFullscreen } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
-import ControlBtns from './ControlBtns'
-import SearchInput from './SearchInput'
+import ControlBtns from './ControlBtns.vue'
+import SearchInput from './SearchInput.vue'
 
 </script>
 

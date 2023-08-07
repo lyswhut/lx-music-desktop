@@ -1,9 +1,9 @@
-const LinePlayer = require('./line-player')
-const FontPlayer = require('./font-player')
+import LinePlayer from './line-player'
+import FontPlayer from './font-player'
 
 const fontTimeExp = /<(\d+),(\d+)>/g
 
-module.exports = class Lyric {
+export default class Lyric {
   constructor({
     lyric = '',
     extendedLyrics = [],

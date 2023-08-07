@@ -29,9 +29,9 @@ import { ref } from '@common/utils/vueTools'
 // import { saveVolumeIsMute } from '@renderer/store/setting'
 // import { volume, isMute } from '@renderer/store/player/volume'
 // import fs from 'node:fs'
-import BiquadFilter from './BiquadFilter'
-import AudioPanner from './AudioPanner'
-import AudioConvolution from './AudioConvolution'
+import BiquadFilter from './BiquadFilter.vue'
+import AudioPanner from './AudioPanner.vue'
+import AudioConvolution from './AudioConvolution.vue'
 import PitchShifter from './PitchShifter.vue'
 
 defineProps({

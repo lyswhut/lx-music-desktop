@@ -42,7 +42,7 @@ import { playNext, playPrev, togglePlay } from '@renderer/core/player'
 import { status, isPlay } from '@renderer/store/player/state'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 
-import ControlBtns from './components/ControlBtns'
+import ControlBtns from './components/ControlBtns.vue'
 
 const {
   nowPlayTimeStr,
@@ -71,13 +71,13 @@ const {
   overflow: hidden;
 }
 
-.progress-container {
+.progressContainer {
   width: 100%;
   position: relative;
   padding: 3px 0;
 }
 
-.progress-content {
+.progressContent {
   position: relative;
   height: 16px;
   padding: 5px 0;
@@ -87,12 +87,12 @@ const {
   height: 100%;
 }
 
-.bar-transition {
+.barTransition {
   transition-property: transform;
   transition-timing-function: ease-out;
   transition-duration: 0.2s;
 }
-.time-label {
+.timeLabel {
   width: 100%;
   height: 18px;
   display: flex;
@@ -104,7 +104,7 @@ const {
   flex: auto;
 }
 
-.play-control {
+.playControl {
   flex: none;
   height: 100%;
   display: flex;
@@ -113,7 +113,7 @@ const {
   padding: 0 25px;
   color: var(--color-button-font);
 }
-.play-btn {
+.playBtn {
   height: 40%;
   padding: 5px;
   cursor: pointer;
@@ -125,7 +125,7 @@ const {
   opacity: 1;
   cursor: pointer;
 
-  +.play-btn {
+  +.playBtn {
     margin-left: 10px;
   }
   svg {

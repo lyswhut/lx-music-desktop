@@ -1,5 +1,5 @@
 import { BrowserWindow, dialog } from 'electron'
-import { join } from 'path'
+import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { isLinux, isWin } from '@common/utils'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
@@ -96,7 +96,7 @@ export const createWindow = () => {
   }
   browserWindow = new BrowserWindow(options)
 
-  const winURL = global.isDev ? 'http://localhost:9080' : `file://${join(encodePath(__dirname), 'index.html')}`
+  const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), '../renderer/index.html')}`
   void browserWindow.loadURL(winURL + `?dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()

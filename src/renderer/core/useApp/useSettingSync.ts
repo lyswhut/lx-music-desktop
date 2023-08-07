@@ -2,14 +2,14 @@ import { watch } from '@common/utils/vueTools'
 import { isFullscreen, proxy, sync, windowSizeList } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 import { sendSyncAction, setTaskBarProgress, setWindowSize } from '@renderer/utils/ipc'
-import { setLanguage } from '@/lang'
+import { setLanguage } from '@root/lang'
 import { setUserApi } from '../apiSource'
 // import { applyTheme, getThemes } from '@renderer/store/utils'
 
 
 export default () => {
   watch(() => appSetting['common.windowSizeId'], (index) => {
-    let info = index == null ? windowSizeList[2] : windowSizeList[index]
+    const info = index == null ? windowSizeList[2] : windowSizeList[index]
     setWindowSize(info.width, info.height)
   })
   watch(() => appSetting['common.fontSize'], (fontSize) => {

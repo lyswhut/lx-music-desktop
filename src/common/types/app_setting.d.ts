@@ -1,4 +1,4 @@
-import type { I18n } from '@/lang/i18n'
+import type { I18n } from '@root/lang/i18n'
 
 declare global {
 

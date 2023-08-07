@@ -1,11 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "paths": {
-      "@common/*": ["common/*"],
-    },
     "typeRoots": [
       "./types"
     ],
+    "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
+      "@common/*": ["common/*"],
+    },
   },
 }

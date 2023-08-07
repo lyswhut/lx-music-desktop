@@ -1,4 +1,5 @@
 import '@common/error'
+import 'virtual:svg-icons-register'
 import { createApp } from 'vue'
 
 import './core/globalData'
@@ -18,8 +19,8 @@ import router from './router'
 
 
 import { getSetting, updateSetting } from './utils/ipc'
-import { langList } from '@/lang'
-import type { I18n } from '@/lang/i18n'
+import { langList } from '@root/lang'
+import type { I18n } from '@root/lang/i18n'
 
 import { initSetting } from './store/setting'
 // import { bubbleCursor } from './utils/cursor-effects/bubbleCursor'
@@ -43,7 +44,7 @@ void getSetting().then(setting => {
   // Set language automatically
   if (!setting['common.langId'] || !window.i18n.availableLocales.includes(setting['common.langId'])) {
     let langId: I18n['locale'] | null = null
-    let locale = window.navigator.language.toLocaleLowerCase() as I18n['locale']
+    const locale = window.navigator.language.toLocaleLowerCase() as I18n['locale']
     if (window.i18n.availableLocales.includes(locale)) {
       langId = locale
     } else {

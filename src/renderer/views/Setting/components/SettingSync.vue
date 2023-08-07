@@ -120,10 +120,6 @@ export default {
 </script>
 
 <style lang="less" module>
-.save-path {
-  font-size: 12px;
-}
-
 .portInput[disabled], .hostInput[disabled] {
   opacity: .8 !important;
 }

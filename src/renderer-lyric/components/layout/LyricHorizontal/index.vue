@@ -198,7 +198,7 @@ export default {
 //   // -webkit-text-fill-color: #fff;
 //   // -webkit-text-stroke: thin #124628;
 // }
-.lyric-space {
+.lyricSpace {
   height: 80%;
 }
 // .lyric-text {
@@ -224,7 +224,7 @@ export default {
     }
   }
 }
-.lrc-active-zoom {
+.lrcActiveZoom {
   :global {
     .line-content {
       &.active {
@@ -246,21 +246,21 @@ export default {
     }
   }
 }
-.font-weight-font {
+.fontWeightFont {
   :global {
     .font-mode > .line {
       font-weight: bold;
     }
   }
 }
-.font-weight-line {
+.fontWeightLine {
   :global {
     .line-mode > .line {
       font-weight: bold;
     }
   }
 }
-.font-weight-extended {
+.fontWeightExtended {
   :global {
     .extended {
       font-weight: bold;

@@ -49,8 +49,8 @@
 import { computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
-import ControlBtns from './ControlBtns'
-import PlayProgress from './PlayProgress'
+import ControlBtns from './ControlBtns.vue'
+import PlayProgress from './PlayProgress.vue'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
 import {
@@ -314,7 +314,7 @@ export default {
   gap: 18px;
 }
 
-.play-btn {
+.playBtn {
   flex: none;
   height: 52%;
   // margin-top: -2px;

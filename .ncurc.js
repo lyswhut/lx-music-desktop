@@ -17,6 +17,7 @@ module.exports = {
   // filter: [
   //   'electron-builder',
   //   'electron-updater',
+  //   'electron-log',
   // ],
 
   // target: 'patch',

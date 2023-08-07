@@ -1,8 +1,8 @@
 import Store from 'electron-store'
 import { dialog, shell } from 'electron'
-import { join } from 'path'
-import fs from 'fs'
-import log from 'electron-log'
+import path from 'node:path'
+import fs from 'node:fs'
+import { log } from '@common/utils'
 
 type Stores = Record<string, Store>
 
@@ -27,8 +27,8 @@ export default (name: string, isIgnoredError = true, isShowErrorAlert = true): S
     if (!isIgnoredError) throw error
 
 
-    const backPath = join(global.lxDataPath, name + '.json.bak')
-    fs.renameSync(join(global.lxDataPath, name + '.json'), backPath)
+    const backPath = path.join(global.lxDataPath, name + '.json.bak')
+    fs.renameSync(path.join(global.lxDataPath, name + '.json'), backPath)
     if (isShowErrorAlert) {
       dialog.showMessageBoxSync({
         type: 'error',

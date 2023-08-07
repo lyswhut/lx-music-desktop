@@ -1,8 +1,8 @@
-const { contextBridge, ipcRenderer } = require('electron')
-const needle = require('needle')
-const zlib = require('zlib')
-const { createCipheriv, publicEncrypt, constants, randomBytes, createHash } = require('crypto')
-const USER_API_RENDERER_EVENT_NAME = require('../rendererEvent/name')
+import { contextBridge, ipcRenderer } from 'electron'
+import needle from 'needle'
+import zlib from 'zlib'
+import { createCipheriv, publicEncrypt, constants, randomBytes, createHash } from 'crypto'
+import USER_API_RENDERER_EVENT_NAME from '../rendererEvent/name'
 
 for (const key of Object.keys(process.env)) {
   if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]

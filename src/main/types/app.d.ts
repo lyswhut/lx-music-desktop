@@ -43,7 +43,7 @@ declare global {
   //   }
   // }
 
-  var isDev: boolean
+  // var isDev: boolean
   var envParams: LX.EnvParams
   var staticPath: string
   var lxDataPath: string

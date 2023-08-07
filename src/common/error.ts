@@ -6,7 +6,7 @@ const ignoreErrorMessage = [
 ]
 
 process.on('uncaughtException', err => {
-  if (ignoreErrorMessage.includes(err.message)) return
+  if (ignoreErrorMessage.includes(err?.message)) return
   console.error('An uncaught error occurred!')
   console.error(err)
   log.error(err)

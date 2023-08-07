@@ -15,7 +15,7 @@ dd
       | {{ $t('setting__other_resource_cache_label') }}
       span.auto-hidden {{ cacheSize }}
     .p
-      base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{$t('setting__other_resource_cache_clear_btn')}}
+      base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{ $t('setting__other_resource_cache_clear_btn') }}
 
 dd
   h3#other_other_source {{ $t('setting__other_other_cache') }}
@@ -32,7 +32,7 @@ dd
     .p
       base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{ $t('setting__other_other_source_clear_btn') }}
       base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
-      base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{$t('setting__other_lyric_raw_clear_btn')}}
+      base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
 
 dd
   h3#other_lyric_edited {{ $t('setting__other_lyric_edited_cache') }}
@@ -41,13 +41,13 @@ dd
       | {{ $t('setting__other_lyric_edited_label') }}
       span.auto-hidden {{ lyricEditedCount }}
     .p
-      base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{$t('setting__other_lyric_edited_clear_btn')}}
+      base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{ $t('setting__other_lyric_edited_clear_btn') }}
 
 dd
   h3#other_lyric_edited {{ $t('setting__other_listdata') }}
   div
     .p
-      base-btn.btn(min @click="handleClearListData") {{$t('setting__other_listdata_clear_btn')}}
+      base-btn.btn(min @click="handleClearListData") {{ $t('setting__other_listdata_clear_btn') }}
 
 </template>
 

@@ -104,7 +104,7 @@ export default {
   position: relative;
   border-radius: 40px;
 }
-.progress-mask {
+.progressMask {
   position: absolute;
   left: 0;
   top: 0;
@@ -112,7 +112,7 @@ export default {
   height: 100%;
   cursor: pointer;
 }
-.progress-bar {
+.progressBar {
   position: absolute;
   left: 0;
   top: 0;
@@ -120,22 +120,22 @@ export default {
   height: 100%;
   transform-origin: 0;
 }
-.progress-bar1 {
+.progressBar1 {
   background-color: var(--color-primary-light-100-alpha-600);
 }
 
-.progress-bar2 {
+.progressBar2 {
   background-color: var(--color-primary-light-100-alpha-400);
   will-change: transform;
 }
 
-.progress-bar3 {
+.progressBar3 {
   background-color: var(--color-primary-light-100-alpha-200);
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
   opacity: 0.5;
 }
 
-.bar-transition {
+.barTransition {
   transition-property: transform;
   transition-timing-function: ease-out;
   transition-duration: 0.2s;

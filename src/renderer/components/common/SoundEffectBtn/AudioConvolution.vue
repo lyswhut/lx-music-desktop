@@ -38,7 +38,7 @@
 import { ref, onMounted, computed } from '@common/utils/vueTools'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { convolutions } from '@renderer/plugins/player'
-import AddConvolutionPresetBtn from './AddConvolutionPresetBtn'
+import AddConvolutionPresetBtn from './AddConvolutionPresetBtn.vue'
 import { getUserConvolutionPresetList, removeUserConvolutionPreset } from '@renderer/store/soundEffect'
 
 const updateConvolution = val => {

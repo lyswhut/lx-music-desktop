@@ -1,5 +1,5 @@
 <template>
-  <material-modal :show="modelValue" bg-close="bg-close" teleport="#view" @close="$emit('update:model-value', false)">
+  <material-modal :show="modelValue" bg-close="bg-close" teleport="#view" @close="$emit('update:modelValue', false)">
     <main :class="$style.main">
       <h2>{{ $t('theme_selector_modal__title') }}</h2>
       <div class="scroll" :class="$style.content">
@@ -50,7 +50,7 @@ export default {
       default: false,
     },
   },
-  emits: ['update:model-value'],
+  emits: ['update:modelValue'],
   setup(props) {
     const themeInfo = reactive({
       themeLights: [],

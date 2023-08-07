@@ -18,20 +18,20 @@ const initTables = (db: Database.Database) => {
 // 打开、初始化数据库
 export const init = (lxDataPath: string): boolean | null => {
   const databasePath = path.join(lxDataPath, 'lx.data.db')
-  const nativeBinding = path.join(__dirname, '../node_modules/better-sqlite3/build/Release/better_sqlite3.node')
+  const nativeBinding = path.join(__dirname, '../../node_modules/better-sqlite3/build/Release/better_sqlite3.node')
   let dbFileExists = true
 
   try {
     db = new Database(databasePath, {
       fileMustExist: true,
       nativeBinding,
-      verbose: global.isDev ? console.log : undefined,
+      verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
     })
   } catch (error) {
     console.log(error)
     db = new Database(databasePath, {
       nativeBinding,
-      verbose: global.isDev ? console.log : undefined,
+      verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
     })
     initTables(db)
     dbFileExists = false

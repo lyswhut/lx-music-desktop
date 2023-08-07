@@ -10,8 +10,8 @@
 import { isFullscreen } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 
-import ControlBtns from './ControlBtns'
-import NavBar from './NavBar'
+import ControlBtns from './ControlBtns.vue'
+import NavBar from './NavBar.vue'
 
 </script>
 

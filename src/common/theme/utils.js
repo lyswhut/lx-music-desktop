@@ -1,6 +1,6 @@
-const { RGB_Linear_Shade, RGB_Alpha_Shade } = require('./colorUtils')
+import { RGB_Linear_Shade, RGB_Alpha_Shade } from './colorUtils'
 
-exports.createThemeColors = (rgbaColor, fontRgbaColor, isDark) => {
+export const createThemeColors = (rgbaColor, fontRgbaColor, isDark) => {
   const colors = {
     '--color-primary': rgbaColor,
   }

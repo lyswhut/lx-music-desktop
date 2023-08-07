@@ -1,7 +1,7 @@
 import { mainSend } from '@common/mainIpc'
 import { BrowserWindow } from 'electron'
 import fs from 'fs'
-import { join } from 'path'
+import path from 'node:path'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
 import { encodePath } from '@common/utils/electron'
 
@@ -27,15 +27,16 @@ const winEvent = () => {
 
 export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   await closeWindow()
-  dir ??= global.isDev ? webpackUserApiPath : join(encodePath(__dirname), 'userApi')
+  dir ??= process.env.NODE_ENV !== 'production' ? path.join(__USER_API_PATH__, 'renderer') : encodePath(__dirname)
 
   if (!html) {
-    html = await fs.promises.readFile(join(dir, 'renderer/user-api.html'), 'utf8')
+    html = await fs.promises.readFile(path.join(dir, 'user-api.html'), 'utf8')
   }
-  const preloadUrl = global.isDev
-    ? `${join(encodePath(__dirname), '../dist/user-api-preload.js')}`
-    : `${join(encodePath(__dirname), 'user-api-preload.js')}`
-  // console.log(preloadUrl)
+  const preloadUrl = process.env.NODE_ENV !== 'production'
+    ? `${path.join(encodePath(__dirname), '../dist/user-api-preload.js')}`
+    : `${path.join(encodePath(__dirname), '../preload/user-api-preload.js')}`
+
+  // console.log(preloadUrl, html)
 
   /**
    * Initial window options

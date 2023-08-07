@@ -19,8 +19,8 @@ dd
       .p(v-else-if="versionInfo.status != 'downloading'")
         span {{ $t('setting__update_new_version') }}
       .p
-        base-btn.btn.gap-left(min @click="showUpdateModal") {{$t('setting__update_open_version_modal_btn')}}
-    .p.small(v-else-if="versionInfo.status =='checking'") {{$t('setting__update_checking')}}
+        base-btn.btn.gap-left(min @click="showUpdateModal") {{ $t('setting__update_open_version_modal_btn') }}
+    .p.small(v-else-if="versionInfo.status =='checking'") {{ $t('setting__update_checking') }}
 </template>
 
 <script>

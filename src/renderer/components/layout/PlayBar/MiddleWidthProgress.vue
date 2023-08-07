@@ -47,7 +47,7 @@
 import { computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
-import ControlBtns from './ControlBtns'
+import ControlBtns from './ControlBtns.vue'
 // import PlayProgress from './PlayProgress'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'

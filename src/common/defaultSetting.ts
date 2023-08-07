@@ -1,5 +1,5 @@
-import { join } from 'path'
-import { homedir } from 'os'
+import path from 'node:path'
+import os from 'node:os'
 
 const isMac = process.platform == 'darwin'
 const isWin = process.platform == 'win32'
@@ -102,7 +102,7 @@ const defaultSetting: LX.AppSetting = {
   'list.actionButtonsVisible': false,
 
   'download.enable': false,
-  'download.savePath': join(homedir(), 'Desktop'),
+  'download.savePath': path.join(os.homedir(), 'Desktop'),
   'download.fileName': '歌名 - 歌手',
   'download.maxDownloadNum': 3,
   'download.skipExistFile': true,

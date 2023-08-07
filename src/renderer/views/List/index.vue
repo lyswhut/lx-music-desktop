@@ -8,8 +8,8 @@
 <script>
 import { getListPrevSelectId } from '@renderer/utils/data'
 
-import MyList from './MyList'
-import MusicList from './MusicList'
+import MyList from './MyList/index.vue'
+import MusicList from './MusicList/index.vue'
 
 export default {
   name: 'List',

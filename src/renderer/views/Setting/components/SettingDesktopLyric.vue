@@ -26,7 +26,7 @@ dd
   .gap-top
     base-checkbox(id="setting_desktop_lyric_zoom" :model-value="appSetting['desktopLyric.style.isZoomActiveLrc']" :label="$t('desktop_lyric__lrc_active_zoom_on')" @update:model-value="updateSetting({ 'desktopLyric.style.isZoomActiveLrc': $event })")
   //- .gap-top
-    base-checkbox(id="setting_desktop_lyric_fontWeight" :modelValue="appSetting['desktopLyric.style.fontWeight']" @update:model-value="updateSetting({ 'desktopLyric.style.fontWeight': $event })" :label="$t('setting__desktop_lyric_font_weight')")
+    base-checkbox(id="setting_desktop_lyric_fontWeight" :model-value="appSetting['desktopLyric.style.fontWeight']" @update:model-value="updateSetting({ 'desktopLyric.style.fontWeight': $event })" :label="$t('setting__desktop_lyric_font_weight')")
 
 dd
   h3#setting__desktop_lyric_font_weight {{ $t('setting__desktop_lyric_font_weight') }}
@@ -60,7 +60,7 @@ dd
   div
     .p
       base-btn.btn(min @click="changeLineGap(-1)") {{ $t('setting__desktop_lyric_line_gap_dec') }}
-      base-btn.btn(min @click="changeLineGap(1)") {{$t('setting__desktop_lyric_line_gap_add')}}
+      base-btn.btn(min @click="changeLineGap(1)") {{ $t('setting__desktop_lyric_line_gap_add') }}
 dd
   h3#desktop_lyric_color {{ $t('setting__desktop_lyric_color') }}
   div
@@ -76,7 +76,7 @@ dd
           div(ref="lyric_shadow_color_ref" :class="$style.color")
           div(:class="$style.label") {{ $t('setting__desktop_lyric_shadow_color') }}
     .p.gap-top
-      base-btn.btn(min @click="resetColor") {{$t('setting__desktop_lyric_color_reset')}}
+      base-btn.btn(min @click="resetColor") {{ $t('setting__desktop_lyric_color_reset') }}
 dd
   h3#desktop_lyric_font {{ $t('setting__desktop_lyric_font') }}
   div
@@ -86,7 +86,7 @@ dd
   h3#desktop_lyric_reset {{ $t('setting__desktop_lyric_reset') }}
   div
     .p.gap-top
-      base-btn.btn(min @click="resetWindowSetting") {{$t('setting__desktop_lyric_reset_window')}}
+      base-btn.btn(min @click="resetWindowSetting") {{ $t('setting__desktop_lyric_reset_window') }}
 
 </template>
 

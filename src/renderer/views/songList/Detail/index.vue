@@ -172,13 +172,13 @@ export default {
   flex-flow: column nowrap;
 }
 
-.song-list-header {
+.songListHeader {
   flex: none;
   display: flex;
   flex-flow: row nowrap;
   height: 80px;
 }
-.song-list-header-left {
+.songListHeaderLeft {
   flex: none;
   margin-left: 15px;
   height: 100%;
@@ -191,7 +191,7 @@ export default {
   opacity: .9;
   box-shadow: 0 0 2px 0 rgba(0,0,0,.2);
 }
-.play-num {
+.playNum {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -204,7 +204,7 @@ export default {
   .mixin-ellipsis-1;
 }
 
-.song-list-header-middle {
+.songListHeaderMiddle {
   flex: auto;
   padding: 2px 7px;
   h3 {
@@ -220,13 +220,13 @@ export default {
     color: var(--color-font-label);
   }
 }
-.song-list-header-right {
+.songListHeaderRight {
   flex: none;
   display: flex;
   align-items: center;
   padding-right: 15px;
 
-  .header-right-btn {
+  .headerRightBtn {
     border-radius: 0;
     &:first-child {
       border-top-left-radius: 4px;

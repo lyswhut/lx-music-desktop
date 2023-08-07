@@ -58,7 +58,7 @@
 
 <script>
 import { ref } from '@common/utils/vueTools'
-import { setting, themeList } from '@lyric/store/state'
+import { setting } from '@lyric/store/state'
 import { updateSetting } from '@lyric/store/action'
 
 export default {
@@ -105,7 +105,6 @@ export default {
     }
     return {
       setting,
-      themeList,
       isShowThemeList,
 
       handleClose,

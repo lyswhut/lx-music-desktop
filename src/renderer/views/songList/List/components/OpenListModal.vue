@@ -49,7 +49,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:model-value'])
+const emit = defineEmits(['update:modelValue'])
 
 const router = useRouter()
 const route = useRoute()

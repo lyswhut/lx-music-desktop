@@ -56,7 +56,7 @@ import {
 } from '@renderer/store/player/action'
 import { onMounted, onBeforeUnmount, computed, reactive, ref, nextTick, watch } from '@common/utils/vueTools'
 import useLyric from '@renderer/utils/compositions/useLyric'
-import LyricMenu from './components/LyricMenu'
+import LyricMenu from './components/LyricMenu.vue'
 import { appSetting } from '@renderer/store/setting'
 import { setLyricOffset } from '@renderer/core/lyric'
 
@@ -263,7 +263,7 @@ export default {
   //   font-size: 1.2em;
   // }
 }
-.lrc-active-zoom {
+.lrcActiveZoom {
   :global {
     .line-content {
       &.active {
@@ -343,12 +343,12 @@ export default {
   .lyricSelectlineExtended {
     font-size: 14px;
   }
-  .lrc-active {
+  .lrcActive {
     color: var(--color-primary);
   }
 }
 
-.lyric-space {
+.lyricSpace {
   height: 70%;
 }
 

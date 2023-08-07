@@ -2,10 +2,10 @@
   <teleport to="#root">
     <div ref="dom_menu" :class="$style.container" :style="menuStyles" :aria-hidden="!modelValue">
       <!-- <div :class="$style.group">
-      <div :class="$style.title">{{$t('lyric_menu__align')}}</div>
+      <div :class="$style.title">{{ $t('lyric_menu__align') }}</div>
       <div :class="$style.subGroup">
-        <div :class="[$style.btn, { [$style.active]: appSetting['playDetail.style.align'] == 'left' }]" role="button" @click="setFontAlign('left')" ignore-tip :aria-label="$t('lyric_menu__align_left')">{{$t('lyric_menu__align_left')}}</div>
-        <div :class="[$style.btn, { [$style.active]: appSetting['playDetail.style.align'] == 'center' }]" role="button" @click="setFontAlign('center')" ignore-tip :aria-label="$t('lyric_menu__align_center')">{{$t('lyric_menu__align_center')}}</div>
+        <div :class="[$style.btn, { [$style.active]: appSetting['playDetail.style.align'] == 'left' }]" role="button" @click="setFontAlign('left')" ignore-tip :aria-label="$t('lyric_menu__align_left')">{{ $t('lyric_menu__align_left') }}</div>
+        <div :class="[$style.btn, { [$style.active]: appSetting['playDetail.style.align'] == 'center' }]" role="button" @click="setFontAlign('center')" ignore-tip :aria-label="$t('lyric_menu__align_center')">{{ $t('lyric_menu__align_center') }}</div>
       </div>
     </div> -->
       <div :class="$style.group">
@@ -83,7 +83,7 @@ export default {
       required: true,
     },
   },
-  emits: ['updateLyric', 'update:model-value'],
+  emits: ['updateLyric', 'update:modelValue'],
   setup(props, { emit }) {
     // const appSetting = useRefGetter('appSetting')
     // const playDetailSetting = useRefGetter('playDetailSetting')
@@ -98,7 +98,7 @@ export default {
     const location = computed(() => props.xy)
 
     const onHide = () => {
-      emit('update:model-value', false)
+      emit('update:modelValue', false)
     }
 
     const setFontAlign = val => {
