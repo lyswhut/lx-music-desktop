@@ -55,7 +55,7 @@ export default {
   },
   replaceAt(raw, atList) {
     atList.forEach((atobj) => {
-      raw = raw.replaceAll(`[at=${atobj.id}]`,`@${atobj.name} `)
+      raw = raw.replaceAll(`[at=${atobj.id}]`, `@${atobj.name} `)
     })
     return raw
   },
