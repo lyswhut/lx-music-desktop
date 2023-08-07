@@ -53,11 +53,17 @@ export default {
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取回复评论失败')
     return { source: 'kg', comments: this.filterComment(body.list || []) }
   },
+  replaceAt(raw, atList) {
+    atList.forEach((atobj) => {
+      raw = raw.replaceAll(`[at=${atobj.id}]`, `@${atobj.name} `)
+    })
+    return raw
+  },
   filterComment(rawList) {
     return rawList.map(item => {
       let data = {
         id: item.id,
-        text: decodeName(item.content || ''),
+        text: decodeName((item.atlist ? this.replaceAt(item.content, item.atlist) : item.content) || ''),
         images: item.images ? item.images.map(i => i.url) : [],
         location: item.location,
         time: item.addtime,
