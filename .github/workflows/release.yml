@@ -35,7 +35,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Release package
         run: |
@@ -84,7 +84,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Release package
         run: |
@@ -133,7 +133,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Release package
         run: |

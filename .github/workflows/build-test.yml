@@ -1,4 +1,4 @@
-name: Run eslint check
+name: Run build test
 
 on:
   pull_request:
@@ -23,3 +23,6 @@ jobs:
 
       - name: Eslint check
         run: npm run lint
+
+      - name: Test Build
+        run: npm run build

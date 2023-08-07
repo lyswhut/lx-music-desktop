@@ -35,7 +35,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Build Package Setup x64
         run: npm run pack:win:setup:x64
@@ -127,7 +127,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Build Package dmg
         run: |
@@ -187,7 +187,7 @@ jobs:
           npm ci
 
       - name: Build src code
-        run: npm run build:src
+        run: npm run build
 
       - name: Build Package deb x64
         run: npm run pack:linux:deb:x64
