@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.4.0-beta.4",
+  "version": "2.4.0-beta.5",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main/main.js",
   "productName": "lx-music-desktop",
@@ -59,7 +59,7 @@
     "build": "ts-node build-config/pack.js",
     "lint": "eslint --ext .ts,.js,.vue src",
     "lint:fix": "eslint --ext .ts,.js,.vue --fix src",
-    "postinstall": "electron-builder install-app-deps",
+    "postinstall": "node ./build-config/dependencies-patch.js && electron-builder install-app-deps",
     "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:2081 npm run pack",
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:2081 npm i"
   },
@@ -270,7 +270,7 @@
     "utf-8-validate": "^6.0.3",
     "vue": "~3.2.47",
     "vue-router": "^4.2.4",
-    "ws": "github:lyswhut/ws#76966d23e9b610422d8395cdd3a6b1ca0e1f25c4"
+    "ws": "^8.13.0"
   },
   "overrides": {
     "got": "^11",
