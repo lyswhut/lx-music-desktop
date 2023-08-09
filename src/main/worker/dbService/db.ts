@@ -25,13 +25,13 @@ export const init = (lxDataPath: string): boolean | null => {
     db = new Database(databasePath, {
       fileMustExist: true,
       nativeBinding,
-      verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
+      // verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
     })
   } catch (error) {
     console.log(error)
     db = new Database(databasePath, {
       nativeBinding,
-      verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
+      // verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
     })
     initTables(db)
     dbFileExists = false
