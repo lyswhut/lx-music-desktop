@@ -50,6 +50,9 @@ const winEvent = () => {
 
   browserWindow.on('show', () => {
     global.lx.event_app.main_window_show()
+
+    // 修复隐藏窗口后再显示时任务栏按钮丢失的问题
+    setThumbarButtons()
   })
   browserWindow.on('hide', () => {
     global.lx.event_app.main_window_hide()
