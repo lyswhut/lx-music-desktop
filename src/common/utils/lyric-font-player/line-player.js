@@ -148,7 +148,7 @@ export default class LinePlayer {
     const currentTime = this._currentTime()
     const driftTime = currentTime - curLine.time
 
-    if (driftTime >= 0 || this.curLineNum === 0) {
+    if (driftTime >= 0) {
       let nextLine = this.lines[this.curLineNum + 1]
       const delay = (nextLine.time - curLine.time - driftTime) / this._rate
 
@@ -167,6 +167,17 @@ export default class LinePlayer {
         this._refresh()
         return
       }
+    } else if (this.curLineNum == 0) {
+      let firstLine = this.lines[0]
+      const delay = (firstLine.time - currentTime) / this._rate
+      if (this.isPlay) {
+        timeoutTools.start(() => {
+          if (!this.isPlay) return
+          this._refresh()
+        }, delay)
+      }
+      this.onPlay(-1, '', currentTime)
+      return
     }
 
     this.curLineNum = this._findCurLineNum(currentTime, this.curLineNum) - 1

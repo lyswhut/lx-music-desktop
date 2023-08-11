@@ -85,7 +85,7 @@ export const init = () => {
   lrc = new Lyric({
     shadowContent: false,
     onPlay(line, text) {
-      setText(text, line)
+      setText(text, Math.max(line, 0))
       setStatusText(text)
       // console.log(line, text)
     },

@@ -12,7 +12,7 @@ export const init = () => {
     rate: setting['player.playbackRate'],
     isVertical: setting['desktopLyric.direction'] == 'vertical',
     onPlay(line, text) {
-      setText(text, line)
+      setText(text, Math.max(line, 0))
       // console.log(line, text)
     },
     onSetLyric(lines, offset) { // listening lyrics seting event
