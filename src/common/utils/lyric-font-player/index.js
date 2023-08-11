@@ -68,7 +68,7 @@ export default class Lyric {
   _handleLinePlayerOnPlay = (num, text, curTime) => {
     if (this.isLineMode) {
       if (num < this.playingLineNum + 1) {
-        for (let i = this.playingLineNum, minNum = Math.max(num, 0); i > minNum - 1; i--) {
+        for (let i = this.playingLineNum, minNum = Math.max(num, 0) - 1; i > minNum; i--) {
           const font = this._lineFonts[i]
           font.reset()
           font.lineContent.classList.remove(this.activeLineClassName)
@@ -86,7 +86,7 @@ export default class Lyric {
       }
     } else {
       if (num < this.playingLineNum + 1) {
-        for (let i = this.playingLineNum, minNum = Math.max(num, 0); i > minNum - 1; i--) {
+        for (let i = this.playingLineNum, minNum = Math.max(num, 0) - 1; i > minNum; i--) {
           const font = this._lineFonts[i]
           font.lineContent.classList.remove(this.activeLineClassName)
           font.reset()
