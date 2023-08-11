@@ -104,7 +104,10 @@ const getFileMetadata = async(path: string) => {
   if (prevFileInfo.path == path) return prevFileInfo.promise
   prevFileInfo.path = path
   return prevFileInfo.promise = checkPath(path).then(async(isExist) => {
-    return isExist ? import('music-metadata').then(async({ parseFile }) => parseFile(path)) : null
+    return isExist ? import('music-metadata').then(async({ parseFile }) => parseFile(path)).catch(err => {
+      console.log(err)
+      return null
+    }) : null
   })
 }
 /**
