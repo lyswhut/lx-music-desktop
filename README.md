@@ -91,25 +91,7 @@
 
 ### 源码使用方法
 
-环境要求：Node.js 16+
-
-```bash
-# 开发模式
-npm run dev
-
-# 构建免安装版
-npm run pack:dir
-
-# 构建安装包（Windows版）
-npm run pack:win
-
-# 构建安装包（Mac版）
-npm run pack:mac
-
-# 构建安装包（Linux版）
-npm run pack:linux
-
-```
+已迁移至：<https://lyswhut.github.io/lx-music-doc/desktop/use-source-code>
 
 ### UI界面
 
@@ -131,7 +113,7 @@ npm run pack:linux
 
 1. 参照[源码使用方法](https://lyswhut.github.io/lx-music-doc/desktop/use-source-code)设置开发环境
 2. 克隆本仓库代码并切换到`dev`分支开发
-3. 提交PR
+3. 提交PR至`dev`分支
 
 ### 项目协议
 
