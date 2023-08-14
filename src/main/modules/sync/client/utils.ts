@@ -1,5 +1,6 @@
 import { generateKeyPair } from 'node:crypto'
 import { httpFetch, type RequestOptions } from '@main/utils/request'
+import { decodeData, encodeData } from '../utils'
 
 export const request = async(url: string, options: RequestOptions = { }) => {
   return httpFetch(url, {
@@ -74,15 +75,14 @@ export const generateRsaKey = async() => new Promise<{ publicKey: string, privat
   )
 })
 
-
-export const encryptMsg = (keyInfo: LX.Sync.ClientKeyInfo, msg: string): string => {
-  return msg
+export const encryptMsg = async(keyInfo: LX.Sync.ClientKeyInfo, msg: string): Promise<string> => {
+  return encodeData(msg)
   // if (!keyInfo) return ''
   // return aesEncrypt(msg, keyInfo.key, keyInfo.iv)
 }
 
-export const decryptMsg = (keyInfo: LX.Sync.ClientKeyInfo, enMsg: string): string => {
-  return enMsg
+export const decryptMsg = async(keyInfo: LX.Sync.ClientKeyInfo, enMsg: string): Promise<string> => {
+  return decodeData(enMsg)
   // if (!keyInfo) return ''
   // let msg = ''
   // try {

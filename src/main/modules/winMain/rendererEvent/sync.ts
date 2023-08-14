@@ -3,7 +3,7 @@ import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { startServer, stopServer, getServerStatus, generateCode, connectServer, disconnectServer, getClientStatus } from '@main/modules/sync'
 import { sendEvent } from '../main'
 
-let selectModeListenr: ((mode: LX.Sync.Mode) => void) | null = null
+let selectModeListenr: ((mode: LX.Sync.Mode | null) => void) | null = null
 
 export default () => {
   mainHandle<LX.Sync.SyncServiceActions, any>(WIN_MAIN_RENDERER_EVENT_NAME.sync_action, async({ params: data }) => {
@@ -18,7 +18,10 @@ export default () => {
       case 'get_client_status': return getClientStatus()
       case 'generate_code': return generateCode()
       case 'select_mode':
-        if (selectModeListenr) selectModeListenr(data.data)
+        if (selectModeListenr) {
+          selectModeListenr(data.data)
+          selectModeListenr = null
+        }
         break
       default:
         break
@@ -43,11 +46,12 @@ export const sendServerStatus = (status: LX.Sync.ServerStatus) => {
     data: status,
   })
 }
-export const sendSelectMode = (deviceName: string, listener: (mode: LX.Sync.Mode) => void) => {
+export const sendSelectMode = (deviceName: string, listener: (mode: LX.Sync.Mode | null) => void) => {
   selectModeListenr = listener
   sendSyncAction({ action: 'select_mode', data: deviceName })
 }
 export const removeSelectModeListener = () => {
+  if (selectModeListenr) selectModeListenr(null)
   selectModeListenr = null
 }
 export const sendCloseSelectMode = () => {

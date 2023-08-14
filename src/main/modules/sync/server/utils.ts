@@ -6,7 +6,7 @@ import {
   saveSnapshotInfo,
   type SnapshotInfo,
 } from '../data'
-import { getLocalListData } from '../utils'
+import { decodeData, encodeData, getLocalListData } from '../utils'
 
 export const generateCode = (): string => {
   return Math.random().toString().substring(2, 8)
@@ -16,14 +16,18 @@ export const getIP = (request: http.IncomingMessage) => {
   return request.socket.remoteAddress
 }
 
-export const encryptMsg = (keyInfo: LX.Sync.ServerKeyInfo, msg: string): string => {
-  return msg
+export const encryptMsg = async(keyInfo: LX.Sync.ServerKeyInfo | null, msg: string): Promise<string> => {
+  return encodeData(msg)
+  // console.log('enmsg raw: ', msg.length, 'en: ', len.length)
+  // return len
   // if (!keyInfo) return ''
   // return aesEncrypt(msg, keyInfo.key, keyInfo.iv)
 }
 
-export const decryptMsg = (keyInfo: LX.Sync.ServerKeyInfo, enMsg: string): string => {
-  return enMsg
+export const decryptMsg = async(keyInfo: LX.Sync.ServerKeyInfo | null, enMsg: string): Promise<string> => {
+  return decodeData(enMsg)
+  // console.log('decmsg raw: ', len.length, 'en: ', enMsg.length)
+  // return len
   // if (!keyInfo) return ''
   // let msg = ''
   // try {

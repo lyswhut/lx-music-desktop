@@ -3,6 +3,7 @@ import { getSyncAuthKey, setSyncAuthKey } from '../data'
 import { SYNC_CODE } from '@common/constants'
 import log from '../log'
 import { aesDecrypt, aesEncrypt, getComputerName, rsaDecrypt } from '../utils'
+import { toMD5 } from '@common/utils/nodejs'
 
 
 const hello = async(urlInfo: LX.Sync.Client.UrlInfo) => request(`${urlInfo.httpProtocol}//${urlInfo.hostPath}/hello`)
@@ -25,7 +26,7 @@ const getServerId = async(urlInfo: LX.Sync.Client.UrlInfo) => request(`${urlInfo
   })
 
 const codeAuth = async(urlInfo: LX.Sync.Client.UrlInfo, serverId: string, authCode: string) => {
-  let key = ''.padStart(16, Buffer.from(authCode).toString('hex'))
+  let key = toMD5(authCode).substring(0, 16)
   // const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
   key = Buffer.from(key).toString('base64')
   let { publicKey, privateKey } = await generateRsaKey()

@@ -78,7 +78,7 @@ export const DOWNLOAD_STATUS = {
 export const QUALITYS = ['flac24bit', 'flac', 'wav', 'ape', '320k', '192k', '128k'] as const
 
 export const SYNC_CODE = {
-  helloMsg: 'Hello~::^-^::~v3~',
+  helloMsg: 'Hello~::^-^::~v4~',
   idPrefix: 'OjppZDo6',
   authMsg: 'lx-music auth::',
   authFailed: 'Auth failed',

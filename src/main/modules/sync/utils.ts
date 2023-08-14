@@ -1,5 +1,6 @@
 import { createCipheriv, createDecipheriv, publicEncrypt, privateDecrypt, constants } from 'node:crypto'
 import os, { networkInterfaces } from 'node:os'
+import zlib from 'node:zlib'
 import cp from 'node:child_process'
 import { LIST_IDS } from '@common/constants'
 
@@ -39,6 +40,38 @@ export const getComputerName = () => {
   if (!name) name = os.hostname()
   return name
 }
+
+const gzip = async(data: string) => new Promise<string>((resolve, reject) => {
+  zlib.gzip(data, (err, buf) => {
+    if (err) {
+      reject(err)
+      return
+    }
+    resolve(buf.toString('base64'))
+  })
+})
+const unGzip = async(data: string) => new Promise<string>((resolve, reject) => {
+  zlib.gunzip(Buffer.from(data, 'base64'), (err, buf) => {
+    if (err) {
+      reject(err)
+      return
+    }
+    resolve(buf.toString())
+  })
+})
+
+export const encodeData = async(data: string) => {
+  return data.length > 1024
+    ? 'cg_' + await gzip(data)
+    : data
+}
+
+export const decodeData = async(enData: string) => {
+  return enData.substring(0, 3) == 'cg_'
+    ? await unGzip(enData.replace('cg_', ''))
+    : enData
+}
+
 
 export const aesEncrypt = (text: string, key: string) => {
   const cipher = createCipheriv('aes-128-ecb', Buffer.from(key, 'base64'), '')

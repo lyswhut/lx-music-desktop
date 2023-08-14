@@ -4,6 +4,7 @@ import querystring from 'node:querystring'
 import { getIP } from './utils'
 import { createClientKeyInfo, getClientKeyInfo, saveClientKeyInfo } from '../data'
 import { aesDecrypt, aesEncrypt, getComputerName, rsaEncrypt } from '../utils'
+import { toMD5 } from '@common/utils/nodejs'
 
 const requestIps = new Map<string, number>()
 
@@ -35,7 +36,7 @@ const verifyByKey = (encryptMsg: string, userId: string) => {
 }
 
 const verifyByCode = (encryptMsg: string, password: string) => {
-  let key = ''.padStart(16, Buffer.from(password).toString('hex'))
+  let key = toMD5(password).substring(0, 16)
   // const iv = Buffer.from(key.split('').reverse().join('')).toString('base64')
   key = Buffer.from(key).toString('base64')
   // console.log(req.headers.m, authCode, key)

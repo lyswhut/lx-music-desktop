@@ -1,15 +1,15 @@
 import http, { type IncomingMessage } from 'node:http'
 import url from 'node:url'
 import { WebSocketServer } from 'ws'
-import * as modules from './modules'
+import { modules, callObj } from './modules'
 import { authCode, authConnect } from './auth'
-import syncList from './syncList'
 import log from '../log'
 import { SYNC_CLOSE_CODE, SYNC_CODE } from '@common/constants'
 import { decryptMsg, encryptMsg, generateCode as handleGenerateCode } from './utils'
 import { getAddress } from '../utils'
 import { sendServerStatus } from '@main/modules/winMain/index'
 import { getClientKeyInfo, getServerId, saveClientKeyInfo } from '../data'
+import { createMsg2call } from 'message2call'
 
 
 let status: LX.Sync.ServerStatus = {
@@ -40,6 +40,24 @@ const codeTools: {
   },
 }
 
+const syncData = async(socket: LX.Sync.Server.Socket) => {
+  for (const module of Object.values(modules)) {
+    await module.sync(socket)
+  }
+}
+
+const registerLocalSyncEvent = async(wss: LX.Sync.Server.SocketServer) => {
+  for (const module of Object.values(modules)) {
+    module.registerEvent(wss)
+  }
+}
+
+const unregisterLocalSyncEvent = () => {
+  for (const module of Object.values(modules)) {
+    module.unregisterEvent()
+  }
+}
+
 const checkDuplicateClient = (newSocket: LX.Sync.Server.Socket) => {
   for (const client of [...wss!.clients]) {
     if (client === newSocket || client.keyInfo.clientId != newSocket.keyInfo.clientId) continue
@@ -65,7 +83,7 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
   checkDuplicateClient(socket)
 
   try {
-    await syncList(wss as LX.Sync.Server.SocketServer, socket)
+    await syncData(socket)
   } catch (err) {
     // console.log(err)
     log.warn(err)
@@ -83,9 +101,6 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
   // console.log('connection', keyInfo.deviceName)
   log.info('connection', keyInfo.deviceName)
   // console.log(socket.handshake.query)
-  for (const module of Object.values(modules)) {
-    module.registerListHandler(wss as LX.Sync.Server.SocketServer, socket)
-  }
 
   socket.isReady = true
 }
@@ -93,9 +108,6 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
 const handleUnconnection = () => {
   console.log('unconnection')
   // console.log(socket.handshake.query)
-  for (const module of Object.values(modules)) {
-    module.unregisterListHandler()
-  }
 }
 
 const authConnection = (req: http.IncomingMessage, callback: (err: string | null | undefined, success: boolean) => void) => {
@@ -157,52 +169,73 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
 
     // const events = new Map<keyof ActionsType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
     // const events = new Map<keyof LX.Sync.ActionSyncType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
-    let events: Partial<{ [K in keyof LX.Sync.ActionSyncType]: Array<(data: LX.Sync.ActionSyncType[K]) => void> }> = {}
+    // let events: Partial<{ [K in keyof LX.Sync.ActionSyncType]: Array<(data: LX.Sync.ActionSyncType[K]) => void> }> = {}
     let closeEvents: Array<(err: Error) => (void | Promise<void>)> = []
+    const msg2call = createMsg2call<LX.Sync.ClientActions>({
+      funcsObj: callObj,
+      timeout: 120 * 1000,
+      sendMessage(data) {
+        void encryptMsg(socket.keyInfo, JSON.stringify(data)).then((data) => {
+          // console.log('sendData', eventName)
+          socket.send(data)
+        }).catch(err => {
+          log.error('encrypt message error:', err)
+          log.error(err.message)
+          socket.close(SYNC_CLOSE_CODE.failed)
+        })
+      },
+      onCallBeforeParams(rawArgs) {
+        return [socket, ...rawArgs]
+      },
+      onError(error, path, groupName) {
+        const name = groupName ?? ''
+        log.error(`sync call ${name} ${path.join('.')} error:`, error)
+        if (groupName == null) return
+        socket.close(SYNC_CLOSE_CODE.failed)
+      },
+    })
+    socket.remote = msg2call.remote
+    socket.remoteSyncList = msg2call.createSyncRemote('list')
     socket.addEventListener('message', ({ data }) => {
-      if (typeof data === 'string') {
-        let syncData: LX.Sync.ActionSync
+      if (typeof data != 'string') return
+      void decryptMsg(socket.keyInfo, data).then((data) => {
+        let syncData: any
         try {
-          syncData = JSON.parse(decryptMsg(socket.keyInfo, data))
+          syncData = JSON.parse(data)
         } catch (err) {
           log.error('parse message error:', err)
           socket.close(SYNC_CLOSE_CODE.failed)
           return
         }
-        const handlers = events[syncData.action]
-        if (handlers) {
-          // @ts-expect-error
-          for (const handler of handlers) handler(syncData.data)
-        }
-      }
+        msg2call.onMessage(syncData)
+      }).catch(err => {
+        log.error('decrypt message error:', err)
+        log.error(err.message)
+        socket.close(SYNC_CLOSE_CODE.failed)
+      })
     })
     socket.addEventListener('close', () => {
+      if (!socket.isReady) {
+        const queryData = url.parse(request.url as string, true).query as Record<string, string>
+        log.info('deconnection', queryData.i)
+        return
+      }
       const err = new Error('closed')
       for (const handler of closeEvents) void handler(err)
-      events = {}
+      // events = {}
       closeEvents = []
       if (!status.devices.length) handleUnconnection()
       log.info('deconnection', socket.keyInfo.deviceName)
     })
-    socket.onRemoteEvent = function(eventName, handler) {
-      let eventArr = events[eventName]
-      if (!eventArr) events[eventName] = eventArr = []
-      // let eventArr = events.get(eventName)
-      // if (!eventArr) events.set(eventName, eventArr = [])
-      eventArr.push(handler)
-
-      return () => {
-        eventArr!.splice(eventArr!.indexOf(handler), 1)
-      }
-    }
     socket.onClose = function(handler: typeof closeEvents[number]) {
       closeEvents.push(handler)
       return () => {
         closeEvents.splice(closeEvents.indexOf(handler), 1)
       }
     }
-    socket.sendData = function(eventName, data, callback) {
-      socket.send(encryptMsg(socket.keyInfo, JSON.stringify({ action: eventName, data })), callback)
+    socket.broadcast = function(handler) {
+      if (!wss) return
+      for (const client of wss.clients) handler(client)
     }
     void handleConnection(socket, request)
   })
@@ -256,6 +289,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     const bind = typeof addr == 'string' ? `pipe ${addr}` : `port ${addr.port}`
     log.info(`Listening on ${ip} ${bind}`)
     resolve(null)
+    void registerLocalSyncEvent(wss as LX.Sync.Server.SocketServer)
   })
 
   httpServer.listen(port, ip)
@@ -264,6 +298,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
 const handleStopServer = async() => new Promise<void>((resolve, reject) => {
   if (!wss) return
   for (const client of wss.clients) client.close(SYNC_CLOSE_CODE.normal)
+  unregisterLocalSyncEvent()
   wss.close()
   wss = null
   httpServer.close((err) => {

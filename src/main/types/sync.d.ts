@@ -14,18 +14,8 @@ declare global {
             urlInfo: UrlInfo
           }
 
-          onRemoteEvent: <T extends keyof LX.Sync.ActionSyncSendType>(
-            eventName: T,
-            handler: (data: LX.Sync.ActionSyncSendType[T]) => (void | Promise<void>)
-          ) => () => void
-
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
-
-          sendData: <T extends keyof LX.Sync.ActionSyncType>(
-            eventName: T,
-            data?: LX.Sync.ActionSyncType[T],
-            callback?: (err?: Error) => void
-          ) => void
+          remoteSyncList: LX.Sync.ServerActions
         }
 
         interface UrlInfo {
@@ -38,22 +28,13 @@ declare global {
       namespace Server {
         interface Socket extends WS.WebSocket {
           isAlive?: boolean
-          isMobile: boolean
           isReady: boolean
-          keyInfo: LX.Sync.ServerKeyInfo
-
-          onRemoteEvent: <T extends keyof LX.Sync.ActionSyncType>(
-            eventName: T,
-            handler: (data: LX.Sync.ActionSyncType[T]) => void
-          ) => () => void
-
+          keyInfo: ServerKeyInfo
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
+          broadcast: (handler: (client: Socket) => void) => void
 
-          sendData: <T extends keyof LX.Sync.ActionSyncSendType>(
-            eventName: T,
-            data?: LX.Sync.ActionSyncSendType[T],
-            callback?: (err?: Error) => void
-          ) => void
+          remote: LX.Sync.ClientActions
+          remoteSyncList: LX.Sync.ClientActions
         }
         type SocketServer = WS.Server<Socket>
       }
