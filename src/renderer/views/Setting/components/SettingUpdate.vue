@@ -79,7 +79,7 @@ export default {
 </script>
 
 <style lang="less" module>
-.save-path {
-  font-size: 12px;
-}
+// .savePath {
+//   font-size: 12px;
+// }
 </style>

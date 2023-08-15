@@ -165,7 +165,7 @@ export default {
     will-change: transform;
   }
 
-  .bar-transition {
+  .barTransition {
     transition-property: transform;
     transition-timing-function: ease-out;
     transition-duration: 0.2s;

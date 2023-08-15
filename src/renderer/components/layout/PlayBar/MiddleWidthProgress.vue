@@ -299,7 +299,7 @@ export default {
   gap: 18px;
 }
 
-.play-btn {
+.playBtn {
   flex: none;
   height: 52%;
   // margin-top: -2px;

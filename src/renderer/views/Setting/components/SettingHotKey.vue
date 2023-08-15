@@ -8,7 +8,8 @@ dd
     div(v-for="(item, index) in allHotKeys.local" :key="index" :class="$style.hotKeyItem")
       h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
       base-input(
-:class="$style.hotKeyItemInput" readonly :auto-paste="false" :placeholder="$t('setting__hot_key_unset_input')" :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
+        :class="$style.hotKeyItemInput" readonly :auto-paste="false"
+        :placeholder="$t('setting__hot_key_unset_input')" :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
         @keyup.prevent
         @focus="handleHotKeyFocus($event, item, 'local')"
         @blur="handleHotKeyBlur($event, item, 'local')")
@@ -20,7 +21,7 @@ dd
     div(v-for="(item, index) in allHotKeys.global" :key="index" :class="$style.hotKeyItem")
       h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
       base-input(
-:class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
+        :class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
         :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" :auto-paste="false" readonly :placeholder="$t('setting__hot_key_unset_input')" @input.prevent
         @focus="handleHotKeyFocus($event, item, 'global')"
         @blur="handleHotKeyBlur($event, item, 'global')")
@@ -274,34 +275,34 @@ export default {
   text-decoration: line-through;
 }
 
-.del-line {
-  position: relative;
-  &:before {
-    display: block;
-    height: 1px;
-    position: absolute;
-    width: 110%;
-    content: ' ';
-    left: 0;
-    background-color: #000;
-    transform: rotate(-24deg);
-    transform-origin: 0;
-    top: 83%;
-    z-index: 1;
-  }
-  &:after {
-    display: block;
-    height: 1px;
-    position: absolute;
-    width: 110%;
-    content: ' ';
-    left: 0;
-    background-color: #000;
-    transform: rotate(23deg);
-    transform-origin: 0px;
-    top: 2px;
-    z-index: 1;
-  }
-}
+// .delLine {
+//   position: relative;
+//   &:before {
+//     display: block;
+//     height: 1px;
+//     position: absolute;
+//     width: 110%;
+//     content: ' ';
+//     left: 0;
+//     background-color: #000;
+//     transform: rotate(-24deg);
+//     transform-origin: 0;
+//     top: 83%;
+//     z-index: 1;
+//   }
+//   &:after {
+//     display: block;
+//     height: 1px;
+//     position: absolute;
+//     width: 110%;
+//     content: ' ';
+//     left: 0;
+//     background-color: #000;
+//     transform: rotate(23deg);
+//     transform-origin: 0px;
+//     top: 2px;
+//     z-index: 1;
+//   }
+// }
 
 </style>
