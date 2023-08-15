@@ -101,8 +101,8 @@ const defaultSetting: LX.AppSetting = {
   'list.addMusicLocationType': 'top',
   'list.actionButtonsVisible': false,
 
-  'download.enable': false,
-  'download.savePath': join(homedir(), 'Desktop'),
+  'download.enable': true,
+  'download.savePath': join(homedir(), 'Downloads'),
   'download.fileName': '歌名 - 歌手',
   'download.maxDownloadNum': 3,
   'download.skipExistFile': true,
@@ -111,8 +111,8 @@ const defaultSetting: LX.AppSetting = {
   'download.isDownloadRLrc': false,
   'download.lrcFormat': 'utf8',
   'download.isEmbedPic': true,
-  'download.isEmbedLyric': false,
-  'download.isEmbedLyricT': false,
+  'download.isEmbedLyric': true,
+  'download.isEmbedLyricT': true,
   'download.isEmbedLyricR': false,
   'download.isUseOtherSource': false,
 
