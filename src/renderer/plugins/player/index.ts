@@ -1,5 +1,3 @@
-import PhaseVocoder from './pitch-shifter/phase-vocoder.js?worker&url'
-
 let audio: HTMLAudioElement | null = null
 let audioContext: AudioContext
 let mediaSource: MediaElementAudioSourceNode
@@ -278,7 +276,11 @@ const loadPitchShifterNode = () => {
   pitchShifterNodeLoadStatus = 'loading'
   initAdvancedAudioFeatures()
   // source -> analyser -> biquadFilter -> audioWorklet(pitch shifter) -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
-  void audioContext.audioWorklet.addModule(PhaseVocoder).then(() => {
+  void audioContext.audioWorklet.addModule(new URL(
+    /* webpackChunkName: 'pitch_shifter.audioWorklet' */
+    './pitch-shifter/phase-vocoder.js',
+    import.meta.url,
+  )).then(() => {
     console.log('pitch shifter audio worklet loaded')
     // https://github.com/olvb/phaze/issues/26#issuecomment-1574629971
     pitchShifterNode = new AudioWorkletNode(audioContext, 'phase-vocoder-processor', { outputChannelCount: [2] })

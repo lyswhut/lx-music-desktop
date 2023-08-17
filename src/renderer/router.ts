@@ -2,14 +2,6 @@
 // import Vue from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-import SearchView from './views/Search/index.vue'
-import SongListView from './views/songList/List/index.vue'
-import SongListDetailView from './views/songList/Detail/index.vue'
-import LeaderboardView from './views/Leaderboard/index.vue'
-import ListView from './views/List/index.vue'
-import DownloadView from './views/Download/index.vue'
-import SettingView from './views/Setting/index.vue'
-
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -17,7 +9,7 @@ const router = createRouter({
     {
       path: '/search',
       name: 'Search',
-      component: SearchView,
+      component: require('./views/Search/index.vue').default,
       meta: {
         name: 'Search',
       },
@@ -25,7 +17,7 @@ const router = createRouter({
     {
       path: '/songList/list',
       name: 'SongList',
-      component: SongListView,
+      component: require('./views/songList/List/index.vue').default,
       meta: {
         name: 'SongList',
       },
@@ -33,7 +25,7 @@ const router = createRouter({
     {
       path: '/songList/detail',
       name: 'SongListDetail',
-      component: SongListDetailView,
+      component: require('./views/songList/Detail/index.vue').default,
       meta: {
         name: 'SongList',
       },
@@ -41,7 +33,7 @@ const router = createRouter({
     {
       path: '/leaderboard',
       name: 'Leaderboard',
-      component: LeaderboardView,
+      component: require('./views/Leaderboard/index.vue').default,
       meta: {
         name: 'Leaderboard',
       },
@@ -49,7 +41,7 @@ const router = createRouter({
     {
       path: '/list',
       name: 'List',
-      component: ListView,
+      component: require('./views/List/index.vue').default,
       meta: {
         name: 'List',
       },
@@ -57,7 +49,7 @@ const router = createRouter({
     {
       path: '/download',
       name: 'Download',
-      component: DownloadView,
+      component: require('./views/Download/index.vue').default,
       meta: {
         name: 'Download',
       },
@@ -65,7 +57,7 @@ const router = createRouter({
     {
       path: '/setting',
       name: 'Setting',
-      component: SettingView,
+      component: require('./views/Setting/index.vue').default,
       meta: {
         name: 'Setting',
       },

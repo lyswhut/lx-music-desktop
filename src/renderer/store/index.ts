@@ -1,10 +1,10 @@
 import { ref, reactive, shallowRef, markRaw, computed, watch } from '@common/utils/vueTools'
 import { windowSizeList as configWindowSizeList } from '@common/config'
 import { appSetting } from './setting'
-import { version } from '../../../package.json'
+import pkg from '../../../package.json'
 import { type ProgressInfo } from 'electron-updater'
 import music from '@renderer/utils/musicSdk'
-process.versions.app = version
+process.versions.app = pkg.version
 
 export const apiSource = ref<string | null>(null)
 export const proxy: {
@@ -115,7 +115,7 @@ export const versionInfo = window.lxData.versionInfo = reactive<{
   status: LX.UpdateStatus
   downloadProgress: ProgressInfo | null
 }>({
-  version,
+  version: pkg.version,
   newVersion: null,
   showModal: false,
   reCheck: false,

@@ -1,5 +1,4 @@
 import '@common/error'
-import 'virtual:svg-icons-register'
 import { createApp } from 'vue'
 
 import './core/globalData'

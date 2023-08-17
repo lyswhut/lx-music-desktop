@@ -1,5 +1,5 @@
 import { createInflate, constants as zlibConstants } from 'node:zlib'
-import path from 'node:path'
+// import path from 'path'
 import { mainHandle } from '@common/mainIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
@@ -40,7 +40,7 @@ const handleDecode = async(lrc: string, tlrc: string, rlrc: string) => {
     // const nativeBindingPath = path.join(__dirname, '../build/Release/qrc_decode.node')
     // const nativeBindingPath = process.env.NODE_ENV !== 'production' ? path.join(__dirname, '../build/Release/qrc_decode.node')
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const addon = require(path.join(__QRC_DECODE_NODE_PATH__, 'qrc_decode.node'))
+    const addon = require('qrc_decode.node')
     // console.log(addon)
     qrc_decode = addon.qrc_decode
   }

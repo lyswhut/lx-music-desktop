@@ -26,5 +26,5 @@ app.on('ready', () => {
 })
 
 // Require `main` process to boot app
-import('./index')
+require('./index')
 

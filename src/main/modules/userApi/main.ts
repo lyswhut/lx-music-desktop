@@ -27,16 +27,15 @@ const winEvent = () => {
 
 export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   await closeWindow()
-  dir ??= process.env.NODE_ENV !== 'production' ? path.join(__USER_API_PATH__, 'renderer') : encodePath(__dirname)
+  dir ??= process.env.NODE_ENV !== 'production' ? webpackUserApiPath : path.join(encodePath(__dirname), 'userApi')
 
   if (!html) {
-    html = await fs.promises.readFile(path.join(dir, 'user-api.html'), 'utf8')
+    html = await fs.promises.readFile(path.join(dir, 'renderer/user-api.html'), 'utf8')
   }
   const preloadUrl = process.env.NODE_ENV !== 'production'
     ? `${path.join(encodePath(__dirname), '../dist/user-api-preload.js')}`
-    : `${path.join(encodePath(__dirname), '../preload/user-api-preload.js')}`
-
-  // console.log(preloadUrl, html)
+    : `${path.join(encodePath(__dirname), 'user-api-preload.js')}`
+  // console.log(preloadUrl)
 
   /**
    * Initial window options

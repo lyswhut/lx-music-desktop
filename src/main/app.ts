@@ -21,8 +21,8 @@ export const initGlobalData = () => {
 
   global.staticPath =
     process.env.NODE_ENV !== 'production'
-      ? __STATIC_PATH__
-      : path.join(encodePath(__dirname), '../static')
+      ? webpackStaticPath
+      : path.join(encodePath(__dirname), 'static')
 }
 
 export const initSingleInstanceHandle = () => {

@@ -1,22 +1,25 @@
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 
-const requireComponent = import.meta.glob(['./**/*.vue', '!./**/components/**/*.vue'], { eager: true })
-const vueFileRxp = /\.vue$/
-const vueIndexFileRxp = /\/index\.vue$/
+const requireComponent = require.context('./', true, /\.vue$/)
 
+const vueFileRxp = /\.vue$/
 
 export default app => {
-  Object.entries(requireComponent).forEach(([path, module]) => {
-    path = path.replace(/^\.\//, '')
-    let fileName = vueIndexFileRxp.test(path)
-      ? path.replace(vueIndexFileRxp, '')
-      : path.replace(vueFileRxp, '')
+  requireComponent.keys().forEach(fileName => {
+    const filePath = fileName.replace(/^\.\//, '')
 
-    let componentName = upperFirst(camelCase(fileName))
+    if (!filePath.split('/').every((path, index, arr) => {
+      const char = path.charAt(0)
+      return vueFileRxp.test(path) || char.toUpperCase() !== char || arr[index + 1] == 'index.vue'
+    })) return
 
-    // console.log(componentName)
+    const componentConfig = requireComponent(fileName)
 
-    app.component(componentName, module.default)
+    let componentName = upperFirst(camelCase(filePath.replace(/\.\w+$/, '')))
+
+    if (componentName.endsWith('Index')) componentName = componentName.replace(/Index$/, '')
+
+    app.component(componentName, componentConfig.default || componentConfig)
   })
 }

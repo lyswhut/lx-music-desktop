@@ -139,7 +139,7 @@ export const createWindow = () => {
     },
   })
 
-  const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9081' : `file://${path.join(encodePath(__dirname), '../renderer-lyric/index.html')}`
+  const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9081/lyric.html' : `file://${path.join(encodePath(__dirname), 'lyric.html')}`
   void browserWindow.loadURL(winURL + `?dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()

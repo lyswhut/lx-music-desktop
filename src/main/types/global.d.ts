@@ -9,7 +9,6 @@
 // //   }
 // // }
 
-declare const __STATIC_PATH__: string
-declare const __USER_API_PATH__: string
-declare const __QRC_DECODE_NODE_PATH__: string
+declare const webpackStaticPath: string
+declare const webpackUserApiPath: string
 
