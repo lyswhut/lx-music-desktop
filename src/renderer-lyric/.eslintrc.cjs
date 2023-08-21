@@ -1,10 +1,11 @@
 /* eslint-env node */
-const { base, typescript, vue } = require('../../.eslintrc.base.cjs')
+const { base, html, typescript, vue } = require('../../.eslintrc.base.cjs')
 
 module.exports = {
   root: true,
   ...base,
   overrides: [
+    html,
     vue,
     {
       ...typescript,

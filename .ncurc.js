@@ -9,8 +9,6 @@ module.exports = {
     'eslint-plugin-n',
     '@types/ws',
     'eslint-config-standard-with-typescript',
-    '@typescript-eslint/eslint-plugin',
-    '@typescript-eslint/parser',
   ],
 
   // target: 'newest',

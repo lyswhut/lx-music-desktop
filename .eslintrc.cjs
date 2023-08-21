@@ -12,6 +12,8 @@ module.exports = {
     },
   ],
   ignorePatterns: [
+    'node_modules',
+    '*.min.js',
     'dist',
     'build',
   ],

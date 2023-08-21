@@ -44,9 +44,13 @@ const vueRule = {
 
 exports.base = {
   extends: ['standard'],
-  plugins: ['html'],
   rules: baseRule,
   parser: '@babel/eslint-parser',
+}
+
+exports.html = {
+  files: ['*.html'],
+  plugins: ['html'],
 }
 
 exports.typescript = {
