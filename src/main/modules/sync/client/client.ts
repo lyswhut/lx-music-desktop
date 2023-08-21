@@ -219,9 +219,14 @@ export const connect = (urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.Client
   })
   client.addEventListener('close', ({ code }) => {
     const err = new Error('closed')
-    for (const handler of closeEvents) void handler(err)
-    handleDisconnection()
+    try {
+      for (const handler of closeEvents) void handler(err)
+    } catch (err: any) {
+      log.error(err?.message)
+    }
     closeEvents = []
+    handleDisconnection()
+    message2read.onDestroy()
     switch (code) {
       case SYNC_CLOSE_CODE.normal:
       // case SYNC_CLOSE_CODE.failed:

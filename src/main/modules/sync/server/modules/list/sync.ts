@@ -62,6 +62,8 @@ const overwriteRemoteListData = async(socket: LX.Sync.Server.Socket, listData: L
     if (excludeIds.includes(client.keyInfo.clientId) || !client.isReady) return
     tasks.push(client.remoteSyncList.onListSyncAction(action).then(() => {
       updateDeviceSnapshotKey(socket.keyInfo, key)
+    }).catch(err => {
+      console.log(err.message)
     }))
   })
   if (!tasks.length) return
