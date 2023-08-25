@@ -1,13 +1,17 @@
 import type http from 'http'
 import { SYNC_CODE } from '@common/constants'
+import {
+  aesEncrypt,
+  aesDecrypt,
+  rsaEncrypt,
+  getIP,
+} from '../utils/tools'
 import querystring from 'node:querystring'
-import { getIP } from './utils'
-import { createClientKeyInfo, getClientKeyInfo, saveClientKeyInfo } from '../data'
-import { aesDecrypt, aesEncrypt, getComputerName, rsaEncrypt } from '../utils'
-import { toMD5 } from '@common/utils/nodejs'
+import { getUserSpace, createClientKeyInfo } from '../user'
+import { toMD5 } from '../utils'
+import { getComputerName } from '../../utils'
 
 const requestIps = new Map<string, number>()
-
 
 const getAvailableIP = (req: http.IncomingMessage) => {
   let ip = getIP(req)
@@ -15,7 +19,8 @@ const getAvailableIP = (req: http.IncomingMessage) => {
 }
 
 const verifyByKey = (encryptMsg: string, userId: string) => {
-  const keyInfo = getClientKeyInfo(userId)
+  const userSpace = getUserSpace()
+  const keyInfo = userSpace.dataManage.getClientKeyInfo(userId)
   if (!keyInfo) return null
   let text
   try {
@@ -28,7 +33,7 @@ const verifyByKey = (encryptMsg: string, userId: string) => {
     const deviceName = text.replace(SYNC_CODE.authMsg, '') || 'Unknown'
     if (deviceName != keyInfo.deviceName) {
       keyInfo.deviceName = deviceName
-      saveClientKeyInfo(keyInfo)
+      userSpace.dataManage.saveClientKeyInfo(keyInfo)
     }
     return aesEncrypt(SYNC_CODE.helloMsg, keyInfo.key)
   }
@@ -43,7 +48,7 @@ const verifyByCode = (encryptMsg: string, password: string) => {
   let text
   try {
     text = aesDecrypt(encryptMsg, key)
-  } catch (err) {
+  } catch {
     return null
   }
   // console.log(text)
@@ -53,6 +58,8 @@ const verifyByCode = (encryptMsg: string, password: string) => {
     const deviceName = data[2] || 'Unknown'
     const isMobile = data[3] == 'lx_music_mobile'
     const keyInfo = createClientKeyInfo(deviceName, isMobile)
+    const userSpace = getUserSpace()
+    userSpace.dataManage.saveClientKeyInfo(keyInfo)
     return rsaEncrypt(Buffer.from(JSON.stringify({
       clientId: keyInfo.clientId,
       key: keyInfo.key,
@@ -66,7 +73,6 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
   let code = 401
   let msg: string = SYNC_CODE.msgAuthFailed
 
-  // console.log(req.headers)
   let ip = getAvailableIP(req)
   if (ip) {
     if (typeof req.headers.m == 'string' && req.headers.m) {
@@ -89,13 +95,15 @@ export const authCode = async(req: http.IncomingMessage, res: http.ServerRespons
     code = 403
     msg = SYNC_CODE.msgBlockedIp
   }
+  // console.log(req.headers)
 
   res.writeHead(code)
   res.end(msg)
 }
 
 const verifyConnection = (encryptMsg: string, userId: string) => {
-  const keyInfo = getClientKeyInfo(userId)
+  const userSpace = getUserSpace()
+  const keyInfo = userSpace.dataManage.getClientKeyInfo(userId)
   if (!keyInfo) return false
   let text
   try {

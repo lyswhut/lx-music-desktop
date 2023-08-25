@@ -1,5 +1,5 @@
 import { request, generateRsaKey } from './utils'
-import { getSyncAuthKey, setSyncAuthKey } from '../data'
+import { getSyncAuthKey, setSyncAuthKey } from './data'
 import { SYNC_CODE } from '@common/constants'
 import log from '../log'
 import { aesDecrypt, aesEncrypt, getComputerName, rsaDecrypt } from '../utils'

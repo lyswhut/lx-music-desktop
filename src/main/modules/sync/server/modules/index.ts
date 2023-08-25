@@ -1,10 +1,12 @@
-import * as list from './list'
-// export * as theme from './theme'
+import { sync } from './list'
 
-
-export const callObj = Object.assign({}, list.handler)
-
+export const callObj = Object.assign({},
+  sync.handler,
+)
 
 export const modules = {
-  list,
+  list: sync,
 }
+
+
+export { ListManage } from './list'

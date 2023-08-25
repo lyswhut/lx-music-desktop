@@ -3,7 +3,7 @@ import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { startServer, stopServer, getServerStatus, generateCode, connectServer, disconnectServer, getClientStatus } from '@main/modules/sync'
 import { sendEvent } from '../main'
 
-let selectModeListenr: ((mode: LX.Sync.Mode | null) => void) | null = null
+let selectModeListenr: ((mode: LX.Sync.ListSyncMode | null) => void) | null = null
 
 export default () => {
   mainHandle<LX.Sync.SyncServiceActions, any>(WIN_MAIN_RENDERER_EVENT_NAME.sync_action, async({ params: data }) => {
@@ -46,7 +46,7 @@ export const sendServerStatus = (status: LX.Sync.ServerStatus) => {
     data: status,
   })
 }
-export const sendSelectMode = (deviceName: string, listener: (mode: LX.Sync.Mode | null) => void) => {
+export const sendSelectMode = (deviceName: string, listener: (mode: LX.Sync.ListSyncMode | null) => void) => {
   selectModeListenr = listener
   sendSyncAction({ action: 'select_mode', data: deviceName })
 }

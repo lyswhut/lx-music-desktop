@@ -4,6 +4,7 @@ import { connect as socketConnect, disconnect as socketDisconnect, sendSyncStatu
 import { SYNC_CODE } from '@common/constants'
 import log from '../log'
 import { parseUrl } from './utils'
+import migrateData from '../migrate'
 
 let connectId = 0
 
@@ -29,6 +30,8 @@ const connectServer = async(host: string, authCode?: string) => {
     message: SYNC_CODE.connecting,
   })
   const id = connectId
+  await migrateData(global.lxDataPath)
+
   return handleConnect(host, authCode).catch(async err => {
     if (id != connectId) return
     sendSyncStatus({

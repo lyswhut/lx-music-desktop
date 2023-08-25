@@ -1,15 +1,16 @@
 import http, { type IncomingMessage } from 'node:http'
 import url from 'node:url'
 import { WebSocketServer } from 'ws'
-import { modules, callObj } from './modules'
+import { modules, callObj } from '../modules'
 import { authCode, authConnect } from './auth'
-import log from '../log'
-import { SYNC_CLOSE_CODE, SYNC_CODE } from '@common/constants'
-import { decryptMsg, encryptMsg, generateCode as handleGenerateCode } from './utils'
-import { getAddress } from '../utils'
-import { sendServerStatus } from '@main/modules/winMain/index'
-import { getClientKeyInfo, getServerId, saveClientKeyInfo } from '../data'
+import { getAddress } from '../../utils'
+import { SYNC_CLOSE_CODE, SYNC_CODE } from '../../constants'
+import { getUserSpace, releaseUserSpace, getServerId, initServerInfo } from '../user'
 import { createMsg2call } from 'message2call'
+import log from '../../log'
+import { sendServerStatus } from '@main/modules/winMain'
+import { decryptMsg, encryptMsg, generateCode as handleGenerateCode } from '../utils/tools'
+import migrateData from '../../migrate'
 
 
 let status: LX.Sync.ServerStatus = {
@@ -19,6 +20,7 @@ let status: LX.Sync.ServerStatus = {
   code: '',
   devices: [],
 }
+
 let stopingServer = false
 
 const codeTools: {
@@ -51,6 +53,7 @@ const syncData = async(socket: LX.Sync.Server.Socket) => {
   }
 }
 
+
 const registerLocalSyncEvent = async(wss: LX.Sync.Server.SocketServer) => {
   for (const module of Object.values(modules)) {
     module.registerEvent(wss)
@@ -63,10 +66,11 @@ const unregisterLocalSyncEvent = () => {
   }
 }
 
+
 const checkDuplicateClient = (newSocket: LX.Sync.Server.Socket) => {
   for (const client of [...wss!.clients]) {
     if (client === newSocket || client.keyInfo.clientId != newSocket.keyInfo.clientId) continue
-    console.log('duplicate client', client.keyInfo.deviceName)
+    log.info('duplicate client', client.userInfo.name, client.keyInfo.deviceName)
     client.isReady = false
     client.close(SYNC_CLOSE_CODE.normal)
   }
@@ -76,15 +80,18 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
   const queryData = url.parse(request.url as string, true).query as Record<string, string>
 
   //   // if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
-  const keyInfo = getClientKeyInfo(queryData.i)
+  const userSpace = getUserSpace()
+  const keyInfo = userSpace.dataManage.getClientKeyInfo(queryData.i)
   if (!keyInfo) {
     socket.close(SYNC_CLOSE_CODE.failed)
     return
   }
-  keyInfo.lastSyncDate = Date.now()
-  saveClientKeyInfo(keyInfo)
+  keyInfo.lastConnectDate = Date.now()
+  userSpace.dataManage.saveClientKeyInfo(keyInfo)
   //   // socket.lx_keyInfo = keyInfo
   socket.keyInfo = keyInfo
+  socket.userInfo = { name: 'default' }
+
   checkDuplicateClient(socket)
 
   try {
@@ -95,13 +102,12 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
     return
   }
   status.devices.push(keyInfo)
-  socket.onClose(() => {
-    // console.log('disconnect', reason)
-    status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo?.clientId), 1)
-    sendServerStatus(status)
-  })
   // handleConnection(io, socket)
   sendServerStatus(status)
+  socket.onClose(() => {
+    status.devices.splice(status.devices.findIndex(k => k.clientId == keyInfo.clientId), 1)
+    sendServerStatus(status)
+  })
 
   // console.log('connection', keyInfo.deviceName)
   log.info('connection', keyInfo.deviceName)
@@ -111,8 +117,8 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
 }
 
 const handleUnconnection = () => {
-  console.log('unconnection')
-  // console.log(socket.handshake.query)
+  // console.log('unconnection')
+  releaseUserSpace()
 }
 
 const authConnection = (req: http.IncomingMessage, callback: (err: string | null | undefined, success: boolean) => void) => {
@@ -229,7 +235,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
       closeEvents = []
       msg2call.onDestroy()
       if (socket.isReady) {
-        log.info('deconnection', socket.keyInfo.deviceName)
+        log.info('deconnection', socket.userInfo.name, socket.keyInfo.deviceName)
         // events = {}
         if (!status.devices.length) handleUnconnection()
       } else {
@@ -247,14 +253,16 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
       if (!wss) return
       for (const client of wss.clients) handler(client)
     }
+
     void handleConnection(socket, request)
   })
 
   httpServer.on('upgrade', function upgrade(request, socket, head) {
-    socket.on('error', onSocketError)
+    socket.addListener('error', onSocketError)
     // This function is not defined on purpose. Implement it with your own logic.
     authConnection(request, err => {
       if (err) {
+        console.log(err)
         socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
         socket.destroy()
         return
@@ -270,6 +278,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
   const interval = setInterval(() => {
     wss?.clients.forEach(socket => {
       if (socket.isAlive == false) {
+        log.info('alive check false:', socket.userInfo.name, socket.keyInfo.deviceName)
         socket.terminate()
         return
       }
@@ -321,7 +330,6 @@ const handleStopServer = async() => new Promise<void>((resolve, reject) => {
 })
 
 export const stopServer = async() => {
-  console.log('stop')
   codeTools.stop()
   if (!status.status) {
     status.status = false
@@ -345,15 +353,19 @@ export const stopServer = async() => {
     console.log(err)
     status.message = err.message
   }).finally(() => {
-    stopingServer = false
     sendServerStatus(status)
+    stopingServer = false
   })
 }
 
 export const startServer = async(port: number) => {
-  console.log('status.status', status.status)
+  // if (status.status) await handleStopServer()
+  console.log('status.status', status.status, stopingServer)
   if (stopingServer) return
   if (status.status) await handleStopServer()
+
+  await migrateData(global.lxDataPath)
+  await initServerInfo()
 
   log.info('starting sync server')
   await handleStartServer(port).then(() => {

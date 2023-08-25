@@ -29,6 +29,7 @@ declare global {
         interface Socket extends WS.WebSocket {
           isAlive?: boolean
           isReady: boolean
+          userInfo: { name: 'default' }
           keyInfo: ServerKeyInfo
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
           broadcast: (handler: (client: Socket) => void) => void

@@ -24,7 +24,7 @@ declare namespace LX {
     | SyncAction<'client_status', ClientStatus>
     | SyncAction<'server_status', ServerStatus>
 
-    type SyncServiceActions = SyncAction<'select_mode', Mode>
+    type SyncServiceActions = SyncAction<'select_mode', ListSyncMode>
     | SyncAction<'get_server_status'>
     | SyncAction<'get_client_status'>
     | SyncAction<'generate_code'>
@@ -90,14 +90,17 @@ declare namespace LX {
       clientId: string
       key: string
       deviceName: string
-      lastSyncDate?: number
-      snapshotKey: string
+      lastConnectDate?: number
       isMobile: boolean
     }
 
+    interface ListInfo {
+      lastSyncDate?: number
+      snapshotKey: string
+    }
     type ListData = Omit<LX.List.ListDataFull, 'tempList'>
 
-    type Mode = 'merge_local_remote'
+    type ListSyncMode = 'merge_local_remote'
     | 'merge_remote_local'
     | 'overwrite_local_remote'
     | 'overwrite_remote_local'

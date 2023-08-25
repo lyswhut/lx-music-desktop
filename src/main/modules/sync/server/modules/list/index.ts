@@ -1,4 +1,3 @@
-export * as handler from './handler'
-export { default as sync } from './sync'
+export * as sync from './sync'
+export { ListManage } from './manage'
 
-export * from './localEvent'

@@ -1,6 +1,5 @@
-import { updateDeviceSnapshotKey } from '@main/modules/sync/data'
-import { registerListActionEvent } from '../../../utils'
-import { getCurrentListInfoKey } from '../../utils'
+import { registerListActionEvent } from '../../../../utils'
+import { getUserSpace } from '../../../user'
 
 // let socket: LX.Sync.Server.Socket | null
 let unregisterLocalListAction: (() => void) | null
@@ -8,11 +7,12 @@ let unregisterLocalListAction: (() => void) | null
 
 const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.ActionList) => {
   // console.log('sendListAction', action.action)
-  const key = await getCurrentListInfoKey()
+  const userSpace = getUserSpace()
+  const key = await userSpace.listManage.createSnapshot()
   for (const client of wss.clients) {
     if (!client.isReady) return
     void client.remoteSyncList.onListSyncAction(action).then(() => {
-      updateDeviceSnapshotKey(client.keyInfo, key)
+      void userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
     })
   }
 }

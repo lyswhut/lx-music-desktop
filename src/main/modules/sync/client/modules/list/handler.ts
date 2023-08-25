@@ -21,7 +21,7 @@ export const list_sync_get_md5 = async(socket: LX.Sync.Client.Socket) => {
   return toMD5(JSON.stringify(await getLocalListData()))
 }
 
-const getSyncMode = async(socket: LX.Sync.Client.Socket): Promise<LX.Sync.Mode> => new Promise((resolve, reject) => {
+const getSyncMode = async(socket: LX.Sync.Client.Socket): Promise<LX.Sync.ListSyncMode> => new Promise((resolve, reject) => {
   const handleDisconnect = (err: Error) => {
     sendCloseSelectMode()
     removeSelectModeListener()

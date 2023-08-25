@@ -44,6 +44,8 @@ export default {
           host: appSetting['sync.client.host'],
           authCode: code,
         },
+      }).catch(err => {
+        console.log(err)
       })
     }
     return {
