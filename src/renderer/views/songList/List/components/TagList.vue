@@ -24,7 +24,6 @@
 import { watch, shallowReactive, ref, onMounted, onBeforeUnmount, computed, reactive } from '@common/utils/vueTools'
 import { setTags, getTags } from '@renderer/store/songList/action'
 import { tags, type TagInfoTypeItem } from '@renderer/store/songList/state'
-import LX from '@renderer/types/lx'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 import { useI18n } from '@renderer/plugins/i18n'
 
@@ -40,7 +39,7 @@ const t = useI18n()
 
 const list = shallowReactive<TagInfoTypeItem[]>([])
 const handleToggleTag = (id: string) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       source: props.source,

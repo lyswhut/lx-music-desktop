@@ -113,7 +113,7 @@ export default {
       lyricMenuXY.x = event.pageX
       lyricMenuXY.y = event.pageY
       if (lyricMenuVisible.value) return
-      nextTick(() => {
+      void nextTick(() => {
         lyricMenuVisible.value = true
       })
     }

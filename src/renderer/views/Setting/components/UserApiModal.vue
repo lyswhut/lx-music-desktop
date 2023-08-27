@@ -60,16 +60,16 @@ export default {
         })
         return
       }
-      showSelectDialog({
+      void showSelectDialog({
         title: this.$t('user_api__import_file'),
         properties: ['openFile'],
         filters: [
           { name: 'LX API File', extensions: ['js'] },
           { name: 'All Files', extensions: ['*'] },
         ],
-      }).then(result => {
+      }).then(async result => {
         if (result.canceled) return
-        return readFile(result.filePaths[0]).then(data => {
+        return readFile(result.filePaths[0]).then(async data => {
           return importUserApi(data.toString()).then(({ apiList }) => {
             userApi.list = apiList
           })
@@ -92,10 +92,10 @@ export default {
       this.$emit('update:modelValue', false)
     },
     handleOpenUrl(url) {
-      openUrl(url)
+      void openUrl(url)
     },
     handleChangeAllowUpdateAlert(api, enable) {
-      setAllowShowUserApiUpdateAlert(api.id, enable)
+      void setAllowShowUserApiUpdateAlert(api.id, enable)
     },
   },
 }

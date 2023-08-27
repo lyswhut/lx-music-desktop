@@ -84,7 +84,7 @@ export default {
     watch(() => props.visible, (visible) => {
       if (visible) {
         if (duplicateList.value.length) duplicateList.value = []
-        handleFilterList()
+        void handleFilterList()
       }
     })
 

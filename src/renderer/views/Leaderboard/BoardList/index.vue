@@ -25,9 +25,8 @@
 <script setup lang="ts">
 import { watch, shallowReactive, ref } from '@common/utils/vueTools'
 import { getBoardsList, setBoard } from '@renderer/store/leaderboard/action'
-import { boards, Board } from '@renderer/store/leaderboard/state'
+import { boards, type Board } from '@renderer/store/leaderboard/state'
 import useMenu from './useMenu'
-import LX from '@renderer/types/lx'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 
 const props = defineProps<{
@@ -44,7 +43,7 @@ const list = shallowReactive<Board['list']>([])
 const rightClickItemIndex = ref(-1)
 
 const handleToggleList = (id: string) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       source: props.source,
@@ -65,7 +64,7 @@ const handleRigthClick = (event: MouseEvent, index: number) => {
   rightClickItemIndex.value = index
   showMenu(event, index)
 }
-const handleMenuClick = (action?: { action: string}) => {
+const handleMenuClick = (action?: { action: string }) => {
   if (rightClickItemIndex.value < 0) return
   let index = rightClickItemIndex.value
   rightClickItemIndex.value = -1

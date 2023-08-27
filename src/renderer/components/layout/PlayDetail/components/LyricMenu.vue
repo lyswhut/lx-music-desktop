@@ -55,10 +55,10 @@ const offsetTagRxp = /(?:^|\n)\s*\[offset:\s*(\S+(?:\d+)*)\s*\]/
 const offsetTagAllRxp = /(^|\n)\s*\[offset:\s*(\S+(?:\d+)*)\s*\]/g
 
 const saveLyric = debounce((musicInfo, lyricInfo) => {
-  saveLyricEdited(musicInfo, lyricInfo)
+  void saveLyricEdited(musicInfo, lyricInfo)
 })
 const removeLyric = debounce(musicInfo => {
-  removeLyricEdited(musicInfo)
+  void removeLyricEdited(musicInfo)
 })
 
 const getOffset = lrc => {

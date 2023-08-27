@@ -47,7 +47,7 @@ export default {
       mediaDevices.value = audioDevices
       // console.log(this.mediaDevices)
     }
-    getMediaDevice()
+    void getMediaDevice()
 
     navigator.mediaDevices.addEventListener('devicechange', getMediaDevice)
     onBeforeUnmount(() => {

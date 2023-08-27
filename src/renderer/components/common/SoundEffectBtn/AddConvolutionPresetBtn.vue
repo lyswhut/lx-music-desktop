@@ -25,7 +25,7 @@ const handleEditing = () => {
   if (isEditing.value) return
   // if (!this.newPresetName) this.newPresetName = this.listName
   isEditing.value = true
-  nextTick(() => {
+  void nextTick(() => {
     input.value.$el.focus()
   })
 }
@@ -36,7 +36,7 @@ const handleSave = (event) => {
   isEditing.value = false
   if (!name) return
   if (name.length > 20) name = name.substring(0, 20)
-  saveUserConvolutionPreset({
+  void saveUserConvolutionPreset({
     id: Date.now().toString(),
     name,
     source: appSetting['player.soundEffect.convolution.fileName'],

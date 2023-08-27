@@ -22,7 +22,6 @@ import OpenListModal from './components/OpenListModal.vue'
 import ListView from './ListView.vue'
 import { sources, listInfo, isVisibleListDetail } from '@renderer/store/songList/state'
 import { sourceNames } from '@renderer/store'
-import LX from '@renderer/types/lx'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
 const source = ref<LX.OnlineSource>('kw')
@@ -38,7 +37,7 @@ interface Query {
   page?: string
 }
 
-const verifyQueryParams = async function(this: any, to: { query: Query, path: string}, from: any, next: (route?: { path: string; query: Query }) => void) {
+const verifyQueryParams = async function(this: any, to: { query: Query, path: string }, from: any, next: (route?: { path: string, query: Query }) => void) {
   let _source = to.query.source
   let _tagId = to.query.tagId
   let _sortId = to.query.sortId
@@ -72,7 +71,7 @@ const verifyQueryParams = async function(this: any, to: { query: Query, path: st
   tagId.value = _tagId ?? ''
   sortId.value = _sortId ?? ''
   page.value = _page ? parseInt(_page) : 1
-  setSongListSetting({ source: _source, tagId: _tagId, sortId: _sortId })
+  void setSongListSetting({ source: _source, tagId: _tagId, sortId: _sortId })
 }
 
 
@@ -95,7 +94,7 @@ export default {
     const route = useRoute()
     const handleToggleSource = (id: LX.OnlineSource) => {
       if (id == source.value) return
-      router.replace({
+      void router.replace({
         path: route.path,
         query: {
           source: id,

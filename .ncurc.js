@@ -6,9 +6,8 @@ module.exports = {
     'del',
     'comlink',
     'vue',
-    'eslint-plugin-n',
     '@types/ws',
-    'eslint-config-standard-with-typescript',
+    // 'eslint-config-standard-with-typescript',
   ],
 
   // target: 'newest',

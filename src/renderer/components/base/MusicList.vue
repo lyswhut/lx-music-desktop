@@ -28,7 +28,7 @@ const easeInOutQuad = (t, b, c, d) => {
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
 const handleScroll = (element, to, duration = 300, callback = () => {}, onCancel = () => {}) => {
-  if (!element) return callback()
+  if (!element) { callback(); return }
   const start = element.scrollTop || element.scrollY || 0
   let cancel = false
   if (to > start) {
@@ -36,10 +36,10 @@ const handleScroll = (element, to, duration = 300, callback = () => {}, onCancel
     if (to > maxScrollTop) to = maxScrollTop
   } else if (to < start) {
     if (to < 0) to = 0
-  } else return callback()
+  } else { callback(); return }
   const change = to - start
   const increment = 10
-  if (!change) return callback()
+  if (!change) { callback(); return }
 
   let currentTime = 0
   let val
@@ -145,7 +145,7 @@ export default {
         case 'down':
           break
         default:
-          console.log(render(null, slots.default(list[0])[0]))
+          render(null, slots.default(list[0])[0])
           break
       }
     }
@@ -196,14 +196,14 @@ export default {
       emit('scroll', event)
     }
 
-    const scrollTo = (scrollTop, animate = false) => {
+    const scrollTo = async(scrollTop, animate = false) => {
       return new Promise(resolve => {
         if (cancelScroll) {
           cancelScroll(resolve)
         } else {
           resolve()
         }
-      }).then(() => {
+      }).then(async() => {
         return new Promise((resolve, reject) => {
           if (animate) {
             isScrolling = true
@@ -224,7 +224,7 @@ export default {
       })
     }
 
-    const scrollToIndex = (index, offset = 0, animate = false) => {
+    const scrollToIndex = async(index, offset = 0, animate = false) => {
       return scrollTo(Math.max(index * props.itemHeight + offset, 0), animate)
     }
 
@@ -245,7 +245,7 @@ export default {
       cachedList = Array(list.length)
       startIndex = -1
       endIndex = -1
-      nextTick(() => {
+      void nextTick(() => {
         updateView(true)
       })
     }

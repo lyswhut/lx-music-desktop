@@ -29,7 +29,7 @@ const list = shallowReactive([])
 
 
 const handleToggle = (id) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       source: props.source,

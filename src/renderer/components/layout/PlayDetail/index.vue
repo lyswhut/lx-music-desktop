@@ -138,7 +138,7 @@ export default {
       visibled,
       isFullscreen,
       fullscreenExit() {
-        setFullScreen(false).then((fullscreen) => {
+        void setFullScreen(false).then((fullscreen) => {
           isFullscreen.value = fullscreen
         })
       },

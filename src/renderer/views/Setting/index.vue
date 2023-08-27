@@ -119,7 +119,7 @@ export default {
 
     const toggleTab = id => {
       avtiveComponentName.value = id
-      nextTick(() => {
+      void nextTick(() => {
         dom_content_ref.value?.scrollTo({
           top: 0,
           behavior: 'smooth',

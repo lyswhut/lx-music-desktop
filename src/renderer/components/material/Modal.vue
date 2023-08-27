@@ -161,7 +161,7 @@ export default {
           // }
           this.setRandomAnimation()
           this.showModal = true
-          nextTick(() => {
+          void nextTick(() => {
             this.$refs.dom_container.parentNode.classList.add('show-modal')
             this.showContent = true
           })

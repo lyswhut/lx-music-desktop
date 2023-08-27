@@ -83,6 +83,7 @@ export default {
       if (this.maxPage <= this.btnLength) return Array.from({ length: this.maxPage }, (_, i) => i + 1)
       let start =
         this.page - this.pageEvg > 1
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           ? this.maxPage - this.page < this.pageEvg + 1
             ? this.maxPage - (this.btnLength - 1)
             : this.page - this.pageEvg

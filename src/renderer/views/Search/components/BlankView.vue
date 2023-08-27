@@ -44,7 +44,7 @@ const hotSearchList = shallowRef([])
 if (appSetting['search.isShowHotSearch']) {
   watch(() => props.visible, (visible) => {
     if (!visible) return
-    getList(props.source).then(list => {
+    void getList(props.source).then(list => {
       hotSearchList.value = list
     })
   }, {
@@ -53,7 +53,7 @@ if (appSetting['search.isShowHotSearch']) {
 
   watch(() => props.source, (source) => {
     if (!props.visible) return
-    getList(source).then(list => {
+    void getList(source).then(list => {
       if (source != props.source) return
       hotSearchList.value = list
     })
@@ -61,12 +61,12 @@ if (appSetting['search.isShowHotSearch']) {
 }
 
 if (appSetting['search.isShowHistorySearch']) {
-  getHistoryList()
+  void getHistoryList()
 }
 
 const router = useRouter()
 const handleSearch = (text) => {
-  router.replace({
+  void router.replace({
     path: '/search',
     query: {
       text,

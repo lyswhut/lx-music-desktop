@@ -143,9 +143,9 @@ export default {
       if (task.isComplate) {
         handlePlayMusic(list.value.indexOf(task), true)
       } else if (task.status === downloadStatus.RUN || task.status === downloadStatus.WAITING) {
-        handlePauseTask(index, true)
+        void handlePauseTask(index, true)
       } else {
-        handleStartTask(index, true)
+        void handleStartTask(index, true)
       }
       clickTime = 0
       clickIndex = -1
@@ -172,16 +172,16 @@ export default {
           handlePlayMusic(index, true)
           break
         case 'start':
-          handleStartTask(index, true)
+          void handleStartTask(index, true)
           break
         case 'pause':
-          handlePauseTask(index, true)
+          void handlePauseTask(index, true)
           break
         case 'remove':
-          handleRemoveTask(index, true)
+          void handleRemoveTask(index, true)
           break
         case 'file':
-          handleOpenFile(index)
+          void handleOpenFile(index)
           break
         case 'search':
           handleSearch(index)

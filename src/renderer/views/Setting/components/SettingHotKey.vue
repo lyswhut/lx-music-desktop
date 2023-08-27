@@ -134,6 +134,7 @@ export default {
         if (config) {
           if (config.key == newHotKey) return
           originKey = config.key
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete current_hot_key.value[type].keys[config.key]
         } else if (!newHotKey) return
 
@@ -143,6 +144,7 @@ export default {
             config = tempInfo.keys[newHotKey]
             if (config) {
               console.log(newHotKey, info, config, info.name, config.name)
+              // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
               delete current_hot_key.value[tempType].keys[newHotKey]
               break
             }
@@ -203,7 +205,7 @@ export default {
       await handleHotKeySaveConfig()
       await getHotKeyStatus()
     }
-    const getHotKeyStatus = () => {
+    const getHotKeyStatus = async() => {
       return hotKeyGetStatus().then(status => {
         // console.log(status)
         hotKeyStatus.value = status
@@ -213,7 +215,7 @@ export default {
 
     current_hot_key.value = window.lx.appHotKeyConfig
     initHotKeyConfig()
-    getHotKeyStatus()
+    void getHotKeyStatus()
 
     window.app_event.on('keyDown', handleKeyDown)
 

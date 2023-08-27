@@ -18,7 +18,7 @@ const handleEditing = () => {
   if (isEditing.value) return
   // if (!this.newPresetName) this.newPresetName = this.listName
   isEditing.value = true
-  nextTick(() => {
+  void nextTick(() => {
     input.value.$el.focus()
   })
 }
@@ -29,7 +29,7 @@ const handleSave = (event) => {
   isEditing.value = false
   if (!name) return
   if (name.length > 20) name = name.substring(0, 20)
-  saveUserEQPreset({
+  void saveUserEQPreset({
     id: Date.now().toString(),
     name,
     hz31: appSetting['player.soundEffect.biquadFilter.hz31'],

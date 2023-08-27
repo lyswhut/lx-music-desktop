@@ -139,12 +139,12 @@ export default {
     const handleRestoreScroll = (_scrollIndex, _isAnimation) => {
       scrollIndex = _scrollIndex
       isAnimation = _isAnimation
-      if (isAnimation) restoreScroll(scrollIndex, isAnimation)
+      if (isAnimation) void restoreScroll(scrollIndex, isAnimation)
       // console.log('handleRestoreScroll', scrollIndex, isAnimation)
     }
     const onLoadedList = () => {
       // console.log('restoreScroll', scrollIndex, isAnimation)
-      restoreScroll(scrollIndex, isAnimation)
+      void restoreScroll(scrollIndex, isAnimation)
     }
 
     const {

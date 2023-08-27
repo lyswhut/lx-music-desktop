@@ -44,7 +44,7 @@ const verifyQueryParams = async function(to, from, next) {
   next()
   source.value = _source
   boardId.value = _boardId
-  setLeaderboardSetting({ source: _source, boardId: _boardId })
+  void setLeaderboardSetting({ source: _source, boardId: _boardId })
 }
 
 
@@ -64,7 +64,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const handleToggleSource = (id) => {
-      router.replace({
+      void router.replace({
         path: route.path,
         query: {
           source: id,

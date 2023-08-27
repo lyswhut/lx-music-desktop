@@ -113,7 +113,7 @@ export default {
   },
   computed: {
     history() {
-      if (!this.versionInfo.newVersion || !this.versionInfo.newVersion?.history) return []
+      if (!this.versionInfo.newVersion?.history) return []
       let arr = []
       let currentVer = this.versionInfo.version
       this.versionInfo.newVersion?.history.forEach(ver => {
@@ -134,7 +134,7 @@ export default {
     },
   },
   created() {
-    getIgnoreVersion().then(version => {
+    void getIgnoreVersion().then(version => {
       this.ignoreVersion = version
     })
   },
@@ -143,7 +143,7 @@ export default {
       versionInfo.showModal = false
     },
     handleOpenUrl(url) {
-      openUrl(url)
+      void openUrl(url)
     },
     handleRestartClick(event) {
       this.handleClose()
@@ -166,7 +166,7 @@ export default {
           confirmButtonText: window.i18n.t('update__ignore_confirm'),
         })) {
           setTimeout(() => {
-            dialog({
+            void dialog({
               message: window.i18n.t('update__ignore_confirm_tip'),
               confirmButtonText: window.i18n.t('update__ignore_confirm_tip_confirm'),
             })

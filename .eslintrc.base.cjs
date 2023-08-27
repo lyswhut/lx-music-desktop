@@ -29,13 +29,22 @@ const typescriptRule = {
     allowBoolean: true,
     allowAny: true,
   }],
+  '@typescript-eslint/no-misused-promises': [
+    'error',
+    {
+      checksVoidReturn: {
+        arguments: false,
+        attributes: false,
+      },
+    },
+  ],
   '@typescript-eslint/naming-convention': 'off',
   '@typescript-eslint/return-await': 'off',
   '@typescript-eslint/ban-ts-comment': 'off',
   '@typescript-eslint/comma-dangle': 'off',
 }
 const vueRule = {
-  ...baseRule,
+  ...typescriptRule,
   'vue/multi-word-component-names': 'off',
   'vue/max-attributes-per-line': 'off',
   'vue/singleline-html-element-content-newline': 'off',

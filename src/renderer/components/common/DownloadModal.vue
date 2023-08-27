@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     handleClick(quality) {
-      createDownloadTasks([this.musicInfo], quality)
+      void createDownloadTasks([this.musicInfo], quality)
       this.handleClose()
     },
     handleClose() {

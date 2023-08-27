@@ -36,7 +36,6 @@
 <script setup lang="ts">
 import { ref } from '@common/utils/vueTools'
 import type { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
-// import LX from '@renderer/types/lx'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
 
@@ -60,7 +59,7 @@ const togglePage = (page: number) => {
 }
 
 const toDetail = (info: ListInfoItem) => {
-  router.push({
+  void router.push({
     path: '/songList/detail',
     query: {
       source: info.source,

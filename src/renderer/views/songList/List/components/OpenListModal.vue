@@ -65,7 +65,7 @@ watch(() => props.modelValue, (visible) => {
 const handleSubmit = () => {
   if (!text.value.length) return
   setOpenSongListInputInfo(text.value, source.value)
-  router.push({
+  void router.push({
     path: '/songList/detail',
     query: {
       source: source.value,

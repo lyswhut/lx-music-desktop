@@ -111,9 +111,8 @@ export default {
     handleClick(index) {
       const list = 'progress' in this.musicList[0] ? this.musicList.map(t => t.metadata.musicInfo) : this.musicList
 
-      this.isMove
-        ? moveListMusics(this.fromListId, this.lists[index].id, list)
-        : addListMusics(this.lists[index].id, list)
+      if (this.isMove) void moveListMusics(this.fromListId, this.lists[index].id, list)
+      else void addListMusics(this.lists[index].id, list)
 
       if (this.keyModDown && !this.isMove) return
       this.$nextTick(() => {
@@ -135,7 +134,7 @@ export default {
       this.newListName = event.target.value = ''
       this.isEditing = false
       if (!name) return
-      createUserList({ name })
+      void createUserList({ name })
     },
   },
 }

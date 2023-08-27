@@ -6,7 +6,7 @@ import useDarg from '@renderer/utils/compositions/useDrag'
 
 export default ({ dom_lists_list, handleSaveListName, handleMenuClick }: {
   dom_lists_list: Ref<HTMLElement | null>
-  handleSaveListName: () => void
+  handleSaveListName: () => Promise<void> | void
   handleMenuClick: () => void
 }) => {
   const isModDown = ref(false)
@@ -34,7 +34,7 @@ export default ({ dom_lists_list, handleSaveListName, handleMenuClick }: {
 
       isModDown.value = true
       setDisabled(false)
-      handleSaveListName()
+      void handleSaveListName()
     }
     handleMenuClick()
   }

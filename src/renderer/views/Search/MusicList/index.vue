@@ -19,7 +19,7 @@
 import { watch } from '@common/utils/vueTools'
 import { searchText } from '@renderer/store/search/state'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
-import useList, { SearchSource } from './useList'
+import useList, { type SearchSource } from './useList'
 
 interface Props {
   sourceId: SearchSource
@@ -51,7 +51,7 @@ watch(searchText, (searchText) => {
 })
 
 const handleTogglePage = (page: number) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       ...route.query,

@@ -7,7 +7,6 @@ import { watch, ref, nextTick } from '@common/utils/vueTools'
 import { listInfo } from '@renderer/store/songList/state'
 import { getAndSetList } from '@renderer/store/songList/action'
 import { useRouter, useRoute, onBeforeRouteLeave } from '@common/utils/vueRouter'
-import LX from '@renderer/types/lx'
 import SongList from './components/SongList.vue'
 
 
@@ -28,12 +27,12 @@ const getListData = async(source: LX.OnlineSource, tabId: string, sortId: string
   // console.log(source, tabId, sortId, page)
   await getAndSetList(source, tabId, sortId, page).then(() => {
     if (listInfo.key == window.lx.songListInfo.songlistKey && window.lx.songListInfo.songlistPosition) {
-      nextTick(() => {
+      void nextTick(() => {
         list_ref.value?.scrollTo(window.lx.songListInfo.songlistPosition)
       })
     } else if (list_ref.value) {
       window.lx.songListInfo.songlistKey = null
-      nextTick(() => {
+      void nextTick(() => {
         list_ref.value.scrollTo(0)
       })
     }
@@ -41,7 +40,7 @@ const getListData = async(source: LX.OnlineSource, tabId: string, sortId: string
 }
 
 const togglePage = (page: number) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       ...route.query,
@@ -57,7 +56,7 @@ watch(() => [props.source, props.tagId, props.sortId, props.page], ([source, tag
   // console.log(source, tagId, sortId)
   if (!source || !sortId) return
   // console.log(source, tagId, sortId, page)
-  getListData(source as LX.OnlineSource, tagId as string, sortId as string, page as number)
+  void getListData(source as LX.OnlineSource, tagId as string, sortId as string, page as number)
 }, {
   immediate: true,
 })

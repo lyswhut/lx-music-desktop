@@ -186,7 +186,7 @@ export default {
     const handleEditTheme = (theme) => {
       // console.log(theme)
       if (!theme && userThemes.length >= 10) {
-        dialog({
+        void dialog({
           message: t('theme_max_tip'),
           confirmButtonText: t('alert_button_text'),
         })
@@ -214,7 +214,7 @@ export default {
       if (themeId.value == 'auto') return
       if (window.localStorage.getItem('theme-auto-tip') != 'true') {
         window.localStorage.setItem('theme-auto-tip', 'true')
-        dialog({
+        void dialog({
           message: t('setting__basic_theme_auto_tip'),
           confirmButtonText: t('ok'),
         })
@@ -271,7 +271,7 @@ export default {
     const fontList = computed(() => {
       return [{ id: '', label: t('setting__desktop_lyric_font_default') }, ...systemFontList.value]
     })
-    getSystemFonts().then(fonts => {
+    void getSystemFonts().then(fonts => {
       systemFontList.value = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
     })
 

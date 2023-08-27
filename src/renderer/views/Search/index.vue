@@ -54,7 +54,7 @@ const verifyQueryParams = async(to, from, next) => {
     if (!_page) page.value = 1
   }
   next()
-  setSearchSetting({ source: _source, type: _type })
+  void setSearchSetting({ source: _source, type: _type })
 }
 
 export default {
@@ -76,7 +76,7 @@ export default {
       }
     })
     const handleSourceChange = (id) => {
-      router.replace({
+      void router.replace({
         path: route.path,
         query: {
           ...route.query,
@@ -93,7 +93,7 @@ export default {
       ]
     })
     const handleTypeChange = (type) => {
-      router.replace({
+      void router.replace({
         path: route.path,
         query: {
           ...route.query,

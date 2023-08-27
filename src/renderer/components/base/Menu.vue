@@ -65,7 +65,7 @@ export default {
     })
 
     const menuClick = (item) => {
-      if (item && item.disabled) return
+      if (item?.disabled) return
       emit('menu-click', item)
     }
 

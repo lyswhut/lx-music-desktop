@@ -56,7 +56,7 @@ export default {
     const updateInfo = ref({})
     // const updateTimes = ref({})
 
-    getListUpdateInfo().then((listUpdateInfo) => {
+    void getListUpdateInfo().then((listUpdateInfo) => {
       updateInfo.value = listUpdateInfo
       // if (listUpdateTimes._inited) {
       //   for (const [id, value] of Object.entries(info)) {
@@ -72,12 +72,12 @@ export default {
     })
 
     const handleUpdate = (targetListInfo) => {
-      handleSyncSourceList(targetListInfo)
+      void handleSyncSourceList(targetListInfo)
       // console.log(targetListInfo.list.length, list.length)
     }
 
     const handleChangeAutoUpdate = (list, enable) => {
-      setListAutoUpdate(list.id, enable)
+      void setListAutoUpdate(list.id, enable)
     }
 
     return {

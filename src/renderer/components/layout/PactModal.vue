@@ -81,11 +81,11 @@ export default {
       }, 2e3)
     },
     handleClose(isExit) {
-      if (isExit) return quitApp(true)
+      if (isExit) { quitApp(true); return }
       isShowPact.value = false
     },
     openUrl(url) {
-      openUrl(url)
+      void openUrl(url)
     },
     startTimeout() {
       window.setTimeout(() => {

@@ -65,11 +65,11 @@ const handleSetPreset = (item) => {
 const userPresetList = ref([])
 
 const handleRemovePreset = id => {
-  removeUserEQPreset(id)
+  void removeUserEQPreset(id)
 }
 
 onMounted(() => {
-  getUserEQPresetList().then(list => {
+  void getUserEQPresetList().then(list => {
     userPresetList.value = list
   })
 })

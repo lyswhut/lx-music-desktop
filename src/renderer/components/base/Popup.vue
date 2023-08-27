@@ -22,13 +22,11 @@ import { ref, watch, onMounted, onBeforeUnmount, reactive } from '@common/utils/
 // https://github.com/vuejs/core/issues/2855#issuecomment-768388962
 import {
   Teleport as teleport_,
-  TeleportProps,
-  VNodeProps,
+  type TeleportProps,
+  type VNodeProps,
 } from 'vue'
-const Teleport = teleport_ as {
-  new (): {
-    $props: VNodeProps & TeleportProps
-  }
+const Teleport = teleport_ as new () => {
+  $props: VNodeProps & TeleportProps
 }
 
 const props = defineProps<{

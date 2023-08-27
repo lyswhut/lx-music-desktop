@@ -30,7 +30,7 @@ import { computed, ref } from '@common/utils/vueTools'
 export default {
   setup() {
     const lastStartVersion = ref(null)
-    getLastStartInfo().then(version => {
+    void getLastStartInfo().then(version => {
       lastStartVersion.value = version
     })
 
@@ -43,7 +43,7 @@ export default {
         history: [],
         isLatest: true,
       }
-      if (!versionInfo.newVersion || !versionInfo.newVersion?.history) return info
+      if (!versionInfo.newVersion?.history) return info
       info.isLatest = compareVer(currentVer, versionInfo.newVersion.version) >= 0
 
       const history = [{ version: versionInfo.newVersion.version, desc: versionInfo.newVersion.desc }, ...versionInfo.newVersion.history]

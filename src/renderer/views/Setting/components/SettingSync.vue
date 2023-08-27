@@ -91,7 +91,7 @@ export default {
     })
 
     const refreshSyncCode = () => {
-      sendSyncAction({ action: 'generate_code' })
+      void sendSyncAction({ action: 'generate_code' })
     }
 
     const setSyncServerPort = debounce(port => {

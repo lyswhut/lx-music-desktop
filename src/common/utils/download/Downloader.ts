@@ -270,7 +270,7 @@ class Task extends EventEmitter {
       const result = this.__handleDiffChunk(chunk)
       if (result) chunk = result
       else {
-        this.__handleStop().finally(() => {
+        void this.__handleStop().finally(() => {
           // this.__handleError(new Error('Resume failed, response chunk does not match.'))
           // Resume failed, response chunk does not match, remove file and restart download
           console.log('Resume failed, response chunk does not match.')

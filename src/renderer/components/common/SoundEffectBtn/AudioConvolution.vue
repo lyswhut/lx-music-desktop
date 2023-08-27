@@ -69,7 +69,7 @@ const handleSetPreset = (item) => {
 }
 const userPresetList = ref([])
 const handleRemovePreset = id => {
-  removeUserConvolutionPreset(id)
+  void removeUserConvolutionPreset(id)
 }
 
 const disabledConvolution = computed(() => {
@@ -77,7 +77,7 @@ const disabledConvolution = computed(() => {
 })
 
 onMounted(() => {
-  getUserConvolutionPresetList().then(list => {
+  void getUserConvolutionPresetList().then(list => {
     userPresetList.value = list
   })
 })

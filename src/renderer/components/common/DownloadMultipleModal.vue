@@ -37,7 +37,7 @@ export default {
   emits: ['update:show', 'confirm'],
   methods: {
     handleClick(quality) {
-      createDownloadTasks(this.list.filter(item => item.source != 'local'), quality)
+      void createDownloadTasks(this.list.filter(item => item.source != 'local'), quality)
       this.handleClose()
       this.$emit('confirm')
     },

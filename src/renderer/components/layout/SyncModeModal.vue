@@ -61,7 +61,7 @@ export default {
     }
     const handleSelectMode = (mode) => {
       if (mode.startsWith('overwrite') && isOverwrite.value) mode += '_full'
-      sendSyncAction({ action: 'select_mode', data: mode })
+      void sendSyncAction({ action: 'select_mode', data: mode })
       handleClose()
     }
     return {

@@ -141,7 +141,7 @@ export default {
     },
     handleSearch() {
       this.hideList()
-      if (this.selectIndex < 0) return this.sendEvent('submit')
+      if (this.selectIndex < 0) { this.sendEvent('submit'); return }
       this.sendEvent('listClick', this.selectIndex)
     },
     showList() {

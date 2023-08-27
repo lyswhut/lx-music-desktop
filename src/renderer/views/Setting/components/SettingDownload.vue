@@ -67,7 +67,7 @@ export default {
     const t = useI18n()
 
     const handleChangeSavePath = () => {
-      showSelectDialog({
+      void showSelectDialog({
         title: t('setting__download_select_save_path'),
         defaultPath: appSetting['download.savePath'],
         properties: ['openDirectory'],

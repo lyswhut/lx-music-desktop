@@ -117,7 +117,7 @@ export default {
       console.log(sortType.value, sortField.value)
 
       closeModal()
-      updateListMusicsPosition({ listId: props.listInfo.id, position: 0, ids: list.map(m => m.id) })
+      void updateListMusicsPosition({ listId: props.listInfo.id, position: 0, ids: list.map(m => m.id) })
     }
 
     const listName = computed(() => {

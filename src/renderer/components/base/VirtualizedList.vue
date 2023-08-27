@@ -50,7 +50,7 @@ const easeInOutQuad = (t, b, c, d) => {
   return (-c / 2) * (t * (t - 2) - 1) + b
 }
 const handleScroll = (element, to, duration = 300, callback = () => {}, onCancel = () => {}) => {
-  if (!element) return callback()
+  if (!element) { callback(); return }
   const start = element.scrollTop || element.scrollY || 0
   let cancel = false
   if (to > start) {
@@ -58,10 +58,10 @@ const handleScroll = (element, to, duration = 300, callback = () => {}, onCancel
     if (to > maxScrollTop) to = maxScrollTop
   } else if (to < start) {
     if (to < 0) to = 0
-  } else return callback()
+  } else { callback(); return }
   const change = to - start
   const increment = 10
-  if (!change) return callback()
+  if (!change) { callback(); return }
 
   let currentTime = 0
   let val
@@ -214,7 +214,7 @@ export default {
 
     const scrollTo = (scrollTop, animate = false, onScrollEnd) => {
       if (onScrollEnd) {
-        new Promise(resolve => {
+        void new Promise(resolve => {
           if (cancelScroll) {
             cancelScroll(resolve)
           } else {
@@ -270,7 +270,7 @@ export default {
       cachedList = Array(list.length)
       startIndex = -1
       endIndex = -1
-      nextTick(() => {
+      void nextTick(() => {
         updateView()
       })
     }

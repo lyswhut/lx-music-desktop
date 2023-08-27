@@ -8,7 +8,7 @@
 import { watch } from '@common/utils/vueTools'
 import { searchText } from '@renderer/store/search/state'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
-import useList, { SearchSource } from './useList'
+import useList, { type SearchSource } from './useList'
 import SongList from '@renderer/views/songList/List/components/SongList.vue'
 
 interface Props {
@@ -40,7 +40,7 @@ watch(searchText, (searchText) => {
 })
 
 const togglePage = (page: number) => {
-  router.replace({
+  void router.replace({
     path: route.path,
     query: {
       ...route.query,
