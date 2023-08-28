@@ -13,9 +13,13 @@ declare global {
             keyInfo: ClientKeyInfo
             urlInfo: UrlInfo
           }
+          moduleReadys: {
+            list: boolean
+          }
 
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
-          remoteSyncList: LX.Sync.ServerActions
+          remote: LX.Sync.ServerSyncActions
+          remoteQueueList: LX.Sync.ServerSyncListActions
         }
 
         interface UrlInfo {
@@ -31,11 +35,16 @@ declare global {
           isReady: boolean
           userInfo: { name: 'default' }
           keyInfo: ServerKeyInfo
+          feature: LX.Sync.EnabledFeatures
+          moduleReadys: {
+            list: boolean
+          }
+
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
           broadcast: (handler: (client: Socket) => void) => void
 
-          remote: LX.Sync.ClientActions
-          remoteSyncList: LX.Sync.ClientActions
+          remote: LX.Sync.ClientSyncActions
+          remoteQueueList: LX.Sync.ClientSyncListActions
         }
         type SocketServer = WS.Server<Socket>
       }

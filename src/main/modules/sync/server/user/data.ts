@@ -3,7 +3,7 @@ import path from 'node:path'
 import { randomBytes } from 'node:crypto'
 import { throttle } from '@common/utils/common'
 import { filterFileName, toMD5 } from '../utils'
-import { File } from '../../constants'
+import { File } from '../../../../../common/constants_sync'
 
 
 interface ServerInfo {
@@ -111,7 +111,7 @@ export class UserDataManage {
     this.saveDevicesInfoThrottle()
   }
 
-  getClientKeyInfo = (clientId?: string): LX.Sync.ServerKeyInfo | null => {
+  getClientKeyInfo = (clientId?: string | null): LX.Sync.ServerKeyInfo | null => {
     if (!clientId) return null
     return this.devicesInfo.clients[clientId] ?? null
   }

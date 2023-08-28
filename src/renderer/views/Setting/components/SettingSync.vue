@@ -46,7 +46,7 @@ import { openUrl } from '@common/utils/electron'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { debounce } from '@common/utils/common'
-import { SYNC_CODE } from '@common/constants'
+import { SYNC_CODE } from '@common/constants_sync'
 
 export default {
   name: 'SettingSync',

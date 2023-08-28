@@ -1,5 +1,4 @@
 import type http from 'http'
-import { SYNC_CODE } from '@common/constants'
 import {
   aesEncrypt,
   aesDecrypt,
@@ -10,6 +9,7 @@ import querystring from 'node:querystring'
 import { getUserSpace, createClientKeyInfo } from '../user'
 import { toMD5 } from '../utils'
 import { getComputerName } from '../../utils'
+import { SYNC_CODE } from '@common/constants_sync'
 
 const requestIps = new Map<string, number>()
 

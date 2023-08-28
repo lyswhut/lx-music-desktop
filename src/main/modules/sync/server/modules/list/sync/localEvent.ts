@@ -5,13 +5,13 @@ import { getUserSpace } from '../../../user'
 let unregisterLocalListAction: (() => void) | null
 
 
-const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.ActionList) => {
+const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.List.ActionList) => {
   // console.log('sendListAction', action.action)
   const userSpace = getUserSpace()
   const key = await userSpace.listManage.createSnapshot()
   for (const client of wss.clients) {
-    if (!client.isReady) return
-    void client.remoteSyncList.onListSyncAction(action).then(() => {
+    if (!client.moduleReadys?.list) continue
+    void client.remoteQueueList.onListSyncAction(action).then(() => {
       void userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
     })
   }
@@ -23,6 +23,7 @@ export const registerEvent = (wss: LX.Sync.Server.SocketServer) => {
   //   unregisterLocalListAction?.()
   //   unregisterLocalListAction = null
   // })
+  unregisterEvent()
   unregisterLocalListAction = registerListActionEvent((action) => {
     void sendListAction(wss, action)
   })

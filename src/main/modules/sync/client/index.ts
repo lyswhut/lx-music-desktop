@@ -1,10 +1,10 @@
 import handleAuth from './auth'
 import { connect as socketConnect, disconnect as socketDisconnect, sendSyncStatus, sendSyncMessage } from './client'
 // import { getSyncHost } from '@root/utils/data'
-import { SYNC_CODE } from '@common/constants'
 import log from '../log'
 import { parseUrl } from './utils'
 import migrateData from '../migrate'
+import { SYNC_CODE } from '@common/constants_sync'
 
 let connectId = 0
 

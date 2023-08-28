@@ -10,3 +10,7 @@ export const modules = {
 
 
 export { ListManage } from './list'
+
+export const featureVersion = {
+  list: 1,
+} as const

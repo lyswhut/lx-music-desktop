@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { File } from '../constants'
+import { File } from '../../../../common/constants_sync'
 
 
 let syncAuthKeys: Record<string, LX.Sync.ClientKeyInfo>

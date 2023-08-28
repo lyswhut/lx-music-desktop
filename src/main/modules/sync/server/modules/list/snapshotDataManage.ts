@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import syncLog from '../../../log'
 import { getUserConfig, type UserDataManage } from '../../user/data'
-import { File } from '../../../constants'
+import { File } from '../../../../../../common/constants_sync'
 import { checkAndCreateDirSync } from '../../utils'
 
 
@@ -11,7 +11,7 @@ interface SnapshotInfo {
   latest: string | null
   time: number
   list: string[]
-  clients: Record<string, LX.Sync.ListInfo>
+  clients: Record<string, LX.Sync.List.ListInfo>
 }
 export class SnapshotDataManage {
   userDataManage: UserDataManage
@@ -70,7 +70,7 @@ export class SnapshotDataManage {
 
   getSnapshot = async(name: string) => {
     const filePath = path.join(this.snapshotDir, `snapshot_${name}`)
-    let listData: LX.Sync.ListData
+    let listData: LX.Sync.List.ListData
     try {
       listData = JSON.parse((await fs.promises.readFile(filePath)).toString('utf-8'))
     } catch (err) {

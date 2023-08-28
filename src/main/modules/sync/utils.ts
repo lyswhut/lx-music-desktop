@@ -90,8 +90,8 @@ export const rsaDecrypt = (buffer: Buffer, key: string): Buffer => {
   return privateDecrypt({ key, padding: constants.RSA_PKCS1_OAEP_PADDING }, buffer)
 }
 
-export const getLocalListData = async(): Promise<LX.Sync.ListData> => {
-  const lists: LX.Sync.ListData = {
+export const getLocalListData = async(): Promise<LX.Sync.List.ListData> => {
+  const lists: LX.Sync.List.ListData = {
     defaultList: await global.lx.worker.dbService.getListMusics(LIST_IDS.DEFAULT),
     loveList: await global.lx.worker.dbService.getListMusics(LIST_IDS.LOVE),
     userList: [],
@@ -106,12 +106,12 @@ export const getLocalListData = async(): Promise<LX.Sync.ListData> => {
   return lists
 }
 
-export const setLocalListData = async(listData: LX.Sync.ListData) => {
+export const setLocalListData = async(listData: LX.Sync.List.ListData) => {
   await global.lx.event_list.list_data_overwrite(listData, true)
 }
 
 
-export const registerListActionEvent = (sendListAction: (action: LX.Sync.ActionList) => (void | Promise<void>)) => {
+export const registerListActionEvent = (sendListAction: (action: LX.Sync.List.ActionList) => (void | Promise<void>)) => {
   const list_data_overwrite = async(listData: MakeOptional<LX.List.ListDataFull, 'tempList'>, isRemote: boolean = false) => {
     if (isRemote) return
     await sendListAction({ action: 'list_data_overwrite', data: listData })
@@ -188,7 +188,7 @@ export const registerListActionEvent = (sendListAction: (action: LX.Sync.ActionL
   }
 }
 
-export const handleRemoteListAction = async({ action, data }: LX.Sync.ActionList) => {
+export const handleRemoteListAction = async({ action, data }: LX.Sync.List.ActionList) => {
   // console.log('handleRemoteListAction', action)
 
   switch (action) {

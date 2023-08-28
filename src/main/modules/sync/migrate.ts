@@ -1,4 +1,4 @@
-import { File } from './constants'
+import { File } from '../../../common/constants_sync'
 import fs from 'node:fs'
 import path from 'node:path'
 

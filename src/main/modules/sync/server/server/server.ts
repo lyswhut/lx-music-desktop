@@ -1,10 +1,9 @@
 import http, { type IncomingMessage } from 'node:http'
-import url from 'node:url'
 import { WebSocketServer } from 'ws'
-import { modules, callObj } from '../modules'
+import { registerLocalSyncEvent, callObj, sync, unregisterLocalSyncEvent } from './sync'
 import { authCode, authConnect } from './auth'
 import { getAddress } from '../../utils'
-import { SYNC_CLOSE_CODE, SYNC_CODE } from '../../constants'
+import { SYNC_CLOSE_CODE, SYNC_CODE } from '@common/constants_sync'
 import { getUserSpace, releaseUserSpace, getServerId, initServerInfo } from '../user'
 import { createMsg2call } from 'message2call'
 import log from '../../log'
@@ -22,6 +21,8 @@ let status: LX.Sync.ServerStatus = {
 }
 
 let stopingServer = false
+
+let host = 'http://localhost'
 
 const codeTools: {
   timeout: NodeJS.Timer | null
@@ -42,46 +43,25 @@ const codeTools: {
   },
 }
 
-const syncData = async(socket: LX.Sync.Server.Socket) => {
-  let disconnected = false
-  socket.onClose(() => {
-    disconnected = true
-  })
-  for (const module of Object.values(modules)) {
-    await module.sync(socket)
-    if (disconnected) throw new Error('disconnected')
-  }
-}
-
-
-const registerLocalSyncEvent = async(wss: LX.Sync.Server.SocketServer) => {
-  for (const module of Object.values(modules)) {
-    module.registerEvent(wss)
-  }
-}
-
-const unregisterLocalSyncEvent = () => {
-  for (const module of Object.values(modules)) {
-    module.unregisterEvent()
-  }
-}
-
-
 const checkDuplicateClient = (newSocket: LX.Sync.Server.Socket) => {
   for (const client of [...wss!.clients]) {
     if (client === newSocket || client.keyInfo.clientId != newSocket.keyInfo.clientId) continue
     log.info('duplicate client', client.userInfo.name, client.keyInfo.deviceName)
     client.isReady = false
+    for (const name of Object.keys(client.moduleReadys) as Array<keyof LX.Sync.Server.Socket['moduleReadys']>) {
+      client.moduleReadys[name] = false
+    }
     client.close(SYNC_CLOSE_CODE.normal)
   }
 }
 
 const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingMessage) => {
-  const queryData = url.parse(request.url as string, true).query as Record<string, string>
+  const queryData = new URL(request.url as string, host).searchParams
+  const clientId = queryData.get('i')
 
   //   // if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
   const userSpace = getUserSpace()
-  const keyInfo = userSpace.dataManage.getClientKeyInfo(queryData.i)
+  const keyInfo = userSpace.dataManage.getClientKeyInfo(clientId)
   if (!keyInfo) {
     socket.close(SYNC_CLOSE_CODE.failed)
     return
@@ -95,7 +75,7 @@ const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingM
   checkDuplicateClient(socket)
 
   try {
-    await syncData(socket)
+    await sync(socket)
   } catch (err) {
     // console.log(err)
     log.warn(err)
@@ -174,6 +154,12 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
 
   wss.on('connection', function(socket, request) {
     socket.isReady = false
+    socket.moduleReadys = {
+      list: false,
+    }
+    socket.feature = {
+      list: false,
+    }
     socket.on('pong', () => {
       socket.isAlive = true
     })
@@ -182,10 +168,12 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     // const events = new Map<keyof LX.Sync.ActionSyncType, Array<(err: Error | null, data: LX.Sync.ActionSyncType[keyof LX.Sync.ActionSyncType]) => void>>()
     // let events: Partial<{ [K in keyof LX.Sync.ActionSyncType]: Array<(data: LX.Sync.ActionSyncType[K]) => void> }> = {}
     let closeEvents: Array<(err: Error) => (void | Promise<void>)> = []
-    const msg2call = createMsg2call<LX.Sync.ClientActions>({
+    let disconnected = false
+    const msg2call = createMsg2call<LX.Sync.ClientSyncActions>({
       funcsObj: callObj,
       timeout: 120 * 1000,
       sendMessage(data) {
+        if (disconnected) throw new Error('disconnected')
         void encryptMsg(socket.keyInfo, JSON.stringify(data)).then((data) => {
           // console.log('sendData', eventName)
           socket.send(data)
@@ -200,13 +188,14 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
       },
       onError(error, path, groupName) {
         const name = groupName ?? ''
-        log.error(`sync call ${name} ${path.join('.')} error:`, error)
+        const deviceName = socket.keyInfo?.deviceName ?? ''
+        log.error(`sync call ${deviceName} ${name} ${path.join('.')} error:`, error)
         if (groupName == null) return
         socket.close(SYNC_CLOSE_CODE.failed)
       },
     })
     socket.remote = msg2call.remote
-    socket.remoteSyncList = msg2call.createSyncRemote('list')
+    socket.remoteQueueList = msg2call.createQueueRemote('list')
     socket.addEventListener('message', ({ data }) => {
       if (typeof data != 'string') return
       void decryptMsg(socket.keyInfo, data).then((data) => {
@@ -233,14 +222,15 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
         log.error(err?.message)
       }
       closeEvents = []
+      disconnected = true
       msg2call.onDestroy()
       if (socket.isReady) {
         log.info('deconnection', socket.userInfo.name, socket.keyInfo.deviceName)
         // events = {}
         if (!status.devices.length) handleUnconnection()
       } else {
-        const queryData = url.parse(request.url as string, true).query as Record<string, string>
-        log.info('deconnection', queryData.i)
+        const queryData = new URL(request.url as string, host).searchParams
+        log.info('deconnection', queryData.get('i'))
       }
     })
     socket.onClose = function(handler: typeof closeEvents[number]) {
@@ -311,6 +301,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     void registerLocalSyncEvent(wss as LX.Sync.Server.SocketServer)
   })
 
+  host = `http://${ip}:${port}`
   httpServer.listen(port, ip)
 })
 

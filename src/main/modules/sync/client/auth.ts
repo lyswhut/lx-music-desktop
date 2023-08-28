@@ -1,9 +1,9 @@
 import { request, generateRsaKey } from './utils'
 import { getSyncAuthKey, setSyncAuthKey } from './data'
-import { SYNC_CODE } from '@common/constants'
 import log from '../log'
 import { aesDecrypt, aesEncrypt, getComputerName, rsaDecrypt } from '../utils'
 import { toMD5 } from '@common/utils/nodejs'
+import { SYNC_CODE } from '@common/constants_sync'
 
 
 const hello = async(urlInfo: LX.Sync.Client.UrlInfo) => request(`${urlInfo.httpProtocol}//${urlInfo.hostPath}/hello`)

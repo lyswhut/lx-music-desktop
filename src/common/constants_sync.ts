@@ -41,7 +41,7 @@ export const SYNC_CLOSE_CODE = {
   failed: 4100,
 } as const
 
-export const TRANS_MODE: Readonly<Record<LX.Sync.ListSyncMode, LX.Sync.ListSyncMode>> = {
+export const TRANS_MODE: Readonly<Record<LX.Sync.List.SyncMode, LX.Sync.List.SyncMode>> = {
   merge_local_remote: 'merge_remote_local',
   merge_remote_local: 'merge_local_remote',
   overwrite_local_remote: 'overwrite_remote_local',
@@ -64,3 +64,7 @@ export const File = {
 
   syncAuthKeysJSON: 'syncAuthKey.json',
 } as const
+
+export const FeaturesList = [
+  'list',
+] as const

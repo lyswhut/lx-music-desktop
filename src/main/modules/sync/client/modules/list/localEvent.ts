@@ -8,9 +8,10 @@ export const registerEvent = (socket: LX.Sync.Client.Socket) => {
   //   unregisterLocalListAction?.()
   //   unregisterLocalListAction = null
   // })
+  unregisterEvent()
   unregisterLocalListAction = registerListActionEvent((action) => {
-    if (!socket?.isReady) return
-    void socket.remoteSyncList.onListSyncAction(action)
+    if (!socket.moduleReadys?.list) return
+    void socket.remoteQueueList.onListSyncAction(action)
   })
 }
 

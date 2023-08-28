@@ -2,9 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "isolatedModules": true,
-    "module": "ESNext",
-    "moduleResolution": "nodenext",
-    "resolveJsonModule": true,
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@common/*": ["common/*"],
       "@renderer/*": ["renderer/*"],

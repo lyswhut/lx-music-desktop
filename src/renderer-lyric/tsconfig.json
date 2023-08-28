@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "isolatedModules": true,
-    "moduleResolution": "nodenext",
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
       "@common/*": ["common/*"],
       // "@renderer/*": ["renderer/*"],

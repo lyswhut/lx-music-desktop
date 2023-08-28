@@ -1,7 +1,8 @@
+// 这个文件导出的方法将暴露给客户端调用，第一个参数固定为当前 socket 对象
 // import { throttle } from '@common/utils/common'
 // import { sendSyncActionList } from '@main/modules/winMain'
 // import { SYNC_CLOSE_CODE } from '@/constants'
-import { SYNC_CLOSE_CODE } from '@main/modules/sync/constants'
+import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 import { getUserSpace } from '@main/modules/sync/server/user'
 import { handleRemoteListAction } from '@main/modules/sync/utils'
 // import { encryptMsg } from '@/utils/tools'
@@ -108,7 +109,7 @@ import { handleRemoteListAction } from '@main/modules/sync/utils'
 //   }
 // }
 
-// export const sendListAction = async(action: LX.Sync.ActionList) => {
+// export const sendListAction = async(action: LX.Sync.List.ActionList) => {
 //   console.log('sendListAction', action.action)
 //   // io.sockets
 //   await broadcast('list:sync:action', action)
@@ -144,7 +145,8 @@ import { handleRemoteListAction } from '@main/modules/sync/utils'
 //   // }
 // }
 
-export const onListSyncAction = async(socket: LX.Sync.Server.Socket, action: LX.Sync.ActionList) => {
+export const onListSyncAction = async(socket: LX.Sync.Server.Socket, action: LX.Sync.List.ActionList) => {
+  if (!socket.moduleReadys.list) return
   const userSpace = getUserSpace(socket.userInfo.name)
   await handleRemoteListAction(action).then(async updated => {
     if (!updated) {
@@ -156,8 +158,8 @@ export const onListSyncAction = async(socket: LX.Sync.Server.Socket, action: LX.
     const currentUserName = socket.userInfo.name
     const currentId = socket.keyInfo.clientId
     socket.broadcast((client) => {
-      if (client.keyInfo.clientId == currentId || !client.isReady || client.userInfo.name != currentUserName) return
-      void client.remoteSyncList.onListSyncAction(action)
+      if (client.keyInfo.clientId == currentId || !client.moduleReadys?.list || client.userInfo.name != currentUserName) return
+      void client.remoteQueueList.onListSyncAction(action)
     })
   })
 }

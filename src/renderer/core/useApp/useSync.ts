@@ -2,7 +2,7 @@ import { markRaw, onBeforeUnmount } from '@common/utils/vueTools'
 import { onSyncAction, sendSyncAction } from '@renderer/utils/ipc'
 import { sync } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
-import { SYNC_CODE } from '@common/constants'
+import { SYNC_CODE } from '@common/constants_sync'
 
 export default () => {
   const handleSyncList = (event: LX.Sync.SyncMainWindowActions) => {
