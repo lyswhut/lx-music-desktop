@@ -35,6 +35,7 @@ const heartbeatTools = {
   failedNum: 0,
   maxTryNum: 100000,
   stepMs: 3000,
+  connectTimeout: null as NodeJS.Timeout | null,
   pingTimeout: null as NodeJS.Timeout | null,
   delayRetryTimeout: null as NodeJS.Timeout | null,
   handleOpen() {
@@ -54,15 +55,16 @@ const heartbeatTools = {
     }, 30000 + 1000)
   },
   reConnnect() {
-    if (this.pingTimeout) {
-      clearTimeout(this.pingTimeout)
-      this.pingTimeout = null
-    }
+    this.clearTimeout()
     // client = null
     if (!client) return
 
     if (++this.failedNum > this.maxTryNum) {
       this.failedNum = 0
+      sendSyncStatus({
+        status: false,
+        message: 'Connect error',
+      })
       throw new Error('connect error')
     }
 
@@ -85,6 +87,10 @@ const heartbeatTools = {
     }, waitTime)
   },
   clearTimeout() {
+    if (this.connectTimeout) {
+      clearTimeout(this.connectTimeout)
+      this.connectTimeout = null
+    }
     if (this.delayRetryTimeout) {
       clearTimeout(this.delayRetryTimeout)
       this.delayRetryTimeout = null
@@ -96,7 +102,32 @@ const heartbeatTools = {
   },
   connect(socket: LX.Sync.Client.Socket) {
     console.log('heartbeatTools connect')
+    this.connectTimeout = setTimeout(() => {
+      this.connectTimeout = null
+      if (client) {
+        try {
+          client.close(SYNC_CLOSE_CODE.failed)
+        } catch {}
+      }
+      if (++this.failedNum > this.maxTryNum) {
+        this.failedNum = 0
+        sendSyncStatus({
+          status: false,
+          message: 'Connect error',
+        })
+        throw new Error('connect error')
+      }
+      sendSyncStatus({
+        status: false,
+        message: 'Connect timeout, try reconnect...',
+      })
+      this.reConnnect()
+    }, 2 * 60 * 1000)
     socket.on('open', () => {
+      if (this.connectTimeout) {
+        clearTimeout(this.connectTimeout)
+        this.connectTimeout = null
+      }
       this.handleOpen()
     })
     socket.on('ping', () => {
