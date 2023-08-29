@@ -1,3 +1,4 @@
+import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 import { registerListActionEvent } from '../../../../utils'
 import { getUserSpace } from '../../../user'
 
@@ -11,8 +12,13 @@ const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.L
   const key = await userSpace.listManage.createSnapshot()
   for (const client of wss.clients) {
     if (!client.moduleReadys?.list) continue
-    void client.remoteQueueList.onListSyncAction(action).then(() => {
-      void userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
+    void client.remoteQueueList.onListSyncAction(action).then(async() => {
+      return userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
+    }).catch(err => {
+      // TODO send status
+      client.close(SYNC_CLOSE_CODE.failed)
+      // client.moduleReadys.list = false
+      console.log(err.message)
     })
   }
 }

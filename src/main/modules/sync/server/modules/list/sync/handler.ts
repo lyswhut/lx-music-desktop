@@ -3,6 +3,7 @@
 // import { sendSyncActionList } from '@main/modules/winMain'
 // import { SYNC_CLOSE_CODE } from '@/constants'
 // import { SYNC_CLOSE_CODE } from '@common/constants_sync'
+import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 import { getUserSpace } from '@main/modules/sync/server/user'
 import { handleRemoteListAction } from '@main/modules/sync/utils'
 // import { encryptMsg } from '@/utils/tools'
@@ -155,6 +156,13 @@ export const onListSyncAction = async(socket: LX.Sync.Server.Socket, action: LX.
   const currentId = socket.keyInfo.clientId
   socket.broadcast((client) => {
     if (client.keyInfo.clientId == currentId || !client.moduleReadys?.list || client.userInfo.name != currentUserName) return
-    void client.remoteQueueList.onListSyncAction(action)
+    void client.remoteQueueList.onListSyncAction(action).then(async() => {
+      return userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
+    }).catch(err => {
+      // TODO send status
+      client.close(SYNC_CLOSE_CODE.failed)
+      // client.moduleReadys.list = false
+      console.log(err.message)
+    })
   })
 }

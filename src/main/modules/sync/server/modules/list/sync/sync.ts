@@ -2,6 +2,7 @@
 import { removeSelectModeListener, sendCloseSelectMode, sendSelectMode } from '@main/modules/winMain'
 import { getUserSpace, getUserConfig } from '../../../user'
 import { getLocalListData, setLocalListData } from '@main/modules/sync/utils'
+import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 // import { LIST_IDS } from '@common/constants'
 
 // type ListInfoType = LX.List.UserListInfoFull | LX.List.MyDefaultListInfoFull | LX.List.MyLoveListInfoFull
@@ -65,12 +66,15 @@ const setLocalList = async(socket: LX.Sync.Server.Socket, listData: LX.Sync.List
 const overwriteRemoteListData = async(socket: LX.Sync.Server.Socket, listData: LX.Sync.List.ListData, key: string, excludeIds: string[] = []) => {
   const action = { action: 'list_data_overwrite', data: listData } as const
   const tasks: Array<Promise<void>> = []
+  const userSpace = getUserSpace(socket.userInfo.name)
   socket.broadcast((client) => {
     if (excludeIds.includes(client.keyInfo.clientId) || client.userInfo.name != socket.userInfo.name || !client.moduleReadys?.list) return
     tasks.push(client.remoteQueueList.onListSyncAction(action).then(async() => {
-      const userSpace = getUserSpace(socket.userInfo.name)
-      return userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, key)
+      return userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
     }).catch(err => {
+      // TODO send status
+      client.close(SYNC_CLOSE_CODE.failed)
+      // client.moduleReadys.list = false
       console.log(err.message)
     }))
   })
