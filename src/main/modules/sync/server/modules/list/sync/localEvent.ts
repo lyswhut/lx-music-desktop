@@ -9,9 +9,10 @@ let unregisterLocalListAction: (() => void) | null
 const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.List.ActionList) => {
   // console.log('sendListAction', action.action)
   const userSpace = getUserSpace()
-  const key = await userSpace.listManage.createSnapshot()
+  let key = ''
   for (const client of wss.clients) {
     if (!client.moduleReadys?.list) continue
+    if (!key) key = await userSpace.listManage.createSnapshot()
     void client.remoteQueueList.onListSyncAction(action).then(async() => {
       return userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
     }).catch(err => {
