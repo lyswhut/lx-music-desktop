@@ -11,7 +11,7 @@ const getOffsetTop = (contentHeight, lineHeight) => {
   }
 }
 
-export default () => {
+export default (isComputeHeight) => {
   const dom_lyric = ref(null)
   const dom_lyric_text = ref(null)
   const isMsDown = ref(false)
@@ -28,7 +28,9 @@ export default () => {
   let timeout = null
   let cancelScrollFn
   let dom_lines
+  let line_heights
   let isSetedLines = false
+  let prevActiveLine = 0
 
 
   const handleScrollLrc = (duration = 300) => {
@@ -39,7 +41,18 @@ export default () => {
     }
     if (isStopScroll) return
     let dom_p = dom_lines[lyric.line]
-    cancelScrollFn = scrollTo(dom_lyric.value, dom_p ? (dom_p.offsetTop - getOffsetTop(dom_lyric.value.clientHeight, dom_p.clientHeight)) : 0, duration)
+
+    if (dom_p) {
+      let offset = 0
+      if (isComputeHeight.value) {
+        let prevLineHeight = line_heights[prevActiveLine] ?? 0
+        offset = prevActiveLine < lyric.line ? ((dom_lines[prevActiveLine]?.clientHeight ?? 0) - prevLineHeight) : 0
+        // console.log(prevActiveLine, dom_lines[prevActiveLine]?.clientHeight ?? 0, prevLineHeight, offset)
+      }
+      cancelScrollFn = scrollTo(dom_lyric.value, dom_p ? (dom_p.offsetTop - offset - getOffsetTop(dom_lyric.value.clientHeight, dom_p.clientHeight)) : 0, duration)
+    } else {
+      cancelScrollFn = scrollTo(dom_lyric.value, 0, duration)
+    }
   }
   const clearLyricScrollTimeout = () => {
     if (!timeout) return
@@ -136,11 +149,13 @@ export default () => {
     dom_lyric_text.value.appendChild(dom_line_content)
     nextTick(() => {
       dom_lines = dom_lyric.value.querySelectorAll('.line-content')
+      line_heights = Array.from(dom_lines).map(l => l.clientHeight)
       handleScrollLrc()
     })
   }
 
   const initLrc = (lines, oLines) => {
+    prevActiveLine = 0
     isSetedLines = true
     if (oLines) {
       if (lines.length) {
@@ -162,6 +177,9 @@ export default () => {
 
   let delayScrollTimeout
   const scrollLine = (line, oldLine) => {
+    setImmediate(() => {
+      prevActiveLine = line
+    })
     if (line < 0 || !lyric.lines.length) return
     if (line == 0 && isSetedLines) return isSetedLines = false
     isSetedLines &&= false

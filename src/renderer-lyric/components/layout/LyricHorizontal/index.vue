@@ -41,6 +41,9 @@ export default {
       '--line-gap': setting['desktopLyric.style.lineGap'] + 'px',
       '--line-extended-gap': (setting['desktopLyric.style.lineGap'] / 3).toFixed(2) + 'px',
     }))
+    const isComputeHeight = computed(() => {
+      return setting['desktopLyric.style.isZoomActiveLrc'] && !setting['desktopLyric.isDelayScroll']
+    })
     const {
       dom_lyric,
       dom_lyric_text,
@@ -48,7 +51,7 @@ export default {
       handleLyricMouseDown,
       handleLyricTouchStart,
       handleWheel,
-    } = useLyric()
+    } = useLyric(isComputeHeight)
 
     return {
       classNames,

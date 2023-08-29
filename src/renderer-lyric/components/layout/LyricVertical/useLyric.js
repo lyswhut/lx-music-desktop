@@ -6,12 +6,12 @@ import { setWindowBounds } from '@lyric/utils/ipc'
 
 const getOffsetTop = (contentWidth, lineWidth) => {
   switch (setting['desktopLyric.scrollAlign']) {
-    case 'top': return contentWidth - lineWidth
+    case 'top': return contentWidth - lineWidth - 2
     default: return contentWidth * 0.5 - lineWidth / 2
   }
 }
 
-export default () => {
+export default (isComputeWidth) => {
   const dom_lyric = ref(null)
   const dom_lyric_text = ref(null)
   const isMsDown = ref(false)
@@ -28,7 +28,9 @@ export default () => {
   let timeout = null
   let cancelScrollFn
   let dom_lines
+  let line_widths
   let isSetedLines = false
+  let prevActiveLine = 0
 
 
   const handleScrollLrc = (duration = 300) => {
@@ -39,7 +41,18 @@ export default () => {
     }
     if (isStopScroll) return
     let dom_p = dom_lines[lyric.line]
-    cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft - getOffsetTop(dom_lyric.value.clientWidth, dom_p.clientWidth)) : 0, duration)
+
+    if (dom_p) {
+      let offset = 0
+      if (isComputeWidth.value) {
+        let prevLineWidth = line_widths[prevActiveLine] ?? 0
+        offset = prevActiveLine < lyric.line ? ((dom_lines[prevActiveLine]?.clientWidth ?? 0) - prevLineWidth) : 0
+        // console.log(prevActiveLine, dom_lines[prevActiveLine]?.clientHeight ?? 0, prevLineWidth, offset)
+      }
+      cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft + offset - getOffsetTop(dom_lyric.value.clientWidth, dom_p.clientWidth)) : 0, duration)
+    } else {
+      cancelScrollFn = scrollXRTo(dom_lyric.value, 0, duration)
+    }
   }
   const clearLyricScrollTimeout = () => {
     if (!timeout) return
@@ -136,11 +149,13 @@ export default () => {
     dom_lyric_text.value.appendChild(dom_line_content)
     nextTick(() => {
       dom_lines = dom_lyric.value.querySelectorAll('.line-content')
+      line_widths = Array.from(dom_lines).map(l => l.clientWidth)
       handleScrollLrc()
     })
   }
 
   const initLrc = (lines, oLines) => {
+    prevActiveLine = 0
     isSetedLines = true
     if (oLines) {
       if (lines.length) {
@@ -162,6 +177,9 @@ export default () => {
 
   let delayScrollTimeout
   const scrollLine = (line, oldLine) => {
+    setImmediate(() => {
+      prevActiveLine = line
+    })
     if (line < 0) return
     if (line == 0 && isSetedLines) return isSetedLines = false
     isSetedLines &&= false
