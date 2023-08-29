@@ -229,7 +229,6 @@ export const handleRemoteListAction = async({ action, data }: LX.Sync.List.Actio
       await global.lx.event_list.list_music_clear(data, true)
       break
     default:
-      return false
+      throw new Error('unknown list sync action')
   }
-  return true
 }

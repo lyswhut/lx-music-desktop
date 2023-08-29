@@ -2,7 +2,7 @@
 // import { throttle } from '@common/utils/common'
 // import { sendSyncActionList } from '@main/modules/winMain'
 // import { SYNC_CLOSE_CODE } from '@/constants'
-import { SYNC_CLOSE_CODE } from '@common/constants_sync'
+// import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 import { getUserSpace } from '@main/modules/sync/server/user'
 import { handleRemoteListAction } from '@main/modules/sync/utils'
 // import { encryptMsg } from '@/utils/tools'
@@ -147,19 +147,14 @@ import { handleRemoteListAction } from '@main/modules/sync/utils'
 
 export const onListSyncAction = async(socket: LX.Sync.Server.Socket, action: LX.Sync.List.ActionList) => {
   if (!socket.moduleReadys.list) return
+  await handleRemoteListAction(action)
   const userSpace = getUserSpace(socket.userInfo.name)
-  await handleRemoteListAction(action).then(async updated => {
-    if (!updated) {
-      socket.close(SYNC_CLOSE_CODE.failed)
-      return
-    }
-    const key = await userSpace.listManage.createSnapshot()
-    userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, key)
-    const currentUserName = socket.userInfo.name
-    const currentId = socket.keyInfo.clientId
-    socket.broadcast((client) => {
-      if (client.keyInfo.clientId == currentId || !client.moduleReadys?.list || client.userInfo.name != currentUserName) return
-      void client.remoteQueueList.onListSyncAction(action)
-    })
+  const key = await userSpace.listManage.createSnapshot()
+  userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, key)
+  const currentUserName = socket.userInfo.name
+  const currentId = socket.keyInfo.clientId
+  socket.broadcast((client) => {
+    if (client.keyInfo.clientId == currentId || !client.moduleReadys?.list || client.userInfo.name != currentUserName) return
+    void client.remoteQueueList.onListSyncAction(action)
   })
 }
