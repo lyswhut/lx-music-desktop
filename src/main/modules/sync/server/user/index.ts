@@ -6,6 +6,8 @@ import {
 export interface UserSpace {
   dataManage: UserDataManage
   listManage: ListManage
+  getDecices: () => Promise<LX.Sync.ServerKeyInfo[]>
+  removeDevice: (clientId: string) => Promise<void>
 }
 const users = new Map<string, UserSpace>()
 
@@ -31,9 +33,17 @@ export const getUserSpace = (userName = 'default') => {
   if (!user) {
     console.log('new user data manage:', userName)
     const dataManage = new UserDataManage(userName)
+    const listManage = new ListManage(dataManage)
     users.set(userName, user = {
       dataManage,
-      listManage: new ListManage(dataManage),
+      listManage,
+      async getDecices() {
+        return this.dataManage.getAllClientKeyInfo()
+      },
+      async removeDevice(clientId) {
+        await listManage.removeDevice(clientId)
+        await dataManage.removeClientKeyInfo(clientId)
+      },
     })
   }
   return user

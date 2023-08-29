@@ -1,4 +1,5 @@
 // import { SYNC_CLOSE_CODE } from '../../../../constants'
+import { removeSelectModeListener, sendCloseSelectMode, sendSelectMode } from '@main/modules/winMain'
 import { getUserSpace, getUserConfig } from '../../../user'
 import { getLocalListData, setLocalListData } from '@main/modules/sync/utils'
 // import { LIST_IDS } from '@common/constants'
@@ -29,9 +30,26 @@ const getRemoteListMD5 = async(socket: LX.Sync.Server.Socket): Promise<string> =
 // const getLocalListData = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.List.ListData> => {
 //   return getUserSpace(socket.userInfo.name).listManage.getListData()
 // }
-const getSyncMode = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.List.SyncMode> => {
-  return socket.remoteQueueList.list_sync_get_sync_mode()
-}
+const getSyncMode = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.List.SyncMode> => new Promise((resolve, reject) => {
+  const handleDisconnect = (err: Error) => {
+    sendCloseSelectMode()
+    removeSelectModeListener()
+    reject(err)
+  }
+  let removeEventClose = socket.onClose(handleDisconnect)
+  sendSelectMode(socket.keyInfo.deviceName, (mode) => {
+    if (mode == null) {
+      reject(new Error('cancel'))
+      return
+    }
+    resolve(mode)
+    removeSelectModeListener()
+    removeEventClose()
+  })
+})
+// const getSyncMode = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.List.SyncMode> => {
+//   return socket.remoteQueueList.list_sync_get_sync_mode()
+// }
 
 const finishedSync = async(socket: LX.Sync.Server.Socket) => {
   await socket.remoteQueueList.list_sync_finished()

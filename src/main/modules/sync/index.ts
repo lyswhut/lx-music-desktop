@@ -9,6 +9,8 @@ export {
   stopServer,
   getStatus as getServerStatus,
   generateCode,
+  getDevices as getServerDevices,
+  removeDevice as removeServerDevice,
 } from './server'
 
 export {

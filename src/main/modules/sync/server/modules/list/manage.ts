@@ -44,6 +44,10 @@ export class ListManage {
     await this.snapshotDataManage.updateDeviceSnapshotKey(clientId, key)
   }
 
+  removeDevice = async(clientId: string) => {
+    this.snapshotDataManage.removeSnapshotInfo(clientId)
+  }
+
   getListData = async(): Promise<LX.Sync.List.ListData> => {
     return getLocalListData()
   }

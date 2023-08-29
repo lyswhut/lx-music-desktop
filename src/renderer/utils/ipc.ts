@@ -727,6 +727,23 @@ export const sendSyncAction = async(action: LX.Sync.SyncServiceActions) => {
   return rendererInvoke<LX.Sync.SyncServiceActions>(WIN_MAIN_RENDERER_EVENT_NAME.sync_action, action)
 }
 
+/**
+ * 获取同步服务端连接设备历史列表
+ * @returns
+ */
+export const getSyncServerDevices = () => {
+  return rendererInvoke<LX.Sync.ServerDevices>(WIN_MAIN_RENDERER_EVENT_NAME.sync_get_server_devices)
+}
+
+/**
+ * 移除同步服务端连接设备
+ * @returns
+ */
+export const removeSyncServerDevice = (clientId: string) => {
+  return rendererInvoke<string>(WIN_MAIN_RENDERER_EVENT_NAME.sync_remove_server_device, clientId)
+}
+
+
 // export const refreshSyncCode = async(): Promise<string> => {
 //   return rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.sync_generate_code)
 // }

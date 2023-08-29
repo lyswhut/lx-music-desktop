@@ -68,6 +68,15 @@ export class SnapshotDataManage {
     this.saveSnapshotInfoThrottle()
   }
 
+  removeSnapshotInfo = (clientId: string) => {
+    let client = this.snapshotInfo.clients[clientId]
+    if (!client) return
+    if (client.snapshotKey) this.clientSnapshotKeys.splice(this.clientSnapshotKeys.indexOf(client.snapshotKey), 1)
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete this.snapshotInfo.clients[clientId]
+    this.saveSnapshotInfoThrottle()
+  }
+
   getSnapshot = async(name: string) => {
     const filePath = path.join(this.snapshotDir, `snapshot_${name}`)
     let listData: LX.Sync.List.ListData

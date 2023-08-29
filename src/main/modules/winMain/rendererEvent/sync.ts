@@ -1,6 +1,16 @@
 import { mainHandle } from '@common/mainIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
-import { startServer, stopServer, getServerStatus, generateCode, connectServer, disconnectServer, getClientStatus } from '@main/modules/sync'
+import {
+  startServer,
+  stopServer,
+  getServerStatus,
+  generateCode,
+  connectServer,
+  disconnectServer,
+  getClientStatus,
+  getServerDevices,
+  removeServerDevice,
+} from '@main/modules/sync'
 import { sendEvent } from '../main'
 
 let selectModeListenr: ((mode: LX.Sync.List.SyncMode | null) => void) | null = null
@@ -26,6 +36,12 @@ export default () => {
       default:
         break
     }
+  })
+  mainHandle<never, LX.Sync.ServerDevices>(WIN_MAIN_RENDERER_EVENT_NAME.sync_get_server_devices, async() => {
+    return getServerDevices()
+  })
+  mainHandle<string>(WIN_MAIN_RENDERER_EVENT_NAME.sync_remove_server_device, async({ params: clientId }) => {
+    await removeServerDevice(clientId)
   })
 }
 

@@ -31,6 +31,8 @@ declare namespace LX {
     | SyncAction<'enable_server', EnableServer>
     | SyncAction<'enable_client', EnableClient>
 
+    type ServerDevices = ServerKeyInfo[]
+
     interface ServerStatus {
       status: boolean
       message: string

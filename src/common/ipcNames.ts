@@ -127,6 +127,8 @@ const modules = {
     get_music_url_count: 'get_music_url_count',
 
     sync_action: 'sync_action',
+    sync_get_server_devices: 'sync_get_server_devices',
+    sync_remove_server_device: 'sync_remove_server_device',
 
     process_new_desktop_lyric_client: 'process_new_desktop_lyric_client',
 

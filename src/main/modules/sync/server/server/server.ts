@@ -385,3 +385,18 @@ export const generateCode = async() => {
   sendServerStatus(status)
   return status.code
 }
+
+export const getDevices = async() => {
+  const userSpace = getUserSpace()
+  return userSpace.getDecices()
+}
+
+export const removeDevice = async(clientId: string) => {
+  if (wss) {
+    for (const client of wss.clients) {
+      if (client.keyInfo.clientId == clientId) client.close(SYNC_CLOSE_CODE.normal)
+    }
+  }
+  const userSpace = getUserSpace()
+  await userSpace.removeDevice(clientId)
+}
