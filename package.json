@@ -220,7 +220,6 @@
     "@types/ws": "8.5.4",
     "@volar/vue-language-plugin-pug": "^1.6.5",
     "@vue/language-plugin-pug": "^1.8.8",
-    "babel-loader": "^9.1.3",
     "browserslist": "^4.21.10",
     "chalk": "^4.1.2",
     "changelog-parser": "^3.0.1",

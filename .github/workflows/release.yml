@@ -6,9 +6,41 @@ on:
       - master
 
 jobs:
+  CheckCode:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Cache file
+        uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            $HOME/.cache/electron
+            $HOME/.cache/electron-builder
+            $HOME/.npm/_prebuilds
+          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Lint src code
+        run: npm run lint
+
   Windows:
     name: Windows
     runs-on: windows-latest
+    needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v3
@@ -58,6 +90,7 @@ jobs:
   Mac:
     name: Mac
     runs-on: macos-latest
+    needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v3
@@ -104,6 +137,7 @@ jobs:
   Linux:
     name: Linux
     runs-on: ubuntu-latest
+    needs: CheckCode
     steps:
       - name: Install package
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
