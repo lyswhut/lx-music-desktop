@@ -69,7 +69,7 @@ export default () => {
   const handleGetVersionInfo = async(): Promise<NonNullable<typeof versionInfo['newVersion']>> => {
     return (versionInfo.newVersion?.history && !versionInfo.reCheck
       ? Promise.resolve(versionInfo.newVersion)
-      : getVersionInfo().then(body => {
+      : getVersionInfo().then((body: any) => {
         versionInfo.newVersion = body
         return body
       })
@@ -102,7 +102,10 @@ export default () => {
       if (result.version == '0.0.0') {
         versionInfo.isUnknown = true
         versionInfo.status = 'error'
-        versionInfo.showModal = true
+        let ignoreFailTipTime = parseInt(localStorage.getItem('update__check_failed_tip') ?? '0')
+        if (Date.now() - ignoreFailTipTime > 7 * 86400000) {
+          versionInfo.showModal = true
+        }
         return
       }
       versionInfo.isUnknown = false

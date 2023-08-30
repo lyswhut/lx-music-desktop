@@ -546,6 +546,7 @@
   "setting__update_show_change_log": "Show changelog on first boot after version update",
   "setting__update_try_auto_update": "Attempt to download updates automatically when a new version is found",
   "setting__update_unknown": "Unknown",
+  "setting__update_unknown_tip": "❓ Failed to obtain the latest version information, it is recommended to go to the About interface to open the project release address to check whether the current version is the latest",
   "setting_sync_status_enabled": "connected",
   "song_list": "Playlists",
   "songlist__import_input_btn_confirm": "Open",

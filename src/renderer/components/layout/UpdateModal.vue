@@ -32,8 +32,9 @@ material-modal(:show="versionInfo.showModal" max-width="60%" @close="handleClose
           p 若一样则不必理会该弹窗，直接关闭即可，否则请手动下载新版本更新。
     div(:class="$style.footer")
       div(:class="$style.btns")
-        base-btn(v-if="versionInfo.status == 'error'" :class="$style.btn" @click="handleCheckUpdate") 重新检查更新
-        base-btn(v-else :class="$style.btn" disabled) 检查更新中...
+        base-btn(v-if="versionInfo.status == 'error'" :class="$style.btn2" @click="handleCheckUpdate") 重新检查更新
+        base-btn(v-else :class="$style.btn2" disabled) 检查更新中...
+        base-btn(:disabled="disabledIgnoreFailBtn" :class="$style.btn2" @click="handleIgnoreFailTipClick") 一个星期内不再提醒
   main(v-else-if="versionInfo.status == 'downloaded'" :class="$style.main")
     h2 🚀程序更新🚀
 
@@ -109,6 +110,7 @@ export default {
   data() {
     return {
       ignoreVersion: null,
+      disabledIgnoreFailBtn: true,
     }
   },
   computed: {
@@ -137,6 +139,7 @@ export default {
     void getIgnoreVersion().then(version => {
       this.ignoreVersion = version
     })
+    this.disabledIgnoreFailBtn = Date.now() - parseInt(localStorage.getItem('update__check_failed_tip') ?? '0') < 7 * 86400000
   },
   methods: {
     handleClose() {
@@ -188,6 +191,10 @@ export default {
       versionInfo.status = 'checking'
       versionInfo.reCheck = true
       checkUpdate()
+    },
+    handleIgnoreFailTipClick() {
+      localStorage.setItem('update__check_failed_tip', Date.now().toString())
+      this.disabledIgnoreFailBtn = true
     },
   },
 }

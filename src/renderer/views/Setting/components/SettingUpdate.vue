@@ -7,7 +7,7 @@ dd
     base-checkbox(id="setting__update_showChangeLog" :model-value="appSetting['common.showChangeLog']" :label="$t('setting__update_show_change_log')" @update:model-value="updateSetting({'common.showChangeLog': $event})")
   .gap-top
     .p.small
-      | {{ $t('setting__update_latest_label') }}{{ versionInfo.newVersion ? versionInfo.newVersion.version : $t('setting__update_unknown') }}
+      | {{ $t('setting__update_latest_label') }}{{ versionInfo.newVersion && versionInfo.newVersion.version != '0.0.0' ? versionInfo.newVersion.version : $t('setting__update_unknown') }}
     .p.small(@click="handleOpenDevTools") {{ $t('setting__update_current_label') }}{{ versionInfo.version }}
     .p.small(v-if="downloadProgress" style="line-height: 1.5;")
       | {{ $t('setting__update_downloading') }}
@@ -16,6 +16,8 @@ dd
     template(v-if="versionInfo.newVersion")
       .p(v-if="versionInfo.isLatest")
         span {{ $t('setting__update_latest') }}
+      .p(v-else-if="versionInfo.isUnknown")
+        span {{ $t('setting__update_unknown_tip') }}
       .p(v-else-if="versionInfo.status != 'downloading'")
         span {{ $t('setting__update_new_version') }}
       .p

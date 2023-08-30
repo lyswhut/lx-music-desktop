@@ -546,6 +546,7 @@
   "setting__update_show_change_log": "更新版本後的首次啟動時顯示更新日誌",
   "setting__update_try_auto_update": "發現新版本時嘗試自動下載更新",
   "setting__update_unknown": "未知",
+  "setting__update_unknown_tip": "❓ 獲取最新版本信息失敗，建議去關於界面打開項目發布地址查看當前版本是否最新",
   "setting_sync_status_enabled": "已連接",
   "song_list": "歌單",
   "songlist__import_input_show_btn": "打開歌單",
