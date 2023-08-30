@@ -4,7 +4,7 @@ import { PLAYER_EVENT_NAME } from '@common/ipcNames'
 // 列表操作事件（公共，只注册一次）
 export default () => {
   mainHandle<LX.List.UserListInfo[]>(PLAYER_EVENT_NAME.list_get, async() => {
-    return await global.lx.worker.dbService.getAllUserList()
+    return global.lx.worker.dbService.getAllUserList()
   })
   mainHandle<LX.List.ListActionDataOverwrite>(PLAYER_EVENT_NAME.list_data_overwire, async({ params: listData }) => {
     await global.lx.event_list.list_data_overwrite(listData, false)
@@ -22,7 +22,7 @@ export default () => {
     await global.lx.event_list.list_update_position(position, ids, false)
   })
   mainHandle<string, LX.Music.MusicInfo[]>(PLAYER_EVENT_NAME.list_music_get, async({ params: listId }) => {
-    return await global.lx.worker.dbService.getListMusics(listId)
+    return global.lx.worker.dbService.getListMusics(listId)
   })
   mainHandle<LX.List.ListActionMusicAdd>(PLAYER_EVENT_NAME.list_music_add, async({ params: { id, musicInfos, addMusicLocationType } }) => {
     await global.lx.event_list.list_music_add(id, musicInfos, addMusicLocationType, false)
@@ -46,9 +46,9 @@ export default () => {
     await global.lx.event_list.list_music_clear(listId, false)
   })
   mainHandle<LX.List.ListActionCheckMusicExistList, boolean>(PLAYER_EVENT_NAME.list_music_check_exist, async({ params: { listId, musicInfoId } }) => {
-    return await global.lx.worker.dbService.checkListExistMusic(listId, musicInfoId)
+    return global.lx.worker.dbService.checkListExistMusic(listId, musicInfoId)
   })
   mainHandle<string, string[]>(PLAYER_EVENT_NAME.list_music_get_list_ids, async({ params: musicInfoId }) => {
-    return await global.lx.worker.dbService.getMusicExistListIds(musicInfoId)
+    return global.lx.worker.dbService.getMusicExistListIds(musicInfoId)
   })
 }

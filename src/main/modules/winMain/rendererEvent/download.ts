@@ -4,7 +4,7 @@ import { mainHandle } from '@common/mainIpc'
 
 export default () => {
   mainHandle<LX.Download.ListItem[]>(WIN_MAIN_RENDERER_EVENT_NAME.download_list_get, async() => {
-    return await global.lx.worker.dbService.getDownloadList()
+    return global.lx.worker.dbService.getDownloadList()
   })
   mainHandle<LX.Download.saveDownloadMusicInfo>(WIN_MAIN_RENDERER_EVENT_NAME.download_list_add, async({ params: { list, addMusicLocationType } }) => {
     await global.lx.worker.dbService.downloadInfoSave(list, addMusicLocationType)

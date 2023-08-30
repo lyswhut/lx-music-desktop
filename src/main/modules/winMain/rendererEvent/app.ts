@@ -70,7 +70,7 @@ export default () => {
 
   // 选择目录
   mainHandle<Electron.OpenDialogOptions, Electron.OpenDialogReturnValue>(WIN_MAIN_RENDERER_EVENT_NAME.show_select_dialog, async({ params: options }) => {
-    return await showSelectDialog(options)
+    return showSelectDialog(options)
   })
   // 显示弹窗信息
   mainOn<Electron.MessageBoxSyncOptions>(WIN_MAIN_RENDERER_EVENT_NAME.show_dialog, ({ params }) => {
@@ -78,7 +78,7 @@ export default () => {
   })
   // 显示保存弹窗
   mainHandle<Electron.SaveDialogOptions, Electron.SaveDialogReturnValue>(WIN_MAIN_RENDERER_EVENT_NAME.show_save_dialog, async({ params }) => {
-    return await showSaveDialog(params)
+    return showSaveDialog(params)
   })
 
 
@@ -87,7 +87,7 @@ export default () => {
   })
 
   mainHandle<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_cache_size, async() => {
-    return await getCacheSize()
+    return getCacheSize()
   })
 
   mainOn(WIN_MAIN_RENDERER_EVENT_NAME.open_dev_tools, () => {

@@ -18,7 +18,7 @@ export const getMusicUrl = async({ musicInfo, isRefresh, onToggleSource = () => 
     if (path) return path
   }
 
-  return await getOnlineMusicUrl({ musicInfo: musicInfo.metadata.musicInfo, isRefresh, onToggleSource })
+  return getOnlineMusicUrl({ musicInfo: musicInfo.metadata.musicInfo, isRefresh, onToggleSource })
 }
 
 export const getPicUrl = async({ musicInfo, isRefresh, listId, onToggleSource = () => {} }: {
@@ -38,7 +38,7 @@ export const getPicUrl = async({ musicInfo, isRefresh, listId, onToggleSource = 
     if (onlineMusicInfo.meta.picUrl) return onlineMusicInfo.meta.picUrl
   }
 
-  return await getOnlinePicUrl({ musicInfo: musicInfo.metadata.musicInfo, isRefresh, onToggleSource }).then((url) => {
+  return getOnlinePicUrl({ musicInfo: musicInfo.metadata.musicInfo, isRefresh, onToggleSource }).then((url) => {
     // TODO: when listId required save url (update downloadInfo)
 
     return url
@@ -52,7 +52,7 @@ export const getLyricInfo = async({ musicInfo, isRefresh, onToggleSource = () =>
 }): Promise<LX.Player.LyricInfo> => {
   if (!isRefresh) {
     const lyricInfo = await getCachedLyricInfo(musicInfo.metadata.musicInfo)
-    if (lyricInfo) return await buildLyricInfo(lyricInfo)
+    if (lyricInfo) return buildLyricInfo(lyricInfo)
   }
 
   return getOnlineLyricInfo({

@@ -73,5 +73,5 @@ export const deduplicationList = <T extends LX.Music.MusicInfo>(list: T[]): T[] 
 }
 
 export const langS2T = async(str: string) => {
-  return await window.lx.worker.main.langS2t(Buffer.from(str).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
+  return window.lx.worker.main.langS2t(Buffer.from(str).toString('base64')).then(b64 => Buffer.from(b64, 'base64').toString())
 }

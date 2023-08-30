@@ -38,10 +38,10 @@ export default {
       },
     )
     return requestObj.promise.then(({ body }) => {
-      if (body.error_code !== 0) return Promise.reject('图片获取失败')
+      if (body.error_code !== 0) return Promise.reject(new Error('图片获取失败'))
       let info = body.data[0].info
       const img = info.imgsize ? info.image.replace('{size}', info.imgsize[0]) : info.image
-      if (!img) return Promise.reject('Pic get failed')
+      if (!img) return Promise.reject(new Error('Pic get failed'))
       return img
     })
   },

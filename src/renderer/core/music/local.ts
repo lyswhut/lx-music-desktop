@@ -25,7 +25,7 @@ export const getMusicUrl = async({ musicInfo, isRefresh, onToggleSource = () => 
   onToggleSource()
   const otherSource = await getOtherSource(musicInfo)
   if (!otherSource.length) throw new Error('source not found')
-  return await getOnlineOtherSourceMusicUrl({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ url, quality: targetQuality, musicInfo: targetMusicInfo, isFromCache }) => {
+  return getOnlineOtherSourceMusicUrl({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ url, quality: targetQuality, musicInfo: targetMusicInfo, isFromCache }) => {
     // saveLyric(musicInfo, data.lyricInfo)
     if (!isFromCache) void saveMusicUrl(targetMusicInfo, targetQuality, url)
 
@@ -50,7 +50,7 @@ export const getPicUrl = async({ musicInfo, listId, isRefresh, onToggleSource = 
   onToggleSource()
   const otherSource = await getOtherSource(musicInfo)
   if (!otherSource.length) throw new Error('source not found')
-  return await getOnlineOtherSourcePicUrl({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ url, musicInfo: targetMusicInfo, isFromCache }) => {
+  return getOnlineOtherSourcePicUrl({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ url, musicInfo: targetMusicInfo, isFromCache }) => {
     if (listId) {
       musicInfo.meta.picUrl = url
       void updateListMusics([{ id: listId, musicInfo }])
@@ -69,7 +69,7 @@ export const getLyricInfo = async({ musicInfo, isRefresh, onToggleSource = () =>
     const lyricInfo = await getCachedLyricInfo(musicInfo)
     if (lyricInfo) {
       // 存在已编辑、原始歌词
-      if (lyricInfo.rawlrcInfo.lyric) return await buildLyricInfo(lyricInfo)
+      if (lyricInfo.rawlrcInfo.lyric) return buildLyricInfo(lyricInfo)
     }
 
     // 尝试读取文件内歌词
@@ -81,7 +81,7 @@ export const getLyricInfo = async({ musicInfo, isRefresh, onToggleSource = () =>
   const otherSource = await getOtherSource(musicInfo)
   if (!otherSource.length) throw new Error('source not found')
   // eslint-disable-next-line @typescript-eslint/promise-function-async
-  return await getOnlineOtherSourceLyricInfo({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ lyricInfo, musicInfo: targetMusicInfo, isFromCache }) => {
+  return getOnlineOtherSourceLyricInfo({ musicInfos: [...otherSource], onToggleSource, isRefresh }).then(({ lyricInfo, musicInfo: targetMusicInfo, isFromCache }) => {
     void saveLyric(musicInfo, lyricInfo)
 
     if (isFromCache) return buildLyricInfo(lyricInfo)

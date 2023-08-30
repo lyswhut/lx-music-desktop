@@ -4,7 +4,7 @@ import { mainHandle } from '@common/mainIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
 const handleInflate = async(data: Buffer) => {
-  return await new Promise((resolve: (result: Buffer) => void, reject) => {
+  return new Promise((resolve: (result: Buffer) => void, reject) => {
     inflate(data, (err, result) => {
       if (err) {
         reject(err)

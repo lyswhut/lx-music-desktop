@@ -17,7 +17,7 @@ export async function rendererInvoke<V>(name: string): Promise<V>
 export async function rendererInvoke<T>(name: string, params: T): Promise<void>
 export async function rendererInvoke<T, V>(name: string, params: T): Promise<V>
 export async function rendererInvoke <T, V>(name: string, params?: T): Promise<V> {
-  return await ipcRenderer.invoke(name, params)
+  return ipcRenderer.invoke(name, params)
 }
 
 export function rendererOn(name: string, listener: LX.IpcRendererEventListener): void

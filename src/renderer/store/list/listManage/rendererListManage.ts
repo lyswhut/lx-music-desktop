@@ -155,7 +155,7 @@ export const overwriteListFull = async(data: LX.List.ListActionDataOverwrite) =>
  * @param musicInfoId
  */
 export const checkListExistMusic = async(listId: string, musicInfoId: string): Promise<boolean> => {
-  return await rendererInvoke<LX.List.ListActionCheckMusicExistList, boolean>(PLAYER_EVENT_NAME.list_music_check_exist, { listId, musicInfoId })
+  return rendererInvoke<LX.List.ListActionCheckMusicExistList, boolean>(PLAYER_EVENT_NAME.list_music_check_exist, { listId, musicInfoId })
 }
 
 /**
@@ -163,7 +163,7 @@ export const checkListExistMusic = async(listId: string, musicInfoId: string): P
  * @param musicInfoId
  */
 export const getMusicExistListIds = async(musicInfoId: string): Promise<string[]> => {
-  return await rendererInvoke<string, string[]>(PLAYER_EVENT_NAME.list_music_get_list_ids, musicInfoId)
+  return rendererInvoke<string, string[]>(PLAYER_EVENT_NAME.list_music_get_list_ids, musicInfoId)
 }
 
 

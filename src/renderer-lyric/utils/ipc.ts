@@ -4,7 +4,7 @@ import { CMMON_EVENT_NAME, WIN_LYRIC_RENDERER_EVENT_NAME } from '@common/ipcName
 type RemoveListener = () => void
 
 export const getSetting = async() => {
-  return await rendererInvoke<LX.DesktopLyric.Config>(WIN_LYRIC_RENDERER_EVENT_NAME.get_config)
+  return rendererInvoke<LX.DesktopLyric.Config>(WIN_LYRIC_RENDERER_EVENT_NAME.get_config)
 }
 export const updateSetting = async(setting: Partial<LX.DesktopLyric.Config>) => {
   await rendererInvoke(WIN_LYRIC_RENDERER_EVENT_NAME.set_config, setting)

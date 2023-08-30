@@ -81,7 +81,7 @@ export const buildLyricInfo = async(lyricInfo: MakeOptional<LX.Player.LyricInfo,
       tasks.push(lyricInfo.rlyric ? langS2T(lyricInfo.rlyric) : Promise.resolve(''))
       tasks.push(lyricInfo.lxlyric ? langS2T(lyricInfo.lxlyric) : Promise.resolve(''))
     }
-    return await Promise.all(tasks).then(([lyric, tlyric, rlyric, lxlyric, lyric_raw, tlyric_raw, rlyric_raw, lxlyric_raw]) => {
+    return Promise.all(tasks).then(([lyric, tlyric, rlyric, lxlyric, lyric_raw, tlyric_raw, rlyric_raw, lxlyric_raw]) => {
       const rawlrcInfo = lyric_raw ? {
         lyric: lyric_raw,
         tlyric: tlyric_raw,
@@ -225,7 +225,7 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
     if (!allowToggleSource || err.message == requestMsg.tooManyRequests) throw err
     onToggleSource()
     // eslint-disable-next-line @typescript-eslint/promise-function-async
-    return await getOtherSource(musicInfo).then(otherSource => {
+    return getOtherSource(musicInfo).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         return getOnlineOtherSourceMusicUrl({
@@ -309,7 +309,7 @@ export const handleGetOnlinePicUrl = async({ musicInfo, isRefresh, onToggleSourc
     if (!allowToggleSource) throw err
     onToggleSource()
     // eslint-disable-next-line @typescript-eslint/promise-function-async
-    return await getOtherSource(musicInfo).then(otherSource => {
+    return getOtherSource(musicInfo).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         return getOnlineOtherSourcePicUrl({
@@ -408,7 +408,7 @@ export const handleGetOnlineLyricInfo = async({ musicInfo, onToggleSource, isRef
 
     onToggleSource()
     // eslint-disable-next-line @typescript-eslint/promise-function-async
-    return await getOtherSource(musicInfo).then(otherSource => {
+    return getOtherSource(musicInfo).then(otherSource => {
       console.log('find otherSource', otherSource)
       if (otherSource.length) {
         return getOnlineOtherSourceLyricInfo({

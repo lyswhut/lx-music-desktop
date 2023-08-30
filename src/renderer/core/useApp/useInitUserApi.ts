@@ -49,7 +49,7 @@ export default () => {
                       return { type, url: res.data.url }
                     }).catch(async err => {
                       console.log(err.message)
-                      return await Promise.reject(err)
+                      return Promise.reject(err)
                     }),
                   }
                 }

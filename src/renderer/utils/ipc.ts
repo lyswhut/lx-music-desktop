@@ -37,7 +37,7 @@ export const clearOtherSource = async() => {
   await rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.clear_other_source)
 }
 export const getOtherSourceCount = async() => {
-  return await rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_other_source_count)
+  return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_other_source_count)
 }
 
 
@@ -254,7 +254,7 @@ export const saveLeaderboardSetting = (source: typeof DEFAULT_SETTING['leaderboa
   })
 }
 export const getLeaderboardSetting = async() => {
-  return await rendererInvoke<string, typeof DEFAULT_SETTING['leaderboard']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.leaderboardSetting) ?? { ...DEFAULT_SETTING.leaderboard }
+  return (await rendererInvoke<string, typeof DEFAULT_SETTING['leaderboard']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.leaderboardSetting)) ?? { ...DEFAULT_SETTING.leaderboard }
 }
 export const saveSongListSetting = (setting: typeof DEFAULT_SETTING['songList']) => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
@@ -263,7 +263,7 @@ export const saveSongListSetting = (setting: typeof DEFAULT_SETTING['songList'])
   })
 }
 export const getSongListSetting = async() => {
-  return await rendererInvoke<string, typeof DEFAULT_SETTING['songList']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.songListSetting) ?? { ...DEFAULT_SETTING.songList }
+  return (await rendererInvoke<string, typeof DEFAULT_SETTING['songList']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.songListSetting)) ?? { ...DEFAULT_SETTING.songList }
 }
 export const saveSearchSetting = (setting: typeof DEFAULT_SETTING['search']) => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
@@ -272,7 +272,7 @@ export const saveSearchSetting = (setting: typeof DEFAULT_SETTING['search']) => 
   })
 }
 export const getSearchSetting = async() => {
-  return await rendererInvoke<string, typeof DEFAULT_SETTING['search']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.searchSetting) ?? { ...DEFAULT_SETTING.search }
+  return (await rendererInvoke<string, typeof DEFAULT_SETTING['search']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.searchSetting)) ?? { ...DEFAULT_SETTING.search }
 }
 export const saveViewPrevState = (state: typeof DEFAULT_SETTING['viewPrevState']) => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
@@ -281,7 +281,7 @@ export const saveViewPrevState = (state: typeof DEFAULT_SETTING['viewPrevState']
   })
 }
 export const getViewPrevState = async() => {
-  return await rendererInvoke<string, typeof DEFAULT_SETTING['viewPrevState']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.viewPrevState) ?? { ...DEFAULT_SETTING.viewPrevState }
+  return (await rendererInvoke<string, typeof DEFAULT_SETTING['viewPrevState']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.viewPrevState)) ?? { ...DEFAULT_SETTING.viewPrevState }
 }
 
 
@@ -292,7 +292,7 @@ export const getSystemFonts = async() => {
 }
 
 export const getUserSoundEffectEQPresetList = async() => {
-  return await rendererInvoke<LX.SoundEffect.EQPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_eq_preset)
+  return rendererInvoke<LX.SoundEffect.EQPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_eq_preset)
 }
 
 export const saveUserSoundEffectEQPresetList = (list: LX.SoundEffect.EQPreset[]) => {
@@ -300,7 +300,7 @@ export const saveUserSoundEffectEQPresetList = (list: LX.SoundEffect.EQPreset[])
 }
 
 export const getUserSoundEffectConvolutionPresetList = async() => {
-  return await rendererInvoke<LX.SoundEffect.ConvolutionPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_convolution_preset)
+  return rendererInvoke<LX.SoundEffect.ConvolutionPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_convolution_preset)
 }
 
 export const saveUserSoundEffectConvolutionPresetList = (list: LX.SoundEffect.ConvolutionPreset[]) => {
@@ -308,7 +308,7 @@ export const saveUserSoundEffectConvolutionPresetList = (list: LX.SoundEffect.Co
 }
 
 // export const getUserSoundEffectPitchShifterPresetList = async() => {
-//   return await rendererInvoke<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_pitch_shifter_preset)
+//   return rendererInvoke<LX.SoundEffect.PitchShifterPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_pitch_shifter_preset)
 // }
 
 // export const saveUserSoundEffectPitchShifterPresetList = (list: LX.SoundEffect.PitchShifterPreset[]) => {
@@ -507,7 +507,7 @@ export const clearLyricRaw = async() => {
 }
 
 export const getLyricRawCount = async() => {
-  return await rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_lyric_raw_count)
+  return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_lyric_raw_count)
 }
 
 
@@ -559,7 +559,7 @@ export const clearLyricEdited = async() => {
 }
 
 export const getLyricEditedCount = async() => {
-  return await rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_lyric_edited_count)
+  return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_lyric_edited_count)
 }
 
 
@@ -603,7 +603,7 @@ export const clearMusicUrl = async() => {
 }
 
 export const getMusicUrlCount = async() => {
-  return await rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_music_url_count)
+  return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_music_url_count)
 }
 
 /**

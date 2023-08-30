@@ -105,7 +105,7 @@ export const search = async(text: string, page: number, sourceId: LX.OnlineSourc
         }
       }))
     }
-    return await Promise.all(task).then((results: SearchResult[]) => {
+    return Promise.all(task).then((results: SearchResult[]) => {
       if (key != listInfo.key) return []
       return setLists(results, page, text)
     })

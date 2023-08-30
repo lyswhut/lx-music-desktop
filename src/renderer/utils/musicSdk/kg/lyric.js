@@ -76,7 +76,7 @@ export default {
   //   })
   //   requestObj.promise = requestObj.promise.then(({ body, statusCode }) => {
   //     if (statusCode !== 200) {
-  //       if (tryNum > 5) return Promise.reject('歌词获取失败')
+  //       if (tryNum > 5) return Promise.reject(new Error('歌词获取失败'))
   //       let tryRequestObj = this.getLyric(songInfo, ++tryNum)
   //       requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
   //       return tryRequestObj.promise
@@ -98,7 +98,7 @@ export default {
     })
     requestObj.promise = requestObj.promise.then(({ body, statusCode }) => {
       if (statusCode !== 200) {
-        if (tryNum > 5) return Promise.reject('歌词获取失败')
+        if (tryNum > 5) return Promise.reject(new Error('歌词获取失败'))
         let tryRequestObj = this.searchLyric(name, hash, time, ++tryNum)
         requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
         return tryRequestObj.promise
@@ -121,7 +121,7 @@ export default {
     })
     requestObj.promise = requestObj.promise.then(({ body, statusCode }) => {
       if (statusCode !== 200) {
-        if (tryNum > 5) return Promise.reject('歌词获取失败')
+        if (tryNum > 5) return Promise.reject(new Error('歌词获取失败'))
         let tryRequestObj = this.getLyric(id, accessKey, ++tryNum)
         requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
         return tryRequestObj.promise

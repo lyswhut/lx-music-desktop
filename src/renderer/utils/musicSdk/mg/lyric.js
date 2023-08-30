@@ -57,7 +57,7 @@ const mrcTools = {
     })
     return requestObj.promise.then(({ statusCode, body }) => {
       if (statusCode == 200) return body
-      if (tryNum > 5 || statusCode == 404) return Promise.reject('歌词获取失败')
+      if (tryNum > 5 || statusCode == 404) return Promise.reject(new Error('歌词获取失败'))
       return this.getText(url, ++tryNum)
     })
   },
@@ -84,7 +84,7 @@ const mrcTools = {
         let p
         if (info.mrcUrl) p = this.getMrc(info.mrcUrl)
         else if (info.lrcUrl) p = this.getLrc(info.lrcUrl)
-        if (p == null) return Promise.reject('获取歌词失败')
+        if (p == null) return Promise.reject(new Error('获取歌词失败'))
         return Promise.all([p, this.getTrc(info.trcUrl)]).then(([lrcInfo, tlyric]) => {
           lrcInfo.tlyric = tlyric
           return lrcInfo
@@ -102,7 +102,7 @@ export default {
       let requestObj = httpFetch(songInfo.lrcUrl)
       requestObj.promise = requestObj.promise.then(({ body, statusCode }) => {
         if (statusCode !== 200) {
-          if (tryNum > 5) return Promise.reject('歌词获取失败')
+          if (tryNum > 5) return Promise.reject(new Error('歌词获取失败'))
           let tryRequestObj = this.getLyricWeb(songInfo, ++tryNum)
           requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
           return tryRequestObj.promise

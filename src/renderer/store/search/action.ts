@@ -22,7 +22,7 @@ const saveSearchHistoryListThrottle = throttle((list: LX.List.SearchHistoryList)
 export const getHistoryList = async() => {
   if (isInitedSearchHistory || historyList.length) return
   historyList.push(...(await getSearchHistoryList() ?? []))
-  isInitedSearchHistory = true
+  isInitedSearchHistory ||= true
 }
 export const addHistoryWord = async(word: string) => {
   if (!appSetting['search.isShowHistorySearch']) return

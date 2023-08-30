@@ -30,6 +30,7 @@ export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   dir ??= process.env.NODE_ENV !== 'production' ? webpackUserApiPath : path.join(encodePath(__dirname), 'userApi')
 
   if (!html) {
+    // eslint-disable-next-line require-atomic-updates
     html = await fs.promises.readFile(path.join(dir, 'renderer/user-api.html'), 'utf8')
   }
   const preloadUrl = process.env.NODE_ENV !== 'production'

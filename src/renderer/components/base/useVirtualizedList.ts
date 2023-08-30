@@ -141,14 +141,14 @@
 //   }
 
 //   const scrollTo = async(scrollTop, animate = false) => {
-//     return await new Promise(resolve => {
+//     return new Promise(resolve => {
 //       if (cancelScroll) {
 //         cancelScroll(resolve)
 //       } else {
 //         resolve()
 //       }
 //     }).then(async() => {
-//       return await new Promise((resolve, reject) => {
+//       return new Promise((resolve, reject) => {
 //         if (animate) {
 //           isScrolling = true
 //           scrollToValue = scrollTop
@@ -169,7 +169,7 @@
 //   }
 
 //   const scrollToIndex = async(index, offset = 0, animate = false) => {
-//     return await scrollTo(Math.max(index * props.itemHeight + offset, 0), animate)
+//     return scrollTo(Math.max(index * props.itemHeight + offset, 0), animate)
 //   }
 
 //   const getScrollTop = () => {

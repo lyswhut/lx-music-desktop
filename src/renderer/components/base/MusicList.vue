@@ -215,7 +215,7 @@ export default {
             }, () => {
               cancelScroll = null
               isScrolling = false
-              reject('canceled')
+              reject(new Error('canceled'))
             })
           } else {
             dom_scrollContainer.value.scrollTop = scrollTop

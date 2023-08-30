@@ -253,7 +253,7 @@ export const initAppSetting = async() => {
   }
   // global.lx.theme = getTheme()
 
-  isInitialized = true
+  isInitialized ||= true
 }
 
 export const quitApp = () => {

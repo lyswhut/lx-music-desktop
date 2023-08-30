@@ -20,7 +20,7 @@ export default () => {
   })
 
   mainHandle<string[]>(CMMON_EVENT_NAME.get_system_fonts, async() => {
-    return await getFonts()
+    return getFonts()
   })
 }
 

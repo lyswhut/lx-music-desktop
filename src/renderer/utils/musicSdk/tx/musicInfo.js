@@ -33,7 +33,7 @@ export default (songmid) => {
   })
   return requestObj.promise.then(({ body }) => {
     // console.log(body)
-    if (body.code != 0 || body.req.code != 0) return Promise.reject('获取歌曲信息失败')
+    if (body.code != 0 || body.req.code != 0) return Promise.reject(new Error('获取歌曲信息失败'))
     const item = body.req.data.track_info
     if (!item.file?.media_mid) return null
 

@@ -55,7 +55,7 @@ export const getMusicUrl = async({ musicInfo, quality, isRefresh, allowToggleSou
   const cachedUrl = await getStoreMusicUrl(musicInfo, targetQuality)
   if (cachedUrl && !isRefresh) return cachedUrl
 
-  return await handleGetOnlineMusicUrl({ musicInfo, quality, onToggleSource, isRefresh, allowToggleSource }).then(({ url, quality: targetQuality, musicInfo: targetMusicInfo, isFromCache }) => {
+  return handleGetOnlineMusicUrl({ musicInfo, quality, onToggleSource, isRefresh, allowToggleSource }).then(({ url, quality: targetQuality, musicInfo: targetMusicInfo, isFromCache }) => {
     if (targetMusicInfo.id != musicInfo.id && !isFromCache) void saveMusicUrl(targetMusicInfo, targetQuality, url)
     void saveMusicUrl(musicInfo, targetQuality, url)
     return url
@@ -70,7 +70,7 @@ export const getPicUrl = async({ musicInfo, listId, isRefresh, allowToggleSource
   onToggleSource?: (musicInfo?: LX.Music.MusicInfoOnline) => void
 }): Promise<string> => {
   if (musicInfo.meta.picUrl && !isRefresh) return musicInfo.meta.picUrl
-  return await handleGetOnlinePicUrl({ musicInfo, onToggleSource, isRefresh, allowToggleSource }).then(({ url, musicInfo: targetMusicInfo, isFromCache }) => {
+  return handleGetOnlinePicUrl({ musicInfo, onToggleSource, isRefresh, allowToggleSource }).then(({ url, musicInfo: targetMusicInfo, isFromCache }) => {
     // picRequest = null
     if (listId) {
       musicInfo.meta.picUrl = url
@@ -88,16 +88,16 @@ export const getLyricInfo = async({ musicInfo, isRefresh, allowToggleSource = tr
 }): Promise<LX.Player.LyricInfo> => {
   if (!isRefresh) {
     const lyricInfo = await getCachedLyricInfo(musicInfo)
-    if (lyricInfo) return await buildLyricInfo(lyricInfo)
+    if (lyricInfo) return buildLyricInfo(lyricInfo)
   }
 
   // lrcRequest = music[musicInfo.source].getLyric(musicInfo)
-  return await handleGetOnlineLyricInfo({ musicInfo, onToggleSource, isRefresh, allowToggleSource }).then(async({ lyricInfo, musicInfo: targetMusicInfo, isFromCache }) => {
+  return handleGetOnlineLyricInfo({ musicInfo, onToggleSource, isRefresh, allowToggleSource }).then(async({ lyricInfo, musicInfo: targetMusicInfo, isFromCache }) => {
     // lrcRequest = null
-    if (isFromCache) return await buildLyricInfo(lyricInfo)
+    if (isFromCache) return buildLyricInfo(lyricInfo)
     if (targetMusicInfo.id == musicInfo.id) void saveLyric(musicInfo, lyricInfo)
     else void saveLyric(targetMusicInfo, lyricInfo)
 
-    return await buildLyricInfo(lyricInfo)
+    return buildLyricInfo(lyricInfo)
   })
 }

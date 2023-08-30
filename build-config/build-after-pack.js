@@ -16,7 +16,7 @@ module.exports = async(context) => {
   const resPath = `${appOutDir}/${productFilename}.app/Contents/Resources`
 
   // 创建APP语言包文件
-  return await Promise.all(
+  return Promise.all(
     Object.entries(macLanguagesInfoPlistStrings).map(([lang, config]) => {
       let infos = Object.entries(config).map(([k, v]) => `"${k}" = "${v}";`).join('\n')
       return fs.writeFile(`${resPath}/${lang}.lproj/InfoPlist.strings`, infos)

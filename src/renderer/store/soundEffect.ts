@@ -12,12 +12,14 @@ let userEqPresetList: LX.SoundEffect.EQPreset[] | null = null
 
 export const getUserEQPresetList = async() => {
   if (userEqPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userEqPresetList = reactive(await getUserSoundEffectEQPresetList())
   }
   return userEqPresetList
 }
 export const saveUserEQPreset = async(preset: LX.SoundEffect.EQPreset) => {
   if (userEqPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userEqPresetList = reactive(await getUserSoundEffectEQPresetList())
   }
   const target = userEqPresetList.find(p => p.id == preset.id)
@@ -27,6 +29,7 @@ export const saveUserEQPreset = async(preset: LX.SoundEffect.EQPreset) => {
 }
 export const removeUserEQPreset = async(id: string) => {
   if (userEqPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userEqPresetList = reactive(await getUserSoundEffectEQPresetList())
   }
   const index = userEqPresetList.findIndex(p => p.id == id)
@@ -45,6 +48,7 @@ export const getUserConvolutionPresetList = async() => {
 }
 export const saveUserConvolutionPreset = async(preset: LX.SoundEffect.ConvolutionPreset) => {
   if (userConvolutionPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userConvolutionPresetList = reactive(await getUserSoundEffectConvolutionPresetList())
   }
   const target = userConvolutionPresetList.find(p => p.id == preset.id)
@@ -54,6 +58,7 @@ export const saveUserConvolutionPreset = async(preset: LX.SoundEffect.Convolutio
 }
 export const removeUserConvolutionPreset = async(id: string) => {
   if (userConvolutionPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userConvolutionPresetList = reactive(await getUserSoundEffectConvolutionPresetList())
   }
   const index = userConvolutionPresetList.findIndex(p => p.id == id)

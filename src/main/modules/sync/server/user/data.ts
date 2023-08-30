@@ -25,8 +25,10 @@ export const initServerInfo = async() => {
   if (serverInfo != null) return
   const serverInfoFilePath = path.join(global.lxDataPath, File.serverDataPath, File.serverInfoJSON)
   if (await exists(serverInfoFilePath)) {
+    // eslint-disable-next-line require-atomic-updates
     serverInfo = JSON.parse((await fs.promises.readFile(serverInfoFilePath)).toString())
   } else {
+    // eslint-disable-next-line require-atomic-updates
     serverInfo = {
       serverId: randomBytes(4 * 4).toString('base64'),
       version: 2,

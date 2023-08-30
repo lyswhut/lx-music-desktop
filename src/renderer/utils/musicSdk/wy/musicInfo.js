@@ -17,7 +17,7 @@ export default songmid => {
   })
   requestObj.promise = requestObj.promise.then(({ body }) => {
     // console.log(body)
-    if (body.code !== 200 || !body.songs.length) return Promise.reject('获取歌曲信息失败')
+    if (body.code !== 200 || !body.songs.length) return Promise.reject(new Error('获取歌曲信息失败'))
     return body.songs[0]
   })
   return requestObj

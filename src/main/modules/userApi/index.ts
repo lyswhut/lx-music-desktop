@@ -28,7 +28,7 @@ export const setApi = async(id: string) => {
   }
   const apiList = getUserApis()
   if (!apiList.some(a => a.id === id)) return
-  userApiId = id
+  userApiId ||= id
   await loadApi(id)
 }
 

@@ -16,8 +16,10 @@ export const initClientInfo = async() => {
   if (syncAuthKeys != null) return
   const syncAuthKeysFilePath = path.join(global.lxDataPath, File.clientDataPath, File.syncAuthKeysJSON)
   if (await fs.promises.stat(syncAuthKeysFilePath).then(() => true).catch(() => false)) {
+    // eslint-disable-next-line require-atomic-updates
     syncAuthKeys = JSON.parse((await fs.promises.readFile(syncAuthKeysFilePath)).toString())
   } else {
+    // eslint-disable-next-line require-atomic-updates
     syncAuthKeys = {}
     const syncDataPath = path.join(global.lxDataPath, File.clientDataPath)
     if (!await exists(syncDataPath)) {

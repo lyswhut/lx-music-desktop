@@ -128,7 +128,7 @@ export const sendEvent = <T = any>(name: string, params?: T) => {
 
 export const showSelectDialog = async(options: Electron.OpenDialogOptions) => {
   if (!browserWindow) throw new Error('main window is undefined')
-  return await dialog.showOpenDialog(browserWindow, options)
+  return dialog.showOpenDialog(browserWindow, options)
 }
 export const showDialog = ({ type, message, detail }: Electron.MessageBoxSyncOptions) => {
   if (!browserWindow) return
@@ -140,7 +140,7 @@ export const showDialog = ({ type, message, detail }: Electron.MessageBoxSyncOpt
 }
 export const showSaveDialog = async(options: Electron.SaveDialogOptions) => {
   if (!browserWindow) throw new Error('main window is undefined')
-  return await dialog.showSaveDialog(browserWindow, options)
+  return dialog.showSaveDialog(browserWindow, options)
 }
 export const minimize = () => {
   if (!browserWindow) return
@@ -256,7 +256,7 @@ export const clearCache = async() => {
 
 export const getCacheSize = async() => {
   if (!browserWindow) throw new Error('main window is undefined')
-  return await browserWindow.webContents.session.getCacheSize()
+  return browserWindow.webContents.session.getCacheSize()
 }
 
 export const getWebContents = (): Electron.WebContents => {

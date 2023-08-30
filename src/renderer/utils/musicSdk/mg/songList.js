@@ -168,7 +168,7 @@ export default {
     // return this._requestObj_list.promise.then(({ statusCode, body }) => {
     //   if (statusCode !== 200) return this.getList(sortId, tagId, page)
     //   let list = body.replace(/[\r\n]/g, '').match(this.regExps.list)
-    //   if (!list) return Promise.reject('获取列表失败')
+    //   if (!list) return Promise.reject(new Error('获取列表失败'))
     //   return list.map(item => {
     //     let info = item.match(this.regExps.listInfo)
     //     return {

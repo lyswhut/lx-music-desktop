@@ -18,7 +18,7 @@ export default () => {
   })
 
   mainHandle<string[], LX.UserApi.UserApiInfo[]>(WIN_MAIN_RENDERER_EVENT_NAME.remove_user_api, async({ params: apiIds }) => {
-    return await removeApi(apiIds)
+    return removeApi(apiIds)
   })
 
   mainHandle<LX.UserApi.UserApiSetApiParams>(WIN_MAIN_RENDERER_EVENT_NAME.set_user_api, async({ params: apiId }) => {
@@ -38,7 +38,7 @@ export default () => {
   })
 
   mainHandle<LX.UserApi.UserApiRequestParams>(WIN_MAIN_RENDERER_EVENT_NAME.request_user_api, async({ params }) => {
-    return await request(params)
+    return request(params)
   })
   mainHandle<LX.UserApi.UserApiRequestCancelParams>(WIN_MAIN_RENDERER_EVENT_NAME.request_user_api_cancel, async({ params: requestKey }) => {
     cancelRequest(requestKey)
