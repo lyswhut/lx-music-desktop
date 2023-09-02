@@ -80,10 +80,6 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
 
   const handleScrollLrc = (duration = 300) => {
     if (!dom_lines?.length || !dom_lyric.value) return
-    if (cancelScrollFn) {
-      cancelScrollFn()
-      cancelScrollFn = null
-    }
     if (isSkipMouseEnter) return
     if (isStopScroll.value) return
     let dom_p = dom_lines[lyric.line]
@@ -179,10 +175,6 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
       if (lines.length) {
         setLyric(lines)
       } else {
-        if (cancelScrollFn) {
-          cancelScrollFn()
-          cancelScrollFn = null
-        }
         cancelScrollFn = scrollTo(dom_lyric.value, 0, 300, () => {
           if (lyric.lines !== lines) return
           setLyric(lines)
