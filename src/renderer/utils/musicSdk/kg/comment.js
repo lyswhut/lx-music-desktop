@@ -18,7 +18,8 @@ export default {
     const { body, statusCode } = await _requestObj.promise
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取评论失败')
-    return { source: 'kg', comments: this.filterComment(body.list || []), total: body.count, page, limit, maxPage: body.maxPage }
+    const total = body.count ?? 0
+    return { source: 'kg', comments: this.filterComment(body.list || []), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   async getHotComment({ hash }, page = 1, limit = 20) {
     // console.log(songmid)
@@ -34,7 +35,7 @@ export default {
     // console.log(body)
     if (statusCode != 200 || body.err_code !== 0) throw new Error('获取热门评论失败')
     const total = body.count ?? 0
-    return { source: 'kg', comments: this.filterComment(body.list || []), total, page, limit, maxPage: Math.ceil(body.count / limit) || 1 }
+    return { source: 'kg', comments: this.filterComment(body.list || []), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   async getReplyComment({ songmid, audioId }, replyId, page = 1, limit = 100) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
