@@ -3,7 +3,7 @@ import { useI18n } from '@renderer/plugins/i18n'
 import { setTitle } from '@renderer/utils'
 
 import {
-  setLoopPlay, setPause, setStop,
+  setPause, setStop,
 } from '@renderer/plugins/player'
 
 import useMediaSessionInfo from './useMediaSessionInfo'
@@ -91,12 +91,12 @@ export default () => {
   }
 
   watch(() => appSetting['player.togglePlayMethod'], newValue => {
-    setLoopPlay(newValue == 'singleLoop')
+    // setLoopPlay(newValue == 'singleLoop')
     if (playedList.length) clearPlayedList()
     if (newValue == 'random' && playMusicInfo.musicInfo && !playMusicInfo.isTempPlay) addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
   })
 
-  setLoopPlay(appSetting['player.togglePlayMethod'] == 'singleLoop')
+  // setLoopPlay(appSetting['player.togglePlayMethod'] == 'singleLoop')
 
 
   window.key_event.on(HOTKEY_PLAYER.next.action, handlePlayNext)
