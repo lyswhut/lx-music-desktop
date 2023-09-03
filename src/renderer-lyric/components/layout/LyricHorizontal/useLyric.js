@@ -169,6 +169,7 @@ export default (isComputeHeight) => {
 
   let delayScrollTimeout
   const scrollLine = (line, oldLine) => {
+    console.log('scrollLine', line, oldLine)
     setImmediate(() => {
       prevActiveLine = line
     })
@@ -197,9 +198,6 @@ export default (isComputeHeight) => {
     document.addEventListener('touchend', handleMouseMsUp)
 
     initLrc(lyric.lines, null)
-    nextTick(() => {
-      scrollLine(lyric.line)
-    })
   })
 
   onBeforeUnmount(() => {

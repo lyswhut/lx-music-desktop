@@ -197,9 +197,6 @@ export default (isComputeWidth) => {
     document.addEventListener('touchend', handleMouseMsUp)
 
     initLrc(lyric.lines, null)
-    nextTick(() => {
-      scrollLine(lyric.line)
-    })
   })
 
   onBeforeUnmount(() => {

@@ -208,9 +208,6 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
     document.addEventListener('touchend', handleMouseMsUp)
 
     initLrc(lyric.lines, null)
-    nextTick(() => {
-      scrollLine(lyric.line)
-    })
   })
 
   onBeforeUnmount(() => {
