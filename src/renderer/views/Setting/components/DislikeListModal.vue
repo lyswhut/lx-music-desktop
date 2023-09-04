@@ -26,8 +26,10 @@ export default {
     const rules = ref('')
 
     const handleSave = async() => {
-      await overwirteDislikeInfo(rules.value)
-      emit('onRuleUpdate')
+      if (rules.value.trim() != dislikeInfo.rules.trim()) {
+        await overwirteDislikeInfo(rules.value)
+        emit('onRuleUpdate')
+      }
       emit('update:modelValue', false)
     }
 
