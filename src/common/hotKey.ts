@@ -66,6 +66,21 @@ const hotKey = {
       action: 'volume_mute',
       type: '',
     },
+    music_love: {
+      name: 'music_love',
+      action: 'music_love',
+      type: '',
+    },
+    music_unlove: {
+      name: 'music_unlove',
+      action: 'music_unlove',
+      type: '',
+    },
+    music_dislike: {
+      name: 'music_dislike',
+      action: 'music_dislike',
+      type: '',
+    },
   },
   desktop_lyric: {
     toggle_visible: {

@@ -40,6 +40,24 @@ export const getOtherSourceCount = async() => {
   return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_other_source_count)
 }
 
+export const getDislikeListInfo = async(): Promise<LX.Dislike.DislikeInfo> => {
+  return rendererInvoke<LX.Dislike.DislikeInfo>(WIN_MAIN_RENDERER_EVENT_NAME.get_dislike_music_infos)
+}
+export const addDislikeInfo = async(dislikeInfo: LX.Dislike.DislikeMusicInfo[]) => {
+  return rendererInvoke<LX.Dislike.DislikeMusicInfo[]>(WIN_MAIN_RENDERER_EVENT_NAME.add_dislike_music_infos, dislikeInfo)
+}
+export const overwirteDislikeInfo = async(dislikeInfo: string) => {
+  return rendererInvoke<string>(WIN_MAIN_RENDERER_EVENT_NAME.overwrite_dislike_music_infos, dislikeInfo)
+}
+// export const updateDislikeInfo = async(dislikeInfo: LX.Dislike.ListItem[]) => {
+//   await rendererInvoke<LX.Dislike.ListItem[]>(WIN_MAIN_RENDERER_EVENT_NAME.update_dislike_music_infos, dislikeInfo)
+// }
+// export const removeDislikeInfo = async(ids: string[]) => {
+//   await rendererInvoke<string[]>(WIN_MAIN_RENDERER_EVENT_NAME.remove_dislike_music_infos, ids)
+// }
+// export const clearDislikeInfo = async() => {
+//   await rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.clear_dislike_music_infos)
+// }
 
 export const getHotKeyConfig = async() => {
   return rendererInvoke<LX.HotKeyConfigAll>(WIN_MAIN_RENDERER_EVENT_NAME.get_hot_key)
@@ -333,6 +351,11 @@ export const allHotKeys = markRaw({
       type: APP_EVENT_NAMES.winMainName,
     },
     {
+      name: hotKeys.HOTKEY_PLAYER.music_dislike.name,
+      action: hotKeys.HOTKEY_PLAYER.music_dislike.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
       name: hotKeys.HOTKEY_COMMON.focusSearchInput.name,
       action: hotKeys.HOTKEY_COMMON.focusSearchInput.action,
       type: APP_EVENT_NAMES.winMainName,
@@ -392,6 +415,21 @@ export const allHotKeys = markRaw({
     {
       name: hotKeys.HOTKEY_PLAYER.volume_mute.name,
       action: hotKeys.HOTKEY_PLAYER.volume_mute.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.music_love.name,
+      action: hotKeys.HOTKEY_PLAYER.music_love.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.music_unlove.name,
+      action: hotKeys.HOTKEY_PLAYER.music_unlove.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.music_dislike.name,
+      action: hotKeys.HOTKEY_PLAYER.music_dislike.action,
       type: APP_EVENT_NAMES.winMainName,
     },
     {

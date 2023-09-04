@@ -35,6 +35,16 @@ dd
       base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
 
 dd
+  h3#other_lyric_edited {{ $t('setting__other_dislike_list') }}
+  div
+    .p
+      | {{ $t('setting__other_dislike_list_label') }}
+      span.auto-hidden {{ dislikeRuleCount }}
+    .p
+      base-btn.btn(min @click="isShowDislikeList = true") {{ $t('setting__other_dislike_list_show_btn') }}
+  DislikeListModal(v-model="isShowDislikeList" @on-rule-update="handleCountRules")
+
+dd
   h3#other_lyric_edited {{ $t('setting__other_lyric_edited_cache') }}
   div
     .p
@@ -65,9 +75,14 @@ import { dialog } from '@renderer/plugins/Dialog'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { overwriteListFull } from '@renderer/store/list/listManage'
+import { dislikeInfo } from '@renderer/store/dislikeList'
+import DislikeListModal from './DislikeListModal.vue'
 
 export default {
   name: 'SettingOther',
+  components: {
+    DislikeListModal,
+  },
   setup() {
     const t = useI18n()
 
@@ -135,6 +150,11 @@ export default {
     }
     refreshMusicUrlCount()
 
+    const dislikeRuleCount = ref(dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size)
+    const isShowDislikeList = ref(false)
+    const handleCountRules = () => {
+      dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size
+    }
 
     const lyricRawCount = ref(0)
     const isDisabledLyricRawCacheClear = ref(false)
@@ -203,6 +223,10 @@ export default {
       musicUrlCount,
       isDisabledMusicUrlCacheClear,
       handleClearMusicUrlCache,
+
+      dislikeRuleCount,
+      isShowDislikeList,
+      handleCountRules,
 
       lyricRawCount,
       isDisabledLyricRawCacheClear,

@@ -6,6 +6,9 @@ import { useI18n } from '@renderer/plugins/i18n'
 import { removeListMusics } from '@renderer/store/list/action'
 import { appSetting } from '@renderer/store/setting'
 import { toOldMusicInfo } from '@renderer/utils/index'
+import { addDislikeInfo, hasDislike } from '@renderer/core/dislikeList'
+import { playNext } from '@renderer/core/player'
+import { playMusicInfo } from '@renderer/store/player/state'
 
 
 export default ({ props, list, selectedList, removeAllSelect }) => {
@@ -34,6 +37,14 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
     clipboardWriteText(appSetting['download.fileName'].replace('歌名', minfo.name).replace('歌手', minfo.singer))
   }
 
+  const handleDislikeMusic = async(index) => {
+    const minfo = list.value[index]
+    await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
+    if (!playMusicInfo.isTempPlay && hasDislike(playMusicInfo.musicInfo)) {
+      playNext(true)
+    }
+  }
+
   const handleRemoveMusic = async(index, single) => {
     if (selectedList.value.length && !single) {
       const confirm = await (selectedList.value.length > 1
@@ -55,6 +66,7 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
     handleSearch,
     handleOpenMusicDetail,
     handleCopyName,
+    handleDislikeMusic,
     handleRemoveMusic,
   }
 }

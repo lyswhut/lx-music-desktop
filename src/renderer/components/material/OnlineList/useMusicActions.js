@@ -2,6 +2,9 @@ import { useRouter } from '@common/utils/vueRouter'
 import musicSdk from '@renderer/utils/musicSdk'
 import { openUrl } from '@common/utils/electron'
 import { toOldMusicInfo } from '@renderer/utils'
+import { addDislikeInfo, hasDislike } from '@renderer/core/dislikeList'
+import { playNext } from '@renderer/core/player'
+import { playMusicInfo } from '@renderer/store/player/state'
 
 
 export default ({ props }) => {
@@ -24,8 +27,18 @@ export default ({ props }) => {
     openUrl(url)
   }
 
+  const handleDislikeMusic = async(index) => {
+    const minfo = props.list[index]
+    await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
+    if (!playMusicInfo.isTempPlay && hasDislike(playMusicInfo.musicInfo)) {
+      playNext(true)
+    }
+  }
+
+
   return {
     handleSearch,
     handleOpenMusicDetail,
+    handleDislikeMusic,
   }
 }

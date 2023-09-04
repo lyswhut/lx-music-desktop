@@ -2,7 +2,7 @@ import Database from 'better-sqlite3'
 import path from 'path'
 import tables from './tables'
 import verifyDB from './verifyDB'
-// import migrateData from './migrate'
+import migrateData from './migrate'
 
 let db: Database.Database
 
@@ -37,7 +37,7 @@ export const init = (lxDataPath: string): boolean | null => {
     dbFileExists = false
   }
 
-  // if (dbFileExists) migrateData(db)
+  if (dbFileExists) migrateData(db)
 
   // https://www.sqlite.org/pragma.html#pragma_optimize
   if (dbFileExists) db.exec('PRAGMA optimize;')

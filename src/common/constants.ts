@@ -1,5 +1,9 @@
 export const URL_SCHEME_RXP = /^lxmusic:\/\//
 
+export const SPLIT_CHAR = {
+  DISLIKE_NAME: '@',
+  DISLIKE_NAME_ALIAS: '#',
+} as const
 
 export const STORE_NAMES = {
   APP_SETTINGS: 'config_v2',

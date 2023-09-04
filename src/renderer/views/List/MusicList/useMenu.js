@@ -1,6 +1,7 @@
 import { computed, ref, shallowReactive, reactive, nextTick } from '@common/utils/vueTools'
 import musicSdk from '@renderer/utils/musicSdk'
 import { useI18n } from '@renderer/plugins/i18n'
+import { hasDislike } from '@renderer/core/dislikeList'
 
 export default ({
   assertApiSupport,
@@ -15,6 +16,7 @@ export default ({
   handleShowSortModal,
   handleOpenMusicDetail,
   handleCopyName,
+  handleDislikeMusic,
   handleRemoveMusic,
 }) => {
   const itemMenuControl = reactive({
@@ -26,6 +28,7 @@ export default ({
     sort: true,
     download: true,
     search: true,
+    dislike: true,
     remove: true,
     sourceDetail: true,
   })
@@ -81,6 +84,11 @@ export default ({
         disabled: !itemMenuControl.search,
       },
       {
+        name: t('list__dislike'),
+        action: 'dislike',
+        disabled: !itemMenuControl.dislike,
+      },
+      {
         name: t('list__remove'),
         action: 'remove',
         disabled: !itemMenuControl.remove,
@@ -93,6 +101,8 @@ export default ({
     // itemMenuControl.play =
     //   itemMenuControl.playLater =
     itemMenuControl.download = assertApiSupport(musicInfo.source) && musicInfo.source != 'local'
+
+    itemMenuControl.dislike = !hasDislike(musicInfo)
 
     menuLocation.x = event.pageX
     menuLocation.y = event.pageY
@@ -137,6 +147,9 @@ export default ({
         break
       case 'search':
         handleSearch(index)
+        break
+      case 'dislike':
+        handleDislikeMusic(index)
         break
       case 'remove':
         handleRemoveMusic(index)

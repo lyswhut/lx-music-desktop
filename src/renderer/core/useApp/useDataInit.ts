@@ -9,6 +9,7 @@ import { play, playList } from '@renderer/core/player'
 import { onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { playMusicInfo } from '@renderer/store/player/state'
+import { initDislikeInfo } from '@renderer/core/dislikeList'
 
 const initPrevPlayInfo = async() => {
   const info = await getPlayInfo()
@@ -48,6 +49,7 @@ export default () => {
       window.app_event.myListUpdate(ids)
     })
     window.lxData.userLists = await getUserLists() // 获取用户列表
+    await initDislikeInfo() // 获取不喜欢列表
     await initPrevPlayInfo().catch(err => {
       log.error(err)
     }) // 初始化上次的歌曲播放信息

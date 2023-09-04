@@ -205,5 +205,12 @@ tables.set('download_list', `
     PRIMARY KEY("id")
   );
 `)
+tables.set('dislike_list', `
+  CREATE TABLE "dislike_list" (
+    "type" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "meta" TEXT
+  );
+`)
 
 export default tables

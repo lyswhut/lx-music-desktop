@@ -60,6 +60,10 @@ export default {
       type: String,
       default: 'auto',
     },
+    height: {
+      type: String,
+      default: 'auto',
+    },
   },
   emits: ['after-enter', 'after-leave', 'close'],
   data() {
@@ -147,6 +151,7 @@ export default {
         maxWidth: this.maxWidth,
         minWidth: this.minWidth,
         width: this.width,
+        height: this.height,
         maxHeight: this.maxHeight,
       }
     },

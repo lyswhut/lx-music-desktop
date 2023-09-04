@@ -126,6 +126,10 @@ const modules = {
     clear_music_url: 'clear_music_url',
     get_music_url_count: 'get_music_url_count',
 
+    get_dislike_music_infos: 'get_dislike_music_infos',
+    add_dislike_music_infos: 'add_dislike_music_infos',
+    overwrite_dislike_music_infos: 'overwrite_dislike_music_infos',
+
     sync_action: 'sync_action',
     sync_get_server_devices: 'sync_get_server_devices',
     sync_remove_server_device: 'sync_remove_server_device',

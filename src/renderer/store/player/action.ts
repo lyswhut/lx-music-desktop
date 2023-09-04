@@ -73,7 +73,7 @@ export const setPlayListId = (listId: string | null) => {
   playInfo.playerListId = listId
 }
 
-export const getList = (listId: string | null): LX.Music.MusicInfo[] | LX.Download.ListItem[] => {
+export const getList = (listId: string | null): Array<LX.Music.MusicInfo | LX.Download.ListItem> => {
   return listId == LIST_IDS.DOWNLOAD ? downloadList : getListMusicsFromCache(listId)
 }
 

@@ -1,6 +1,7 @@
 import { computed, ref, reactive, nextTick } from '@common/utils/vueTools'
 import musicSdk from '@renderer/utils/musicSdk'
 import { useI18n } from '@renderer/plugins/i18n'
+import { hasDislike } from '@renderer/core/dislikeList'
 
 export default ({
   props,
@@ -13,6 +14,7 @@ export default ({
   handleSearch,
   handleShowMusicAddModal,
   handleOpenMusicDetail,
+  handleDislikeMusic,
 }) => {
   const itemMenuControl = reactive({
     play: true,
@@ -21,6 +23,7 @@ export default ({
     download: true,
     search: true,
     sourceDetail: true,
+    dislike: true,
   })
   const t = useI18n()
   const menuLocation = reactive({ x: 0, y: 0 })
@@ -58,6 +61,11 @@ export default ({
         action: 'sourceDetail',
         disabled: !itemMenuControl.sourceDetail,
       },
+      {
+        name: t('list__dislike'),
+        action: 'dislike',
+        disabled: !itemMenuControl.dislike,
+      },
     ]
   })
 
@@ -66,6 +74,8 @@ export default ({
     // this.listMenu.itemMenuControl.play =
     //   this.listMenu.itemMenuControl.playLater =
     itemMenuControl.download = assertApiSupport(musicInfo.source)
+
+    itemMenuControl.dislike = !hasDislike(musicInfo)
 
     if (props.checkApiSource) {
       itemMenuControl.playLater =
@@ -110,6 +120,9 @@ export default ({
         break
       case 'sourceDetail':
         handleOpenMusicDetail(index)
+      case 'dislike':
+        handleDislikeMusic(index)
+        break
     }
   }
 

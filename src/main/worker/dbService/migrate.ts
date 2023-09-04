@@ -1,24 +1,36 @@
 import type Database from 'better-sqlite3'
 
+// const migrateV1 = (db: Database.Database) => {
+//   const sql = `
+//     DROP TABLE "main"."download_list";
+
+//     CREATE TABLE "download_list" (
+//       "id" TEXT NOT NULL,
+//       "isComplate" INTEGER NOT NULL,
+//       "status" TEXT NOT NULL,
+//       "statusText" TEXT NOT NULL,
+//       "progress_downloaded" INTEGER NOT NULL,
+//       "progress_total" INTEGER NOT NULL,
+//       "url" TEXT,
+//       "quality" TEXT NOT NULL,
+//       "ext" TEXT NOT NULL,
+//       "fileName" TEXT NOT NULL,
+//       "filePath" TEXT NOT NULL,
+//       "musicInfo" TEXT NOT NULL,
+//       "position" INTEGER NOT NULL,
+//       PRIMARY KEY("id")
+//     );
+//   `
+//   db.exec(sql)
+//   db.prepare('UPDATE "main"."db_info" SET "field_value"=@value WHERE "field_name"=@name').run({ name: 'version', value: '2' })
+// }
+
 const migrateV1 = (db: Database.Database) => {
   const sql = `
-    DROP TABLE "main"."download_list";
-
-    CREATE TABLE "download_list" (
-      "id" TEXT NOT NULL,
-      "isComplate" INTEGER NOT NULL,
-      "status" TEXT NOT NULL,
-      "statusText" TEXT NOT NULL,
-      "progress_downloaded" INTEGER NOT NULL,
-      "progress_total" INTEGER NOT NULL,
-      "url" TEXT,
-      "quality" TEXT NOT NULL,
-      "ext" TEXT NOT NULL,
-      "fileName" TEXT NOT NULL,
-      "filePath" TEXT NOT NULL,
-      "musicInfo" TEXT NOT NULL,
-      "position" INTEGER NOT NULL,
-      PRIMARY KEY("id")
+    CREATE TABLE "dislike_list" (
+      "type" TEXT NOT NULL,
+      "content" TEXT NOT NULL,
+      "meta" TEXT
     );
   `
   db.exec(sql)
