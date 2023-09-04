@@ -316,6 +316,12 @@ const checkListLatest = async(socket: LX.Sync.Server.Socket) => {
   if (latest && userCurrentListInfoKey != currentListInfoKey) await userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, currentListInfoKey)
   return latest
 }
+const selectData = <T>(snapshot: T | null, local: T, remote: T): T => {
+  return snapshot == local
+    ? remote
+    // ? (snapshot == remote ? snapshot as T : remote)
+    : local
+}
 const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, snapshot: LX.Sync.List.ListData) => {
   if (await checkListLatest(socket)) return
 
@@ -348,7 +354,15 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
     const remoteList = remoteUserListData.get(list.id)
     let newList: LX.List.UserListInfoFull
     if (remoteList) {
-      newList = { ...list, list: mergeListDataFromSnapshot(list.list, remoteList.list, snapshotUserListData.get(list.id)?.list ?? [], addMusicLocationType) }
+      const snapshotList = snapshotUserListData.get(list.id) ?? { name: null, source: null, sourceListId: null, list: [] }
+      newList = {
+        id: list.id,
+        locationUpdateTime: list.locationUpdateTime,
+        name: selectData(snapshotList.name, list.name, remoteList.name),
+        source: selectData(snapshotList.source, list.source, remoteList.source),
+        sourceListId: selectData(snapshotList.sourceListId, list.sourceListId, remoteList.sourceListId),
+        list: mergeListDataFromSnapshot(list.list, remoteList.list, snapshotList.list, addMusicLocationType),
+      }
     } else {
       newList = { ...list }
     }
