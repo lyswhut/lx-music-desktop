@@ -105,9 +105,7 @@ export default () => {
     if (!playMusicInfo.musicInfo) return
     const minfo = 'progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo : playMusicInfo.musicInfo
     await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
-    if (!playMusicInfo.isTempPlay) {
-      playNext(true)
-    }
+    playNext(true)
   }
 
   watch(() => appSetting['player.togglePlayMethod'], newValue => {

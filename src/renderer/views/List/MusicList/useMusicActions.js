@@ -40,7 +40,7 @@ export default ({ props, list, selectedList, removeAllSelect }) => {
   const handleDislikeMusic = async(index) => {
     const minfo = list.value[index]
     await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
-    if (!playMusicInfo.isTempPlay && hasDislike(playMusicInfo.musicInfo)) {
+    if (hasDislike(playMusicInfo.musicInfo)) {
       playNext(true)
     }
   }

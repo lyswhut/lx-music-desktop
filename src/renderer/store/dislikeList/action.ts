@@ -45,7 +45,7 @@ const initNameSet = () => {
       list.push(`${SPLIT_CHAR.DISLIKE_NAME}${singer}`)
     }
   }
-  dislikeInfo.rules = list.join('\n') + '\n'
+  dislikeInfo.rules = Array.from(new Set(list)).join('\n') + '\n'
 }
 
 export const addDislikeInfo = (infos: LX.Dislike.DislikeMusicInfo[]) => {
