@@ -169,7 +169,6 @@ export default (isComputeHeight) => {
 
   let delayScrollTimeout
   const scrollLine = (line, oldLine) => {
-    console.log('scrollLine', line, oldLine)
     setImmediate(() => {
       prevActiveLine = line
     })
