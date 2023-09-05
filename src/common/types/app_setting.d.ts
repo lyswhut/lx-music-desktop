@@ -259,6 +259,11 @@ declare global {
       'player.autoSkipOnError': boolean
 
       /**
+       * 点击相同列表内的歌曲切歌时是否清空已播放列表（随机模式下列表内所有歌曲会重新参与随机）
+       */
+      'player.isAutoCleanPlayedList': boolean
+
+      /**
        * 播放详情页-是否缩放当前播放的歌词行
        */
       'playDetail.isZoomActiveLrc': boolean
