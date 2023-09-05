@@ -41,7 +41,7 @@ export const overwirteDislikeInfo = async(rules: string) => {
 // }
 
 
-export const hasDislike = (info: LX.Music.MusicInfo | null) => {
+export const hasDislike = (info: LX.Music.MusicInfo | LX.Download.ListItem | null) => {
   if (!info) return false
   return action.hasDislike(info)
 }
