@@ -70,16 +70,6 @@ export default () => {
     return global.lx.worker.dbService.musicInfoOtherSourceCount()
   })
 
-  // =========================不喜欢的歌曲=========================
-  mainHandle<LX.Dislike.DislikeInfo>(WIN_MAIN_RENDERER_EVENT_NAME.get_dislike_music_infos, async() => {
-    return global.lx.worker.dbService.getDislikeListInfo()
-  })
-  mainHandle<LX.Dislike.DislikeMusicInfo[]>(WIN_MAIN_RENDERER_EVENT_NAME.add_dislike_music_infos, async({ params: infos }) => {
-    await global.lx.worker.dbService.dislikeInfoAdd(infos)
-  })
-  mainHandle<string>(WIN_MAIN_RENDERER_EVENT_NAME.overwrite_dislike_music_infos, async({ params: rules }) => {
-    await global.lx.worker.dbService.dislikeInfoOverwrite(rules)
-  })
   // mainHandle<string[]>(WIN_MAIN_RENDERER_EVENT_NAME.remove_dislike_music_infos, async({ params: ids }) => {
   //   await global.lx.worker.dbService.dislikeInfoRemove(ids)
   // })

@@ -1,25 +1,25 @@
 import { SYNC_CLOSE_CODE } from '@common/constants_sync'
-import { registerListActionEvent } from '../../../../listEvent'
+import { registerDislikeActionEvent } from '../../../../dislikeEvent'
 import { getUserSpace } from '../../../user'
 
 // let socket: LX.Sync.Server.Socket | null
 let unregisterLocalListAction: (() => void) | null
 
 
-const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.List.ActionList) => {
+const sendListAction = async(wss: LX.Sync.Server.SocketServer, action: LX.Sync.Dislike.ActionList) => {
   // console.log('sendListAction', action.action)
   const userSpace = getUserSpace()
   let key = ''
   for (const client of wss.clients) {
-    if (!client.moduleReadys?.list) continue
+    if (!client.moduleReadys?.dislike) continue
     // eslint-disable-next-line require-atomic-updates
-    if (!key) key = await userSpace.listManage.createSnapshot()
-    void client.remoteQueueList.onListSyncAction(action).then(async() => {
-      return userSpace.listManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
+    if (!key) key = await userSpace.dislikeManage.createSnapshot()
+    void client.remoteQueueDislike.onDislikeSyncAction(action).then(async() => {
+      return userSpace.dislikeManage.updateDeviceSnapshotKey(client.keyInfo.clientId, key)
     }).catch(err => {
       // TODO send status
       client.close(SYNC_CLOSE_CODE.failed)
-      // client.moduleReadys.list = false
+      // client.moduleReadys.dislike = false
       console.log(err.message)
     })
   }
@@ -32,7 +32,7 @@ export const registerEvent = (wss: LX.Sync.Server.SocketServer) => {
   //   unregisterLocalListAction = null
   // })
   unregisterEvent()
-  unregisterLocalListAction = registerListActionEvent((action) => {
+  unregisterLocalListAction = registerDislikeActionEvent((action) => {
     void sendListAction(wss, action)
   })
 }

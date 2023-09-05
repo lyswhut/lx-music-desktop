@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 // import { Event as WinMainEvent } from '@main/modules/winMain/event'
 // import { Event as WinLyricEvent } from '@main/modules/winLyric/event'
-import { type AppType, type ListType } from '@main/event'
+import { type DislikeType, type AppType, type ListType } from '@main/event'
 import { type DBSeriveTypes } from '@main/worker/utils'
 
 interface Lx {
@@ -25,6 +25,7 @@ interface Lx {
   // mainWindowClosed: boolean
   event_app: AppType
   event_list: ListType
+  event_dislike: DislikeType
   worker: {
     dbService: DBSeriveTypes
   }

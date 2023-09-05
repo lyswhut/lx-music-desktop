@@ -23,13 +23,15 @@ declare namespace LX {
       singer: string
     }
 
+    type DislikeRules = string
+
     interface DislikeInfo {
       // musicIds: Set<string>
       names: Set<string>
       musicNames: Set<string>
       singerNames: Set<string>
       // list: LX.Dislike.ListItem[]
-      rules: string
+      rules: DislikeRules
     }
   }
 }

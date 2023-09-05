@@ -40,15 +40,6 @@ export const getOtherSourceCount = async() => {
   return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_other_source_count)
 }
 
-export const getDislikeListInfo = async(): Promise<LX.Dislike.DislikeInfo> => {
-  return rendererInvoke<LX.Dislike.DislikeInfo>(WIN_MAIN_RENDERER_EVENT_NAME.get_dislike_music_infos)
-}
-export const addDislikeInfo = async(dislikeInfo: LX.Dislike.DislikeMusicInfo[]) => {
-  return rendererInvoke<LX.Dislike.DislikeMusicInfo[]>(WIN_MAIN_RENDERER_EVENT_NAME.add_dislike_music_infos, dislikeInfo)
-}
-export const overwirteDislikeInfo = async(dislikeInfo: string) => {
-  return rendererInvoke<string>(WIN_MAIN_RENDERER_EVENT_NAME.overwrite_dislike_music_infos, dislikeInfo)
-}
 // export const updateDislikeInfo = async(dislikeInfo: LX.Dislike.ListItem[]) => {
 //   await rendererInvoke<LX.Dislike.ListItem[]>(WIN_MAIN_RENDERER_EVENT_NAME.update_dislike_music_infos, dislikeInfo)
 // }

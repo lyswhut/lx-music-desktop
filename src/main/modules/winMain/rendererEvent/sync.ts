@@ -13,7 +13,8 @@ import {
 } from '@main/modules/sync'
 import { sendEvent } from '../main'
 
-let selectModeListenr: ((mode: LX.Sync.List.SyncMode | null) => void) | null = null
+
+let selectModeListenr: ((mode: LX.Sync.ModeTypes[keyof LX.Sync.ModeTypes] | null) => void) | null = null
 
 export default () => {
   mainHandle<LX.Sync.SyncServiceActions, any>(WIN_MAIN_RENDERER_EVENT_NAME.sync_action, async({ params: data }) => {
@@ -29,7 +30,7 @@ export default () => {
       case 'generate_code': return generateCode()
       case 'select_mode':
         if (selectModeListenr) {
-          selectModeListenr(data.data)
+          selectModeListenr(data.data.mode)
           selectModeListenr = null
         }
         break
@@ -62,9 +63,9 @@ export const sendServerStatus = (status: LX.Sync.ServerStatus) => {
     data: status,
   })
 }
-export const sendSelectMode = (deviceName: string, listener: (mode: LX.Sync.List.SyncMode | null) => void) => {
-  selectModeListenr = listener
-  sendSyncAction({ action: 'select_mode', data: deviceName })
+export const sendSelectMode = <T extends keyof LX.Sync.ModeTypes>(deviceName: string, type: T, listener: (mode: LX.Sync.ModeTypes[T] | null) => void) => {
+  selectModeListenr = listener as typeof selectModeListenr
+  sendSyncAction({ action: 'select_mode', data: { deviceName, type } })
 }
 export const removeSelectModeListener = () => {
   if (selectModeListenr) selectModeListenr(null)

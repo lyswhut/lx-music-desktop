@@ -3,7 +3,7 @@ material-modal(:show="modelValue" teleport="#view" height="80%" width="80%" @clo
   main(:class="$style.main")
     h2 {{ $t('setting__dislike_list_title') }}
     div(:class="$style.content")
-      textarea(v-model="rules" :class="$style.textarea")
+      textarea(v-model="rules" :class="$style.textarea" :placeholder="$t('setting__dislike_list_input_tip')")
   div(:class="$style.footer")
     div(:class="$style.tips") {{ $t('setting__dislike_list_tips') }}
     base-btn(:class="$style.btn" @click="handleSave") {{ $t('setting__dislike_list_save_btn') }}
@@ -21,21 +21,20 @@ export default {
       default: false,
     },
   },
-  emits: ['update:modelValue', 'onRuleUpdate'],
+  emits: ['update:modelValue'],
   setup(props, { emit }) {
     const rules = ref('')
 
     const handleSave = async() => {
       if (rules.value.trim() != dislikeInfo.rules.trim()) {
         await overwirteDislikeInfo(rules.value)
-        emit('onRuleUpdate')
       }
       emit('update:modelValue', false)
     }
 
     watch(() => props.modelValue, (visible) => {
       if (!visible) return
-      rules.value = dislikeInfo.rules
+      rules.value = dislikeInfo.rules.length ? dislikeInfo.rules + '\n' : dislikeInfo.rules
     })
 
     return {
@@ -84,6 +83,7 @@ export default {
   border: none;
   outline: none;
   border-radius: 4px;
+  padding: 5px;
   background-color: var(--color-primary-light-200-alpha-900);
   box-sizing: border-box;
   font-family: inherit;

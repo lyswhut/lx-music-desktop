@@ -1,9 +1,9 @@
 import { type UserDataManage } from '../../user'
 import { SnapshotDataManage } from './snapshotDataManage'
 import { toMD5 } from '../../utils'
-import { getLocalListData } from '@main/modules/sync/listEvent'
+import { getLocalDislikeData } from '@main/modules/sync/dislikeEvent'
 
-export class ListManage {
+export class DislikeManage {
   snapshotDataManage: SnapshotDataManage
 
   constructor(userDataManage: UserDataManage) {
@@ -11,8 +11,8 @@ export class ListManage {
   }
 
   createSnapshot = async() => {
-    const listData = JSON.stringify(await this.getListData())
-    const md5 = toMD5(listData)
+    const listData = await this.getDislikeRules()
+    const md5 = toMD5(listData.trim())
     const snapshotInfo = await this.snapshotDataManage.getSnapshotInfo()
     console.log(md5, snapshotInfo.latest)
     if (snapshotInfo.latest == md5) return md5
@@ -31,7 +31,7 @@ export class ListManage {
     if (snapshotInfo.latest) {
       return snapshotInfo.latest
     }
-    snapshotInfo.latest = toMD5(JSON.stringify(await this.getListData()))
+    snapshotInfo.latest = toMD5((await this.getDislikeRules()).trim())
     this.snapshotDataManage.saveSnapshotInfo(snapshotInfo)
     return snapshotInfo.latest
   }
@@ -48,8 +48,8 @@ export class ListManage {
     this.snapshotDataManage.removeSnapshotInfo(clientId)
   }
 
-  getListData = async(): Promise<LX.Sync.List.ListData> => {
-    return getLocalListData()
+  getDislikeRules = async() => {
+    return getLocalDislikeData()
   }
 }
 

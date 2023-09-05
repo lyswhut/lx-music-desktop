@@ -36,6 +36,12 @@ const modules = {
     list_music_check_exist: 'list_music_check_exist',
     list_music_get_list_ids: 'list_music_get_list_ids',
   },
+  dislike: {
+    get_dislike_music_infos: 'get_dislike_music_infos',
+    add_dislike_music_infos: 'add_dislike_music_infos',
+    overwrite_dislike_music_infos: 'overwrite_dislike_music_infos',
+    clear_dislike_music_infos: 'clear_dislike_music_infos',
+  },
   winMain: {
     focus: 'focus',
     close: 'close',
@@ -126,10 +132,6 @@ const modules = {
     clear_music_url: 'clear_music_url',
     get_music_url_count: 'get_music_url_count',
 
-    get_dislike_music_infos: 'get_dislike_music_infos',
-    add_dislike_music_infos: 'add_dislike_music_infos',
-    overwrite_dislike_music_infos: 'overwrite_dislike_music_infos',
-
     sync_action: 'sync_action',
     sync_get_server_devices: 'sync_get_server_devices',
     sync_remove_server_device: 'sync_remove_server_device',
@@ -186,6 +188,7 @@ for (const moduleName of Object.keys(modules) as Array<keyof typeof modules>) {
 
 export const CMMON_EVENT_NAME = modules.common
 export const PLAYER_EVENT_NAME = modules.player
+export const DISLIKE_EVENT_NAME = modules.dislike
 export const WIN_MAIN_RENDERER_EVENT_NAME = modules.winMain
 export const WIN_LYRIC_RENDERER_EVENT_NAME = modules.winLyric
 export const HOTKEY_RENDERER_EVENT_NAME = modules.hotKey

@@ -51,7 +51,7 @@ const initDislikeList = () => {
     }
   }
 
-  dislikeInfo.rules = Array.from(new Set(list)).join('\n') + '\n'
+  dislikeInfo.rules = Array.from(new Set(list)).join('\n')
 
   return dislikeInfo
 }

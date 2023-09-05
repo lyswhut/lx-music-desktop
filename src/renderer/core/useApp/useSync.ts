@@ -9,7 +9,8 @@ export default () => {
     // console.log(event)
     switch (event.action) {
       case 'select_mode':
-        sync.deviceName = event.data
+        sync.deviceName = event.data.deviceName
+        sync.type = event.data.type
         sync.isShowSyncMode = true
         break
       case 'close_select_mode':

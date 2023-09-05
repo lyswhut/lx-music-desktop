@@ -1,4 +1,4 @@
-import { markRaw } from '@common/utils/vueTools'
+import { markRaw, ref } from '@common/utils/vueTools'
 
 // import { deduplicationList } from '@common/utils/renderer'
 
@@ -9,3 +9,5 @@ export const dislikeInfo: LX.Dislike.DislikeInfo = markRaw({
   singerNames: markRaw(new Set()),
   rules: '',
 })
+
+export const dislikeRuleCount = ref(0)

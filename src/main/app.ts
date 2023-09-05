@@ -6,7 +6,7 @@ import { getTheme, initHotKey, initSetting, parseEnvParams } from './utils'
 import { navigationUrlWhiteList } from '@common/config'
 import defaultSetting from '@common/defaultSetting'
 import { closeWindow, isExistWindow as isExistMainWindow, showWindow as showMainWindow } from './modules/winMain'
-import { createAppEvent, createListEvent } from '@main/event'
+import { createAppEvent, createDislikeEvent, createListEvent } from '@main/event'
 import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
 import { migrateDBData } from './utils/migrate'
@@ -212,6 +212,7 @@ export const initAppSetting = async() => {
       // mainWindowClosed: true,
       event_app: createAppEvent(),
       event_list: createListEvent(),
+      event_dislike: createDislikeEvent(),
       appSetting: defaultSetting,
       worker: createWorkers(),
       hotKey: {

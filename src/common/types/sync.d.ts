@@ -19,12 +19,20 @@ declare namespace LX {
     }
     type SyncAction<A, D = undefined> = D extends undefined ? SyncActionBase<A> : SyncActionData<A, D>
 
-    type SyncMainWindowActions = SyncAction<'select_mode', string>
+
+    interface ModeTypes {
+      list: LX.Sync.List.SyncMode
+      dislike: LX.Sync.Dislike.SyncMode
+    }
+
+    type ModeType = { [K in keyof ModeTypes]: { type: K, mode: ModeTypes[K] } }[keyof ModeTypes]
+
+    type SyncMainWindowActions = SyncAction<'select_mode', { deviceName: string, type: keyof ModeTypes }>
     | SyncAction<'close_select_mode'>
     | SyncAction<'client_status', ClientStatus>
     | SyncAction<'server_status', ServerStatus>
 
-    type SyncServiceActions = SyncAction<'select_mode', LX.Sync.List.SyncMode>
+    type SyncServiceActions = SyncAction<'select_mode', ModeType>
     | SyncAction<'get_server_status'>
     | SyncAction<'get_client_status'>
     | SyncAction<'generate_code'>
@@ -64,6 +72,7 @@ declare namespace LX {
     type ServerType = 'desktop-app' | 'server'
     interface EnabledFeatures {
       list: boolean
+      dislike: boolean
     }
     type SupportedFeatures = Partial<{ [k in keyof EnabledFeatures]: number }>
   }

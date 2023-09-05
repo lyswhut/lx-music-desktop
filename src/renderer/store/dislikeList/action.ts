@@ -1,7 +1,7 @@
 import { markRaw } from '@common/utils/vueTools'
 
 
-import { dislikeInfo } from './state'
+import { dislikeInfo, dislikeRuleCount } from './state'
 import { SPLIT_CHAR } from '@common/constants'
 
 
@@ -19,6 +19,7 @@ export const initDislikeInfo = ({ musicNames, rules, names, singerNames }: LX.Di
   dislikeInfo.singerNames = markRaw(singerNames)
   dislikeInfo.musicNames = markRaw(musicNames)
   dislikeInfo.rules = rules
+  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size
 }
 
 const initNameSet = () => {
@@ -46,7 +47,8 @@ const initNameSet = () => {
       list.push(`${SPLIT_CHAR.DISLIKE_NAME}${singer}`)
     }
   }
-  dislikeInfo.rules = Array.from(new Set(list)).join('\n') + '\n'
+  dislikeInfo.rules = Array.from(new Set(list)).join('\n')
+  dislikeRuleCount.value = dislikeInfo.musicNames.size + dislikeInfo.singerNames.size + dislikeInfo.names.size
 }
 
 export const addDislikeInfo = (infos: LX.Dislike.DislikeMusicInfo[]) => {
@@ -57,6 +59,12 @@ export const addDislikeInfo = (infos: LX.Dislike.DislikeMusicInfo[]) => {
 
 export const overwirteDislikeInfo = (rules: string) => {
   dislikeInfo.rules = rules
+  initNameSet()
+  return dislikeInfo.rules
+}
+
+export const clearDislikeInfo = () => {
+  dislikeInfo.rules = ''
   initNameSet()
   return dislikeInfo.rules
 }

@@ -1,7 +1,7 @@
 // import { SYNC_CLOSE_CODE } from '../../../../constants'
 import { removeSelectModeListener, sendCloseSelectMode, sendSelectMode } from '@main/modules/winMain'
 import { getUserSpace, getUserConfig } from '../../../user'
-import { getLocalListData, setLocalListData } from '@main/modules/sync/utils'
+import { getLocalListData, setLocalListData } from '@main/modules/sync/listEvent'
 import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 // import { LIST_IDS } from '@common/constants'
 
@@ -38,7 +38,7 @@ const getSyncMode = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.List.S
     reject(err)
   }
   let removeEventClose = socket.onClose(handleDisconnect)
-  sendSelectMode(socket.keyInfo.deviceName, (mode) => {
+  sendSelectMode(socket.keyInfo.deviceName, 'list', (mode) => {
     if (mode == null) {
       reject(new Error('cancel'))
       return

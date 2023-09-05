@@ -12,11 +12,13 @@ export const getEnabledFeatures = async(socket: LX.Sync.Client.Socket, serverTyp
     case 'server':
       return {
         list: featureVersion.list == supportedFeatures.list,
+        dislike: featureVersion.dislike == supportedFeatures.dislike,
       }
     case 'desktop-app':
     default:
       return {
         list: featureVersion.list == supportedFeatures.list,
+        dislike: featureVersion.dislike == supportedFeatures.dislike,
       }
   }
 }

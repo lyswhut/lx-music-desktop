@@ -31,6 +31,7 @@ export const sync: {
   isShowSyncMode: boolean
   isShowAuthCodeModal: boolean
   deviceName: string
+  type: keyof LX.Sync.ModeTypes
   server: {
     port: string
     status: {
@@ -55,6 +56,7 @@ export const sync: {
   isShowSyncMode: false,
   isShowAuthCodeModal: false,
   deviceName: '',
+  type: 'list',
   server: {
     port: '',
     status: {

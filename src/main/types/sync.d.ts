@@ -15,11 +15,13 @@ declare global {
           }
           moduleReadys: {
             list: boolean
+            dislike: boolean
           }
 
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
           remote: LX.Sync.ServerSyncActions
           remoteQueueList: LX.Sync.ServerSyncListActions
+          remoteQueueDislike: LX.Sync.ServerSyncDislikeActions
         }
 
         interface UrlInfo {
@@ -38,6 +40,7 @@ declare global {
           feature: LX.Sync.EnabledFeatures
           moduleReadys: {
             list: boolean
+            dislike: boolean
           }
 
           onClose: (handler: (err: Error) => (void | Promise<void>)) => () => void
@@ -45,6 +48,7 @@ declare global {
 
           remote: LX.Sync.ClientSyncActions
           remoteQueueList: LX.Sync.ClientSyncListActions
+          remoteQueueDislike: LX.Sync.ClientSyncDislikeActions
         }
         type SocketServer = WS.Server<Socket>
       }
