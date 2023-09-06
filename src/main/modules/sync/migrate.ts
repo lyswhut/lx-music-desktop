@@ -1,6 +1,7 @@
 import { File } from '../../../common/constants_sync'
 import fs from 'node:fs'
 import path from 'node:path'
+import { exists } from './utils'
 
 interface ServerKeyInfo {
   clientId: string
@@ -12,8 +13,6 @@ interface ServerKeyInfo {
   isMobile: boolean
 }
 
-
-const exists = async(path: string) => fs.promises.stat(path).then(() => true).catch(() => false)
 
 // 迁移 v2 sync 数据
 export default async(dataPath: string) => {

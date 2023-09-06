@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto'
 import { throttle } from '@common/utils/common'
 import { filterFileName, toMD5 } from '../utils'
 import { File } from '@common/constants_sync'
+import { exists } from '../../utils'
 
 
 interface ServerInfo {
@@ -20,7 +21,6 @@ const saveServerInfoThrottle = throttle(() => {
   })
 })
 let serverInfo: ServerInfo
-const exists = async(path: string) => fs.promises.stat(path).then(() => true).catch(() => false)
 export const initServerInfo = async() => {
   if (serverInfo != null) return
   const serverInfoFilePath = path.join(global.lxDataPath, File.serverDataPath, File.serverInfoJSON)

@@ -398,7 +398,8 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
 const syncList = async(socket: LX.Sync.Server.Socket) => {
   // socket.data.snapshotFilePath = getSnapshotFilePath(socket.keyInfo)
   // console.log(socket.keyInfo)
-  if (!(socket.feature.list as LX.Sync.ListConfig).skipSnapshot) {
+  if (!socket.feature.list) throw new Error('list feature options not available')
+  if (!socket.feature.list.skipSnapshot) {
     const user = getUserSpace(socket.userInfo.name)
     const userCurrentListInfoKey = await user.listManage.getDeviceCurrentSnapshotKey(socket.keyInfo.clientId)
     if (userCurrentListInfoKey) {

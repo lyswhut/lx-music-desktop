@@ -1,5 +1,6 @@
 import { createCipheriv, createDecipheriv, publicEncrypt, privateDecrypt, constants } from 'node:crypto'
 import os, { networkInterfaces } from 'node:os'
+import fs from 'node:fs'
 import zlib from 'node:zlib'
 import cp from 'node:child_process'
 
@@ -88,3 +89,6 @@ export const rsaEncrypt = (buffer: Buffer, key: string): string => {
 export const rsaDecrypt = (buffer: Buffer, key: string): Buffer => {
   return privateDecrypt({ key, padding: constants.RSA_PKCS1_OAEP_PADDING }, buffer)
 }
+
+
+export const exists = async(path: string) => fs.promises.stat(path).then(() => true).catch(() => false)

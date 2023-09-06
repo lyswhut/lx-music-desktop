@@ -23,7 +23,7 @@ const getRemoteDataMD5 = async(socket: LX.Sync.Server.Socket): Promise<string> =
 }
 
 // const getLocalDislikeData  async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.Dislike.ListData> => {
-//   return getUserSpace(socket.userInfo.name).listManage.getListData()
+//   return getUserSpace(socket.userInfo.name).dislikeManage.getListData()
 // }
 const getSyncMode = async(socket: LX.Sync.Server.Socket): Promise<LX.Sync.Dislike.SyncMode> => new Promise((resolve, reject) => {
   const handleDisconnect = (err: Error) => {
@@ -54,7 +54,7 @@ const finishedSync = async(socket: LX.Sync.Server.Socket) => {
 const setLocalList = async(socket: LX.Sync.Server.Socket, listData: LX.Dislike.DislikeRules) => {
   await setLocalDislikeData(listData)
   const userSpace = getUserSpace(socket.userInfo.name)
-  return userSpace.listManage.createSnapshot()
+  return userSpace.dislikeManage.createSnapshot()
 }
 
 const overwriteRemoteListData = async(socket: LX.Sync.Server.Socket, listData: LX.Dislike.DislikeRules, key: string, excludeIds: string[] = []) => {
@@ -196,7 +196,8 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
 const syncDislike = async(socket: LX.Sync.Server.Socket) => {
   // socket.data.snapshotFilePath = getSnapshotFilePath(socket.keyInfo)
   // console.log(socket.keyInfo)
-  if (!(socket.feature.dislike as LX.Sync.DislikeConfig).skipSnapshot) {
+  if (!socket.feature.dislike) throw new Error('dislike feature options not available')
+  if (!socket.feature.dislike.skipSnapshot) {
     const user = getUserSpace(socket.userInfo.name)
     const userCurrentDislikeInfoKey = await user.dislikeManage.getDeviceCurrentSnapshotKey(socket.keyInfo.clientId)
     if (userCurrentDislikeInfoKey) {

@@ -189,12 +189,12 @@ export const connect = (urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.Client
     onError(error, path, groupName) {
       const name = groupName ?? ''
       log.error(`sync call ${name} ${path.join('.')} error:`, error)
-      if (groupName == null) return
-      client?.close(SYNC_CLOSE_CODE.failed)
-      sendSyncStatus({
-        status: false,
-        message: error.message,
-      })
+      // if (groupName == null) return
+      // client?.close(SYNC_CLOSE_CODE.failed)
+      // sendSyncStatus({
+      //   status: false,
+      //   message: error.message,
+      // })
     },
   })
 

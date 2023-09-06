@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { File } from '../../../../common/constants_sync'
+import { exists } from '../utils'
 
 
 let syncAuthKeys: Record<string, LX.Sync.ClientKeyInfo>
@@ -11,7 +12,6 @@ const saveSyncAuthKeys = async() => {
   return fs.promises.writeFile(syncAuthKeysFilePath, JSON.stringify(syncAuthKeys), 'utf8')
 }
 
-const exists = async(path: string) => fs.promises.stat(path).then(() => true).catch(() => false)
 export const initClientInfo = async() => {
   if (syncAuthKeys != null) return
   const syncAuthKeysFilePath = path.join(global.lxDataPath, File.clientDataPath, File.syncAuthKeysJSON)

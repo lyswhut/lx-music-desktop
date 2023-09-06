@@ -192,8 +192,8 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
         const name = groupName ?? ''
         const deviceName = socket.keyInfo?.deviceName ?? ''
         log.error(`sync call ${deviceName} ${name} ${path.join('.')} error:`, error)
-        if (groupName == null) return
-        socket.close(SYNC_CLOSE_CODE.failed)
+        // if (groupName == null) return
+        // socket.close(SYNC_CLOSE_CODE.failed)
       },
     })
     socket.remote = msg2call.remote
