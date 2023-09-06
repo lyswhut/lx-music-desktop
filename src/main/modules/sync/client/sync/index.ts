@@ -1,4 +1,4 @@
-import * as handler from './handler'
+import handler from './handler'
 import { callObj as _callObj } from '../modules'
 export { modules } from '../modules'
 

@@ -398,14 +398,16 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
 const syncList = async(socket: LX.Sync.Server.Socket) => {
   // socket.data.snapshotFilePath = getSnapshotFilePath(socket.keyInfo)
   // console.log(socket.keyInfo)
-  const user = getUserSpace(socket.userInfo.name)
-  const userCurrentListInfoKey = await user.listManage.getDeviceCurrentSnapshotKey(socket.keyInfo.clientId)
-  if (userCurrentListInfoKey) {
-    const listData = await user.listManage.snapshotDataManage.getSnapshot(userCurrentListInfoKey)
-    if (listData) {
-      console.log('handleMergeListDataFromSnapshot')
-      await handleMergeListDataFromSnapshot(socket, listData)
-      return
+  if (!(socket.feature.list as LX.Sync.ListConfig).skipSnapshot) {
+    const user = getUserSpace(socket.userInfo.name)
+    const userCurrentListInfoKey = await user.listManage.getDeviceCurrentSnapshotKey(socket.keyInfo.clientId)
+    if (userCurrentListInfoKey) {
+      const listData = await user.listManage.snapshotDataManage.getSnapshot(userCurrentListInfoKey)
+      if (listData) {
+        console.log('handleMergeListDataFromSnapshot')
+        await handleMergeListDataFromSnapshot(socket, listData)
+        return
+      }
     }
   }
   await handleSyncList(socket)

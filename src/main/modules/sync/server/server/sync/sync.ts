@@ -12,9 +12,8 @@ export const sync = async(socket: LX.Sync.Server.Socket) => {
   if (disconnected) throw new Error('disconnected')
   for (const moduleName of FeaturesList) {
     if (enabledFeatures[moduleName]) {
-      await modules[moduleName].sync(socket).then(() => {
-        socket.feature[moduleName] = true
-      }).catch(_ => _)
+      socket.feature[moduleName] = enabledFeatures[moduleName]
+      await modules[moduleName].sync(socket).catch(_ => _)
     }
     if (disconnected) throw new Error('disconnected')
   }

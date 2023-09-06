@@ -3,21 +3,19 @@
 import { FeaturesList } from '../../../../../../common/constants_sync'
 import { modules } from '../../modules'
 
+const handler: LX.Sync.ServerSyncHandlerActions<LX.Sync.Server.Socket> = {
+  async onFeatureChanged(socket, feature) {
+    // const userSpace = getUserSpace(socket.userInfo.name)
+    const beforeFeature = socket.feature
 
-export const onFeatureChanged = async(socket: LX.Sync.Server.Socket, feature: LX.Sync.EnabledFeatures) => {
-  // const userSpace = getUserSpace(socket.userInfo.name)
-  const beforeFeature = socket.feature
-
-  for (const name of FeaturesList) {
-    if (feature[name] == beforeFeature[name]) continue
-    if (feature[name]) {
-      await modules[name].sync(socket).then(() => {
-        beforeFeature[name] = true
-      }).catch(_ => _)
-    } else {
+    for (const name of FeaturesList) {
+      const newStatus = feature[name]
+      if (newStatus == null) continue
+      beforeFeature[name] = feature[name]
       socket.moduleReadys[name] = false
-      beforeFeature[name] = false
+      if (feature[name]) await modules[name].sync(socket).catch(_ => _)
     }
-  }
+  },
 }
 
+export default handler
