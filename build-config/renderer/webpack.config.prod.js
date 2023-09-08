@@ -19,6 +19,15 @@ module.exports = merge(baseConfig, {
   externals: [
     // ...Object.keys(dependencies || {}).filter(d => !whiteListedModules.includes(d)),
   ],
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+    ],
+  },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
