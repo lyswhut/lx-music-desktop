@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.4.0-beta.15",
+  "version": "2.4.0",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -205,7 +205,7 @@
   },
   "homepage": "https://github.com/lyswhut/lx-music-desktop#readme",
   "devDependencies": {
-    "@babel/core": "^7.22.15",
+    "@babel/core": "^7.22.17",
     "@babel/eslint-parser": "^7.22.15",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
@@ -219,13 +219,13 @@
     "@types/tunnel": "^0.0.3",
     "@types/ws": "8.5.4",
     "@volar/vue-language-plugin-pug": "^1.6.5",
-    "@vue/language-plugin-pug": "^1.8.8",
+    "@vue/language-plugin-pug": "^1.8.10",
     "babel-loader": "^9.1.3",
     "browserslist": "^4.21.10",
     "chalk": "^4.1.2",
     "changelog-parser": "^3.0.1",
     "copy-webpack-plugin": "^11.0.0",
-    "core-js": "^3.32.1",
+    "core-js": "^3.32.2",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
@@ -234,9 +234,9 @@
     "electron-builder": "^24.6.4",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.508",
+    "electron-to-chromium": "^1.4.513",
     "electron-updater": "^6.1.4",
-    "eslint": "^8.48.0",
+    "eslint": "^8.49.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-with-typescript": "^39.0.0",
     "eslint-formatter-friendly": "github:lyswhut/eslint-friendly-formatter#2170d1320e2fad13615a9dcf229669f0bb473a53",
@@ -295,7 +295,7 @@
     "utf-8-validate": "^6.0.3",
     "vue": "~3.2.47",
     "vue-router": "^4.2.4",
-    "ws": "^8.13.0"
+    "ws": "^8.14.1"
   },
   "overrides": {
     "got": "^11",
