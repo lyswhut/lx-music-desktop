@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3'
 import path from 'path'
-import tables from './tables'
+import tables, { DB_VERSION } from './tables'
 import verifyDB from './verifyDB'
 import migrateData from './migrate'
 
@@ -10,7 +10,7 @@ let db: Database.Database
 const initTables = (db: Database.Database) => {
   db.exec(`
     ${Array.from(tables.values()).join('\n')}
-    INSERT INTO "main"."db_info" ("field_name", "field_value") VALUES ('version', '1');
+    INSERT INTO "main"."db_info" ("field_name", "field_value") VALUES ('version', '${DB_VERSION}');
   `)
 }
 

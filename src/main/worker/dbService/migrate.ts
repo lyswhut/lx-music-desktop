@@ -1,4 +1,5 @@
 import type Database from 'better-sqlite3'
+import { DB_VERSION } from './tables'
 
 // const migrateV1 = (db: Database.Database) => {
 //   const sql = `
@@ -26,15 +27,19 @@ import type Database from 'better-sqlite3'
 // }
 
 const migrateV1 = (db: Database.Database) => {
-  const sql = `
-    CREATE TABLE "dislike_list" (
-      "type" TEXT NOT NULL,
-      "content" TEXT NOT NULL,
-      "meta" TEXT
-    );
-  `
-  db.exec(sql)
-  db.prepare('UPDATE "main"."db_info" SET "field_value"=@value WHERE "field_name"=@name').run({ name: 'version', value: '2' })
+  // 修复 v2.4.0 的默认数据库版本号不对的问题
+  const existsTable = db.prepare('SELECT name FROM "main".sqlite_master WHERE type=\'table\' AND name=\'dislike_list\';').get()
+  if (!existsTable) {
+    const sql = `
+      CREATE TABLE "dislike_list" (
+        "type" TEXT NOT NULL,
+        "content" TEXT NOT NULL,
+        "meta" TEXT
+      );
+    `
+    db.exec(sql)
+  }
+  db.prepare('UPDATE "main"."db_info" SET "field_value"=@value WHERE "field_name"=@name').run({ name: 'version', value: DB_VERSION })
 }
 
 export default (db: Database.Database) => {
