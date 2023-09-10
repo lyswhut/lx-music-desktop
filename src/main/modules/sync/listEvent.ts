@@ -1,5 +1,17 @@
 import { LIST_IDS } from '@common/constants'
 
+// 构建列表信息对象，用于统一字段位置顺序
+export const buildUserListInfoFull = ({ id, name, source, sourceListId, list, locationUpdateTime }: LX.List.UserListInfoFull) => {
+  return {
+    id,
+    name,
+    source,
+    sourceListId,
+    locationUpdateTime,
+    list,
+  }
+}
+
 export const getLocalListData = async(): Promise<LX.Sync.List.ListData> => {
   const lists: LX.Sync.List.ListData = {
     defaultList: await global.lx.worker.dbService.getListMusics(LIST_IDS.DEFAULT),
@@ -10,7 +22,7 @@ export const getLocalListData = async(): Promise<LX.Sync.List.ListData> => {
   const userListInfos = await global.lx.worker.dbService.getAllUserList()
   for await (const list of userListInfos) {
     lists.userList.push(await global.lx.worker.dbService.getListMusics(list.id)
-      .then(musics => ({ ...list, list: musics })))
+      .then(musics => buildUserListInfoFull({ ...list, list: musics })))
   }
 
   return lists

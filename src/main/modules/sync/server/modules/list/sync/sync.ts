@@ -1,7 +1,7 @@
 // import { SYNC_CLOSE_CODE } from '../../../../constants'
 import { removeSelectModeListener, sendCloseSelectMode, sendSelectMode } from '@main/modules/winMain'
 import { getUserSpace, getUserConfig } from '../../../user'
-import { getLocalListData, setLocalListData } from '@main/modules/sync/listEvent'
+import { buildUserListInfoFull, getLocalListData, setLocalListData } from '@main/modules/sync/listEvent'
 import { SYNC_CLOSE_CODE } from '@common/constants_sync'
 // import { LIST_IDS } from '@common/constants'
 
@@ -355,14 +355,14 @@ const handleMergeListDataFromSnapshot = async(socket: LX.Sync.Server.Socket, sna
     let newList: LX.List.UserListInfoFull
     if (remoteList) {
       const snapshotList = snapshotUserListData.get(list.id) ?? { name: null, source: null, sourceListId: null, list: [] }
-      newList = {
+      newList = buildUserListInfoFull({
         id: list.id,
-        locationUpdateTime: list.locationUpdateTime,
         name: selectData(snapshotList.name, list.name, remoteList.name),
         source: selectData(snapshotList.source, list.source, remoteList.source),
         sourceListId: selectData(snapshotList.sourceListId, list.sourceListId, remoteList.sourceListId),
+        locationUpdateTime: list.locationUpdateTime,
         list: mergeListDataFromSnapshot(list.list, remoteList.list, snapshotList.list, addMusicLocationType),
-      }
+      })
     } else {
       newList = { ...list }
     }
