@@ -49,10 +49,19 @@ export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.
   }
   if (getOtherSourcePromises.has(key)) return getOtherSourcePromises.get(key)
 
-  const promise = musicSdk.findMusic(searchMusicInfo).then((otherSource) => {
-    const sources: LX.Music.MusicInfoOnline[] = otherSource.map(toNewMusicInfo) as LX.Music.MusicInfoOnline[]
-    if (sources.length) void saveOtherSourceFromStore(musicInfo.id, sources)
-    return sources
+  const promise = new Promise<LX.Music.MusicInfoOnline[]>((resolve, reject) => {
+    let timeout: null | NodeJS.Timeout = setTimeout(() => {
+      timeout = null
+      reject(new Error('find music timeout'))
+    }, 20_000)
+    musicSdk.findMusic(searchMusicInfo).then((otherSource) => {
+      resolve(otherSource.map(toNewMusicInfo) as LX.Music.MusicInfoOnline[])
+    }).catch(reject).finally(() => {
+      if (timeout) clearTimeout(timeout)
+    })
+  }).then((otherSource) => {
+    if (otherSource.length) void saveOtherSourceFromStore(musicInfo.id, otherSource)
+    return otherSource
   }).finally(() => {
     if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
   })
