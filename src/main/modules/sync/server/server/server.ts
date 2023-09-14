@@ -210,7 +210,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
           socket.close(SYNC_CLOSE_CODE.failed)
           return
         }
-        msg2call.onMessage(syncData)
+        msg2call.message(syncData)
       }).catch(err => {
         log.error('decrypt message error:', err)
         log.error(err.message)
@@ -226,7 +226,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
       }
       closeEvents = []
       disconnected = true
-      msg2call.onDestroy()
+      msg2call.destroy()
       if (socket.isReady) {
         log.info('deconnection', socket.userInfo.name, socket.keyInfo.deviceName)
         // events = {}

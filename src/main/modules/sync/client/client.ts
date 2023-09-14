@@ -214,7 +214,7 @@ export const connect = (urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.Client
           client?.close(SYNC_CLOSE_CODE.failed)
           return
         }
-        message2read.onMessage(syncData)
+        message2read.message(syncData)
       }).catch((error) => {
         log.error('decrypt msg error: ', error)
         client?.close(SYNC_CLOSE_CODE.failed)
@@ -253,7 +253,7 @@ export const connect = (urlInfo: LX.Sync.Client.UrlInfo, keyInfo: LX.Sync.Client
     }
     closeEvents = []
     disconnected = true
-    message2read.onDestroy()
+    message2read.destroy()
     switch (code) {
       case SYNC_CLOSE_CODE.normal:
       // case SYNC_CLOSE_CODE.failed:
