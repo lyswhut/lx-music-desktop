@@ -4,6 +4,7 @@ import { clearEnvParamsDeeplink, focusWindow, onDeeplink } from '@renderer/utils
 import { useDialog } from './utils'
 import useMusicAction from './useMusicAction'
 import useSonglistAction from './useSonglistAction'
+import usePlayerAction from './usePlayerAction'
 
 export default () => {
   let isInited = false
@@ -12,6 +13,7 @@ export default () => {
 
   const handleMusicAction = useMusicAction()
   const handleSonglistAction = useSonglistAction()
+  const handlePlayerAction = usePlayerAction()
 
 
   const handleLinkAction = async(link: string) => {
@@ -40,6 +42,9 @@ export default () => {
         break
       case 'songlist':
         await handleSonglistAction(action, params)
+        break
+      case 'player':
+        await handlePlayerAction(action as any)
         break
       default: throw new Error('Unknown type: ' + type)
     }

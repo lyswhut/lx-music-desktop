@@ -29,12 +29,9 @@ import useLyric from './useLyric'
 import useVolume from './useVolume'
 import useWatchList from './useWatchList'
 import { HOTKEY_PLAYER } from '@common/hotKey'
-import { playNext, pause, playPrev, togglePlay } from '@renderer/core/player'
+import { playNext, pause, playPrev, togglePlay, collectMusic, uncollectMusic, dislikeMusic } from '@renderer/core/player'
 import usePlaybackRate from './usePlaybackRate'
 import useSoundEffect from './useSoundEffect'
-import { addListMusics, removeListMusics } from '@renderer/store/list/action'
-import { loveList } from '@renderer/store/list/state'
-import { addDislikeInfo } from '@renderer/core/dislikeList'
 
 
 export default () => {
@@ -93,21 +90,6 @@ export default () => {
     setStop()
   }
 
-  const collectMusic = () => {
-    if (!playMusicInfo.musicInfo) return
-    void addListMusics(loveList.id, ['progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo : playMusicInfo.musicInfo])
-  }
-  const unCollectMusic = () => {
-    if (!playMusicInfo.musicInfo) return
-    void removeListMusics({ listId: loveList.id, ids: ['progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo.id : playMusicInfo.musicInfo.id] })
-  }
-  const dislikeMusic = async() => {
-    if (!playMusicInfo.musicInfo) return
-    const minfo = 'progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo : playMusicInfo.musicInfo
-    await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
-    playNext(true)
-  }
-
   watch(() => appSetting['player.togglePlayMethod'], newValue => {
     // setLoopPlay(newValue == 'singleLoop')
     if (playedList.length) clearPlayedList()
@@ -121,7 +103,7 @@ export default () => {
   window.key_event.on(HOTKEY_PLAYER.prev.action, handlePlayPrev)
   window.key_event.on(HOTKEY_PLAYER.toggle_play.action, togglePlay)
   window.key_event.on(HOTKEY_PLAYER.music_love.action, collectMusic)
-  window.key_event.on(HOTKEY_PLAYER.music_unlove.action, unCollectMusic)
+  window.key_event.on(HOTKEY_PLAYER.music_unlove.action, uncollectMusic)
   window.key_event.on(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
 
   window.app_event.on('play', setPlayStatus)
@@ -141,7 +123,7 @@ export default () => {
     window.key_event.off(HOTKEY_PLAYER.prev.action, handlePlayPrev)
     window.key_event.off(HOTKEY_PLAYER.toggle_play.action, togglePlay)
     window.key_event.off(HOTKEY_PLAYER.music_love.action, collectMusic)
-    window.key_event.off(HOTKEY_PLAYER.music_unlove.action, unCollectMusic)
+    window.key_event.off(HOTKEY_PLAYER.music_unlove.action, uncollectMusic)
     window.key_event.off(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
 
 
