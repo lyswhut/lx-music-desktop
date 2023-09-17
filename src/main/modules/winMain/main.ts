@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog } from 'electron'
+import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { isLinux, isWin } from '@common/utils'
@@ -65,6 +65,7 @@ export const createWindow = () => {
   const windowSizeInfo = getWindowSizeInfo(global.lx.appSetting['common.windowSizeId'])
 
   const { shouldUseDarkColors, theme } = global.lx.theme
+  const ses = session.fromPartition('persist:win-main')
 
   /**
    * Initial window options
@@ -82,6 +83,7 @@ export const createWindow = () => {
     fullscreenable: true,
     show: false,
     webPreferences: {
+      session: ses,
       nodeIntegrationInWorker: true,
       contextIsolation: false,
       webSecurity: false,
