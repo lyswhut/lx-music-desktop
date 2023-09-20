@@ -7,53 +7,54 @@
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win:setup:x64",
     "pack:win": "node build-config/pack.js && npm run pack:win:setup:x64 && npm run pack:win:setup:x86 && npm run pack:win:setup:arm64 && npm run pack:win:setup:x86_64 && npm run pack:win:7z",
-    "pack:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p never",
-    "pack:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p never",
-    "pack:win:setup:x86": "cross-env TARGET=Setup ARCH=x86 electron-builder -w=nsis --ia32 -p never",
-    "pack:win:setup:arm64": "cross-env TARGET=Setup ARCH=arm64 electron-builder -w=nsis --arm64 -p never",
+    "pack:win:setup:x86_64": "node build-config/build-pack.js target=win arch=x86_64 type=setup",
+    "pack:win:setup:x64": "node build-config/build-pack.js target=win arch=x64 type=setup",
+    "pack:win:setup:x86": "node build-config/build-pack.js target=win arch=x86 type=setup",
+    "pack:win:setup:arm64": "node build-config/build-pack.js target=win arch=arm64 type=setup",
     "pack:win:portable": "npm run pack:win:portable:x86_64 && npm run pack:win:portable:x64 && npm run pack:win:portable:x86",
-    "pack:win:portable:x86_64": "cross-env TARGET=portable ARCH=x86_64 electron-builder -w=portable --x64 --ia32 -p never",
-    "pack:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p never",
-    "pack:win:portable:x86": "cross-env TARGET=portable ARCH=x86 electron-builder -w=portable --ia32 -p never",
-    "pack:win:7z": "npm run pack:win:7z:x64 && npm run pack:win:7z:x86",
-    "pack:win:7z:x64": "cross-env TARGET=green ARCH=win_x64 electron-builder -w=7z --x64 -p never",
-    "pack:win:7z:x86": "cross-env TARGET=green ARCH=win_x86 electron-builder -w=7z --ia32 -p never",
-    "pack:win:7z:arm64": "cross-env TARGET=green ARCH=win_arm64 electron-builder -w=7z --arm64 -p never",
+    "pack:win:portable:x86_64": "node build-config/build-pack.js target=win arch=x86_64 type=portable",
+    "pack:win:portable:x64": "node build-config/build-pack.js target=win arch=x64 type=portable",
+    "pack:win:portable:x86": "node build-config/build-pack.js target=win arch=x86 type=portable",
+    "pack:win:7z": "npm run pack:win:7z:x64",
+    "pack:win:7z:x64": "node build-config/build-pack.js target=win arch=x64 type=green",
+    "pack:win:7z:arm64": "node build-config/build-pack.js target=win arch=arm64 type=green",
+    "pack:win7:7z:x64": "node build-config/build-pack.js target=win arch=x64 type=win7_green",
+    "pack:win7:7z:x86": "node build-config/build-pack.js target=win arch=x86 type=win7_green",
     "pack:linux": "node build-config/pack.js && npm run pack:linux:deb && npm run pack:linux:appImage && npm run pack:linux:rpm && npm run pack:linux:pacman",
-    "pack:linux:appImage": "cross-env ARCH=x64 electron-builder -l=AppImage -p never",
-    "pack:linux:deb": "npm run pack:linux:deb:x64 && npm run pack:linux:deb:arm64 && npm run pack:linux:deb:armv7l",
-    "pack:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p never",
-    "pack:linux:deb:arm64": "cross-env ARCH=arm64 electron-builder -l=deb --arm64 -p never",
-    "pack:linux:deb:armv7l": "cross-env ARCH=armv7l electron-builder -l=deb --armv7l -p never",
-    "pack:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm --x64 -p never",
-    "pack:linux:pacman": "cross-env ARCH=x64 electron-builder -l=pacman --x64 -p never",
+    "pack:linux:appImage": "node build-config/build-pack.js target=linux arch=x64 type=appImage",
+    "pack:linux:deb": "npm run pack:linux:deb:amd64 && npm run pack:linux:deb:arm64 && npm run pack:linux:deb:armv7l",
+    "pack:linux:deb:amd64": "node build-config/build-pack.js target=linux arch=x64 type=deb",
+    "pack:linux:deb:arm64": "node build-config/build-pack.js target=linux arch=arm64 type=deb",
+    "pack:linux:deb:armv7l": "node build-config/build-pack.js target=linux arch=armv7l type=deb",
+    "pack:linux:rpm": "node build-config/build-pack.js target=linux arch=x64 type=rpm",
+    "pack:linux:pacman": "node build-config/build-pack.js target=linux arch=x64 type=pacman",
     "pack:mac": "node build-config/pack.js && npm run pack:mac:dmg && npm run pack:mac:dmg:arm64",
-    "pack:mac:dmg": "cross-env electron-builder -m=dmg -p never",
-    "pack:mac:dmg:arm64": "cross-env electron-builder -m=dmg --arm64 -p never",
-    "pack:dir": "node build-config/pack.js && electron-builder --dir",
+    "pack:mac:dmg": "node build-config/build-pack.js target=mac arch=x64 type=dmg",
+    "pack:mac:dmg:arm64": "node build-config/build-pack.js target=mac arch=arm64 type=dmg",
+    "pack:dir": "node build-config/pack.js && node build-config/build-pack.js target=dir",
     "publish": "node publish",
-    "publish:win:setup:x64:always": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p always",
-    "publish:win:setup:x64": "cross-env TARGET=Setup ARCH=x64 electron-builder -w=nsis --x64 -p always",
-    "publish:win:setup:x86": "cross-env TARGET=Setup ARCH=x86 electron-builder -w=nsis --ia32 -p onTagOrDraft",
-    "publish:win:setup:arm64": "cross-env TARGET=Setup ARCH=arm64 electron-builder -w=nsis --arm64 -p onTagOrDraft",
-    "publish:win:setup:x86_64": "cross-env TARGET=Setup ARCH=x86_64 electron-builder -w=nsis --x64 --ia32 -p onTagOrDraft",
+    "publish:win:setup:x64": "node build-config/build-pack.js target=win arch=x64 type=setup publish=onTagOrDraft",
+    "publish:win:setup:x86": "node build-config/build-pack.js target=win arch=x86 type=setup publish=onTagOrDraft",
+    "publish:win:setup:arm64": "node build-config/build-pack.js target=win arch=arm64 type=setup publish=onTagOrDraft",
+    "publish:win:setup:x86_64": "node build-config/build-pack.js target=win arch=x86_64 type=setup publish=onTagOrDraft",
     "publish:win:portable": "npm run publish:win:portable:x86_64 && npm run publish:win:portable:x64 && npm run publish:win:portable:x86",
-    "publish:win:portable:x86_64": "cross-env TARGET=portable ARCH=x86_64 electron-builder -w=portable --x64 --ia32 -p onTagOrDraft",
-    "publish:win:portable:x64": "cross-env TARGET=portable ARCH=x64 electron-builder -w=portable --x64 -p onTagOrDraft",
-    "publish:win:portable:x86": "cross-env TARGET=portable ARCH=x86 electron-builder -w=portable --ia32 -p onTagOrDraft",
-    "publish:win:7z:x64": "cross-env TARGET=green ARCH=win_x64 electron-builder -w=7z --x64 -p onTagOrDraft",
-    "publish:win:7z:x86": "cross-env TARGET=green ARCH=win_x86 electron-builder -w=7z --ia32 -p onTagOrDraft",
-    "publish:win:7z:arm64": "cross-env TARGET=green ARCH=win_arm64 electron-builder -w=7z --arm64 -p onTagOrDraft",
-    "publish:mac:dmg:always": "electron-builder -m=dmg -p always",
-    "publish:mac:dmg": "electron-builder -m=dmg -p onTagOrDraft",
-    "publish:mac:dmg:arm64": "electron-builder -m=dmg --arm64 -p onTagOrDraft",
-    "publish:linux:deb:x64:always": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p always",
-    "publish:linux:deb:x64": "cross-env ARCH=x64 electron-builder -l=deb --x64 -p onTagOrDraft",
-    "publish:linux:deb:arm64": "cross-env ARCH=arm64 electron-builder -l=deb --arm64 -p onTagOrDraft",
-    "publish:linux:deb:armv7l": "cross-env ARCH=armv7l electron-builder -l=deb --armv7l -p onTagOrDraft",
-    "publish:linux:appImage": "cross-env ARCH=x64 electron-builder -l=AppImage -p onTagOrDraft",
-    "publish:linux:rpm": "cross-env ARCH=x64 electron-builder -l=rpm --x64 -p onTagOrDraft",
-    "publish:linux:pacman": "cross-env ARCH=x64 electron-builder -l=pacman --x64 -p onTagOrDraft",
+    "publish:win:portable:x86_64": "node build-config/build-pack.js target=win arch=x86_64 type=portable publish=onTagOrDraft",
+    "publish:win:portable:x64": "node build-config/build-pack.js target=win arch=x64 type=portable publish=onTagOrDraft",
+    "publish:win:portable:x86": "node build-config/build-pack.js target=win arch=x86 type=portable publish=onTagOrDraft",
+    "publish:win:7z:x64:always": "node build-config/build-pack.js target=win arch=x64 type=green publish=always",
+    "publish:win:7z:arm64": "node build-config/build-pack.js target=win arch=arm64 type=green publish=onTagOrDraft",
+    "publish:win7:7z:x64": "node build-config/build-pack.js target=win arch=x64 type=win7_green publish=onTagOrDraft",
+    "publish:win7:7z:x86": "node build-config/build-pack.js target=win arch=x86 type=win7_green publish=onTagOrDraft",
+    "publish:mac:dmg:always": "node build-config/build-pack.js target=mac arch=x64 type=dmg publish=always",
+    "publish:mac:dmg": "node build-config/build-pack.js target=mac arch=x64 type=dmg publish=onTagOrDraft",
+    "publish:mac:dmg:arm64": "node build-config/build-pack.js target=mac arch=arm64 type=dmg publish=onTagOrDraft",
+    "publish:linux:deb:amd64:always": "node build-config/build-pack.js target=linux arch=x64 type=deb publish=always",
+    "publish:linux:deb:amd64": "node build-config/build-pack.js target=linux arch=x64 type=deb publish=onTagOrDraft",
+    "publish:linux:deb:arm64": "node build-config/build-pack.js target=linux arch=arm64 type=deb publish=onTagOrDraft",
+    "publish:linux:deb:armv7l": "node build-config/build-pack.js target=linux arch=armv7l type=deb publish=onTagOrDraft",
+    "publish:linux:appImage": "node build-config/build-pack.js target=linux arch=x64 type=appImage publish=onTagOrDraft",
+    "publish:linux:rpm": "node build-config/build-pack.js target=linux arch=x64 type=rpm publish=onTagOrDraft",
+    "publish:linux:pacman": "node build-config/build-pack.js target=linux arch=x64 type=pacman publish=onTagOrDraft",
     "dev": "cross-env NODE_OPTIONS=--max-http-header-size=200000 node build-config/runner-dev.js",
     "build:theme": "node src/common/theme/createThemes.js",
     "build": "node build-config/pack.js",
@@ -73,104 +74,6 @@
   "engines": {
     "node": ">= 16",
     "npm": ">=8.5.2"
-  },
-  "build": {
-    "appId": "cn.toside.music.desktop",
-    "beforePack": "./build-config/build-before-pack.js",
-    "afterPack": "./build-config/build-after-pack.js",
-    "protocols": {
-      "name": "lx-music-protocol",
-      "schemes": [
-        "lxmusic"
-      ]
-    },
-    "directories": {
-      "buildResources": "./resources",
-      "output": "./build"
-    },
-    "files": [
-      "!node_modules/**/*",
-      "node_modules/font-list",
-      "node_modules/better-sqlite3/lib",
-      "node_modules/better-sqlite3/package.json",
-      "node_modules/better-sqlite3/build/Release/better_sqlite3.node",
-      "node_modules/electron-font-manager/index.js",
-      "node_modules/electron-font-manager/package.json",
-      "node_modules/electron-font-manager/build/Release/font_manager.node",
-      "node_modules/node-gyp-build",
-      "node_modules/bufferutil",
-      "node_modules/utf-8-validate",
-      "build/Release/qrc_decode.node",
-      "dist/**/*"
-    ],
-    "asar": {
-      "smartUnpack": false
-    },
-    "extraResources": [
-      "./licenses"
-    ],
-    "win": {
-      "icon": "./resources/icons/icon.ico",
-      "legalTrademarks": "lyswhut",
-      "artifactName": "${productName} v${version} ${env.ARCH} ${env.TARGET}.${ext}"
-    },
-    "mac": {
-      "icon": "./resources/icons/icon.icns",
-      "category": "public.app-category.music"
-    },
-    "linux": {
-      "maintainer": "lyswhut <lyswhut@qq.com>",
-      "artifactName": "${productName} v${version} ${env.ARCH}.${ext}",
-      "icon": "./resources/icons",
-      "category": "Utility;AudioVideo;Audio;Player;Music;",
-      "desktop": {
-        "Name": "LX Music",
-        "Name[zh_CN]": "LX Music",
-        "Name[zh_TW]": "LX Music",
-        "Encoding": "UTF-8",
-        "MimeType": "x-scheme-handler/lxmusic",
-        "StartupNotify": "false"
-      }
-    },
-    "nsis": {
-      "oneClick": false,
-      "language": "2052",
-      "allowToChangeInstallationDirectory": true,
-      "differentialPackage": true,
-      "license": "./licenses/license.rtf",
-      "shortcutName": "LX Music"
-    },
-    "dmg": {
-      "window": {
-        "width": 600,
-        "height": 400
-      },
-      "contents": [
-        {
-          "x": 106,
-          "y": 252,
-          "name": "LX Music"
-        },
-        {
-          "x": 490,
-          "y": 252,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ],
-      "title": "洛雪音乐助手 v${version}"
-    },
-    "appImage": {
-      "license": "./licenses/license_zh.txt",
-      "category": "Utility;AudioVideo;Audio;Player;Music;"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "lyswhut",
-        "repo": "lx-music-desktop"
-      }
-    ]
   },
   "macLanguagesInfoPlistStrings": {
     "en": {
@@ -230,12 +133,12 @@
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "del": "^6.1.1",
-    "electron": "^22.3.24",
-    "electron-builder": "^24.6.4",
+    "electron": "^25.8.1",
+    "electron-builder": "^24.6.5",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
     "electron-to-chromium": "^1.4.523",
-    "electron-updater": "^6.1.4",
+    "electron-updater": "^6.1.5",
     "eslint": "^8.49.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-with-typescript": "^39.0.0",
@@ -249,7 +152,7 @@
     "less-loader": "^11.1.3",
     "mini-css-extract-plugin": "^2.7.6",
     "node-loader": "^2.0.0",
-    "postcss": "^8.4.29",
+    "postcss": "^8.4.30",
     "postcss-loader": "^7.3.3",
     "postcss-pxtorem": "^6.0.0",
     "pug": "^3.0.2",

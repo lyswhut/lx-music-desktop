@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-x64-Setup
-          path: build/* x64 Setup.exe
+          path: build/*-x64-Setup.exe
 
       - name: Build Package 7z x64
         run: npm run pack:win:7z:x64
@@ -83,23 +83,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-win_x64-green
-          path: build/*win_x64 green.7z
-
-      - name: Build Package Setup x86
-        run: npm run pack:win:setup:x86
-      - name: Upload Artifact Setup x86
-        uses: actions/upload-artifact@v3
-        with:
-          name: lx-music-desktop-x86-Setup
-          path: build/* x86 Setup.exe
-
-      - name: Build Package 7z x86
-        run: npm run pack:win:7z:x86
-      - name: Upload Artifact 7z x86
-        uses: actions/upload-artifact@v3
-        with:
-          name: lx-music-desktop-win_x86-green
-          path: build/*win_x86 green.7z
+          path: build/*win_x64-green.7z
 
       - name: Build Package Setup arm64
         run: npm run pack:win:setup:arm64
@@ -107,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-arm64-Setup
-          path: build/* arm64 Setup.exe
+          path: build/*-arm64-Setup.exe
 
       - name: Build Package 7z arm64
         run: npm run pack:win:7z:arm64
@@ -115,15 +99,27 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-win_arm64-green
-          path: build/*win_arm64 green.7z
+          path: build/*win_arm64-green.7z
 
-      - name: Build Package Setup x86_64
-        run: npm run pack:win:setup:x86_64
-      - name: Upload Artifact Setup x86_64
+
+      - name: Install old electron
+        run: npm install electron@22
+
+      - name: Build Package win7 7z x64
+        run: npm run pack:win7:7z:x64
+      - name: Upload Artifact win7 7z x64
         uses: actions/upload-artifact@v3
         with:
-          name: lx-music-desktop-x86_64-Setup
-          path: build/*x86_64 Setup.exe
+          name: lx-music-desktop-win7_x64-green
+          path: build/*win7_x64-green.7z
+
+      - name: Build Package win7 7z x86
+        run: npm run pack:win7:7z:x86
+      - name: Upload Artifact win7 7z x86
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-win7_x86-green
+          path: build/*win7_x86-green.7z
 
       - name: Generate file MD5
         run: |
@@ -223,13 +219,13 @@ jobs:
       - name: Build src code
         run: npm run build
 
-      - name: Build Package deb x64
-        run: npm run pack:linux:deb:x64
-      - name: Upload Artifact deb x64
+      - name: Build Package deb amd64
+        run: npm run pack:linux:deb:amd64
+      - name: Upload Artifact deb amd64
         uses: actions/upload-artifact@v3
         with:
-          name: lx-music-desktop-deb-x64
-          path: build/* x64.deb
+          name: lx-music-desktop-deb-amd64
+          path: build/*_amd64.deb
 
       - name: Build Package deb arm64
         run: npm run pack:linux:deb:arm64
@@ -237,7 +233,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-deb-arm64
-          path: build/* arm64.deb
+          path: build/*_arm64.deb
 
       - name: Build Package deb armv7l
         run: npm run pack:linux:deb:armv7l
@@ -245,7 +241,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-deb-armv7l
-          path: build/* armv7l.deb
+          path: build/*_armv7l.deb
 
       - name: Build Package x64 appImage
         run: npm run pack:linux:appImage
@@ -253,7 +249,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-x64-appImage
-          path: build/* x64.AppImage
+          path: build/*_x64.AppImage
 
       - name: Build Package x64 rpm
         run: npm run pack:linux:rpm
@@ -261,7 +257,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-x64-rpm
-          path: build/* x64.rpm
+          path: build/*.x64.rpm
 
       - name: Build Package x64 pacman
         run: npm run pack:linux:pacman
@@ -269,7 +265,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lx-music-desktop-x64-pacman
-          path: build/* x64.pacman
+          path: build/*_x64.pacman
 
       - name: Generate file MD5
         run: |
