@@ -3,7 +3,7 @@ material-modal(:show="modelValue" teleport="#view" height="80%" width="80%" @clo
   main(:class="$style.main")
     h2 {{ $t('setting__dislike_list_title') }}
     div(:class="$style.content")
-      textarea(v-model="rules" :class="$style.textarea" :placeholder="$t('setting__dislike_list_input_tip')")
+      textarea.scroll(v-model="rules" :class="$style.textarea" :placeholder="$t('setting__dislike_list_input_tip')")
   div(:class="$style.footer")
     div(:class="$style.tips") {{ $t('setting__dislike_list_tips') }}
     base-btn(:class="$style.btn" @click="handleSave") {{ $t('setting__dislike_list_save_btn') }}
