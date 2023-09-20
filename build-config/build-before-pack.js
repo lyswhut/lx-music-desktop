@@ -53,7 +53,8 @@ const replaceQrcDecodeLib = async(electronNodeAbi, platform, arch) => {
 
 module.exports = async(context) => {
   const { electronPlatformName, arch } = context
-  const electronNodeAbi = nodeAbi.getAbi(context.packager.info._framework.version, 'electron')
+  const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/.*?(\d+)/, '$1')
+  const electronNodeAbi = nodeAbi.getAbi(electronVersion, 'electron')
   await replaceQrcDecodeLib(electronNodeAbi, electronPlatformName, arch)
   if (electronPlatformName !== 'linux' || process.env.FORCE) return
   const bindingFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp')
