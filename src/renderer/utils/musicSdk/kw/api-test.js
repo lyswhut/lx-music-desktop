@@ -16,7 +16,7 @@ const api_test = {
   //   return requestObj
   // },
   getMusicUrl(songInfo, type) {
-    const requestObj = httpFetch(`http://ts.tempmusics.tk/url/kw/${songInfo.songmid}.match(/\d+/g)[0]/${type}`, {
+    const requestObj = httpFetch(`http://ts.tempmusics.tk/url/kw/${songInfo.songmid.match(/\d+/g)[0]}/${type}`, {
       method: 'get',
       timeout,
       headers,
