@@ -7,7 +7,7 @@ export default {
   async getComment({ songmid }, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
 
-    const _requestObj = httpFetch(`http://ncomment.kuwo.cn/com.s?f=web&type=get_comment&aapiver=1&prod=kwplayer_ar_10.5.2.0&digest=15&sid=${songmid}&start=${limit * (page - 1)}&msgflag=1&count=${limit}&newver=3&uid=0`, {
+    const _requestObj = httpFetch(`http://ncomment.kuwo.cn/com.s?f=web&type=get_comment&aapiver=1&prod=kwplayer_ar_10.5.2.0&digest=15&sid=${songmid.match(/\d+/g)[0]}&start=${limit * (page - 1)}&msgflag=1&count=${limit}&newver=3&uid=0`, {
       headers: {
         'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9;)',
       },
@@ -29,7 +29,7 @@ export default {
   async getHotComment({ songmid }, page = 1, limit = 100) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
-    const _requestObj2 = httpFetch(`http://ncomment.kuwo.cn/com.s?f=web&type=get_rec_comment&aapiver=1&prod=kwplayer_ar_10.5.2.0&digest=15&sid=${songmid}&start=${limit * (page - 1)}&msgflag=1&count=${limit}&newver=3&uid=0`, {
+    const _requestObj2 = httpFetch(`http://ncomment.kuwo.cn/com.s?f=web&type=get_rec_comment&aapiver=1&prod=kwplayer_ar_10.5.2.0&digest=15&sid=${songmid.match(/\d+/g)[0]}&start=${limit * (page - 1)}&msgflag=1&count=${limit}&newver=3&uid=0`, {
       headers: {
         'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9;)',
       },
