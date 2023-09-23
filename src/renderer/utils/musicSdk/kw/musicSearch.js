@@ -30,7 +30,7 @@ export default {
     // console.log(rawData)
     for (let i = 0; i < rawData.length; i++) {
       const info = rawData[i]
-      let songId = info.MUSICRID.replace('MUSIC_', '')
+      let songId = info.MUSICRID.match(/\d+/g)[0]
       // const format = (info.FORMATS || info.formats).split('|')
 
       if (!info.N_MINFO) {
