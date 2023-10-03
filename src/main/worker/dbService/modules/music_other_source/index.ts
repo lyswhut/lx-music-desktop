@@ -24,7 +24,7 @@ const toDBMusicInfo = (id: string, musicInfos: LX.Music.MusicInfo[]): LX.DBServi
  * @returns 歌词信息
  */
 export const getMusicInfoOtherSource = (id: string): LX.Music.MusicInfoOnline[] => {
-  const list = queryMusicInfo(id).map(info => {
+  const list = queryMusicInfo(id).sort((a, b) => a.order - b.order).map(info => {
     return {
       id: info.id,
       name: info.name,

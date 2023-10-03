@@ -82,6 +82,7 @@ declare namespace LX {
 
     interface MusicInfoOtherSource extends Omit<MusicInfoOnline, 'listId'> {
       source_id: string
+      order: number
     }
 
   }
