@@ -1,18 +1,48 @@
-This project (software) is issued based on the Apache License 2.0 license. Before using this software, you (users) need to sign this agreement before you can continue to use it. The following agreement is a supplement to the Apache License 2.0. In case of conflict, use the following agreement Shall prevail.
+This project is issued based on the Apache License 2.0 license. The following protocols are supplemented by Apache License 2.0.
 
+Words stipulate: "this project" in this agreement refers to the Luoxue Music Desktop Edition project; "user" refers to the user who signed this agreement; the "official music platform" refers to The official platform of the music source is collectively referred to; "copyright data" refers to the data that includes but not limited to images, audio, names, etc.
 
-Terms agreed: "this software" in this agreement refers to the Luo Xue Music desktop version of the project; "user" refers to the user who signed this agreement; "official music platform" refers to the built-in software including Kuwo, Kugou, Migu The official platforms of music sources, etc. are collectively referred to; "copyright data" refers to data including but not limited to images, audio, names, etc. that others own the copyright.
+1. Data source
 
-1. The principle of the data source of this software is to pull data from the public servers of each official music platform. After simply filtering and merging the data for display, this software is not responsible for the accuracy of the data.
-2. Copyright data may be generated during the use of this software. For this copyright data, the software does not own their ownership. In order to avoid infringement, users must clear the copyright generated during the use of this software within 24 hours data.
-3. The alias of the official music platform in this software is a name for the official music platform in the software. It does not contain maliciousness. If the official music platform feels inappropriate, you can contact the software to change or remove it.
-4. The parts used in this software include but are not limited to fonts, pictures and other resources from the Internet. If there is infringement, you can contact this software to remove it.
-5. Any direct, indirect, special, accidental or consequential damage of any nature arising from the use of this software, including this agreement or the use or inability to use this software (including but not limited to due to loss of goodwill, work stoppage, Compensation for computer failure or damage caused by the failure, or any and all other commercial damage or loss) is the responsibility of the user.
-6. This project is completely free, and the open source is published on GitHub. It is used by people all over the world to learn and exchange technology. This software does not guarantee that the technology in the project may violate local laws and regulations. It is prohibited to violate local laws and regulations. Using this software, the user shall be responsible for any violations caused by the user's use of the software without knowing or not permitted by local laws and regulations. The software shall not be responsible for any direct, indirect, special, accidental Or consequential responsibility.
+1.1 The principle of online data sources of various official platforms of this project is to draw data from its open server (the same data obtained from the unsproting state in the official platform app). After simply screening and merging data, this project Responsible for the legitimacy and accuracy of the data.
+1.2 The ability of this project itself does not obtain a certain audio data. The online audio data source used in this project comes from the online link of the "Source" selected in the software settings. For example, when playing a song, the project only transmits information such as the song name, singer name and other information to be played to "source". If the "source" returns a link, this project will think that this is the audio data of the song For use, as for whether this is the correct audio data, this project cannot verify its accuracy, so the audio that you want to play may occur during the process of using this project.
+1.3 The unofficial platform data (such as my collection list) of this project comes from synchronous services connected by the user's local system or user connection. This project is not responsible for the legality and accuracy of these data.
 
+2. Copyright data
 
-* If the agreement is updated without prior notice, you can check it at the open source address.
-* The original intention of this software is to help the official music platform to simplify the data generation for display, and to help users quickly locate the music platform where the desired content is based on the song title, artist and other keywords.
-* Music platform is not easy, it is recommended to support genuine resources to the corresponding music platform.
+2.1 During the process of using this project, copyright data may be generated. For these copyright data, this project does not have their ownership. In order to avoid infringement, users must remove copyright data generated during the process of using this project within ** 24 hours.
+
+3. Alias of Music Platform
+
+3.1 The official music platform in this project is named a name for the official music platform in this project, without maliciousness. If the official music platform feels inappropriate, you can contact this project to change or remove.
+
+Fourth, resource use
+
+4.1 The parts used in this project include, but not limited to fonts, pictures and other resources from the Internet. If infringement occurs, you can contact this project.
+
+5. Disclaimer
+
+5.1 The use of this project includes any direct, indirect, special, accidental, or result damage due to any nature caused by this agreement or use or unable to use this item (including but not limited to the loss of goodwill, stop work, computer, computer Damage compensation caused by faults or faults, or any or all other commercial damage or losses) is responsible for users.
+
+6. Use restrictions
+
+6.1 This project is completely free, and open source is published in GitHub for the learning exchanges of technology for people all over the world. This project does not guarantee that the technology in the project may violate local laws and regulations.
+
+6.2 ** This project is prohibited in violation of local laws and regulations. ** For the user's use of any illegal and illegal acts caused by the use of the project if the user is not allowed to be allowed to the user, it is undertaken by the user. Sexual responsibility.
+
+7. Copyright protection
+
+7.1 Music platform is not easy, please respect the copyright and support genuine.
+
+8. Non -commercial nature
+
+8.1 This project is only used for exploring and research on technical feasibility, and does not accept any business (including but not limited to advertising, etc.) cooperation and donations.
+
+9. Accepting agreement
+
+9.1 If you use this project, it will represent you accept this agreement.
+
+* If the agreement is updated, you will not be notified separately, you can check the open source address.
+* The content of this agreement is translated from the Chinese version of the agreement
 
 By: lyswhut
