@@ -53,7 +53,7 @@ const replaceQrcDecodeLib = async(electronNodeAbi, platform, arch) => {
 
 module.exports = async(context) => {
   const { electronPlatformName, arch } = context
-  const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/.*?(\d+)/, '$1')
+  const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/^[^\d]*?(\d+)/, '$1')
   const electronNodeAbi = nodeAbi.getAbi(electronVersion, 'electron')
   await replaceQrcDecodeLib(electronNodeAbi, electronPlatformName, arch)
   if (electronPlatformName !== 'linux' || process.env.FORCE) return

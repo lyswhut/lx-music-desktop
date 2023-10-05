@@ -6,9 +6,9 @@ const libDir = path.join(__dirname, 'lib')
 
 const getGzipFiles = async() => {
   const names = await fs.promises.readdir(libDir)
-  for (const name of names) {
-    if (name.endsWith('.node')) await fs.promises.unlink(path.join(libDir, name))
-  }
+  // for (const name of names) {
+  //   if (name.endsWith('.node')) await fs.promises.unlink(path.join(libDir, name))
+  // }
   return names.filter(name => name.endsWith('.gz'))
 }
 
