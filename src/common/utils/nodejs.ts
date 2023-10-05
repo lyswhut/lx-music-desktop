@@ -140,8 +140,8 @@ export const saveLxConfigFile = async(path: string, data: any) => {
 export const readLxConfigFile = async(path: string): Promise<any> => {
   let isJSON = path.endsWith('.json')
   let data: string | Buffer = await fs.promises.readFile(path, isJSON ? 'utf8' : 'binary')
-  if (!data || isJSON) return data
-  data = await gunzipData(Buffer.from(data, 'binary'))
+  if (!data) return data
+  if (!isJSON) data = await gunzipData(Buffer.from(data, 'binary'))
   data = JSON.parse(data)
 
   // 修复v1.14.0出现的导出数据被序列化两次的问题
