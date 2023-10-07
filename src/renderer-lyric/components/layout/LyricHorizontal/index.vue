@@ -34,7 +34,7 @@ export default {
       return name
     })
     const lrcStyles = computed(() => ({
-      fontFamily: /\s/.test(setting['desktopLyric.style.font']) ? `"${setting['desktopLyric.style.font']}"` : setting['desktopLyric.style.font'],
+      fontFamily: setting['desktopLyric.style.font'],
       fontSize: Math.trunc(setting['desktopLyric.style.fontSize']) + 'px',
       opacity: setting['desktopLyric.style.opacity'] / 100,
       textAlign: setting['desktopLyric.style.align'],

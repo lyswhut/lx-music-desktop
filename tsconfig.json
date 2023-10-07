@@ -4,8 +4,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "allowJs": true,
-    "module": "esnext",
-    "moduleResolution": "nodenext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "outDir": "./dist",
     "baseUrl": "./src",                                     /* Specify the base directory to resolve non-relative module names. */
