@@ -22,7 +22,7 @@ export const setUserApi = async(apiId: string) => {
     })
   } else {
     // @ts-expect-error
-    qualityList.value = musicSdk.supportQuality[apiId] as LX.QualityList
+    qualityList.value = musicSdk.supportQuality[apiId] ?? {}
     apiSource.value = apiId
     void setUserApiAction(apiId)
   }
