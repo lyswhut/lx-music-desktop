@@ -5,7 +5,7 @@ module.exports = {
     'chalk',
     'del',
     'comlink',
-    'vue',
+    // 'vue',
     '@types/ws',
     // 'eslint-config-standard-with-typescript',
     'typescript', // https://github.com/microsoft/TypeScript/pull/54567
