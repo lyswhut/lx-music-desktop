@@ -18,18 +18,44 @@ export const getUserApis = (): LX.UserApi.UserApiInfo[] => {
   return userApis
 }
 
+const INFO_NAMES = {
+  name: 24,
+  description: 36,
+  author: 56,
+  homepage: 1024,
+  version: 36,
+} as const
+type INFO_NAMES_Type = typeof INFO_NAMES
+const matchInfo = (scriptInfo: string) => {
+  const infoArr = scriptInfo.split(/\r?\n/)
+  const rxp = /^\s?\*\s?@(\w+)\s(.+)$/
+  const infos: Partial<Record<keyof typeof INFO_NAMES, string>> = {}
+  for (const info of infoArr) {
+    const result = rxp.exec(info)
+    if (!result) continue
+    const key = result[1] as keyof typeof INFO_NAMES
+    if (INFO_NAMES[key] == null) continue
+    infos[key] = result[2].trim()
+  }
+
+  for (const [key, len] of Object.entries(INFO_NAMES) as Array<{ [K in keyof INFO_NAMES_Type]: [K, INFO_NAMES_Type[K]] }[keyof INFO_NAMES_Type]>) {
+    infos[key] ||= ''
+    if (infos[key] == null) infos[key] = ''
+    else if (infos[key]!.length > len) infos[key] = infos[key]!.substring(0, len) + '...'
+  }
+
+  return infos as Record<keyof typeof INFO_NAMES, string>
+}
 export const importApi = (script: string): LX.UserApi.UserApiInfo => {
-  let scriptInfo = script.split(/\r?\n/)
-  let name = scriptInfo[1] || ''
-  let description = scriptInfo[2] || ''
-  name = name.startsWith(' * @name ') ? name.replace(' * @name ', '').trim() : `user_api_${new Date().toLocaleString()}`
-  if (name.length > 24) name = name.substring(0, 24) + '...'
-  description = description.startsWith(' * @description ') ? description.replace(' * @description ', '').trim() : ''
-  if (description.length > 36) description = description.substring(0, 36) + '...'
+  const result = /^\/\*[\S|\s]+?\*\//.exec(script)
+  if (!result) throw new Error('无效的自定义源文件')
+
+  let scriptInfo = matchInfo(result[0])
+
+  scriptInfo.name ||= `user_api_${new Date().toLocaleString()}`
   const apiInfo = {
     id: `user_api_${Math.random().toString().substring(2, 5)}_${Date.now()}`,
-    name,
-    description,
+    ...scriptInfo,
     script,
     allowShowUpdateAlert: true,
   }

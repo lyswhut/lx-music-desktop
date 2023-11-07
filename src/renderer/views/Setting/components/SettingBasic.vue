@@ -231,7 +231,7 @@ export default {
       let status
       if (userApi.status) status = t('setting__basic_source_status_success')
       else if (userApi.message == 'initing') status = t('setting__basic_source_status_initing')
-      else status = `${t('setting__basic_source_status_failed')} - ${userApi.message}`
+      else status = `${t('setting__basic_source_status_failed')}`
 
       return status
     }

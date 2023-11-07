@@ -16,8 +16,9 @@ export default () => {
     userApi.status = status
     userApi.message = message
 
-    if (status && apiInfo?.sources) {
-      if (apiInfo.id === appSetting['common.apiSource']) {
+    if (!apiInfo || apiInfo.id !== appSetting['common.apiSource']) return
+    if (status) {
+      if (apiInfo.sources) {
         let apis: any = {}
         let qualitys: LX.QualityList = {}
         for (const [source, { actions, type, qualitys: sourceQualitys }] of Object.entries(apiInfo.sources)) {
@@ -42,7 +43,7 @@ export default () => {
                           musicInfo: songInfo,
                         },
                       },
-                    // eslint-disable-next-line @typescript-eslint/promise-function-async
+                      // eslint-disable-next-line @typescript-eslint/promise-function-async
                     }).then(res => {
                       // console.log(res)
                       if (!/^https?:/.test(res.data.url)) return Promise.reject(new Error('Get url failed'))
@@ -63,6 +64,14 @@ export default () => {
         }
         qualityList.value = qualitys
         userApi.apis = apis
+      }
+    } else {
+      if (message) {
+        void dialog({
+          message: `${t('user_api__init_failed_alert', { name: apiInfo.name })}\n${message}`,
+          selection: true,
+          confirmButtonText: t('ok'),
+        })
       }
     }
   })

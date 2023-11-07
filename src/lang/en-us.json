@@ -684,6 +684,7 @@
   "user_api__btn_import": "Import",
   "user_api__btn_remove": "Remove",
   "user_api__import_file": "Select music API script file",
+  "user_api__init_failed_alert": "Custom source [{name}] failed to initialize:",
   "user_api__max_tip": "There can only be a maximum of 20 sources at the same time🤪\nIf you want to continue importing, please remove some old sources to make room",
   "user_api__noitem": "There is nothing here...😲",
   "user_api__note": "Tip: Although we have isolated the script's running environment as much as possible, importing scripts containing malicious behaviors may still affect your system. Please import them carefully.",
