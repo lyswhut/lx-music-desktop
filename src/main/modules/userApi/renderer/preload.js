@@ -137,6 +137,13 @@ const handleShowUpdateAlert = (data, resolve, reject) => {
   resolve()
 }
 
+const onError = (errorMessage) => {
+  if (isInitedApi) return
+  isInitedApi = true
+  if (errorMessage.length > 1024) errorMessage = errorMessage.substring(0, 1024) + '...'
+  sendMessage(USER_API_RENDERER_EVENT_NAME.init, null, false, errorMessage)
+}
+
 const initEnv = (userApi) => {
   contextBridge.exposeInMainWorld('lx', {
     EVENT_NAMES,
@@ -158,22 +165,26 @@ const initEnv = (userApi) => {
 
       let request = needle.request(method, url, data, options, (err, resp, body) => {
         // console.log(err, resp, body)
-        if (err) {
-          callback(err, null, null)
-        } else {
-          body = resp.body = resp.raw.toString()
-          try {
-            resp.body = JSON.parse(resp.body)
-          } catch (_) {}
-          body = resp.body
-          callback(err, {
-            statusCode: resp.statusCode,
-            statusMessage: resp.statusMessage,
-            headers: resp.headers,
-            bytes: resp.bytes,
-            raw: resp.raw,
-            body,
-          }, body)
+        try {
+          if (err) {
+            callback.call(this, err, null, null)
+          } else {
+            body = resp.body = resp.raw.toString()
+            try {
+              resp.body = JSON.parse(resp.body)
+            } catch (_) {}
+            body = resp.body
+            callback.call(this, err, {
+              statusCode: resp.statusCode,
+              statusMessage: resp.statusMessage,
+              headers: resp.headers,
+              bytes: resp.bytes,
+              raw: resp.raw,
+              body,
+            }, body)
+          }
+        } catch (err) {
+          onError(err.message)
         }
       }).request
 
@@ -290,10 +301,7 @@ const initEnv = (userApi) => {
 
   contextBridge.exposeInMainWorld('__lx_init_error_handler__', {
     sendError(errorMessage) {
-      if (isInitedApi) return
-      isInitedApi = true
-      if (errorMessage.length > 1024) errorMessage = errorMessage.substring(0, 1024) + '...'
-      sendMessage(USER_API_RENDERER_EVENT_NAME.init, null, false, errorMessage)
+      onError(errorMessage)
     },
   })
 
