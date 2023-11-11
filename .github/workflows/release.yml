@@ -75,7 +75,17 @@ jobs:
           npm run publish:win:7z:arm64
           npm run publish:win:setup:arm64
           npm run publish:win:setup:x64
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+
+      - name: Prepare win7 electron env
+        run: |
           npm install electron@22
+          pip.exe install setuptools
+
+      - name: Release win7 package
+        run: |
           npm run publish:win7:7z:x64
           npm run publish:win7:7z:x86
         env:

@@ -105,6 +105,9 @@ jobs:
       - name: Install old electron
         run: npm install electron@22
 
+      - name: Install python setuptools
+        run: pip.exe install setuptools
+
       - name: Build Package win7 7z x64
         run: npm run pack:win7:7z:x64
       - name: Upload Artifact win7 7z x64
@@ -134,7 +137,7 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v3
 
-      - name: Install python3 setuptools
+      - name: Install python setuptools
         run: python3 -m pip install setuptools
 
       - name: Install Node.js
