@@ -134,6 +134,9 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v3
 
+      - name: Install python3 setuptools
+        run: python3 -m pip install setuptools
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
