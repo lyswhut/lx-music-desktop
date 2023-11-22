@@ -120,6 +120,7 @@ export default {
     handleRegisterEvent(action) {
       let eventHub = window.key_event
       let name = action == 'on' ? 'on' : 'off'
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       eventHub[name](HOTKEY_COMMON.focusSearchInput.action, this.handleFocusInput)
     },
     handleFocusInput() {
