@@ -596,7 +596,7 @@
   "sync__dislike_title": "Choose how to sync with {name}'s dislike list",
   "sync__list_merge_tip_desc": "Merge the two lists together, the same song will be removed (the song of the merged person is removed), and different songs will be added.",
   "sync__list_other_tip_desc": "\"Cancel Sync\" will not use list sync.",
-  "sync__list_overwrite_tip_desc": "The list with the same ID of the covered person and the covered list will be deleted and replaced with the list of the covered person (lists with different list IDs will be merged together). If you check Complete coverage, all lists of the covered person will be moved. \nDivide, and then replace with a list of overriders.",
+  "sync__list_overwrite_tip_desc": "Lists with the same ID as the overwritten list and the overwritten list will be deleted and replaced with the overrider's list (lists with different list IDs will be merged together). If full coverage is checked, all lists of the covered one will be moved. Remove and replace with a list of overrides.",
   "sync__list_title": "Choose how to synchronize the list with {name}",
   "sync__merge_btn_local_remote": "Local list merge remote list",
   "sync__merge_btn_remote_local": "Remote list merge local list",

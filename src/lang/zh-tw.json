@@ -596,7 +596,7 @@
   "sync__dislike_title": "選擇與 {name} 的不喜歡清單同步方式",
   "sync__list_merge_tip_desc": "將兩邊的列表合併到一起，相同的歌曲將被去掉（去掉的是被合併者的歌曲），不同的歌曲將被添加。",
   "sync__list_other_tip_desc": "「取消同步」將不使用清單同步功能。",
-  "sync__list_overwrite_tip_desc": "被覆蓋者與覆蓋者清單ID相同的清單將被刪除後替換成覆蓋者的清單（清單ID不同的清單將合併為一起），若勾選完全覆蓋，則被覆蓋者的所有清單將會被移\n除，然後替換成覆蓋者的列表。",
+  "sync__list_overwrite_tip_desc": "被覆蓋者與覆蓋者清單ID相同的清單將被刪除後替換成覆蓋者的清單（清單ID不同的清單將合併為一起），若勾選完全覆蓋，則被覆蓋者的所有清單將會被移除，然後替換成覆蓋者的列表。",
   "sync__list_title": "選擇與 {name} 的列表同步方式",
   "sync__merge_btn_local_remote": "本機列表 合併 遠端列表",
   "sync__merge_btn_remote_local": "遠端列表 合併 本機列表",

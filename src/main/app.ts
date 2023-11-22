@@ -172,9 +172,11 @@ export const listenerAppEvent = (startApp: () => void) => {
     initScreenParams()
   })
 
-  nativeTheme.addListener('updated', (event: any) => {
-    const themeInfo: Electron.NativeTheme = event.sender
-    global.lx?.event_app.system_theme_change(themeInfo.shouldUseDarkColors)
+  nativeTheme.addListener('updated', () => {
+    const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
+    if (shouldUseDarkColors == global.lx.theme.shouldUseDarkColors) return
+    global.lx.theme.shouldUseDarkColors = shouldUseDarkColors
+    global.lx?.event_app.system_theme_change(shouldUseDarkColors)
   })
 }
 
@@ -224,7 +226,7 @@ export const initAppSetting = async() => {
         state: new Map(),
       },
       theme: {
-        shouldUseDarkColors: false,
+        shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
         theme: {
           id: '',
           name: '',
