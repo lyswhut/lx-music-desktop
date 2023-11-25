@@ -81,6 +81,7 @@ export const createWindow = () => {
     resizable: false,
     maximizable: false,
     fullscreenable: true,
+    roundedCorners: false,
     show: false,
     webPreferences: {
       session: ses,
