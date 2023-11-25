@@ -13,7 +13,7 @@ declare namespace LX {
     type UserApiSources = Record<LX.Source, UserApiSourceInfo>
 
 
-    interface UserApiInfo {
+    interface UserApiInfoFull {
       id: string
       name: string
       description: string
@@ -24,6 +24,8 @@ declare namespace LX {
       version?: string
       sources?: UserApiSources
     }
+
+    type UserApiInfo = Omit<UserApiInfoFull, 'script'>
 
     interface UserApiStatus {
       status: boolean

@@ -1,20 +1,52 @@
 import { userApis as defaultUserApis } from './config'
 import { STORE_NAMES } from '@common/constants'
 import getStore from '@main/utils/store'
+import zlib from 'node:zlib'
 
 let userApis: LX.UserApi.UserApiInfo[] | null
+let scripts = new Map<string, string>()
+
+const saveData = () => {
+  getStore(STORE_NAMES.USER_API).set('userApis', userApis!.map(api => {
+    return {
+      ...api,
+      script: scripts.get(api.id),
+    }
+  }))
+}
 
 export const getUserApis = (): LX.UserApi.UserApiInfo[] => {
-  const electronStore_userApi = getStore(STORE_NAMES.USER_API)
   if (userApis) return userApis
-  userApis = electronStore_userApi.get('userApis') as LX.UserApi.UserApiInfo[]
-  if (!userApis) {
-    userApis = defaultUserApis
+
+  const electronStore_userApi = getStore(STORE_NAMES.USER_API)
+  let infoFull = electronStore_userApi.get('userApis') as LX.UserApi.UserApiInfoFull[]
+  let requiredUpdate = false
+  if (infoFull) {
+    for (let i = 0; i < infoFull.length; i++) {
+      const api = infoFull[i]
+      if (api.version != null) continue
+      requiredUpdate ||= true
+      try {
+        infoFull.splice(i, 1, {
+          ...parseScriptInfo(api.script),
+          ...api,
+        })
+      } catch (e) {
+        infoFull.splice(i, 1)
+        i--
+      }
+    }
+  } else {
+    infoFull = defaultUserApis
     electronStore_userApi.set('userApis', userApis)
   }
-  for (const api of userApis) {
+  userApis = infoFull.map(api => {
     if (api.allowShowUpdateAlert == null) api.allowShowUpdateAlert = false
-  }
+    const { script, ...info } = api
+    scripts.set(api.id, script)
+    return info
+  })
+  if (requiredUpdate) saveData()
   return userApis
 }
 
@@ -46,22 +78,47 @@ const matchInfo = (scriptInfo: string) => {
 
   return infos as Record<keyof typeof INFO_NAMES, string>
 }
-export const importApi = (script: string): LX.UserApi.UserApiInfo => {
+const parseScriptInfo = (script: string) => {
   const result = /^\/\*[\S|\s]+?\*\//.exec(script)
   if (!result) throw new Error('无效的自定义源文件')
 
   let scriptInfo = matchInfo(result[0])
 
   scriptInfo.name ||= `user_api_${new Date().toLocaleString()}`
+  return scriptInfo
+}
+const deflateScript = async(script: string) => new Promise<string>((resolve, reject) => {
+  zlib.deflate(Buffer.from(script, 'utf8'), (err, buf) => {
+    if (err) {
+      reject(err)
+      return
+    }
+    resolve('gz_' + buf.toString('base64'))
+  })
+})
+const inflateScript = async(script: string) => new Promise<string>((resolve, reject) => {
+  if (script.startsWith('gz_')) {
+    zlib.inflate(Buffer.from(script.substring(3), 'base64'), (err, buf) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve(buf.toString('utf8'))
+    })
+  } else resolve(script)
+})
+export const importApi = async(scriptRaw: string): Promise<LX.UserApi.UserApiInfo> => {
+  let scriptInfo = parseScriptInfo(scriptRaw)
   const apiInfo = {
     id: `user_api_${Math.random().toString().substring(2, 5)}_${Date.now()}`,
     ...scriptInfo,
-    script,
     allowShowUpdateAlert: true,
   }
   userApis ??= []
   userApis.push(apiInfo)
-  getStore(STORE_NAMES.USER_API).set('userApis', userApis)
+  const script = await deflateScript(scriptRaw)
+  scripts.set(apiInfo.id, script)
+  saveData()
   return apiInfo
 }
 
@@ -69,16 +126,21 @@ export const removeApi = (ids: string[]) => {
   if (!userApis) return
   for (let index = userApis.length - 1; index > -1; index--) {
     if (ids.includes(userApis[index].id)) {
+      scripts.delete(userApis[index].id)
       userApis.splice(index, 1)
       ids.splice(index, 1)
     }
   }
-  getStore(STORE_NAMES.USER_API).set('userApis', userApis)
+  saveData()
 }
 
 export const setAllowShowUpdateAlert = (id: string, enable: boolean) => {
   const targetApi = userApis?.find(api => api.id == id)
   if (!targetApi) return
   targetApi.allowShowUpdateAlert = enable
-  getStore(STORE_NAMES.USER_API).set('userApis', userApis)
+  saveData()
+}
+
+export const getScript = async(id: string) => {
+  return inflateScript(scripts.get(id) ?? '')
 }

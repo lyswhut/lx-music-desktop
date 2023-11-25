@@ -5,6 +5,7 @@ import path from 'node:path'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
 import { encodePath } from '@common/utils/electron'
 import USER_API_RENDERER_EVENT_NAME from './rendererEvent/name'
+import { getScript } from './utils'
 
 let browserWindow: Electron.BrowserWindow | null = null
 
@@ -91,8 +92,8 @@ export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   // const randomNum = Math.random().toString().substring(2, 10)
   await browserWindow.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(html))
 
-  browserWindow.on('ready-to-show', () => {
-    sendEvent(USER_API_RENDERER_EVENT_NAME.initEnv, userApi)
+  browserWindow.on('ready-to-show', async() => {
+    sendEvent(USER_API_RENDERER_EVENT_NAME.initEnv, { ...userApi, script: await getScript(userApi.id) })
   })
 
   // global.modules.userApiWindow.loadFile(join(dir, 'renderer/user-api.html'))
@@ -106,7 +107,7 @@ export const closeWindow = async() => {
     browserWindow.webContents.session.clearStorageData(),
     browserWindow.webContents.session.clearCache(),
   ])
-  browserWindow.destroy()
+  browserWindow?.destroy()
   browserWindow = null
 }
 

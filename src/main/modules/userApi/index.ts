@@ -6,9 +6,9 @@ let userApiId: string | null
 
 export const getApiList = getUserApis
 
-export const importApi = (script: string): LX.UserApi.ImportUserApi => {
+export const importApi = async(script: string): Promise<LX.UserApi.ImportUserApi> => {
   return {
-    apiInfo: handleImportApi(script),
+    apiInfo: await handleImportApi(script),
     apiList: getUserApis(),
   }
 }

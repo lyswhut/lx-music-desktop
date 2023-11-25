@@ -5,7 +5,10 @@ material-modal(:show="modelValue" bg-close teleport="#view" @close="handleClose"
     ul.scroll(v-if="apiList.length" :class="$style.content")
       li(v-for="(api, index) in apiList" :key="api.id" :class="[$style.listItem, {[$style.active]: appSetting['common.apiSource'] == api.id}]")
         div(:class="$style.listLeft")
-          h3 {{ api.name }}
+          h3
+            | {{ api.name }}
+            span(v-if="api.version") {{ /^\d/.test(api.version) ? `v${api.version}` : api.version }}
+            span(v-if="api.author") {{ api.author }}
           p {{ api.description }}
           div
             base-checkbox(:id="`user_api_${api.id}`" v-model="api.allowShowUpdateAlert" :class="$style.checkbox" :label="$t('user_api__allow_show_update_alert')" @change="handleChangeAllowUpdateAlert(api, $event)")
@@ -145,7 +148,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   transition: background-color 0.2s ease;
-  padding: 10px;
+  padding: 15px 10px;
   border-radius: @radius-border;
   &:hover {
     background-color: var(--color-primary-background-hover);
@@ -157,6 +160,11 @@ export default {
     font-size: 15px;
     color: var(--color-font);
     word-break: break-all;
+    span {
+      font-size: 12px;
+      color: var(--color-font-label);
+      margin-left: 6px;
+    }
   }
   p {
     margin-top: 5px;
