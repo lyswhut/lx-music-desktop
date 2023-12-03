@@ -161,7 +161,7 @@ const initEnv = (userApi) => {
         // data.content_type = 'multipart/form-data'
         options.json = false
       }
-      options.response_timeout = timeout
+      options.response_timeout = typeof timeout == 'number' && timeout > 0 ? Math.min(timeout, 60_000) : 60_000
 
       let request = needle.request(method, url, data, options, (err, resp, body) => {
         // console.log(err, resp, body)
