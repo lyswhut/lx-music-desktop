@@ -244,7 +244,7 @@ export default {
         })),
         ...userApi.list.map(api => ({
           id: api.id,
-          label: `${api.name}${api.description ? `（${api.description}）` : ''}${api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : ''}`,
+          label: `${api.name}${api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : ''}`,
           status: api.status,
           message: api.message,
           disabled: false,
