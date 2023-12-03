@@ -8,7 +8,7 @@ module.exports = {
     // 'vue',
     '@types/ws',
     // 'eslint-config-standard-with-typescript',
-    'typescript', // https://github.com/microsoft/TypeScript/pull/54567
+    // 'typescript', // https://github.com/microsoft/TypeScript/pull/54567
   ],
 
   // target: 'newest',
