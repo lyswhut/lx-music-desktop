@@ -41,7 +41,11 @@ dd
     .gap-top(v-for="item in apiSources" :key="item.id")
       base-checkbox(
         :id="`setting_api_source_${item.id}`" name="setting_api_source"
-        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
+        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :aria-label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
+        span(:class="$style.sourceLabel")
+          | {{ item.name }}
+          span(v-if="item.desc" :class="$style.desc") {{ item.desc }}
+          span(v-if="item.statusLabel" :class="$style.status") {{ item.statusLabel }}
     .p.gap-top
       base-btn.btn(min @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
 
@@ -239,12 +243,16 @@ export default {
       return [
         ...apiSourceInfo.map(api => ({
           id: api.id,
-          label: t('setting__basic_source_' + api.id) || api.name,
+          name: api.name,
+          label: api.name,
           disabled: api.disabled,
         })),
         ...userApi.list.map(api => ({
           id: api.id,
+          name: api.name,
           label: `${api.name}${api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : ''}`,
+          desc: [/^\d/.test(api.version) ? `v${api.version}` : api.version, api.author].filter(Boolean).join(', '),
+          statusLabel: api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : '',
           status: api.status,
           message: api.message,
           disabled: false,
@@ -482,6 +490,23 @@ export default {
         color: var(--color-primary-dark-100-alpha-300);
       }
     }
+  }
+}
+
+.sourceLabel {
+  flex: auto;
+  margin-left: 5px;
+  line-height: 1.5;
+  cursor: pointer;
+
+  .desc {
+    color: var(--color-500);
+    font-size: 12px;
+    margin-left: 5px;
+  }
+
+  .status {
+    margin-left: 5px;
   }
 }
 
