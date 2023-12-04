@@ -180,7 +180,6 @@
     "comlink": "~4.3.1",
     "crypto-js": "^4.2.0",
     "electron-log": "^5.0.1",
-    "electron-store": "^8.1.0",
     "font-list": "^1.5.1",
     "iconv-lite": "^0.6.3",
     "image-size": "^1.0.2",
