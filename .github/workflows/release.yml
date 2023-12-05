@@ -86,6 +86,7 @@ jobs:
 
       - name: Release win7 package
         run: |
+          npm run publish:win7:setup:x64
           npm run publish:win7:7z:x64
           npm run publish:win7:7z:x86
         env:

@@ -179,6 +179,12 @@ const createTarget = {
           buildOptions: { win: ['7z'] },
           options: winOptions,
         }
+      case 'win7_setup':
+        winOptions.artifactName = `\${productName}-v\${version}-win7_${arch}-Setup.\${ext}`
+        return {
+          buildOptions: { win: ['nsis'] },
+          options: winOptions,
+        }
       case 'win7_green':
         winOptions.artifactName = `\${productName}-v\${version}-win7_${arch}-green.\${ext}`
         return {

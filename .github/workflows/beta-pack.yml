@@ -108,6 +108,14 @@ jobs:
       - name: Install python setuptools
         run: pip.exe install setuptools
 
+      - name: Build Package win7 Setup x64
+        run: npm run pack:win7:setup:x64
+      - name: Upload Artifact win7 Setup x64
+        uses: actions/upload-artifact@v3
+        with:
+          name: lx-music-desktop-win7_x64-Setup
+          path: build/*win7_x64-Setup.exe
+
       - name: Build Package win7 7z x64
         run: npm run pack:win7:7z:x64
       - name: Upload Artifact win7 7z x64
