@@ -47,7 +47,7 @@ export default {
     },
     label: {
       type: String,
-      required: true,
+      default: undefined,
     },
     disabled: {
       type: Boolean,

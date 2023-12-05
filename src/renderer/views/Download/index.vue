@@ -20,7 +20,7 @@
       </div>
       <div v-if="list.length" ref="dom_listContent" :class="$style.content">
         <base-virtualized-list
-          v-slot="{ item, index }" :list="list" key-name="id" :item-height="listItemHeight"
+          ref="listRef" v-slot="{ item, index }" :list="list" key-name="id" :item-height="listItemHeight"
           container-class="scroll" content-class="list"
         >
           <div
@@ -68,6 +68,7 @@
 <script>
 // import { checkPath, openDirInExplorer, openUrl } from '@common/utils/electron'
 
+import { ref } from '@common/utils/vueTools'
 import useListInfo from './useListInfo'
 import useList from './useList'
 import useTab from './useTab'
@@ -80,6 +81,7 @@ import { appSetting } from '@renderer/store/setting'
 export default {
   name: 'Download',
   setup() {
+    const listRef = ref()
     const { tabs, activeTab } = useTab()
 
     const {
@@ -95,7 +97,7 @@ export default {
       listItemHeight,
       removeAllSelect,
       handleSelectData,
-    } = useList({ list, listAll })
+    } = useList({ listRef, list, listAll })
 
     const {
       handlePlayMusic,
@@ -196,6 +198,7 @@ export default {
       return quality == 'flac24bit' ? 'FLAC Hires' : quality?.toUpperCase()
     }
     return {
+      listRef,
       list,
       downloadStatus,
       rightClickSelectedIndex,

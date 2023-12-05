@@ -3,7 +3,7 @@ import { isFullscreen } from '@renderer/store'
 import { getFontSizeWithScreen } from '@renderer/utils'
 import { appSetting } from '@renderer/store/setting'
 
-const useKeyEvent = ({ handleSelectAllData }) => {
+const useKeyEvent = ({ listRef, handleSelectAllData }) => {
   const keyEvent = {
     isShiftDown: false,
     isModDown: false,
@@ -22,7 +22,7 @@ const useKeyEvent = ({ handleSelectAllData }) => {
     keyEvent.isModDown &&= false
   }
   const handle_key_mod_a_down = ({ event }) => {
-    if (event.target.tagName == 'INPUT') return
+    if (event.target.tagName == 'INPUT' || document.activeElement != listRef.value?.$el) return
     event.preventDefault()
     if (event.repeat) return
     keyEvent.isModDown = false
@@ -45,7 +45,7 @@ const useKeyEvent = ({ handleSelectAllData }) => {
   return keyEvent
 }
 
-export default ({ list, listAll }) => {
+export default ({ listRef, list, listAll }) => {
   const selectedList = ref([])
 
   let lastSelectIndex = -1
@@ -60,7 +60,7 @@ export default ({ list, listAll }) => {
     removeAllSelect()
     selectedList.value = [...list.value]
   }
-  const keyEvent = useKeyEvent({ handleSelectAllData })
+  const keyEvent = useKeyEvent({ handleSelectAllData, listRef })
 
   const handleSelectData = clickIndex => {
     if (keyEvent.isShiftDown) {

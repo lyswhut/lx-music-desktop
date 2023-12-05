@@ -164,7 +164,7 @@ export default {
       listItemHeight,
       handleSelectData,
       removeAllSelect,
-    } = useList({ list })
+    } = useList({ listRef, list })
 
     const {
       handlePlayMusic,

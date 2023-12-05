@@ -1,10 +1,11 @@
-import { computed, watch, ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { computed, watch, ref, onBeforeUnmount, type Ref } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 import { getFontSizeWithScreen } from '@renderer/utils'
 
-const useKeyEvent = ({ handleSelectAllData }: {
+const useKeyEvent = ({ handleSelectAllData, listRef }: {
   handleSelectAllData: () => void
+  listRef: Ref<any>
 }) => {
   const keyEvent = {
     isShiftDown: false,
@@ -24,7 +25,7 @@ const useKeyEvent = ({ handleSelectAllData }: {
     keyEvent.isModDown &&= false
   }
   const handle_key_mod_a_down = ({ event }: LX.KeyDownEevent) => {
-    if (!event || (event.target as HTMLElement).tagName == 'INPUT') return
+    if (!event || (event.target as HTMLElement).tagName == 'INPUT' || document.activeElement != listRef.value?.$el) return
     event.preventDefault()
     if (event.repeat) return
     keyEvent.isModDown = false
@@ -48,10 +49,11 @@ const useKeyEvent = ({ handleSelectAllData }: {
 }
 
 
-export default ({ props }: {
+export default ({ props, listRef }: {
   props: {
     list: LX.Music.MusicInfoOnline[]
   }
+  listRef: Ref<any>
 }) => {
   const selectedList = ref<LX.Music.MusicInfoOnline[]>([])
   let lastSelectIndex = -1
@@ -66,7 +68,7 @@ export default ({ props }: {
     removeAllSelect()
     selectedList.value = [...props.list]
   }
-  const keyEvent = useKeyEvent({ handleSelectAllData })
+  const keyEvent = useKeyEvent({ handleSelectAllData, listRef })
 
   const handleSelectData = (clickIndex: number) => {
     if (keyEvent.isShiftDown) {
