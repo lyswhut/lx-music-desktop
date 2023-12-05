@@ -1,41 +1,11 @@
 <template lang="pug">
 transition(enter-active-class="animated slideInRight" leave-active-class="animated slideOutDown" @after-enter="handleAfterEnter" @after-leave="handleAfterLeave")
-  div(v-if="isShowPlayerDetail" :class="[$style.container, { [$style.fullscreen]: isFullscreen }]" @contextmenu="handleContextMenu")
+  div(v-if="isShowPlayerDetail" :class="[$style.container, { fullscreen: isFullscreen }]" @contextmenu="handleContextMenu")
     div(:class="$style.bg")
     //- div(:class="$style.bg" :style="bgStyle")
     //- div(:class="$style.bg2")
-    div(v-if="appSetting['common.controlBtnPosition'] == 'left'" :class="[$style.header, $style.controlBtnLeft]")
-      div(:class="$style.controBtn")
-        button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="80%" viewBox="0 0 30.727 30.727" space="preserve")
-            use(xlink:href="#icon-window-hide")
-        button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" @click="fullscreenExit")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%")
-            use(xlink:href="#icon-fullscreen-exit")
-        button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve")
-            use(xlink:href="#icon-window-minimize")
-
-        //- button(type="button" :class="$style.max" @click="max")
-        button(type="button" :class="$style.close" :aria-label="$t('close')" @click="close")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve")
-            use(xlink:href="#icon-window-close")
-    div(v-else :class="[$style.header, $style.controlBtnRight]")
-      div(:class="$style.controBtn")
-        button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" @click="hide")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="35%" viewBox="0 0 30.727 30.727" space="preserve")
-            use(xlink:href="#icon-window-hide")
-        button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" @click="fullscreenExit")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%")
-            use(xlink:href="#icon-fullscreen-exit")
-        button(type="button" :class="$style.min" :aria-label="$t('min')" @click="min")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
-            use(xlink:href="#icon-window-minimize-2")
-
-        //- button(type="button" :class="$style.max" @click="max")
-        button(type="button" :class="$style.close" :aria-label="$t('close')" @click="close")
-          svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
-            use(xlink:href="#icon-window-close-2")
+    ControlBtnsLeftHeader(v-if="appSetting['common.controlBtnPosition'] == 'left'")
+    ControlBtnsRightHeader(v-else)
     div(:class="[$style.main, {[$style.showComment]: isShowPlayComment}]")
       div.left(:class="$style.left")
         //- div(:class="$style.info")
@@ -73,6 +43,8 @@ import {
 import LyricPlayer from './LyricPlayer.vue'
 import PlayBar from './PlayBar.vue'
 import MusicComment from './components/MusicComment/index.vue'
+import ControlBtnsLeftHeader from './ControlBtnsLeftHeader.vue'
+import ControlBtnsRightHeader from './ControlBtnsRightHeader.vue'
 import { registerAutoHideMounse, unregisterAutoHideMounse } from './autoHideMounse'
 import { appSetting } from '@renderer/store/setting'
 import { closeWindow, maxWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
@@ -80,6 +52,8 @@ import { closeWindow, maxWindow, minWindow, setFullScreen } from '@renderer/util
 export default {
   name: 'CorePlayDetail',
   components: {
+    ControlBtnsLeftHeader,
+    ControlBtnsRightHeader,
     LyricPlayer,
     PlayBar,
     MusicComment,
@@ -185,22 +159,6 @@ export default {
   * {
     box-sizing: border-box;
   }
-
-  &.fullscreen {
-    .header {
-      -webkit-app-region: no-drag;
-      align-self: flex-start;
-      .controBtn {
-        .close, .min {
-          display: none;
-        }
-        .fullscreenExit {
-          display: flex;
-        }
-      }
-    }
-  }
-
 }
 .bg {
   position: absolute;
@@ -241,103 +199,6 @@ export default {
 //   z-index: -1;
 //   background-color: rgba(255, 255, 255, .8);
 // }
-
-.header {
-  position: relative;
-  flex: 0 0 @height-toolbar;
-  -webkit-app-region: drag;
-  width: 100%;
-
-  .controBtn {
-    position: absolute;
-    top: 0;
-    display: flex;
-    -webkit-app-region: no-drag;
-
-    button {
-      display: flex;
-      position: relative;
-      background: none;
-      border: none;
-      outline: none;
-      padding: 1px;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .fullscreenExit {
-      display: none;
-    }
-  }
-
-  &.controlBtnLeft {
-    .controBtn {
-      align-items: center;
-      padding: 0 @control-btn-width;
-      left: 0;
-      flex-direction: row-reverse;
-      height: @height-toolbar * .7;
-      transition: opacity @transition-normal;
-      opacity: .5;
-      &:hover {
-        opacity: .8;
-        .controBtnIcon {
-          opacity: 1;
-        }
-      }
-
-      button {
-        width: @control-btn-width;
-        height: @control-btn-width;
-        border-radius: 50%;
-        color: var(--color-font);
-        + button {
-          margin-right: (@control-btn-width / 2);
-        }
-
-        &.hide {
-          background-color: var(--color-btn-hide);
-        }
-        &.min, &.fullscreenExit {
-          background-color: var(--color-btn-min);
-        }
-        // &.max {
-        //   background-color: var(--color-btn-max);
-        // }
-        &.close {
-          background-color: var(--color-btn-close);
-        }
-      }
-    }
-
-    .controBtnIcon {
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-  }
-  &.controlBtnRight {
-    align-self: flex-start;
-    .controBtn {
-      right: 0;
-      button {
-        width: 46px;
-        height: 30px;
-        color: var(--color-font-label);
-        transition: background-color 0.2s ease-in-out;
-
-        &:hover {
-          background-color: var(--color-button-background-hover);
-
-          &.close {
-            background-color: var(--color-btn-close);
-          }
-        }
-      }
-    }
-  }
-}
 
 .main {
   flex: auto;
