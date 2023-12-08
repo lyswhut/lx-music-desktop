@@ -26,6 +26,7 @@ import {
 } from '@main/modules/winMain'
 import { quitApp } from '@main/app'
 import { getAllThemes, removeTheme, saveTheme } from '@main/utils'
+import { openDirInExplorer } from '@common/utils/electron'
 
 export default () => {
   // 设置应用名称
@@ -79,6 +80,10 @@ export default () => {
   // 显示保存弹窗
   mainHandle<Electron.SaveDialogOptions, Electron.SaveDialogReturnValue>(WIN_MAIN_RENDERER_EVENT_NAME.show_save_dialog, async({ params }) => {
     return showSaveDialog(params)
+  })
+  // 在资源管理器中定位文件
+  mainOn<string>(WIN_MAIN_RENDERER_EVENT_NAME.open_dir_in_explorer, async({ params }) => {
+    return openDirInExplorer(params)
   })
 
 

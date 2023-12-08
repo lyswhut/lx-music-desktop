@@ -55,6 +55,7 @@ const modules = {
     show_save_dialog: 'show_save_dialog',
     show_select_dialog: 'show_select_dialog',
     show_dialog: 'show_dialog',
+    open_dir_in_explorer: 'open_dir_in_explorer',
     open_dev_tools: 'open_dev_tools',
 
     progress: 'progress',

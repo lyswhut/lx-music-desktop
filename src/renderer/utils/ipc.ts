@@ -494,6 +494,12 @@ export const openSaveDir = async(options: Electron.SaveDialogOptions) => {
   return rendererInvoke<Electron.SaveDialogOptions, Electron.SaveDialogReturnValue>(WIN_MAIN_RENDERER_EVENT_NAME.show_save_dialog, options)
 }
 
+/**
+ * 在资源管理器中定位文件
+ */
+export const openDirInExplorer = async(path: string) => {
+  return rendererSend<string>(WIN_MAIN_RENDERER_EVENT_NAME.open_dir_in_explorer, path)
+}
 
 /**
  * 获取缓存大小

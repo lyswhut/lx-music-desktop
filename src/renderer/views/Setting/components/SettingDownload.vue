@@ -56,8 +56,7 @@ dd
 <script>
 import { computed } from '@common/utils/vueTools'
 // import { getSystemFonts } from '@renderer/utils/tools'
-import { openDirInExplorer } from '@common/utils/electron'
-import { showSelectDialog } from '@renderer/utils/ipc'
+import { showSelectDialog, openDirInExplorer } from '@renderer/utils/ipc'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 
