@@ -1,6 +1,6 @@
 <template>
   <div :class="[$style.tagList, {[$style.active]: popupVisible}]">
-    <div ref="dom_btn" :class="$style.label" @click="handleShow">
+    <div ref="dom_btn" :class="$style.label" @click.stop="handleShow">
       <span>{{ tagName }}</span>
       <div :class="$style.icon">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.847 451.847" space="preserve">
@@ -98,9 +98,7 @@ const handleHide = (evt) => {
   // if (e && e.target.parentNode != this.$refs.dom_popup && this.show) return this.show = false
   // console.log(this.$refs)
   if (evt && (evt.target == dom_btn.value || dom_btn.value?.contains(evt.target))) return
-  setTimeout(() => {
-    popupVisible.value = false
-  }, 50)
+  popupVisible.value = false
 }
 
 
