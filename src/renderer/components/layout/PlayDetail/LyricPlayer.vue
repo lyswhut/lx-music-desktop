@@ -25,7 +25,7 @@
       </div>
     </transition>
     <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-      <div v-if="isShowLrcSelectContent" :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" @contextmenu="handleCopySelectText">
+      <div v-if="isShowLrcSelectContent" ref="dom_lrc_select_content" tabindex="-1" :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" @contextmenu="handleCopySelectText">
         <div v-for="(info, index) in lyric.lines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]">
           <span>{{ info.text }}</span>
           <template v-for="(lrc, i) in info.extendedLyrics" :key="i">
@@ -59,6 +59,7 @@ import useLyric from '@renderer/utils/compositions/useLyric'
 import LyricMenu from './components/LyricMenu.vue'
 import { appSetting } from '@renderer/store/setting'
 import { setLyricOffset } from '@renderer/core/lyric'
+import useSelectAllLrc from './useSelectAllLrc'
 
 export default {
   components: {
@@ -82,6 +83,8 @@ export default {
       handleSkipMouseLeave,
       handleScrollLrc,
     } = useLyric({ isPlay, lyric, playProgress, isShowLyricProgressSetting })
+
+    const dom_lrc_select_content = useSelectAllLrc()
 
     watch([isFullscreen, isShowPlayComment], () => {
       setTimeout(handleScrollLrc, 400)
@@ -154,6 +157,7 @@ export default {
       dom_lyric,
       dom_lyric_text,
       dom_skip_line,
+      dom_lrc_select_content,
       isMsDown,
       timeStr,
       handleLyricMouseDown,
