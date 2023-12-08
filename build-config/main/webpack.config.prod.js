@@ -12,6 +12,7 @@ const buildConfig = require('../webpack-build-config')
 
 module.exports = merge(baseConfig, {
   mode: 'production',
+  devtool: 'source-map',
   entry: {
     main: path.join(__dirname, '../../src/main/index.ts'),
     // 'dbService.worker': path.join(__dirname, '../../src/main/worker/dbService/index.ts'),
