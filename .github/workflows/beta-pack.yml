@@ -40,31 +40,17 @@ jobs:
   Windows:
     name: Windows
     runs-on: windows-latest
+    env:
+      NPM_CACHE: '%APPDATA%\npm-cache'
+      ELECTRON_CACHE: '%LOCALAPPDATA%\electron\Cache'
+      ELECTRON_BUILDERCACHE: '%LOCALAPPDATA%\electron-builder\Cache'
     # needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-
-      - name: Cache file
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            %APPDATA%\npm-cache
-            %LOCALAPPDATA%\electron\Cache
-            %LOCALAPPDATA%\electron-builder\Cache
-          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
-      - name: Install Dependencies
-        run: |
-          npm ci
+      - name: Setup Node Env
+        uses: ./.github/actions/setup
 
       - name: Build src code
         run: npm run build
@@ -141,6 +127,10 @@ jobs:
     name: Mac
     runs-on: macos-latest
     # needs: CheckCode
+    env:
+      NPM_CACHE: $HOME/.npm
+      ELECTRON_CACHE: $HOME/.cache/electron
+      ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
@@ -148,26 +138,8 @@ jobs:
       - name: Install python setuptools
         run: python3 -m pip install setuptools
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-
-      - name: Cache file
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            $HOME/.cache/electron
-            $HOME/.cache/electron-builder
-            $HOME/.npm/_prebuilds
-          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
-      - name: Install Dependencies
-        run: |
-          npm ci
+      - name: Setup Node Env
+        uses: ./.github/actions/setup
 
       - name: Build src code
         run: npm run build
@@ -176,9 +148,6 @@ jobs:
         run: |
           npm run pack:mac:dmg
           npm run pack:mac:dmg:arm64
-        env:
-          ELECTRON_CACHE: $HOME/.cache/electron
-          ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
 
       - name: Upload Artifact dmg
         uses: actions/upload-artifact@v3
@@ -201,6 +170,10 @@ jobs:
   Linux:
     name: Linux
     runs-on: ubuntu-latest
+    env:
+      NPM_CACHE: $HOME/.npm
+      ELECTRON_CACHE: $HOME/.cache/electron
+      ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
     # needs: CheckCode
     steps:
       - name: Install package
@@ -209,26 +182,8 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '16'
-
-      - name: Cache file
-        uses: actions/cache@v3
-        with:
-          path: |
-            node_modules
-            $HOME/.cache/electron
-            $HOME/.cache/electron-builder
-            $HOME/.npm/_prebuilds
-          key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
-
-      - name: Install Dependencies
-        run: |
-          npm ci
+      - name: Setup Node Env
+        uses: ./.github/actions/setup
 
       - name: Build src code
         run: npm run build

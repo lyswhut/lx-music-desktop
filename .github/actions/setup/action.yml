@@ -1,0 +1,25 @@
+name: Setup
+description: Setup Node Env
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '16'
+
+    - name: Cache node modules
+      id: cache-npm
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.NPM_CACHE }}
+          ${{ env.ELECTRON_CACHE }}
+          ${{ env.ELECTRON_BUILDERCACHE }}
+        key: ${{ runner.os }}-node-modules-cache-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-cache-
+
+    - name: Install dependencies
+      run: npm ci
