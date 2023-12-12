@@ -23,3 +23,4 @@ runs:
 
     - name: Install dependencies
       run: npm ci
+      shell: bash
