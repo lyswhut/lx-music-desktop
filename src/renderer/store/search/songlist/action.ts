@@ -2,7 +2,7 @@ import { markRawList } from '@common/utils/vueTools'
 import music from '@renderer/utils/musicSdk'
 import { sortInsert, similar } from '@common/utils/common'
 
-import type { ListInfoItem, SearchListInfo } from './state'
+import type { ListInfoItem } from './state'
 import { sources, maxPages, listInfos } from './state'
 
 interface SearchResult {
@@ -60,7 +60,7 @@ const setLists = (results: SearchResult[], page: number, text: string): ListInfo
 
 const setList = (datas: SearchResult, page: number, text: string): ListInfoItem[] => {
   // console.log(datas.source, datas.list)
-  let listInfo = listInfos[datas.source] as SearchListInfo
+  let listInfo = listInfos[datas.source]!
   listInfo.list = markRawList(datas.list)
   if (page == 1 || (datas.total && datas.list.length)) listInfo.total = datas.total
   else listInfo.total = datas.limit * page
@@ -72,7 +72,7 @@ const setList = (datas: SearchResult, page: number, text: string): ListInfoItem[
 }
 
 export const resetListInfo = (sourceId: LX.OnlineSource | 'all'): [] => {
-  let listInfo = listInfos[sourceId] as SearchListInfo
+  let listInfo = listInfos[sourceId]!
   listInfo.page = 1
   listInfo.limit = 20
   listInfo.total = 0
@@ -85,7 +85,7 @@ export const resetListInfo = (sourceId: LX.OnlineSource | 'all'): [] => {
 }
 
 export const search = async(text: string, page: number, sourceId: LX.OnlineSource | 'all'): Promise<ListInfoItem[]> => {
-  const listInfo = listInfos[sourceId] as SearchListInfo
+  const listInfo = listInfos[sourceId]!
   if (!text) return resetListInfo(sourceId)
   const key = `${page}__${sourceId}__${text}`
   if (listInfo.key == key && listInfo.list.length) return listInfo.list
@@ -94,7 +94,7 @@ export const search = async(text: string, page: number, sourceId: LX.OnlineSourc
     listInfo.key = key
     let task = []
     for (const source of sources) {
-      if (source == 'all' || (page > 1 && page > (maxPages[source] as number))) continue
+      if (source == 'all' || (page > 1 && page > (maxPages[source]!))) continue
       task.push((music[source]?.songList.search(text, page, listInfos.all.limit) ?? Promise.reject(new Error('source not found: ' + source))).catch((error: any) => {
         console.log(error)
         return {

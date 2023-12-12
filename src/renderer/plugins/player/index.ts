@@ -82,7 +82,7 @@ const initBiquadFilter = () => {
   }
 
   for (i = 1; i < freqs.length; i++) {
-    (biquads.get(`hz${freqs[i - 1]}`) as BiquadFilterNode).connect(biquads.get(`hz${freqs[i]}`) as BiquadFilterNode)
+    (biquads.get(`hz${freqs[i - 1]}`)!).connect(biquads.get(`hz${freqs[i]}`)!)
   }
 }
 
@@ -117,8 +117,8 @@ const initAdvancedAudioFeatures = () => {
   // source -> analyser -> biquadFilter -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
   mediaSource = audioContext.createMediaElementSource(audio)
   mediaSource.connect(analyser)
-  analyser.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
-  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  analyser.connect(biquads.get(`hz${freqs[0]}`)!)
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1)!}`)!)
   lastBiquadFilter.connect(convolverSourceGainNode)
   lastBiquadFilter.connect(convolver)
   convolverDynamicsCompressor.connect(panner)
@@ -223,7 +223,7 @@ let isConnected = true
 const connectNode = () => {
   if (isConnected) return
   console.log('connect Node')
-  analyser?.connect(biquads.get(`hz${freqs[0]}`) as BiquadFilterNode)
+  analyser?.connect(biquads.get(`hz${freqs[0]}`)!)
   isConnected = true
   if (pitchShifterNodeTempValue == 1 && pitchShifterNodeLoadStatus == 'connected') {
     disconnectPitchShifterNode()
@@ -246,7 +246,7 @@ const connectPitchShifterNode = () => {
   audio!.addEventListener('emptied', disconnectNode)
   if (audio!.paused) disconnectNode()
 
-  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1)!}`)!)
   lastBiquadFilter.disconnect()
   lastBiquadFilter.connect(pitchShifterNode)
 
@@ -260,7 +260,7 @@ const connectPitchShifterNode = () => {
 }
 const disconnectPitchShifterNode = () => {
   console.log('disconnect Pitch Shifter Node')
-  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1) as Freqs}`) as BiquadFilterNode)
+  const lastBiquadFilter = (biquads.get(`hz${freqs.at(-1)!}`)!)
   lastBiquadFilter.disconnect()
   lastBiquadFilter.connect(convolver)
   lastBiquadFilter.connect(convolverSourceGainNode)

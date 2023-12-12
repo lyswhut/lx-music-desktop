@@ -56,7 +56,7 @@ const checkDuplicateClient = (newSocket: LX.Sync.Server.Socket) => {
 }
 
 const handleConnection = async(socket: LX.Sync.Server.Socket, request: IncomingMessage) => {
-  const queryData = new URL(request.url as string, host).searchParams
+  const queryData = new URL(request.url!, host).searchParams
   const clientId = queryData.get('i')
 
   //   // if (typeof socket.handshake.query.i != 'string') return socket.disconnect(true)
@@ -232,7 +232,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
         // events = {}
         if (!status.devices.length) handleUnconnection()
       } else {
-        const queryData = new URL(request.url as string, host).searchParams
+        const queryData = new URL(request.url!, host).searchParams
         log.info('deconnection', queryData.get('i'))
       }
     })
@@ -301,7 +301,7 @@ const handleStartServer = async(port = 9527, ip = '0.0.0.0') => await new Promis
     const bind = typeof addr == 'string' ? `pipe ${addr}` : `port ${addr.port}`
     log.info(`Listening on ${ip} ${bind}`)
     resolve(null)
-    void registerLocalSyncEvent(wss as LX.Sync.Server.SocketServer)
+    void registerLocalSyncEvent(wss!)
   })
 
   host = `http://${ip}:${port}`

@@ -3,7 +3,7 @@ import music from '@renderer/utils/musicSdk'
 import { deduplicationList, toNewMusicInfo } from '@renderer/utils'
 import { sortInsert, similar } from '@common/utils/common'
 
-import { sources, maxPages, listInfos, type ListInfo } from './state'
+import { sources, maxPages, listInfos } from './state'
 
 interface SearchResult {
   list: LX.Music.MusicInfo[]
@@ -61,7 +61,7 @@ const setLists = (results: SearchResult[], page: number, text: string): LX.Music
 
 const setList = (datas: SearchResult, page: number, text: string): LX.Music.MusicInfo[] => {
   // console.log(datas.source, datas.list)
-  let listInfo = listInfos[datas.source] as ListInfo
+  let listInfo = listInfos[datas.source]!
   listInfo.list = deduplicationList(datas.list.map(s => markRaw(toNewMusicInfo(s))))
   if (page == 1 || (datas.total && datas.list.length)) listInfo.total = datas.total
   else listInfo.total = datas.limit * page
@@ -74,7 +74,7 @@ const setList = (datas: SearchResult, page: number, text: string): LX.Music.Musi
 }
 
 export const resetListInfo = (sourceId: LX.OnlineSource | 'all'): [] => {
-  let listInfo = listInfos[sourceId] as ListInfo
+  let listInfo = listInfos[sourceId]!
   listInfo.list = []
   listInfo.page = 0
   listInfo.maxPage = 0

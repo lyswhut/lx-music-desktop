@@ -4,7 +4,7 @@ import syncSourceList from '@renderer/store/list/syncSourceList'
 
 const handleSyncSourceList = async(waitUpdateLists: LX.List.UserListInfo[]) => {
   if (!waitUpdateLists.length) return
-  const targetListInfo = waitUpdateLists.shift() as LX.List.UserListInfo
+  const targetListInfo = waitUpdateLists.shift()!
   // console.log(targetListInfo)
   try {
     await syncSourceList(targetListInfo)

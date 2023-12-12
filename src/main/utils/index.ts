@@ -178,8 +178,8 @@ export const initHotKey = async() => {
   }
 
   return {
-    local: localConfig as LX.HotKeyConfig,
-    global: globalConfig as LX.HotKeyConfig,
+    local: localConfig!,
+    global: globalConfig!,
   }
 }
 

@@ -42,6 +42,7 @@ const typescriptRule = {
   '@typescript-eslint/return-await': 'off',
   '@typescript-eslint/ban-ts-comment': 'off',
   '@typescript-eslint/comma-dangle': 'off',
+  '@typescript-eslint/no-unsafe-argument': 'off',
 }
 const vueRule = {
   ...typescriptRule,

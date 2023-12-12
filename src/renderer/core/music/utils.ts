@@ -169,7 +169,7 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   let itemQuality: LX.Quality | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
+  while (musicInfo = (musicInfos.shift()!)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     if (!assertApiSupport(musicInfo.source)) continue
@@ -263,7 +263,7 @@ export const getOnlineOtherSourcePicUrl = async({ musicInfos, onToggleSource, is
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
+  while (musicInfo = (musicInfos.shift()!)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     // if (!assertApiSupport(musicInfo.source)) continue
@@ -346,7 +346,7 @@ export const getOnlineOtherSourceLyricInfo = async({ musicInfos, onToggleSource,
 }> => {
   let musicInfo: LX.Music.MusicInfoOnline | null = null
   // eslint-disable-next-line no-cond-assign
-  while (musicInfo = (musicInfos.shift() as LX.Music.MusicInfoOnline)) {
+  while (musicInfo = (musicInfos.shift()!)) {
     if (retryedSource.includes(musicInfo.source)) continue
     retryedSource.push(musicInfo.source)
     // if (!assertApiSupport(musicInfo.source)) continue

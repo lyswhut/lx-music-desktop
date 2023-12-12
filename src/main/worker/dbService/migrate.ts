@@ -30,7 +30,7 @@ const migrateV1 = (db: Database.Database) => {
   // 修复 v2.4.0 的默认数据库版本号不对的问题
   const existsTable = db.prepare('SELECT name FROM "main".sqlite_master WHERE type=\'table\' AND name=\'dislike_list\';').get()
   if (!existsTable) {
-    const sql = tables.get('dislike_list') as string
+    const sql = tables.get('dislike_list')!
     db.exec(sql)
   }
 }

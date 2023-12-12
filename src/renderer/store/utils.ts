@@ -75,7 +75,7 @@ export const applyTheme = (id: string, lightId: string, darkId: string, dataPath
     let theme = findTheme(themeInfo, themeId)
     if (!theme) {
       themeId = id == 'auto' && themeShouldUseDarkColors.value ? 'black' : 'green'
-      theme = themeInfo.themes.find(theme => theme.id == themeId) as LX.Theme
+      theme = themeInfo.themes.find(theme => theme.id == themeId)!
     }
     window.setTheme(buildThemeColors(theme, dataPath))
   })

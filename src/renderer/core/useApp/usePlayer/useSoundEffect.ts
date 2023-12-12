@@ -20,7 +20,7 @@ const loadBuffer = async(name: string) => new Promise<AudioBuffer>((resolve, rej
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const path = require('@renderer/assets/medias/filters/' + name) as string
   if (cache.has(path)) {
-    resolve(cache.get(path) as AudioBuffer)
+    resolve(cache.get(path)!)
     return
   }
   // Load buffer asynchronously

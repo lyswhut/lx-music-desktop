@@ -117,7 +117,7 @@ const verifyConnection = (encryptMsg: string, userId: string) => {
 export const authConnect = async(req: http.IncomingMessage) => {
   let ip = getAvailableIP(req)
   if (ip) {
-    const query = querystring.parse((req.url as string).split('?')[1])
+    const query = querystring.parse((req.url!).split('?')[1])
     const i = query.i
     const t = query.t
     if (typeof i == 'string' && typeof t == 'string' && verifyConnection(t, i)) return

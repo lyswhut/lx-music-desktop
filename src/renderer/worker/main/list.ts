@@ -112,7 +112,7 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
   let intv = 0
   let unit = 1
   while (intvArr.length) {
-    intv += parseInt(intvArr.pop() as string) * unit
+    intv += parseInt(intvArr.pop()!) * unit
     unit *= 60
   }
   return intv
@@ -237,7 +237,7 @@ export const filterDuplicateMusic = async(list: LX.Music.MusicInfo[], isFilterVa
   // console.log(duplicateList)
   const duplicateNames = Array.from(duplicateList)
   duplicateNames.sort((a, b) => a.localeCompare(b))
-  return duplicateNames.map(name => listMap.get(name) as ListMapValue).flat()
+  return duplicateNames.map(name => listMap.get(name)!).flat()
 }
 
 export const searchListMusic = (list: LX.Music.MusicInfo[], text: string) => {
@@ -271,7 +271,7 @@ export const createSortedList = (list: LX.Music.MusicInfo[], position: number, i
   const map = new Map<string, LX.Music.MusicInfo>()
   for (const item of list) map.set(item.id, item)
   for (const id of ids) {
-    infos.push(map.get(id) as LX.Music.MusicInfo)
+    infos.push(map.get(id)!)
     map.delete(id)
   }
   list = list.filter(mInfo => map.has(mInfo.id))

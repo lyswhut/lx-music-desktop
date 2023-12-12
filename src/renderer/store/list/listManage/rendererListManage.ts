@@ -68,7 +68,7 @@ export const updateUserListPosition = async(data: LX.List.ListActionUpdatePositi
  */
 export const getListMusics = async(listId: string | null): Promise<LX.Music.MusicInfo[]> => {
   if (!listId) return []
-  if (allMusicList.has(listId)) return allMusicList.get(listId) as LX.Music.MusicInfo[]
+  if (allMusicList.has(listId)) return allMusicList.get(listId)!
   const list = await rendererInvoke<string, LX.Music.MusicInfo[]>(PLAYER_EVENT_NAME.list_music_get, listId)
   return setMusicList(listId, list)
 }
