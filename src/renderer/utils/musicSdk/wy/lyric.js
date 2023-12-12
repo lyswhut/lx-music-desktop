@@ -246,6 +246,20 @@ const parseTools = {
 //   return requestObj
 // }
 
+// https://github.com/lyswhut/lx-music-mobile/issues/370
+const fixTimeLabel = (lrc, tlrc, romalrc) => {
+  if (lrc) {
+    let newLrc = lrc.replace(/\[(\d{2}:\d{2}):(\d{2})]/g, '[$1.$2]')
+    let newTlrc = tlrc?.replace(/\[(\d{2}:\d{2}):(\d{2})]/g, '[$1.$2]') ?? tlrc
+    if (newLrc != lrc || newTlrc != tlrc) {
+      lrc = newLrc
+      tlrc = newTlrc
+      if (romalrc) romalrc = romalrc.replace(/\[(\d{2}:\d{2}):(\d{2,3})]/g, '[$1.$2]').replace(/\[(\d{2}:\d{2}\.\d{2})0]/g, '[$1]')
+    }
+  }
+
+  return { lrc, tlrc, romalrc }
+}
 
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/lyric_new.js
 export default songmid => {
@@ -261,10 +275,11 @@ export default songmid => {
     yrv: 0,
   })
   requestObj.promise = requestObj.promise.then(({ body }) => {
-    // console.log(body)
+    console.log(body)
     if (body.code !== 200 || !body?.lrc?.lyric) return Promise.reject(new Error('Get lyric failed'))
-    const info = parseTools.parse(body.yrc?.lyric, body.ytlrc?.lyric, body.yromalrc?.lyric, body.lrc.lyric, body.tlyric?.lyric, body.romalrc?.lyric)
-    // console.log(info)
+    const fixTimeLabelLrc = fixTimeLabel(body.lrc.lyric, body.tlyric?.lyric, body.romalrc?.lyric)
+    const info = parseTools.parse(body.yrc?.lyric, body.ytlrc?.lyric, body.yromalrc?.lyric, fixTimeLabelLrc.lrc, fixTimeLabelLrc.tlrc, fixTimeLabelLrc.romalrc)
+    console.log(info)
     if (!info.lyric) return Promise.reject(new Error('Get lyric failed'))
     return info
   })
