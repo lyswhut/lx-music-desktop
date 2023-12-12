@@ -32,7 +32,7 @@
         </button>
       </div>
       <div v-if="list" :class="$style.list" :style="listStyle">
-        <ul ref="dom_list">
+        <ul ref="dom_list" @mouseleave="selectIndex = -1">
           <li
             v-for="(item, index) in list"
             :key="item"
@@ -142,7 +142,10 @@ export default {
     },
     handleSearch() {
       this.hideList()
-      if (this.selectIndex < 0) { this.sendEvent('submit'); return }
+      if (this.selectIndex < 0) {
+        this.sendEvent('submit')
+        return
+      }
       this.sendEvent('listClick', this.selectIndex)
     },
     showList() {
