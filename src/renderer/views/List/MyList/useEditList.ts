@@ -23,7 +23,7 @@ export default ({ dom_lists_list }: {
   const handleSaveListName = async() => {
     let dom_target = dom_lists_list.value?.querySelector('.' + styles.editing) as HTMLElement
     if (!dom_target) return
-    const dom_input = dom_target.querySelector('.' + styles.listsInput)!
+    const dom_input: HTMLInputElement = dom_target.querySelector('.' + styles.listsInput)!
     if (!dom_input) return
     let name = dom_input.value.trim()
     if (dom_target.dataset.index == null) return
