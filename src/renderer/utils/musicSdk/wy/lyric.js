@@ -275,11 +275,11 @@ export default songmid => {
     yrv: 0,
   })
   requestObj.promise = requestObj.promise.then(({ body }) => {
-    console.log(body)
+    // console.log(body)
     if (body.code !== 200 || !body?.lrc?.lyric) return Promise.reject(new Error('Get lyric failed'))
     const fixTimeLabelLrc = fixTimeLabel(body.lrc.lyric, body.tlyric?.lyric, body.romalrc?.lyric)
     const info = parseTools.parse(body.yrc?.lyric, body.ytlrc?.lyric, body.yromalrc?.lyric, fixTimeLabelLrc.lrc, fixTimeLabelLrc.tlrc, fixTimeLabelLrc.romalrc)
-    console.log(info)
+    // console.log(info)
     if (!info.lyric) return Promise.reject(new Error('Get lyric failed'))
     return info
   })

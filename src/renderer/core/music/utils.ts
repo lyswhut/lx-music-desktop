@@ -118,7 +118,7 @@ export const buildLyricInfo = async(lyricInfo: MakeOptional<LX.Player.LyricInfo,
 
 export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<LX.Player.LyricInfo | null> => {
   let lrcInfo = await getStoreLyric(musicInfo)
-  lrcInfo = {} as unknown as LX.Player.LyricInfo
+  // lrcInfo = {} as unknown as LX.Player.LyricInfo
   if (existTimeExp.test(lrcInfo.lyric) && lrcInfo.tlyric != null) {
     // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
     //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
