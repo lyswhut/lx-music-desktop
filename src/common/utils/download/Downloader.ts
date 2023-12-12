@@ -39,6 +39,8 @@ class Task extends EventEmitter {
   requestInstance: http.ClientRequest | null = null
   maxRedirectNum = 2
   private redirectNum = 0
+  private dataWriteQueueLength = 0
+  private closeWaiting = false
 
 
   constructor(url: string, savePath: string, filename: string, options: Partial<Options> = {}) {
@@ -65,6 +67,8 @@ class Task extends EventEmitter {
     this.progress.downloaded = 0
     this.progress.progress = 0
     this.progress.speed = 0
+    this.dataWriteQueueLength = 0
+    this.closeWaiting = false
     if (startByte) this.requestOptions.headers!.range = `bytes=${startByte}-${endByte}`
 
     if (!path) return
@@ -202,6 +206,7 @@ class Task extends EventEmitter {
     this.ws = fs.createWriteStream(this.chunkInfo.path, options)
 
     this.ws.on('finish', () => {
+      if (this.closeWaiting) return
       void this.__closeWriteStream()
     })
     this.ws.on('error', err => {
@@ -245,16 +250,21 @@ class Task extends EventEmitter {
         return
       }
       // console.log('close write stream')
-      this.ws.close(err => {
-        if (err) {
-          this.status = STATUS.error
-          this.emit('error', err)
-          reject(err)
-          return
-        }
-        this.ws = null
-        resolve()
-      })
+      if (this.closeWaiting || this.dataWriteQueueLength) {
+        this.closeWaiting ||= true
+        this.ws.on('close', resolve)
+      } else {
+        this.ws.close(err => {
+          if (err) {
+            this.status = STATUS.error
+            this.emit('error', err)
+            reject(err)
+            return
+          }
+          this.ws = null
+          resolve()
+        })
+      }
     })
   }
 
@@ -293,12 +303,16 @@ class Task extends EventEmitter {
       console.log('cancel write')
       return
     }
+    this.dataWriteQueueLength++
     this.__calculateProgress(chunk.length)
     this.ws.write(chunk, err => {
-      if (!err) return
-      console.log(err)
-      this.__handleError(err)
-      void this.stop()
+      this.dataWriteQueueLength--
+      if (err) {
+        console.log(err)
+        this.__handleError(err)
+        void this.stop()
+      }
+      if (this.closeWaiting && !this.dataWriteQueueLength) this.ws?.close()
     })
   }
 
@@ -322,22 +336,8 @@ class Task extends EventEmitter {
   }
 
   async __handleStop() {
-    return new Promise<void>((resolve, reject) => {
-      this.__closeRequest()
-      if (this.ws) {
-        this.ws.close(err => {
-          if (err) {
-            reject(err)
-            this.emit('error', err)
-            return
-          }
-          this.ws = null
-          resolve()
-        })
-      } else {
-        resolve()
-      }
-    })
+    this.__closeRequest()
+    return this.__closeWriteStream()
   }
 
   __calculateProgress(receivedBytes: number) {
