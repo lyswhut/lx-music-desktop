@@ -116,6 +116,9 @@ export default {
           ) {
             return item
           }
+          if (!singer) {
+            if (item.lowerCaseName == lowerCaseName && (interval ? item.interval == interval : true)) return item
+          }
         }
         return null
       }).catch(_ => null))

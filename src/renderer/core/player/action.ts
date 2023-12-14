@@ -150,7 +150,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()
-  })
+  }).catch(_ => _)
 
   void getLyricInfo({ musicInfo }).then((lyricInfo) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
@@ -200,7 +200,7 @@ const handlePlay = () => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()
-  })
+  }).catch(_ => _)
 
   void getLyricInfo({ musicInfo }).then((lyricInfo) => {
     if (musicInfo.id != playMusicInfo.musicInfo?.id) return
