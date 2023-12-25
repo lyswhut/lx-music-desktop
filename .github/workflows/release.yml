@@ -65,6 +65,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BT_TOKEN: ${{ secrets.BT_TOKEN }}
 
+      - name: Generate file MD5
+        run: |
+          cd build
+          Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
+
+
+  Windows_7:
+    name: Windows
+    runs-on: windows-latest
+    env:
+      NPM_CACHE: '%APPDATA%\npm-cache'
+      ELECTRON_CACHE: '%LOCALAPPDATA%\electron\Cache'
+      ELECTRON_BUILDERCACHE: '%LOCALAPPDATA%\electron-builder\Cache'
+    # needs: CheckCode
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node Env
+        uses: ./.github/actions/setup
+
+      - name: Build src code
+        run: npm run build
+
       - name: Prepare win7 electron env
         run: |
           npm install electron@22
