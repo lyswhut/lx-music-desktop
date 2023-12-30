@@ -71,6 +71,7 @@
   "download_status_error_write": "歌曲儲存位置被佔用或沒有寫入權限，請嘗試變更歌曲儲存目錄或重新啟動軟體或重新啟動電腦，錯誤詳情：",
   "download_status_start": "開始下載",
   "download_status_url_geting": "音樂連結獲取中...",
+  "download_status_write_queue": "資料寫入中（{num}）",
   "duplicate_list_tip": "你之前已收藏過該清單 [{name}]，是否需要更新裡面的歌曲？",
   "export": "匯出",
   "fullscreen_exit": "退出全螢幕",

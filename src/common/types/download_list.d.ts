@@ -21,6 +21,7 @@ declare global {
         speed: string
         downloaded: number
         total: number
+        writeQueue: number
       }
 
       interface DownloadTaskActionBase <A> {
@@ -50,6 +51,7 @@ declare global {
         total: number
         progress: number
         speed: string
+        writeQueue: number
         metadata: {
           musicInfo: LX.Music.MusicInfoOnline
           url: string | null

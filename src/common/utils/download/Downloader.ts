@@ -8,6 +8,7 @@ import { request, type Options as RequestOptions } from './request'
 
 export interface Options {
   forceResume: boolean
+  timeout: number
   requestOptions: RequestOptions
 }
 
@@ -23,6 +24,7 @@ const defaultRequestOptions: Options['requestOptions'] = {
 }
 const defaultOptions: Options = {
   forceResume: true,
+  timeout: 20_000,
   requestOptions: { ...defaultRequestOptions },
 }
 
@@ -41,6 +43,7 @@ class Task extends EventEmitter {
   private redirectNum = 0
   private dataWriteQueueLength = 0
   private closeWaiting = false
+  private timeout: null | NodeJS.Timeout = null
 
 
   constructor(url: string, savePath: string, filename: string, options: Partial<Options> = {}) {
@@ -69,6 +72,8 @@ class Task extends EventEmitter {
     this.progress.speed = 0
     this.dataWriteQueueLength = 0
     this.closeWaiting = false
+    this.__clearTimeout()
+    this.__startTimeout()
     if (startByte) this.requestOptions.headers!.range = `bytes=${startByte}-${endByte}`
 
     if (!path) return
@@ -144,6 +149,7 @@ class Task extends EventEmitter {
           }
           this.status = STATUS.failed
           this.emit('fail', response)
+          this.__clearTimeout()
           this.__closeRequest()
           void this.__closeWriteStream()
           return
@@ -156,6 +162,7 @@ class Task extends EventEmitter {
           return
         }
         this.status = STATUS.running
+        this.__startTimeout()
         response
           .on('data', this.__handleWriteData.bind(this))
           .on('error', err => { this.__handleError(err) })
@@ -222,6 +229,7 @@ class Task extends EventEmitter {
 
   __handleComplete() {
     if (this.status == STATUS.error) return
+    this.__clearTimeout()
     void this.__closeWriteStream().then(() => {
       if (this.progress.downloaded == this.progress.total) {
         this.status = STATUS.completed
@@ -237,6 +245,7 @@ class Task extends EventEmitter {
   __handleError(error: Error) {
     if (this.status == STATUS.error) return
     this.status = STATUS.error
+    this.__clearTimeout()
     this.__closeRequest()
     void this.__closeWriteStream()
     if (error.message == 'aborted') return
@@ -304,9 +313,11 @@ class Task extends EventEmitter {
       return
     }
     this.dataWriteQueueLength++
+    this.__startTimeout()
     this.__calculateProgress(chunk.length)
     this.ws.write(chunk, err => {
       this.dataWriteQueueLength--
+      if (this.status == STATUS.running) this.__calculateProgress(0)
       if (err) {
         console.log(err)
         this.__handleError(err)
@@ -322,22 +333,36 @@ class Task extends EventEmitter {
     let chunkLen = chunk.length
     let isOk
     if (chunkLen >= resumeLastChunkLen) {
-      isOk = chunk.slice(0, resumeLastChunkLen).toString('hex') === this.resumeLastChunk!.toString('hex')
+      isOk = chunk.subarray(0, resumeLastChunkLen).toString('hex') === this.resumeLastChunk!.toString('hex')
       if (!isOk) return null
 
       this.resumeLastChunk = null
-      return chunk.slice(resumeLastChunkLen)
+      return chunk.subarray(resumeLastChunkLen)
     } else {
-      isOk = chunk.slice(0, chunkLen).toString('hex') === this.resumeLastChunk!.slice(0, chunkLen).toString('hex')
+      isOk = chunk.subarray(0, chunkLen).toString('hex') === this.resumeLastChunk!.subarray(0, chunkLen).toString('hex')
       if (!isOk) return null
-      this.resumeLastChunk = this.resumeLastChunk!.slice(chunkLen)
-      return chunk.slice(chunkLen)
+      this.resumeLastChunk = this.resumeLastChunk!.subarray(chunkLen)
+      return chunk.subarray(chunkLen)
     }
   }
 
   async __handleStop() {
+    this.__clearTimeout()
     this.__closeRequest()
     return this.__closeWriteStream()
+  }
+
+  private __clearTimeout() {
+    if (!this.timeout) return
+    clearTimeout(this.timeout)
+    this.timeout = null
+  }
+
+  private __startTimeout() {
+    this.__clearTimeout()
+    this.timeout = setTimeout(() => {
+      this.__handleError(new Error('download timeout'))
+    }, this.options.timeout)
   }
 
   __calculateProgress(receivedBytes: number) {
@@ -350,7 +375,7 @@ class Task extends EventEmitter {
 
 
     // emit the progress every second or if finished
-    if (progress.downloaded === progress.total || elaspsedTime > 1000) {
+    if ((progress.downloaded === progress.total && this.dataWriteQueueLength == 0) || elaspsedTime > 1000) {
       this.statsEstimate.time = currentTime
       this.statsEstimate.bytes = progress.downloaded - this.statsEstimate.prevBytes
       this.statsEstimate.prevBytes = progress.downloaded
@@ -359,6 +384,7 @@ class Task extends EventEmitter {
         downloaded: progress.downloaded,
         progress: progress.progress,
         speed: this.statsEstimate.bytes,
+        writeQueue: this.dataWriteQueueLength,
       })
     }
   }

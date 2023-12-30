@@ -41,6 +41,7 @@ const initDownloadList = () => {
       total: item.progress_total,
       progress: item.progress_total ? parseInt((item.progress_downloaded / item.progress_total).toFixed(2)) * 100 : 0,
       speed: '',
+      writeQueue: 0,
       metadata: {
         musicInfo,
         url: item.url,

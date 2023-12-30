@@ -205,6 +205,7 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, s
       downloadInfo.downloaded = status.downloaded
       downloadInfo.progress = status.progress
       downloadInfo.speed = status.speed
+      downloadInfo.writeQueue = status.writeQueue
       sendAction(downloadInfo.id, { action: 'progress', data: status })
       // console.log(status)
     },

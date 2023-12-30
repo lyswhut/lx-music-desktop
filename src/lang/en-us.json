@@ -71,6 +71,7 @@
   "download_status_error_write": "The song save location is occupied or does not have write permission, please try to change the song save directory or restart the software or restart the computer, the error details:",
   "download_status_start": "start download",
   "download_status_url_geting": "Getting music link...",
+  "download_status_write_queue": "Data is being written ({num})",
   "duplicate_list_tip": "You have favorited this list [{name}] before, do you need to update the songs in it?",
   "export": "Export",
   "fullscreen_exit": "Exit Full Screen",

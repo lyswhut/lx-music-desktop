@@ -74,6 +74,7 @@ export const createDownload = ({
       speed,
       downloaded: stats.downloaded,
       total: stats.total,
+      writeQueue: stats.writeQueue,
     })
     // if (debugDownload) {
     //   const downloaded = sizeFormate(stats.downloaded)

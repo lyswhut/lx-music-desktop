@@ -82,10 +82,17 @@ const updateFilePath = (downloadInfo: LX.Download.ListItem, filePath: string) =>
 }
 
 const setProgress = (downloadInfo: LX.Download.ListItem, progress: LX.Download.ProgressInfo) => {
-  downloadInfo.progress = progress.progress
   downloadInfo.total = progress.total
   downloadInfo.downloaded = progress.downloaded
-  downloadInfo.speed = progress.speed
+  downloadInfo.writeQueue = progress.writeQueue
+  if (progress.progress == 100) {
+    downloadInfo.speed = ''
+    downloadInfo.progress = 99.99
+    setStatusText(downloadInfo, window.i18n.t('download_status_write_queue', { num: progress.writeQueue }))
+  } else {
+    downloadInfo.speed = progress.speed
+    downloadInfo.progress = progress.progress
+  }
   throttleUpdateTask([downloadInfo])
 }
 
@@ -248,6 +255,7 @@ const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
         setStatus(downloadInfo, DOWNLOAD_STATUS.RUN)
         break
       case 'complete':
+        downloadInfo.progress = 100
         saveMeta(downloadInfo)
         downloadLyric(downloadInfo)
         void window.lx.worker.download.removeTask(downloadInfo.id)
