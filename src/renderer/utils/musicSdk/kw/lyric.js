@@ -92,6 +92,7 @@ const buildParams = (id, isGetLyricx) => {
 
 const timeExp = /^\[([\d:.]*)\]{1}/g
 const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
+const lyricxTag = /^<-?\d+,-?\d+>/
 export default {
   /* sortLrcArr(arr) {
     const lrcSet = new Set()
@@ -150,6 +151,7 @@ export default {
     let lrc = []
     let lrcT = []
 
+    let isLyricx = false
     for (const item of arr) {
       if (lrcSet.has(item.time)) {
         if (lrc.length < 2) continue
@@ -161,9 +163,10 @@ export default {
         lrc.push(item)
         lrcSet.add(item.time)
       }
+      if (!isLyricx && lyricxTag.test(item.text)) isLyricx = true
     }
 
-    if (lrcT.length > lrc.length * 0.3) {
+    if (!isLyricx && lrcT.length > lrc.length * 0.3) {
       throw new Error('failed')
       // if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
       //   const tItem = lrc.pop()
