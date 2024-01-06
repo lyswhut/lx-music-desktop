@@ -166,7 +166,7 @@ export default {
       if (!isLyricx && lyricxTag.test(item.text)) isLyricx = true
     }
 
-    if (!isLyricx && lrcT.length > lrc.length * 0.3) {
+    if (!isLyricx && lrcT.length > lrc.length * 0.3 && lrc.length - lrcT.length > 6) {
       throw new Error('failed')
       // if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
       //   const tItem = lrc.pop()
