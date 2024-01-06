@@ -6,6 +6,8 @@ module.exports = {
     'del',
     'comlink',
     // 'vue',
+    'image-size',
+    'message2call',
     '@types/ws',
     // 'eslint-config-standard-with-typescript',
     // 'typescript', // https://github.com/microsoft/TypeScript/pull/54567
