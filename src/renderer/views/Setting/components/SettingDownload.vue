@@ -24,7 +24,7 @@ dd(:aria-label="$t('setting__download_name_title')")
   h3#download_name {{ $t('setting__download_name') }}
   div
     base-checkbox.gap-left(
-v-for="item in musicNames" :id="`setting_download_musicName_${item.value}`" :key="item.value" name="setting_download_musicName" :value="item.value"
+        v-for="item in musicNames" :id="`setting_download_musicName_${item.value}`" :key="item.value" name="setting_download_musicName" :value="item.value"
         need :model-value="appSetting['download.fileName']" :label="item.name" @update:model-value="updateSetting({'download.fileName': $event})")
 dd
   h3#download_data_embed {{ $t('setting__download_data_embed') }}

@@ -5,7 +5,7 @@ module.exports = {
     'chalk',
     'del',
     'comlink',
-    // 'vue',
+    'vue',
     'image-size',
     'message2call',
     '@types/ws',
