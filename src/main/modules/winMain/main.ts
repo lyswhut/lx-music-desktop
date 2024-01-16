@@ -165,26 +165,17 @@ export const toggleHide = () => {
 }
 export const toggleMinimize = () => {
   if (!browserWindow) return
-  if (browserWindow.isMinimized()) {
-    if (!browserWindow.isVisible()) {
-      browserWindow.show()
-    }
-    browserWindow.restore()
-    browserWindow.focus()
-  } else {
-    browserWindow.minimize()
-  }
+  if (browserWindow.isVisible()) {
+    if (browserWindow.isMinimized()) browserWindow.restore()
+    else browserWindow.minimize()
+  } else browserWindow.show()
 }
 export const showWindow = () => {
   if (!browserWindow) return
-  if (browserWindow.isMinimized()) {
-    browserWindow.restore()
-  }
   if (browserWindow.isVisible()) {
-    browserWindow.focus()
-  } else {
-    browserWindow.show()
-  }
+    if (browserWindow.isMinimized()) browserWindow.restore()
+    else browserWindow.focus()
+  } else browserWindow.show()
 }
 export const hideWindow = () => {
   if (!browserWindow) return
