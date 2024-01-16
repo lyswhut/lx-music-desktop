@@ -55,7 +55,7 @@ export const registerListActionEvent = (sendListAction: (action: LX.Sync.List.Ac
     await sendListAction({ action: 'list_update_position', data: { position, ids } })
   }
   const list_music_overwrite = async(listId: string, musicInfos: LX.Music.MusicInfo[], isRemote: boolean = false) => {
-    if (isRemote) return
+    if (isRemote || listId == LIST_IDS.TEMP) return
     await sendListAction({ action: 'list_music_overwrite', data: { listId, musicInfos } })
   }
   const list_music_add = async(id: string, musicInfos: LX.Music.MusicInfo[], addMusicLocationType: LX.AddMusicLocationType, isRemote: boolean = false) => {
@@ -67,11 +67,12 @@ export const registerListActionEvent = (sendListAction: (action: LX.Sync.List.Ac
     await sendListAction({ action: 'list_music_move', data: { fromId, toId, musicInfos, addMusicLocationType } })
   }
   const list_music_remove = async(listId: string, ids: string[], isRemote: boolean = false) => {
-    if (isRemote) return
+    if (isRemote || listId == LIST_IDS.TEMP) return
     await sendListAction({ action: 'list_music_remove', data: { listId, ids } })
   }
   const list_music_update = async(musicInfos: LX.List.ListActionMusicUpdate, isRemote: boolean = false) => {
-    if (isRemote) return
+    musicInfos = musicInfos.filter(item => item.id != LIST_IDS.TEMP)
+    if (isRemote || !musicInfos.length) return
     await sendListAction({ action: 'list_music_update', data: musicInfos })
   }
   const list_music_clear = async(ids: string[], isRemote: boolean = false) => {
@@ -79,7 +80,7 @@ export const registerListActionEvent = (sendListAction: (action: LX.Sync.List.Ac
     await sendListAction({ action: 'list_music_clear', data: ids })
   }
   const list_music_update_position = async(listId: string, position: number, ids: string[], isRemote: boolean = false) => {
-    if (isRemote) return
+    if (isRemote || listId == LIST_IDS.TEMP) return
     await sendListAction({ action: 'list_music_update_position', data: { listId, position, ids } })
   }
   global.lx.event_list.on('list_data_overwrite', list_data_overwrite)
