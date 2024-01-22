@@ -59,7 +59,7 @@ const writeMeta = async(filePath, meta, picPath) => {
 
 module.exports = (filePath, meta) => {
   if (!meta.APIC) return writeMeta(filePath, meta)
-  const picUrl = meta.APIC
+  let picUrl = meta.APIC
   delete meta.APIC
   if (!/^http/.test(picUrl)) {
     return writeMeta(filePath, meta)
@@ -67,6 +67,7 @@ module.exports = (filePath, meta) => {
   let ext = path.extname(picUrl)
   let picPath = filePath.replace(/\.flac$/, '') + (ext ? ext.replace(extReg, '$1') : '.jpg')
 
+  if (picUrl.includes('music.126.net')) picUrl += `${picUrl.includes('?') ? '&' : '?'}param=500y500`
   download(picUrl, picPath).then(success => {
     if (success) {
       writeMeta(filePath, meta, picPath).finally(() => {
