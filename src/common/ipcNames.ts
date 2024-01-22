@@ -57,6 +57,7 @@ const modules = {
     show_dialog: 'show_dialog',
     open_dir_in_explorer: 'open_dir_in_explorer',
     open_dev_tools: 'open_dev_tools',
+    set_power_save_blocker: 'set_power_save_blocker',
 
     progress: 'progress',
     change_tray: 'change_tray',

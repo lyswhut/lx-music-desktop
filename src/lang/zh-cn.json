@@ -508,6 +508,7 @@
   "setting__play_mediaDevice_title": "选择声音输出的媒体设备",
   "setting__play_media_device_error_tip": "此功能与高级音频功能（音频可视化、音效设置）冲突，你本次启动软件时已启用这些功能，此设置暂不可用，请 关闭这些功能 并 重启 软件后，再来修改此设置。",
   "setting__play_media_device_tip": "此功能与音频可视化功能冲突，两者无法同时启用，是否将音频可视化关闭 并 应用所选音频输出设置？",
+  "setting__play_power_save_blocker": "播放歌曲时阻止电脑休眠",
   "setting__play_quality": "优先播放320K品质的歌曲（如果可用）",
   "setting__play_save_play_time": "记住播放进度",
   "setting__play_startup_auto_play": "启动软件后自动播放音乐",

@@ -104,6 +104,11 @@ declare global {
       'player.volume': number
 
       /**
+       * 播放歌曲时是否阻止电脑休眠
+       */
+      'player.powerSaveBlocker': boolean
+
+      /**
        * 是否静音
        */
       'player.isMute': boolean

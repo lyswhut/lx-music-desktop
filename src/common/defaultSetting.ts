@@ -27,6 +27,7 @@ const defaultSetting: LX.AppSetting = {
   'player.highQuality': false,
   'player.isShowTaskProgess': true,
   'player.volume': 1,
+  'player.powerSaveBlocker': true,
   'player.isMute': false,
   'player.playbackRate': 1,
   'player.preservesPitch': true,

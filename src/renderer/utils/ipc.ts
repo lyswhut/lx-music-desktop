@@ -687,6 +687,12 @@ export const showHideWindowToggle = () => {
 export const focusWindow = () => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.focus)
 }
+/**
+ * 是否启用电源锁
+ */
+export const setPowerSaveBlocker = (enabled: boolean) => {
+  rendererSend<boolean>(WIN_MAIN_RENDERER_EVENT_NAME.set_power_save_blocker, enabled)
+}
 
 /**
  * 窗口获取焦点事件

@@ -5,7 +5,7 @@ import { STORE_NAMES, URL_SCHEME_RXP } from '@common/constants'
 import defaultSetting from '@common/defaultSetting'
 import defaultHotKey from '@common/defaultHotKey'
 import { migrateDataJson, migrateHotKey, migrateUserApi, parseDataFile } from './migrate'
-import { nativeTheme } from 'electron'
+import { nativeTheme, powerSaveBlocker } from 'electron'
 import { joinPath } from '@common/utils/nodejs'
 import themes from '@common/theme/index.json'
 
@@ -278,5 +278,17 @@ export const getTheme = () => {
       isDark: theme.isDark,
       colors,
     },
+  }
+}
+
+let powerSaveBlockerId: number | null = null
+export const setPowerSaveBlocker = (enabled: boolean) => {
+  let isEnabled = powerSaveBlockerId != null && powerSaveBlocker.isStarted(powerSaveBlockerId)
+  if (enabled) {
+    if (isEnabled) return
+    powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension')
+  } else {
+    if (!isEnabled) return
+    if (powerSaveBlocker.stop(powerSaveBlockerId!)) powerSaveBlockerId = null
   }
 }
