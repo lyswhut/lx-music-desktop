@@ -1,4 +1,4 @@
-import log from 'electron-log'
+import log from 'electron-log/node'
 
 
 export const isLinux = process.platform == 'linux'
