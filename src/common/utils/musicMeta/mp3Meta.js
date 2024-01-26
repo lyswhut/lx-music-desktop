@@ -1,6 +1,6 @@
 const NodeID3 = require('node-id3')
 const path = require('path')
-// const fs = require('fs')
+const fs = require('fs')
 const download = require('./downloader')
 const extReg = /^(\.(?:jpe?g|png)).*$/
 
@@ -30,9 +30,9 @@ module.exports = (filePath, meta) => {
     if (success) {
       meta.APIC = picPath
       handleWriteMeta(meta, filePath)
-      // fs.unlink(picPath, err => {
-      //   if (err) console.log(err.message)
-      // })
+      fs.unlink(picPath, err => {
+        if (err) console.log(err.message)
+      })
     } else {
       delete meta.APIC
       handleWriteMeta(meta, filePath)
