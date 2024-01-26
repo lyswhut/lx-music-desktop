@@ -11,7 +11,7 @@ runs:
 
     - name: Cache node modules
       id: cache-npm
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ${{ env.NPM_CACHE }}
