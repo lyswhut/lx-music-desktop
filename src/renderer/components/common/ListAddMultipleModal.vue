@@ -22,6 +22,7 @@ import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { addListMusics, moveListMusics, createUserList } from '@renderer/store/list/action'
 import useKeyDown from '@renderer/utils/compositions/useKeyDown'
 import { useI18n } from '@root/lang'
+import { dialog } from '@renderer/plugins/Dialog'
 
 export default {
   props: {
@@ -129,11 +130,13 @@ export default {
       this.isEditing = true
       this.$nextTick(() => event.currentTarget.querySelector('.' + this.$style.newListInput).focus())
     },
-    handleSaveList(event) {
+    async handleSaveList(event) {
       let name = event.target.value
       this.newListName = event.target.value = ''
       this.isEditing = false
-      if (!name) return
+      if (!name || (
+        userLists.some(l => l.name == name) && !(await dialog.confirm(window.i18n.t('list_duplicate_tip'))))
+      ) return
       void createUserList({ name })
     },
   },

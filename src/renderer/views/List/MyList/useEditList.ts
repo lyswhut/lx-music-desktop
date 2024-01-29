@@ -1,6 +1,7 @@
 import { ref, nextTick, useCssModule, type Ref } from '@common/utils/vueTools'
 import { userLists } from '@renderer/store/list/state'
 import { updateUserList, createUserList } from '@renderer/store/list/action'
+import { dialog } from '@renderer/plugins/Dialog'
 
 export default ({ dom_lists_list }: {
   dom_lists_list: Ref<HTMLElement | null>
@@ -39,7 +40,9 @@ export default ({ dom_lists_list }: {
     let name = target.value.trim()
     target.readOnly = true
 
-    if (name == '') {
+    if (name == '' || (
+      userLists.some(l => l.name == name) && !(await dialog.confirm(window.i18n.t('list_duplicate_tip'))))
+    ) {
       isShowNewList.value = false
       return
     }

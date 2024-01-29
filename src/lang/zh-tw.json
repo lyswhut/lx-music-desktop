@@ -119,6 +119,7 @@
   "list_add__title_first_add": "添加",
   "list_add__title_first_move": "移動",
   "list_add__title_last": "到...",
+  "list_duplicate_tip": "已存在同名列表，是否仍要繼續建立？",
   "list_import_tip__alldata": "導入失敗，這是一個所有資料備份文件，你需要去這裡導入：\n設定 -> 備份與還原 -> 所有資料 -> 匯入",
   "list_import_tip__playlist": "導入失敗，這是一個列表備份文件，你需要去這裡導入：\n設定 -> 備份與還原 -> 部分資料 -> 匯入列表",
   "list_import_tip__playlist_part": "導入失敗，這是一個單列表文件，你需要去這裡導入：\n我的清單 -> 右鍵點選任何一個清單名稱 -> 在彈出的選單中選擇導入",

@@ -119,6 +119,7 @@
   "list_add__title_first_add": "Add",
   "list_add__title_first_move": "Move",
   "list_add__title_last": "to...",
+  "list_duplicate_tip": "A list with the same name already exists. Do you want to continue creating it?",
   "list_import_tip__alldata": "Import failed, this is an all data backup file, you need to go here to import: \nSettings -> Backup and Restore -> All Data -> Import",
   "list_import_tip__playlist": "Import failed, this is a list backup file, you need to go here to import: \nSettings -> Backup and Restore -> Import List",
   "list_import_tip__playlist_part": "The import failed, this is a single-list file, you need to go here to import: \nMy List -> Right-click on any list name -> Select Import in the pop-up menu",
