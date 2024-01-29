@@ -252,7 +252,7 @@ export default {
           id: api.id,
           name: api.name,
           label: `${api.name}${api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : ''}`,
-          desc: [/^\d/.test(api.version) ? `v${api.version}` : api.version, api.author].filter(Boolean).join(', '),
+          desc: [/^\d/.test(api.version) ? `v${api.version}` : api.version].filter(Boolean).join(', '),
           statusLabel: api.id == appSetting['common.apiSource'] ? `[${getApiStatus()}]` : '',
           status: api.status,
           message: api.message,
