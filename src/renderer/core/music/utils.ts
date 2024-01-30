@@ -10,6 +10,7 @@ import {
 import { appSetting } from '@renderer/store/setting'
 import { langS2T, toNewMusicInfo, toOldMusicInfo } from '@renderer/utils'
 import { requestMsg } from '@renderer/utils/message'
+import { apis } from '@renderer/utils/musicSdk/api-source'
 
 
 const getOtherSourcePromises = new Map()
@@ -145,6 +146,68 @@ export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<
     } else return lrcInfo
   }
   return null
+}
+
+export const getOnlineOtherSourceMusicUrlByLocal = async(musicInfo: LX.Music.MusicInfoLocal, isRefresh: boolean): Promise<{
+  url: string
+  quality: LX.Quality
+  isFromCache: boolean
+}> => {
+  if (!await window.lx.apiInitPromise[0]) throw new Error('source init failed')
+
+  const quality = '128k'
+
+  const cachedUrl = await getStoreMusicUrl(musicInfo, quality)
+  if (cachedUrl && !isRefresh) return { url: cachedUrl, quality, isFromCache: true }
+
+  let reqPromise
+  try {
+    reqPromise = apis('local').getMusicUrl(toOldMusicInfo(musicInfo), null).promise
+  } catch (err: any) {
+    reqPromise = Promise.reject(err)
+  }
+
+  return reqPromise.then(({ url }: { url: string }) => {
+    return { url, quality, isFromCache: false }
+  })
+}
+
+export const getOnlineOtherSourceLyricByLocal = async(musicInfo: LX.Music.MusicInfoLocal, isRefresh: boolean): Promise<{
+  lyricInfo: LX.Music.LyricInfo
+  isFromCache: boolean
+}> => {
+  if (!await window.lx.apiInitPromise[0]) throw new Error('source init failed')
+
+  const lyricInfo = await getCachedLyricInfo(musicInfo)
+  if (lyricInfo && !isRefresh) return { lyricInfo, isFromCache: true }
+
+  let reqPromise
+  try {
+    reqPromise = apis('local').getLyric(toOldMusicInfo(musicInfo)).promise
+  } catch (err: any) {
+    reqPromise = Promise.reject(err)
+  }
+
+  return reqPromise.then((lyricInfo: LX.Music.LyricInfo) => {
+    return { lyricInfo, isFromCache: false }
+  })
+}
+
+export const getOnlineOtherSourcePicByLocal = async(musicInfo: LX.Music.MusicInfoLocal): Promise<{
+  url: string
+}> => {
+  if (!await window.lx.apiInitPromise[0]) throw new Error('source init failed')
+
+  let reqPromise
+  try {
+    reqPromise = apis('local').getPic(toOldMusicInfo(musicInfo)).promise
+  } catch (err: any) {
+    reqPromise = Promise.reject(err)
+  }
+
+  return reqPromise.then((url: string) => {
+    return { url }
+  })
 }
 
 export const getPlayQuality = (highQuality: boolean, musicInfo: LX.Music.MusicInfoOnline): LX.Quality => {

@@ -51,4 +51,4 @@
 - 新增 `globalThis.lx.currentScriptInfo` 对象，可以从这里获取解析后的脚本头部注释信息及脚本原始内容，具体可用属性看文档说明
 - `globalThis.lx.version` 属性更新到 `2.0.0`
 - 自定义源不再使用`script`标签的形式执行，若要获取脚本原始代码字符串需从 `globalThis.lx.currentScriptInfo.rawScript` 属性获取
--
+- 自定义源新增支持`local`源的`musicUrl`、`pic`、`lyric`的获取操作详情看自定义源文档说明

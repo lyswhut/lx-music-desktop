@@ -23,13 +23,14 @@ const eventNames = Object.values(EVENT_NAMES)
 const events = {
   request: null,
 }
-const allSources = ['kw', 'kg', 'tx', 'wy', 'mg']
+const allSources = ['kw', 'kg', 'tx', 'wy', 'mg', 'local']
 const supportQualitys = {
   kw: ['128k', '320k', 'flac', 'flac24bit'],
   kg: ['128k', '320k', 'flac', 'flac24bit'],
   tx: ['128k', '320k', 'flac', 'flac24bit'],
   wy: ['128k', '320k', 'flac', 'flac24bit'],
   mg: ['128k', '320k', 'flac', 'flac24bit'],
+  local: [],
 }
 const supportActions = {
   kw: ['musicUrl'],
@@ -38,6 +39,18 @@ const supportActions = {
   wy: ['musicUrl'],
   mg: ['musicUrl'],
   xm: ['musicUrl'],
+  local: ['musicUrl', 'lyric', 'pic'],
+}
+
+const verifyLyricInfo = (info) => {
+  if (typeof info != 'object' || typeof info.lyric != 'string') throw new Error('failed')
+  if (info.lyric.length > 4096) throw new Error('failed')
+  return {
+    lyric: info.lyric,
+    tlyric: (typeof info.tlyric == 'string' && info.tlyric.length < 4096) ? info.tlyric : null,
+    mlyric: typeof info.mlyric == 'string' && info.mlyric.length < 4096 ? info.mlyric : null,
+    lxlyric: typeof info.lxlyric == 'string' && info.lxlyric.length < 4096 ? info.lxlyric : null,
+  }
 }
 
 const handleRequest = (context, { requestKey, data }) => {
@@ -50,6 +63,7 @@ const handleRequest = (context, { requestKey, data }) => {
       }
       switch (data.action) {
         case 'musicUrl':
+          if (typeof response != 'string' || response.length > 2048 || !/^https?:/.test(response)) throw new Error('failed')
           sendData.result = {
             source: data.source,
             action: data.action,
@@ -57,6 +71,21 @@ const handleRequest = (context, { requestKey, data }) => {
               type: data.info.type,
               url: response,
             },
+          }
+          break
+        case 'lyric':
+          sendData.result = {
+            source: data.source,
+            action: data.action,
+            data: verifyLyricInfo(response),
+          }
+          break
+        case 'pic':
+          if (typeof response != 'string' || response.length > 2048 || !/^https?:/.test(response)) throw new Error('failed')
+          sendData.result = {
+            source: data.source,
+            action: data.action,
+            data: response,
           }
           break
       }

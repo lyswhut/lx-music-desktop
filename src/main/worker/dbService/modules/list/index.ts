@@ -79,16 +79,16 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
  * 覆盖列表
  * @param lists 列表信息
  */
-export const setUserLists = (lists: LX.List.UserListInfo[]) => {
-  const newUserLists: LX.DBService.UserListInfo[] = lists.map((list, index) => {
-    return {
-      ...list,
-      position: index,
-    }
-  })
-  inertUserLists(newUserLists, true)
-  userLists = newUserLists
-}
+// const setUserLists = (lists: LX.List.UserListInfo[]) => {
+//   const newUserLists: LX.DBService.UserListInfo[] = lists.map((list, index) => {
+//     return {
+//       ...list,
+//       position: index,
+//     }
+//   })
+//   inertUserLists(newUserLists, true)
+//   userLists = newUserLists
+// }
 
 /**
  * 批量删除列表

@@ -1,7 +1,7 @@
 declare namespace LX {
   namespace UserApi {
     type UserApiSourceInfoType = 'music'
-    type UserApiSourceInfoActions = 'musicUrl'
+    type UserApiSourceInfoActions = 'musicUrl' | 'lyric' | 'pic'
 
     interface UserApiSourceInfo {
       name: string
