@@ -314,18 +314,6 @@ window.addEventListener('unhandledrejection', (event) => {
   const message = typeof event.reason === 'string' ? event.reason : event.reason?.message ?? String(event.reason)
   globalThis.__lx_init_error_handler__.sendError(message.replace(/^Error:\\s/, ''))
 })
-Object.defineProperty(window.document, 'getElementsByTagName', {
-  value: (name) => {
-    if (name == 'script') {
-      return [
-        Object.freeze({
-          innerText: lx.currentScriptInfo.rawScript,
-        }),
-      ]
-    }
-    return null
-  }
-})
 })()`)
 
   webFrame.executeJavaScript(userApi.script).catch(_ => _)
