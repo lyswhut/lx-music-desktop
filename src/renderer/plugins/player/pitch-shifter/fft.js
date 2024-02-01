@@ -21,7 +21,7 @@ function FFT(size) {
   for (let t = 1; this.size > t; t <<= 1) { power++ }
 
   // Calculate initial step's width:
-  //   * If we are full radix-4 - it is 2x smaller to give inital len=8
+  //   * If we are full radix-4 - it is 2x smaller to give initial len=8
   //   * Otherwise it is the same as `power` to give len=4
   this._width = power % 2 === 0 ? power - 1 : power
 
