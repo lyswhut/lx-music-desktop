@@ -67,11 +67,8 @@ export default () => {
     setAllStatus(t('player__loading'))
   }
 
-  const handleCanplay = () => {
-    setAllStatus('')
-  }
-
   const handlePlaying = () => {
+    setAllStatus('')
     clearLoadingTimeout()
   }
 
@@ -123,7 +120,6 @@ export default () => {
 
   window.app_event.on('playerLoadstart', handleLoadstart)
   window.app_event.on('playerLoadeddata', handleLoadeddata)
-  window.app_event.on('playerCanplay', handleCanplay)
   window.app_event.on('playerPlaying', handlePlaying)
   window.app_event.on('playerWaiting', handleWating)
   window.app_event.on('playerEmptied', handleEmpied)
@@ -133,7 +129,6 @@ export default () => {
   onBeforeUnmount(() => {
     window.app_event.off('playerLoadstart', handleLoadstart)
     window.app_event.off('playerLoadeddata', handleLoadeddata)
-    window.app_event.off('playerCanplay', handleCanplay)
     window.app_event.off('playerPlaying', handlePlaying)
     window.app_event.off('playerWaiting', handleWating)
     window.app_event.off('playerEmptied', handleEmpied)

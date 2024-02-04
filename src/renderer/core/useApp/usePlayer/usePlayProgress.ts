@@ -121,8 +121,8 @@ export default () => {
     }
   }
 
-  const handleCanplay = () => {
-    console.log('handleCanplay', mediaBuffer.playTime, restorePlayTime)
+  const handlePlaying = () => {
+    console.log('handlePlaying', mediaBuffer.playTime, restorePlayTime)
     clearBufferTimeout()
     if (mediaBuffer.playTime) {
       let playTime = mediaBuffer.playTime
@@ -190,7 +190,7 @@ export default () => {
   window.app_event.on('setProgress', setProgress)
   // window.app_event.on(eventPlayerNames.restorePlay, handleRestorePlay)
   window.app_event.on('playerLoadeddata', handleLoadeddata)
-  window.app_event.on('playerCanplay', handleCanplay)
+  window.app_event.on('playerPlaying', handlePlaying)
   window.app_event.on('playerWaiting', handleWating)
   window.app_event.on('playerEmptied', handleEmpied)
   window.app_event.on('musicToggled', handleSetPlayInfo)
@@ -220,7 +220,7 @@ export default () => {
     window.app_event.off('setProgress', setProgress)
     // window.app_event.off(eventPlayerNames.restorePlay, handleRestorePlay)
     window.app_event.off('playerLoadeddata', handleLoadeddata)
-    window.app_event.off('playerCanplay', handleCanplay)
+    window.app_event.off('playerPlaying', handlePlaying)
     window.app_event.off('playerWaiting', handleWating)
     window.app_event.off('playerEmptied', handleEmpied)
     window.app_event.off('musicToggled', handleSetPlayInfo)

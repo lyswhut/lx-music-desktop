@@ -129,7 +129,7 @@ export default () => {
   // }
 
   window.app_event.on('playerLoadeddata', updatePositionState)
-  window.app_event.on('playerCanplay', updatePositionState)
+  window.app_event.on('playerPlaying', updatePositionState)
   window.app_event.on('play', handlePlay)
   window.app_event.on('pause', handlePause)
   window.app_event.on('stop', handleStop)
@@ -141,7 +141,7 @@ export default () => {
 
   onBeforeUnmount(() => {
     window.app_event.off('playerLoadeddata', updatePositionState)
-    window.app_event.off('playerCanplay', updatePositionState)
+    window.app_event.off('playerPlaying', updatePositionState)
     window.app_event.off('play', handlePlay)
     window.app_event.off('pause', handlePause)
     window.app_event.off('stop', handleStop)
