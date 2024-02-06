@@ -44,12 +44,12 @@ const supportActions = {
 
 const verifyLyricInfo = (info) => {
   if (typeof info != 'object' || typeof info.lyric != 'string') throw new Error('failed')
-  if (info.lyric.length > 4096) throw new Error('failed')
+  if (info.lyric.length > 51200) throw new Error('failed')
   return {
     lyric: info.lyric,
-    tlyric: (typeof info.tlyric == 'string' && info.tlyric.length < 4096) ? info.tlyric : null,
-    mlyric: typeof info.mlyric == 'string' && info.mlyric.length < 4096 ? info.mlyric : null,
-    lxlyric: typeof info.lxlyric == 'string' && info.lxlyric.length < 4096 ? info.lxlyric : null,
+    tlyric: (typeof info.tlyric == 'string' && info.tlyric.length < 5120) ? info.tlyric : null,
+    rlyric: (typeof info.rlyric == 'string' && info.rlyric.length < 5120) ? info.rlyric : null,
+    lxlyric: (typeof info.lxlyric == 'string' && info.lxlyric.length < 8192) ? info.lxlyric : null,
   }
 }
 
