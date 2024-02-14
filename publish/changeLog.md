@@ -5,4 +5,4 @@
 
 ### 其他
 
-- 更新 electron 到 v27.3.1
+- 更新 electron 到 v27.3.2
