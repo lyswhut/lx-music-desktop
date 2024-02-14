@@ -31,11 +31,15 @@ export const getComputerName = () => {
       name = process.env.COMPUTERNAME
       break
     case 'darwin':
-      name = cp.execSync('scutil --get ComputerName').toString().trim()
+      try {
+        name = cp.execSync('scutil --get ComputerName').toString().trim()
+      } catch {}
       break
     case 'linux':
-      name = cp.execSync('hostnamectl --pretty').toString().trim()
-      break
+      // Don't fail even if hostnamectl is unavailable
+      try {
+        name = cp.execSync('hostnamectl --pretty').toString().trim()
+      } catch {}
   }
   if (!name) name = os.hostname()
   return name
