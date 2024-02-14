@@ -34,8 +34,11 @@ export const getComputerName = () => {
       name = cp.execSync('scutil --get ComputerName').toString().trim()
       break
     case 'linux':
-      name = cp.execSync('hostnamectl --pretty').toString().trim()
-      break
+      try {
+        name = cp.execSync('hostnamectl --pretty').toString().trim()
+      }
+      // Don't fail even if hostnamectl is unavailable
+      finally { break }
   }
   if (!name) name = os.hostname()
   return name
