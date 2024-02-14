@@ -235,7 +235,7 @@ export default {
   // },
   getLyric(musicInfo, isGetLyricx = true) {
     // this.getLyric2(musicInfo)
-    const requestObj = httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${buildParams(musicInfo.songmid, isGetLyricx)}`)
+    const requestObj = httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${buildParams(musicInfo.songmid.match(/\d+/g)[0], isGetLyricx)}`)
     requestObj.promise = requestObj.promise.then(({ statusCode, body, raw }) => {
       if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
       return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
