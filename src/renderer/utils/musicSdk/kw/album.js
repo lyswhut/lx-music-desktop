@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { decodeName } from '../../index'
-import { formatSinger, objStr2JSON } from './util'
+import { formatSinger, objStr2JSON } from './utils'
 
 // let requestObj_list
 export default {

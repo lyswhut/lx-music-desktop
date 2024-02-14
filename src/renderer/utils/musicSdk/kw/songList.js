@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import { formatPlayTime, decodeName } from '../../index'
-import { formatSinger, objStr2JSON } from './util'
+import { formatSinger, objStr2JSON } from './utils'
 import album from './album'
 
 export default {
