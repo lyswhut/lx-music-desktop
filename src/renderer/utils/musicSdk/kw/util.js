@@ -193,19 +193,9 @@ const createAesDecrypt = (buffer, mode, key, iv) => {
   return Buffer.concat([cipher.update(buffer), cipher.final()])
 }
 
-const strToUint8Array = str => {
-  const length = Math.floor(str.length / 2)
-  const bArr = new Uint8Array(length)
-  for (let i = 0; i < length; i++) {
-    const i2 = i * 2
-    bArr[i] = parseInt(str.substring(i2, i2 + 2), 16)
-  }
-  return bArr
-}
-
 export const wbdCrypto = {
   aesMode: 'aes-128-ecb',
-  aesKey: strToUint8Array('7057273DC7FA29BF39442D72DD5E8CE4'),
+  aesKey: Buffer.from([112, 87, 39, 61, 199, 250, 41, 191, 57, 68, 45, 114, 221, 94, 140, 228], 'binary'),
   aesIv: '',
   appId: 'y67sprxhhpws',
   decodeData(base64Result) {
