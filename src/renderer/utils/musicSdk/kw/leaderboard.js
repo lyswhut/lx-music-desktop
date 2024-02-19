@@ -206,7 +206,7 @@ export default {
 
     return request.then(({ statusCode, body }) => {
       const rawData = wbdCrypto.decodeData(body)
-      console.log(rawData)
+      // console.log(rawData)
       const data = rawData.data
       if (statusCode !== 200 || rawData.code != 200 || !data.musiclist) return this.getList(id, page, retryNum)
 
