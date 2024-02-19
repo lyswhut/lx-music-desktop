@@ -456,7 +456,7 @@ export default {
       total -= limit
       page += 1
       const params = 'appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&page=' + page + '&pagesize=' + limit + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-'
-      tasks.push(this.createHttp(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 5)}`, {
+      tasks.push(this.createHttp(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 'web')}`, {
         headers: {
           mid: '1586163263991',
           Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -472,7 +472,7 @@ export default {
     let id = global_collection_id
     if (id.length > 1000) throw new Error('get list error')
     const params = 'appid=1058&specialid=0&global_specialid=' + id + '&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-'
-    let info = await this.createHttp(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
+    let info = await this.createHttp(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 'web')}`, {
       headers: {
         mid: '1586163242519',
         Referer: 'https://m3ws.kugou.com/share/index.php',

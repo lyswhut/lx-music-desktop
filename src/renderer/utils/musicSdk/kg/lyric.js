@@ -89,7 +89,7 @@ export default {
   //   return requestObj
   // },
   searchLyric(name, hash, time, tryNum = 0) {
-    let requestObj = httpFetch(`http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&keyword=${encodeURIComponent(name)}&hash=${hash}&timelength=${time}`, {
+    let requestObj = httpFetch(`http://lyrics.kugou.com/search?ver=1&man=yes&client=pc&keyword=${encodeURIComponent(name)}&hash=${hash}&timelength=${time}&lrctxt=1`, {
       headers: {
         'KG-RC': 1,
         'KG-THash': 'expand_search_manager.cpp:852736169:451',
@@ -105,14 +105,14 @@ export default {
       }
       if (body.candidates.length) {
         let info = body.candidates[0]
-        return { id: info.id, accessKey: info.accesskey }
+        return { id: info.id, accessKey: info.accesskey, fmt: (info.krctype == 1 && info.contenttype != 1) ? 'krc' : 'lrc' }
       }
       return null
     })
     return requestObj
   },
-  getLyricDownload(id, accessKey, tryNum = 0) {
-    let requestObj = httpFetch(`http://lyrics.kugou.com/download?ver=1&client=pc&id=${id}&accesskey=${accessKey}&fmt=krc&charset=utf8`, {
+  getLyricDownload(id, accessKey, fmt, tryNum = 0) {
+    let requestObj = httpFetch(`http://lyrics.kugou.com/download?ver=1&client=pc&id=${id}&accesskey=${accessKey}&fmt=${fmt}&charset=utf8`, {
       headers: {
         'KG-RC': 1,
         'KG-THash': 'expand_search_manager.cpp:852736169:451',
@@ -122,13 +122,26 @@ export default {
     requestObj.promise = requestObj.promise.then(({ body, statusCode }) => {
       if (statusCode !== 200) {
         if (tryNum > 5) return Promise.reject(new Error('歌词获取失败'))
-        let tryRequestObj = this.getLyric(id, accessKey, ++tryNum)
+        let tryRequestObj = this.getLyric(id, accessKey, fmt, ++tryNum)
         requestObj.cancelHttp = tryRequestObj.cancelHttp.bind(tryRequestObj)
         return tryRequestObj.promise
       }
 
-      return decodeLyric(body.content).then(result => parseLyric(result))
+      switch (body.fmt) {
+        case 'krc':
+          return decodeLyric(body.content).then(result => parseLyric(result))
+        case 'lrc':
+          return {
+            lyric: Buffer.from(body.content, 'base64').toString('utf-8'),
+            tlyric: '',
+            rlyric: '',
+            lxlyric: '',
+          }
+        default:
+          return Promise.reject(new Error(`未知歌词格式: ${body.fmt}`))
+      }
     })
+
     return requestObj
   },
   getLyric(songInfo, tryNum = 0) {
@@ -137,7 +150,7 @@ export default {
     requestObj.promise = requestObj.promise.then(result => {
       if (!result) return Promise.reject(new Error('Get lyric failed'))
 
-      let requestObj2 = this.getLyricDownload(result.id, result.accessKey)
+      let requestObj2 = this.getLyricDownload(result.id, result.accessKey, result.fmt)
 
       requestObj.cancelHttp = requestObj2.cancelHttp.bind(requestObj2)
 

@@ -254,7 +254,7 @@ export default {
     if (this.collectionIdListInfoCache.has(id)) return this.collectionIdListInfoCache.get(id)
 
     const params = `appid=1058&specialid=0&global_specialid=${id}&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-`
-    return createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
+    return createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 'web')}`, {
       headers: {
         mid: '1586163242519',
         Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -321,7 +321,7 @@ export default {
     const listInfo = await this.getUserListInfoByCollectionId(id)
 
     const params = `need_sort=1&module=CloudMusic&clientver=11589&pagesize=${limit}&global_collection_id=${id}&userid=0&page=${page}&type=0&area_code=1&appid=1005`
-    return createHttpFetch(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 2)}`, {
+    return createHttpFetch(`http://pubsongs.kugou.com/v2/get_other_list_file?${params}&signature=${signatureParams(params, 'android')}`, {
       headers: {
         'User-Agent': 'Android10-AndroidPhone-11589-201-0-playlist-wifi',
       },
@@ -539,7 +539,7 @@ export default {
       total -= limit
       page += 1
       const params = 'appid=1058&global_specialid=' + id + '&specialid=0&plat=0&version=8000&page=' + page + '&pagesize=' + limit + '&srcappid=2919&clientver=20000&clienttime=1586163263991&mid=1586163263991&uuid=1586163263991&dfid=-'
-      tasks.push(createHttpFetch(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 5)}`, {
+      tasks.push(createHttpFetch(`https://mobiles.kugou.com/api/v5/special/song_v2?${params}&signature=${signatureParams(params, 'web')}`, {
         headers: {
           mid: '1586163263991',
           Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -555,7 +555,7 @@ export default {
     let id = global_collection_id
     if (id.length > 1000) throw new Error('get list error')
     const params = 'appid=1058&specialid=0&global_specialid=' + id + '&format=jsonp&srcappid=2919&clientver=20000&clienttime=1586163242519&mid=1586163242519&uuid=1586163242519&dfid=-'
-    let info = await createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 5)}`, {
+    let info = await createHttpFetch(`https://mobiles.kugou.com/api/v5/special/info_v2?${params}&signature=${signatureParams(params, 'web')}`, {
       headers: {
         mid: '1586163242519',
         Referer: 'https://m3ws.kugou.com/share/index.php',
@@ -760,7 +760,7 @@ export default {
 
   search(text, page, limit = 20) {
     const params = `userid=1384394652&req_custom=1&appid=1005&req_multi=1&version=11589&page=${page}&filter=0&pagesize=${limit}&order=0&clienttime=1681779443&iscorrection=1&searchsong=0&keyword=${text}&mid=288799920684148686226285199951543865551&dfid=3eSBsO1u97EY1zeIZd40hH4p&clientver=11589&platform=AndroidFilter`
-    const url = encodeURI(`http://complexsearchretry.kugou.com/v1/search/special?${params}&signature=${signatureParams(params, 1)}`)
+    const url = encodeURI(`http://complexsearchretry.kugou.com/v1/search/special?${params}&signature=${signatureParams(params, 'android')}`)
     return createHttpFetch(url).then(body => {
       // console.log(body)
       return {
