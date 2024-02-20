@@ -1,30 +1,8 @@
 <template lang="pug">
 dt#basic {{ $t('setting__basic') }}
 dd
-  h3#basic_theme {{ $t('setting__basic_theme') }}
   div
-    ul(:class="$style.theme")
-      li(v-for="theme in defaultThemes" :key="theme.id" :aria-label="$t('theme_' + theme.id)" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)")
-        div(:class="$style.bg")
-        span(:class="$style.label") {{ $t('theme_' + theme.id) }}
-      li(v-for="theme in userThemes" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
-        div(:class="$style.bg")
-        span(:class="$style.label") {{ theme.name }}
-      li(:aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
-        div(:class="$style.bg")
-          div(:class="$style.bgContent")
-            div(:class="$style.light")
-            div(:class="$style.dark")
-        span(:class="$style.label") {{ $t('theme_auto') }}
-      li(:aria-label="$t('theme_add')" :class="[$style.themeItem, $style.add]" @click="handleEditTheme()")
-        div(:class="$style.bg")
-          div(:class="$style.bgContent")
-            svg-icon(:class="$style.icon" name="plus")
-        span(:class="$style.label") {{ $t('theme_add') }}
-
-dd
-  div
-    .gap-top.top
+    .gap-top
       base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({'common.isShowAnimation': $event})")
     .gap-top
       base-checkbox(id="setting_animate" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({'common.randomAnimate': $event})")
@@ -34,6 +12,28 @@ dd
       base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
     .p.gap-top
       base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+
+dd
+  h3#basic_theme {{ $t('setting__basic_theme') }}
+  div
+    ul(:class="$style.theme")
+      li(v-for="theme in themeList" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
+        div(:class="$style.bg")
+        span(:class="$style.label") {{ theme.name }}
+      li(v-if="showAllTheme || themeId == 'auto'" :aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
+        div(:class="$style.bg")
+          div(:class="$style.bgContent")
+            div(:class="$style.light")
+            div(:class="$style.dark")
+        span(:class="$style.label") {{ $t('theme_auto') }}
+      li(v-if="showAllTheme" :aria-label="$t('theme_add')" :class="[$style.themeItem, $style.add]" @click="handleEditTheme()")
+        div(:class="$style.bg")
+          div(:class="$style.bgContent")
+            svg-icon(:class="$style.icon" name="plus")
+        span(:class="$style.label") {{ $t('theme_add') }}
+      li(v-if="!showAllTheme" :aria-label="$t('theme_more_btn_show')" :class="[$style.themeItem, $style.moreThme]" @click="showAllTheme = true")
+        span(:class="$style.label") {{ $t('theme_more_btn_show') }}
+        svg-icon(name="angle-right-solid" :class="$style.activeIcon")
 
 dd
   h3#basic_source {{ $t('setting__basic_source') }}
@@ -136,8 +136,23 @@ export default {
   setup() {
     const t = useI18n()
 
-    const defaultThemes = shallowReactive([])
+    const showAllTheme = ref(false)
+    const defaultThemesRaw = shallowReactive([])
+    const defaultThemes = computed(() => {
+      return defaultThemesRaw.map(theme => ({ ...theme, isDefault: true, name: t('theme_' + theme.id) }))
+    })
     const userThemes = shallowReactive([])
+    const allThemes = computed(() => {
+      return [...defaultThemes.value, ...userThemes]
+    })
+    const themeList = computed(() => {
+      if (!allThemes.value.length) return []
+      return showAllTheme.value
+        ? allThemes.value
+        : themeId.value == 'auto'
+          ? []
+          : [allThemes.value.find(t => t.id == themeId.value) ?? allThemes.value[0]]
+    })
     const autoTheme = reactive({})
     const updateAutoTheme = (info) => {
       let light = findTheme(info, appSetting['theme.lightId'])
@@ -163,7 +178,7 @@ export default {
       getThemes((info) => {
         // console.log(info)
         dataPath = info.dataPath
-        defaultThemes.splice(0, defaultThemes.length, ...info.themes.map(t => {
+        defaultThemesRaw.splice(0, defaultThemesRaw.length, ...info.themes.map(t => {
           return {
             id: t.id,
             styles: {
@@ -190,6 +205,7 @@ export default {
     const editThemeId = ref('')
     const handleEditTheme = (theme) => {
       // console.log(theme)
+      if (theme?.isDefault) return
       if (!theme && userThemes.length >= 10) {
         void dialog({
           message: t('theme_max_tip'),
@@ -299,9 +315,10 @@ export default {
     return {
       appSetting,
       updateSetting,
-      defaultThemes,
       userThemes,
       autoTheme,
+      showAllTheme,
+      themeList,
       // currentStting,
       // themes,
       // themeClassName,
@@ -489,6 +506,16 @@ export default {
       }
       .label {
         color: var(--color-primary-dark-100-alpha-300);
+      }
+    }
+
+    &.moreThme {
+      flex-direction: row;
+      width: auto;
+      gap: 5px;
+      color: var(--color-primary-font-active);
+      .label {
+        height: auto;
       }
     }
   }
