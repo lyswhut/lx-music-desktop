@@ -20,19 +20,21 @@ export default () => {
 
   // 更新超时定时器
   let updateTimeout: number | null = null
-  if (window.lx.isProd && !(isWin && process.arch.includes('arm'))) {
-    updateTimeout = window.setTimeout(() => {
-      updateTimeout = null
-      void nextTick(() => {
-        showUpdateModal()
-        setTimeout(() => {
-          void dialog({
-            message: window.i18n.t('update__timeout_top'),
-            confirmButtonText: window.i18n.t('alert_button_text'),
-          })
-        }, 500)
-      })
-    }, 60 * 60 * 1000)
+  const startUpdateTimeout = () => {
+    if (window.lx.isProd && !(isWin && process.arch.includes('arm'))) {
+      updateTimeout = window.setTimeout(() => {
+        updateTimeout = null
+        void nextTick(() => {
+          showUpdateModal()
+          setTimeout(() => {
+            void dialog({
+              message: window.i18n.t('update__timeout_top'),
+              confirmButtonText: window.i18n.t('alert_button_text'),
+            })
+          }, 500)
+        })
+      }, 60 * 60 * 1000)
+    }
   }
 
   const clearUpdateTimeout = () => {
@@ -149,7 +151,10 @@ export default () => {
       desc: info.releaseNotes as string,
     }
     versionInfo.isLatest = false
-    if (appSetting['common.tryAutoUpdate']) versionInfo.status = 'downloading'
+    if (appSetting['common.tryAutoUpdate']) {
+      versionInfo.status = 'downloading'
+      startUpdateTimeout()
+    }
     void nextTick(() => {
       showUpdateModal()
     })
