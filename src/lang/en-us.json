@@ -640,6 +640,7 @@
   "theme_edit_modal__control_btn": "Left control button color",
   "theme_edit_modal__copy": "Copy theme",
   "theme_edit_modal__dark": "Dark theme",
+  "theme_edit_modal__dark_font": "Dark font",
   "theme_edit_modal__font": "Font color",
   "theme_edit_modal__hide_btn": "Hide play details page",
   "theme_edit_modal__main_bg": "Content area background color",

@@ -107,6 +107,7 @@
         <div :class="$style.subContent">
           <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
           <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
+          <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
           <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
         </div>
         <div :class="$style.subContent">
@@ -161,6 +162,7 @@ export default {
   setup(props, { emit }) {
     const themeName = ref('')
     const isDark = ref(false)
+    const isDarkFont = ref(false)
     const preview = ref(false)
     const bgImg = ref('')
     let bgImgRaw = ''
@@ -227,8 +229,8 @@ export default {
     let hideBtnColorOrigin
     let hideBtnColor
 
-    const applyPrimaryColor = (color, fontColor, isDark) => {
-      theme.config.themeColors = createThemeColors(color, fontColor, isDark)
+    const applyPrimaryColor = (color, fontColor, isDark, isDarkFont) => {
+      theme.config.themeColors = createThemeColors(color, fontColor, isDark, isDarkFont)
       if (theme.config.extInfo['--color-app-background'].startsWith('var')) setAppBgColor(getColor(appBgColorOrigin, theme))
       if (theme.config.extInfo['--color-nav-font'].startsWith('var')) setAsideFontColor(getColor(asideFontColorOrigin, theme))
       if (theme.config.extInfo['--color-main-background'].startsWith('var')) setMainBgColor(getColor(mainBgColorOrigin, theme))
@@ -247,6 +249,7 @@ export default {
       // console.log(theme)
       themeName.value = theme.name
       isDark.value = theme.isDark
+      isDarkFont.value = theme.isDarkFont ?? false
       currentBgPath = ''
       if (theme.config.extInfo['--background-image'] == 'none') {
         bgImg.value = ''
@@ -279,10 +282,10 @@ export default {
       hideBtnColor = getColor(hideBtnColorOrigin, theme)
 
       initMainColor(theme.config.themeColors['--color-primary'], (color) => {
-        applyPrimaryColor(color, theme.config.themeColors['--color-1000'], theme.isDark)
+        applyPrimaryColor(color, theme.config.themeColors['--color-1000'], theme.isDark, theme.isDarkFont)
       })
       initFontColor(theme.config.themeColors['--color-1000'] ?? (isDark ? 'rgb(229, 229, 229)' : 'rgb(33, 33, 33)'), (color) => {
-        applyPrimaryColor(theme.config.themeColors['--color-primary'], color, theme.isDark)
+        applyPrimaryColor(theme.config.themeColors['--color-primary'], color, theme.isDark, theme.isDarkFont)
       })
       initAppBgColor(appBgColor, (color) => {
         // console.log('appBgColor', color)
@@ -402,7 +405,11 @@ export default {
     }
     const handleDark = (val) => {
       theme.isDark = val
-      applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.config.themeColors['--color-1000'], theme.isDark)
+      applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.config.themeColors['--color-1000'], theme.isDark, theme.isDarkFont)
+    }
+    const handleDarkFont = (val) => {
+      theme.isDarkFont = val
+      applyPrimaryColor(theme.config.themeColors['--color-primary'], theme.config.themeColors['--color-1000'], theme.isDark, theme.isDarkFont)
     }
     /**
      * 预览主题
@@ -506,6 +513,8 @@ export default {
       bgImg,
       isDark,
       handleDark,
+      isDarkFont,
+      handleDarkFont,
       preview,
       handlePreview,
       handleCancel,

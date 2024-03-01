@@ -276,6 +276,7 @@ export const getTheme = () => {
       id: global.lx.appSetting['theme.id'],
       name: theme.name,
       isDark: theme.isDark,
+      isDarkFont: theme.isDarkFont,
       colors,
     },
   }

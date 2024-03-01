@@ -9,6 +9,7 @@ const defaultThemes = [
     id: 'green',
     name: '绿意盎然',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(77, 175, 124)',
       font: 'rgb(33, 33, 33)',
@@ -32,6 +33,7 @@ const defaultThemes = [
     id: 'blue',
     name: '蓝田生玉',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(52, 152, 219)',
       font: 'rgb(33, 33, 33)',
@@ -55,6 +57,7 @@ const defaultThemes = [
     id: 'blue_plus',
     name: '蛋雅深蓝',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(77, 131, 175)',
       font: 'rgb(33, 33, 33)',
@@ -78,6 +81,7 @@ const defaultThemes = [
     id: 'orange',
     name: '橙黄橘绿',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(245, 171, 53)',
       font: 'rgb(33, 33, 33)',
@@ -101,6 +105,7 @@ const defaultThemes = [
     id: 'red',
     name: '热情似火',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(214, 69, 65)',
       font: 'rgb(33, 33, 33)',
@@ -124,6 +129,7 @@ const defaultThemes = [
     id: 'pink',
     name: '粉装玉琢',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(241, 130, 141)',
       font: 'rgb(33, 33, 33)',
@@ -147,6 +153,7 @@ const defaultThemes = [
     id: 'purple',
     name: '重斤球紫',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(155, 89, 182)',
       font: 'rgb(33, 33, 33)',
@@ -170,6 +177,7 @@ const defaultThemes = [
     id: 'grey',
     name: '灰常美丽',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(108, 122, 137)',
       font: 'rgb(33, 33, 33)',
@@ -193,6 +201,7 @@ const defaultThemes = [
     id: 'ming',
     name: '青出于黑',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(51, 110, 123)',
       font: 'rgb(33, 33, 33)',
@@ -216,6 +225,7 @@ const defaultThemes = [
     id: 'blue2',
     name: '清热板蓝',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(79, 98, 208)',
       font: 'rgb(33, 33, 33)',
@@ -262,6 +272,7 @@ const defaultThemes = [
     id: 'mid_autumn',
     name: '月里嫦娥',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(74, 55, 82)',
       font: 'rgb(33, 33, 33)',
@@ -286,6 +297,7 @@ const defaultThemes = [
     id: 'naruto',
     name: '木叶之村',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(87, 144, 167)',
       font: 'rgb(33, 33, 33)',
@@ -309,6 +321,7 @@ const defaultThemes = [
     id: 'china_ink',
     name: '近墨者黑',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgba(47, 47, 47, 1)',
       font: 'rgb(33, 33, 33)',
@@ -333,6 +346,7 @@ const defaultThemes = [
     id: 'happy_new_year',
     name: '新年快乐',
     isDark: false,
+    isDarkFont: false,
     config: {
       primary: 'rgb(192, 57, 43)',
       font: 'rgb(33, 33, 33)',

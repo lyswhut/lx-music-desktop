@@ -1,6 +1,6 @@
 const { RGB_Linear_Shade, RGB_Alpha_Shade } = require('./colorUtils')
 
-exports.createThemeColors = (rgbaColor, fontRgbaColor, isDark) => {
+exports.createThemeColors = (rgbaColor, fontRgbaColor, isDark, isDarkFont) => {
   const colors = {
     '--color-primary': rgbaColor,
   }
@@ -30,19 +30,19 @@ exports.createThemeColors = (rgbaColor, fontRgbaColor, isDark) => {
 
   colors['--color-theme'] = isDark ? colors['--color-primary-light-900'] : rgbaColor
 
-  return { ...colors, ...createFontColors(fontRgbaColor, isDark) }
+  return { ...colors, ...createFontColors(fontRgbaColor, isDark, isDarkFont) }
 }
 
-const createFontColors = (rgbaColor, isDark) => {
+const createFontColors = (rgbaColor, isDark, isDarkFont) => {
   // rgb(238, 238, 238)
   // let prec = 'rgb(255, 255, 255)'
   rgbaColor ??= isDark ? 'rgb(229, 229, 229)' : 'rgb(33, 33, 33)'
-  if (isDark) return createFontDarkColors(rgbaColor)
+  if (isDark) return createFontDarkColors(rgbaColor, isDarkFont)
 
   let colors = {
     '--color-1000': rgbaColor,
   }
-  let step = isDark ? -0.05 : 0.05
+  let step = (isDarkFont ? 0.02 : 0.05) * (isDark ? -1 : 1)
   for (let i = 1; i < 21; i += 1) {
     colors[`--color-${String(1000 - 50 * i).padStart(3, '0')}`] = RGB_Linear_Shade(step * i, rgbaColor)
   }
@@ -50,14 +50,14 @@ const createFontColors = (rgbaColor, isDark) => {
   return colors
 }
 
-const createFontDarkColors = (rgbaColor) => {
+const createFontDarkColors = (rgbaColor, isDarkFont) => {
   // rgb(238, 238, 238)
   // let prec = 'rgb(255, 255, 255)'
 
   let colors = {
     '--color-1000': rgbaColor,
   }
-  const step = -0.05
+  const step = isDarkFont ? -0.015 : -0.05
   let preColor = rgbaColor
   for (let i = 1; i < 21; i += 1) {
     preColor = RGB_Linear_Shade(step, preColor)

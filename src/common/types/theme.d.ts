@@ -262,6 +262,7 @@ declare namespace LX {
     id: string
     name: string
     isDark: boolean
+    isDarkFont: boolean
     isCustom: boolean
     config: {
       themeColors: ThemeColors
