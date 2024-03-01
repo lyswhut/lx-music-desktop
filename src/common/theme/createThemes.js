@@ -249,6 +249,7 @@ const defaultThemes = [
     id: 'black',
     name: '黑灯瞎火',
     isDark: true,
+    isDarkFont: false,
     config: {
       primary: 'rgb(150, 150, 150)',
       font: 'rgb(229, 229, 229)',
