@@ -32,12 +32,32 @@
 
 ### 说明
 
-一个基于 Electron + Vue 开发的音乐软件。
+一个基于Electron + Vue 开发的音乐软。下面是这个项目的技术栈介绍：
 
-所用技术栈：
+1. Electron: 基于Node.js和V8构建的桌面应用框架，可以使用HTML、CSS和JavaScript构建跨平台应用程序。
+2. Vue3: 基于web组件模型构建的框架，能够在front-end实时更新DOM数据，还能实现双向数据绑定。
+3. Vue-Router: 官方提供的Vue3路由管理器，可以实现SPA的路由功能。
+4. Vuex: 一种状态管理器，解决了组件之间共享状态逻辑复杂的问题，使状态的传递和管理更加清晰、方便。
+5. TypeScript: 超集编程语言，通过类型检查来提高代码健壮性和可维护性。
+6. Babel: JavaScript编译器，可以实现将ES6+的代码编译成ES5代码，以兼容老版本的浏览器。还具有其他功能，例如把JSX、TypeScript转换为JavaScript。
+7. ESLint: JavaScript代码检查工具，可以保证代码规范和可读性。
+8. webpack: 自动化构建工具，支持各种模块打包，并提供代码压缩、混淆、hash等功能。
+9. Pug: 一种模板引擎，可以减少HTML中的重复代码，并支持使用变量和函数等。
+10. postcss: 给CSS代码添加浏览器前缀，还支持使用CSS变量和函数等。
+11. Mini-css-extract-plugin: 把CSS代码提取到独立的文件中，并支持自动化代码压缩。
+12. Svg-sprite-loader: 把多个SVG文件合并成一个SVG sprite，并提供自定义加载器。
+13. Font-list: 通过Node.js实现获取系统字体信息的轻量库。
+14. better-sqlite3: 基于Node.js的轻量级SQL数据库管理库，具有更快的速度和更好的API。
+15. Socket.io: 基于WebSocket的数据传输协议，可以实现实时通讯功能。
+16. Sortablejs: 基于jQuery的拖拽排序插件，可以用于网站的拖拽排序等场景。
+17. Electron-log: 基于Electron的日志管理库，兼容Node.js中的console.log()。
+18. Http-terminator: 基于Node.js的HTTP服务器管理库，允许在站点关闭时终止当前处理程序并允许请求完成。
+19. Image-size: 基于Node.js的图片大小检测库，允许从图像数据中提取和解析JPEG、PNG和GIF图片字节的大小。
+20. Music-metadata: 基于Node.js的音乐元数据解析库，可解析MP3、MP4、FLAC、OGG、WMA等音乐格式。
+21. Socket.io: 基于WebSocket的数据传输协议，可以实现实时通讯功能。
+22. Electron-store: 基于Node.js的Electron应用程序中的持久化本地存储库，允许在应用程序的生命周期内访问和存储数据。
 
-- Electron 15+
-- Vue 3
+这个项目所用的技术栈都是当前前端开发比较流行的组件库和工具，可以提高开发效率和代码健壮性，降低出错率，便于团队合作。
 
 已支持的平台：
 
