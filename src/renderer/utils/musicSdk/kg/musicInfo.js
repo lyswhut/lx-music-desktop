@@ -13,7 +13,7 @@ const createGetMusicInfosTask = (hashs) => {
     dfid: '-',
     clienttime: Date.now(),
     key: 'OIlwieks28dk2k092lksi2UIkp',
-    fields: 'album_info,author_name,audio_info,ori_audio_name,base,songname',
+    fields: 'album_info,author_name,audio_info,ori_audio_name,base,songname,classification',
   }
   let list = hashs
   let tasks = []
@@ -103,8 +103,12 @@ export const getMusicInfos = async(hashs) => {
   return filterMusicInfoList(await Promise.all(createGetMusicInfosTask(hashs)).then(data => data.flat()))
 }
 
+export const getMusicInfoRaw = async(hash) => {
+  return Promise.all(createGetMusicInfosTask([{ hash }])).then(data => data.flat()[0])
+}
+
 export const getMusicInfo = async(hash) => {
-  return getMusicInfos([hash]).then(data => data[0])
+  return getMusicInfos([{ hash }]).then(data => data[0])
 }
 
 export const getMusicInfosByList = (list) => {

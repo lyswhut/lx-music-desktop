@@ -1,6 +1,7 @@
 import { httpFetch } from '../../request'
 import { decodeName, dateFormat2 } from '../../index'
 import { signatureParams } from './util'
+import { getMusicInfoRaw } from './musicInfo'
 
 export default {
   _requestObj: null,
@@ -8,8 +9,11 @@ export default {
   async getComment({ hash }, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
 
+    const res_id = (await getMusicInfoRaw(hash)).classification?.[0]?.res_id
+    if (!res_id) throw new Error('获取评论失败')
+
     let timestamp = Date.now()
-    const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=0&p=${page}&pagesize=${limit}&uuid=0&ver=10`
+    const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=${res_id}&p=${page}&pagesize=${limit}&uuid=0&ver=10`
     const _requestObj = httpFetch(`http://m.comment.service.kugou.com/r/v1/rank/newest?${params}&signature=${signatureParams(params)}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.24',
