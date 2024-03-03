@@ -87,6 +87,7 @@ export const watchConfigKeys = [
 export const buildLyricConfig = (appSetting: Partial<LX.AppSetting>): Partial<LX.DesktopLyric.Config> => {
   const setting: Partial<LX.DesktopLyric.Config> = {}
   for (const key of watchConfigKeys) {
+    // @ts-expect-error
     if (key in appSetting) setting[key] = appSetting[key]
   }
   return setting
