@@ -57,6 +57,7 @@ const parseLyric = str => {
 
 export default {
   getIntv(interval) {
+    if (!interval) return 0
     let intvArr = interval.split(':')
     let intv = 0
     let unit = 1
