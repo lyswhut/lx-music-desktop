@@ -1,4 +1,7 @@
-let audio: HTMLAudioElement | null = null
+interface HTMLAudioElementChrome extends HTMLAudioElement {
+  setSinkId: (id: string) => Promise<void>
+}
+let audio: HTMLAudioElementChrome | null = null
 let audioContext: AudioContext
 let mediaSource: MediaElementAudioSourceNode
 let analyser: AnalyserNode
@@ -56,7 +59,7 @@ export const soundR = 0.5
 
 export const createAudio = () => {
   if (audio) return
-  audio = new window.Audio()
+  audio = new window.Audio() as HTMLAudioElementChrome
   audio.controls = false
   audio.autoplay = true
   audio.preload = 'auto'
@@ -372,9 +375,9 @@ export const setCurrentTime = (time: number) => {
   if (audio) audio.currentTime = time
 }
 
-export const setMediaDeviceId = (mediaDeviceId: string) => {
-  // @ts-expect-error
-  return audio ? audio.setSinkId(mediaDeviceId) : Promise.resolve()
+export const setMediaDeviceId = async(mediaDeviceId: string): Promise<void> => {
+  if (!audio) return
+  return audio.setSinkId(mediaDeviceId)
 }
 
 export const setVolume = (volume: number) => {
