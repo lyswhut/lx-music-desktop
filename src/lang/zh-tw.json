@@ -5,6 +5,7 @@
   "audio_visualization": "音訊視覺化（實驗性）",
   "back": "返回",
   "btn_cancel": "取消",
+  "btn_close": "關閉",
   "btn_confirm": "確定",
   "btn_save": "儲存",
   "cancel_button_text": "取消",
@@ -685,7 +686,8 @@
   "update__timeout_top": "下載時間過長提示\n\n你目前所在網路訪問GitHub較慢，新版本已經下了一個鐘了還沒完成😳，你仍可選擇繼續等，但牆裂建議手動更新版本！",
   "user_api__allow_show_update_alert": "允許顯示更新彈窗",
   "user_api__btn_export": "匯出",
-  "user_api__btn_import": "導入",
+  "user_api__btn_import": "本地導入",
+  "user_api__btn_import_online": "線上匯入",
   "user_api__btn_remove": "移除",
   "user_api__import_file": "選擇音樂API腳本文件",
   "user_api__init_failed_alert": "自訂來源 [{name}] 初始化失敗：",
@@ -695,5 +697,10 @@
   "user_api__readme": "來源編寫說明：",
   "user_api__title": "自訂來源管理",
   "user_api__update_alert": "自訂來源 [{name}] 發現新版本：",
-  "user_api__update_alert_open_url": "開啟更新地址"
+  "user_api__update_alert_open_url": "開啟更新地址",
+  "user_api_import__failed": "自訂來源導入失敗：\n{message}",
+  "user_api_import_online__input_confirm": "導入",
+  "user_api_import_online__input_loading": "導入中...",
+  "user_api_import_online__input_tip": "請輸入 HTTP 連結",
+  "user_api_import_online__title": "線上導入自訂來源"
 }

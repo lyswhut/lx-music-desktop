@@ -5,6 +5,7 @@
   "audio_visualization": "Audio visualization (experimental)",
   "back": "Back",
   "btn_cancel": "Cancel",
+  "btn_close": "Closure",
   "btn_confirm": "Confirm",
   "btn_save": "Save",
   "cancel_button_text": "Cancel",
@@ -685,7 +686,8 @@
   "update__timeout_top": "Download time is too long prompt\n\nYour current network access to GitHub is slow, and the new version has been downloaded for an hour and has not been completed yet😳, you can still choose to continue waiting, but the wall crack recommends manually updating the version!",
   "user_api__allow_show_update_alert": "Allow update popup to show",
   "user_api__btn_export": "Export",
-  "user_api__btn_import": "Import",
+  "user_api__btn_import": "Local import",
+  "user_api__btn_import_online": "Online import",
   "user_api__btn_remove": "Remove",
   "user_api__import_file": "Select music API script file",
   "user_api__init_failed_alert": "Custom source [{name}] failed to initialize:",
@@ -695,5 +697,10 @@
   "user_api__readme": "Source writing instructions: ",
   "user_api__title": "Custom Source Management",
   "user_api__update_alert": "Custom source [{name}] found new version:",
-  "user_api__update_alert_open_url": "Open update address"
+  "user_api__update_alert_open_url": "Open update address",
+  "user_api_import__failed": "Custom source import failed:\n{message}",
+  "user_api_import_online__input_confirm": "Import",
+  "user_api_import_online__input_loading": "Importing...",
+  "user_api_import_online__input_tip": "Please enter HTTP link",
+  "user_api_import_online__title": "Import custom sources online"
 }

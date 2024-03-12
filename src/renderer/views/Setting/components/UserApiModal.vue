@@ -23,8 +23,10 @@ material-modal(:show="modelValue" bg-close teleport="#view" @close="handleClose"
         span.hover.underline(aria-label="https://lxmusic.toside.cn/desktop/custom-source" @click="handleOpenUrl('https://lyswhut.github.io/lx-music-doc/desktop/custom-source')") FAQ
       p {{ $t('user_api__note') }}
     div(:class="$style.footer")
+      base-btn(:class="$style.footerBtn" @click="isShowOnlineImportModal = true") {{ $t('user_api__btn_import_online') }}
       base-btn(:class="$style.footerBtn" @click="handleImport") {{ $t('user_api__btn_import') }}
       //- base-btn(:class="$style.footerBtn" @click="handleExport") {{ $t('user_api__btn_export') }}
+    UserApiOnlineImportModal(v-model:show="isShowOnlineImportModal" @import="importUserApi")
 </template>
 
 <script>
@@ -34,8 +36,15 @@ import { openUrl } from '@common/utils/electron'
 import apiSourceInfo from '@renderer/utils/musicSdk/api-source-info'
 import { userApi } from '@renderer/store'
 import { appSetting, updateSetting } from '@renderer/store/setting'
+import { ref } from '@common/utils/vueTools'
+import { dialog } from '@renderer/plugins/Dialog'
+
+import UserApiOnlineImportModal from './UserApiOnlineImportModal.vue'
 
 export default {
+  components: {
+    UserApiOnlineImportModal,
+  },
   props: {
     modelValue: {
       type: Boolean,
@@ -44,9 +53,11 @@ export default {
   },
   emits: ['update:modelValue'],
   setup() {
+    const isShowOnlineImportModal = ref(false)
     return {
       userApi,
       appSetting,
+      isShowOnlineImportModal,
     }
   },
   computed: {
@@ -55,6 +66,13 @@ export default {
     },
   },
   methods: {
+    async importUserApi(script) {
+      return importUserApi(script).then(({ apiList }) => {
+        userApi.list = apiList
+      }).catch((err) => {
+        void dialog(this.$t('user_api_import__failed', { message: err.message }))
+      })
+    },
     handleImport() {
       if (this.userApi.list.length > 20) {
         this.$dialog({
@@ -73,9 +91,7 @@ export default {
       }).then(async result => {
         if (result.canceled) return
         return readFile(result.filePaths[0]).then(async data => {
-          return importUserApi(data.toString()).then(({ apiList }) => {
-            userApi.list = apiList
-          })
+          return this.importUserApi(data.toString())
         })
       })
     },
@@ -110,8 +126,8 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .main {
-  padding: 15px;
-  max-width: 400px;
+  padding: 15px 8px;
+  max-width: 550px;
   min-width: 300px;
   display: flex;
   flex-flow: column nowrap;
@@ -142,6 +158,7 @@ export default {
   min-height: 100px;
   max-height: 100%;
   margin-top: 15px;
+  padding: 0 7px;
 }
 .listItem {
   display: flex;
@@ -201,6 +218,7 @@ export default {
   }
 }
 .note {
+  padding: 0 7px;
   margin-top: 15px;
   font-size: 12px;
   line-height: 1.25;
@@ -212,6 +230,7 @@ export default {
   }
 }
 .footer {
+  padding: 0 7px;
   margin-top: 15px;
   display: flex;
   flex-flow: row nowrap;
