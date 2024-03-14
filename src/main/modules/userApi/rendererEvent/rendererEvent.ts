@@ -1,7 +1,7 @@
 import { mainOn } from '@common/mainIpc'
 
 import USER_API_RENDERER_EVENT_NAME from './name'
-import { createWindow, openDevTools, sendEvent } from '../main'
+import { createWindow, getProxy, openDevTools, sendEvent } from '../main'
 import { getUserApis } from '../utils'
 import { sendShowUpdateAlert, sendStatusChange } from '@main/modules/winMain'
 
@@ -71,10 +71,14 @@ export const init = () => {
       updateUrl: data.updateUrl,
     })
   }
+  const handleGetProxy = () => {
+    sendEvent(USER_API_RENDERER_EVENT_NAME.proxyUpdate, getProxy())
+  }
   mainOn(USER_API_RENDERER_EVENT_NAME.init, handleInit)
   mainOn(USER_API_RENDERER_EVENT_NAME.response, handleResponse)
   mainOn(USER_API_RENDERER_EVENT_NAME.openDevTools, handleOpenDevTools)
   mainOn(USER_API_RENDERER_EVENT_NAME.showUpdateAlert, handleShowUpdateAlert)
+  mainOn(USER_API_RENDERER_EVENT_NAME.getProxy, handleGetProxy)
 }
 
 export const clearRequestTimeout = (requestKey: string) => {

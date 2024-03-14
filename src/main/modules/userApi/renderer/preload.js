@@ -3,16 +3,18 @@ import needle from 'needle'
 import zlib from 'zlib'
 import { createCipheriv, publicEncrypt, constants, randomBytes, createHash } from 'crypto'
 import USER_API_RENDERER_EVENT_NAME from '../rendererEvent/name'
+import { httpOverHttp, httpsOverHttp } from 'tunnel'
 
-for (const key of Object.keys(process.env)) {
-  if (/^(?:http_proxy|https_proxy|NO_PROXY)$/i.test(key)) delete process.env[key]
-}
 
 const sendMessage = (action, data, status, message) => {
   ipcRenderer.send(action, { data, status, message })
 }
 
 let isInitedApi = false
+const proxy = {
+  host: '',
+  port: '',
+}
 let isShowedUpdateAlert = false
 const EVENT_NAMES = {
   request: 'request',
@@ -40,6 +42,16 @@ const supportActions = {
   mg: ['musicUrl'],
   xm: ['musicUrl'],
   local: ['musicUrl', 'lyric', 'pic'],
+}
+
+const httpsRxp = /^https:/
+const getRequestAgent = url => {
+  return proxy.host ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)({
+    proxy: {
+      host: proxy.host,
+      port: proxy.port,
+    },
+  }) : undefined
 }
 
 const verifyLyricInfo = (info) => {
@@ -174,10 +186,16 @@ const onError = (errorMessage) => {
 }
 
 const initEnv = (userApi) => {
+  proxy.host = userApi.proxy.host
+  proxy.port = userApi.proxy.port
+
   contextBridge.exposeInMainWorld('lx', {
     EVENT_NAMES,
     request(url, { method = 'get', timeout, headers, body, form, formData }, callback) {
-      let options = { headers }
+      let options = {
+        headers,
+        agent: getRequestAgent(url),
+      }
       let data
       if (body) {
         data = body
@@ -351,4 +369,9 @@ window.addEventListener('unhandledrejection', (event) => {
 
 ipcRenderer.on(USER_API_RENDERER_EVENT_NAME.initEnv, (event, data) => {
   initEnv(data)
+})
+
+ipcRenderer.on(USER_API_RENDERER_EVENT_NAME.proxyUpdate, (event, data) => {
+  proxy.host = data.host
+  proxy.port = data.port
 })
