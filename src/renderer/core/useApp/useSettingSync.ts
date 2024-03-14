@@ -106,12 +106,6 @@ export default () => {
   watch(() => appSetting['network.proxy.port'], port => {
     proxy.port = port
   })
-  watch(() => appSetting['network.proxy.username'], username => {
-    proxy.username = username
-  })
-  watch(() => appSetting['network.proxy.password'], password => {
-    proxy.password = password
-  })
 
   watch(() => appSetting['player.isShowTaskProgess'], val => {
     if (val) return

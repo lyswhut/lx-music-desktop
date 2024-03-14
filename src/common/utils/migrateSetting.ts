@@ -117,8 +117,6 @@ export default (setting: any): Partial<LX.AppSetting> => {
     setting['network.proxy.enable'] = setting.network?.proxy?.enable
     setting['network.proxy.host'] = setting.network?.proxy?.host
     setting['network.proxy.port'] = setting.network?.proxy?.port
-    setting['network.proxy.username'] = setting.network?.proxy?.username
-    setting['network.proxy.password'] = setting.network?.proxy?.password
 
     setting['tray.enable'] = setting.tray?.enable
     setting['tray.themeId'] = setting.tray?.themeId
