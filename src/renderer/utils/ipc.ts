@@ -20,6 +20,13 @@ export const onSettingChanged = (listener: LX.IpcRendererEventListenerParams<Par
   }
 }
 
+export const onOpenSetting = (listener: LX.IpcRendererEventListenerParams<Partial<LX.AppSetting>>): RemoveListener => {
+  rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.on_open_setting, listener)
+  return () => {
+    rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.on_open_setting, listener)
+  }
+}
+
 export const sendInited = () => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.inited)
 }

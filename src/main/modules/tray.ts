@@ -5,9 +5,11 @@ import {
   hideWindow as hideMainWindow,
   isExistWindow as isExistMainWindow,
   isShowWindow as isShowMainWindow,
+  sendEvent,
   showWindow as showMainWindow,
 } from './winMain'
 import { quitApp } from '@main/app'
+import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
 let tray: Electron.Tray | null
 let isEnableTray: boolean = false
@@ -138,6 +140,13 @@ export const createMenu = () => {
             showMainWindow()
           },
         })
+    menu.push({
+      label: '设置',
+      click() {
+        sendEvent(WIN_MAIN_RENDERER_EVENT_NAME.on_open_setting)
+        showMainWindow()
+      },
+    })
   }
   menu.push(global.lx.appSetting['desktopLyric.enable']
     ? {
