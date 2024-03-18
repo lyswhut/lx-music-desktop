@@ -82,6 +82,15 @@
           <div class="list-item-cell" style="flex: 0 0 10%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
         </div>
       </base-virtualized-list>
+      <button
+        v-if="playerInfo.isPlayList && playerInfo.playIndex >= 0"
+        :class="$style.location"
+        @click="handleLocation"
+      >
+        <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <use xlink:href="#icon-music-location" />
+        </svg>
+      </button>
     </div>
     <div v-show="!list.length" :class="$style.noItem">
       <p v-text="$t('no_item')" />
@@ -287,6 +296,9 @@ export default {
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
     }
+    const handleLocation = () => {
+      listRef.value.scrollToIndex(playerInfo.value.playIndex, 0, true)
+    }
 
     return {
       listItemHeight,
@@ -338,6 +350,8 @@ export default {
       handleRestoreScroll,
 
       actionButtonsVisible,
+
+      handleLocation,
     }
   },
 }
@@ -396,6 +410,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   flex: auto;
+  position: relative;
 }
 
 .noItem {
@@ -412,4 +427,32 @@ export default {
   }
 }
 
+.location {
+  all: unset;
+  position: absolute;
+  right: 48px;
+  bottom: 48px;
+  width: 32px;
+  height: 32px;
+  color: var(--color-button-font);
+  cursor: pointer;
+
+  svg {
+    transition: opacity @transition-fast;
+    opacity: .6;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
+  }
+
+  &:hover {
+    svg {
+      opacity: .9;
+    }
+  }
+
+  &:active {
+    svg {
+      opacity: 1;
+    }
+  }
+}
 </style>
