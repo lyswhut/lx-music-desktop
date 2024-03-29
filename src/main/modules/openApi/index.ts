@@ -1,4 +1,5 @@
 import http from 'node:http'
+import type { Socket } from 'node:net'
 
 let status: LX.OpenAPI.Status = {
   status: false,
@@ -7,6 +8,7 @@ let status: LX.OpenAPI.Status = {
 }
 
 let httpServer: http.Server
+let sockets = new Set<Socket>()
 
 const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<void>((resolve, reject) => {
   httpServer = http.createServer((req, res) => {
@@ -47,6 +49,13 @@ const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<vo
     console.log(error)
     reject(error)
   })
+  httpServer.on('connection', (socket) => {
+    sockets.add(socket)
+    socket.once('close', () => {
+      sockets.delete(socket)
+    })
+    socket.setTimeout(4000)
+  })
 
   httpServer.on('listening', () => {
     const addr = httpServer.address()
@@ -69,6 +78,8 @@ const handleStopServer = async() => new Promise<void>((resolve, reject) => {
     }
     resolve()
   })
+  for (const socket of sockets) socket.destroy()
+  sockets.clear()
 })
 
 
