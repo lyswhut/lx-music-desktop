@@ -187,6 +187,7 @@ export const setWindowBounds = (options: Partial<Electron.Rectangle>) => {
 }
 export const setProgressBar = (progress: number, options?: Electron.ProgressBarOptions) => {
   if (!browserWindow) return
+  console.log(progress, options)
   browserWindow.setProgressBar(progress, options)
 }
 export const setIgnoreMouseEvents = (ignore: boolean, options?: Electron.IgnoreMouseEventsOptions) => {

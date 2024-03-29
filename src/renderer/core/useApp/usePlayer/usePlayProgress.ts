@@ -59,6 +59,7 @@ export default () => {
 
   const setProgress = (time: number, maxTime?: number) => {
     if (!musicInfo.id) return
+    if (maxTime != null) setMaxplayTime(maxTime)
     console.log('setProgress', time, maxTime)
     if (time > 0) restorePlayTime = time
     if (mediaBuffer.playTime) {
@@ -68,8 +69,6 @@ export default () => {
     }
     setNowPlayTime(time)
     setCurrentTime(time)
-
-    if (maxTime != null) setMaxplayTime(maxTime)
 
     // if (!isPlay) audio.play()
   }

@@ -48,7 +48,7 @@ export default () => {
     prev: true,
   }
   const progressStatus = {
-    progress: 0,
+    progress: -1,
     status: 'none' as Electron.ProgressBarOptions['mode'],
   }
   let showProgress = global.lx.appSetting['player.isShowTaskProgess']
@@ -87,12 +87,11 @@ export default () => {
       if (status.collect != null) taskBarButtonFlags.collect = status.collect
       setThumbarButtons(taskBarButtonFlags)
     }
-    if (status.progress) {
+    if (status.progress != null && global.lx.player_status.duration) {
       const progress = status.progress / global.lx.player_status.duration
-      if (progress.toFixed(2) == progressStatus.progress.toFixed(2)) return
-      progressStatus.progress = progress
-      if (showProgress) {
-        setProgressBar(progress, {
+      if (progress.toFixed(2) != progressStatus.progress.toFixed(2) && showProgress) {
+        progressStatus.progress = progress < 0.01 ? 0.01 : progress
+        setProgressBar(progressStatus.progress, {
           mode: progressStatus.status,
         })
       }

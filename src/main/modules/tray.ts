@@ -5,6 +5,7 @@ import {
   hideWindow as hideMainWindow,
   isExistWindow as isExistMainWindow,
   isShowWindow as isShowMainWindow,
+  sendTaskbarButtonClick,
   showWindow as showMainWindow,
 } from './winMain'
 import { quitApp } from '@main/app'
@@ -12,6 +13,14 @@ import { quitApp } from '@main/app'
 let tray: Electron.Tray | null
 let isEnableTray: boolean = false
 let themeId: number
+
+const playerState = {
+  empty: false,
+  collect: false,
+  play: false,
+  next: true,
+  prev: true,
+}
 
 const watchConfigKeys = [
   'desktopLyric.enable',
@@ -42,6 +51,12 @@ const themeList = [
 
 const messages = {
   'en-us': {
+    collect: 'Collection',
+    uncollect: 'Cancel collection',
+    play: 'Play',
+    pause: 'Pause',
+    next: 'Next song',
+    prev: 'Previous song',
     hide_win_main: 'Hide Main Window',
     show_win_main: 'Show Main Window',
     hide_win_lyric: 'Close desktop lyrics',
@@ -53,6 +68,12 @@ const messages = {
     exit: 'Exit',
   },
   'zh-cn': {
+    collect: '收藏',
+    uncollect: '取消收藏',
+    play: '播放',
+    pause: '暂停',
+    next: '下一曲',
+    prev: '上一曲',
     hide_win_main: '隐藏主界面',
     show_win_main: '显示主界面',
     hide_win_lyric: '关闭桌面歌词',
@@ -64,6 +85,12 @@ const messages = {
     exit: '退出',
   },
   'zh-tw': {
+    collect: '收藏',
+    uncollect: '取消收藏',
+    play: '播放',
+    pause: '暫停',
+    next: '下一曲',
+    prev: '上一曲',
     hide_win_main: '隱藏主界面',
     show_win_main: '顯示主界面',
     hide_win_lyric: '關閉桌面歌詞',
@@ -120,25 +147,50 @@ const handleUpdateConfig = (config: any) => {
   global.lx.event_app.update_config(config)
 }
 
+const createPlayerMenu = () => {
+  let menu: Electron.MenuItemConstructorOptions[] = []
+  menu.push(playerState.play ? {
+    label: i18n.getMessage('pause'),
+    click() {
+      sendTaskbarButtonClick('pause')
+    },
+  } : {
+    label: i18n.getMessage('play'),
+    click() {
+      sendTaskbarButtonClick('play')
+    },
+  })
+  menu.push({
+    label: i18n.getMessage('prev'),
+    click() {
+      sendTaskbarButtonClick('prev')
+    },
+  })
+  menu.push({
+    label: i18n.getMessage('next'),
+    click() {
+      sendTaskbarButtonClick('next')
+    },
+  })
+  menu.push(playerState.collect ? {
+    label: i18n.getMessage('uncollect'),
+    click() {
+      sendTaskbarButtonClick('unCollect')
+    },
+  } : {
+    label: i18n.getMessage('collect'),
+    click() {
+      sendTaskbarButtonClick('collect')
+    },
+  })
+  return menu
+}
+
 export const createMenu = () => {
   if (!tray) return
-  let menu = []
-  if (isExistMainWindow()) {
-    const isShow = isShowMainWindow()
-    menu.push(isShow
-      ? {
-          label: i18n.getMessage('hide_win_main'),
-          click() {
-            hideMainWindow()
-          },
-        }
-      : {
-          label: i18n.getMessage('show_win_main'),
-          click() {
-            showMainWindow()
-          },
-        })
-  }
+  let menu: Electron.MenuItemConstructorOptions[] = createPlayerMenu()
+  if (playerState.empty) for (const m of menu) m.enabled = false
+  menu.push({ type: 'separator' })
   menu.push(global.lx.appSetting['desktopLyric.enable']
     ? {
         label: i18n.getMessage('hide_win_lyric'),
@@ -178,6 +230,23 @@ export const createMenu = () => {
           handleUpdateConfig({ 'desktopLyric.isAlwaysOnTop': true })
         },
       })
+  menu.push({ type: 'separator' })
+  if (isExistMainWindow()) {
+    const isShow = isShowMainWindow()
+    menu.push(isShow
+      ? {
+          label: i18n.getMessage('hide_win_main'),
+          click() {
+            hideMainWindow()
+          },
+        }
+      : {
+          label: i18n.getMessage('show_win_main'),
+          click() {
+            showMainWindow()
+          },
+        })
+  }
   menu.push({
     label: i18n.getMessage('exit'),
     click() {
@@ -240,5 +309,35 @@ export default () => {
   global.lx.event_app.on('app_inited', () => {
     i18n.setLang(global.lx.appSetting['common.langId'])
     init()
+  })
+
+  global.lx.event_app.on('player_status', (status) => {
+    let updated = false
+    if (status.status) {
+      switch (status.status) {
+        case 'paused':
+          playerState.play = false
+          playerState.empty &&= false
+          break
+        case 'error':
+          playerState.play = false
+          playerState.empty &&= false
+          break
+        case 'playing':
+          playerState.play = true
+          playerState.empty &&= false
+          break
+        case 'stoped':
+          playerState.play &&= false
+          playerState.empty = true
+          break
+      }
+      updated = true
+    }
+    if (status.collect != null) {
+      playerState.collect = status.collect
+      updated = true
+    }
+    if (updated) init()
   })
 }
