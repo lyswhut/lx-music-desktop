@@ -3,6 +3,8 @@ export const getNow = typeof performance == 'object' && window.performance.now ?
 
 export class TimeoutTools {
   constructor(thresholdTime = 80) {
+    this.nextTick = window.requestAnimationFrame.bind(window)
+    this.cancelNextTick = window.cancelAnimationFrame.bind(window)
     this.invokeTime = 0
     this.animationFrameId = null
     this.timeoutId = null
@@ -11,7 +13,7 @@ export class TimeoutTools {
   }
 
   run() {
-    this.animationFrameId = window.requestAnimationFrame(() => {
+    this.animationFrameId = this.nextTick(() => {
       this.animationFrameId = null
       let diff = this.invokeTime - getNow()
       // console.log('diff', diff)
@@ -39,7 +41,7 @@ export class TimeoutTools {
 
   clear() {
     if (this.animationFrameId) {
-      window.cancelAnimationFrame(this.animationFrameId)
+      this.cancelNextTick(this.animationFrameId)
       this.animationFrameId = null
     }
     if (this.timeoutId) {

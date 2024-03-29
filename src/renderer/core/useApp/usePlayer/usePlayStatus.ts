@@ -1,55 +1,65 @@
-import { onBeforeUnmount } from '@common/utils/vueTools'
-import { setPlayerAction, onPlayerAction } from '@renderer/utils/ipc'
+import { onBeforeUnmount, watch } from '@common/utils/vueTools'
+import { sendPlayerStatus, onPlayerAction } from '@renderer/utils/ipc'
 // import store from '@renderer/store'
 
 import { loveList } from '@renderer/store/list/state'
 import { addListMusics, removeListMusics, checkListExistMusic } from '@renderer/store/list/action'
-import { playMusicInfo } from '@renderer/store/player/state'
+import { playMusicInfo, musicInfo } from '@renderer/store/player/state'
 import { throttle } from '@common/utils'
 import { pause, play, playNext, playPrev } from '@renderer/core/player'
+import { playProgress } from '@renderer/store/player/playProgress'
 
 export default () => {
   // const setVisibleDesktopLyric = useCommit('setVisibleDesktopLyric')
   // const setLockDesktopLyric = useCommit('setLockDesktopLyric')
+  let collect = false
 
-  const buttons = {
-    empty: true,
-    collect: false,
-    play: false,
-    prev: true,
-    next: true,
-    lrc: false,
-    lockLrc: false,
-  }
-  const setButtons = () => {
-    setPlayerAction(buttons)
-  }
   const updateCollectStatus = async() => {
     let status = !!playMusicInfo.musicInfo && await checkListExistMusic(loveList.id, playMusicInfo.musicInfo.id)
-    if (buttons.collect == status) return false
-    buttons.collect = status
+    if (collect == status) return false
+    collect = status
     return true
   }
 
   const handlePlay = () => {
-    buttons.empty &&= false
-    buttons.play = true
-    setButtons()
+    sendPlayerStatus({ status: 'playing' })
   }
   const handlePause = () => {
-    buttons.empty &&= false
-    buttons.play = false
-    setButtons()
+    sendPlayerStatus({ status: 'paused' })
   }
   const handleStop = () => {
     if (playMusicInfo.musicInfo != null) return
-    buttons.collect &&= false
-    buttons.empty = true
-    setButtons()
+    sendPlayerStatus({ status: 'stoped' })
   }
-  const handleSetPlayInfo = () => {
-    void updateCollectStatus().then(isExist => {
-      if (isExist) setButtons()
+  const handleError = () => {
+    sendPlayerStatus({ status: 'error' })
+  }
+  const handleSetPlayInfo = async() => {
+    await updateCollectStatus()
+    sendPlayerStatus({
+      collect,
+      name: musicInfo.name,
+      singer: musicInfo.singer,
+      albumName: musicInfo.album,
+      picUrl: musicInfo.pic ?? '',
+      lyric: musicInfo.lrc ?? '',
+      lyricLineText: '',
+    })
+  }
+  const handleSetLyric = () => {
+    sendPlayerStatus({
+      lyric: musicInfo.lrc ?? '',
+      lyricLineText: '',
+    })
+  }
+  const handleSetPic = () => {
+    sendPlayerStatus({
+      picUrl: musicInfo.pic ?? '',
+    })
+  }
+  const handleSetLyricLine = (text: string) => {
+    sendPlayerStatus({
+      lyricLineText: text,
     })
   }
   // const handleSetTaskbarThumbnailClip = (clip) => {
@@ -57,7 +67,7 @@ export default () => {
   // }
   const throttleListChange = throttle(async listIds => {
     if (!listIds.includes(loveList.id)) return
-    if (await updateCollectStatus()) setButtons()
+    if (await updateCollectStatus()) sendPlayerStatus({ collect })
   })
   // const updateSetting = () => {
   //   const setting = store.getters.setting
@@ -82,12 +92,12 @@ export default () => {
       case 'collect':
         if (!playMusicInfo.musicInfo) return
         void addListMusics(loveList.id, ['progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo : playMusicInfo.musicInfo])
-        if (await updateCollectStatus()) setButtons()
+        if (await updateCollectStatus()) sendPlayerStatus({ collect })
         break
       case 'unCollect':
         if (!playMusicInfo.musicInfo) return
         void removeListMusics({ listId: loveList.id, ids: ['progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo.id : playMusicInfo.musicInfo.id] })
-        if (await updateCollectStatus()) setButtons()
+        if (await updateCollectStatus()) sendPlayerStatus({ collect })
         break
       // case 'lrc':
       //   setVisibleDesktopLyric(true)
@@ -107,10 +117,24 @@ export default () => {
       //   break
     }
   })
+  watch(() => playProgress.nowPlayTime, (newValue, oldValue) => {
+    // console.log(playProgress.nowPlayTime, newValue, oldValue)
+    // if (newValue.toFixed(2) === oldValue.toFixed(2)) return
+    // console.log(playProgress.nowPlayTime)
+    sendPlayerStatus({ progress: newValue })
+  })
+  watch(() => playProgress.maxPlayTime, (newValue) => {
+    sendPlayerStatus({ duration: newValue })
+  })
+
   window.app_event.on('play', handlePlay)
   window.app_event.on('pause', handlePause)
   window.app_event.on('stop', handleStop)
+  window.app_event.on('error', handleError)
   window.app_event.on('musicToggled', handleSetPlayInfo)
+  window.app_event.on('lyricUpdated', handleSetLyric)
+  window.app_event.on('picUpdated', handleSetPic)
+  window.app_event.on('lyricLinePlay', handleSetLyricLine)
   // window.app_event.on(eventTaskbarNames.setTaskbarThumbnailClip, handleSetTaskbarThumbnailClip)
   window.app_event.on('myListUpdate', throttleListChange)
 
@@ -119,7 +143,11 @@ export default () => {
     window.app_event.off('play', handlePlay)
     window.app_event.off('pause', handlePause)
     window.app_event.off('stop', handleStop)
+    window.app_event.off('error', handleError)
     window.app_event.off('musicToggled', handleSetPlayInfo)
+    window.app_event.off('lyricUpdated', handleSetLyric)
+    window.app_event.off('picUpdated', handleSetPic)
+    window.app_event.off('lyricLinePlay', handleSetLyricLine)
     // window.app_event.off(eventTaskbarNames.setTaskbarThumbnailClip, handleSetTaskbarThumbnailClip)
     window.app_event.off('myListUpdate', throttleListChange)
   })
@@ -129,7 +157,14 @@ export default () => {
     // buttons.lrc = setting.desktopLyric.enable
     // buttons.lockLrc = setting.desktopLyric.isLock
     await updateCollectStatus()
-    if (playMusicInfo.musicInfo != null) buttons.empty = false
-    setButtons()
+    if (playMusicInfo.musicInfo == null) return
+    sendPlayerStatus({
+      collect,
+      name: musicInfo.name,
+      singer: musicInfo.singer,
+      albumName: musicInfo.album,
+      picUrl: musicInfo.pic ?? '',
+      lyric: musicInfo.lrc ?? '',
+    })
   }
 }

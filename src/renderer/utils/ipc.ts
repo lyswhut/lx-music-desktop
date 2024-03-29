@@ -172,11 +172,13 @@ export const userApiRequestCancel = (requestKey: LX.UserApi.UserApiRequestCancel
 //   }
 // }
 
-export const setTaskBarProgress = (progress: number, mode?: Electron.ProgressBarOptions['mode']) => {
-  rendererSend<LX.Player.ProgressBarOptions>(WIN_MAIN_RENDERER_EVENT_NAME.progress, {
-    progress: progress < 0 ? progress : Math.max(0.01, progress),
-    mode: mode ?? 'normal',
-  })
+export const sendPlayerStatus = (status: Partial<LX.Player.Status>) => {
+  rendererSend<Partial<LX.Player.Status>>(WIN_MAIN_RENDERER_EVENT_NAME.player_status, status)
+}
+
+
+export const sendOpenAPIAction = async(action: LX.OpenAPI.Actions) => {
+  return rendererInvoke<LX.OpenAPI.Actions, LX.OpenAPI.Status>(WIN_MAIN_RENDERER_EVENT_NAME.open_api_action, action)
 }
 
 export const saveLastStartInfo = (version: string) => {

@@ -52,6 +52,14 @@ export class Event extends EventEmitter {
     this.emit('deeplink', link)
   }
 
+  player_status(status: Partial<LX.Player.Status>) {
+    for (const [key, value] of Object.entries(status)) {
+      // @ts-expect-error
+      global.lx.player_status[key] = value
+    }
+    this.emit('player_status', status)
+  }
+
   hot_key_down(keyInfo: LX.HotKeyDownInfo) {
     this.emit('hot_key_down', keyInfo)
   }

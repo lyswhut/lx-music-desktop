@@ -73,6 +73,11 @@ export const sync: {
   },
 })
 
+export const openAPI = reactive({
+  address: '',
+  message: '',
+})
+
 
 export const windowSizeActive = computed(() => {
   return windowSizeList.find(i => i.id === appSetting['common.windowSizeId']) ?? windowSizeList[0]

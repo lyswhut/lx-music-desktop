@@ -30,6 +30,7 @@ interface Lx {
     dbService: DBSeriveTypes
   }
   theme: LX.ThemeSetting
+  player_status: LX.Player.Status
 }
 
 declare global {

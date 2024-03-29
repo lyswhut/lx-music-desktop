@@ -619,6 +619,17 @@ declare global {
        */
       'sync.client.host': string
 
+
+      /**
+       * 是否启用开放API服务
+       */
+      'openAPI.enable': boolean
+
+      /**
+       * 同步服务端口号
+       */
+      'openAPI.port': '23333' | string
+
       /**
        * 是否在离开搜索界面时自动清空搜索框
        */

@@ -1,7 +1,7 @@
 import { onBeforeUnmount, watch } from '@common/utils/vueTools'
 import { formatPlayTime2, getRandom } from '@common/utils/common'
 import { throttle } from '@common/utils'
-import { setTaskBarProgress, savePlayInfo } from '@renderer/utils/ipc'
+import { savePlayInfo } from '@renderer/utils/ipc'
 import { onTimeupdate, getCurrentTime, getDuration, setCurrentTime, onVisibilityChange } from '@renderer/plugins/player'
 import { playProgress, setNowPlayTime, setMaxplayTime } from '@renderer/store/player/playProgress'
 import { musicInfo, playMusicInfo, playInfo } from '@renderer/store/player/state'
@@ -14,7 +14,6 @@ const delaySavePlayInfo = throttle(savePlayInfo, 2000)
 
 export default () => {
   let restorePlayTime = 0
-  let prevProgressStatus: Electron.ProgressBarOptions['mode'] = 'none'
   const mediaBuffer: {
     timeout: NodeJS.Timeout | null
     playTime: number
@@ -75,32 +74,18 @@ export default () => {
     // if (!isPlay) audio.play()
   }
 
-  const handleSetTaskBarState = (progress: number, status?: Electron.ProgressBarOptions['mode']) => {
-    if (appSetting['player.isShowTaskProgess']) setTaskBarProgress(progress, status)
-  }
-
-  const handlePlay = () => {
-    prevProgressStatus = 'normal'
-    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
-  }
   const handlePause = () => {
-    prevProgressStatus = 'paused'
-    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
     clearBufferTimeout()
   }
 
   const handleStop = () => {
     setNowPlayTime(0)
     setMaxplayTime(0)
-    prevProgressStatus = 'none'
-    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
   }
 
   const handleError = () => {
     restorePlayTime ||= getCurrentTime() // 记录出错的播放时间
     console.log('handleError')
-    prevProgressStatus = 'error'
-    handleSetTaskBarState(playProgress.progress, prevProgressStatus)
   }
 
   const handleLoadeddata = () => {
@@ -157,10 +142,6 @@ export default () => {
     }
   }
 
-  watch(() => playProgress.progress, (newValue, oldValue) => {
-    if (newValue.toFixed(2) === oldValue.toFixed(2)) return
-    handleSetTaskBarState(newValue, prevProgressStatus)
-  })
   watch(() => playProgress.nowPlayTime, (newValue, oldValue) => {
     if (Math.abs(newValue - oldValue) > 2) window.app_event.activePlayProgressTransition()
     if (appSetting['player.isSavePlayTime'] && !playMusicInfo.isTempPlay) {
@@ -183,7 +164,7 @@ export default () => {
     }
   })
 
-  window.app_event.on('play', handlePlay)
+  // window.app_event.on('play', handlePlay)
   window.app_event.on('pause', handlePause)
   window.app_event.on('stop', handleStop)
   window.app_event.on('error', handleError)
@@ -213,7 +194,7 @@ export default () => {
   onBeforeUnmount(() => {
     rOnTimeupdate()
     rVisibilityChange()
-    window.app_event.off('play', handlePlay)
+    // window.app_event.off('play', handlePlay)
     window.app_event.off('pause', handlePause)
     window.app_event.off('stop', handleStop)
     window.app_event.off('error', handleError)

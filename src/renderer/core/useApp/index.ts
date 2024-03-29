@@ -4,6 +4,7 @@ import { proxy, isFullscreen, themeId } from '@renderer/store'
 import { appSetting } from '@renderer/store/setting'
 
 import useSync from './useSync'
+import useOpenAPI from './useOpenAPI'
 import useUpdate from './useUpdate'
 import useDataInit from './useDataInit'
 import useHandleEnvParams from './useHandleEnvParams'
@@ -25,6 +26,7 @@ export default () => {
 
   const router = useRouter()
   const initSyncService = useSync()
+  const initOpenAPI = useOpenAPI()
   useEventListener()
   const initPlayer = usePlayer()
   const handleEnvParams = useHandleEnvParams()
@@ -62,6 +64,7 @@ export default () => {
       handleEnvParams(envParams) // 处理传入的启动参数
       void initDeeplink(envParams)
       void initSyncService()
+      void initOpenAPI()
       sendInited()
 
       handleListAutoUpdate()

@@ -87,6 +87,7 @@ export const init = () => {
     onPlay(line, text) {
       setText(text, Math.max(line, 0))
       setStatusText(text)
+      window.app_event.lyricLinePlay(text)
       // console.log(line, text)
     },
     onSetLyric(lines, offset) { // listening lyrics seting event
@@ -183,6 +184,10 @@ export const setLyric = () => {
       lrc.play(time)
     })
   }
+}
+
+export const setAutoPause = (autoPause: boolean) => {
+  lrc.setAutoPause(autoPause)
 }
 
 

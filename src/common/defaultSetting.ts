@@ -136,6 +136,9 @@ const defaultSetting: LX.AppSetting = {
   'sync.server.maxSsnapshotNum': 5,
   'sync.client.host': '',
 
+  'openAPI.enable': false,
+  'openAPI.port': '23330',
+
   // 'theme.id': 'blue_plus',
   'theme.id': 'green',
   'theme.lightId': 'green',

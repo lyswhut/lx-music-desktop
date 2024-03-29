@@ -144,6 +144,11 @@ export class AppEvent extends Event {
     this.emit('lyricOffsetUpdate')
   }
 
+  // 歌词行播放
+  lyricLinePlay(text: string) {
+    this.emit('lyricLinePlay', text)
+  }
+
   // 我的列表改变事件
   myListUpdate(ids: string[]) {
     this.emit('myListUpdate', ids)
