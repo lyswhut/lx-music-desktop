@@ -242,6 +242,7 @@ export const initAppSetting = async() => {
         picUrl: '',
         progress: 0,
         duration: 0,
+        playbackRate: 1,
         lyricLineText: '',
         lyric: '',
         collect: false,

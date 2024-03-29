@@ -8,6 +8,7 @@ import { playMusicInfo, musicInfo } from '@renderer/store/player/state'
 import { throttle } from '@common/utils'
 import { pause, play, playNext, playPrev } from '@renderer/core/player'
 import { playProgress } from '@renderer/store/player/playProgress'
+import { appSetting } from '@renderer/store/setting'
 
 export default () => {
   // const setVisibleDesktopLyric = useCommit('setVisibleDesktopLyric')
@@ -126,6 +127,9 @@ export default () => {
   watch(() => playProgress.maxPlayTime, (newValue) => {
     sendPlayerStatus({ duration: newValue })
   })
+  watch(() => appSetting['player.playbackRate'], rate => {
+    sendPlayerStatus({ playbackRate: rate })
+  })
 
   window.app_event.on('play', handlePlay)
   window.app_event.on('pause', handlePause)
@@ -163,6 +167,7 @@ export default () => {
       name: musicInfo.name,
       singer: musicInfo.singer,
       albumName: musicInfo.album,
+      playbackRate: appSetting['player.playbackRate'],
       picUrl: musicInfo.pic ?? '',
       lyric: musicInfo.lrc ?? '',
     })

@@ -24,6 +24,7 @@ declare namespace LX {
       picUrl: string
       progress: number
       duration: number
+      playbackRate: number
       lyricLineText: string
       lyric: string
       collect: boolean

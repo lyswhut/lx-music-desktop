@@ -28,6 +28,7 @@ const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<vo
           duration: global.lx.player_status.duration,
           progress: global.lx.player_status.progress,
           picUrl: global.lx.player_status.picUrl,
+          playbackRate: global.lx.player_status.playbackRate,
           lyricLineText: global.lx.player_status.lyricLineText,
         })
         break
