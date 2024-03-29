@@ -9,6 +9,7 @@ let status: LX.OpenAPI.Status = {
 
 let httpServer: http.Server
 let sockets = new Set<Socket>()
+let responses = new Set<http.ServerResponse<http.IncomingMessage>>()
 
 const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<void>((resolve, reject) => {
   httpServer = http.createServer((req, res) => {
@@ -32,11 +33,72 @@ const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<vo
           lyricLineText: global.lx.player_status.lyricLineText,
         })
         break
+        // case '/test':
+        //   code = 200
+        //   res.setHeader('Content-Type', 'text/html; charset=utf-8')
+        //   msg = `<!DOCTYPE html>
+        //   <html lang="en">
+        //     <head>
+        //       <meta charset="UTF-8" />
+        //       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        //       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        //       <title>Nodejs Server-Sent Events</title>
+        //     </head>
+        //     <body>
+        //       <h1>Hello SSE!</h1>
+
+        //       <h2>List of Server-sent events</h2>
+        //       <ul id="sse-list"></ul>
+
+        //       <script>
+        //         const subscription = new EventSource('/subscribe-player-status');
+
+        //       // Default events
+        //       subscription.addEventListener('open', () => {
+        //           console.log('Connection opened')
+        //       });
+
+      //       subscription.addEventListener('error', (err) => {
+      //           console.error(err)
+      //       });
+      //       subscription.addEventListener('lyricLineText', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('progress', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('name', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('singer', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       </script>
+      //     </body>
+      //   </html>`
+      //   break
       case '/lyric':
         code = 200
         res.setHeader('Content-Type', 'text/plain; charset=utf-8')
         msg = global.lx.player_status.lyric
         break
+      case '/subscribe-player-status':
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          Connection: 'keep-alive',
+          'Cache-Control': 'no-cache',
+        })
+        req.socket.setTimeout(0)
+        req.on('close', () => {
+          res.end('OK')
+          responses.delete(res)
+        })
+        for (const [k, v] of Object.entries(global.lx.player_status)) {
+          res.write(`event: ${k}\n`)
+          res.write(`data: ${JSON.stringify(v)}\n\n`)
+        }
+        responses.add(res)
+        return
       default:
         code = 401
         msg = 'Forbidden'
@@ -81,10 +143,21 @@ const handleStopServer = async() => new Promise<void>((resolve, reject) => {
   })
   for (const socket of sockets) socket.destroy()
   sockets.clear()
+  responses.clear()
 })
 
 
+const sendStatus = (status: Partial<LX.Player.Status>) => {
+  if (!responses.size) return
+  for (const [k, v] of Object.entries(status)) {
+    for (const resp of responses) {
+      resp.write(`event: ${k}\n`)
+      resp.write(`data: ${JSON.stringify(v)}\n\n`)
+    }
+  }
+}
 export const stopServer = async() => {
+  global.lx.event_app.off('player_status', sendStatus)
   if (!status.status) {
     status.status = false
     status.message = ''
@@ -113,6 +186,7 @@ export const startServer = async(port: number) => {
     status.message = err.message
     status.address = ''
   })
+  global.lx.event_app.on('player_status', sendStatus)
   return status
 }
 
