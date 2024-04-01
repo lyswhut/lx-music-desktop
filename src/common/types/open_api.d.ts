@@ -8,6 +8,7 @@ declare namespace LX {
     interface EnableServer {
       enable: boolean
       port: string
+      bindLan: boolean
     }
 
     interface ActionBase <A> {

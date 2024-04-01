@@ -462,6 +462,7 @@
   "setting__odc_clear_search_list": "Clear the search list when you are not searching",
   "setting__open_api": "Open API",
   "setting__open_api_address": "Service address: {address}",
+  "setting__open_api_bind_lan": "Allow access from LAN",
   "setting__open_api_enable": "Enable open API service",
   "setting__open_api_port": "Service port",
   "setting__open_api_port_tip": "Please enter the open API service port",

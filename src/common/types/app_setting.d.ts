@@ -626,9 +626,14 @@ declare global {
       'openAPI.enable': boolean
 
       /**
-       * 同步服务端口号
+       * API服务端口号
        */
-      'openAPI.port': '23333' | string
+      'openAPI.port': '23330' | string
+
+      /**
+       * 是否绑定到局域网
+       */
+      'openAPI.bindLan': boolean
 
       /**
        * 是否在离开搜索界面时自动清空搜索框

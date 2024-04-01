@@ -5,12 +5,13 @@ import { openAPI } from '@renderer/store'
 import { setAutoPause } from '@renderer/core/lyric'
 
 export default () => {
-  const handleEnable = async(enable: boolean, port: string) => {
+  const handleEnable = async(enable: boolean, port: string, bindLan: boolean) => {
     await sendOpenAPIAction({
       action: 'enable',
       data: {
         enable,
         port,
+        bindLan,
       },
     }).then((status) => {
       openAPI.address = status.address
@@ -27,16 +28,22 @@ export default () => {
     })
   }
   watch(() => appSetting['openAPI.enable'], enable => {
-    void handleEnable(enable, appSetting['openAPI.port'])
+    void handleEnable(enable, appSetting['openAPI.port'], appSetting['openAPI.bindLan'])
   })
 
   watch(() => appSetting['openAPI.port'], port => {
-    void handleEnable(appSetting['openAPI.enable'], port)
+    if (!appSetting['openAPI.enable']) return
+    void handleEnable(appSetting['openAPI.enable'], port, appSetting['openAPI.bindLan'])
+  })
+
+  watch(() => appSetting['openAPI.bindLan'], bindLan => {
+    if (!appSetting['openAPI.enable']) return
+    void handleEnable(appSetting['openAPI.enable'], appSetting['openAPI.port'], bindLan)
   })
 
   return async() => {
     if (appSetting['openAPI.enable']) {
-      void handleEnable(true, appSetting['openAPI.port'])
+      void handleEnable(true, appSetting['openAPI.port'], appSetting['openAPI.bindLan'])
     }
   }
 }

@@ -11,7 +11,7 @@ export default () => {
   mainHandle<LX.OpenAPI.Actions, any>(WIN_MAIN_RENDERER_EVENT_NAME.open_api_action, async({ params: data }) => {
     switch (data.action) {
       case 'enable':
-        return data.data.enable ? await startServer(parseInt(data.data.port)) : await stopServer()
+        return data.data.enable ? await startServer(parseInt(data.data.port), data.data.bindLan) : await stopServer()
       case 'status': return getStatus()
     }
   })

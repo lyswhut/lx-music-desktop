@@ -138,6 +138,7 @@ const defaultSetting: LX.AppSetting = {
 
   'openAPI.enable': false,
   'openAPI.port': '23330',
+  'openAPI.bindLan': false,
 
   // 'theme.id': 'blue_plus',
   'theme.id': 'green',

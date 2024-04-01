@@ -41,7 +41,7 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
   }
 }
 
-const handleStartServer = async(port = 9000, ip = '127.0.0.1') => new Promise<void>((resolve, reject) => {
+const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
     let code
@@ -197,9 +197,9 @@ export const stopServer = async() => {
   })
   return status
 }
-export const startServer = async(port: number) => {
+export const startServer = async(port: number, bindLan: boolean) => {
   if (status.status) await handleStopServer()
-  await handleStartServer(port).then(() => {
+  await handleStartServer(port, bindLan ? '0.0.0.0' : '127.0.0.1').then(() => {
     status.status = true
     status.message = ''
     status.address = `http://localhost${port == 80 ? '' : ':' + port}`

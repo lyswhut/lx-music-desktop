@@ -462,6 +462,7 @@
   "setting__odc_clear_search_list": "離開搜尋介面時清空搜尋列表",
   "setting__open_api": "開放API",
   "setting__open_api_address": "服務地址：{address}",
+  "setting__open_api_bind_lan": "允許來自區域網路的訪問",
   "setting__open_api_enable": "啟用開放API服務",
   "setting__open_api_port": "服務連接埠",
   "setting__open_api_port_tip": "請輸入開放API服務端口",
