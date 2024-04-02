@@ -6,10 +6,11 @@ import { callObj } from './sync'
 // import registerSyncListHandler from './syncList'
 import log from '../log'
 import { dateFormat } from '@common/utils/common'
-import { aesEncrypt, getAddress } from '../utils'
+import { aesEncrypt } from '../utils'
 import { sendClientStatus } from '@main/modules/winMain'
 import { createMsg2call } from 'message2call'
 import { SYNC_CLOSE_CODE, SYNC_CODE } from '@common/constants_sync'
+import { getAddress } from '@common/utils/nodejs'
 
 let status: LX.Sync.ClientStatus = {
   status: false,

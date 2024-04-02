@@ -461,7 +461,7 @@
   "setting__odc_clear_search_input": "离开搜索界面时清空搜索框",
   "setting__odc_clear_search_list": "离开搜索界面时清空搜索列表",
   "setting__open_api": "开放API",
-  "setting__open_api_address": "服务地址：{address}",
+  "setting__open_api_address": "服务地址：",
   "setting__open_api_bind_lan": "允许来自局域网的访问",
   "setting__open_api_enable": "启用开放API服务",
   "setting__open_api_port": "服务端口",

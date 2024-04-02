@@ -231,7 +231,7 @@ export default class LinePlayer {
       timeoutTools.cancelNextTick = window.cancelAnimationFrame.bind(window)
     } else {
       timeoutTools.nextTick = (handler) => {
-        return setTimeout(handler, 80)
+        return setTimeout(handler, 20)
       }
       timeoutTools.cancelNextTick = clearTimeout.bind(global)
     }

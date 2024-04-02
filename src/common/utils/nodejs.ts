@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import crypto from 'node:crypto'
 import { gzip, gunzip } from 'node:zlib'
 import path from 'node:path'
+import { networkInterfaces } from 'node:os'
 import { log } from '@common/utils'
 
 export const joinPath = (...paths: string[]): string => path.join(...paths)
@@ -184,4 +185,21 @@ export const copyFile = async(sourcePath: string, distPath: string) => {
 
 export const moveFile = async(sourcePath: string, distPath: string) => {
   return fs.promises.rename(sourcePath, distPath)
+}
+
+export const getAddress = (): string[] => {
+  const nets = networkInterfaces()
+  const results: string[] = []
+  // console.log(nets)
+
+  for (const interfaceInfos of Object.values(nets)) {
+    if (!interfaceInfos) continue
+    // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+    for (const interfaceInfo of interfaceInfos) {
+      if (interfaceInfo.family === 'IPv4' && !interfaceInfo.internal) {
+        results.push(interfaceInfo.address)
+      }
+    }
+  }
+  return results
 }

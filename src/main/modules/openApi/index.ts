@@ -1,6 +1,7 @@
 import http from 'node:http'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
+import { getAddress } from '@common/utils/nodejs'
 
 let status: LX.OpenAPI.Status = {
   status: false,
@@ -198,11 +199,13 @@ export const stopServer = async() => {
   return status
 }
 export const startServer = async(port: number, bindLan: boolean) => {
-  if (status.status) await handleStopServer()
+  if (status.status) await stopServer()
   await handleStartServer(port, bindLan ? '0.0.0.0' : '127.0.0.1').then(() => {
     status.status = true
     status.message = ''
-    status.address = `http://localhost${port == 80 ? '' : ':' + port}`
+    let address = ['127.0.0.1']
+    if (bindLan) address = [...address, ...getAddress()]
+    status.address = address.join(', ')
   }).catch(err => {
     console.log(err)
     status.status = false
