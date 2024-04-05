@@ -31,7 +31,12 @@ exports.mergeCSSLoader = beforeLoader => {
             esModule: false,
           },
         },
-        'css-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            esModule: false,
+          },
+        },
         'postcss-loader',
       ],
     },
@@ -63,3 +68,15 @@ exports.logStats = (proc, data) => {
   console.log(log)
 }
 
+exports.debounce = (fn, delay = 100) => {
+  let timer = null
+  let _args
+  return (...args) => {
+    _args = args
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      timer = null
+      fn(..._args)
+    }, delay)
+  }
+}
