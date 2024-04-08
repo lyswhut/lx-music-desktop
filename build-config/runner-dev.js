@@ -133,6 +133,7 @@ function startRendererScripts() {
 }
 
 function startMain() {
+  let firstRun = true
   return new Promise((resolve, reject) => {
     // mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
     // mainConfig.mode = 'development'
@@ -153,17 +154,20 @@ function startMain() {
       }
 
       // logStats('Main', stats)
-      resolve()
       if (electronProcess) {
         electronProcess.removeAllListeners()
         treeKill(electronProcess.pid)
       }
-      runElectronDelay()
+      if (firstRun) {
+        firstRun = false
+        resolve()
+      } else runElectronDelay()
     })
   })
 }
 
 function startElectron() {
+  console.log('startElectron')
   let args = [
     '--inspect=5858',
     // 'NODE_ENV=development',
