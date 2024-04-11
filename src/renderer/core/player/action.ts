@@ -1,5 +1,5 @@
 import { isEmpty, setPause, setPlay, setResource, setStop } from '@renderer/plugins/player'
-import { isPlay, playedList, playInfo, playMusicInfo, tempPlayList } from '@renderer/store/player/state'
+import { isPlay, playedList, playInfo, playMusicInfo, tempPlayList, musicInfo as _musicInfo } from '@renderer/store/player/state'
 import {
   getList,
   clearPlayedList,
@@ -148,7 +148,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
 
 
   void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
-    if (musicInfo.id != playMusicInfo.musicInfo?.id) return
+    if (musicInfo.id != playMusicInfo.musicInfo?.id || url == _musicInfo.pic) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()
   }).catch(_ => _)
@@ -198,7 +198,7 @@ const handlePlay = () => {
   setMusicUrl(musicInfo)
 
   void getPicPath({ musicInfo, listId: playMusicInfo.listId }).then((url: string) => {
-    if (musicInfo.id != playMusicInfo.musicInfo?.id) return
+    if (musicInfo.id != playMusicInfo.musicInfo?.id || url == _musicInfo.pic) return
     setMusicInfo({ pic: url })
     window.app_event.picUpdated()
   }).catch(_ => _)
