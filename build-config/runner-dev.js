@@ -167,7 +167,6 @@ function startMain() {
 }
 
 function startElectron() {
-  console.log('startElectron')
   let args = [
     '--inspect=5858',
     // 'NODE_ENV=development',

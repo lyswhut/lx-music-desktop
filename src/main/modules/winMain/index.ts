@@ -87,9 +87,9 @@ export default () => {
       if (status.collect != null) taskBarButtonFlags.collect = status.collect
       setThumbarButtons(taskBarButtonFlags)
     }
-    if (status.progress != null && global.lx.player_status.duration) {
-      const progress = status.progress / global.lx.player_status.duration
-      if (progress.toFixed(2) != progressStatus.progress.toFixed(2) && showProgress) {
+    if (showProgress && status.progress != null) {
+      const progress = global.lx.player_status.duration ? status.progress / global.lx.player_status.duration : 0
+      if (progress.toFixed(2) != progressStatus.progress.toFixed(2)) {
         progressStatus.progress = progress < 0.01 ? 0.01 : progress
         setProgressBar(progressStatus.progress, {
           mode: progressStatus.status,
