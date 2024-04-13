@@ -36,7 +36,7 @@ const defaultSetting: LX.AppSetting = {
   'player.isShowLyricTranslation': false,
   'player.isShowLyricRoma': false,
   'player.isS2t': false,
-  'player.isPlayLxlrc': isWin,
+  'player.isPlayLxlrc': !isMac,
   'player.isSavePlayTime': false,
   'player.audioVisualization': false,
   'player.waitPlayEndStop': true,
@@ -63,7 +63,7 @@ const defaultSetting: LX.AppSetting = {
 
   'playDetail.isZoomActiveLrc': false,
   'playDetail.isShowLyricProgressSetting': false,
-  'playDetail.style.fontSize': 100,
+  'playDetail.style.fontSize': 140,
   'playDetail.style.align': 'center',
 
   'desktopLyric.enable': false,
