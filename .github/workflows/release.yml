@@ -42,8 +42,6 @@ jobs:
     runs-on: windows-latest
     env:
       NPM_CACHE: '%APPDATA%\npm-cache'
-      ELECTRON_CACHE: '%LOCALAPPDATA%\electron\Cache'
-      ELECTRON_BUILDERCACHE: '%LOCALAPPDATA%\electron-builder\Cache'
     # needs: CheckCode
     steps:
       - name: Check out git repository
@@ -53,7 +51,9 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build src code
-        run: npm run build
+        run: |
+          git status --porcelain
+          npm run build
 
       - name: Release package
         run: |
@@ -76,9 +76,6 @@ jobs:
     runs-on: windows-latest
     env:
       NPM_CACHE: '%APPDATA%\npm-cache'
-      ELECTRON_CACHE: '%LOCALAPPDATA%\electron\Cache'
-      ELECTRON_BUILDERCACHE: '%LOCALAPPDATA%\electron-builder\Cache'
-      BUILD_WIN_7: 'true'
     # needs: CheckCode
     steps:
       - name: Check out git repository
@@ -88,7 +85,9 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build src code
-        run: npm run build
+        run: |
+          git status --porcelain
+          npm run build
 
       - name: Prepare win7 electron env
         run: |
@@ -114,8 +113,6 @@ jobs:
     runs-on: macos-latest
     env:
       NPM_CACHE: $HOME/.npm
-      ELECTRON_CACHE: $HOME/.cache/electron
-      ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
     # needs: CheckCode
     steps:
       - name: Check out git repository
@@ -128,7 +125,9 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build src code
-        run: npm run build
+        run: |
+          git status --porcelain
+          npm run build
 
       - name: Release package
         run: |
@@ -148,8 +147,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NPM_CACHE: $HOME/.npm
-      ELECTRON_CACHE: $HOME/.cache/electron
-      ELECTRON_BUILDERCACHE: $HOME/.cache/electron-builder
     # needs: CheckCode
     steps:
       - name: Install package
@@ -162,7 +159,9 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build src code
-        run: npm run build
+        run: |
+          git status --porcelain
+          npm run build
 
       - name: Release package
         run: |

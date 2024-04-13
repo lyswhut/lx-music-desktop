@@ -19,7 +19,7 @@ const gitInfo = {
 }
 
 try {
-  if (!execSync('git status --porcelain').toString().trim() || process.env.BUILD_WIN_7) {
+  if (!execSync('git status --porcelain').toString().trim()) {
     gitInfo.commit_id = execSync('git log -1 --pretty=format:"%H"').toString().trim()
     gitInfo.commit_date = execSync('git log -1 --pretty=format:"%ad" --date=iso-strict').toString().trim()
   }

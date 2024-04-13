@@ -15,8 +15,6 @@ runs:
       with:
         path: |
           ${{ env.NPM_CACHE }}
-          ${{ env.ELECTRON_CACHE }}
-          ${{ env.ELECTRON_BUILDERCACHE }}
         key: ${{ runner.os }}-node-modules-cache-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-modules-cache-
