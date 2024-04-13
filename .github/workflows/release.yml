@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  IS_CI: 'true'
+
 jobs:
   # CheckCode:
   #   name: Lint Code

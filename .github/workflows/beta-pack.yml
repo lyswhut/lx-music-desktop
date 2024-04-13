@@ -5,6 +5,9 @@ on:
     branches:
       - beta
 
+env:
+  IS_CI: 'true'
+
 jobs:
   # CheckCode:
   #   name: Lint Code
