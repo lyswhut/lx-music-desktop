@@ -560,6 +560,8 @@
   "setting__sync_tip": "For how to use it, please see the \"Sync function\" section of the FAQ",
   "setting__update": "Update",
   "setting__update_checking": "Checking for updates...",
+  "setting__update_commit_date": "Submission date:",
+  "setting__update_commit_id": "Code version:",
   "setting__update_current_label": "Current version: ",
   "setting__update_downloading": "Update is found and being downloaded...⏳",
   "setting__update_init": "Processing update...",

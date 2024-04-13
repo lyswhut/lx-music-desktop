@@ -78,6 +78,7 @@ jobs:
       NPM_CACHE: '%APPDATA%\npm-cache'
       ELECTRON_CACHE: '%LOCALAPPDATA%\electron\Cache'
       ELECTRON_BUILDERCACHE: '%LOCALAPPDATA%\electron-builder\Cache'
+      BUILD_WIN_7: 'true'
     # needs: CheckCode
     steps:
       - name: Check out git repository

@@ -560,6 +560,8 @@
   "setting__sync_tip": "使用方式請看常見問題「同步功能」部分",
   "setting__update": "軟體更新",
   "setting__update_checking": "檢查更新中...",
+  "setting__update_commit_date": "提交日期：",
+  "setting__update_commit_id": "程式碼版本：",
   "setting__update_current_label": "目前版本：",
   "setting__update_downloading": "發現新版本並在努力下載中，請稍後...⏳",
   "setting__update_init": "處理更新中...",
