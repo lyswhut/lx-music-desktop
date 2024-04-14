@@ -6,6 +6,41 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.7.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.6.0...v2.7.0) - 2024-04-14
+
+### 新增
+
+- 主题编辑器添加“深色字体”选项，启用后将减少字体颜色梯度，各类字体（正文、标签字体等）颜色将更接近，这有助于解决创建全透明主题时可能出现的字体配色问题（#1799）
+- 新增在线自定义源导入功能，允许通过http/https链接导入自定义源
+- 新增HTTP开放API服务，默认关闭，该服务可以为第三方软件提供调用LX的能力，可用API看[说明文档](https://lyswhut.github.io/lx-music-doc/desktop/open-api)（#1824）
+- 托盘菜单新增播放、切歌、收藏控制
+- 添加当前软件版本所对应的代码提交版本、提交时间的显示，可到设置-版本更新查看
+
+### 优化
+
+- 主题设置默认折叠其他主题以优化进入设置界面时的性能
+- 不再丢弃kg源逐行歌词（@helloplhm-qwq）
+- 支持kw源排行榜显示大小（revert @Folltoshe #1460）
+- 托盘菜单添加多语言支持（#1802）
+- 优化本地歌曲换源匹配机制
+
+### 修复
+
+- 修复某些情况下歌曲加载时间过长时不会自动跳到下一首的问题
+- 修复mg歌词在某些情况下获取失败的问题（#1783）
+- 修复mg歌单搜索（@helloplhm-qwq）
+- 修复kg最新评论无法获取的问题（@helloplhm-qwq）
+- 修复更新超时弹窗在非更新阶段意外弹出的问题（#1797）
+- 修复网络代理设置没有对自定义源的网络请求生效的问题（#1814）
+
+### 移除
+
+- 移除未使用的网络代理设置用户名、密码设置，实际上在 v1.20.0 起这两个设置就没有在被内部使用
+
+### 其他
+
+- 更新 electron 到 v28.3.0
+
 ## [2.6.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.5.0...v2.6.0) - 2024-02-01
 
 提交祝大家新年快乐！
