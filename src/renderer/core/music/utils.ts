@@ -219,9 +219,8 @@ export const getPlayQuality = (highQuality: LX.Quality, musicInfo: LX.Music.Musi
 
     let t = TRY_QUALITYS_LIST
       .slice(TRY_QUALITYS_LIST.indexOf(highQuality as TryQualityType))
-      .find(q => {
-        return musicInfo.meta._qualitys[q] && list?.includes(q)
-      })
+      .find(q => musicInfo.meta._qualitys[q] && list?.includes(q))
+
     if (t) type = t
   }
   return type
