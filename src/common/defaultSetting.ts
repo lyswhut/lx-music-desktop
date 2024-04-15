@@ -24,7 +24,7 @@ const defaultSetting: LX.AppSetting = {
 
   'player.startupAutoPlay': false,
   'player.togglePlayMethod': 'listLoop',
-  'player.highQuality': false,
+  'player.playQuality': '128k',
   'player.isShowTaskProgess': true,
   'player.volume': 1,
   'player.powerSaveBlocker': true,
