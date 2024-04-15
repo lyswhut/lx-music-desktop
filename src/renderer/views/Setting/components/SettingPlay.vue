@@ -20,11 +20,18 @@ dd
   .gap-top
     base-checkbox(id="setting_player_lyric_play_lxlrc" :model-value="appSetting['player.isPlayLxlrc']" :label="$t('setting__play_lyric_lxlrc')" @update:model-value="updateSetting({'player.isPlayLxlrc': $event})")
   .gap-top
-    base-checkbox(id="setting_player_highQuality" :model-value="appSetting['player.highQuality']" :label="$t('setting__play_quality')" @update:model-value="updateSetting({'player.highQuality': $event})")
-  .gap-top
     base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
   .gap-top
     base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :model-value="appSetting['player.isMediaDeviceRemovedStopPlay']" :label="$t('setting__play_mediaDevice_remove_stop_play')" @update:model-value="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})")
+
+dd
+  h3#basic_play_quality {{ $t('setting__play_playQuality') }}
+  div
+    base-checkbox.gap-left(
+      v-for="item in playQualityList" :id="`setting_play_quality_${item}`" :key="item"
+      name="setting_play_quality" need :model-value="appSetting['player.playQuality']" :value="item" :label="item"
+      @update:model-value="updateSetting({'player.playQuality': $event})")
+
 dd(:aria-label="$t('setting__play_mediaDevice_title')")
   h3#play_mediaDevice {{ $t('setting__play_mediaDevice') }}
   div
@@ -39,12 +46,14 @@ import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { setPowerSaveBlocker } from '@renderer/core/player/utils'
 import { isPlay } from '@renderer/store/player/state'
+import { TRY_QUALITYS_LIST } from '@renderer/core/music/utils'
 
 
 export default {
   name: 'SettingPlay',
   setup() {
     const t = useI18n()
+    const playQualityList = [...TRY_QUALITYS_LIST, '128k'].reverse()
 
     const mediaDevices = ref([])
     const getMediaDevice = async() => {
@@ -105,6 +114,7 @@ export default {
       mediaDeviceId,
       handleMediaDeviceIdChnage,
       handleUpdatePowerSaveBlocker,
+      playQualityList,
     }
   },
 }

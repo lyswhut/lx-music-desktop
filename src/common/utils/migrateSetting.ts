@@ -57,7 +57,6 @@ export default (setting: any): Partial<LX.AppSetting> => {
     setting['common.controlBtnPosition'] = setting.controlBtnPosition
 
     setting['player.togglePlayMethod'] = setting.player?.togglePlayMethod
-    setting['player.highQuality'] = setting.player?.highQuality
     setting['player.isShowTaskProgess'] = setting.player?.isShowTaskProgess
     setting['player.volume'] = setting.player?.volume
     setting['player.isMute'] = setting.player?.isMute
