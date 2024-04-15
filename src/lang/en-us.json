@@ -518,7 +518,7 @@
   "setting__play_mediaDevice_title": "Select a media device for audio output",
   "setting__play_media_device_error_tip": "This function conflicts with advanced audio functions (audio visualization, sound effect settings). These functions have been enabled when you start the software this time. This setting is not available for now. Please close these functions and restart the software before modifying this setting.",
   "setting__play_media_device_tip": "This feature conflicts with Audio Visualization, both cannot be enabled at the same time, would you like to turn Audio Visualization off and apply the selected audio output settings?",
-  "setting__play_playQuality": "Prioritize playback sound quality",
+  "setting__play_playQuality": "Prioritize sound quality for playback (if available)",
   "setting__play_power_save_blocker": "Prevent computer from sleeping while playing songs",
   "setting__play_save_play_time": "Remember playback progress",
   "setting__play_startup_auto_play": "Play music automatically after launching the software",
