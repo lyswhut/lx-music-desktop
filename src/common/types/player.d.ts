@@ -26,6 +26,7 @@ declare namespace LX {
       duration: number
       playbackRate: number
       lyricLineText: string
+      lyricLineAllText: string
       lyric: string
       collect: boolean
     }

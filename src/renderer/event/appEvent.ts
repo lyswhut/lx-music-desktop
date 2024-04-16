@@ -145,8 +145,8 @@ export class AppEvent extends Event {
   }
 
   // 歌词行播放
-  lyricLinePlay(text: string) {
-    this.emit('lyricLinePlay', text)
+  lyricLinePlay(text: string, line: number) {
+    this.emit('lyricLinePlay', text, line)
   }
 
   // 我的列表改变事件

@@ -1,6 +1,6 @@
 import { reactive } from '@common/utils/vueTools'
 
-interface Line {
+export interface Line {
   text: string
   time: number
   extendedLyrics: string[]

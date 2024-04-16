@@ -14,13 +14,32 @@ type SubscribeKeys = keyof LX.Player.Status
 let httpServer: http.Server
 let sockets = new Set<Socket>()
 let responses = new Map<http.ServerResponse<http.IncomingMessage>, SubscribeKeys[]>()
+let playerStatusKeys: SubscribeKeys[]
+
+const defaultFilter = [
+  'status',
+  'name',
+  'singer',
+  'albumName',
+  'lyricLineText',
+  'duration',
+  'progress',
+  'playbackRate',
+] satisfies SubscribeKeys[]
 
 const parseFilter = (filter: any) => {
-  const keys = Object.keys(global.lx.player_status) as SubscribeKeys[]
-  if (typeof filter != 'string') return keys
+  if (typeof filter != 'string') return defaultFilter
   filter = filter.split(',')
-  const subKeys = keys.filter(k => filter.includes(k))
-  return subKeys.length ? subKeys : keys
+  const subKeys = playerStatusKeys.filter(k => filter.includes(k))
+  return subKeys.length ? subKeys : defaultFilter
+}
+const handleSendStatus = (res: http.ServerResponse<http.IncomingMessage>, query?: string) => {
+  const keys = parseFilter(querystring.parse(query ?? '').filter)
+  const resp: Partial<Record<SubscribeKeys, any>> = {}
+  for (const k of keys) resp[k] = global.lx.player_status[k]
+  res.setHeader('Content-Type', 'application/json; charset=utf-8')
+  res.writeHead(200)
+  res.end(JSON.stringify(resp))
 }
 const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>, query?: string) => {
   res.writeHead(200, {
@@ -43,26 +62,15 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
 }
 
 const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
+  playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
     let code
     let msg
     switch (endUrl) {
       case '/status':
-        code = 200
-        res.setHeader('Content-Type', 'application/json; charset=utf-8')
-        msg = JSON.stringify({
-          status: global.lx.player_status.status,
-          name: global.lx.player_status.name,
-          singer: global.lx.player_status.singer,
-          albumName: global.lx.player_status.albumName,
-          duration: global.lx.player_status.duration,
-          progress: global.lx.player_status.progress,
-          picUrl: global.lx.player_status.picUrl,
-          playbackRate: global.lx.player_status.playbackRate,
-          lyricLineText: global.lx.player_status.lyricLineText,
-        })
-        break
+        handleSendStatus(res, query)
+        return
         // case '/test':
         //   code = 200
         //   res.setHeader('Content-Type', 'text/html; charset=utf-8')

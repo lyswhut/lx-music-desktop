@@ -87,7 +87,7 @@ export const init = () => {
     onPlay(line, text) {
       setText(text, Math.max(line, 0))
       setStatusText(text)
-      window.app_event.lyricLinePlay(text)
+      window.app_event.lyricLinePlay(text, line)
       // console.log(line, text)
     },
     onSetLyric(lines, offset) { // listening lyrics seting event
