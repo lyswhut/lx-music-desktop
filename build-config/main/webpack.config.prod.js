@@ -7,12 +7,12 @@ const baseConfig = require('./webpack.config.base')
 
 // const { dependencies } = require('../../package.json')
 
-const buildConfig = require('../webpack-build-config')
+// const buildConfig = require('../webpack-build-config')
 
 
 module.exports = merge(baseConfig, {
   mode: 'production',
-  devtool: 'source-map',
+  devtool: false,
   entry: {
     main: path.join(__dirname, '../../src/main/index.ts'),
     // 'dbService.worker': path.join(__dirname, '../../src/main/worker/dbService/index.ts'),
@@ -45,6 +45,6 @@ module.exports = merge(baseConfig, {
     maxAssetSize: 1024 * 1024 * 20,
   },
   optimization: {
-    minimize: buildConfig.minimize,
+    minimize: false,
   },
 })
