@@ -2,7 +2,7 @@
   <teleport :to="teleport">
     <div v-if="showModal" ref="dom_container" :class="$style.container">
       <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-        <div v-show="showContent" :class="[$style.modal, {[$style.filter]: teleport == '#root'}]" @click="bgClose && close()">
+        <div v-show="showContent" :class="[$style.modal, {[$style.filter]: filter}]" @click="bgClose && close()">
           <transition :enter-active-class="inClass" :leave-active-class="outClass" @after-enter="$emit('after-enter', $event)" @after-leave="handleAfterLeave">
             <div v-show="showContent" :class="$style.content" :style="contentStyle" @click.stop>
               <header :class="$style.header">
@@ -26,6 +26,7 @@ import { getRandom } from '@common/utils/common'
 import { nextTick } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 
+let modalCount = 0
 export default {
   props: {
     show: {
@@ -142,6 +143,8 @@ export default {
       outClass: 'animated slideOutRight',
       showModal: false,
       showContent: false,
+      modalCount: false,
+      isAddedClass: false,
       // ai: 0,
     }
   },
@@ -155,36 +158,50 @@ export default {
         maxHeight: this.maxHeight,
       }
     },
+    filter() {
+      return this.teleport == '#root' || this.modalCount > 1
+    },
   },
   watch: {
-    show: {
-      handler(val) {
-        if (val) {
-          // const dom = document.getElementById(this.teleport)
-          // if (dom) {
-          //   // dom.t
-          // }
-          this.setRandomAnimation()
-          this.showModal = true
-          void nextTick(() => {
-            this.$refs.dom_container.parentNode.classList.add('show-modal')
-            this.showContent = true
-          })
-        } else {
-          this.$refs.dom_container?.parentNode.classList.remove('show-modal')
-          this.showContent = false
-        }
-      },
-      immediate: true,
+    show(val) {
+      this.handleShowChange(val)
     },
   },
   mounted() {
+    if (this.show) this.handleShowChange(true)
     this.setRandomAnimation()
   },
   beforeUnmount() {
-    this.$refs.dom_container?.parentNode.classList.remove('show-modal')
+    this.removeClass()
   },
   methods: {
+    handleShowChange(val) {
+      if (val) {
+        // const dom = document.getElementById(this.teleport)
+        // if (dom) {
+        //   // dom.t
+        // }
+        this.setRandomAnimation()
+        this.modalCount = ++modalCount
+        this.showModal = true
+        void nextTick(() => {
+          const node = this.$refs.dom_container.parentNode
+          if (!node.classList.contains('show-modal')) {
+            node.classList.add('show-modal')
+            this.isAddedClass = true
+          }
+          this.showContent = true
+        })
+      } else {
+        if (modalCount > 0) this.modalCount = --modalCount
+        this.removeClass()
+        this.showContent = false
+      }
+    },
+    removeClass() {
+      if (!this.isAddedClass) return
+      this.$refs.dom_container?.parentNode.classList.remove('show-modal')
+    },
     setRandomAnimation() {
       if (appSetting['common.randomAnimate']) {
         const [animIn, animOut] = this.animates[getRandom(0, this.animates.length)]
