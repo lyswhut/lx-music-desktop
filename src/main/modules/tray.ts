@@ -117,16 +117,17 @@ const i18n = {
   },
 }
 
+const getIconPath = (id: number) => {
+  let theme = themeList.find(item => item.id === id) ?? themeList[0]
+  return path.join(global.staticPath, 'images/tray', theme.fileName + (isWin ? '.ico' : '.png'))
+}
+
 export const createTray = () => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   if ((tray && !tray.isDestroyed()) || !global.lx.appSetting['tray.enable']) return
 
-  themeId = global.lx.appSetting['tray.themeId']
-  let theme = themeList.find(item => item.id === themeId) ?? themeList[0]
-  const iconPath = path.join(global.staticPath, 'images/tray', theme.fileName + '.png')
-
   // 托盘
-  tray = new Tray(nativeImage.createFromPath(iconPath))
+  tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
 
   tray.setToolTip('LX Music')
   createMenu()
@@ -259,9 +260,7 @@ export const createMenu = () => {
 
 export const setTrayImage = (themeId: number) => {
   if (!tray) return
-  let theme = themeList.find(item => item.id === themeId) ?? themeList[0]
-  const iconPath = path.join(global.staticPath, 'images/tray', theme.fileName + '.png')
-  tray.setImage(nativeImage.createFromPath(iconPath))
+  tray.setImage(nativeImage.createFromPath(getIconPath(themeId)))
 }
 
 const init = () => {
