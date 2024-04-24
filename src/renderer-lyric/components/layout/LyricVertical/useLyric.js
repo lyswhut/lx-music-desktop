@@ -2,7 +2,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from '@common/utils/
 import { scrollXRTo } from '@common/utils/renderer'
 import { lyric } from '@lyric/store/lyric'
 import { isPlay, setting } from '@lyric/store/state'
-import { setWindowBounds } from '@lyric/utils/ipc'
+import { invalidateShadow, setWindowBounds } from '@lyric/utils/ipc'
 
 const getOffsetTop = (contentWidth, lineWidth) => {
   switch (setting['desktopLyric.scrollAlign']) {
@@ -45,9 +45,13 @@ export default (isComputeWidth) => {
         offset = prevActiveLine < lyric.line ? ((dom_lines[prevActiveLine]?.clientWidth ?? 0) - prevLineWidth) : 0
         // console.log(prevActiveLine, dom_lines[prevActiveLine]?.clientHeight ?? 0, prevLineWidth, offset)
       }
-      cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft + offset - getOffsetTop(dom_lyric.value.clientWidth, dom_p.clientWidth)) : 0, duration)
+      cancelScrollFn = scrollXRTo(dom_lyric.value, dom_p ? (dom_p.offsetLeft + offset - getOffsetTop(dom_lyric.value.clientWidth, dom_p.clientWidth)) : 0, duration, () => {
+        invalidateShadow()
+      })
     } else {
-      cancelScrollFn = scrollXRTo(dom_lyric.value, 0, duration)
+      cancelScrollFn = scrollXRTo(dom_lyric.value, 0, duration, () => {
+        invalidateShadow()
+      })
     }
   }
   const clearLyricScrollTimeout = () => {
@@ -158,6 +162,7 @@ export default (isComputeWidth) => {
         setLyric(lines)
       } else {
         cancelScrollFn = scrollXRTo(dom_lyric.value, 0, 300, () => {
+          invalidateShadow()
           if (lyric.lines !== lines) return
           setLyric(lines)
         }, 50)
