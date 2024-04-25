@@ -70,7 +70,10 @@ export default {
         this.btnText = this.$t('user_api_import_online__input_confirm')
       }
       if (script.length > 3_000_000) {
-        void dialog(this.$t('user_api_import__failed', { message: 'Too large script' }))
+        void dialog(this.$t('user_api_import__failed', {
+          message: 'Too large script',
+          confirm: this.$t('ok'),
+        }))
         return
       }
       this.$emit('import', script)
