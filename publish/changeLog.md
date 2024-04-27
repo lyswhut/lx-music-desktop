@@ -23,3 +23,7 @@
 - `/status` 及 `/subscribe-player-status` 的可用字段名添加了 `lyricLineAllText`，它对应的值是当前句歌词及扩展歌词文本（扩展歌词包含翻译、罗马音等，按换行符分割）
 
 详情看开放API接入文档
+
+### 其他
+
+- 更新 electron 到 v28.3.1
