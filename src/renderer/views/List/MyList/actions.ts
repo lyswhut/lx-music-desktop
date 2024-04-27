@@ -15,7 +15,9 @@ export const addLocalFile = async(listInfo: LX.List.MyListInfo) => {
     title: window.i18n.t('lists__add_local_file_desc'),
     properties: ['openFile', 'multiSelections'],
     filters: [
-      { name: 'Media File', extensions: ['mp3', 'flac', 'ogg', 'wav'] },
+      // https://support.google.com/chromebook/answer/183093
+      // 3gp, .avi, .mov, .m4v, .m4a, .mp3, .mkv, .ogm, .ogg, .oga, .webm, .wav
+      { name: 'Media File', extensions: ['mp3', 'flac', 'ogg', 'oga', 'wav', 'm4a'] },
       // { name: 'All Files', extensions: ['*'] },
     ],
   })
