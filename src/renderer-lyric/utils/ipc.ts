@@ -1,6 +1,5 @@
 import { rendererSend, rendererInvoke, rendererOn, rendererOff } from '@common/rendererIpc'
 import { CMMON_EVENT_NAME, WIN_LYRIC_RENDERER_EVENT_NAME } from '@common/ipcNames'
-import { isMac } from '@common/utils'
 
 type RemoveListener = () => void
 
@@ -18,10 +17,6 @@ export const onSettingChanged = (listener: LX.IpcRendererEventListenerParams<Par
 }
 export const setWindowBounds = (bounds: LX.DesktopLyric.NewBounds) => {
   rendererSend<LX.DesktopLyric.NewBounds>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_bounds, bounds)
-}
-export const invalidateShadow = () => {
-  if (!isMac) return
-  rendererSend(WIN_LYRIC_RENDERER_EVENT_NAME.invalidate_shadow)
 }
 
 export const sendConnectMainWindowEvent = () => {
