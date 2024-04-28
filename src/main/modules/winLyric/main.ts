@@ -119,6 +119,7 @@ export const createWindow = () => {
     useContentSize: true,
     frame: false,
     transparent: true,
+    hasShadow: false,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
@@ -192,11 +193,6 @@ export const setAlwaysOnTop = (flag: boolean, level?: 'normal' | 'floating' | 't
 export const getMainFrame = (): Electron.WebFrameMain | null => {
   if (!browserWindow) return null
   return browserWindow.webContents.mainFrame
-}
-
-export const invalidateShadow = () => {
-  if (!browserWindow) return
-  browserWindow.invalidateShadow()
 }
 
 interface AlwaysOnTopTools {
