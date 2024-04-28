@@ -3,7 +3,7 @@ import { mainOn, mainHandle } from '@common/mainIpc'
 import { WIN_LYRIC_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { buildLyricConfig, getLyricWindowBounds } from './utils'
 import { sendNewDesktopLyricClient } from '@main/modules/winMain'
-import { getBounds, getMainFrame, invalidateShadow, sendEvent, setBounds } from './main'
+import { getBounds, getMainFrame, sendEvent, setBounds } from './main'
 import { MessageChannelMain } from 'electron'
 
 
@@ -27,10 +27,6 @@ export default () => {
 
   mainOn<LX.DesktopLyric.NewBounds>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_bounds, ({ params: options }) => {
     setBounds(getLyricWindowBounds(getBounds(), options))
-  })
-
-  mainOn(WIN_LYRIC_RENDERER_EVENT_NAME.invalidate_shadow, () => {
-    invalidateShadow()
   })
 
   mainOn(WIN_LYRIC_RENDERER_EVENT_NAME.request_main_window_channel, ({ event }) => {

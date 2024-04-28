@@ -195,11 +195,6 @@ export const getMainFrame = (): Electron.WebFrameMain | null => {
   return browserWindow.webContents.mainFrame
 }
 
-export const invalidateShadow = () => {
-  if (!browserWindow) return
-  browserWindow.invalidateShadow()
-}
-
 interface AlwaysOnTopTools {
   timeout: NodeJS.Timeout | null
   setAlwaysOnTop: (isLoop: boolean) => void
