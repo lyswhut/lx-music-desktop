@@ -76,7 +76,7 @@ export const createWindow = () => {
     width: windowSizeInfo.width,
     frame: false,
     transparent: !global.envParams.cmdParams.dt,
-    hasShadow: !global.envParams.cmdParams.dt,
+    hasShadow: global.envParams.cmdParams.dt,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
