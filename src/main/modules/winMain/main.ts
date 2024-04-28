@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
-import { isLinux, isWin } from '@common/utils'
+import { isLinux, isWin, isMac } from '@common/utils'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
 import { mainSend } from '@common/mainIpc'
 import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
@@ -76,6 +76,7 @@ export const createWindow = () => {
     width: windowSizeInfo.width,
     frame: false,
     transparent: !global.envParams.cmdParams.dt,
+    hasShadow: !isMac,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
