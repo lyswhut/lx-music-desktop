@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { BrowserWindow } from 'electron'
-import { debounce, isLinux, isWin, isMac } from '@common/utils'
+import { debounce, isLinux, isWin } from '@common/utils'
 import { initWindowSize } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
@@ -119,7 +119,7 @@ export const createWindow = () => {
     useContentSize: true,
     frame: false,
     transparent: true,
-    hasShadow: !isMac,
+    hasShadow: false,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
     resizable: false,
