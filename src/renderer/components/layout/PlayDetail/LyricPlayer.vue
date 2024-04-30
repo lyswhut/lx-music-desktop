@@ -5,7 +5,7 @@
         v-show="!isShowLrcSelectContent"
         ref="dom_lyric"
         :class="['lyric', $style.lyric, { [$style.draging]: isMsDown }, { [$style.lrcActiveZoom]: isZoomActiveLrc }]" :style="lrcStyles"
-        @wheel="handleWheel" @mousedown="handleLyricMouseDown"
+        @wheel="handleWheel" @mousedown="handleLyricMouseDown" @touchstart="handleLyricTouchStart"
         @contextmenu.stop="handleShowLyricMenu"
       >
         <div :class="['pre', $style.lyricSpace]" />
@@ -77,6 +77,7 @@ export default {
       isStopScroll,
       timeStr,
       handleLyricMouseDown,
+      handleLyricTouchStart,
       handleWheel,
       handleSkipPlay,
       handleSkipMouseEnter,
@@ -161,6 +162,7 @@ export default {
       isMsDown,
       timeStr,
       handleLyricMouseDown,
+      handleLyricTouchStart,
       handleWheel,
       handleSkipPlay,
       handleSkipMouseEnter,
