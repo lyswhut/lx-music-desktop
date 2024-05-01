@@ -46,6 +46,7 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
     'Content-Type': 'text/event-stream',
     Connection: 'keep-alive',
     'Cache-Control': 'no-cache',
+    'Access-Control-Allow-Origin': '*'
   })
   req.socket.setTimeout(0)
   req.on('close', () => {
