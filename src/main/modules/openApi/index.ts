@@ -38,6 +38,7 @@ const handleSendStatus = (res: http.ServerResponse<http.IncomingMessage>, query?
   const resp: Partial<Record<SubscribeKeys, any>> = {}
   for (const k of keys) resp[k] = global.lx.player_status[k]
   res.setHeader('Content-Type', 'application/json; charset=utf-8')
+  res.setHeader('Access-Control-Allow-Origin', '*')
   res.writeHead(200)
   res.end(JSON.stringify(resp))
 }
@@ -46,6 +47,7 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
     'Content-Type': 'text/event-stream',
     Connection: 'keep-alive',
     'Cache-Control': 'no-cache',
+    'Access-Control-Allow-Origin': '*',
   })
   req.socket.setTimeout(0)
   req.on('close', () => {
@@ -118,6 +120,7 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
       case '/lyric':
         code = 200
         res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.setHeader('Access-Control-Allow-Origin', '*')
         msg = global.lx.player_status.lyric
         break
       case '/subscribe-player-status':
