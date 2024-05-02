@@ -389,7 +389,7 @@
   "setting__desktop_lyric_unplay_color": "未播放顏色",
   "setting__dislike_list_input_tip": "歌曲名@歌手名\n歌曲名\n@歌手名",
   "setting__dislike_list_save_btn": "儲存",
-  "setting__dislike_list_tips": "1. 每條一行，若歌曲或歌手名字中存在“@”符號，則需要將其替換成“",
+  "setting__dislike_list_tips": "1. 每條一行，若歌曲或歌手名字中存在“@”符號，則需要將其替換成“#”\n2. 指定某歌手的某首歌：歌曲名@歌手名\n3. 指定某首歌：歌曲名\n4. 指定某歌手：@歌手名",
   "setting__dislike_list_title": "不喜歡的歌曲規則列表",
   "setting__download": "下載設定",
   "setting__download_data_embed": "是否將以下內容嵌入到音訊檔案中",
