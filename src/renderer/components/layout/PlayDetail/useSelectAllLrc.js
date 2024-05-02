@@ -1,4 +1,4 @@
-import { ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { ref, onBeforeUnmount, onMounted } from '@common/utils/vueTools'
 
 export default () => {
   const dom_lrc_select_content = ref()
@@ -14,10 +14,12 @@ export default () => {
     selection.addRange(range)
   }
 
+  onMounted(() => {
+    window.key_event.on('key_mod+a_down', handle_key_mod_a_down)
+  })
   onBeforeUnmount(() => {
     window.key_event.off('key_mod+a_down', handle_key_mod_a_down)
   })
-  window.key_event.on('key_mod+a_down', handle_key_mod_a_down)
 
   return dom_lrc_select_content
 }
