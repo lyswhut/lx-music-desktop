@@ -54,6 +54,7 @@ let pitchShifterNode: AudioWorkletNode
 let pitchShifterNodePitchFactor: AudioParam
 let pitchShifterNodeLoadStatus: 'none' | 'loading' | 'unconnect' | 'connected' = 'none'
 let pitchShifterNodeTempValue = 1
+let defaultChannelCount = 2
 export const soundR = 0.5
 
 
@@ -111,6 +112,7 @@ const initAdvancedAudioFeatures = () => {
   if (audioContext) return
   if (!audio) throw new Error('audio not defined')
   audioContext = new window.AudioContext()
+  defaultChannelCount = audioContext.destination.channelCount
 
   initAnalyser()
   initBiquadFilter()
@@ -134,6 +136,32 @@ export const getAudioContext = () => {
   return audioContext
 }
 
+let unsubMediaListChangeEvent: (() => void) | null = null
+export const setMaxOutputChannelCount = (enable: boolean) => {
+  if (enable) {
+    initAdvancedAudioFeatures()
+    audioContext.destination.channelCount = audioContext.destination.maxChannelCount
+    audioContext.destination.channelCountMode = 'max'
+    // navigator.mediaDevices.addEventListener('devicechange', handleMediaListChange)
+    if (!unsubMediaListChangeEvent) {
+      let handleMediaListChange = () => {
+        setMaxOutputChannelCount(true)
+      }
+      window.app_event.on('playerDeviceChanged', handleMediaListChange)
+      unsubMediaListChangeEvent = () => {
+        window.app_event.off('playerDeviceChanged', handleMediaListChange)
+        unsubMediaListChangeEvent = null
+      }
+    }
+  } else {
+    unsubMediaListChangeEvent?.()
+    if (audioContext && audioContext.destination.channelCountMode != 'explicit') {
+      audioContext.destination.channelCount = defaultChannelCount
+      // audioContext.destination.channelInterpretation
+      audioContext.destination.channelCountMode = 'explicit'
+    }
+  }
+}
 
 export const getAnalyser = (): AnalyserNode | null => {
   initAdvancedAudioFeatures()

@@ -513,6 +513,7 @@
   "setting__play_lyric_roma": "顯示歌詞羅馬音（如果可用）",
   "setting__play_lyric_s2t": "將播放與下載的歌詞轉換為繁體中文",
   "setting__play_lyric_transition": "顯示歌詞翻譯（如果可用）",
+  "setting__play_max_output_channel_count": "使用設備能處理的最大聲道數輸出音頻",
   "setting__play_mediaDevice": "音訊輸出",
   "setting__play_mediaDevice_remove_stop_play": "當前的聲音輸出裝置被改變時暫停播放歌曲",
   "setting__play_mediaDevice_title": "選擇聲音輸出的媒體設備",

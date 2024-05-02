@@ -22,6 +22,8 @@ dd
   .gap-top
     base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
   .gap-top
+    base-checkbox(id="setting_player_isMaxOutputChannelCount" :model-value="appSetting['player.isMaxOutputChannelCount']" :label="$t('setting__play_max_output_channel_count')" @update:model-value="updateSetting({'player.isMaxOutputChannelCount': $event})")
+  .gap-top
     base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :model-value="appSetting['player.isMediaDeviceRemovedStopPlay']" :label="$t('setting__play_mediaDevice_remove_stop_play')" @update:model-value="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})")
 
 dd

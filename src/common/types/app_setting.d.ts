@@ -124,6 +124,11 @@ declare global {
       'player.preservesPitch': boolean
 
       /**
+       * 使用设备能处理的最大声道数输出音频
+       */
+      'player.isMaxOutputChannelCount': boolean
+
+      /**
        * 音频输出设备id
        */
       'player.mediaDeviceId': string
