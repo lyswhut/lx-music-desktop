@@ -80,8 +80,8 @@ export default {
           confirmButtonText: t('confirm_button_text'),
         })
         if (!confirm) return
-        saveMediaDeviceId('default')
         await setMediaDeviceId('default').catch(_ => _)
+        saveMediaDeviceId('default')
       }
       setEnableAudioVisualization(newSetting)
     }
