@@ -124,6 +124,10 @@ export class AppEvent extends Event {
     this.emit('playerWaiting')
   }
 
+  playerDeviceChanged() {
+    this.emit('playerDeviceChanged')
+  }
+
   // 激活进度条动画事件
   activePlayProgressTransition() {
     this.emit('activePlayProgressTransition')

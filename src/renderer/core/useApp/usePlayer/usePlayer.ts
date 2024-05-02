@@ -32,6 +32,7 @@ import { HOTKEY_PLAYER } from '@common/hotKey'
 import { playNext, pause, playPrev, togglePlay, collectMusic, uncollectMusic, dislikeMusic } from '@renderer/core/player'
 import usePlaybackRate from './usePlaybackRate'
 import useSoundEffect from './useSoundEffect'
+import useMaxOutputChannelCount from './useMaxOutputChannelCount'
 import { setPowerSaveBlocker } from '@renderer/core/player/utils'
 
 
@@ -43,6 +44,7 @@ export default () => {
   usePlayEvent()
   useLyric()
   useVolume()
+  useMaxOutputChannelCount()
   useSoundEffect()
   usePlaybackRate()
   useWatchList()

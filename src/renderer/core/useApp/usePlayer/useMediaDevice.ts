@@ -41,16 +41,16 @@ export default () => {
     })
   }
 
-  const handleDeviceChangeStopPlay = (label: string) => {
+  const handleDeviceChange = (label: string) => {
     // console.log(device)
     // console.log(appSetting['player.isMediaDeviceRemovedStopPlay'], isPlay.value, label, prevDeviceLabel)
-    if (
-      appSetting['player.isMediaDeviceRemovedStopPlay'] &&
-      isPlay.value &&
-      label != prevDeviceLabel
-    ) {
-      window.lx.isPlayedStop = true
-      pause()
+    if (label != prevDeviceLabel) {
+      window.app_event.playerDeviceChanged()
+
+      if (appSetting['player.isMediaDeviceRemovedStopPlay'] && isPlay.value) {
+        window.lx.isPlayedStop = true
+        pause()
+      }
     }
   }
 
@@ -58,7 +58,7 @@ export default () => {
     const mediaDeviceId = appSetting['player.mediaDeviceId']
     const device = await getMediaDevice(mediaDeviceId)
 
-    handleDeviceChangeStopPlay(device.label)
+    handleDeviceChange(device.label)
 
     if (device.deviceId == mediaDeviceId) prevDeviceLabel = device.label
     else void setMediaDevice(device.deviceId, device.label)
