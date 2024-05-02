@@ -31,7 +31,7 @@ const defaultSetting: LX.AppSetting = {
   'player.isMute': false,
   'player.playbackRate': 1,
   'player.preservesPitch': true,
-  'player.isMaxOutputChannelCount': true,
+  'player.isMaxOutputChannelCount': false,
   'player.mediaDeviceId': 'default',
   'player.isMediaDeviceRemovedStopPlay': false,
   'player.isShowLyricTranslation': false,

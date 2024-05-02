@@ -25,14 +25,19 @@
 
 <script setup>
 import { onMounted, ref } from '@common/utils/vueTools'
-import { freqs, freqsPreset } from '@renderer/plugins/player'
-import { appSetting, updateSetting } from '@renderer/store/setting'
+import { freqs, freqsPreset, setMediaDeviceId } from '@renderer/plugins/player'
+import { appSetting, saveMediaDeviceId, updateSetting } from '@renderer/store/setting'
 import AddEQPresetBtn from './AddEQPresetBtn.vue'
 import { getUserEQPresetList, removeUserEQPreset } from '@renderer/store/soundEffect'
 
 const labels = freqs.map(num => num < 1000 ? num : `${num / 1000}k`)
 
-const handleUpdate = (key, value) => {
+const handleUpdate = async(key, value) => {
+  if (appSetting['player.mediaDeviceId'] != 'default') {
+    await setMediaDeviceId('default').catch(_ => _)
+    saveMediaDeviceId('default')
+  }
+
   value = Math.round(value)
   // values[index] = value
   updateSetting({ [`player.soundEffect.biquadFilter.hz${key}`]: value })

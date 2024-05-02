@@ -36,12 +36,16 @@
 
 <script setup>
 import { ref, onMounted, computed } from '@common/utils/vueTools'
-import { appSetting, updateSetting } from '@renderer/store/setting'
-import { convolutions } from '@renderer/plugins/player'
+import { appSetting, saveMediaDeviceId, updateSetting } from '@renderer/store/setting'
+import { convolutions, setMediaDeviceId } from '@renderer/plugins/player'
 import AddConvolutionPresetBtn from './AddConvolutionPresetBtn.vue'
 import { getUserConvolutionPresetList, removeUserConvolutionPreset } from '@renderer/store/soundEffect'
 
-const updateConvolution = val => {
+const updateConvolution = async val => {
+  if (appSetting['player.mediaDeviceId'] != 'default') {
+    await setMediaDeviceId('default').catch(_ => _)
+    saveMediaDeviceId('default')
+  }
   const target = convolutions.find(c => c.source == val)
   const setting = {
     'player.soundEffect.convolution.fileName': val,
@@ -61,6 +65,7 @@ const handleUpdateSendGain = (value) => {
 }
 
 const handleSetPreset = (item) => {
+  if (appSetting['player.mediaDeviceId'] != 'default') saveMediaDeviceId('default')
   updateSetting({
     'player.soundEffect.convolution.fileName': item.source,
     'player.soundEffect.convolution.mainGain': item.mainGain,

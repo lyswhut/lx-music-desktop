@@ -22,7 +22,7 @@ dd
   .gap-top
     base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
   .gap-top
-    base-checkbox(id="setting_player_isMaxOutputChannelCount" :model-value="appSetting['player.isMaxOutputChannelCount']" :label="$t('setting__play_max_output_channel_count')" @update:model-value="updateSetting({'player.isMaxOutputChannelCount': $event})")
+    base-checkbox(id="setting_player_isMaxOutputChannelCount" :model-value="isMaxOutputChannelCount" :label="$t('setting__play_max_output_channel_count')" @update:model-value="handleUpdateMaxOutputChannelCount")
   .gap-top
     base-checkbox(id="setting_player_isMediaDeviceRemovedStopPlay" :model-value="appSetting['player.isMediaDeviceRemovedStopPlay']" :label="$t('setting__play_mediaDevice_remove_stop_play')" @update:model-value="updateSetting({'player.isMediaDeviceRemovedStopPlay': $event})")
 
@@ -42,10 +42,10 @@ dd(:aria-label="$t('setting__play_mediaDevice_title')")
 
 <script>
 import { ref, onBeforeUnmount, watch } from '@common/utils/vueTools'
-import { hasInitedAdvancedAudioFeatures } from '@renderer/plugins/player'
+import { hasInitedAdvancedAudioFeatures, setMediaDeviceId } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
 import { useI18n } from '@renderer/plugins/i18n'
-import { appSetting, updateSetting } from '@renderer/store/setting'
+import { appSetting, saveMediaDeviceId, updateSetting } from '@renderer/store/setting'
 import { setPowerSaveBlocker } from '@renderer/core/player/utils'
 import { isPlay } from '@renderer/store/player/state'
 import { TRY_QUALITYS_LIST } from '@renderer/core/music/utils'
@@ -86,8 +86,10 @@ export default {
           confirmButtonText: t('confirm_button_text'),
         })
         if (confirm) {
-          appSetting['player.audioVisualization'] = false
-          appSetting['player.mediaDeviceId'] = mediaDeviceId.value
+          updateSetting({
+            'player.audioVisualization': false,
+            'player.mediaDeviceId': mediaDeviceId.value,
+          })
         } else {
           mediaDeviceId.value = appSetting['player.mediaDeviceId']
         }
@@ -108,6 +110,25 @@ export default {
       updateSetting({ 'player.powerSaveBlocker': enabled })
     }
 
+    const isMaxOutputChannelCount = ref(appSetting['player.isMaxOutputChannelCount'])
+    const handleUpdateMaxOutputChannelCount = async(enabled) => {
+      isMaxOutputChannelCount.value = enabled
+      if (appSetting['player.mediaDeviceId'] != 'default') {
+        const confirm = await dialog.confirm({
+          message: t('setting__play_advanced_audio_features_tip'),
+          cancelButtonText: t('cancel_button_text'),
+          confirmButtonText: t('confirm_button_text'),
+        })
+        if (!confirm) {
+          isMaxOutputChannelCount.value = false
+          return
+        }
+        await setMediaDeviceId('default').catch(_ => _)
+        saveMediaDeviceId('default')
+      }
+      updateSetting({ 'player.isMaxOutputChannelCount': enabled })
+    }
+
 
     return {
       appSetting,
@@ -116,6 +137,8 @@ export default {
       mediaDeviceId,
       handleMediaDeviceIdChnage,
       handleUpdatePowerSaveBlocker,
+      isMaxOutputChannelCount,
+      handleUpdateMaxOutputChannelCount,
       playQualityList,
     }
   },
