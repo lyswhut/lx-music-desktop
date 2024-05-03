@@ -192,7 +192,8 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
         tlrc: appSetting['download.isDownloadTLrc'] && lrcs.tlyric ? lrcs.tlyric : null,
         rlrc: appSetting['download.isDownloadRLrc'] && lrcs.rlyric ? lrcs.rlyric : null,
       }
-      void window.lx.worker.download.saveLrc(lrcData, downloadInfo.metadata.filePath.replace(/(mp3|flac|ape|wav)$/, 'lrc'),
+      void window.lx.worker.download.saveLrc(lrcData,
+        downloadInfo.metadata.filePath.substring(0, downloadInfo.metadata.filePath.lastIndexOf('.')) + '.lrc',
         appSetting['download.lrcFormat'])
     }
   })
