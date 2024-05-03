@@ -321,7 +321,7 @@ class Task extends EventEmitter {
       if (err) {
         console.log(err)
         this.__handleError(err)
-        void this.stop()
+        return
       }
       if (this.closeWaiting && !this.dataWriteQueueLength) this.ws?.close()
     })
