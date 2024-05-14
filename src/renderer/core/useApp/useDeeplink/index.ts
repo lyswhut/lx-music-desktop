@@ -38,7 +38,7 @@ export default () => {
     console.log(params)
     switch (type) {
       case 'music':
-        handleMusicAction(action, params)
+        await handleMusicAction(action, params)
         break
       case 'songlist':
         await handleSonglistAction(action, params)

@@ -17,7 +17,7 @@ const getOtherSourcePromises = new Map()
 export const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 
 export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, isRefresh = false): Promise<LX.Music.MusicInfoOnline[]> => {
-  if (!isRefresh) {
+  if (!isRefresh && musicInfo.id) {
     const cachedInfo = await getOtherSourceFromStore(musicInfo.id)
     if (cachedInfo.length) return cachedInfo
   }
