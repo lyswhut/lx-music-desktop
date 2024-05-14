@@ -182,6 +182,7 @@
   "lyric_menu__size_add": "加大字體（右鍵可微調）",
   "lyric_menu__size_dec": "減小字體（右鍵可微調）",
   "lyric_menu__size_reset": "重置",
+  "media_device__emtpy_device_tip": "音訊輸出裝置為空，若出現無法播放的狀況，請檢查音效卡驅動是否已安裝或重裝音效卡驅動！",
   "min": "最小化",
   "music_album": "專輯名",
   "music_duplicate": "重複歌曲",

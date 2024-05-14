@@ -3,6 +3,7 @@ import {
   watch,
 } from '@common/utils/vueTools'
 import { pause } from '@renderer/core/player/action'
+import { dialog } from '@renderer/plugins/Dialog'
 import { setMediaDeviceId } from '@renderer/plugins/player'
 import { isPlay } from '@renderer/store/player/state'
 import { appSetting, saveMediaDeviceId } from '@renderer/store/setting'
@@ -11,6 +12,8 @@ const getDevices = async() => {
   const devices = await navigator.mediaDevices.enumerateDevices()
   return devices.filter(({ kind }) => kind == 'audiooutput')
 }
+
+let isShowingTipAlert = false
 
 export default () => {
   let prevDeviceLabel: string | null = null
@@ -24,6 +27,15 @@ export default () => {
       device = devices.find(device => device.deviceId === deviceId)
     }
 
+    if (!device && !devices.length && !isShowingTipAlert) {
+      isShowingTipAlert = true
+      void dialog({
+        message: window.i18n.t('media_device__emtpy_device_tip'),
+        confirmButtonText: window.i18n.t('ok'),
+      }).finally(() => {
+        isShowingTipAlert = false
+      })
+    }
     return device ? { label: device.label, deviceId: device.deviceId } : { label: '', deviceId: '' }
   }
   const setMediaDevice = async(deviceId: string, label: string) => {
