@@ -81,12 +81,12 @@ export default {
       return Math.floor(props.btnLength / 2)
     })
     const pages = computed(() => {
-      if (maxPage <= props.btnLength) return Array.from({ length: maxPage }, (_, i) => i + 1)
-      let start = props.page - pageEvg > 1
+      if (maxPage.value <= props.btnLength) return Array.from({ length: maxPage.value }, (_, i) => i + 1)
+      let start = props.page - pageEvg.value > 1
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        ? maxPage - props.page < pageEvg + 1
-          ? maxPage - (props.btnLength - 1)
-          : props.page - pageEvg
+        ? maxPage.value - props.page < pageEvg.value + 1
+          ? maxPage.value - (props.btnLength - 1)
+          : props.page - pageEvg.value
         : 1
       return Array.from({ length: props.btnLength }, (_, i) => start + i)
     })
