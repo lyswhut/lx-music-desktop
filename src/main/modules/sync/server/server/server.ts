@@ -26,7 +26,7 @@ let stopingServer = false
 let host = 'http://localhost'
 
 const codeTools: {
-  timeout: NodeJS.Timer | null
+  timeout: NodeJS.Timeout | null
   start: () => void
   stop: () => void
 } = {
