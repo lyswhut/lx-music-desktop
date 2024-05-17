@@ -42,7 +42,7 @@ export const filterList = async({ playedList, listId, list, playerMusicInfo, isN
   return { filteredList: markRawList(filteredList), playerIndex }
 }
 
-let timeout: NodeJS.Timer | null = null
+let timeout: NodeJS.Timeout | null = null
 const clearTimer = () => {
   if (!timeout) return
   clearTimeout(timeout)
