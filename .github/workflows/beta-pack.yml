@@ -44,7 +44,7 @@ jobs:
     name: Windows
     runs-on: windows-latest
     env:
-      NPM_CACHE: '%APPDATA%\npm-cache'
+      NPM_CACHE: '%LocalAppData%/npm-cache'
     # needs: CheckCode
     steps:
       - name: Check out git repository
@@ -131,7 +131,7 @@ jobs:
     runs-on: macos-latest
     # needs: CheckCode
     env:
-      NPM_CACHE: $HOME/.npm
+      NPM_CACHE: ~/.npm
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
@@ -178,7 +178,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     env:
-      NPM_CACHE: $HOME/.npm
+      NPM_CACHE: ~/.npm
     # needs: CheckCode
     steps:
       - name: Install package
