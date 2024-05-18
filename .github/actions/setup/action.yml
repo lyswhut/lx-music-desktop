@@ -9,15 +9,20 @@ runs:
       with:
         node-version: '20'
 
+    # - name: Get npm cache directory
+    #   run: node -p -e '`NPM_CACHE_DIR=${require("child_process").execSync("npm config get cache").toString()}`' >> $GITHUB_ENV
+    #   run: echo "NPM_CACHE_DIR=$(npm config get cache)" >> $GITHUB_ENV
+
+    # https://docs.npmjs.com/cli/v10/configuring-npm/folders#cache
     - name: Cache node modules
       id: cache-npm
       uses: actions/cache@v4
       with:
         path: |
           ${{ env.NPM_CACHE }}
-        key: ${{ runner.os }}-node-modules-cache-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-npm-cache-${{ hashFiles('package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-node-modules-cache-
+          ${{ runner.os }}-npm-cache-
 
     - name: Install dependencies
       run: npm ci

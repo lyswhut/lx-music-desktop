@@ -188,7 +188,7 @@ const useSearchPlayMusic = () => {
     // console.log(paths, data)
     let info
     if (paths.length) {
-      let name = paths[0]
+      let name = paths[0].trim()
       let singer = ''
       if (name.includes('-')) [name, singer] = name.split('-').map(val => val.trim())
       info = {
@@ -197,6 +197,7 @@ const useSearchPlayMusic = () => {
       }
     } else info = data
     info = verifyInfo(info)
+    if (!info.name) return
     const musicList = await searchMusic(info.name, info.singer || '', info.albumName || '', info.interval || null)
     if (musicList.length) {
       console.log('find music:', musicList)
