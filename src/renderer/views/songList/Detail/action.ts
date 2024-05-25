@@ -5,6 +5,7 @@ import { getListDetail, getListDetailAll } from '@renderer/store/songList/action
 import { createUserList, setTempList } from '@renderer/store/list/action'
 import { playList } from '@renderer/core/player/action'
 import { LIST_IDS } from '@common/constants'
+import { toMD5 } from '@renderer/utils'
 
 const getListId = (id: string, source: LX.OnlineSource) => `${source}__${id}`
 
@@ -12,7 +13,7 @@ export const addSongListDetail = async(id: string, source: LX.OnlineSource, name
   // console.log(this.listDetail.info)
   // if (!this.listDetail.info.name) return
   const listId = getListId(id, source)
-  const targetList = userLists.find(l => l.id == listId)
+  const targetList = userLists.find(l => l.sourceListId == listId)
   if (targetList) {
     const confirm = await dialog.confirm({
       message: window.i18n.t('duplicate_list_tip', { name: targetList.name }),
@@ -27,7 +28,7 @@ export const addSongListDetail = async(id: string, source: LX.OnlineSource, name
   const list = await getListDetailAll(id, source)
   await createUserList({
     name,
-    id: listId,
+    id: `${source}_${toMD5(listId)}`,
     list,
     source,
     sourceListId: id,
