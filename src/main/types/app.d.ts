@@ -12,10 +12,6 @@ interface Lx {
     state: LX.HotKeyState
   }
   /**
-   * 是否红绿灯关闭
-   */
-  isTrafficLightClose: boolean
-  /**
    * 是否跳过托盘退出
    */
   isSkipTrayQuit: boolean
