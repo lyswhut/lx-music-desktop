@@ -13,19 +13,15 @@ const winEvent = () => {
   if (!browserWindow) return
 
   browserWindow.on('close', event => {
-    if (
-      global.lx.appSetting['tray.enable'] &&
-      (global.lx.isTrafficLightClose || (isWin && !global.lx.isSkipTrayQuit))
-    ) {
-      global.lx.isTrafficLightClose &&= false
-      event.preventDefault()
-      browserWindow!.hide()
+    if (global.lx.isSkipTrayQuit || !global.lx.appSetting['tray.enable']) {
+      browserWindow!.setProgressBar(-1)
+      // global.lx.mainWindowClosed = true
+      global.lx.event_app.main_window_close()
       return
     }
 
-    browserWindow!.setProgressBar(-1)
-    // global.lx.mainWindowClosed = true
-    global.lx.event_app.main_window_close()
+    event.preventDefault()
+    browserWindow!.hide()
   })
 
   browserWindow.on('closed', () => {

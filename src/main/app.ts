@@ -5,7 +5,7 @@ import { URL_SCHEME_RXP } from '@common/constants'
 import { getTheme, initHotKey, initSetting, parseEnvParams } from './utils'
 import { navigationUrlWhiteList } from '@common/config'
 import defaultSetting from '@common/defaultSetting'
-import { closeWindow, isExistWindow as isExistMainWindow, showWindow as showMainWindow } from './modules/winMain'
+import { isExistWindow as isExistMainWindow, showWindow as showMainWindow } from './modules/winMain'
 import { createAppEvent, createDislikeEvent, createListEvent } from '@main/event'
 import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
@@ -158,6 +158,9 @@ export const listenerAppEvent = (startApp: () => void) => {
     }
   })
 
+  app.on('before-quit', () => {
+    global.lx.isSkipTrayQuit = true
+  })
   app.on('window-all-closed', () => {
     if (isMac) return
 
@@ -209,7 +212,6 @@ export const initAppSetting = async() => {
   if (!global.lx) {
     const config = await initHotKey()
     global.lx = {
-      isTrafficLightClose: false,
       isSkipTrayQuit: false,
       // mainWindowClosed: true,
       event_app: createAppEvent(),
@@ -275,5 +277,5 @@ export const initAppSetting = async() => {
 
 export const quitApp = () => {
   global.lx.isSkipTrayQuit = true
-  closeWindow()
+  app.quit()
 }

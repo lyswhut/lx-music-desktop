@@ -61,7 +61,6 @@ export default () => {
       app.exit(0)
       return
     }
-    global.lx.isTrafficLightClose = true
     closeWindow()
   })
   // 全屏
