@@ -46,12 +46,14 @@ export default () => {
       picUrl: musicInfo.pic ?? '',
       lyric: musicInfo.lrc ?? '',
       lyricLineText: '',
+      lyricLineAllText: '',
     })
   }
   const handleSetLyric = () => {
     sendPlayerStatus({
       lyric: musicInfo.lrc ?? '',
       lyricLineText: '',
+      lyricLineAllText: '',
     })
   }
   const handleSetPic = () => {
