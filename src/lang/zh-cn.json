@@ -267,7 +267,7 @@
   "player__sound_effect_convolution_file_tim_omni_35_10_magnetic": "磁性立体声",
   "player__sound_effect_convolution_main_gain": "原始音频增益",
   "player__sound_effect_convolution_send_gain": "环境音效增益",
-  "player__sound_effect_features_tip": "提示：音效功能 与 自定义音频输出设备功能 冲突，启用音效功能后音频输出设备将会被重置为默认的输出设备，目前此问题暂无法解决。",
+  "player__sound_effect_features_tip": "提示：「音效设置」与「自定义音频输出设备」冲突，启用音效设置后音频输出设备将会被重置为默认的输出设备，目前此问题暂无法解决。",
   "player__sound_effect_panner": "3D立体环绕（需使用耳机）",
   "player__sound_effect_panner_enabled": "启用",
   "player__sound_effect_panner_sound_r": "声音距离",
