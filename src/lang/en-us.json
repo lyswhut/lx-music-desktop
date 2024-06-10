@@ -267,6 +267,7 @@
   "player__sound_effect_convolution_file_tim_omni_35_10_magnetic": "Rock 2",
   "player__sound_effect_convolution_main_gain": "Original Audio Gain",
   "player__sound_effect_convolution_send_gain": "Ambient Sound Effect Gain",
+  "player__sound_effect_features_tip": "Tip: The sound effect settings conflicts with the the custom audio output device. After enabling the sound effect settings, the audio output device will be reset to the default output device. This problem cannot be solved at present.",
   "player__sound_effect_panner": "3D stereo surround (need to use headphones)",
   "player__sound_effect_panner_enabled": "enable",
   "player__sound_effect_panner_sound_r": "Sound distance",
