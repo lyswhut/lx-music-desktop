@@ -2,6 +2,7 @@ import needle, { type NeedleHttpVerbs, type NeedleOptions, type BodyData, type N
 // import progress from 'request-progress'
 import { httpOverHttp, httpsOverHttp } from 'tunnel'
 import { type ClientRequest } from 'node:http'
+import { getProxy } from './index'
 // import fs from 'fs'
 
 export const requestMsg = {
@@ -15,42 +16,9 @@ export const requestMsg = {
 
 
 const httpsRxp = /^https:/
-let envProxy: null | { host: string, port: string } = null
-
 const getRequestAgent = (url: string) => {
-  if (envProxy == null) {
-    if (global.envParams.cmdParams['proxy-server'] && typeof global.envParams.cmdParams['proxy-server'] == 'string') {
-      const [host, port = ''] = global.envParams.cmdParams['proxy-server'].split(':')
-      envProxy = {
-        host,
-        port,
-      }
-    }
-  }
-  const proxy = {
-    enable: global.lx.appSetting['network.proxy.enable'],
-    host: global.lx.appSetting['network.proxy.host'],
-    port: global.lx.appSetting['network.proxy.port'],
-    envProxy,
-  }
-
-  let options
-  if (global.lx.appSetting['network.proxy.enable'] && proxy.host) {
-    options = {
-      proxy: {
-        host: proxy.host,
-        port: parseInt(proxy.port || '80'),
-      },
-    }
-  } else if (proxy.envProxy) {
-    options = {
-      proxy: {
-        host: proxy.envProxy.host,
-        port: parseInt(proxy.envProxy.port || '80'),
-      },
-    }
-  }
-  return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)(options) : undefined
+  const proxy = getProxy()
+  return proxy ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)({ proxy }) : undefined
 }
 
 export interface RequestOptions extends NeedleOptions {

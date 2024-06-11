@@ -2,7 +2,7 @@ import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { isLinux, isWin } from '@common/utils'
-import { openDevTools as handleOpenDevTools } from '@main/utils'
+import { getProxy, openDevTools as handleOpenDevTools } from '@main/utils'
 import { mainSend } from '@common/mainIpc'
 import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
 import { encodePath } from '@common/utils/electron'
@@ -65,6 +65,12 @@ export const createWindow = () => {
 
   const { shouldUseDarkColors, theme } = global.lx.theme
   const ses = session.fromPartition('persist:win-main')
+  const proxy = getProxy()
+  if (proxy) {
+    void ses.setProxy({
+      proxyRules: `http://${proxy.host}:${proxy.port}`,
+    })
+  }
 
   /**
    * Initial window options
@@ -123,6 +129,21 @@ export const closeWindow = () => {
   if (!browserWindow) return
   browserWindow.close()
 }
+
+export const setProxy = () => {
+  if (!browserWindow) return
+  const proxy = getProxy()
+  if (proxy) {
+    void browserWindow.webContents.session.setProxy({
+      proxyRules: `http://${proxy.host}:${proxy.port}`,
+    })
+  } else {
+    void browserWindow.webContents.session.setProxy({
+      proxyRules: '',
+    })
+  }
+}
+
 
 export const sendEvent = <T = any>(name: string, params?: T) => {
   if (!browserWindow) return
