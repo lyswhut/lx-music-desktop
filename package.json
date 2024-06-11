@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.8.1-beta.2",
+  "version": "2.8.1-beta.3",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "productName": "lx-music-desktop",
@@ -122,9 +122,9 @@
     "@types/tunnel": "^0.0.7",
     "@types/ws": "8.5.4",
     "@volar/vue-language-plugin-pug": "^1.6.5",
-    "@vue/language-plugin-pug": "^2.0.19",
+    "@vue/language-plugin-pug": "^2.0.21",
     "babel-loader": "^9.1.3",
-    "browserslist": "^4.23.0",
+    "browserslist": "^4.23.1",
     "chalk": "^4.1.2",
     "changelog-parser": "^3.0.1",
     "copy-webpack-plugin": "^12.0.2",
@@ -137,7 +137,7 @@
     "electron-builder": "^24.13.3",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.2.0",
-    "electron-to-chromium": "^1.4.793",
+    "electron-to-chromium": "^1.4.798",
     "electron-updater": "^6.2.1",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
@@ -196,7 +196,7 @@
     "tunnel": "^0.0.6",
     "utf-8-validate": "^6.0.4",
     "vue": "~3.3.13",
-    "vue-router": "^4.3.2",
+    "vue-router": "^4.3.3",
     "ws": "^8.17.0"
   },
   "overrides": {
@@ -213,6 +213,7 @@
     "svg-baker": {
       "postcss": "latest"
     },
+    "braces": "latest",
     "node-gyp-build": "latest",
     "http-cache-semantics": "latest"
   }
