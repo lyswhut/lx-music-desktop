@@ -1,14 +1,21 @@
 const http = require('http')
 const https = require('https')
 const fs = require('fs')
+const { httpOverHttp, httpsOverHttp } = require('tunnel')
 
-const sendRequest = (url) => {
+const httpsRxp = /^https:/
+const getRequestAgent = (url, proxy) => {
+  return proxy ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)({ proxy }) : undefined
+}
+
+const sendRequest = (url, proxy) => {
   const urlParse = new URL(url)
   const httpOptions = {
     method: 'get',
     host: urlParse.hostname,
     port: urlParse.port,
     path: urlParse.pathname + urlParse.search,
+    agent: getRequestAgent(url, proxy),
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
     },
@@ -20,9 +27,9 @@ const sendRequest = (url) => {
     : http.request(httpOptions)
 }
 
-module.exports = (url, filePath) => {
+module.exports = (url, filePath, proxy) => {
   return new Promise((resolve) => {
-    sendRequest(url)
+    sendRequest(url, proxy)
       .on('response', response => {
         // console.log(response.statusCode)
         if (response.statusCode !== 200 && response.statusCode != 206) {

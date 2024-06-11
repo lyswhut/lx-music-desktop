@@ -15,7 +15,7 @@ const handleWriteMeta = (meta, filePath) => {
   NodeID3.write(meta, filePath)
 }
 
-module.exports = (filePath, meta) => {
+module.exports = (filePath, meta, proxy) => {
   if (!meta.APIC) return handleWriteMeta(meta, filePath)
   if (!/^http/.test(meta.APIC)) {
     delete meta.APIC
@@ -26,7 +26,7 @@ module.exports = (filePath, meta) => {
 
   let picUrl = meta.APIC
   if (picUrl.includes('music.126.net')) picUrl += `${picUrl.includes('?') ? '&' : '?'}param=500y500`
-  download(picUrl, picPath).then(success => {
+  download(picUrl, picPath, proxy).then(success => {
     if (success) {
       meta.APIC = picPath
       handleWriteMeta(meta, filePath)

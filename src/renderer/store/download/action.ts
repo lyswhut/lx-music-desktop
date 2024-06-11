@@ -15,6 +15,7 @@ import { qualityList } from '..'
 import { proxyCallback } from '@renderer/worker/utils'
 import { arrPush, arrUnshift, joinPath } from '@renderer/utils'
 import { DOWNLOAD_STATUS } from '@common/constants'
+import { proxy } from '../index'
 
 const waitingUpdateTasks = new Map<string, LX.Download.ListItem>()
 let timer: NodeJS.Timeout | null = null
@@ -131,6 +132,15 @@ const setStatus = (downloadInfo: LX.Download.ListItem, status: LX.Download.Downl
 // 修复 1.1.x版本 酷狗源歌词格式
 const fixKgLyric = (lrc: string) => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
 
+const getProxy = () => {
+  return proxy.enable && proxy.host ? {
+    host: proxy.host,
+    port: parseInt(proxy.port || '80'),
+  } : proxy.envProxy ? {
+    host: proxy.envProxy.host,
+    port: parseInt(proxy.envProxy.port || '80'),
+  } : undefined
+}
 /**
  * 设置歌曲meta信息
  * @param downloadInfo 下载任务信息
@@ -170,7 +180,7 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
       artist: downloadInfo.metadata.musicInfo.singer,
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
-    }, lrcData)
+    }, lrcData, getProxy())
   })
 }
 
@@ -282,7 +292,7 @@ const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
       default:
         break
     }
-  }))
+  }), getProxy())
 }
 const startTask = async(downloadInfo: LX.Download.ListItem) => {
   setStatus(downloadInfo, DOWNLOAD_STATUS.RUN)

@@ -1,7 +1,7 @@
 import initRendererEvent, { handleKeyDown, hotKeyConfigUpdate } from './rendererEvent'
 
 import { APP_EVENT_NAMES } from '@common/constants'
-import { createWindow, minimize, setProgressBar, setThumbarButtons, toggleHide, toggleMinimize } from './main'
+import { createWindow, minimize, setProgressBar, setProxy, setThumbarButtons, toggleHide, toggleMinimize } from './main'
 import initUpdate from './autoUpdate'
 import { HOTKEY_COMMON } from '@common/hotKey'
 import { quitApp } from '@main/app'
@@ -107,6 +107,9 @@ export default () => {
       } else {
         setProgressBar(-1, { mode: 'none' })
       }
+    }
+    if (keys.includes('network.proxy.enable') || (global.lx.appSetting['network.proxy.enable'] && keys.some(k => k.includes('network.proxy.')))) {
+      setProxy()
     }
   })
 }
