@@ -320,6 +320,11 @@ declare global {
       'desktopLyric.isShowTaskbar': boolean
 
       /**
+       * 是否将歌词进程显示在状态栏
+       */
+      'desktopLyric.isShowStatusBar': boolean
+
+      /**
        * 是否启用音频可视化
        */
       'desktopLyric.audioVisualization': boolean

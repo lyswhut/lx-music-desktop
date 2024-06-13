@@ -13,6 +13,7 @@ import { quitApp } from '@main/app'
 let tray: Electron.Tray | null
 let isEnableTray: boolean = false
 let themeId: number
+let isShowStatusBar: boolean = false
 
 const playerState = {
   empty: false,
@@ -26,6 +27,7 @@ const watchConfigKeys = [
   'desktopLyric.enable',
   'desktopLyric.isLock',
   'desktopLyric.isAlwaysOnTop',
+  'desktopLyric.isShowStatusBar',
   'tray.themeId',
   'tray.enable',
   'common.langId',
@@ -124,7 +126,7 @@ const getIconPath = (id: number) => {
 
 export const createTray = () => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  if ((tray && !tray.isDestroyed()) || !global.lx.appSetting['tray.enable']) return
+  if ((tray && !tray.isDestroyed())) return
 
   // 托盘
   tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
@@ -141,6 +143,7 @@ export const destroyTray = () => {
   if (!tray) return
   tray.destroy()
   isEnableTray = false
+  isShowStatusBar = false
   tray = null
 }
 
@@ -268,9 +271,10 @@ const init = () => {
     themeId = global.lx.appSetting['tray.themeId']
     setTrayImage(themeId)
   }
-  if (isEnableTray !== global.lx.appSetting['tray.enable']) {
+  if (isEnableTray !== global.lx.appSetting['tray.enable'] || isShowStatusBar !== global.lx.appSetting['desktopLyric.isShowStatusBar']) {
     isEnableTray = global.lx.appSetting['tray.enable']
-    global.lx.appSetting['tray.enable'] ? createTray() : destroyTray()
+    isShowStatusBar = global.lx.appSetting['desktopLyric.isShowStatusBar']
+    global.lx.appSetting['tray.enable'] || global.lx.appSetting['desktopLyric.isShowStatusBar'] ? createTray() : destroyTray()
   }
   createMenu()
 }
@@ -338,5 +342,8 @@ export default () => {
       updated = true
     }
     if (updated) init()
+    if (tray && isShowStatusBar && status.lyricLineText) {
+      tray.setTitle(status.lyricLineText)
+    }
   })
 }

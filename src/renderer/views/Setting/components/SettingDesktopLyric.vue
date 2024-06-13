@@ -15,6 +15,8 @@ dd
     base-checkbox(id="setting_desktop_lyric_alwaysOnTop" :model-value="appSetting['desktopLyric.isAlwaysOnTop']" :label="$t('setting__desktop_lyric_always_on_top')" @update:model-value="updateSetting({ 'desktopLyric.isAlwaysOnTop': $event })")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_showTaskbar" :model-value="appSetting['desktopLyric.isShowTaskbar']" :label="$t('setting__desktop_lyric_show_taskbar')" @update:model-value="updateSetting({ 'desktopLyric.isShowTaskbar': $event })")
+  .gap-top(v-if="isMac")
+    base-checkbox(id="setting_desktop_lyric_showStatusBar" :model-value="appSetting['desktopLyric.isShowStatusBar']" :label="$t('setting__desktop_lyric_show_status_bar')" @update:model-value="updateSetting({ 'desktopLyric.isShowStatusBar': $event })")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_alwaysOnTopLoop" :model-value="appSetting['desktopLyric.isAlwaysOnTopLoop']" :label="$t('setting__desktop_lyric_always_on_top_loop')" @update:model-value="updateSetting({ 'desktopLyric.isAlwaysOnTopLoop': $event })")
   .gap-top
@@ -93,7 +95,7 @@ dd
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from '@common/utils/vueTools'
 import { getSystemFonts } from '@renderer/utils/ipc'
-import { isLinux } from '@common/utils'
+import { isLinux, isMac } from '@common/utils'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { useI18n } from '@renderer/plugins/i18n'
 import { pickrTools } from '@renderer/utils/pickrTools'
@@ -294,6 +296,7 @@ export default {
 
       fontList,
       isLinux,
+      isMac,
     }
   },
 }

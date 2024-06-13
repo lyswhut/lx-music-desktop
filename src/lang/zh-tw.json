@@ -388,6 +388,7 @@
   "setting__desktop_lyric_scroll_align_top": "頂部",
   "setting__desktop_lyric_shadow_color": "陰影顏色",
   "setting__desktop_lyric_show_taskbar": "在工作列顯示歌詞進程（此設定用於在錄影軟體無法擷取歌詞視窗時的變通解決方法）",
+  "setting__desktop_lyric_show_status_bar": "在狀態列顯示歌詞進程",
   "setting__desktop_lyric_unplay_color": "未播放顏色",
   "setting__dislike_list_input_tip": "歌曲名@歌手名\n歌曲名\n@歌手名",
   "setting__dislike_list_save_btn": "儲存",
