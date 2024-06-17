@@ -43,5 +43,6 @@ export const setUserApi = async(apiId: string) => {
     if (!window.lx.apiInitPromise[1]) window.lx.apiInitPromise[2](true)
   }
 
+  if (prevId != apiId) return
   if (apiId != appSetting['common.apiSource']) setApiSource(apiId)
 }
