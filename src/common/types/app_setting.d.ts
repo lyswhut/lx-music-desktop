@@ -98,6 +98,12 @@ declare global {
        */
       'player.isShowTaskProgess': boolean
 
+
+      /**
+       * 是否将将歌词显示在状态栏
+       */
+      'player.isShowStatusBarLyric': boolean
+
       /**
        * 音量大小
        */
@@ -318,11 +324,6 @@ declare global {
        * 是否将歌词进程显示在任务栏
        */
       'desktopLyric.isShowTaskbar': boolean
-
-      /**
-       * 是否将歌词进程显示在状态栏
-       */
-      'desktopLyric.isShowStatusBar': boolean
 
       /**
        * 是否启用音频可视化

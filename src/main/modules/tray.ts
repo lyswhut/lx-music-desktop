@@ -1,5 +1,5 @@
 import { Tray, Menu, nativeImage } from 'electron'
-import { isWin } from '@common/utils'
+import { isMac, isWin } from '@common/utils'
 import path from 'node:path'
 import {
   hideWindow as hideMainWindow,
@@ -13,7 +13,7 @@ import { quitApp } from '@main/app'
 let tray: Electron.Tray | null
 let isEnableTray: boolean = false
 let themeId: number
-let isShowStatusBar: boolean = false
+let isShowStatusBarLyric: boolean = false
 
 const playerState = {
   empty: false,
@@ -27,9 +27,9 @@ const watchConfigKeys = [
   'desktopLyric.enable',
   'desktopLyric.isLock',
   'desktopLyric.isAlwaysOnTop',
-  'desktopLyric.isShowStatusBar',
   'tray.themeId',
   'tray.enable',
+  'player.isShowStatusBarLyric',
   'common.langId',
 ] satisfies Array<keyof LX.AppSetting>
 
@@ -67,6 +67,8 @@ const messages = {
     unlock_win_lyric: 'Unlock desktop lyrics',
     top_win_lyric: 'Set top lyrics',
     untop_win_lyric: 'Cancel top lyrics',
+    show_statusbar_lyric: 'Show statusbar lyric',
+    hide_statusbar_lyric: 'Hide statusbar lyric',
     exit: 'Exit',
   },
   'zh-cn': {
@@ -84,6 +86,8 @@ const messages = {
     unlock_win_lyric: '解锁桌面歌词',
     top_win_lyric: '置顶歌词',
     untop_win_lyric: '取消置顶',
+    show_statusbar_lyric: '显示状态栏歌词',
+    hide_statusbar_lyric: '隐藏状态栏歌词',
     exit: '退出',
   },
   'zh-tw': {
@@ -101,6 +105,8 @@ const messages = {
     unlock_win_lyric: '解鎖桌面歌詞',
     top_win_lyric: '置頂歌詞',
     untop_win_lyric: '取消置頂',
+    show_statusbar_lyric: '顯示狀態列歌詞',
+    hide_statusbar_lyric: '隱藏狀態列歌詞',
     exit: '退出',
   },
 } as const
@@ -126,7 +132,7 @@ const getIconPath = (id: number) => {
 
 export const createTray = () => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  if ((tray && !tray.isDestroyed())) return
+  if ((tray && !tray.isDestroyed()) || !global.lx.appSetting['tray.enable']) return
 
   // 托盘
   tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
@@ -143,12 +149,12 @@ export const destroyTray = () => {
   if (!tray) return
   tray.destroy()
   isEnableTray = false
-  isShowStatusBar = false
+  isShowStatusBarLyric = false
   tray = null
 }
 
-const handleUpdateConfig = (config: any) => {
-  global.lx.event_app.update_config(config)
+const handleUpdateConfig = (setting: Partial<LX.AppSetting>) => {
+  global.lx.event_app.update_config(setting)
 }
 
 const createPlayerMenu = () => {
@@ -234,6 +240,22 @@ export const createMenu = () => {
           handleUpdateConfig({ 'desktopLyric.isAlwaysOnTop': true })
         },
       })
+  if (isMac) {
+    menu.push({ type: 'separator' })
+    menu.push(isShowStatusBarLyric
+      ? {
+          label: i18n.getMessage('hide_statusbar_lyric'),
+          click() {
+            handleUpdateConfig({ 'player.isShowStatusBarLyric': false })
+          },
+        }
+      : {
+          label: i18n.getMessage('show_statusbar_lyric'),
+          click() {
+            handleUpdateConfig({ 'player.isShowStatusBarLyric': true })
+          },
+        })
+  }
   menu.push({ type: 'separator' })
   if (isExistMainWindow()) {
     const isShow = isShowMainWindow()
@@ -266,15 +288,28 @@ export const setTrayImage = (themeId: number) => {
   tray.setImage(nativeImage.createFromPath(getIconPath(themeId)))
 }
 
+const setLyric = (lyricLineText?: string) => {
+  if (isShowStatusBarLyric && tray && lyricLineText != null) {
+    tray.setTitle(lyricLineText)
+  }
+}
+
 const init = () => {
   if (themeId != global.lx.appSetting['tray.themeId']) {
     themeId = global.lx.appSetting['tray.themeId']
     setTrayImage(themeId)
   }
-  if (isEnableTray !== global.lx.appSetting['tray.enable'] || isShowStatusBar !== global.lx.appSetting['desktopLyric.isShowStatusBar']) {
+  if (isEnableTray !== global.lx.appSetting['tray.enable']) {
     isEnableTray = global.lx.appSetting['tray.enable']
-    isShowStatusBar = global.lx.appSetting['desktopLyric.isShowStatusBar']
-    global.lx.appSetting['tray.enable'] || global.lx.appSetting['desktopLyric.isShowStatusBar'] ? createTray() : destroyTray()
+    global.lx.appSetting['tray.enable'] ? createTray() : destroyTray()
+  }
+  if (isShowStatusBarLyric !== global.lx.appSetting['player.isShowStatusBarLyric']) {
+    isShowStatusBarLyric = global.lx.appSetting['player.isShowStatusBarLyric']
+    if (isShowStatusBarLyric) {
+      setLyric(global.lx.player_status.lyricLineText)
+    } else {
+      tray?.setTitle('')
+    }
   }
   createMenu()
 }
@@ -321,29 +356,32 @@ export default () => {
         case 'paused':
           playerState.play = false
           playerState.empty &&= false
+          setLyric('')
           break
         case 'error':
           playerState.play = false
           playerState.empty &&= false
+          setLyric('')
           break
         case 'playing':
           playerState.play = true
           playerState.empty &&= false
+          setLyric(global.lx.player_status.lyricLineText)
           break
         case 'stoped':
           playerState.play &&= false
           playerState.empty = true
+          setLyric('')
           break
       }
       updated = true
+    } else {
+      setLyric(status.lyricLineText)
     }
     if (status.collect != null) {
       playerState.collect = status.collect
       updated = true
     }
     if (updated) init()
-    if (tray && isShowStatusBar && status.lyricLineText) {
-      tray.setTitle(status.lyricLineText)
-    }
   })
 }

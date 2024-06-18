@@ -53,7 +53,6 @@ export const watchConfigKeys = [
   'desktopLyric.isAlwaysOnTop',
   'desktopLyric.isAlwaysOnTopLoop',
   'desktopLyric.isShowTaskbar',
-  'desktopLyric.isShowStatusBar',
   'desktopLyric.audioVisualization',
   'desktopLyric.width',
   'desktopLyric.height',
