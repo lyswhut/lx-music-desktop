@@ -526,6 +526,7 @@
   "setting__play_power_save_blocker": "播放歌曲時阻止電腦休眠",
   "setting__play_save_play_time": "記住播放進度",
   "setting__play_startup_auto_play": "啟動軟體後自動播放音樂",
+  "setting__play_statusbar_lyric": "在狀態列顯示歌詞（需要啟用托盤）",
   "setting__play_task_bar": "在工作列上顯示目前歌曲播放進度",
   "setting__play_timeout": "定時暫停",
   "setting__player_audio_visualization_tip": "自訂音訊輸出設備與音訊視覺化功能會衝突，啟用了音訊視覺化後音訊輸出設備將會被重設為預設的輸出設備，目前此問題暫無法解決，是否仍要開啟？",

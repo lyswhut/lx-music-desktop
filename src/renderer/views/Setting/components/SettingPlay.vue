@@ -21,6 +21,8 @@ dd
     base-checkbox(id="setting_player_lyric_play_lxlrc" :model-value="appSetting['player.isPlayLxlrc']" :label="$t('setting__play_lyric_lxlrc')" @update:model-value="updateSetting({'player.isPlayLxlrc': $event})")
   .gap-top
     base-checkbox(id="setting_player_showTaskProgess" :model-value="appSetting['player.isShowTaskProgess']" :label="$t('setting__play_task_bar')" @update:model-value="updateSetting({'player.isShowTaskProgess': $event})")
+  .gap-top(v-if="isMac")
+    base-checkbox(id="setting_player_showStatusBarLyric" :model-value="appSetting['player.isShowStatusBarLyric']" :label="$t('setting__play_statusbar_lyric')" @update:model-value="updateSetting({'player.isShowStatusBarLyric': $event})")
   .gap-top
     base-checkbox(id="setting_player_isMaxOutputChannelCount" :model-value="isMaxOutputChannelCount" :label="$t('setting__play_max_output_channel_count')" @update:model-value="handleUpdateMaxOutputChannelCount")
   .gap-top
@@ -49,6 +51,7 @@ import { appSetting, saveMediaDeviceId, updateSetting } from '@renderer/store/se
 import { setPowerSaveBlocker } from '@renderer/core/player/utils'
 import { isPlay } from '@renderer/store/player/state'
 import { TRY_QUALITYS_LIST } from '@renderer/core/music/utils'
+import { isMac } from '@common/utils'
 
 
 export default {
@@ -140,6 +143,7 @@ export default {
       isMaxOutputChannelCount,
       handleUpdateMaxOutputChannelCount,
       playQualityList,
+      isMac,
     }
   },
 }

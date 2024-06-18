@@ -526,6 +526,7 @@
   "setting__play_power_save_blocker": "播放歌曲时阻止电脑休眠",
   "setting__play_save_play_time": "记住播放进度",
   "setting__play_startup_auto_play": "启动软件后自动播放音乐",
+  "setting__play_statusbar_lyric": "在状态栏显示歌词（需要启用托盘）",
   "setting__play_task_bar": "在任务栏上显示当前歌曲播放进度",
   "setting__play_timeout": "定时暂停",
   "setting__player_audio_visualization_tip": "自定义音频输出设备与音频可视化功能会冲突，启用了音频可视化后音频输出设备将会被重置为默认的输出设备，目前此问题暂无法解决，是否仍要开启？",

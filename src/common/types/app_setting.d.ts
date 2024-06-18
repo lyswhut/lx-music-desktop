@@ -98,6 +98,12 @@ declare global {
        */
       'player.isShowTaskProgess': boolean
 
+
+      /**
+       * 是否将歌词显示在状态栏
+       */
+      'player.isShowStatusBarLyric': boolean
+
       /**
        * 音量大小
        */
