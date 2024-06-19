@@ -225,15 +225,15 @@ export default class LinePlayer {
     this._init()
   }
 
-  setAutoPause(autoPause) {
-    if (autoPause) {
-      timeoutTools.nextTick = window.requestAnimationFrame.bind(window)
-      timeoutTools.cancelNextTick = window.cancelAnimationFrame.bind(window)
-    } else {
+  setDisabledAutoPause(disabledAutoPause) {
+    if (disabledAutoPause) {
       timeoutTools.nextTick = (handler) => {
         return setTimeout(handler, 20)
       }
       timeoutTools.cancelNextTick = clearTimeout.bind(global)
+    } else {
+      timeoutTools.nextTick = window.requestAnimationFrame.bind(window)
+      timeoutTools.cancelNextTick = window.cancelAnimationFrame.bind(window)
     }
   }
 }

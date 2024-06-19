@@ -186,8 +186,18 @@ export const setLyric = () => {
   }
 }
 
-export const setAutoPause = (autoPause: boolean) => {
-  lrc.setAutoPause(autoPause)
+export const setDisabledAutoPause = (disabledAutoPause: boolean) => {
+  lrc.setDisabledAutoPause(disabledAutoPause)
+}
+
+let sources = new Map<string, boolean>()
+let prevDisabled = false
+export const setDisableAutoPauseBySource = (disabled: boolean, source: string) => {
+  sources.set(source, disabled)
+  const currentDisabled = Array.from(sources.values()).some(e => e)
+  if (prevDisabled == currentDisabled) return
+  prevDisabled = currentDisabled
+  setDisabledAutoPause(currentDisabled)
 }
 
 
