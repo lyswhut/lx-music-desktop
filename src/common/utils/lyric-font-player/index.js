@@ -228,7 +228,7 @@ export default class Lyric {
     } else this.playingLineNum = 0
   }
 
-  setAutoPause(autoPause) {
-    this.linePlayer.setAutoPause(autoPause)
+  setDisabledAutoPause(autoPause) {
+    this.linePlayer.setDisabledAutoPause(autoPause)
   }
 }
