@@ -11,8 +11,8 @@ import Event from './Event'
 // }
 
 export class AppEvent extends Event {
-  configUpdate() {
-    this.emit('configUpdate')
+  configUpdate(setting: Partial<LX.AppSetting>) {
+    this.emit('configUpdate', setting)
   }
 
   focus() {

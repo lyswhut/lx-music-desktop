@@ -101,7 +101,7 @@ export default () => {
   const rSetConfig = onSettingChanged(({ params: setting }) => {
     // console.log(config)
     mergeSetting(setting)
-    window.app_event.configUpdate()
+    window.app_event.configUpdate(setting)
   })
 
   const rFocus = onFocus(() => {

@@ -1,4 +1,3 @@
-import { watch } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { setDisableAutoPauseBySource } from '@renderer/core/lyric'
 
@@ -6,8 +5,11 @@ export default () => {
   const handleEnable = (enable: boolean) => {
     setDisableAutoPauseBySource(enable, 'statusBarLyric')
   }
-  watch(() => appSetting['player.isShowStatusBarLyric'], enable => {
-    handleEnable(enable)
+
+  window.app_event.on('configUpdate', (setting) => {
+    if (setting['player.isShowStatusBarLyric'] != null) {
+      handleEnable(setting['player.isShowStatusBarLyric'])
+    }
   })
 
   return async() => {

@@ -106,18 +106,17 @@ const macOptions = {
   },
   dmg: {
     window: {
-      width: 600,
-      height: 400,
+      width: 530,
+      height: 380,
     },
     contents: [
       {
-        x: 106,
-        y: 252,
-        name: 'LX Music',
+        x: 140,
+        y: 200,
       },
       {
-        x: 490,
-        y: 252,
+        x: 390,
+        y: 200,
         type: 'link',
         path: '/Applications',
       },

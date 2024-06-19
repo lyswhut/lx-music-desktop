@@ -20,11 +20,7 @@ export default () => {
       openAPI.address = ''
       openAPI.message = error.message
     }).finally(() => {
-      if (openAPI.address) {
-        setDisableAutoPauseBySource(true, 'openAPI')
-      } else {
-        setDisableAutoPauseBySource(false, 'openAPI')
-      }
+      setDisableAutoPauseBySource(!!openAPI.address, 'openAPI')
     })
   }
   watch(() => appSetting['openAPI.enable'], enable => {
