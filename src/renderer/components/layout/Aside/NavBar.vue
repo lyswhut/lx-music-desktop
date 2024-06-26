@@ -1,82 +1,94 @@
 <template>
-  <div :class="$style.menu">
+  <div ref="dom_menu" :class="$style.menu">
     <ul :class="$style.list" role="toolbar">
       <li v-for="item in menus" :key="item.to" :class="$style.navItem" role="presentation">
         <router-link :class="[$style.link, {[$style.active]: $route.meta.name == item.name}]" role="tab" :aria-selected="$route.meta.name == item.name" :to="item.to" :aria-label="item.tips">
-          <div :class="$style.icon">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" space="preserve">
-              <use :xlink:href="item.icon" />
-            </svg>
-          </div>
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" :height="item.size" :width="item.size" space="preserve">
+            <use :xlink:href="item.icon" />
+          </svg>
         </router-link>
       </li>
     </ul>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { appSetting } from '@renderer/store/setting'
+import { useI18n } from '@root/lang'
+import { ref, computed } from '@common/utils/vueTools'
+import { useIconSize } from '@renderer/utils/compositions/useIconSize'
 
 export default {
   name: 'NavBar',
   setup() {
-    return {
-      appSetting,
-    }
-  },
-  computed: {
-    menus() {
+    const t = useI18n()
+    const dom_menu = ref<HTMLElement>()
+    const iconSize = useIconSize(dom_menu, 0.32)
+
+    const menus = computed(() => {
+      const size = iconSize.value
       return [
         {
           to: '/search',
-          tips: this.$t('search'),
+          tips: t('search'),
           icon: '#icon-search-2',
           iconSize: '0 0 425.2 425.2',
+          size,
           name: 'Search',
           enable: true,
         },
         {
           to: '/songList/list',
-          tips: this.$t('song_list'),
+          tips: t('song_list'),
           icon: '#icon-album',
           iconSize: '0 0 425.2 425.2',
+          size,
           name: 'SongList',
           enable: true,
         },
         {
           to: '/leaderboard',
-          tips: this.$t('leaderboard'),
+          tips: t('leaderboard'),
           icon: '#icon-leaderboard',
           iconSize: '0 0 425.22 425.2',
+          size,
           name: 'Leaderboard',
           enable: true,
         },
         {
           to: '/list',
-          tips: this.$t('my_list'),
+          tips: t('my_list'),
           icon: '#icon-love',
           iconSize: '0 0 444.87 391.18',
+          size,
           name: 'List',
           enable: true,
         },
         {
           to: '/download',
-          tips: this.$t('download'),
+          tips: t('download'),
           icon: '#icon-download-2',
           iconSize: '0 0 425.2 425.2',
-          enable: this.appSetting['download.enable'],
+          size,
+          enable: appSetting['download.enable'],
           name: 'Download',
         },
         {
           to: '/setting',
-          tips: this.$t('setting'),
+          tips: t('setting'),
           icon: '#icon-setting',
           iconSize: '0 0 493.23 436.47',
+          size,
           enable: true,
           name: 'Setting',
         },
       ].filter(m => m.enable)
-    },
+    })
+    return {
+      appSetting,
+      menus,
+      dom_menu,
+    }
   },
 }
 </script>
@@ -141,7 +153,7 @@ export default {
   transition-property: background-color, opacity;
   color: var(--color-nav-font);
   cursor: pointer;
-  font-size: 11.5px;
+  // font-size: 11.5px;
   text-align: center;
   outline: none;
   display: flex;
@@ -190,11 +202,11 @@ export default {
   }
 }
 
-.icon {
-  // margin-bottom: 5px;
-  &> svg {
-    width: 32%;
-  }
-}
+// .icon {
+//   // margin-bottom: 5px;
+//   &> svg {
+//     width: 32%;
+//   }
+// }
 
 </style>
