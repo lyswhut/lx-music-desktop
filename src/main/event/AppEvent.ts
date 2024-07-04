@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 
 import { saveAppHotKeyConfig, updateSetting } from '@main/utils'
+import type { BrowserWindow } from 'electron'
 
 export class Event extends EventEmitter {
   // closeAll() {
@@ -69,6 +70,10 @@ export class Event extends EventEmitter {
     this.emit('hot_key_config_update', config)
   }
 
+  main_window_created(win: BrowserWindow) {
+    this.emit('main_window_created', win)
+  }
+
   main_window_ready_to_show() {
     this.emit('main_window_ready_to_show')
   }
@@ -99,6 +104,10 @@ export class Event extends EventEmitter {
 
   main_window_fullscreen(isFullscreen: boolean) {
     this.emit('main_window_fullscreen', isFullscreen)
+  }
+
+  desktop_lyric_window_created(win: BrowserWindow) {
+    this.emit('desktop_lyric_window_created', win)
   }
 }
 

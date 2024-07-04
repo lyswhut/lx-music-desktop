@@ -145,6 +145,7 @@ export const createWindow = () => {
 
   winEvent()
   // browserWindow.webContents.openDevTools()
+  global.lx.event_app.desktop_lyric_window_created(browserWindow)
 }
 export const isExistWindow = (): boolean => !!browserWindow
 

@@ -18,6 +18,53 @@ export const initGlobalData = () => {
     cmdParams: envParams.cmdParams,
     deeplink: envParams.deeplink,
   }
+  global.lx = {
+    inited: false,
+    isSkipTrayQuit: false,
+    // mainWindowClosed: true,
+    event_app: createAppEvent(),
+    event_list: createListEvent(),
+    event_dislike: createDislikeEvent(),
+    appSetting: defaultSetting,
+    worker: createWorkers(),
+    hotKey: {
+      enable: true,
+      config: {
+        local: {
+          enable: false,
+          keys: {},
+        },
+        global: {
+          enable: false,
+          keys: {},
+        },
+      },
+      state: new Map(),
+    },
+    theme: {
+      shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
+      theme: {
+        id: '',
+        name: '',
+        isDark: false,
+        colors: {},
+      },
+    },
+    player_status: {
+      status: 'stoped',
+      name: '',
+      singer: '',
+      albumName: '',
+      picUrl: '',
+      progress: 0,
+      duration: 0,
+      playbackRate: 1,
+      lyricLineText: '',
+      lyricLineAllText: '',
+      lyric: '',
+      collect: false,
+    },
+  }
 
   global.staticPath =
     process.env.NODE_ENV !== 'production'
@@ -209,48 +256,11 @@ const initTheme = () => {
 
 let isInitialized = false
 export const initAppSetting = async() => {
-  if (!global.lx) {
+  if (!global.lx.inited) {
     const config = await initHotKey()
-    global.lx = {
-      isSkipTrayQuit: false,
-      // mainWindowClosed: true,
-      event_app: createAppEvent(),
-      event_list: createListEvent(),
-      event_dislike: createDislikeEvent(),
-      appSetting: defaultSetting,
-      worker: createWorkers(),
-      hotKey: {
-        enable: true,
-        config: {
-          local: config.local,
-          global: config.global,
-        },
-        state: new Map(),
-      },
-      theme: {
-        shouldUseDarkColors: nativeTheme.shouldUseDarkColors,
-        theme: {
-          id: '',
-          name: '',
-          isDark: false,
-          colors: {},
-        },
-      },
-      player_status: {
-        status: 'stoped',
-        name: '',
-        singer: '',
-        albumName: '',
-        picUrl: '',
-        progress: 0,
-        duration: 0,
-        playbackRate: 1,
-        lyricLineText: '',
-        lyricLineAllText: '',
-        lyric: '',
-        collect: false,
-      },
-    }
+    global.lx.hotKey.config.local = config.local
+    global.lx.hotKey.config.global = config.global
+    global.lx.inited = true
   }
 
   if (!isInitialized) {
