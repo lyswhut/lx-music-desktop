@@ -5,6 +5,7 @@ import { type DislikeType, type AppType, type ListType } from '@main/event'
 import { type DBSeriveTypes } from '@main/worker/utils'
 
 interface Lx {
+  inited: boolean
   appSetting: LX.AppSetting
   hotKey: {
     enable: boolean

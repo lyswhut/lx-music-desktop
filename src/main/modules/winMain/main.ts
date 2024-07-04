@@ -117,6 +117,7 @@ export const createWindow = () => {
 
   // global.lx.mainWindowClosed = false
   // browserWindow.webContents.openDevTools()
+  global.lx.event_app.main_window_created(browserWindow)
 }
 
 export const isExistWindow = (): boolean => !!browserWindow
