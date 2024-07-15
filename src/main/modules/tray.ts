@@ -70,6 +70,8 @@ const messages = {
     show_statusbar_lyric: 'Show statusbar lyric',
     hide_statusbar_lyric: 'Hide statusbar lyric',
     exit: 'Exit',
+    music_name: 'Name: ',
+    music_singer: 'Artist: ',
   },
   'zh-cn': {
     collect: '收藏',
@@ -89,6 +91,8 @@ const messages = {
     show_statusbar_lyric: '显示状态栏歌词',
     hide_statusbar_lyric: '隐藏状态栏歌词',
     exit: '退出',
+    music_name: '歌曲名: ',
+    music_singer: '艺术家: ',
   },
   'zh-tw': {
     collect: '收藏',
@@ -108,6 +112,8 @@ const messages = {
     show_statusbar_lyric: '顯示狀態列歌詞',
     hide_statusbar_lyric: '隱藏狀態列歌詞',
     exit: '退出',
+    music_name: '歌曲名: ',
+    music_singer: '藝術家: ',
   },
 } as const
 type Messages = typeof messages
@@ -137,8 +143,8 @@ export const createTray = () => {
   // 托盘
   tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
 
-  tray.setToolTip('LX Music')
-  createMenu()
+  // tray.setToolTip('LX Music')
+  // createMenu()
   tray.setIgnoreDoubleClickEvents(true)
   tray.on('click', () => {
     showMainWindow()
@@ -294,6 +300,22 @@ const setLyric = (lyricLineText?: string) => {
   }
 }
 
+const defaultTip = 'LX Music'
+const setTip = () => {
+  if (!tray) return
+
+  let name = global.lx.player_status.name
+  let tip: string
+  if (name) {
+    if (name.length > 20) name = name.substring(0, 20) + '...'
+    let singer = global.lx.player_status.singer
+    if (singer?.length > 20) singer = singer.substring(0, 20) + '...'
+
+    tip = `${defaultTip}\n${i18n.getMessage('music_name')}${name}${singer ? `\n${i18n.getMessage('music_singer')}${singer}` : ''}`
+  } else tip = defaultTip
+  tray.setToolTip(tip)
+}
+
 const init = () => {
   if (themeId != global.lx.appSetting['tray.themeId']) {
     themeId = global.lx.appSetting['tray.themeId']
@@ -311,6 +333,7 @@ const init = () => {
       tray?.setTitle('')
     }
   }
+  setTip()
   createMenu()
 }
 
@@ -378,6 +401,8 @@ export default () => {
     } else {
       setLyric(status.lyricLineText)
     }
+    if (status.name != null) setTip()
+    if (status.singer != null) setTip()
     if (status.collect != null) {
       playerState.collect = status.collect
       updated = true
