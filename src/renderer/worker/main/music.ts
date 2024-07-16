@@ -4,7 +4,7 @@ import { getLocalMusicFileLyric, getLocalMusicFilePic } from '@renderer/utils/mu
 export const getMusicFilePic = async(filePath: string) => {
   const picture = await getLocalMusicFilePic(filePath)
   if (!picture) return ''
-  return `data:${picture.format};base64,${picture.data.toString('base64')}`
+  return `data:${picture.format};base64,${Buffer.from(picture.data).toString('base64')}`
 }
 
 export const getMusicFileLyric = async(filePath: string): Promise<LX.Music.LyricInfo | null> => {
