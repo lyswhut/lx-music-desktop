@@ -51,7 +51,7 @@ let convolverDynamicsCompressor: DynamicsCompressorNode
 let gainNode: GainNode
 let panner: PannerNode
 let pitchShifterNode: AudioWorkletNode
-let pitchShifterNodePitchFactor: AudioParam
+let pitchShifterNodePitchFactor: AudioParam | null
 let pitchShifterNodeLoadStatus: 'none' | 'loading' | 'unconnect' | 'connected' = 'none'
 let pitchShifterNodeTempValue = 1
 let defaultChannelCount = 2
@@ -119,7 +119,7 @@ const initAdvancedAudioFeatures = () => {
   initConvolver()
   initPanner()
   initGain()
-  // source -> analyser -> biquadFilter -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
+  // source -> analyser -> biquadFilter -> pitchShifter -> [(convolver & convolverSource)->convolverDynamicsCompressor] -> panner -> gain
   mediaSource = audioContext.createMediaElementSource(audio)
   mediaSource.connect(analyser)
   analyser.connect(biquads.get(`hz${freqs[0]}`)!)
@@ -129,7 +129,42 @@ const initAdvancedAudioFeatures = () => {
   convolverDynamicsCompressor.connect(panner)
   panner.connect(gainNode)
   gainNode.connect(audioContext.destination)
+
+  // 音频输出设备改变时刷新 audio node 连接
+  window.app_event.on('playerDeviceChanged', handleMediaListChange)
+
+  // audio.addEventListener('playing', connectAudioNode)
+  // audio.addEventListener('pause', disconnectAudioNode)
+  // audio.addEventListener('waiting', disconnectAudioNode)
+  // audio.addEventListener('emptied', disconnectAudioNode)
+  // if (!audio.paused) connectAudioNode()
 }
+
+const handleMediaListChange = () => {
+  mediaSource.disconnect()
+  mediaSource.connect(analyser)
+}
+
+// let isConnected = true
+// const connectAudioNode = () => {
+//   if (isConnected) return
+//   console.log('connect Node')
+//   mediaSource.connect(analyser)
+//   isConnected = true
+//   if (pitchShifterNodeTempValue == 1 && pitchShifterNodeLoadStatus == 'connected') {
+//     disconnectPitchShifterNode()
+//   }
+// }
+
+// const disconnectAudioNode = () => {
+//   if (!isConnected) return
+//   console.log('disconnect Node')
+//   mediaSource.disconnect()
+//   isConnected = false
+//   if (pitchShifterNodeTempValue == 1 && pitchShifterNodeLoadStatus == 'connected') {
+//     disconnectPitchShifterNode()
+//   }
+// }
 
 export const getAudioContext = () => {
   initAdvancedAudioFeatures()
@@ -140,8 +175,8 @@ let unsubMediaListChangeEvent: (() => void) | null = null
 export const setMaxOutputChannelCount = (enable: boolean) => {
   if (enable) {
     initAdvancedAudioFeatures()
-    audioContext.destination.channelCount = audioContext.destination.maxChannelCount
     audioContext.destination.channelCountMode = 'max'
+    audioContext.destination.channelCount = audioContext.destination.maxChannelCount
     // navigator.mediaDevices.addEventListener('devicechange', handleMediaListChange)
     if (!unsubMediaListChangeEvent) {
       let handleMediaListChange = () => {
@@ -287,7 +322,7 @@ const connectPitchShifterNode = () => {
   // convolverDynamicsCompressor.connect(pitchShifterNode)
   // pitchShifterNode.connect(panner)
   pitchShifterNodeLoadStatus = 'connected'
-  pitchShifterNodePitchFactor.value = pitchShifterNodeTempValue
+  pitchShifterNodePitchFactor!.value = pitchShifterNodeTempValue
 }
 const disconnectPitchShifterNode = () => {
   console.log('disconnect Pitch Shifter Node')
@@ -296,6 +331,7 @@ const disconnectPitchShifterNode = () => {
   lastBiquadFilter.connect(convolver)
   lastBiquadFilter.connect(convolverSourceGainNode)
   pitchShifterNodeLoadStatus = 'unconnect'
+  pitchShifterNodePitchFactor = null
 
   audio!.removeEventListener('playing', connectNode)
   audio!.removeEventListener('pause', disconnectNode)
@@ -337,7 +373,7 @@ export const setPitchShifter = (val: number) => {
     case 'connected':
       // a: 1 = 半音
       // value = 2 ** (a / 12)
-      pitchShifterNodePitchFactor.value = val
+      pitchShifterNodePitchFactor!.value = val
       break
     case 'unconnect':
       connectPitchShifterNode()
