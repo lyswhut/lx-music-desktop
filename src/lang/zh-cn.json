@@ -511,6 +511,7 @@
   "setting__play_detail_font_size_current": "当前字体大小：{size}",
   "setting__play_detail_font_size_reset": "重置",
   "setting__play_detail_font_zoom": "缩放当前正在播放的歌词",
+  "setting__play_detail_lyric_delay_scroll": "延迟歌词滚动",
   "setting__play_detail_lyric_progress": "允许通过歌词调整播放进度",
   "setting__play_lyric_lxlrc": "使用卡拉OK式歌词播放（如果可用，此功能比较耗性能，低配置电脑不建议开启）",
   "setting__play_lyric_roma": "显示歌词罗马音（如果可用）",

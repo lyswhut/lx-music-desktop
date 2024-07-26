@@ -2,6 +2,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from '@common/utils/
 import { throttle, formatPlayTime2 } from '@common/utils/common'
 import { scrollTo } from '@common/utils/renderer'
 import { play } from '@renderer/core/player/action'
+import { appSetting } from '@renderer/store/setting'
 // import { player as eventPlayerNames } from '@renderer/event/names'
 
 export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offset }) => {
@@ -192,10 +193,14 @@ export default ({ isPlay, lyric, playProgress, isShowLyricProgressSetting, offse
     isSetedLines &&= false
     if (oldLine == null || line - oldLine != 1) return handleScrollLrc()
 
-    delayScrollTimeout = setTimeout(() => {
-      delayScrollTimeout = null
-      handleScrollLrc(600)
-    }, 600)
+    if (appSetting['playDetail.isDelayScroll']) {
+      delayScrollTimeout = setTimeout(() => {
+        delayScrollTimeout = null
+        handleScrollLrc(600)
+      }, 600)
+    } else {
+      handleScrollLrc()
+    }
   }
 
   watch(() => lyric.lines, initLrc)

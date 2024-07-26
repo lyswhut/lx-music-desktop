@@ -511,6 +511,7 @@
   "setting__play_detail_font_size_current": "Current font size: {size}",
   "setting__play_detail_font_size_reset": "Reset",
   "setting__play_detail_font_zoom": "Zoom the currently playing lyrics",
+  "setting__play_detail_lyric_delay_scroll": "Delayed lyrics scrolling",
   "setting__play_detail_lyric_progress": "Allows to adjust playback progress by lyrics",
   "setting__play_lyric_lxlrc": "Use karaoke-style lyrics to play (if available, this function consumes more performance, and it is not recommended to enable it on computers with low configuration)",
   "setting__play_lyric_roma": "Show lyrics roman",
