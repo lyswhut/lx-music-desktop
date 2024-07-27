@@ -9,13 +9,13 @@ export const setUserApi = async(apiId: string) => {
   if (prevId == apiId) return
   prevId = apiId
   if (window.lx.apiInitPromise[1]) {
-    const { promise, resolve } = Promise.withResolvers<boolean>()
-    window.lx.apiInitPromise[0] = promise
-    window.lx.apiInitPromise[1] = false
-    window.lx.apiInitPromise[2] = (result: boolean) => {
-      window.lx.apiInitPromise[1] = true
-      resolve(result)
-    }
+    window.lx.apiInitPromise[0] = new Promise<boolean>(resolve => {
+      window.lx.apiInitPromise[1] = false
+      window.lx.apiInitPromise[2] = (result: boolean) => {
+        window.lx.apiInitPromise[1] = true
+        resolve(result)
+      }
+    })
   }
 
   if (/^user_api/.test(apiId)) {
