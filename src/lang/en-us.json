@@ -142,6 +142,7 @@
   "list_update_modal__title": "List update management",
   "list_update_modal__update": "Sync",
   "lists__add_local_file_desc": "Select song file",
+  "lists__dislike_music_singer_tip": "Do you really not like {singer}'s {name}?",
   "lists__dislike_music_tip": "Do you really dislike {name}?",
   "lists__duplicate": "Duplicate song",
   "lists__export": "Export",

@@ -142,6 +142,7 @@
   "list_update_modal__title": "列表更新管理",
   "list_update_modal__update": "立即更新",
   "lists__add_local_file_desc": "选择歌曲文件",
+  "lists__dislike_music_singer_tip": "你真的不喜欢 {singer} 的 {name} 吗？",
   "lists__dislike_music_tip": "你真的不喜欢 {name} 吗？",
   "lists__duplicate": "重复歌曲",
   "lists__export": "导出",

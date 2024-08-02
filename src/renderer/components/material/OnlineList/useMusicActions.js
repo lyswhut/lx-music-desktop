@@ -33,7 +33,7 @@ export default ({ props }) => {
   const handleDislikeMusic = async(index) => {
     const minfo = props.list[index]
     const confirm = await dialog.confirm({
-      message: t('lists__dislike_music_tip', { name: minfo.name }),
+      message: minfo.singer ? t('lists__dislike_music_singer_tip', { name: minfo.name, singer: minfo.singer }) : t('lists__dislike_music_tip', { name: minfo.name }),
       cancelButtonText: t('cancel_button_text_2'),
       confirmButtonText: t('confirm_button_text'),
     })
