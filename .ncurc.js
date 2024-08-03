@@ -11,7 +11,6 @@ module.exports = {
     '@types/ws',
     'eslint',
     'electron-debug',
-    'better-sqlite3',
     // 'eslint-config-standard-with-typescript',
     // 'typescript', // https://github.com/microsoft/TypeScript/pull/54567
   ],
