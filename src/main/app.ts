@@ -10,7 +10,7 @@ import { createAppEvent, createDislikeEvent, createListEvent } from '@main/event
 import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
 import { migrateDBData } from './utils/migrate'
-import { encodePath, openDirInExplorer } from '@common/utils/electron'
+import { openDirInExplorer } from '@common/utils/electron'
 
 export const initGlobalData = () => {
   const envParams = parseEnvParams()
@@ -69,7 +69,7 @@ export const initGlobalData = () => {
   global.staticPath =
     process.env.NODE_ENV !== 'production'
       ? webpackStaticPath
-      : path.join(encodePath(__dirname), 'static')
+      : path.join(__dirname, 'static')
 }
 
 export const initSingleInstanceHandle = () => {
