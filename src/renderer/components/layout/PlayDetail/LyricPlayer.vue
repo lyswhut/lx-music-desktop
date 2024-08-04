@@ -302,7 +302,7 @@ export default {
     position: absolute;
     right: 30px;
     top: -14px;
-    line-height: 1;
+    line-height: 1.2;
     font-size: 12px;
     color: var(--color-primary-dark-100);
     opacity: .7;
