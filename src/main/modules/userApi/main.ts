@@ -3,7 +3,6 @@ import { BrowserWindow } from 'electron'
 import fs from 'fs'
 import path from 'node:path'
 import { openDevTools as handleOpenDevTools } from '@main/utils'
-import { encodePath } from '@common/utils/electron'
 import USER_API_RENDERER_EVENT_NAME from './rendererEvent/name'
 import { getScript } from './utils'
 
@@ -58,15 +57,15 @@ const winEvent = () => {
 
 export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
   await closeWindow()
-  dir ??= process.env.NODE_ENV !== 'production' ? webpackUserApiPath : path.join(encodePath(__dirname), 'userApi')
+  dir ??= process.env.NODE_ENV !== 'production' ? webpackUserApiPath : path.join(__dirname, 'userApi')
 
   if (!html) {
     // eslint-disable-next-line require-atomic-updates
     html = await fs.promises.readFile(path.join(dir, 'renderer/user-api.html'), 'utf8')
   }
   const preloadUrl = process.env.NODE_ENV !== 'production'
-    ? `${path.join(encodePath(__dirname), '../dist/user-api-preload.js')}`
-    : `${path.join(encodePath(__dirname), 'user-api-preload.js')}`
+    ? `${path.join(__dirname, '../dist/user-api-preload.js')}`
+    : `${path.join(__dirname, 'user-api-preload.js')}`
   // console.log(preloadUrl)
 
   /**
