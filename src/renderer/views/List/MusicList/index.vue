@@ -364,7 +364,7 @@ export default {
       color: var(--color-primary);
       padding: 5px;
       font-size: .8em;
-      line-height: 1;
+      line-height: 1.2;
       opacity: .75;
       display: inline-block;
     }

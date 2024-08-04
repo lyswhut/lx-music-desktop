@@ -111,7 +111,7 @@ const updatePreservesPitch = (enabled) => {
   align-items: center;
   font-size: 13px;
   span {
-    line-height: 1;
+    line-height: 1.2;
   }
 }
 .control {

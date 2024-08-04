@@ -104,7 +104,7 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .btns {
-  line-height: 1;
+  line-height: 1.2;
 
   button {
     background-color: transparent;

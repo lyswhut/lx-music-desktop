@@ -126,7 +126,7 @@ export default {
       // border-radius: .3125rem;
       transition: 0.4s ease;
       transition-property: all;
-      line-height: 1;
+      line-height: 1.2;
       display: flex;
       // border-right: none;
       svg {
@@ -136,7 +136,7 @@ export default {
       button {
         display: block;
         padding: 7px 12px;
-        line-height: 1;
+        line-height: 1.2;
         color: var(--color-button-font);
         font-size: 13px;
       }

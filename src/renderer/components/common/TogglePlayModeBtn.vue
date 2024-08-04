@@ -138,9 +138,6 @@ const toggleMode = (mode) => {
   flex-flow: row nowrap;
   font-size: 14px;
   gap: 10px;
-  label span {
-    line-height: 1;
-  }
 }
 
 
