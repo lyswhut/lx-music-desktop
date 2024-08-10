@@ -406,6 +406,8 @@
   "setting__download_lyric_format_gbk": "GBK (Try to select this format when Chinese garbled characters appear on some devices)",
   "setting__download_lyric_format_utf8": "UTF-8",
   "setting__download_lyric_title": "Select whether to download the lyrics file",
+  "setting__download_max_num": "Number of simultaneous download tasks (setting too high may result in IP being blocked, depending on the audio source)",
+  "setting__download_max_num_tip": "Excessively large number of simultaneous downloads may cause your IP to be blocked by the audio source. Do you confirm the modification?",
   "setting__download_name": "Music file naming",
   "setting__download_name1": "Title - Artist",
   "setting__download_name2": "Artist - Title",

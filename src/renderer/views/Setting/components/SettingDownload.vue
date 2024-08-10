@@ -13,6 +13,13 @@ dd(:aria-label="$t('setting__download_path_title')")
       span.auto-hidden.hover(:class="$style.savePath" :aria-label="$t('setting__download_path_open_label')" @click="openDirInExplorer(appSetting['download.savePath'])") {{ appSetting['download.savePath'] }}
     .p
       base-btn.btn(min @click="handleChangeSavePath") {{ $t('setting__download_path_change_btn') }}
+
+dd
+  h3#download_max_num {{ $t('setting__download_max_num') }}
+  div
+    p
+      base-selection.gap-left(:class="$style.selectWidth" :model-value="appSetting['download.maxDownloadNum']" :list="maxNums" item-key="id" item-name="id" @change="handleUpdateMaxNum")
+
 dd
   h3#download_use_other_source
     | {{ $t('setting__download_use_other_source') }}
@@ -59,6 +66,7 @@ import { computed } from '@common/utils/vueTools'
 import { showSelectDialog, openDirInExplorer } from '@renderer/utils/ipc'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, updateSetting } from '@renderer/store/setting'
+import { dialog } from '@renderer/plugins/Dialog'
 
 export default {
   name: 'SettingDownload',
@@ -74,6 +82,14 @@ export default {
         if (result.canceled) return
         updateSetting({ 'download.savePath': result.filePaths[0] })
       })
+    }
+
+    const maxNums = new Array(6).fill(null).map((_, i) => ({ id: i + 1 }))
+    const handleUpdateMaxNum = async({ id }) => {
+      if (id > 3) {
+        if (!await dialog.confirm(window.i18n.t('setting__download_max_num_tip'))) return
+      }
+      updateSetting({ 'download.maxDownloadNum': id })
     }
 
     const musicNames = computed(() => {
@@ -98,6 +114,8 @@ export default {
       handleChangeSavePath,
       musicNames,
       lrcFormatList,
+      maxNums,
+      handleUpdateMaxNum,
     }
   },
 }
@@ -107,4 +125,7 @@ export default {
 // .savePath {
 //   font-size: 12px;
 // }
+.selectWidth {
+  width: 60px;
+}
 </style>
