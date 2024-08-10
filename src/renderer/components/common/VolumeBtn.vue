@@ -1,6 +1,6 @@
 <template>
   <material-popup-btn :class="$style.btnContent">
-    <button :class="$style.btn" :aria-label="isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`">
+    <button :class="$style.btn" :aria-label="isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`" @wheel="handleWheel">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
         <use :xlink:href="icon" />
       </svg>
@@ -29,6 +29,10 @@ import { computed } from '@common/utils/vueTools'
 // import { musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { saveVolumeIsMute } from '@renderer/store/setting'
 import { volume, isMute } from '@renderer/store/player/volume'
+
+const handleWheel = (event) => {
+  window.app_event.setVolume(Math.round(volume.value * 100 + (-event.deltaY / 100 * 2)) / 100)
+}
 
 const handleUpdateVolume = (val) => {
   window.app_event.setVolume(val)
