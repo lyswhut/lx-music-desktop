@@ -406,6 +406,8 @@
   "setting__download_lyric_format_gbk": "GBK（在某些设备上出现中文乱码时可尝试选择此格式）",
   "setting__download_lyric_format_utf8": "UTF-8",
   "setting__download_lyric_title": "是否同时下载歌词文件",
+  "setting__download_max_num": "同时下载任务数（设置过大可能会导致 IP 被封，这取决于音源）",
+  "setting__download_max_num_tip": "过大的同时下载数量可能会导致你的 IP 被音源封禁，是否确认修改？",
   "setting__download_name": "文件命名方式",
   "setting__download_name1": "歌名 - 歌手",
   "setting__download_name2": "歌手 - 歌名",
