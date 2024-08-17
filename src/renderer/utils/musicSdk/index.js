@@ -59,7 +59,7 @@ export default {
   },
   supportQuality,
 
-  async searchMusic({ name, singer, source: s, limit = 10 }) {
+  async searchMusic({ name, singer, source: s, limit = 25 }) {
     const trimStr = str => typeof str == 'string' ? str.trim() : str
     const musicName = trimStr(name)
     const tasks = []

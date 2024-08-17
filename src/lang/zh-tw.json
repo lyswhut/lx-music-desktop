@@ -113,7 +113,7 @@
   "list__source_detail": "歌曲詳情頁",
   "list__start": "開始任務",
   "list__sync": "更新",
-  "list__toggle_source": "手動換源",
+  "list__toggle_source": "歌曲換源",
   "list_add__btn_title": "把該歌曲加到 {name}",
   "list_add__multiple_btn_title": "把這些歌曲加到 {name}",
   "list_add__multiple_title_add": "新增已選取的 {num} 首歌曲到...",
