@@ -1,5 +1,6 @@
 import { checkPath, joinPath, extname, basename, readFile, getFileStats } from '@common/utils/nodejs'
 import { formatPlayTime } from '@common/utils/common'
+import type { IComment } from 'music-metadata/lib/type'
 
 export const checkDownloadFileAvailable = async(musicInfo: LX.Download.ListItem, savePath: string): Promise<boolean> => {
   return musicInfo.isComplate && !/\.ape$/.test(musicInfo.metadata.fileName) &&
@@ -188,7 +189,10 @@ export const getLocalMusicFileLyric = async(path: string): Promise<string | null
   // console.log(metadata)
   for (const info of Object.values(metadata.native)) {
     const ust = info.find(i => i.id == 'USLT')
-    if (ust && ust.value.text.length > 10) return ust.value.text
+    if (ust) {
+      const value = ust.value as IComment
+      if (value.text && value.text.length > 10) return value.text
+    }
   }
   return null
 }
