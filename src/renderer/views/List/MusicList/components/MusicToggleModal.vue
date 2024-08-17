@@ -1,16 +1,16 @@
 <template>
-  <material-modal :show="show" teleport="#view" bg-close @close="handleClose">
+  <material-modal :show="show" teleport="#view" bg-close height="100%" @close="handleClose">
     <main :class="$style.main">
       <base-tab v-model="source" :class="$style.tab" :list="tabs" />
       <div class="scroll" :class="$style.list">
         <template v-if="list.length">
-          <div v-for="(item, index) in list" :key="item.id" :class="$style.listItem">
-            <div :class="$style.num">{{ index + 1 }}</div>
+          <div v-for="item in list" :key="item.id" :class="$style.listItem">
+            <!-- <div :class="$style.num">{{ index + 1 }}</div> -->
             <div :class="$style.textContent">
               <h3 :class="$style.text" :aria-label="`${item.name} - ${item.singer}`">{{ item.name }}</h3>
               <h3 v-if="item.meta.albumName" :class="[$style.text, $style.albumName]" :aria-label="item.meta.albumName">
                 {{ item.singer }}
-                <span v-if="item.meta.albumName"> - {{ item.meta.albumName }}</span>
+                <span v-if="item.meta.albumName"> / {{ item.meta.albumName }}</span>
               </h3>
             </div>
             <div :class="$style.label">{{ item.interval }}</div>
@@ -39,7 +39,7 @@
             </div>
             <div :class="$style.singer">
               {{ musicInfo.singer }}
-              <span v-if="musicInfo.meta.albumName"> - {{ musicInfo.meta.albumName }}</span>
+              <span v-if="musicInfo.meta.albumName"> / {{ musicInfo.meta.albumName }}</span>
             </div>
           </h2>
           <template v-if="toggleMusicInfo">
@@ -51,7 +51,7 @@
               </div>
               <div :class="$style.singer">
                 {{ toggleMusicInfo.singer }}
-                <span v-if="toggleMusicInfo.meta.albumName"> - {{ toggleMusicInfo.meta.albumName }}</span>
+                <span v-if="toggleMusicInfo.meta.albumName"> / {{ toggleMusicInfo.meta.albumName }}</span>
               </div>
             </h2>
           </template>
@@ -172,9 +172,14 @@ export default {
   min-height: 0;
   // max-height: 100%;
   // overflow: hidden;
+  height: 100%;
+}
+.tab {
+  flex: none;
 }
 
 .list {
+  flex: auto;
   min-height: 200px;
   min-width: 460px;
   // background-color: @color-search-form-background;
@@ -188,7 +193,7 @@ export default {
     padding: 10px 5px;
     transition: background-color .2s ease;
     line-height: 1.4;
-    height: 100%;
+    // height: 100%;
     // overflow: hidden;
     display: flex;
     flex-flow: row nowrap;
@@ -213,7 +218,6 @@ export default {
   }
   .textContent {
     flex: auto;
-    padding-left: 5px;
     min-width: 0;
     display: flex;
     flex-flow: column nowrap;
@@ -276,11 +280,11 @@ export default {
 
   .noItem {
     position: relative;
-    height: 200px;
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+    height: 100%;
 
     p {
       font-size: 16px;
@@ -290,6 +294,7 @@ export default {
 }
 
 .footer {
+  flex: none;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

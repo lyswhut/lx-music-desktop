@@ -3,6 +3,7 @@ import { ref, nextTick } from '@common/utils/vueTools'
 import { updateListMusics } from '@renderer/store/list/listManage'
 import { playList } from '@renderer/core/player'
 import { getListMusicsFromCache } from '@renderer/store/list/action'
+import { playMusicInfo } from '@renderer/store/player/state'
 
 export default (props, list) => {
   const isShowMusicToggleModal = ref(false)
@@ -37,7 +38,9 @@ export default (props, list) => {
     ])
     const rawInfo = getListMusicsFromCache(props.listId)[index]
     rawInfo.meta.toggleMusicInfo = toggleMusicInfo
-    playList(props.listId, index)
+    if (toggleMusicInfo || (playMusicInfo.listId == props.listId && playMusicInfo.musicInfo?.id == rawInfo.id)) {
+      playList(props.listId, index)
+    }
   }
 
   return {
