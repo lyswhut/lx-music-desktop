@@ -23,6 +23,10 @@ import { addDislikeInfo } from '@renderer/core/dislikeList'
 // import { checkMusicFileAvailable } from '@renderer/utils/music'
 
 let gettingUrlId = ''
+const createGettingUrlId = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem) => {
+  const tInfo = 'progress' in musicInfo ? musicInfo.metadata.musicInfo.meta.toggleMusicInfo : musicInfo.meta.toggleMusicInfo
+  return `${musicInfo.id}_${tInfo?.id ?? ''}`
+}
 const createDelayNextTimeout = (delay: number) => {
   let timeout: NodeJS.Timeout | null
   const clearDelayNextTimeout = () => {
@@ -56,7 +60,7 @@ const { addDelayNextTimeout: addLoadTimeout, clearDelayNextTimeout: clearLoadTim
  */
 const diffCurrentMusicInfo = (curMusicInfo: LX.Music.MusicInfo | LX.Download.ListItem): boolean => {
   // return curMusicInfo !== playMusicInfo.musicInfo || isPlay.value
-  return gettingUrlId != curMusicInfo.id || curMusicInfo.id != playMusicInfo.musicInfo?.id || isPlay.value
+  return gettingUrlId != createGettingUrlId(curMusicInfo) || curMusicInfo.id != playMusicInfo.musicInfo?.id || isPlay.value
 }
 
 let cancelDelayRetry: (() => void) | null = null
@@ -87,14 +91,21 @@ const getMusicPlayUrl = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListIt
   if (appSetting['player.autoSkipOnError']) addLoadTimeout()
 
   // const type = getPlayType(appSetting['player.highQuality'], musicInfo)
+  let toggleMusicInfo = ('progress' in musicInfo ? musicInfo.metadata.musicInfo : musicInfo).meta.toggleMusicInfo
 
-  return getMusicUrl({
-    musicInfo,
+  return (toggleMusicInfo ? getMusicUrl({
+    musicInfo: toggleMusicInfo,
     isRefresh,
-    onToggleSource(mInfo) {
-      if (diffCurrentMusicInfo(musicInfo)) return
-      setAllStatus(window.i18n.t('toggle_source_try'))
-    },
+    allowToggleSource: false,
+  }) : Promise.reject(new Error('not found'))).catch(async() => {
+    return getMusicUrl({
+      musicInfo,
+      isRefresh,
+      onToggleSource(mInfo) {
+        if (diffCurrentMusicInfo(musicInfo)) return
+        setAllStatus(window.i18n.t('toggle_source_try'))
+      },
+    })
   }).then(url => {
     if (window.lx.isPlayedStop || diffCurrentMusicInfo(musicInfo)) return null
 
@@ -118,7 +129,7 @@ export const setMusicUrl = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem
   // if (appSetting['player.autoSkipOnError']) addLoadTimeout()
   if (!diffCurrentMusicInfo(musicInfo)) return
   if (cancelDelayRetry) cancelDelayRetry()
-  gettingUrlId = musicInfo.id
+  gettingUrlId = createGettingUrlId(musicInfo)
   void getMusicPlayUrl(musicInfo, isRefresh).then((url) => {
     if (!url) return
     setResource(url)
@@ -458,7 +469,7 @@ export const playPrev = async(isAutoToggle = false): Promise<void> => {
 export const play = () => {
   if (playMusicInfo.musicInfo == null) return
   if (isEmpty()) {
-    if (playMusicInfo.musicInfo.id != gettingUrlId) setMusicUrl(playMusicInfo.musicInfo)
+    if (createGettingUrlId(playMusicInfo.musicInfo) != gettingUrlId) setMusicUrl(playMusicInfo.musicInfo)
     return
   }
   setPlay()

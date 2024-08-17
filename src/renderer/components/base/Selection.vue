@@ -198,7 +198,7 @@ export default {
   // color: var(--color-button-font);
   outline: none;
   transition: background-color @transition-normal;
-  background-color: var(--color-button-font)-background;
+  background-color: transparent;
   box-sizing: border-box;
   .mixin-ellipsis-1;
 

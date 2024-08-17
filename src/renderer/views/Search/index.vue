@@ -1,8 +1,8 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.header">
-      <base-tab v-model="source" :class="$style.tab" :list="sources" @change="handleSourceChange" />
-      <base-tab v-model="searchType" :class="$style.tab" :list="searchTypes" @change="handleTypeChange" />
+      <base-tab v-model="source" :list="sources" @change="handleSourceChange" />
+      <base-tab v-model="searchType" :list="searchTypes" @change="handleTypeChange" />
     </div>
     <div :class="$style.main">
       <song-list-list v-if="searchType == 'songlist'" v-show="searchText" :page="page" :source-id="source" />
