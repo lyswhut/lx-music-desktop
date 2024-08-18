@@ -206,9 +206,8 @@ export const registerListAction = (appSetting: LX.AppSetting, onListChanged: (li
     if (updatedListIds.length) onListChanged(updatedListIds)
   }
   const list_music_update = ({ params: musicInfos }: LX.IpcRendererEventParams<LX.List.ListActionMusicUpdate>) => {
-    listMusicUpdateInfo(musicInfos)
-    // const updatedListIds = listMusicUpdateInfo(musicInfos)
-    // if (updatedListIds.length) onListChanged(updatedListIds)
+    const updatedListIds = listMusicUpdateInfo(musicInfos)
+    if (updatedListIds.length) onListChanged(updatedListIds)
   }
   const list_music_update_position = ({ params: { listId, position, ids } }: LX.IpcRendererEventParams<LX.List.ListActionMusicUpdatePosition>) => {
     void listMusicUpdatePosition(listId, position, ids).then(updatedListIds => {
