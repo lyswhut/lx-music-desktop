@@ -43,14 +43,21 @@ jobs:
   Windows:
     name: Windows
     runs-on: windows-latest
-    env:
-      NPM_CACHE: '%LocalAppData%/npm-cache'
     # needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
 
+      - name: Get npm cache directory
+        shell: pwsh
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $env:GITHUB_ENV
+
+      - name: Show Env
+        run: echo "${{ env.NPM_CACHE }}"
+
       - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
         uses: ./.github/actions/setup
 
       - name: Build src code
@@ -77,14 +84,18 @@ jobs:
   Windows_7:
     name: Windows_7
     runs-on: windows-latest
-    env:
-      NPM_CACHE: '%LocalAppData%/npm-cache'
     # needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v4
 
+      - name: Get npm cache directory
+        shell: pwsh
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $env:GITHUB_ENV
+
       - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
         uses: ./.github/actions/setup
 
       - name: Build src code
@@ -114,8 +125,6 @@ jobs:
   Mac:
     name: Mac
     runs-on: macos-latest
-    env:
-      NPM_CACHE: ~/.npm
     # needs: CheckCode
     steps:
       - name: Check out git repository
@@ -128,7 +137,15 @@ jobs:
           source ~/.venv/bin/activate
           python3 -m pip install setuptools
 
+      - name: Get npm cache directory
+        shell: bash
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $GITHUB_ENV
+
+      - name: Show Env
+        run: echo "${{ env.NPM_CACHE }}"
       - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
         uses: ./.github/actions/setup
 
       - name: Build src code
@@ -152,8 +169,6 @@ jobs:
   Linux:
     name: Linux
     runs-on: ubuntu-latest
-    env:
-      NPM_CACHE: ~/.npm
     # needs: CheckCode
     steps:
       - name: Install package
@@ -162,7 +177,15 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v4
 
+      - name: Get npm cache directory
+        shell: bash
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $GITHUB_ENV
+
+      - name: Show Env
+        run: echo "${{ env.NPM_CACHE }}"
       - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
         uses: ./.github/actions/setup
 
       - name: Build src code

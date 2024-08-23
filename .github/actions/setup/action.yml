@@ -18,8 +18,7 @@ runs:
       id: cache-npm
       uses: actions/cache@v4
       with:
-        path: |
-          ${{ env.NPM_CACHE }}
+        path: ${{ env.NPM_CACHE }}
         key: ${{ runner.os }}-npm-cache-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-npm-cache-
