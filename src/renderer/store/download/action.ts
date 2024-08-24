@@ -177,7 +177,7 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
     }
     void window.lx.worker.download.writeMeta(downloadInfo.metadata.filePath, {
       title: downloadInfo.metadata.musicInfo.name,
-      artist: downloadInfo.metadata.musicInfo.singer,
+      artist: downloadInfo.metadata.musicInfo.singer?.replaceAll('、', ';'),
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
     }, lrcData, getProxy())
