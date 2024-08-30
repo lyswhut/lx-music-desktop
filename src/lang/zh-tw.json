@@ -500,6 +500,7 @@
   "setting__other_resource_cache_tip": "圖片、音訊等緩存，清理後圖片等資源將需要重新下載，不建議清理，軟體會根據磁碟空間動態管理快取大小",
   "setting__other_resource_cache_tip_confirm": "涉及圖片、音訊等緩存，清理後圖片等資源將需要重新下載，不建議清理，軟體會根據磁碟空間動態管理快取大小，是否仍要清理？",
   "setting__other_tray_theme": "托盤圖示樣式",
+  "setting__other_tray_theme_auto": "跟隨系統亮暗主題",
   "setting__other_tray_theme_black": "黑色",
   "setting__other_tray_theme_native": "白色",
   "setting__other_tray_theme_origin": "原色",

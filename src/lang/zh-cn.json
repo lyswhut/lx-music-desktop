@@ -500,6 +500,7 @@
   "setting__other_resource_cache_tip": "图片、音频等缓存，清理后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小",
   "setting__other_resource_cache_tip_confirm": "涉及图片、音频等缓存，清理后图片等资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小，是否仍要清理？",
   "setting__other_tray_theme": "托盘图标样式",
+  "setting__other_tray_theme_auto": "跟随系统亮暗主题",
   "setting__other_tray_theme_black": "黑色",
   "setting__other_tray_theme_native": "白色",
   "setting__other_tray_theme_origin": "原色",

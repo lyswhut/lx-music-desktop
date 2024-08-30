@@ -500,6 +500,7 @@
   "setting__other_resource_cache_tip": "Picture, audio, and other caches. After cleaning, resources such as pictures will need to be downloaded again. It is not recommended to clean up. The software will dynamically manage the cache size according to the disk space.",
   "setting__other_resource_cache_tip_confirm": "Involving the cache of pictures, audios, etc., the pictures and other resources will need to be downloaded again after cleaning. It is not recommended to clean up. The software will dynamically manage the cache size according to the disk space. Do you still need to clean up?",
   "setting__other_tray_theme": "Tray Icon Style",
+  "setting__other_tray_theme_auto": "Follow the system light and dark themes",
   "setting__other_tray_theme_black": "Black Color",
   "setting__other_tray_theme_native": "White",
   "setting__other_tray_theme_origin": "Primary Color",

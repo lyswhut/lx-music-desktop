@@ -9,6 +9,7 @@ import {
   showWindow as showMainWindow,
 } from './winMain'
 import { quitApp } from '@main/app'
+import { TRAY_AUTO_ID } from '@common/constants'
 
 let tray: Electron.Tray | null
 let isEnableTray: boolean = false
@@ -132,7 +133,10 @@ const i18n = {
 }
 
 const getIconPath = (id: number) => {
-  let theme = themeList.find(item => item.id === id) ?? themeList[0]
+  let theme = id == TRAY_AUTO_ID
+    ? global.lx.theme.shouldUseDarkColors
+      ? themeList[0] : themeList[2]
+    : themeList.find(item => item.id === id) ?? themeList[0]
   return path.join(global.staticPath, 'images/tray', theme.fileName + (isWin ? '.ico' : '.png'))
 }
 
@@ -370,6 +374,11 @@ export default () => {
   global.lx.event_app.on('app_inited', () => {
     i18n.setLang(global.lx.appSetting['common.langId'])
     init()
+  })
+
+  global.lx.event_app.on('system_theme_change', () => {
+    if (global.lx.appSetting['tray.themeId'] != TRAY_AUTO_ID) return
+    setTrayImage(global.lx.appSetting['tray.themeId'])
   })
 
   global.lx.event_app.on('player_status', (status) => {
