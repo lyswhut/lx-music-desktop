@@ -77,6 +77,7 @@ import { appSetting, updateSetting } from '@renderer/store/setting'
 import { overwriteListFull } from '@renderer/store/list/listManage'
 import { dislikeRuleCount } from '@renderer/store/dislikeList'
 import DislikeListModal from './DislikeListModal.vue'
+import { TRAY_AUTO_ID } from '@common/constants'
 
 export default {
   name: 'SettingOther',
@@ -91,6 +92,7 @@ export default {
         { id: 0, name: 'native', label: t('setting__other_tray_theme_native') },
         { id: 2, name: 'black', label: t('setting__other_tray_theme_black') },
         { id: 1, name: 'origin', label: t('setting__other_tray_theme_origin') },
+        { id: TRAY_AUTO_ID, name: 'auto', label: t('setting__other_tray_theme_auto') },
       ]
     })
 
