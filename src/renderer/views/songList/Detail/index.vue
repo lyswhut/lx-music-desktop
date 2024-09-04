@@ -206,6 +206,7 @@ export default {
 .songListHeaderMiddle {
   flex: auto;
   padding: 2px 7px;
+  min-width: 0;
   h3 {
     .mixin-ellipsis-1;
     line-height: 1.2;
