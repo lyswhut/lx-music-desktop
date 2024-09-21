@@ -41,7 +41,8 @@ export const removeUserEQPreset = async(id: string) => {
 
 let userConvolutionPresetList: LX.SoundEffect.ConvolutionPreset[] | null = null
 export const getUserConvolutionPresetList = async() => {
-  if (userEqPresetList == null) {
+  if (userConvolutionPresetList == null) {
+    // eslint-disable-next-line require-atomic-updates
     userConvolutionPresetList = reactive(await getUserSoundEffectConvolutionPresetList())
   }
   return userConvolutionPresetList
