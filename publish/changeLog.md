@@ -9,4 +9,4 @@
 
 ### 其他
 
-- 更新 electron 到 v30.4.0
+- 更新 electron 到 v30.5.1

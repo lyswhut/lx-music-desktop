@@ -118,6 +118,8 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
   return intv
 }
 
+export type SortFieldName = 'name' | 'singer' | 'albumName' | 'interval' | 'source'
+export type SortFieldType = 'up' | 'down' | 'random'
 /**
  * 排序歌曲
  * @param list 歌曲列表
@@ -126,7 +128,7 @@ const getIntv = (musicInfo: LX.Music.MusicInfo) => {
  * @param localeId 排序语言
  * @returns
  */
-export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: 'up' | 'down' | 'random', fieldName: 'name' | 'singer' | 'albumName' | 'interval' | 'source', localeId: string) => {
+export const sortListMusicInfo = async(list: LX.Music.MusicInfo[], sortType: SortFieldType, fieldName: SortFieldName, localeId: string) => {
   // console.log(sortType, fieldName, localeId)
   // const locale = new Intl.Locale(localeId)
   switch (sortType) {

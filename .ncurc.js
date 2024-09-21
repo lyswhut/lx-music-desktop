@@ -10,6 +10,7 @@ module.exports = {
     'message2call',
     '@types/ws',
     'eslint',
+    '@types/node',
     'electron-debug',
     // 'eslint-config-standard-with-typescript',
     // 'typescript', // https://github.com/microsoft/TypeScript/pull/54567
@@ -31,5 +32,6 @@ module.exports = {
   //   'electron',
   //   'eslint',
   //   'electron-debug',
+  //   '@types/node',
   // ],
 }

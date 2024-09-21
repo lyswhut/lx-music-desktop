@@ -62,7 +62,7 @@ export const getList = async(source: Source): Promise<string[]> => {
       return setLists(results)
     })
   } else {
-    if (sourceList[source]?.length) return Promise.resolve(sourceList[source]!)
+    if (sourceList[source]?.length) return Promise.resolve(sourceList[source])
     if (!music[source]?.hotSearch) {
       setList(source, [])
       return Promise.resolve([])
