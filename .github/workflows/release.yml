@@ -131,11 +131,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install python3 setuptools
-        run: |
-          mkdir ~/.venv
-          python3 -m venv ~/.venv
-          source ~/.venv/bin/activate
-          python3 -m pip install setuptools
+        run: brew install python-setuptools
 
       - name: Get npm cache directory
         shell: bash
