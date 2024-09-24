@@ -11,7 +11,7 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
         //- div(:class="$style.info")
         div(:class="$style.info")
           img(v-if="musicInfo.pic" :class="$style.img" :src="musicInfo.pic")
-          div.description(:class="$style.description")
+          div.description(:class="['scroll', $style.description]")
             p {{ $t('player__music_name') }}{{ musicInfo.name }}
             p {{ $t('player__music_singer') }}{{ musicInfo.singer }}
             p(v-if="musicInfo.album") {{ $t('player__music_album') }}{{ musicInfo.album }}
@@ -244,11 +244,11 @@ export default {
   flex-flow: column nowrap;
   justify-content: flex-start;
   max-width: 300px;
-
+  min-height: 0;
 }
 .img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 80%;
   min-width: 100%;
   box-shadow: 0 0 6px var(--color-primary-alpha-500);
   border-radius: 6px;
@@ -256,8 +256,9 @@ export default {
 }
 .description {
   max-width: 300px;
-  padding: 15px 0;
-  overflow: hidden;
+  margin-top: 15px;
+  padding-bottom: 15px;
+  min-height: 0;
   p {
     line-height: 1.5;
     font-size: 14px;
