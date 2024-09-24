@@ -46,7 +46,7 @@ export default {
   props: {
     placeholder: {
       type: String,
-      default: 'Find for something...',
+      default: 'Search for something...',
     },
     list: {
       type: Array,
