@@ -31,7 +31,5 @@ export const getMusicFilePic = async(filePath: string) => {
 export const getMusicFileLyric = async(filePath: string): Promise<LX.Music.LyricInfo | null> => {
   const lyric = await getLocalMusicFileLyric(filePath)
   if (!lyric) return null
-  return {
-    lyric,
-  }
+  return lyric
 }
