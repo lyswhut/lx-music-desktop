@@ -64,7 +64,7 @@ const usePlayMusic = () => {
           { key: 'img', types: ['string'], max: 1024 },
           { key: 'albumId', types: ['string', 'number'], max: 64 },
           { key: 'interval', types: ['string'], max: 64 },
-          { key: 'albumName', types: ['string'], max: 64 },
+          { key: 'albumName', types: ['string'], max: 200 },
           { key: 'types', types: ['object'], required: true },
         ], musicInfo)
         break
@@ -78,7 +78,7 @@ const usePlayMusic = () => {
           { key: 'albumId', types: ['string', 'number'], max: 64 },
           { key: 'interval', types: ['string'], max: 64 },
           { key: '_interval', types: ['number'], max: 64 },
-          { key: 'albumName', types: ['string'], max: 64 },
+          { key: 'albumName', types: ['string'], max: 200 },
           { key: 'types', types: ['object'], required: true },
 
           { key: 'hash', types: ['string'], required: true, max: 64 },
@@ -93,7 +93,7 @@ const usePlayMusic = () => {
           { key: 'img', types: ['string'], max: 1024 },
           { key: 'albumId', types: ['string', 'number'], max: 64 },
           { key: 'interval', types: ['string'], max: 64 },
-          { key: 'albumName', types: ['string'], max: 64 },
+          { key: 'albumName', types: ['string'], max: 200 },
           { key: 'types', types: ['object'], required: true },
 
           { key: 'strMediaMid', types: ['string'], required: true, max: 64 },
@@ -109,7 +109,7 @@ const usePlayMusic = () => {
           { key: 'img', types: ['string'], max: 1024 },
           { key: 'albumId', types: ['string', 'number'], max: 64 },
           { key: 'interval', types: ['string'], max: 64 },
-          { key: 'albumName', types: ['string'], max: 64 },
+          { key: 'albumName', types: ['string'], max: 200 },
           { key: 'types', types: ['object'], required: true },
         ], musicInfo)
         break
@@ -122,7 +122,7 @@ const usePlayMusic = () => {
           { key: 'img', types: ['string'], max: 1024 },
           { key: 'albumId', types: ['string', 'number'], max: 64 },
           { key: 'interval', types: ['string'], max: 64 },
-          { key: 'albumName', types: ['string'], max: 64 },
+          { key: 'albumName', types: ['string'], max: 200 },
           { key: 'types', types: ['object'], required: true },
 
           { key: 'copyrightId', types: ['string', 'number'], required: true, max: 64 },
@@ -166,7 +166,7 @@ const useSearchPlayMusic = () => {
     return dataVerify([
       { key: 'name', types: ['string'], required: true, max: 200 },
       { key: 'singer', types: ['string'], max: 200 },
-      { key: 'albumName', types: ['string'], max: 64 },
+      { key: 'albumName', types: ['string'], max: 200 },
       { key: 'interval', types: ['string'], max: 64 },
       { key: 'playLater', types: ['boolean'] },
     ], info)
