@@ -10,6 +10,7 @@ import { onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { playMusicInfo } from '@renderer/store/player/state'
 import { initDislikeInfo, registerRemoteDislikeAction } from '@renderer/core/dislikeList'
+import { registerPlayerAction } from '@renderer/core/player/'
 
 const initPrevPlayInfo = async() => {
   const info = await getPlayInfo()
@@ -34,10 +35,12 @@ export default () => {
 
   let unregister: null | (() => void) = null
   let unregisterDislikeEvent: null | (() => void) = null
+  let unregisterPlayerEvent: null | (() => void) = null
 
   onBeforeUnmount(() => {
     if (unregister) unregister()
     if (unregisterDislikeEvent) unregisterDislikeEvent()
+    if (unregisterPlayerEvent) unregisterPlayerEvent()
   })
 
   return async() => {
@@ -52,6 +55,7 @@ export default () => {
     })
     window.lxData.userLists = await getUserLists() // 获取用户列表
     unregisterDislikeEvent = registerRemoteDislikeAction()
+    unregisterPlayerEvent = registerPlayerAction() // 注册播放器相关操作
     await initDislikeInfo() // 获取不喜欢列表
     await initPrevPlayInfo().catch(err => {
       log.error(err)

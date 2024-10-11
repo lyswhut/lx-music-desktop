@@ -2,6 +2,9 @@ import http from 'node:http'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
+import { mainSend } from '@common/mainIpc'
+import { BrowserWindow } from 'electron'
+import { PLAYER_EVENT_NAME } from '@common/ipcNames'
 
 let status: LX.OpenAPI.Status = {
   status: false,
@@ -65,6 +68,7 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
 
 const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
   playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
+  const browserWindow = BrowserWindow.getFocusedWindow() as BrowserWindow;
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
     let code
@@ -117,6 +121,22 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
       //     </body>
       //   </html>`
       //   break
+      case '/play':
+        code = 200
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        msg = 'OK'
+        mainSend(browserWindow, PLAYER_EVENT_NAME.player_play)
+        break
+
+      case '/pause':
+        code = 200
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        msg = 'OK'
+        mainSend(browserWindow, PLAYER_EVENT_NAME.player_pause)
+        break 
+
       case '/lyric':
         code = 200
         res.setHeader('Content-Type', 'text/plain; charset=utf-8')
