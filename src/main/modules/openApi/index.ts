@@ -137,12 +137,29 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
         mainSend(browserWindow, PLAYER_EVENT_NAME.player_pause)
         break 
 
+      case '/prev':
+        code = 200
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        msg = 'OK'
+        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_prev)
+        break
+
+      case '/next':
+        code = 200
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        msg = 'OK'
+        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_next)
+        break
+
       case '/lyric':
         code = 200
         res.setHeader('Content-Type', 'text/plain; charset=utf-8')
         res.setHeader('Access-Control-Allow-Origin', '*')
         msg = global.lx.player_status.lyric
         break
+        
       case '/subscribe-player-status':
         try {
           handleSubscribePlayerStatus(req, res, query)
