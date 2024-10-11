@@ -1,4 +1,4 @@
-import http from 'node:http'
+import http, { type ServerResponse} from 'node:http'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
@@ -71,113 +71,58 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
   const browserWindow = BrowserWindow.getFocusedWindow() as BrowserWindow;
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
-    let code
-    let msg
+    const setResponse = (res: ServerResponse, code: number, contentType: string, msg: string | object) => {
+      res.setHeader('Content-Type', contentType || 'text/plain; charset=utf-8')
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      res.statusCode = code || 200
+      if (typeof msg === 'object') {
+        res.end(JSON.stringify(msg));
+      } else {
+        res.end(msg);
+      }
+    }
     switch (endUrl) {
       case '/status':
         handleSendStatus(res, query)
         return
-        // case '/test':
-        //   code = 200
-        //   res.setHeader('Content-Type', 'text/html; charset=utf-8')
-        //   msg = `<!DOCTYPE html>
-        //   <html lang="en">
-        //     <head>
-        //       <meta charset="UTF-8" />
-        //       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        //       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        //       <title>Nodejs Server-Sent Events</title>
-        //     </head>
-        //     <body>
-        //       <h1>Hello SSE!</h1>
 
-        //       <h2>List of Server-sent events</h2>
-        //       <ul id="sse-list"></ul>
-
-        //       <script>
-        //         const subscription = new EventSource('/subscribe-player-status');
-
-        //       // Default events
-        //       subscription.addEventListener('open', () => {
-        //           console.log('Connection opened')
-        //       });
-
-      //       subscription.addEventListener('error', (err) => {
-      //           console.error(err)
-      //       });
-      //       subscription.addEventListener('lyricLineText', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('progress', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('name', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('singer', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       </script>
-      //     </body>
-      //   </html>`
-      //   break
       case '/play':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        msg = 'OK'
         mainSend(browserWindow, PLAYER_EVENT_NAME.player_play)
+        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
         break
 
       case '/pause':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        msg = 'OK'
         mainSend(browserWindow, PLAYER_EVENT_NAME.player_pause)
-        break 
-
-      case '/prev':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        msg = 'OK'
-        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_prev)
+        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
         break
 
-      case '/next':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        msg = 'OK'
+      case '/play-prev':
+        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_prev)
+        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
+        break
+
+      case '/play-next':
         mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_next)
+        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
         break
 
       case '/lyric':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        msg = global.lx.player_status.lyric
+        setResponse(res, 200, 'text/plain; charset=utf-8', global.lx.player_status.lyric)
         break
-        
+
       case '/subscribe-player-status':
         try {
           handleSubscribePlayerStatus(req, res, query)
-          return
         } catch (err) {
-          console.log(err)
-          code = 500
-          msg = 'Error'
+          console.error(err)
+          setResponse(res, 500, 'text/plain; charset=utf-8', 'Error')
         }
         break
+
       default:
-        code = 401
-        msg = 'Forbidden'
+        setResponse(res, 401, 'text/plain; charset=utf-8', 'Forbidden')
         break
     }
-    if (!code) return
-    res.writeHead(code)
-    res.end(msg)
   })
   httpServer.on('error', error => {
     console.log(error)
