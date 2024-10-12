@@ -1,10 +1,20 @@
-import http, { type ServerResponse} from 'node:http'
+import http from 'node:http'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
-import { mainSend } from '@common/mainIpc'
-import { BrowserWindow } from 'electron'
-import { PLAYER_EVENT_NAME } from '@common/ipcNames'
+import { sendTaskbarButtonClick } from '@main/modules/winMain'
+
+const sendResponse = (res: http.ServerResponse, code = 200, msg: string | Record<any, unknown> = 'OK', contentType = 'text/plain; charset=utf-8') => {
+  res.writeHead(code, {
+    'Content-Type': contentType,
+    'Access-Control-Allow-Origin': '*',
+  })
+  if (typeof msg === 'object') {
+    res.end(JSON.stringify(msg))
+  } else {
+    res.end(msg)
+  }
+}
 
 let status: LX.OpenAPI.Status = {
   status: false,
@@ -40,10 +50,7 @@ const handleSendStatus = (res: http.ServerResponse<http.IncomingMessage>, query?
   const keys = parseFilter(querystring.parse(query ?? '').filter)
   const resp: Partial<Record<SubscribeKeys, any>> = {}
   for (const k of keys) resp[k] = global.lx.player_status[k]
-  res.setHeader('Content-Type', 'application/json; charset=utf-8')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.writeHead(200)
-  res.end(JSON.stringify(resp))
+  sendResponse(res, 200, resp, 'application/json; charset=utf-8')
 }
 const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>, query?: string) => {
   res.writeHead(200, {
@@ -68,61 +75,89 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
 
 const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
   playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
-  const browserWindow = BrowserWindow.getFocusedWindow() as BrowserWindow;
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
-    const setResponse = (res: ServerResponse, code: number, contentType: string, msg: string | object) => {
-      res.setHeader('Content-Type', contentType || 'text/plain; charset=utf-8')
-      res.setHeader('Access-Control-Allow-Origin', '*')
-      res.statusCode = code || 200
-      if (typeof msg === 'object') {
-        res.end(JSON.stringify(msg));
-      } else {
-        res.end(msg);
-      }
-    }
+    let code = 200
+    let msg = 'OK'
     switch (endUrl) {
       case '/status':
         handleSendStatus(res, query)
         return
+        // case '/test':
+        //   code = 200
+        //   res.setHeader('Content-Type', 'text/html; charset=utf-8')
+        //   msg = `<!DOCTYPE html>
+        //   <html lang="en">
+        //     <head>
+        //       <meta charset="UTF-8" />
+        //       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        //       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        //       <title>Nodejs Server-Sent Events</title>
+        //     </head>
+        //     <body>
+        //       <h1>Hello SSE!</h1>
 
-      case '/play':
-        mainSend(browserWindow, PLAYER_EVENT_NAME.player_play)
-        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
-        break
+        //       <h2>List of Server-sent events</h2>
+        //       <ul id="sse-list"></ul>
 
-      case '/pause':
-        mainSend(browserWindow, PLAYER_EVENT_NAME.player_pause)
-        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
-        break
+        //       <script>
+        //         const subscription = new EventSource('/subscribe-player-status');
 
-      case '/play-prev':
-        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_prev)
-        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
-        break
+        //       // Default events
+        //       subscription.addEventListener('open', () => {
+        //           console.log('Connection opened')
+        //       });
 
-      case '/play-next':
-        mainSend(browserWindow, PLAYER_EVENT_NAME.invoke_play_next)
-        setResponse(res, 200, 'text/plain; charset=utf-8', 'OK')
-        break
-
+      //       subscription.addEventListener('error', (err) => {
+      //           console.error(err)
+      //       });
+      //       subscription.addEventListener('lyricLineText', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('progress', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('name', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       subscription.addEventListener('singer', (event) => {
+      //           console.log(event.data)
+      //       });
+      //       </script>
+      //     </body>
+      //   </html>`
+      //   break
       case '/lyric':
-        setResponse(res, 200, 'text/plain; charset=utf-8', global.lx.player_status.lyric)
+        msg = global.lx.player_status.lyric
         break
-
+      case '/play':
+        sendTaskbarButtonClick('play')
+        break
+      case '/pause':
+        sendTaskbarButtonClick('pause')
+        break
+      case '/skip-next':
+        sendTaskbarButtonClick('next')
+        break
+      case '/skip-prev':
+        sendTaskbarButtonClick('prev')
+        break
       case '/subscribe-player-status':
         try {
           handleSubscribePlayerStatus(req, res, query)
+          return
         } catch (err) {
-          console.error(err)
-          setResponse(res, 500, 'text/plain; charset=utf-8', 'Error')
+          console.log(err)
+          code = 500
+          msg = 'Error'
         }
         break
-
       default:
-        setResponse(res, 401, 'text/plain; charset=utf-8', 'Forbidden')
+        code = 401
+        msg = 'Forbidden'
         break
     }
+    sendResponse(res, code, msg)
   })
   httpServer.on('error', error => {
     console.log(error)
