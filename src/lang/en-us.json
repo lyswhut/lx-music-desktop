@@ -382,7 +382,7 @@
   "setting__desktop_lyric_line_gap_add": "Increase spacing",
   "setting__desktop_lyric_line_gap_dec": "Reduce spacing",
   "setting__desktop_lyric_lock": "Lock lyrics",
-  "setting__desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the main screen",
+  "setting__desktop_lyric_lock_screen": "It is not allowed to drag the lyrics window out of the current screen",
   "setting__desktop_lyric_played_color": "color played",
   "setting__desktop_lyric_reset": "Reset",
   "setting__desktop_lyric_reset_window": "Reset window settings",

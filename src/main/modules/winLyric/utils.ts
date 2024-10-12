@@ -8,6 +8,10 @@ export let minHeight = 50
 //   return bounds
 // }
 
+export const setWorkArea = (workArea: Electron.Rectangle) => {
+  global.envParams.workArea = workArea
+}
+
 /**
  *
  * @param bounds 当前设置
@@ -19,24 +23,21 @@ export const getLyricWindowBounds = (bounds: Electron.Rectangle, { x = 0, y = 0,
   if (h < minHeight) h = minHeight
 
   if (global.lx.appSetting['desktopLyric.isLockScreen']) {
-    if (!global.envParams.workAreaSize) return bounds
-    const maxWinW = global.envParams.workAreaSize.width
-    const maxWinH = global.envParams.workAreaSize.height
+    const workArea = global.envParams.workArea
+    if (!workArea) return bounds
 
-    if (w > maxWinW) w = maxWinW
-    if (h > maxWinH) h = maxWinH
+    const maxWinW = workArea.width
+    const maxWinH = workArea.height
 
-    const maxX = global.envParams.workAreaSize.width - w
-    const maxY = global.envParams.workAreaSize.height - h
+    // 限制宽高不超过工作区域
+    w = Math.min(w, maxWinW)
+    h = Math.min(h, maxWinH)
 
-    x += bounds.x
-    y += bounds.y
+    const maxX = workArea.x + maxWinW - w
+    const maxY = workArea.y + maxWinH - h
 
-    if (x > maxX) x = maxX
-    else if (x < 0) x = 0
-
-    if (y > maxY) y = maxY
-    else if (y < 0) y = 0
+    x = Math.max(workArea.x, Math.min(x + bounds.x, maxX))
+    y = Math.max(workArea.y, Math.min(y + bounds.y, maxY))
   } else {
     y += bounds.y
     x += bounds.x
@@ -97,9 +98,9 @@ export const initWindowSize = (x: LX.AppSetting['desktopLyric.x'], y: LX.AppSett
   if (x == null || y == null) {
     if (width < minWidth) width = minWidth
     if (height < minHeight) height = minHeight
-    if (global.envParams.workAreaSize) {
-      x = global.envParams.workAreaSize.width - width
-      y = global.envParams.workAreaSize.height - height
+    if (global.envParams.workArea) {
+      x = global.envParams.workArea.width - width
+      y = global.envParams.workArea.height - height
     } else {
       x = y = 0
     }

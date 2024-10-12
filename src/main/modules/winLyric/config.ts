@@ -1,7 +1,8 @@
 import { isLinux } from '@common/utils'
 import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
 import { sendConfigChange } from './rendererEvent'
-import { buildLyricConfig, getLyricWindowBounds, initWindowSize, watchConfigKeys } from './utils'
+import { buildLyricConfig, getLyricWindowBounds, initWindowSize, watchConfigKeys, setWorkArea } from './utils'
+import { screen } from 'electron'
 
 let isLock: boolean
 let isEnable: boolean
@@ -53,6 +54,18 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
     }
     if (keys.includes('desktopLyric.isLockScreen') && isLockScreen != global.lx.appSetting['desktopLyric.isLockScreen']) {
       isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
+      const bounds = getBounds()
+      const displays = screen.getAllDisplays()
+      const displayOn = displays.find((display: Electron.Display) => {
+        const { x, y, width, height } = display.bounds
+        return (
+          bounds.x >= x &&
+          bounds.y >= y &&
+          bounds.x < x + width &&
+          bounds.y < y + height
+        )
+      })
+      setWorkArea(displayOn!.workArea || displays[0].workArea)
       if (global.lx.appSetting['desktopLyric.isLockScreen']) {
         setBounds(getLyricWindowBounds(getBounds(), {
           x: 0,

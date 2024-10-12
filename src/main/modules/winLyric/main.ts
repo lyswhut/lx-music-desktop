@@ -87,7 +87,7 @@ const winEvent = () => {
 
 export const createWindow = () => {
   closeWindow()
-  if (!global.envParams.workAreaSize) return
+  if (!global.envParams.workArea) return
   let x = global.lx.appSetting['desktopLyric.x']
   let y = global.lx.appSetting['desktopLyric.y']
   let width = global.lx.appSetting['desktopLyric.width']
@@ -95,7 +95,7 @@ export const createWindow = () => {
   let isAlwaysOnTop = global.lx.appSetting['desktopLyric.isAlwaysOnTop']
   // let isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
   let isShowTaskbar = global.lx.appSetting['desktopLyric.isShowTaskbar']
-  // let { width: screenWidth, height: screenHeight } = global.envParams.workAreaSize
+  // let { width: screenWidth, height: screenHeight } = global.envParams.workArea
   const winSize = initWindowSize(x, y, width, height)
   global.lx.event_app.update_config({
     'desktopLyric.x': winSize.x,

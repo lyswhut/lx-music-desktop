@@ -49,7 +49,7 @@ declare namespace LX {
   interface EnvParams {
     deeplink?: string | null
     cmdParams: CmdParams
-    workAreaSize?: Electron.Size
+    workArea?: Electron.Rectangle
   }
 
   interface HotKey {
