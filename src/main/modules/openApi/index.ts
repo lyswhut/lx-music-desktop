@@ -2,6 +2,19 @@ import http from 'node:http'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
+import { sendTaskbarButtonClick } from '@main/modules/winMain'
+
+const sendResponse = (res: http.ServerResponse, code = 200, msg: string | Record<any, unknown> = 'OK', contentType = 'text/plain; charset=utf-8') => {
+  res.writeHead(code, {
+    'Content-Type': contentType,
+    'Access-Control-Allow-Origin': '*',
+  })
+  if (typeof msg === 'object') {
+    res.end(JSON.stringify(msg))
+  } else {
+    res.end(msg)
+  }
+}
 
 let status: LX.OpenAPI.Status = {
   status: false,
@@ -37,10 +50,7 @@ const handleSendStatus = (res: http.ServerResponse<http.IncomingMessage>, query?
   const keys = parseFilter(querystring.parse(query ?? '').filter)
   const resp: Partial<Record<SubscribeKeys, any>> = {}
   for (const k of keys) resp[k] = global.lx.player_status[k]
-  res.setHeader('Content-Type', 'application/json; charset=utf-8')
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.writeHead(200)
-  res.end(JSON.stringify(resp))
+  sendResponse(res, 200, resp, 'application/json; charset=utf-8')
 }
 const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>, query?: string) => {
   res.writeHead(200, {
@@ -67,8 +77,8 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
   playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
   httpServer = http.createServer((req, res): void => {
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
-    let code
-    let msg
+    let code = 200
+    let msg = 'OK'
     switch (endUrl) {
       case '/status':
         handleSendStatus(res, query)
@@ -118,10 +128,25 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
       //   </html>`
       //   break
       case '/lyric':
-        code = 200
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
-        res.setHeader('Access-Control-Allow-Origin', '*')
         msg = global.lx.player_status.lyric
+        break
+      case '/play':
+        sendTaskbarButtonClick('play')
+        break
+      case '/pause':
+        sendTaskbarButtonClick('pause')
+        break
+      case '/skip-next':
+        sendTaskbarButtonClick('next')
+        break
+      case '/skip-prev':
+        sendTaskbarButtonClick('prev')
+        break
+      case '/collect':
+        sendTaskbarButtonClick('collect')
+        break
+      case '/uncollect':
+        sendTaskbarButtonClick('unCollect')
         break
       case '/subscribe-player-status':
         try {
@@ -138,9 +163,7 @@ const handleStartServer = async(port: number, ip: string) => new Promise<void>((
         msg = 'Forbidden'
         break
     }
-    if (!code) return
-    res.writeHead(code)
-    res.end(msg)
+    sendResponse(res, code, msg)
   })
   httpServer.on('error', error => {
     console.log(error)
