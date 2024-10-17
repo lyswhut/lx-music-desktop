@@ -2,8 +2,8 @@ import { qualityList } from '@renderer/store'
 import { assertApiSupport } from '@renderer/store/utils'
 import musicSdk from '@renderer/utils/musicSdk'
 import {
-  getOtherSource as getOtherSourceFromStore,
-  saveOtherSource as saveOtherSourceFromStore,
+  // getOtherSource as getOtherSourceFromStore,
+  // saveOtherSource as saveOtherSourceFromStore,
   getMusicUrl as getStoreMusicUrl,
   getPlayerLyric as getStoreLyric,
 } from '@renderer/utils/ipc'
@@ -17,10 +17,10 @@ const getOtherSourcePromises = new Map()
 export const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 
 export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, isRefresh = false): Promise<LX.Music.MusicInfoOnline[]> => {
-  if (!isRefresh && musicInfo.id) {
-    const cachedInfo = await getOtherSourceFromStore(musicInfo.id)
-    if (cachedInfo.length) return cachedInfo
-  }
+  // if (!isRefresh && musicInfo.id) {
+  //   const cachedInfo = await getOtherSourceFromStore(musicInfo.id)
+  //   if (cachedInfo.length) return cachedInfo
+  // }
   let key: string
   let searchMusicInfo: {
     name: string
@@ -61,7 +61,7 @@ export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.
       if (timeout) clearTimeout(timeout)
     })
   }).then((otherSource) => {
-    if (otherSource.length) void saveOtherSourceFromStore(musicInfo.id, otherSource)
+    // if (otherSource.length) void saveOtherSourceFromStore(musicInfo.id, otherSource)
     return otherSource
   }).finally(() => {
     if (getOtherSourcePromises.has(key)) getOtherSourcePromises.delete(key)
