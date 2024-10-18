@@ -36,7 +36,7 @@
 
 所用技术栈：
 
-- Electron 15+
+- Electron 30+
 - Vue 3
 
 已支持的平台：
@@ -47,7 +47,7 @@
 
 软件变化请查看：[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)<br>
 软件下载请转到：[发布页面](https://github.com/lyswhut/lx-music-desktop/releases)<br>
-或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>
+~~或者到网盘下载（网盘内有MAC、windows版）：`https://www.lanzoui.com/b0bf2cfa/` 密码：`glqw`（若链接无法打开请百度：蓝奏云链接打不开）<br>~~
 使用常见问题请转至：[常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)
 
 目前本项目的原始发布地址只有**GitHub**及**蓝奏网盘**，其他渠道均为第三方转载发布，与本项目无关！
@@ -65,19 +65,9 @@
 
 从v2.2.0起，我们发布了一个独立版的[数据同步服务](https://github.com/lyswhut/lx-music-sync-server#readme)，如果你有服务器，可以将其部署到服务器上作为私人多端同步服务使用，详情看该项目说明
 
-#### 启动参数
+#### 开放 API 支持
 
-目前软件已支持的启动参数如下：
-
-- `-proxy-server` 设置代理服务器，代理应用的所有流量
-- `-proxy-bypass-list` 以分号分隔的主机列表绕过代理服务器
-- `-play` 启动时播放指定列表的音乐
-- `-search`  启动软件时自动在搜索框搜索指定的内容
-- `-dha`  禁用硬件加速启动（Disable Hardware Acceleration）
-- `-dt` 以非透明模式启动（Disable Transparent）
-- `-dhmkh` 禁用硬件媒体密钥处理（Disable Hardware Media Key Handling）
-
-启动参数的详细说明请看[启动参数说明](https://lyswhut.github.io/lx-music-doc/desktop/run-params)
+从 v2.7.0 起支持开放API服务，启用该功能后，将会在本地启动一个 HTTP 服务，提供播放器相关的接口供第三方软件调用，详情看[开放 API 文档](https://lyswhut.github.io/lx-music-doc/desktop/open-api)。
 
 #### 数据存储路径
 
@@ -88,10 +78,6 @@
 - macOS：`~/Library/Application Support/lx-music-desktop`
 
 在Windows平台下，若程序目录下存在`portable`目录，则自动使用此目录作为数据存储目录（v1.17.0新增）。
-
-### 源码使用方法
-
-已迁移至：<https://lyswhut.github.io/lx-music-doc/desktop/use-source-code>
 
 ### UI界面
 
@@ -114,6 +100,10 @@
 1. 参照[源码使用方法](https://lyswhut.github.io/lx-music-doc/desktop/use-source-code)设置开发环境
 2. 克隆本仓库代码并切换到`dev`分支开发
 3. 提交PR至`dev`分支
+
+### 源码使用方法
+
+已迁移至：<https://lyswhut.github.io/lx-music-doc/desktop/use-source-code>
 
 ### 项目协议
 
