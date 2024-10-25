@@ -259,17 +259,20 @@ const handleToggleStop = () => {
  * @returns
  */
 export const playNext = async(isAutoToggle = false): Promise<void> => {
+  console.log('skip next', isAutoToggle)
   if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
     const playMusicInfo = tempPlayList[0]
     removeTempPlayList(0)
     pause()
     setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)
     handlePlay()
+    console.log('play temp list')
     return
   }
 
   if (playMusicInfo.musicInfo == null) {
     handleToggleStop()
+    console.log('musicInfo empty')
     return
   }
 
@@ -277,6 +280,7 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
   const currentListId = playInfo.playerListId
   if (!currentListId) {
     handleToggleStop()
+    console.log('currentListId empty')
     return
   }
   const currentList = getList(currentListId)
@@ -306,6 +310,7 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
       pause()
       setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)
       handlePlay()
+      console.log('play played list')
       return
     }
   }
@@ -320,6 +325,7 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
 
   if (!filteredList.length) {
     handleToggleStop()
+    console.log('filtered list empty')
     return
   }
   // let currentIndex: number = filteredList.indexOf(currentList[playInfo.playerPlayIndex])
@@ -349,9 +355,13 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
       break
     default:
       nextIndex = -1
+      console.log('stop toggle play', togglePlayMethod, isAutoToggle)
       return
   }
-  if (nextIndex < 0) return
+  if (nextIndex < 0) {
+    console.log('next index empty')
+    return
+  }
 
   const nextPlayMusicInfo = {
     musicInfo: filteredList[nextIndex],
