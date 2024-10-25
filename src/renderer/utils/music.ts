@@ -201,10 +201,15 @@ export const getLocalMusicFileLyric = async(path: string): Promise<LX.Music.Lyri
 
   // 尝试读取文件内歌词
   const metadata = await getFileMetadata(path)
+  // console.log(metadata)
   if (!metadata) return null
-  if (metadata.common.lyrics?.[0]?.text && metadata.common.lyrics[0].text.length > 10) {
-    return {
-      lyric: metadata.common.lyrics[0].text,
+  let lyricInfo = metadata.common.lyrics?.[0]
+  if (lyricInfo) {
+    let lyric: string | undefined
+    if (typeof lyricInfo == 'object') lyric = lyricInfo.text
+    else if (typeof lyricInfo == 'string') lyric = lyricInfo
+    if (lyric && lyric.length > 10) {
+      return { lyric }
     }
   }
   // console.log(metadata)
