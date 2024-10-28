@@ -117,6 +117,13 @@ const getFileMetadata = async(path: string) => {
  * @param path 路径
  */
 export const getLocalMusicFilePic = async(path: string) => {
+  const filePath = new RegExp('\\' + extname(path) + '$')
+  let picPath = path.replace(filePath, '.jpg')
+  let stats = await getFileStats(picPath)
+  if (stats) return picPath
+  picPath = path.replace(filePath, '.png')
+  stats = await getFileStats(picPath)
+  if (stats) return picPath
   const metadata = await getFileMetadata(path)
   if (!metadata) return null
   const { selectCover } = await import('music-metadata')
