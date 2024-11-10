@@ -6,6 +6,7 @@ export const request = async(url: string, options: RequestOptions = { }) => {
   return httpFetch(url, {
     ...options,
     timeout: options.timeout ?? 10000,
+    follow_max: 5,
   }).then(response => {
     return {
       text: response.body,
