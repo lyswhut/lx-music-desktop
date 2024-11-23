@@ -29,6 +29,7 @@ const checkMusicUrl = async(url: string) => {
       audio.removeEventListener('canplay', handlePlay)
     }
     const handleErr = () => {
+      clear()
       if (audio?.error?.code !== 1) {
         resolve(false)
       } else {
