@@ -18,24 +18,8 @@ dd
     strong 仔细 仔细 仔细
     | 地阅读常见问题后，
   .p.small
-    | 仍有问题可加企鹅群&nbsp;
-    span.hover(:aria-label="$t('setting__click_open')" @click="openUrl('https://jq.qq.com/?_wv=1027&k=51ECeq2')") 830125506
-    | &nbsp;反馈
-    strong (为免满人，无事勿加，入群先看群公告)
-    | ，或到 GitHub 提交&nbsp;
+    | 仍有问题可到 GitHub 提交&nbsp;
     span.hover.underline(:aria-label="$t('setting__click_open')" @click="openUrl('https://github.com/lyswhut/lx-music-desktop/issues')") issue
-
-  br
-  .p.small
-    | 如果你喜欢并经常使用洛雪音乐，并想要第一时间尝鲜洛雪的新功能&nbsp;
-    span(style="text-decoration: line-through;") （当小白鼠）
-    | ，
-  .p
-    | 可以加入测试企鹅群&nbsp;
-    span.hover(:aria-label="$t('setting__click_open')" @click="openUrl('https://qm.qq.com/cgi-bin/qm/qr?k=zR6aYosQoKb07g4FGFZdO9n9zL1dhFpE&jump_from=webapi')") 768786588
-    | &nbsp;，注意：测试版的功能可能会不稳定，
-    strong 打算潜水的勿加
-
   br
   .p.small 由于软件开发的初衷仅是为了对新技术的学习与研究，因此软件直至停止维护都将会一直保持纯净。
   .p.small
