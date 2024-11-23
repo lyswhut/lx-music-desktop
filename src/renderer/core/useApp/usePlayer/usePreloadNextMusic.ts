@@ -5,8 +5,45 @@ import { musicInfo } from '@renderer/store/player/state'
 // import { getList } from '@renderer/store/utils'
 import { getNextPlayMusicInfo, resetRandomNextMusicInfo } from '@renderer/core/player'
 import { getMusicUrl } from '@renderer/core/music'
-import { checkUrl } from '@renderer/utils/request'
 import { appSetting } from '@renderer/store/setting'
+
+let audio: HTMLAudioElement
+const initAudio = () => {
+  if (audio) return
+  audio = new Audio()
+  audio.controls = false
+  audio.preload = 'auto'
+  audio.crossOrigin = 'anonymous'
+  audio.muted = true
+  audio.volume = 0
+  audio.autoplay = true
+  audio.addEventListener('playing', () => {
+    audio.pause()
+  })
+}
+const checkMusicUrl = async(url: string) => {
+  initAudio()
+  return new Promise((resolve) => {
+    const clear = () => {
+      audio.removeEventListener('error', handleErr)
+      audio.removeEventListener('canplay', handlePlay)
+    }
+    const handleErr = () => {
+      if (audio?.error?.code !== 1) {
+        resolve(false)
+      } else {
+        resolve(true)
+      }
+    }
+    const handlePlay = () => {
+      clear()
+      resolve(true)
+    }
+    audio.addEventListener('error', handleErr)
+    audio.addEventListener('canplay', handlePlay)
+    audio.src = url
+  })
+}
 
 const preloadMusicInfo = {
   isLoading: false,
@@ -28,9 +65,10 @@ const preloadNextMusicUrl = async(curTime: number) => {
     const url = await getMusicUrl({ musicInfo: info.musicInfo }).catch(() => '')
     if (url) {
       console.log('preload url', url)
-      const result = await checkUrl(url).then(() => true).catch(() => false)
+      const result = await checkMusicUrl(url)
       if (!result) {
         const url = await getMusicUrl({ musicInfo: info.musicInfo, isRefresh: true }).catch(() => '')
+        void checkMusicUrl(url)
         console.log('preload url refresh', url)
       }
     }
