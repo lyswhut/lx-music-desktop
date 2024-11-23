@@ -307,3 +307,16 @@ const fetchData = async(url, method, {
     callback(null, resp, body)
   })
 }
+
+export const checkUrl = (url, options = {}) => {
+  return new Promise((resolve, reject) => {
+    fetchData(url, 'head', options, (err, resp) => {
+      if (err) return reject(err)
+      if (resp.statusCode === 200) {
+        resolve()
+      } else {
+        reject(new Error(resp.statusCode))
+      }
+    })
+  })
+}
