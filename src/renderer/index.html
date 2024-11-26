@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: transparent;">
+<html style="background-color: transparent;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,16 @@
   <div id="root" style="display: none;">
   </div>
   <script>
+    const formatLang = (lang = 'en') => {
+      if (lang === 'zh-cn') return 'zh-Hans'
+      if (lang === 'zh-tw') return 'zh-Hant'
+      return lang.split('-')[0]
+    }
+    window.setLang = (lang = navigator.language.toLocaleLowerCase()) => {
+      document.documentElement.setAttribute('lang', formatLang(lang))
+    }
+    window.setLang()
+    document.documentElement.classList.add(/os=(\w+)/.exec(window.location.search)[1])
     window.shouldUseDarkColors = /dark=true/.test(window.location.search)
     window.dt = /dt=true/.test(window.location.search)
     document.documentElement.classList.add(window.dt ? 'disableTransparent' : 'transparent')

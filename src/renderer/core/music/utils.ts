@@ -58,7 +58,7 @@ export const getOtherSource = async(musicInfo: LX.Music.MusicInfo | LX.Download.
       reject(new Error('find music timeout'))
     }, 15_000)
     musicSdk.findMusic(searchMusicInfo).then((otherSource) => {
-      if (otherSourceCache.size > 100) otherSourceCache.clear()
+      if (otherSourceCache.size > 10) otherSourceCache.clear()
       const source = otherSource.map(toNewMusicInfo) as LX.Music.MusicInfoOnline[]
       otherSourceCache.set(musicInfo, source)
       resolve(source)
