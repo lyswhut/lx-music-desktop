@@ -20,6 +20,7 @@ export default () => {
   watch(() => appSetting['common.langId'], (id) => {
     if (!id) return
     setLanguage(id)
+    window.setLang(id)
   })
 
   watch(() => appSetting['common.apiSource'], apiSource => {

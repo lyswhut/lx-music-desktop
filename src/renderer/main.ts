@@ -59,6 +59,7 @@ void getSetting().then(setting => {
     void updateSetting({ 'common.langId': langId })
     console.log('Set lang', setting['common.langId'])
   }
+  window.setLang(setting['common.langId'])
   window.i18n.setLanguage(setting['common.langId'])
 
   if (!setting['common.startInFullscreen'] && (document.body.clientHeight > window.screen.availHeight || document.body.clientWidth > window.screen.availWidth) && setting['common.windowSizeId'] > 1) {

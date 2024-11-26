@@ -30,11 +30,12 @@ import useHoverHide from '@lyric/useApp/useHoverHide'
 import { onMounted } from '@common/utils/vueTools'
 import { setting } from '@lyric/store/state'
 import { sendConnectMainWindowEvent } from '@lyric/utils/ipc'
+import useCommon from '@lyric/useApp/useCommon'
 import useLyric from '@lyric/useApp/useLyric'
 import useTheme from '@lyric/useApp/useTheme'
 import { init as initLyricPlayer } from '@lyric/core/lyric'
 
-
+useCommon()
 const { handleMouseDown, handleTouchDown } = useWindowSize()
 const { handleMouseMoveMain, isHoverHide, isMouseEnter } = useHoverHide()
 useLyric()

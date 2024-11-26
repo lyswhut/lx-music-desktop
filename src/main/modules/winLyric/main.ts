@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { BrowserWindow } from 'electron'
-import { debounce, isLinux, isWin } from '@common/utils'
+import { debounce, getPlatform, isLinux, isWin } from '@common/utils'
 import { initWindowSize } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
@@ -141,7 +141,7 @@ export const createWindow = () => {
   })
 
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9081/lyric.html' : `file://${path.join(encodePath(__dirname), 'lyric.html')}`
-  void browserWindow.loadURL(winURL + `?dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()
   // browserWindow.webContents.openDevTools()
