@@ -34,4 +34,4 @@ Linux 系统至少需要 GLIBC_2.29 版本才能运行，
 
 ### 其他
 
-- 更新 electron 到 v32.2.5
+- 更新 electron 到 v32.2.6
