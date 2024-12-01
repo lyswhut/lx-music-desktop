@@ -55,6 +55,7 @@ const winEvent = () => {
   browserWindow.on('resize', () => {
     // bounds = browserWindow.getBounds()
     // console.log(bounds)
+    isWinBoundsUpdateing = true
     const bounds = browserWindow!.getBounds()
     saveBoundsConfig({
       'desktopLyric.x': bounds.x,
@@ -122,7 +123,7 @@ export const createWindow = () => {
     hasShadow: false,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
-    resizable: false,
+    resizable: isWin,
     minimizable: false,
     maximizable: false,
     fullscreenable: false,

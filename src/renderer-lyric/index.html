@@ -17,7 +17,8 @@
         document.documentElement.setAttribute('lang', formatLang(lang))
       }
       window.setLang()
-      document.documentElement.classList.add(/os=(\w+)/.exec(window.location.search)[1])
+      window.os = /os=(\w+)/.exec(window.location.search)[1]
+      document.documentElement.classList.add(window.os)
       window.dom_style_theme = document.createElement('style')
       window.dom_style_lyric = document.createElement('style')
 
