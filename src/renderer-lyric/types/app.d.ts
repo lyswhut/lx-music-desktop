@@ -11,6 +11,7 @@ declare global {
     setTheme: (colors: Record<string, string>) => void
     setLang: (lang?: string) => void
     setLyricColor: (colors: Record<string, string>) => void
+    os: 'windows' | 'linux' | 'mac'
   }
 
   namespace LX {
