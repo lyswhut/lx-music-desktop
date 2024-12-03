@@ -149,10 +149,12 @@ export default {
       newResult.push(...sortMusic(result, item => item.fSinger == fSinger && item.fMusicName == fMusicName && item.interval == interval))
       newResult.push(...sortMusic(result, item => item.fMusicName == fMusicName && item.fSinger == fSinger && item.fAlbumName == fAlbumName))
       newResult.push(...sortMusic(result, item => item.fSinger == fSinger && item.fMusicName == fMusicName))
+      newResult.push(...sortMusic(result, item => item.fMusicName == fMusicName && item.interval == interval))
+      newResult.push(...sortMusic(result, item => item.fSinger == fSinger && item.interval == interval))
+      newResult.push(...sortMusic(result, item => item.interval == interval))
       newResult.push(...sortMusic(result, item => item.fMusicName == fMusicName))
       newResult.push(...sortMusic(result, item => item.fSinger == fSinger))
       newResult.push(...sortMusic(result, item => item.fAlbumName == fAlbumName))
-      newResult.push(...sortMusic(result, item => item.interval == interval))
       for (const item of result) {
         delete item.fSinger
         delete item.fMusicName
