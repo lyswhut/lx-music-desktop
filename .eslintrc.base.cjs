@@ -21,6 +21,7 @@ const typescriptRule = {
   '@typescript-eslint/explicit-function-return-type': 'off',
   '@typescript-eslint/space-before-function-paren': 'off',
   '@typescript-eslint/no-non-null-assertion': 'off',
+  '@typescript-eslint/no-floating-promises': 'off',
   '@typescript-eslint/restrict-template-expressions': [1, {
     allowBoolean: true,
     allowAny: true,

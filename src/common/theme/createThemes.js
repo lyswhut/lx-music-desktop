@@ -6,6 +6,30 @@ const { createThemeColors } = require('./utils')
 
 const defaultThemes = [
   {
+    id: 'default',
+    name: '默认主题',
+    isDark: false,
+    isDarkFont: false,
+    config: {
+      primary: 'rgb(51,94,234)',
+      font: 'rgb(0, 0, 0)',
+      '--color-app-background': 'rgba(255, 255, 255, 1)',
+      '--color-main-background': 'rgba(255, 255, 255, 1)',
+      '--color-nav-font': 'var(--color-primary)',
+      '--background-image': 'none',
+      '--background-image-position': 'center',
+      '--background-image-size': 'cover',
+
+      '--color-btn-hide': '#3bc2b2',
+      '--color-btn-min': '#85c43b',
+      '--color-btn-close': '#fab4a0',
+
+      '--color-badge-primary': 'var(--color-primary)',
+      '--color-badge-secondary': '#4baed5',
+      '--color-badge-tertiary': '#e7aa36',
+    },
+  },
+  {
     id: 'green',
     name: '绿意盎然',
     isDark: false,

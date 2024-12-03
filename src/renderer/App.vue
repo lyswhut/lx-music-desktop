@@ -1,9 +1,10 @@
 <template>
   <div id="container" class="view-container">
-    <layout-aside id="left" />
-    <div id="right">
-      <layout-toolbar id="toolbar" />
+    <layout-top id="top" />
+    <div id="main">
       <layout-view id="view" />
+    </div>
+    <div id="player-container">
       <layout-play-bar id="player" />
     </div>
     <layout-icons />
@@ -52,7 +53,9 @@ html, body {
   // overflow: hidden;
   box-sizing: border-box;
 }
-
+main::-webkit-scrollbar {
+  width: 0px;
+}
 body {
   user-select: none;
   height: 100%;
@@ -76,7 +79,7 @@ body {
 
 .transparent {
   background: transparent;
-  padding: @shadow-app;
+  // padding: @shadow-app;
   // #waiting-mask {
   //   border-radius: @radius-border;
   //   left: @shadow-app;
@@ -123,7 +126,7 @@ body {
 
 #container {
   position: relative;
-  display: flex;
+
   height: 100%;
   background-color: var(--color-app-background);
 }
@@ -144,6 +147,7 @@ body {
   overflow: hidden;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
 }
+
 #toolbar, #player {
   flex: none;
 }
@@ -157,6 +161,7 @@ body {
 .view-container {
   transition: opacity @transition-normal;
 }
+
 #root.show-modal > .view-container {
   opacity: .9;
 }
@@ -164,5 +169,37 @@ body {
   opacity: .2;
 }
 
+#top{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 84px;
+    backdrop-filter: saturate(180%) blur(20px);
+    background-color: var(--color-primary-light-1000-alpha-200);
+    z-index: 9999;
+    -webkit-app-region: drag;
+    padding-right: 10vw;
+    padding-left: 10vw;
+}
+
+#main{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow: auto;
+  padding: 0 10vw 96px 10vw;
+  box-sizing: border-box;
+  scrollbar-width: none; // firefox
+}
+
+#player-container{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
 </style>
 

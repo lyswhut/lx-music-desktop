@@ -120,8 +120,6 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .container {
-  height: 100%;
-  display: flex;
   flex-flow: column nowrap;
   position: relative;
 }

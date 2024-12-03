@@ -89,19 +89,12 @@ defineExpose({
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 .container {
-  overflow: hidden;
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   position: relative;
 }
 
 .listContent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   font-size: 14px;

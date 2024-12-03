@@ -203,30 +203,34 @@ export default {
 
 .container {
   position: relative;
-  width: 35%;
-  height: @height-toolbar * 0.52;
+  width: 200px;
+  height: @height-toolbar * 0.6;
   -webkit-app-region: no-drag;
 }
 
 .search {
   position: absolute;
+  height: 100%;
   width: 100%;
-  border-radius: @form-radius;
-  transition: box-shadow .4s ease, background-color @transition-normal;
+  border-radius: @form-radius * 2;
   display: flex;
   flex-flow: column nowrap;
-  background-color: var(--color-primary-light-300-alpha-700);
-
+  background-color: var(--color-050);
   &.active {
     background-color: var(--color-primary-light-600-alpha-100);
-    box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
+    color: var(--color-primary);
     .form {
+      color: var(--color-primary);
       input {
         border-bottom-left-radius: 0;
-
+        color: var(--color-primary);
+        &::placeholder {
+          color: var(--color-primary);
+        }
       }
       button {
         border-bottom-right-radius: 0;
+        color: var(--color-primary);
       }
     }
   }
@@ -234,6 +238,7 @@ export default {
     display: flex;
     height: @height-toolbar * 0.52;
     position: relative;
+    height: 100%;
     input {
       flex: auto;
       // border: 1px solid;
@@ -246,12 +251,12 @@ export default {
 
       outline: none;
       // height: @height-toolbar * .7;
-      padding: 0 5px;
+      padding: 0 8px;
       overflow: hidden;
       font-size: 13.5px;
       line-height: @height-toolbar * 0.52 + 5px;
       &::placeholder {
-        color: var(--color-button-font);
+        color: var(--color-700);
         font-size: .98em;
       }
     }
@@ -263,10 +268,9 @@ export default {
       outline: none;
       cursor: pointer;
       height: 100%;
-      padding: 6px 7px;
-      color: var(--color-button-font);
+      padding: 8px 7px;
+      color: var(--color-700);
       transition: background-color .2s ease;
-
       &:last-child {
         border-top-right-radius: 3px;
         border-bottom-right-radius: 3px;
