@@ -34,6 +34,7 @@ import usePlaybackRate from './usePlaybackRate'
 import useSoundEffect from './useSoundEffect'
 import useMaxOutputChannelCount from './useMaxOutputChannelCount'
 import { setPowerSaveBlocker } from '@renderer/core/player/utils'
+import usePreloadNextMusic from './usePreloadNextMusic'
 
 
 export default () => {
@@ -48,6 +49,7 @@ export default () => {
   useSoundEffect()
   usePlaybackRate()
   useWatchList()
+  usePreloadNextMusic()
 
   const handlePlayNext = () => {
     void playNext()
@@ -85,6 +87,7 @@ export default () => {
     // setTimeout(() => {
     if (window.lx.isPlayedStop) {
       setAllStatus(t('player__end'))
+      console.log('played stop')
       return
     }
     // resetPlayerMusicInfo()

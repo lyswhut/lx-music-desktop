@@ -15,6 +15,7 @@ const getTempDir = async() => {
 export const getMusicFilePic = async(filePath: string) => {
   const picture = await getLocalMusicFilePic(filePath)
   if (!picture) return ''
+  if (typeof picture == 'string') return picture
   if (picture.data.length > 400_000) {
     try {
       const tempDir = await getTempDir()

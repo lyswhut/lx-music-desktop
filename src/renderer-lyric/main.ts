@@ -17,7 +17,10 @@ void getSetting().then((setting) => {
   // window.lx.appSetting = setting
   // Set language automatically
   const languageId = setting['common.langId']
-  if (window.i18n.locale !== languageId && languageId != null) window.i18n.setLanguage(languageId)
+  if (window.i18n.locale !== languageId && languageId != null) {
+    window.i18n.setLanguage(languageId)
+    window.setLang(languageId)
+  }
 
   // store.commit('setSetting', setting)
   initSetting(setting)
