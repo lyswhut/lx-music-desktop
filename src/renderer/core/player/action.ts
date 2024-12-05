@@ -240,7 +240,7 @@ const handlePlay = () => {
 export const playList = (listId: string, index: number) => {
   const prevListId = playInfo.playerListId
   setPlayListId(listId)
-  pause()
+  // pause()
   setPlayMusicInfo(listId, getList(listId)[index])
   if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()
   clearTempPlayeList()
@@ -256,12 +256,12 @@ const handleToggleStop = () => {
 
 const randomNextMusicInfo = {
   info: null as LX.Player.PlayMusicInfo | null,
-  index: -1,
+  // index: -1,
 }
 export const resetRandomNextMusicInfo = () => {
   if (randomNextMusicInfo.info) {
     randomNextMusicInfo.info = null
-    randomNextMusicInfo.index = -1
+    // randomNextMusicInfo.index = -1
   }
 }
 
@@ -342,13 +342,13 @@ export const getNextPlayMusicInfo = async(): Promise<LX.Player.PlayMusicInfo | n
 
   if (togglePlayMethod == 'random') {
     randomNextMusicInfo.info = nextPlayMusicInfo
-    randomNextMusicInfo.index = nextIndex
+    // randomNextMusicInfo.index = nextIndex
   }
   return nextPlayMusicInfo
 }
 
 const handlePlayNext = (playMusicInfo: LX.Player.PlayMusicInfo) => {
-  pause()
+  // pause()
   setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)
   handlePlay()
 }
