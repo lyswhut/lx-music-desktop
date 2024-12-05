@@ -21,7 +21,7 @@ const initAudio = () => {
     audio.pause()
   })
 }
-const checkMusicUrl = async(url: string) => {
+const checkMusicUrl = async(url: string): Promise<boolean> => {
   initAudio()
   return new Promise((resolve) => {
     const clear = () => {
