@@ -14,7 +14,7 @@ module.exports = {
     'electron-debug',
     'webpack-dev-server',
     // 'eslint-config-standard-with-typescript',
-    // 'typescript', // https://github.com/microsoft/TypeScript/pull/54567
+    'typescript', // https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#typedarrays-are-now-generic-over-arraybufferlike
   ],
 
   // target: 'newest',
