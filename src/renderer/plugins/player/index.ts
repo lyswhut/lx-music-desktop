@@ -111,7 +111,7 @@ const initGain = () => {
 const initAdvancedAudioFeatures = () => {
   if (audioContext) return
   if (!audio) throw new Error('audio not defined')
-  audioContext = new window.AudioContext()
+  audioContext = new window.AudioContext({ latencyHint: 'playback' })
   defaultChannelCount = audioContext.destination.channelCount
 
   initAnalyser()
