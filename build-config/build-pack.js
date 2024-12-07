@@ -10,6 +10,7 @@ const afterPack = require('./build-after-pack')
 */
 const options = {
   appId: 'cn.toside.music.desktop',
+  productName: 'lx-music-desktop',
   beforePack,
   afterPack,
   protocols: {
@@ -65,7 +66,7 @@ const winOptions = {
     oneClick: false,
     language: '2052',
     allowToChangeInstallationDirectory: true,
-    differentialPackage: true,
+    // differentialPackage: true,
     license: './licenses/license.rtf',
     shortcutName: 'LX Music',
   },
@@ -121,7 +122,7 @@ const macOptions = {
         path: '/Applications',
       },
     ],
-    title: '洛雪音乐助手 v${version}',
+    title: 'LX Music v${version}',
   },
 }
 
