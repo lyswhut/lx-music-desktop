@@ -57,7 +57,7 @@
 
 从 v1.17.0 起支持 Scheme URL，可以使用此功能在浏览器等场景下调用 LX Music，我们开发了一个 [油猴脚本](https://github.com/lyswhut/lx-music-script#readme) 配套使用。
 
-脚本安装地址：[LX Music 辅助脚本](https://greasyfork.org/zh-CN/scripts/438148-lx-msuic-%E8%BE%85%E5%8A%A9%E8%84%9A%E6%9C%AC)。
+脚本安装地址：[LX Music 辅助脚本](https://greasyfork.org/zh-CN/scripts/438148)。
 
 若你想自己调用 LX Music，可以参考 [Scheme URL 支持](https://lyswhut.github.io/lx-music-doc/desktop/scheme-url)。
 
