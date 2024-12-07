@@ -46,9 +46,9 @@ body:
     label: 操作系统版本
     description: |
       你使用什么版本的操作系统？
-      在 Windows 上，单击「开始按钮 > 设置 > 系统 > 关于」；
       在 macOS 上，单击「Apple 菜单 > 关于本机」；
-      在 Linux 上，执行 lsb_release 或 uname -a 命令。
+      在 Linux 上，执行 lsb_release 或 uname -a 命令；
+      在 Windows 上，单击「开始按钮 > 设置 > 系统 > 关于」。
     placeholder: "例如 Windows 11 版本 24H2、macOS Sequoia 15.1.1 或 Ubuntu 24.10"
   validations:
     required: true
