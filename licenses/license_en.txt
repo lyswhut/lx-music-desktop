@@ -2,7 +2,7 @@ This project is issued based on the Apache License 2.0 license. The following ag
 
 DEFINITIONS:
 
-"This Project" refers to the LX Music Desktop Edition project. "User" refers to the user who signed this agreement. "Official Music Streaming Service" refers to collectively the official streaming service corresponding to the music source. "Copyrighted Data" refers to data including, but not limited to, pictures, audio, names, etc., for which others own the copyright.
+"This Project" refers to the LX Music Desktop Edition (aka lx-music-desktop) project. "User" refers to the user who signed this agreement. "Official Music Streaming Service" refers to collectively the official streaming service corresponding to the music source. "Copyrighted Data" refers to data including, but not limited to, pictures, audio, names, etc., for which others own the copyright.
 
 1. Data Source
 
@@ -46,7 +46,7 @@ DEFINITIONS:
 
 9.1 If you use this project, it will represent you accept this agreement.
 
-* If the agreement is updated, you will not be notified separately. You can check it out by visiting the open-source address.
+* If the agreement is updated, you will not be notified separately. You can check it out by visiting the project address.
 * The content of this agreement is translated from the Chinese version of the agreement.
 
 By: lyswhut
