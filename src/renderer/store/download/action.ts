@@ -101,10 +101,10 @@ const setStatus = (downloadInfo: LX.Download.ListItem, status: LX.Download.Downl
   if (statusText == null) {
     switch (status) {
       case DOWNLOAD_STATUS.RUN:
-        statusText = window.i18n.t('download___status_runing')
+        statusText = window.i18n.t('download___status_running')
         break
       case DOWNLOAD_STATUS.WAITING:
-        statusText = window.i18n.t('download___status_wating')
+        statusText = window.i18n.t('download___status_waiting')
         break
       case DOWNLOAD_STATUS.PAUSE:
         statusText = window.i18n.t('download___status_paused')
@@ -113,7 +113,7 @@ const setStatus = (downloadInfo: LX.Download.ListItem, status: LX.Download.Downl
         statusText = window.i18n.t('download___status_error')
         break
       case DOWNLOAD_STATUS.COMPLETED:
-        statusText = window.i18n.t('download___status_complated')
+        statusText = window.i18n.t('download___status_completed')
         break
       default:
         statusText = ''
@@ -261,7 +261,7 @@ const handleError = (downloadInfo: LX.Download.ListItem, message?: string) => {
 
 const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
   if (!downloadInfo.metadata.url) {
-    setStatusText(downloadInfo, window.i18n.t('download_status_url_geting'))
+    setStatusText(downloadInfo, window.i18n.t('download_status_url_getting'))
     const url = await getUrl(downloadInfo)
     if (!url) {
       handleError(downloadInfo, window.i18n.t('download_status_error_url_failed'))
