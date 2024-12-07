@@ -8,7 +8,7 @@ export default () => {
         id: 'all',
       },
       {
-        label: window.i18n.t('download__runing'),
+        label: window.i18n.t('download__running'),
         id: 'runing',
       },
       {

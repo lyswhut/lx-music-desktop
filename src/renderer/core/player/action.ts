@@ -68,7 +68,7 @@ const delayRetry = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, i
   // if (cancelDelayRetry) cancelDelayRetry()
   return new Promise<string | null>((resolve, reject) => {
     const time = getRandom(2, 6)
-    setAllStatus(window.i18n.t('player__geting_url_delay_retry', { time }))
+    setAllStatus(window.i18n.t('player__getting_url_delay_retry', { time }))
     const tiemout = setTimeout(() => {
       getMusicPlayUrl(musicInfo, isRefresh, true).then((result) => {
         cancelDelayRetry = null
@@ -87,7 +87,7 @@ const delayRetry = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, i
 }
 const getMusicPlayUrl = async(musicInfo: LX.Music.MusicInfo | LX.Download.ListItem, isRefresh = false, isRetryed = false): Promise<string | null> => {
   // this.musicInfo.url = await getMusicPlayUrl(targetSong, type)
-  setAllStatus(window.i18n.t('player__geting_url'))
+  setAllStatus(window.i18n.t('player__getting_url'))
   if (appSetting['player.autoSkipOnError']) addLoadTimeout()
 
   // const type = getPlayType(appSetting['player.highQuality'], musicInfo)
