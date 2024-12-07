@@ -38,7 +38,7 @@ body:
   id: last-known-working-version
   attributes:
     label: 最后正常的版本
-    description: 如果有，请在此处填写最后正常的版本是多少？
+    description: 如果有，请在此处填写最后正常的版本。
     placeholder: 例如 2.8.0
 - type: input
   id: operating-system-version
