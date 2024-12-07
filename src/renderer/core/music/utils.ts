@@ -125,30 +125,33 @@ export const buildLyricInfo = async(lyricInfo: MakeOptional<LX.Player.LyricInfo,
 export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<LX.Player.LyricInfo | null> => {
   let lrcInfo = await getStoreLyric(musicInfo)
   // lrcInfo = {} as unknown as LX.Player.LyricInfo
-  if (existTimeExp.test(lrcInfo.lyric) && lrcInfo.tlyric != null) {
-    // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
-    //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
-    //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
-    // } else if (musicInfo.lrc.startsWith('[id:$00000000]')) {
-    //   let str = musicInfo.lrc.replace('[id:$00000000]\n', '')
-    //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
-    // }
+  if (existTimeExp.test(lrcInfo.lyric)) {
+    if (lrcInfo.tlyric != null) {
+      // if (musicInfo.lrc.startsWith('\ufeff[id:$00000000]')) {
+      //   let str = musicInfo.lrc.replace('\ufeff[id:$00000000]\n', '')
+      //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
+      // } else if (musicInfo.lrc.startsWith('[id:$00000000]')) {
+      //   let str = musicInfo.lrc.replace('[id:$00000000]\n', '')
+      //   commit('setLrc', { musicInfo, lyric: str, tlyric: musicInfo.tlrc, lxlyric: musicInfo.tlrc })
+      // }
 
-    if (lrcInfo.lxlyric == null) {
-      switch (musicInfo.source) { // 以下源支持lxlyric 重新获取
-        case 'kg':
-        case 'kw':
-        case 'mg':
-        case 'wy':
-        case 'tx':
-          break
-        default:
-          return lrcInfo
-      }
-    } else if (lrcInfo.rlyric == null) {
-      // 以下源支持 rlyric 重新获取
-      if (!['wy', 'kg', 'tx'].includes(musicInfo.source)) return lrcInfo
-    } else return lrcInfo
+      if (lrcInfo.lxlyric == null) {
+        switch (musicInfo.source) { // 以下源支持lxlyric 重新获取
+          case 'kg':
+          case 'kw':
+          case 'mg':
+          case 'wy':
+          case 'tx':
+            break
+          default:
+            return lrcInfo
+        }
+      } else if (lrcInfo.rlyric == null) {
+        // 以下源支持 rlyric 重新获取
+        if (!['wy', 'kg', 'tx'].includes(musicInfo.source)) return lrcInfo
+      } else return lrcInfo
+    }
+    if (musicInfo.source == 'local') return lrcInfo
   }
   return null
 }
