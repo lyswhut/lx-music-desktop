@@ -81,7 +81,7 @@
 
 ## 用户界面
 
-<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="LX Music desktop UI"></a></p>
+<p><a href="https://github.com/lyswhut/lx-music-desktop"><img width="100%" src="https://github.com/lyswhut/lx-music-desktop/blob/master/doc/images/app.png" alt="lx-music desktop UI"></a></p>
 
 ## 常见问题
 
@@ -93,7 +93,7 @@
 
 - 对于添加新功能的 PR，建议在提交 PR 前先创建 issue 进行说明，以确认该功能是否确实需要；
 - 对于修复 bug 的 PR，请提供修复前后的说明及重现方式；
-- 其他类型的 PR，则适当附上说明。
+- 对于其他类型的 PR，则适当附上说明。
 
 贡献代码步骤：
 
