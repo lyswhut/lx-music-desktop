@@ -82,12 +82,18 @@ const linuxOptions = {
     icon: './resources/icons',
     category: 'Utility;AudioVideo;Audio;Player;Music;',
     desktop: {
-      Name: 'LX Music',
-      'Name[zh_CN]': 'LX Music',
-      'Name[zh_TW]': 'LX Music',
-      Encoding: 'UTF-8',
-      MimeType: 'x-scheme-handler/lxmusic',
-      StartupNotify: 'false',
+      // https://www.electron.build/app-builder-lib.interface.linuxdesktopfile
+      // https://www.electronjs.org/docs/latest/tutorial/linux-desktop-actions
+      // https://specifications.freedesktop.org/desktop-entry-spec/latest/example.html
+      // https://developer.gnome.org/documentation/guidelines/maintainer/integrating.html#desktop-files
+      entry: {
+        Name: 'LX Music',
+        'Name[zh_CN]': 'LX Music',
+        'Name[zh_TW]': 'LX Music',
+        Encoding: 'UTF-8',
+        MimeType: 'x-scheme-handler/lxmusic',
+        StartupNotify: 'false',
+      },
     },
   },
   appImage: {
