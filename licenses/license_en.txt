@@ -1,22 +1,24 @@
-This project is issued based on the Apache License 2.0 license. The following protocols are supplemented by Apache License 2.0.
+This project is issued based on the Apache License 2.0 license. The following agreements are supplemental to the Apache License 2.0. In the event of a conflict, the following agreements shall prevail.
 
-Words stipulate: "this project" in this agreement refers to the LX Music Desktop Edition project; "user" refers to the user who signed this agreement; the "official music platform" refers to the official platform of the music source that is collectively referred to; "copyright data" refers to the data that includes but is not limited to images, audio, names, etc.
+DEFINITIONS:
+
+"This Project" refers to the LX Music Desktop Edition project. "User" refers to the user who signed this agreement. "Official Music Streaming Service" refers to collectively the official streaming service corresponding to the music source. "Copyrighted Data" refers to data including, but not limited to, pictures, audio, names, etc., for which others own the copyright.
 
 1. Data Source
 
-1.1 The principle of online data sources of various official platforms of this project is to draw data from its open server (the same data obtained from the unsporting state in the official platform app). After simply screening and merging data, this project is responsible for the legitimacy and accuracy of the data.
+1.1 The principle of the online data sources of the various official streaming services of this project is to draw data from its open servers (the same as the data obtained in the unlogged-in state in the official streaming service app). After simply screening and merging the data, this project is responsible for the legitimacy and accuracy of the data.
 
-1.2 The ability of this project itself does not obtain certain audio data. The online audio data source used in this project comes from the online link of the "Source" selected in the software settings. For example, when playing a song, the project only transmits information such as the song name, singer name, and other information to be played to "source". If the "source" returns a link, this project will think that this is the audio data of the song for use, as for whether this is the correct audio data, this project cannot verify its accuracy, so the audio that you want to play may occur during the process of using this project.
+1.2 The ability of this project itself does not obtain certain audio data. The online audio data source used in this project comes from the online link of the "source" selected in the software settings. For example, when playing a song, this project only transmits information such as the song name, singer name, and other information to be played to "source". If the "source" returns a link, this project will think that this is the audio data of the song for use, as for whether this is the correct audio data, this project cannot verify its accuracy, so, in the process of using this project, there may be a problem that the audio you want to play does not correspond to the audio you actually play, or you cannot play it.
 
-1.3 The unofficial platform data (such as my collection list) of this project comes from synchronous services connected by the user's local system or user connection. This project is not responsible for the legality and accuracy of this data.
+1.3 The unofficial streaming service data (such as my collection list) of this project comes from synchronous services connected by the user's local system or user connection. This project is not responsible for the legality and accuracy of this data.
 
-2. Copyright Data
+2. Copyrighted Data
 
-2.1 During the process of using this project, copyright data may be generated. For this copyright data, this project does not have their ownership. In order to avoid infringement, users must remove copyright data generated during the process of using this project ** within  24 hours **.
+2.1 During the process of using this project, copyrighted data may be generated. For this copyrighted data, this project does not have their ownership. In order to avoid infringement, users must remove copyrighted data generated during the process of using this project ** within  24 hours **.
 
-3. Alias of Music Platform
+3. Alias of Music Streaming Service
 
-3.1 The official music platform alias within this project is a term used within this project to refer to the official music platform and does not contain malicious intent. If the operator of the official music platform feels it is inappropriate, you can contact this project to change or remove it.
+3.1 The official music streaming service alias within this project is a term used within this project to refer to the official music streaming service and does not contain malicious intent. If the operator of the official music streaming service feels it is inappropriate, you can contact this project to request changes or removals.
 
 4. Use of Resources
 
@@ -28,13 +30,13 @@ Words stipulate: "this project" in this agreement refers to the LX Music Desktop
 
 6. Use Restrictions
 
-6.1 This project is completely free and open source and is published on GitHub for the learning exchanges of technology for people all over the world. This project does not guarantee that the technology in the project may violate local laws and regulations.
+6.1 This project is completely free and open source and is published on GitHub for the learning exchanges of technology for people all over the world. This project does not guarantee that the technology in this project may violate local laws and regulations.
 
 6.2 ** This project is prohibited in violation of local laws and regulations. ** The user is solely responsible for any violation of law caused by the use of this project that the user knows or does not know is not permitted by local law and regulations.
 
 7. Copyright Protection
 
-7.1 Music platform operation is not an easy task. Please respect copyrights and support the genuine.
+7.1 The operation of a music streaming service is not an easy task. Please respect copyrights and support the genuine.
 
 8. Non-commercial Nature
 
@@ -44,7 +46,7 @@ Words stipulate: "this project" in this agreement refers to the LX Music Desktop
 
 9.1 If you use this project, it will represent you accept this agreement.
 
-* If the agreement is updated, you will not be notified separately. You can check it out by visiting the open source address.
+* If the agreement is updated, you will not be notified separately. You can check it out by visiting the open-source address.
 * The content of this agreement is translated from the Chinese version of the agreement.
 
 By: lyswhut
