@@ -1,0 +1,38 @@
+name: ✨ 功能请求
+description: 为这个项目提出一个想法，请先查看常见问题及搜索 Issue 列表中有无你要提的问题。
+title: "[Feature]: "
+body:
+- type: checkboxes
+  id: check-answer
+  attributes:
+    label: 解决方案检查
+    description: 请确保你已完成以下所有操作。
+    options:
+      - label: 我已阅读 [常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)，但没有找到解决方案。
+        required: true
+      - label: 我已搜索 [Issue 列表](https://github.com/lyswhut/lx-music-desktop/issues?q=is%3Aissue+)，但没有发现类似的问题。
+        required: true
+- type: textarea
+  id: problem-description
+  attributes:
+    label: 问题描述
+    description: 请添加清晰简洁的描述，说明你希望通过此功能请求解决的问题。
+  validations:
+    required: true
+- type: textarea
+  id: proposed-solution
+  attributes:
+    label: 描述你想要的解决方案
+    description: 简洁明了地描述你要发生的事情。
+  validations:
+    required: true
+- type: textarea
+  id: alternatives-considered
+  attributes:
+    label: 描述你考虑过的替代方案
+    description: 对你考虑过的所有替代解决方案或功能的简洁明了的描述。
+- type: textarea
+  id: additional-information
+  attributes:
+    label: 附加信息
+    description: 如果你的问题需要进一步解释，或者想要表达其他内容，请在此处添加更多信息。（直接把图片/视频拖到编辑框即可添加图片/视频）

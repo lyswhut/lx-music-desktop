@@ -1,0 +1,59 @@
+name: 🐞 报告错误
+description: 报告一个错误（Bug），请先查看常见问题及搜索 Issue 列表中有无你要提的问题。
+title: "[Bug]: "
+body:
+- type: checkboxes
+  id: check-answer
+  attributes:
+    label: 解决方案检查
+    description: 请确保你已完成以下所有操作。
+    options:
+      - label: 我已阅读 [常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)，并没有找到解决方案。
+        required: true
+      - label: 我已搜索 [Issue 列表](https://github.com/lyswhut/lx-music-desktop/issues?q=is%3Aissue+)，并没有发现类似的问题。
+        required: true
+- type: textarea
+  id: expected-behavior
+  attributes:
+    label: 预期行为
+    description: 对期望发生的事情的清晰简明描述。
+  validations:
+    required: true
+- type: textarea
+  id: actual-behavior
+  attributes:
+    label: 实际行为
+    description: 对实际发生的事情的清晰简明描述。
+  validations:
+    required: true
+- type: input
+  id: version
+  attributes:
+    label: LX Music 版本
+    description: 你使用什么版本的 LX Music？
+    placeholder: 例如 2.9.0
+  validations:
+    required: true
+- type: input
+  id: last-known-working-version
+  attributes:
+    label: 最后正常的版本
+    description: 如果有，请在此处填写最后正常的版本。
+    placeholder: 例如 2.8.0
+- type: input
+  id: operating-system-version
+  attributes:
+    label: 操作系统版本
+    description: |
+      你使用什么版本的操作系统？
+      在 macOS 上，单击「Apple 菜单 > 关于本机」；
+      在 Linux 上，执行 `lsb_release` 或 `uname -a` 命令；
+      在 Windows 上，单击「开始按钮 > 设置 > 系统 > 关于」。
+    placeholder: "例如 Windows 11 版本 24H2、macOS Sequoia 15.1.1 或 Ubuntu 24.10"
+  validations:
+    required: true
+- type: textarea
+  id: additional-information
+  attributes:
+    label: 附加信息
+    description: 如果你的问题需要进一步解释，或者你所遇到的问题不容易重现，请在此处添加更多信息。（直接把图片/视频拖到编辑框即可添加图片/视频）
