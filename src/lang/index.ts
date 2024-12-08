@@ -18,7 +18,7 @@ const langs = [
     message: zh_cn,
   },
   {
-    name: '繁体中文',
+    name: '繁體中文',
     locale: 'zh-tw',
     // alternate: 'zh-hk',
     country: 'cn',
