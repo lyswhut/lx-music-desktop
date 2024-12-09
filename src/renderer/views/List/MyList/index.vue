@@ -16,6 +16,19 @@
       </div>
     </div>
     <ul ref="dom_lists_list" class="scroll" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
+      <transition enter-active-class="animated-fast slideInLeft" leave-active-class="animated-fast fadeOut" @after-leave="isListSearchLeave = false" @after-enter="$refs.dom_listsSearchInput.focus()">
+        <li v-if="isShowListSearch" :class="[$style.listsItem, $style.listsNew, $style.listsSearch, {[$style.newLeave]: isListSearchLeave}]">
+          <base-input
+            ref="dom_listsSearchInput" :class="$style.listsInput" type="text" :placeholder="$t('lists__list_search_input')"
+            @keyup.enter="handleSearch" @blur="handleSearch"
+          />
+          <data :class="$style.searchClose" @click="handleCloseSearch">
+            <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 475.078 475.077" space="preserve">
+              <use xlink:href="#icon-angle-right-solid" />
+            </svg>
+          </data>
+        </li>
+      </transition>
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}, {[$style.clicked]: rightClickItemIndex == -2}, {[$style.fetching]: fetchingListStatus[defaultList.id]}]"
         :aria-label="$t(defaultList.name)" :aria-selected="defaultList.id == listId"
@@ -99,7 +112,7 @@ import { saveListPrevSelectId } from '@renderer/utils/data'
 
 import { useI18n } from '@renderer/plugins/i18n'
 
-
+import useListSearch from './useListSearch'
 import useShare from './useShare'
 import useMenu from './useMenu'
 import useListUpdate from './useListUpdate'
@@ -122,14 +135,14 @@ export default {
       required: true,
     },
   },
-  emits: ['show-menu'],
+  emits: ['show-menu', 'search'],
   setup(props, { emit }) {
     const router = useRouter()
     const t = useI18n()
 
     const dom_lists_list = ref(null)
     const rightClickItemIndex = ref(-10)
-
+    const { isShowListSearch, isListSearchLeave, handleSearch, handleOpenSearch, handleCloseSearch } = useListSearch({ emit })
     const { handleImportList, handleExportList } = useShare()
     const { isShowListUpdateModal, handleUpdateSourceList } = useListUpdate()
     const { isShowListSortModal, sortListInfo, handleSortList } = useSort()
@@ -173,6 +186,7 @@ export default {
     } = useMenu({
       emit,
 
+      handleOpenSearch,
       handleImportList,
       handleExportList,
       handleUpdateSourceList,
@@ -244,6 +258,11 @@ export default {
       handleListToggle,
       isModDown,
       hideMenu: handleMenuClick,
+
+      isListSearchLeave,
+      isShowListSearch,
+      handleSearch,
+      handleCloseSearch,
     }
   },
 }
@@ -395,6 +414,28 @@ export default {
   background-color: var(--color-primary-background-hover) !important;
   .listsInput {
     display: block;
+  }
+}
+
+.listsSearch{
+  position: relative;
+  .searchClose{
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    cursor: pointer;
+    color: var(--color-primary);
+    background-color: var(--color-primary-light-1000);
+    display: flex;
+    align-items: center;
+    width: 32px;
+    justify-content: center;
+    svg{
+      transform: rotate(180deg);
+      height: 16px;
+    }
   }
 }
 .newLeave {

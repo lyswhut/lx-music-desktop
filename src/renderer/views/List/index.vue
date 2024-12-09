@@ -1,6 +1,6 @@
 <template>
   <div id="my-list" :class="$style.container" @click="handleContainerClick">
-    <MyList ref="myList" :list-id="listId" @show-menu="$refs.musicList.handleMenuClick()" />
+    <MyList ref="myList" :list-id="listId" @show-menu="$refs.musicList.handleMenuClick()" @search="handlePlaylistSearch" />
     <MusicList ref="musicList" :list-id="listId" @show-menu="$refs.myList.handleMenuClick()" />
   </div>
 </template>
@@ -55,6 +55,11 @@ export default {
   },
   created() {
     this.listId = this.$route.query.id
+  },
+  methods: {
+    handlePlaylistSearch(keyword) {
+      this.$refs.musicList?.handlePlaylistSearch(keyword)
+    },
   },
 }
 </script>

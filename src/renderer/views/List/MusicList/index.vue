@@ -118,6 +118,7 @@ import useMusicAdd from './useMusicAdd'
 import useSort from './useSort'
 import useMusicActions from './useMusicActions'
 import useSearch from './useSearch'
+import usePlaylistSearch from './usePlaylistSearch'
 import useListScroll from './useListScroll'
 import useMusicToggle from './useMusicToggle'
 import { appSetting } from '@renderer/store/setting'
@@ -157,6 +158,7 @@ export default {
       dom_listContent,
       listRef,
       list,
+      listCopy,
       playerInfo,
       setSelectedIndex,
       isShowSource,
@@ -175,6 +177,10 @@ export default {
       handlePlayMusicLater,
       doubleClickPlay,
     } = usePlay({ props, selectedList, list, removeAllSelect })
+
+    const {
+      handlePlaylistSearch,
+    } = usePlaylistSearch({ list, listCopy })
 
     const {
       isShowListAdd,
@@ -354,6 +360,8 @@ export default {
       isShowMusicToggleModal,
       selectedToggleMusicInfo,
       toggleSource,
+
+      handlePlaylistSearch,
     }
   },
 }

@@ -14,9 +14,11 @@ export default ({ props, onLoadedList }) => {
 
 
   const list = ref([])
+  const listCopy = ref([])
   watch(() => props.listId, id => {
     getListMusics(id).then(l => {
       list.value = [...l]
+      listCopy.value = [...l]
       if (id != props.listId) return
       onLoadedList()
     })
@@ -39,6 +41,7 @@ export default ({ props, onLoadedList }) => {
     if (!ids.includes(props.listId)) return
     getListMusics(props.listId).then(l => {
       list.value = [...l]
+      listCopy.value = [...l]
     })
   }
 
@@ -54,6 +57,7 @@ export default ({ props, onLoadedList }) => {
     dom_listContent,
     listRef,
     list,
+    listCopy,
     playerInfo,
     setSelectedIndex,
     isShowSource,

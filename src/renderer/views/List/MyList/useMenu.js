@@ -8,6 +8,7 @@ export default ({
   emit,
 
   handleRename,
+  handleOpenSearch,
   handleDuplicateList,
   handleSortList,
   handleOpenSourceDetailPage,
@@ -26,6 +27,7 @@ export default ({
     export: true,
     sync: false,
     remove: true,
+    search: true,
   })
   const t = useI18n()
   const menuLocation = reactive({ x: 0, y: 0 })
@@ -37,6 +39,11 @@ export default ({
         name: t('lists__rename'),
         action: 'rename',
         disabled: !menuControl.rename,
+      },
+      {
+        name: t('lists__search'),
+        action: 'search',
+        disabled: !menuControl.search,
       },
       {
         name: t('lists__sort_list'),
@@ -154,6 +161,9 @@ export default ({
     switch (action.action) {
       case 'rename':
         handleRename(index)
+        break
+      case 'search':
+        handleOpenSearch()
         break
       case 'duplicate':
         handleDuplicateList(listInfo)
