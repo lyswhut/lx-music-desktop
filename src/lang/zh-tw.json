@@ -586,6 +586,7 @@
   "setting__update_try_auto_update": "發現新版本時嘗試自動下載更新",
   "setting__update_unknown": "未知",
   "setting__update_unknown_tip": "❓ 取得最新版本資訊失敗，建議去關於介面開啟專案發佈位址查看目前版本是否最新",
+  "setting_download_save_group_list_name": "將檔案儲存到以對應清單命名的子目錄中",
   "setting_sync_status_enabled": "已連接",
   "song_list": "歌單",
   "songlist__import_input_btn_confirm": "打開",
