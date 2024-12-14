@@ -59,6 +59,7 @@ declare global {
           ext: FileExt
           fileName: string
           filePath: string
+          listId?: string
         }
       }
 

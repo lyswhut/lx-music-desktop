@@ -1,8 +1,8 @@
 import { DOWNLOAD_STATUS, QUALITYS } from '@common/constants'
 import { filterFileName } from '@common/utils/common'
-import { joinPath } from '@common/utils/nodejs'
 import { mergeLyrics } from './lrcTool'
 import fs from 'fs'
+import { clipFileNameLength, clipNameLength } from '@common/utils/tools'
 
 /**
  * 保存歌词文件
@@ -65,22 +65,8 @@ export const getMusicType = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quali
 // const checkExistList = (list: LX.Download.ListItem[], musicInfo: LX.Music.MusicInfo, type: LX.Quality, ext: string): boolean => {
 //   return list.some(s => s.id === musicInfo.id && (s.metadata.type === type || s.metadata.ext === ext))
 // }
-const MAX_NAME_LENGTH = 80
-const MAX_FILE_NAME_LENGTH = 150
-const clipNameLength = (name: string) => {
-  if (name.length <= MAX_NAME_LENGTH || !name.includes('、')) return name
-  const names = name.split('、')
-  let newName = names.shift()!
-  for (const name of names) {
-    if (newName.length + name.length > MAX_NAME_LENGTH) break
-    newName = newName + '、' + name
-  }
-  return newName
-}
-const clipFileNameLength = (name: string) => {
-  return name.length > MAX_FILE_NAME_LENGTH ? name.substring(0, MAX_FILE_NAME_LENGTH) : name
-}
-export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quality, fileName: string, savePath: string, qualityList: LX.QualityList) => {
+
+export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quality, fileName: string, qualityList: LX.QualityList, listId?: string) => {
   type = getMusicType(musicInfo, type, qualityList)
   let ext = getExt(type)
   const key = `${musicInfo.id}_${type}_${ext}`
@@ -101,12 +87,13 @@ export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX
       quality: type,
       ext,
       filePath: '',
+      listId,
       fileName: filterFileName(`${clipFileNameLength(fileName
         .replace('歌名', musicInfo.name)
         .replace('歌手', clipNameLength(musicInfo.singer)))}.${ext}`),
     },
   }
-  downloadInfo.metadata.filePath = joinPath(savePath, downloadInfo.metadata.fileName)
+  // downloadInfo.metadata.filePath = joinPath(savePath, downloadInfo.metadata.fileName)
   // commit('addTask', downloadInfo)
 
   // 删除同路径下的同名文件

@@ -9,7 +9,7 @@ import { createLocalMusicInfo } from '@renderer/utils/music'
 /**
  * 过滤列表中已播放的歌曲
  */
-export const filterMusicList = async({ playedList, listId, list, savePath, playerMusicInfo, dislikeInfo, isNext }: {
+export const filterMusicList = async({ playedList, listId, list, playerMusicInfo, dislikeInfo, isNext }: {
   /**
    * 已播放列表
    */
@@ -25,7 +25,7 @@ export const filterMusicList = async({ playedList, listId, list, savePath, playe
   /**
    * 下载目录
    */
-  savePath: string
+  // savePath: string
   /**
    * 播放器内当前歌曲（`playInfo.playerPlayIndex`指向的歌曲）
    */

@@ -23,6 +23,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    listId: {
+      type: String,
+      default: '',
+    },
     list: {
       type: Array,
       default() {
@@ -37,7 +41,7 @@ export default {
   emits: ['update:show', 'confirm'],
   methods: {
     handleClick(quality) {
-      void createDownloadTasks(this.list.filter(item => item.source != 'local'), quality)
+      void createDownloadTasks(this.list.filter(item => item.source != 'local'), quality, this.listId)
       this.handleClose()
       this.$emit('confirm')
     },

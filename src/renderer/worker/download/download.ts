@@ -8,7 +8,7 @@ import { createDownloadInfo } from './utils'
 //   assertApiSupport,
 //   getExt,
 // } from '..'
-import { checkPath, getFileStats, removeFile } from '@common/utils/nodejs'
+import { checkAndCreateDir, checkPath, getFileStats, removeFile } from '@common/utils/nodejs'
 import { DOWNLOAD_STATUS } from '@common/constants'
 // import { download as eventDownloadNames } from '@renderer/event/names'
 
@@ -40,12 +40,12 @@ const sendAction = (id: string, action: LX.Download.DownloadTaskActions) => {
 export const createDownloadTasks = (
   list: LX.Music.MusicInfoOnline[],
   quality: LX.Quality,
-  savePath: string,
   fileNameFormat: string,
   qualityList: LX.QualityList,
+  listId?: string,
 ): LX.Download.ListItem[] => {
   return list.map(musicInfo => {
-    return createDownloadInfo(musicInfo, quality, fileNameFormat, savePath, qualityList)
+    return createDownloadInfo(musicInfo, quality, fileNameFormat, qualityList, listId)
   }).filter(task => task)
   // commit('addTasks', { list: taskList, addMusicLocationType: rootState.setting.list.addMusicLocationType })
   // let result = getStartTask(downloadList, DOWNLOAD_STATUS, rootState.setting.download.maxDownloadNum)
@@ -60,7 +60,7 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, s
   // 开始任务
   /* commit('onStart', downloadInfo)
   commit('setStatusText', { downloadInfo, text: '任务初始化中' }) */
-  if (!await checkPath(savePath)) {
+  if (!await checkAndCreateDir(savePath)) {
     sendAction(downloadInfo.id, {
       action: 'error',
       data: {

@@ -29,7 +29,7 @@ export const filterList = async({ playedList, listId, list, playerMusicInfo, isN
     listId,
     list: list.map(m => toRaw(m)),
     playedList: toRaw(playedList),
-    savePath: appSetting['download.savePath'],
+    // savePath: appSetting['download.savePath'],
     playerMusicInfo: toRaw(playerMusicInfo),
     dislikeInfo: { names: toRaw(dislikeInfo.names), musicNames: toRaw(dislikeInfo.musicNames), singerNames: toRaw(dislikeInfo.singerNames) },
     isNext,
