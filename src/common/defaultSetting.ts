@@ -107,6 +107,7 @@ const defaultSetting: LX.AppSetting = {
   'list.actionButtonsVisible': false,
 
   'download.enable': false,
+  'download.isSavePathGroupByListName': false,
   'download.savePath': path.join(os.homedir(), 'Desktop'),
   'download.fileName': '歌名 - 歌手',
   'download.maxDownloadNum': 3,

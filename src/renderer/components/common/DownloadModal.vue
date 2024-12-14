@@ -23,6 +23,10 @@ export default {
       type: [Object, null],
       required: true,
     },
+    listId: {
+      type: String,
+      default: '',
+    },
     bgClose: {
       type: Boolean,
       default: true,
@@ -51,7 +55,7 @@ export default {
   },
   methods: {
     handleClick(quality) {
-      void createDownloadTasks([this.musicInfo], quality)
+      void createDownloadTasks([this.musicInfo], quality, this.listId)
       this.handleClose()
     },
     handleClose() {
