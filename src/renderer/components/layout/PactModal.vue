@@ -3,7 +3,7 @@
     <main :class="$style.main">
       <h2>许可协议</h2>
       <div class="select scroll" :class="$style.content">
-        <p><strong>在使用本软件前，你（使用者）需签署本协议才可继续使用！</strong></p><br>
+        <template v-if="!isAgreePact"><p><strong>在使用本软件前，你（使用者）需签署本协议才可继续使用！</strong></p><br></template>
         <p>本项目（软件）基于<strong class="hover underline" @click="openUrl('http://www.apache.org/licenses/LICENSE-2.0')">Apache License 2.0</strong>&nbsp;许可证发行。以下协议是对于 Apache License 2.0 的补充，如有冲突，以以下协议为准。</p><br>
         <p>词语约定：本协议中的“本软件”指 LX Music（洛雪音乐助手）桌面版项目；“使用者”指签署本协议的使用者；“官方音乐平台”指对本软件内置的包括酷我、酷狗、咪咕等音乐源的官方平台统称；“版权数据”指包括但不限于图像、音频、名字等在内的他人拥有所属版权的数据。</p><br>
         <p><strong>一、数据来源</strong></p><br>
