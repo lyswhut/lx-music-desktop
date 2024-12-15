@@ -12,11 +12,11 @@ export default () => {
       appSetting['desktopLyric.enable']
         ? t('player__desktop_lyric_off')
         : t('player__desktop_lyric_on')
-    }（${
+    }\n(${
       appSetting['desktopLyric.isLock']
         ? t('player__desktop_lyric_unlock')
         : t('player__desktop_lyric_lock')
-    }）`
+    })`
   })
 
   const toggleDesktopLyric = () => {
