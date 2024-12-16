@@ -17,7 +17,9 @@ dd(:aria-label="$t('setting__download_path_title')")
       base-btn.btn(min @click="handleChangeSavePath") {{ $t('setting__download_path_change_btn') }}
 
 dd
-  h3#download_max_num {{ $t('setting__download_max_num') }}
+  h3#download_max_num
+    | {{ $t('setting__download_max_num') }}
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__download_max_num_tooltip')")
   div
     p
       base-selection.gap-left(:class="$style.selectWidth" :model-value="appSetting['download.maxDownloadNum']" :list="maxNums" item-key="id" item-name="id" @change="handleUpdateMaxNum")
@@ -54,7 +56,9 @@ dd(:aria-label="$t('setting__download_lyric_title')")
   .gap-top
     base-checkbox(id="setting_download_isDownloadRLrc" :disabled="!appSetting['download.isDownloadLrc']" :model-value="appSetting['download.isDownloadRLrc']" :label="$t('setting__download_rlyric')" @update:model-value="updateSetting({'download.isDownloadRLrc': $event})")
 dd
-  h3#download_lyric_format {{ $t('setting__download_lyric_format') }}
+  h3#download_lyric_format
+    | {{ $t('setting__download_lyric_format') }}
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__download_lyric_format_tip')")
   div
     base-checkbox.gap-left(
       v-for="item in lrcFormatList" :id="`setting_download_lrcFormat_${item.id}`" :key="item.id"
