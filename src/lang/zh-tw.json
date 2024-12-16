@@ -600,7 +600,7 @@
   "songlist__import_input_show_btn": "開啟歌單",
   "songlist__import_input_tip": "輸入歌單連結或歌單 ID",
   "songlist__import_input_tip_1": "不支援跨源開啟歌單，請確認要開啟的歌單與目前歌單源是否對應",
-  "songlist__import_input_tip_2": "若遇到無法開啟的歌單連結，歡迎回饋",
+  "songlist__import_input_tip_2": "若遇到無法開啟的歌單連結，歡迎回報",
   "songlist__import_input_tip_3": "酷狗源不支援用歌單 ID 開啟，但支援用酷狗碼開啟",
   "songlist__import_input_tip_4": "網易源的「我喜歡」歌單需要 Token 才能開啟，詳情看 ",
   "songlist__import_input_title": "開啟分享的歌單",
