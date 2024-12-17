@@ -22,7 +22,7 @@ export const queryMusicUrl = (id: string) => {
  * 批量插入歌曲url
  * @param urlInfo 列表
  */
-export const inertMusicUrl = (urlInfo: LX.DBService.MusicUrlInfo[]) => {
+export const insertMusicUrl = (urlInfo: LX.DBService.MusicUrlInfo[]) => {
   const db = getDB()
   const insertStatement = createInsertStatement()
   const deleteStatement = createDeleteStatement()

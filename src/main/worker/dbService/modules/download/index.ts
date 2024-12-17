@@ -1,7 +1,7 @@
 import { arrPush, arrUnshift } from '@common/utils/common'
 import {
   queryDownloadList,
-  inertDownloadList,
+  insertDownloadList,
   updateDownloadList,
   deleteDownloadList,
   clearDownloadList,
@@ -72,12 +72,12 @@ export const downloadInfoSave = (downloadInfos: LX.Download.ListItem[], addMusic
   if (addMusicLocationType == 'top') {
     let newList = [...list]
     arrUnshift(newList, downloadInfos)
-    inertDownloadList(toDBDownloadInfo(downloadInfos), newList.slice(downloadInfos.length - 1).map((info, index) => {
+    insertDownloadList(toDBDownloadInfo(downloadInfos), newList.slice(downloadInfos.length - 1).map((info, index) => {
       return { id: info.id, position: index }
     }))
     list = newList
   } else {
-    inertDownloadList(toDBDownloadInfo(downloadInfos, list.length), [])
+    insertDownloadList(toDBDownloadInfo(downloadInfos, list.length), [])
     arrPush(list, downloadInfos)
   }
 }

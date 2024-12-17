@@ -1,7 +1,7 @@
 import { SPLIT_CHAR } from '@common/constants'
 import {
   queryDislikeList,
-  inertDislikeList,
+  insertDislikeList,
   overwirteDislikeList,
   // updateDislikeList,
   // deleteDislikeList,
@@ -71,7 +71,7 @@ export const getDislikeListInfo = (): LX.Dislike.DislikeInfo => {
  * @param lists 列表信息
  */
 export const dislikeInfoAdd = async(lists: LX.Dislike.DislikeMusicInfo[]) => {
-  await inertDislikeList(lists.map(info => ({ content: `${info.name}${SPLIT_CHAR.DISLIKE_NAME}${info.singer}` })))
+  await insertDislikeList(lists.map(info => ({ content: `${info.name}${SPLIT_CHAR.DISLIKE_NAME}${info.singer}` })))
 }
 
 /**

@@ -22,7 +22,7 @@ export const queryMusicInfo = (id: string) => {
  * 批量插入歌曲信息
  * @param musicInfos 列表
  */
-export const inertMusicInfo = (musicInfos: LX.DBService.MusicInfoOtherSource[]) => {
+export const insertMusicInfo = (musicInfos: LX.DBService.MusicInfoOtherSource[]) => {
   const db = getDB()
   const musicInfoInsertStatement = createMusicInfoInsertStatement()
   db.transaction((musicInfos: LX.DBService.MusicInfoOtherSource[]) => {

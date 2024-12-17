@@ -1,6 +1,6 @@
 import {
   queryMusicUrl,
-  inertMusicUrl,
+  insertMusicUrl,
   deleteMusicUrl,
   clearMusicUrl,
   countMusicUrl,
@@ -22,7 +22,7 @@ export const getMusicUrl = (id: string): string | null => {
  * @param urlInfos url信息
  */
 export const musicUrlSave = (urlInfos: LX.Music.MusicUrlInfo[]) => {
-  inertMusicUrl(urlInfos)
+  insertMusicUrl(urlInfos)
 }
 
 /**
