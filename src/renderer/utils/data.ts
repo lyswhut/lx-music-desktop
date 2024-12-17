@@ -56,7 +56,9 @@ export const setListPosition = async(id: string, position?: number) => {
   listPosition[id] = position ?? 0
   saveListPositionThrottle()
 }
-export const removeListPosition = (id: string) => {
+export const removeListPosition = async(id: string) => {
+  await initPosition()
+  if (listPosition[id] == null) return
   delete listPosition[id]
   saveListPositionThrottle()
 }
@@ -124,7 +126,9 @@ export const setListUpdateTime = async(id: string, time: number) => {
 //   listUpdateInfo[id] = { updateTime, isAutoUpdate }
 //   saveListUpdateInfo()
 // }
-export const removeListUpdateInfo = (id: string) => {
+export const removeListUpdateInfo = async(id: string) => {
+  await initListUpdateInfo()
+  if (listUpdateInfo[id] == null) return
   delete listUpdateInfo[id]
   saveListUpdateInfo()
 }
