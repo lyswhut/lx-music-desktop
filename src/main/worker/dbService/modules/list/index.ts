@@ -2,7 +2,7 @@ import { LIST_IDS } from '@common/constants'
 import { arrPush, arrPushByPosition, arrUnshift } from '@common/utils/common'
 import {
   deleteUserLists,
-  inertUserLists,
+  insertUserLists,
   insertMusicInfoList,
   insertMusicInfoListAndRefreshOrder,
   moveMusicInfo,
@@ -61,7 +61,7 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
         position: position + index,
       }
     })
-    inertUserLists(newLists)
+    insertUserLists(newLists)
     userLists = [...userLists, ...newLists]
   } else {
     const newUserLists = [...userLists]
@@ -70,7 +70,7 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
     newUserLists.forEach((list, index) => {
       list.position = index
     })
-    inertUserLists(newUserLists, true)
+    insertUserLists(newUserLists, true)
     userLists = newUserLists
   }
 }
@@ -86,7 +86,7 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
 //       position: index,
 //     }
 //   })
-//   inertUserLists(newUserLists, true)
+//   insertUserLists(newUserLists, true)
 //   userLists = newUserLists
 // }
 
@@ -145,7 +145,7 @@ export const updateUserListsPosition = (position: number, ids: string[]) => {
   newUserLists.forEach((list, index) => {
     list.position = index
   })
-  inertUserLists(newUserLists, true)
+  insertUserLists(newUserLists, true)
   userLists = newUserLists
 }
 

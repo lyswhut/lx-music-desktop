@@ -1,12 +1,12 @@
 import {
   queryLyric,
   queryRawLyric,
-  inertRawLyric,
+  insertRawLyric,
   deleteRawLyric,
   updateRawLyric,
   clearRawLyric,
   queryEditedLyric,
-  inertEditedLyric,
+  insertEditedLyric,
   deleteEditedLyric,
   updateEditedLyric,
   clearEditedLyric,
@@ -90,7 +90,7 @@ export const getRawLyric = (id: string): LX.Music.LyricInfo => {
  * @param lyricInfo 歌词信息
  */
 export const rawLyricAdd = (id: string, lyricInfo: LX.Music.LyricInfo) => {
-  inertRawLyric(toDBLyric(id, 'raw', lyricInfo))
+  insertRawLyric(toDBLyric(id, 'raw', lyricInfo))
 }
 
 /**
@@ -150,7 +150,7 @@ export const getEditedLyric = (id: string): LX.Music.LyricInfo => {
  * @param lyricInfo 歌词信息
  */
 export const editedLyricAdd = (id: string, lyricInfo: LX.Music.LyricInfo) => {
-  inertEditedLyric(toDBLyric(id, 'edited', lyricInfo))
+  insertEditedLyric(toDBLyric(id, 'edited', lyricInfo))
 }
 
 /**
@@ -185,7 +185,7 @@ export const editedLyricClear = () => {
 export const editedLyricUpdateAddAndUpdate = (id: string, lyricInfo: LX.Music.LyricInfo) => {
   const lyrics = queryEditedLyric(id)
   if (lyrics.length) updateEditedLyric(toDBLyric(id, 'edited', lyricInfo))
-  else inertEditedLyric(toDBLyric(id, 'edited', lyricInfo))
+  else insertEditedLyric(toDBLyric(id, 'edited', lyricInfo))
 }
 
 /**

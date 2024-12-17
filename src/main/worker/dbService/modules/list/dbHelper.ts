@@ -40,7 +40,7 @@ export const queryAllUserList = () => {
  * @param lists 列表
  * @param isClear 是否清空列表
  */
-export const inertUserLists = (lists: LX.DBService.UserListInfo[], isClear: boolean = false) => {
+export const insertUserLists = (lists: LX.DBService.UserListInfo[], isClear: boolean = false) => {
   const db = getDB()
   const listClearStatement = createListClearStatement()
   const listInsertStatement = createListInsertStatement()
