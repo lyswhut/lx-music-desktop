@@ -39,7 +39,7 @@ export const queryRawLyric = (id: string) => {
  * 批量插入原始歌词
  * @param lyrics 列表
  */
-export const inertRawLyric = (lyrics: LX.DBService.Lyricnfo[]) => {
+export const insertRawLyric = (lyrics: LX.DBService.Lyricnfo[]) => {
   const db = getDB()
   const rawLyricInsertStatement = createRawLyricInsertStatement()
   db.transaction((lyrics: LX.DBService.Lyricnfo[]) => {
@@ -102,7 +102,7 @@ export const queryEditedLyric = (id: string) => {
  * 批量插入已编辑歌词
  * @param lyrics 列表
  */
-export const inertEditedLyric = (lyrics: LX.DBService.Lyricnfo[]) => {
+export const insertEditedLyric = (lyrics: LX.DBService.Lyricnfo[]) => {
   const db = getDB()
   const rawLyricInsertStatement = createEditedLyricInsertStatement()
   db.transaction((lyrics: LX.DBService.Lyricnfo[]) => {

@@ -20,7 +20,7 @@ export const queryDownloadList = () => {
  * 批量插入下载歌曲并刷新顺序
  * @param mInfos 列表
  */
-export const inertDownloadList = (mInfos: LX.DBService.DownloadMusicInfo[], listPositions: Array<{ id: string, position: number }>) => {
+export const insertDownloadList = (mInfos: LX.DBService.DownloadMusicInfo[], listPositions: Array<{ id: string, position: number }>) => {
   const db = getDB()
   const insertStatement = createInsertStatement()
   const updatePositionStatement = createUpdatePositionStatement()
