@@ -57,6 +57,7 @@ export const setListPosition = async(id: string, position?: number) => {
   saveListPositionThrottle()
 }
 export const removeListPosition = (id: string) => {
+  if (!listPosition?.[id]) return
   delete listPosition[id]
   saveListPositionThrottle()
 }
