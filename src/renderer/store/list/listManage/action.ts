@@ -166,8 +166,8 @@ export const userListsRemove = (ids: string[]) => {
   const changedIds = []
   for (const id of ids) {
     removeUserList(id)
-    removeListPosition(id)
-    removeListUpdateInfo(id)
+    void removeListPosition(id)
+    void removeListUpdateInfo(id)
     if (!allMusicList.has(id)) continue
     removeMusicList(id)
     changedIds.push(id)
