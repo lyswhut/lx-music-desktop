@@ -619,7 +619,6 @@ export default {
   }
 }
 .label {
-  .mixin-ellipsis-2;
   padding-top: 10px;
   text-align: center;
   line-height: 1.1;
@@ -770,7 +769,7 @@ export default {
 .footer {
   padding: 15px;
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
