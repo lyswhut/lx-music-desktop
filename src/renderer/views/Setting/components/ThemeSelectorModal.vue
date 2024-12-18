@@ -214,7 +214,6 @@ export default {
       text-align: center;
       height: 1.2em;
       font-size: 14px;
-      .mixin-ellipsis-1;
     }
   }
 }
