@@ -103,12 +103,16 @@
       <!-- <div :class="$style.note">
         <p>{{ $t('theme_selector_modal__title_tip') }}</p>
       </div> -->
-      <div :class="$style.footer">
+      <div :class="$style.footerChkBox">
         <div :class="$style.subContent">
-          <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
           <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
           <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
           <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
+        </div>
+      </div>
+      <div :class="$style.footer">
+        <div :class="$style.subContent">
+          <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
         </div>
         <div :class="$style.subContent">
           <base-btn v-if="themeId" :class="$style.btn" @click="handleRemove">{{ $t('theme_edit_modal__remove') }}</base-btn>
@@ -766,10 +770,31 @@ export default {
   //   }
   // }
 }
-.footer {
+
+.footerChkBox {
   padding: 15px;
   display: flex;
   flex-flow: row wrap;
+  align-items: center;
+  justify-content: right;
+  gap: 15px;
+  font-size: 14px;
+  .subContent {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .checkbox {
+    flex: none;
+  }
+}
+
+.footer {
+  padding: 15px;
+  display: flex;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
   gap: 15px;
@@ -785,7 +810,7 @@ export default {
     flex: none;
   }
   .input {
-    min-width: 0;
+    max-width: 140px;
     flex: 0 1 auto;
   }
 }
