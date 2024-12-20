@@ -100,21 +100,16 @@
           </div>
         </div>
       </div>
-      <!-- <div :class="$style.note">
-        <p>{{ $t('theme_selector_modal__title_tip') }}</p>
-      </div> -->
-      <div :class="$style.footerChkBox">
-        <div :class="$style.subContent">
-          <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
-          <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
-          <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
-        </div>
-      </div>
       <div :class="$style.footer">
-        <div :class="$style.subContent">
+        <div :class="$style.subContent" style="flex-wrap: wrap;">
           <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
+          <div :class="$style.subContent">
+            <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
+            <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
+            <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
+          </div>
         </div>
-        <div :class="$style.subContent">
+        <div :class="$style.subContent" style="flex: none;">
           <base-btn v-if="themeId" :class="$style.btn" @click="handleRemove">{{ $t('theme_edit_modal__remove') }}</base-btn>
           <base-btn v-if="themeId" :class="$style.btn" @click="handleSaveNew">{{ $t('theme_edit_modal__save_new') }}</base-btn>
           <!-- <base-btn :class="$style.btn" @click="handleCancel">{{ $t('btn_cancel') }}</base-btn> -->
@@ -625,7 +620,6 @@ export default {
 .label {
   padding-top: 10px;
   text-align: center;
-  line-height: 1.1;
 }
 
 .bg {
@@ -770,27 +764,6 @@ export default {
   //   }
   // }
 }
-
-.footerChkBox {
-  padding: 15px;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: right;
-  gap: 15px;
-  font-size: 14px;
-  .subContent {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .checkbox {
-    flex: none;
-  }
-}
-
 .footer {
   padding: 15px;
   display: flex;
@@ -810,7 +783,7 @@ export default {
     flex: none;
   }
   .input {
-    max-width: 140px;
+    min-width: 0;
     flex: 0 1 auto;
   }
 }
