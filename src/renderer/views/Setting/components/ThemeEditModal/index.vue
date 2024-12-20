@@ -594,7 +594,7 @@ export default {
 }
 .item {
   padding: 15px 20px 0;
-  width: 60px;
+  width: 70px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
