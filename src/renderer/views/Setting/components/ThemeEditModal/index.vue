@@ -103,7 +103,7 @@
       <div :class="$style.footer">
         <div :class="$style.subContent" style="flex-wrap: wrap;">
           <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
-          <div :class="$style.subContent">
+          <div :class="$style.subContent" style="flex-wrap: wrap;">
             <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
             <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
             <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
@@ -594,7 +594,7 @@ export default {
 }
 .item {
   padding: 15px 20px 0;
-  width: 70px;
+  width: 74px;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
