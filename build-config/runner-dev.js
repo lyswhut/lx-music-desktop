@@ -61,7 +61,9 @@ function startRenderer() {
       },
       setupMiddlewares(middlewares, devServer) {
         devServer.app.use(hotMiddlewareRenderer)
-        devServer.middleware.waitUntilValid(resolve)
+        setImmediate(() => {
+          devServer.middleware.waitUntilValid(resolve)
+        })
 
         return middlewares
       },
@@ -107,7 +109,9 @@ function startRendererLyric() {
       },
       setupMiddlewares(middlewares, devServer) {
         devServer.app.use(hotMiddlewareRenderer)
-        devServer.middleware.waitUntilValid(resolve)
+        setImmediate(() => {
+          devServer.middleware.waitUntilValid(resolve)
+        })
         return middlewares
       },
     }, compiler)

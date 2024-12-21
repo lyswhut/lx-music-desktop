@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.10.0-beta.9",
+  "version": "2.10.0-beta.10",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "scripts": {
@@ -134,11 +134,11 @@
     "css-minimizer-webpack-plugin": "^7.0.0",
     "del": "^6.1.1",
     "electron": "^32.2.7",
-    "electron-builder": "^26.0.0-alpha.7",
+    "electron-builder": "^26.0.0-alpha.8",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "github:lyswhut/electron-devtools-installer#64596d615c1fc891eefd8aef1dfcb2c87aaadf03",
-    "electron-to-chromium": "^1.5.73",
-    "electron-updater": "^6.4.0-alpha.1",
+    "electron-to-chromium": "^1.5.75",
+    "electron-updater": "^6.4.0-alpha.2",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",
@@ -171,8 +171,8 @@
     "vue-loader": "^17.4.2",
     "vue-template-compiler": "^2.7.16",
     "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "5.0.4",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "5.2.0",
     "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^6.0.1"
   },
