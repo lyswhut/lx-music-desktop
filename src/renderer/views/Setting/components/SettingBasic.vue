@@ -361,11 +361,11 @@ export default {
     align-items: center;
     cursor: pointer;
     // color: var(--color-primary);
-    margin-right: 30px;
+    margin-right: 8px;
     transition: .3s ease;
     transition-property: color, opacity;
     margin-bottom: 18px;
-    width: 56px;
+    width: 86px;
 
     &:hover {
       opacity: .7;
