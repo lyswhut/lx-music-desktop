@@ -105,8 +105,10 @@
           <base-input v-model="themeName" :class="$style.input" :placeholder="$t('theme_selector_modal__theme_name')" />
           <div :class="$style.subContent" style="flex-wrap: wrap;">
             <base-checkbox id="theme_edit_modal__dark" v-model="isDark" :class="$style.checkbox" :label="$t('theme_edit_modal__dark')" @change="handleDark" />
-            <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
-            <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
+            <div :class="$style.subContent" style="flex-wrap: wrap;">
+              <base-checkbox id="theme_edit_modal__dark_font" v-model="isDarkFont" :class="$style.checkbox" :label="$t('theme_edit_modal__dark_font')" @change="handleDarkFont" />
+              <base-checkbox id="theme_edit_modal__preview" v-model="preview" :class="$style.checkbox" :label="$t('theme_edit_modal__preview')" @change="handlePreview" />
+            </div>
           </div>
         </div>
         <div :class="$style.subContent" style="flex: none;">
@@ -776,14 +778,14 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
   }
 
   .checkbox {
     flex: none;
   }
   .input {
-    min-width: 0;
+    max-width: 150px;
     flex: 0 1 auto;
   }
 }
