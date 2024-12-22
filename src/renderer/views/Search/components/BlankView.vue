@@ -93,7 +93,7 @@ const handleSearch = (text) => {
 .noitemListContainer {
   padding: 3% 15px 15px;
   // margin-top: -20px;
-  min-height: 300px;
+  min-height: 250px;
   max-height: 94.7%;
 }
 .noitemList {
