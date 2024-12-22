@@ -1,6 +1,6 @@
 <template>
   <material-modal :show="visible" teleport="#view" bg-close @close="closeModal" @after-leave="handleAfterLeave">
-    <main :class="$style.main">
+    <main class="scroll" :class="$style.main">
       <div :class="$style.header">
         <h2>{{ listName }}</h2>
       </div>
