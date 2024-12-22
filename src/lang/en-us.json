@@ -684,7 +684,7 @@
   "theme_edit_modal__primary": "Theme Color",
   "theme_edit_modal__remove": "Remove",
   "theme_edit_modal__remove_tip": "Do you really want to remove this theme?",
-  "theme_edit_modal__save_new": "Save New",
+  "theme_edit_modal__save_new": "Copy",
   "theme_edit_modal__select_bg_file": "Choose a background image",
   "theme_edit_modal__title": "Edit Theme",
   "theme_green": "Green",
