@@ -1,7 +1,8 @@
 <template>
   <material-modal :show="modelValue" max-height="90%" teleport="#view" @close="handleCancel">
     <main :class="$style.main">
-      <h2>{{ $t('theme_edit_modal__title') }}</h2>
+      <template v-if="!themeId"><h2>{{ $t('theme_edit_modal__title_add') }}</h2></template>
+      <template v-if="themeId"><h2>{{ $t('theme_edit_modal__title_edit') }}</h2></template>
       <div class="scroll" :class="$style.content">
         <div :class="[$style.group, $style.base]">
           <div :class="$style.groupContent">
