@@ -165,8 +165,10 @@ export default {
 
 .main {
   padding: 10px 7px 0;
-  // width: 560px;
-  min-width: 280px;
+  width: 560px;
+  max-width: 100%;
+  box-sizing: border-box;
+  // min-width: 280px;
   display: flex;
   flex-flow: column nowrap;
   min-height: 0;
