@@ -631,7 +631,7 @@
   "sync__list_merge_tip_desc": "將兩邊的清單合併到一起，相同的歌曲將被去掉（去掉的是被合併者的歌曲），不同的歌曲將被添加。",
   "sync__list_other_tip_desc": "「取消同步」將不使用清單同步功能。",
   "sync__list_overwrite_tip_desc": "被覆寫者與覆寫者清單 ID 相同的清單將被移除後取代成覆寫者的清單（清單 ID 不同的清單將被合併到一起）。若勾選「完全覆寫」，則被覆寫者的所有清單將被移除，然後取代成覆寫者的清單。",
-  "sync__list_title": "選擇與 {name} 的清單同步方式",
+  "sync__list_title": "選擇與「{name}」的清單同步方式",
   "sync__merge_btn_local_remote": "「本機清單」合併「遠端清單」",
   "sync__merge_btn_remote_local": "「遠端清單」合併「本機清單」",
   "sync__merge_label": "合併",

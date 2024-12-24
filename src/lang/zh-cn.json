@@ -631,7 +631,7 @@
   "sync__list_merge_tip_desc": "将两边的列表合并到一起，相同的歌曲将被去掉（去掉的是被合并者的歌曲），不同的歌曲将被添加。",
   "sync__list_other_tip_desc": "「取消同步」将不使用列表同步功能。",
   "sync__list_overwrite_tip_desc": "被覆盖者与覆盖者列表 ID 相同的列表将被移除后替换成覆盖者的列表（列表 ID 不同的列表将被合并到一起）。若勾选「完全覆盖」，则被覆盖者的所有列表将被移除，然后替换成覆盖者的列表。",
-  "sync__list_title": "选择与 {name} 的列表同步方式",
+  "sync__list_title": "选择与「{name}」的列表同步方式",
   "sync__merge_btn_local_remote": "「本机列表」合并「远程列表」",
   "sync__merge_btn_remote_local": "「远程列表」合并「本机列表」",
   "sync__merge_label": "合并",
