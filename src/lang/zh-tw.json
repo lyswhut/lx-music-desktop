@@ -312,7 +312,7 @@
   "setting__backup_part_import_setting": "匯入設定",
   "setting__backup_part_import_setting_desc": "選取設定檔",
   "setting__basic": "基本設定",
-  "setting__basic_animation": "隨機化彈出動畫",
+  "setting__basic_animation": "彈出層隨機動畫",
   "setting__basic_control_btn_position": "控制按鈕位置",
   "setting__basic_control_btn_position_left": "左邊",
   "setting__basic_control_btn_position_right": "右邊",
