@@ -30,7 +30,7 @@
 [9]: https://img.shields.io/github/license/lyswhut/lx-music-desktop
 [10]: https://github.com/lyswhut/lx-music-desktop/blob/master/LICENSE -->
 
-<p align="center">一个基于 Electron + Vue 开发的音乐软件</p>
+<p align="center">一个基于 Electron & Vue 开发的音乐软件</p>
 
 ## 说明
 
