@@ -345,7 +345,7 @@
   "setting__basic_start_in_fullscreen": "以全螢幕模式啟動",
   "setting__basic_theme": "主題顏色",
   "setting__basic_theme_auto_tip": "此乃動態主題，你可以預先設定一個亮色主題及暗色主題，此後將根據系統的亮、暗主題色自動切換為你預先設定的相應主題。\n\n註：滑鼠右擊此主題項即可開啟亮、暗色主題設定視窗。",
-  "setting__basic_to_tray": "關閉軟體時不退出軟體將其最小化到系統系統匣",
+  "setting__basic_to_tray": "關閉視窗時不退出軟體將其最小化到系統匣",
   "setting__basic_window_size": "視窗尺寸",
   "setting__basic_window_size_big": "大",
   "setting__basic_window_size_huge": "巨大",
