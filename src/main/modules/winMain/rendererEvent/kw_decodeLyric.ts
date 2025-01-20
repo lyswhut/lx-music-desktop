@@ -24,13 +24,13 @@ const decodeLyric = async(buf: Buffer, isGetLyricx: boolean) => {
   // const isLyric = info.includes('\r\nlrcx=0\r\n')
   if (buf.toString('utf8', 0, 10) != 'tp=content') return ''
   // const index = buf.indexOf('\r\n\r\n') + 4
-  const lrcData = await handleInflate(buf.slice(buf.indexOf('\r\n\r\n') + 4))
+  const lrcData = await handleInflate(buf.subarray(buf.indexOf('\r\n\r\n') + 4))
 
   if (!isGetLyricx) return iconv.decode(lrcData, 'gb18030')
 
   const buf_str = Buffer.from(lrcData.toString(), 'base64')
   const buf_str_len = buf_str.length
-  const output = new Uint16Array(buf_str_len)
+  const output = new Uint8Array(buf_str_len)
   let i = 0
   while (i < buf_str_len) {
     let j = 0
