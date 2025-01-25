@@ -46,4 +46,4 @@ Linux 系统至少需要 `GLIBC_2.29` 版本才能运行。
 - 更新 Issue 模板（#2153, @3gf8jv4dv）
 - 更新项目文档（@3gf8jv4dv）
 - 修订项目协议文件（#2146, #2152, @3gf8jv4dv）
-- 更新 Electron 到 v32.2.7
+- 更新 Electron 到 v32.3.0
