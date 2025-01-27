@@ -183,7 +183,7 @@ class OLAProcessor extends globalThis.AudioWorkletProcessor {
       // DUE TO CHROME BUG/INCONSISTENCY, WHEN INACTIVE SILENT NODE IS CONNECTED, inputs[0] IS EITHER EMPTY OR CONTAINS 1 CHANNEL OF SILENT AUDIO DATA, REQUIRES SPECIAL HANDLING
       // if (inputs[0][0].some(this.checkForNotSilence)) console.warn("single channel not silence exception!");
       if (this.lastSilencedHopCount < this.nbOverlaps2x) {
-        // ALLOW nbOverlaps2x BLOCKS OF SILENCE TO COME THROUGH TO ACCOMODATE LATENCY TAIL
+        // ALLOW nbOverlaps2x BLOCKS OF SILENCE TO COME THROUGH TO ACCOMMODATE LATENCY TAIL
         this.lastSilencedHopCount++
         inputs = this.fakeEmptyInputs
         this.processNow = true
