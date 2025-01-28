@@ -116,7 +116,7 @@ export const createWindow = () => {
     x: winSize.x,
     y: winSize.y,
     minWidth: 380,
-    minHeight: 80,
+    minHeight: 38,
     useContentSize: true,
     frame: false,
     transparent: true,

@@ -1,6 +1,6 @@
 // 设置窗口位置、大小
 export let minWidth = 80
-export let minHeight = 50
+export let minHeight = 38
 
 
 // const updateBounds = (bounds: Bounds) => {
@@ -14,9 +14,11 @@ export let minHeight = 50
  * @param param 新设置（相对于当前设置）
  * @returns
  */
-export const getLyricWindowBounds = (bounds: Electron.Rectangle, { x = 0, y = 0, w = 0, h = 0 }: LX.DesktopLyric.NewBounds): Electron.Rectangle => {
-  if (w < minWidth) w = minWidth
-  if (h < minHeight) h = minHeight
+export const getLyricWindowBounds = (bounds: Electron.Rectangle, { x = 0, y = 0, w, h }: LX.DesktopLyric.NewBounds): Electron.Rectangle => {
+  if (w == 0) w = bounds.width
+  else if (w < minWidth) w = minWidth
+  if (h == 0) h = bounds.height
+  else if (h < minHeight) h = minHeight
 
   if (global.lx.appSetting['desktopLyric.isLockScreen']) {
     if (!global.envParams.workAreaSize) return bounds

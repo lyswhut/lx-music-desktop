@@ -3,6 +3,7 @@ import { scrollTo } from '@common/utils/renderer'
 import { lyric } from '@lyric/store/lyric'
 import { isPlay, setting } from '@lyric/store/state'
 import { setWindowBounds } from '@lyric/utils/ipc'
+import { isWin } from '@common/utils'
 
 const getOffsetTop = (contentHeight, lineHeight) => {
   switch (setting['desktopLyric.scrollAlign']) {
@@ -108,12 +109,22 @@ export default (isComputeHeight) => {
       dom_lyric.value.scrollTop = msDownScrollY + msDownY - y
       startLyricScrollTimeout()
     } else if (winEvent.isMsDown) {
-      setWindowBounds({
-        x: x - winEvent.msDownX,
-        y: y - winEvent.msDownY,
-        w: window.innerWidth,
-        h: window.innerHeight,
-      })
+      // https://github.com/lyswhut/lx-music-desktop/issues/2244
+      if (isWin) {
+        setWindowBounds({
+          x: x - winEvent.msDownX,
+          y: y - winEvent.msDownY,
+          w: 0,
+          h: 0,
+        })
+      } else {
+        setWindowBounds({
+          x: x - winEvent.msDownX,
+          y: y - winEvent.msDownY,
+          w: window.innerWidth,
+          h: window.innerHeight,
+        })
+      }
     }
   }
   const handleMouseMsMove = event => {
