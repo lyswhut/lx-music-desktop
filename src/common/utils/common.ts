@@ -71,19 +71,6 @@ export const formatPlayTime2 = (time: number) => {
 }
 
 
-const encodeNames = {
-  '&nbsp;': ' ',
-  '&amp;': '&',
-  '&lt;': '<',
-  '&gt;': '>',
-  '&quot;': '"',
-  '&apos;': "'",
-  '&#039;': "'",
-} as const
-export const decodeName = (str: string | null = '') => {
-  return str?.replace(/(?:&amp;|&lt;|&gt;|&quot;|&apos;|&#039;|&nbsp;)/gm, (s: string) => encodeNames[s as keyof typeof encodeNames]) ?? ''
-}
-
 export const isUrl = (path: string) => /https?:\/\//.test(path)
 
 // 解析URL参数为对象

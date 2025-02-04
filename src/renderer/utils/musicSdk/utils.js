@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import dns from 'dns'
-import { decodeName } from '@common/utils/common'
+import { decodeName } from '@renderer/utils'
 
 export const toMD5 = str => crypto.createHash('md5').update(str).digest('hex')
 
