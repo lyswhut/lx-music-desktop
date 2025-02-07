@@ -22,6 +22,8 @@ export default (isComputeHeight) => {
     isMsDown: false,
     msDownX: 0,
     msDownY: 0,
+    windowW: 0,
+    windowH: 0,
   }
 
   let msDownY = 0
@@ -83,6 +85,8 @@ export default (isComputeHeight) => {
       winEvent.isMsDown = true
       winEvent.msDownX = x
       winEvent.msDownY = y
+      winEvent.windowW = window.innerWidth
+      winEvent.windowH = window.innerHeight
     }
   }
   const handleLyricMouseDown = event => {
@@ -114,8 +118,8 @@ export default (isComputeHeight) => {
         setWindowBounds({
           x: x - winEvent.msDownX,
           y: y - winEvent.msDownY,
-          w: 0,
-          h: 0,
+          w: winEvent.windowW,
+          h: winEvent.windowH,
         })
       } else {
         setWindowBounds({
