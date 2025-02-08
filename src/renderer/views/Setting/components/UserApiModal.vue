@@ -1,6 +1,6 @@
 <template lang="pug">
 material-modal(:show="modelValue" bg-close teleport="#view" @close="handleClose")
-  main(:class="$style.main")
+  main.scroll(:class="$style.main")
     h2 {{ $t('user_api__title') }}
     ul.scroll(v-if="apiList.length" :class="$style.content")
       li(v-for="(api, index) in apiList" :key="api.id" :class="[$style.listItem, {[$style.active]: appSetting['common.apiSource'] == api.id}]")
@@ -131,7 +131,6 @@ export default {
   min-width: 300px;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
   min-height: 0;
   // max-height: 100%;
   // overflow: hidden;
@@ -155,7 +154,7 @@ export default {
 
 .content {
   flex: auto;
-  min-height: 100px;
+  min-height: 80px;
   max-height: 100%;
   margin-top: 15px;
   padding: 0 7px;
