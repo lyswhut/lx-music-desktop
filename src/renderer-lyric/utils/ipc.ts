@@ -18,6 +18,9 @@ export const onSettingChanged = (listener: LX.IpcRendererEventListenerParams<Par
 export const setWindowBounds = (bounds: LX.DesktopLyric.NewBounds) => {
   rendererSend<LX.DesktopLyric.NewBounds>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_bounds, bounds)
 }
+export const setWindowResizeable = (resizable: boolean) => {
+  rendererSend<boolean>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_resizeable, resizable)
+}
 
 export const sendConnectMainWindowEvent = () => {
   rendererSend(WIN_LYRIC_RENDERER_EVENT_NAME.request_main_window_channel)

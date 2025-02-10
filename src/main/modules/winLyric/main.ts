@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { BrowserWindow } from 'electron'
 import { debounce, getPlatform, isLinux, isWin } from '@common/utils'
-import { initWindowSize } from './utils'
+import { initWindowSize, minHeight, minWidth } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
 
@@ -115,8 +115,8 @@ export const createWindow = () => {
     width: winSize.width,
     x: winSize.x,
     y: winSize.y,
-    minWidth: 380,
-    minHeight: 38,
+    minWidth,
+    minHeight,
     useContentSize: true,
     frame: false,
     transparent: true,
@@ -158,6 +158,11 @@ export const closeWindow = () => {
 export const showWindow = () => {
   if (!browserWindow) return
   browserWindow.show()
+}
+
+export const setResizeable = (isResizeable: boolean) => {
+  if (!browserWindow) return
+  browserWindow.setResizable(isResizeable)
 }
 
 export const sendEvent = <T = any>(name: string, params?: T) => {

@@ -162,6 +162,7 @@ const modules = {
     on_config_change: 'on_config_change',
     main_window_inited: 'main_window_inited',
     set_win_bounds: 'set_win_bounds',
+    set_win_resizeable: 'set_win_resizeable',
     key_down: 'key_down',
     request_main_window_channel: 'request_main_window_channel',
     provide_main_window_channel: 'provide_main_window_channel',
