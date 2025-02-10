@@ -1,5 +1,5 @@
 // 设置窗口位置、大小
-export let minWidth = 80
+export let minWidth = 38
 export let minHeight = 38
 
 

@@ -2,7 +2,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from '@common/utils/
 import { scrollTo } from '@common/utils/renderer'
 import { lyric } from '@lyric/store/lyric'
 import { isPlay, setting } from '@lyric/store/state'
-import { setWindowBounds } from '@lyric/utils/ipc'
+import { setWindowBounds, setWindowResizeable } from '@lyric/utils/ipc'
 import { isWin } from '@common/utils'
 
 const getOffsetTop = (contentHeight, lineHeight) => {
@@ -87,6 +87,8 @@ export default (isComputeHeight) => {
       winEvent.msDownY = y
       winEvent.windowW = window.innerWidth
       winEvent.windowH = window.innerHeight
+      // https://github.com/lyswhut/lx-music-desktop/issues/2244
+      if (isWin) setWindowResizeable(false)
     }
   }
   const handleLyricMouseDown = event => {
@@ -101,6 +103,7 @@ export default (isComputeHeight) => {
   const handleMouseMsUp = () => {
     isMsDown.value = false
     winEvent.isMsDown = false
+    if (isWin) setWindowResizeable(true)
   }
 
   const handleMove = (x, y) => {
