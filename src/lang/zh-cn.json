@@ -601,7 +601,7 @@
   "songlist__import_input_tip": "输入歌单链接或歌单 ID",
   "songlist__import_input_tip_1": "不支持跨源打开歌单，请确认要打开的歌单与当前选择的歌单来源是否对应",
   "songlist__import_input_tip_2": "若遇到无法打开的歌单链接，欢迎反馈",
-  "songlist__import_input_tip_3": "不支持用歌单 ID 打开酷狗源歌单，但支持用酷狗码打开",
+  "songlist__import_input_tip_3": "酷狗源歌单不支持用歌单 ID 或概念版链接打开，但支持用普通版链接或酷狗码打开",
   "songlist__import_input_tip_4": "网易源的「我喜欢」歌单需要 Token 才能打开，详情看 ",
   "songlist__import_input_title": "打开分享的歌单",
   "songlist__open_list": "打开「{name}」歌单",
