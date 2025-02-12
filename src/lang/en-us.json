@@ -601,7 +601,7 @@
   "songlist__import_input_tip": "Enter a playlist link/ID",
   "songlist__import_input_tip_1": "Cross-service playlists are not supported. Please confirm whether the playlist to be opened corresponds to the current chosen service",
   "songlist__import_input_tip_2": "If you encounter a playlist link that cannot be opened. Please send us your feedback",
-  "songlist__import_input_tip_3": "Unable to open Kugou playlist with playlist ID, but support to open it with Kugou code",
+  "songlist__import_input_tip_3": "Unable to open Kugou playlist with playlist ID or link from lite edition, but support to open it with Kugou code or link from main edition",
   "songlist__import_input_tip_4": "NetEase Cloud Music's \"I Like\" playlist requires a token to open. For details, see ",
   "songlist__import_input_title": "Open shared playlist",
   "songlist__open_list": "Open \"{name}\" playlist",
