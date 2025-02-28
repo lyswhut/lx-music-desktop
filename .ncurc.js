@@ -12,6 +12,7 @@ module.exports = {
     'eslint',
     '@types/node',
     'electron-debug',
+    'eslint-webpack-plugin',
     // 'eslint-config-standard-with-typescript',
   ],
 
@@ -30,6 +31,7 @@ module.exports = {
   // filter: [
   //   'electron',
   //   'eslint',
+  //   'eslint-webpack-plugin',
   //   'electron-debug',
   //   '@types/node',
   // ],
