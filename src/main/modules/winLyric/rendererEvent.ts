@@ -40,7 +40,7 @@ export default () => {
     // ... send one end to the worker ...
     sendNewDesktopLyricClient(port1)
     // ... and the other end to the main window.
-    event.senderFrame.postMessage(WIN_LYRIC_RENDERER_EVENT_NAME.provide_main_window_channel, null, [port2])
+    event.senderFrame?.postMessage(WIN_LYRIC_RENDERER_EVENT_NAME.provide_main_window_channel, null, [port2])
     // Now the main window and the worker can communicate with each other
     // without going through the main process!
     console.log('request_main_window_channel')
