@@ -432,7 +432,8 @@ export const setMute = (isMute: boolean) => {
 }
 
 export const getCurrentTime = () => {
-  return audio?.currentTime ?? 0
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return audio?.currentTime || 0
 }
 
 export const setCurrentTime = (time: number) => {
@@ -449,7 +450,8 @@ export const setVolume = (volume: number) => {
 }
 
 export const getDuration = () => {
-  return audio?.duration ?? 0
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return audio?.duration || 0
 }
 
 // export const getPlaybackRate = () => {

@@ -344,6 +344,16 @@ export const allHotKeys = markRaw({
       type: APP_EVENT_NAMES.winMainName,
     },
     {
+      name: hotKeys.HOTKEY_PLAYER.seekbackward.name,
+      action: hotKeys.HOTKEY_PLAYER.seekbackward.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.seekforward.name,
+      action: hotKeys.HOTKEY_PLAYER.seekforward.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
       name: hotKeys.HOTKEY_PLAYER.music_dislike.name,
       action: hotKeys.HOTKEY_PLAYER.music_dislike.action,
       type: APP_EVENT_NAMES.winMainName,
@@ -393,6 +403,16 @@ export const allHotKeys = markRaw({
     {
       name: hotKeys.HOTKEY_PLAYER.next.name,
       action: hotKeys.HOTKEY_PLAYER.next.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.seekbackward.name,
+      action: hotKeys.HOTKEY_PLAYER.seekbackward.action,
+      type: APP_EVENT_NAMES.winMainName,
+    },
+    {
+      name: hotKeys.HOTKEY_PLAYER.seekforward.name,
+      action: hotKeys.HOTKEY_PLAYER.seekforward.action,
       type: APP_EVENT_NAMES.winMainName,
     },
     {
