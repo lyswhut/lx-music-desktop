@@ -51,6 +51,16 @@ const hotKey = {
       action: 'prev',
       type: '',
     },
+    seekbackward: {
+      name: 'seekbackward',
+      action: 'seekbackward',
+      type: '',
+    },
+    seekforward: {
+      name: 'seekforward',
+      action: 'seekforward',
+      type: '',
+    },
     volume_up: {
       name: 'volume_up',
       action: 'volume_up',

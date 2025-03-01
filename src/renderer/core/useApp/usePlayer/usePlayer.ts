@@ -3,6 +3,8 @@ import { useI18n } from '@renderer/plugins/i18n'
 import { setTitle } from '@renderer/utils'
 
 import {
+  getCurrentTime,
+  getDuration,
   setPause, setStop,
 } from '@renderer/plugins/player'
 
@@ -97,6 +99,24 @@ export default () => {
     // })
   }
 
+  const setProgress = (time: number) => {
+    window.app_event.setProgress(time)
+  }
+  const handleSeekforward = () => {
+    const seekOffset = 5
+    const curTime = getCurrentTime()
+    const time = Math.min(getCurrentTime() + seekOffset, getDuration())
+    if (Math.trunc(curTime) == Math.trunc(time)) return
+    setProgress(time)
+  }
+  const handleSeekbackward = () => {
+    const seekOffset = 5
+    const curTime = getCurrentTime()
+    const time = Math.max(getCurrentTime() - seekOffset, 0)
+    if (Math.trunc(curTime) == Math.trunc(time)) return
+    setProgress(time)
+  }
+
   const setStopStatus = () => {
     setPlay(false)
     setTitle(null)
@@ -120,6 +140,8 @@ export default () => {
   window.key_event.on(HOTKEY_PLAYER.music_love.action, collectMusic)
   window.key_event.on(HOTKEY_PLAYER.music_unlove.action, uncollectMusic)
   window.key_event.on(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
+  window.key_event.on(HOTKEY_PLAYER.seekbackward.action, handleSeekbackward)
+  window.key_event.on(HOTKEY_PLAYER.seekforward.action, handleSeekforward)
 
   window.app_event.on('play', setPlayStatus)
   window.app_event.on('pause', setPauseStatus)
@@ -142,6 +164,8 @@ export default () => {
     window.key_event.off(HOTKEY_PLAYER.music_love.action, collectMusic)
     window.key_event.off(HOTKEY_PLAYER.music_unlove.action, uncollectMusic)
     window.key_event.off(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
+    window.key_event.off(HOTKEY_PLAYER.seekbackward.action, handleSeekbackward)
+    window.key_event.off(HOTKEY_PLAYER.seekforward.action, handleSeekforward)
 
 
     window.app_event.off('play', setPlayStatus)
