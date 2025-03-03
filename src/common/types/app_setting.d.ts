@@ -341,6 +341,11 @@ declare global {
       'desktopLyric.fullscreenHide': boolean
 
       /**
+       * 是否在暂停时隐藏歌词
+       */
+      'desktopLyric.pauseHide': boolean
+
+      /**
        * 桌面歌词窗口宽度
        */
       'desktopLyric.width': number

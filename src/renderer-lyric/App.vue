@@ -1,5 +1,5 @@
 <template>
-  <div id="container" :class="[{ lock: setting['desktopLyric.isLock'] }, { hide: isHoverHide && isMouseEnter }]">
+  <div id="container" :class="[{ lock: setting['desktopLyric.isLock'] }, { hide: isHide || (isHoverHide && isMouseEnter) }]">
     <div id="main" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" @mousemove="handleMouseMoveMain">
       <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
         <div v-show="!setting['desktopLyric.isLock']" class="control-bar">
@@ -36,6 +36,7 @@ import useCommon from '@lyric/useApp/useCommon'
 import useLyric from '@lyric/useApp/useLyric'
 import useTheme from '@lyric/useApp/useTheme'
 import { init as initLyricPlayer } from '@lyric/core/lyric'
+import usePauseHide from '@lyric/useApp/usePauseHide'
 
 const isShowResize = window.os != 'windows'
 useCommon()
@@ -43,6 +44,7 @@ const { handleMouseDown, handleTouchDown } = useWindowSize()
 const { handleMouseMoveMain, isHoverHide, isMouseEnter } = useHoverHide()
 useLyric()
 useTheme()
+const isHide = usePauseHide()
 
 
 onMounted(() => {

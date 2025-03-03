@@ -76,6 +76,7 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.isShowTaskbar': false,
   'desktopLyric.audioVisualization': false,
   'desktopLyric.fullscreenHide': true,
+  'desktopLyric.pauseHide': true,
   'desktopLyric.width': 450,
   'desktopLyric.height': 300,
   'desktopLyric.x': null,

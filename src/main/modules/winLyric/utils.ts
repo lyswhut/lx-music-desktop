@@ -53,6 +53,7 @@ export const watchConfigKeys = [
   'desktopLyric.isAlwaysOnTop',
   'desktopLyric.isAlwaysOnTopLoop',
   'desktopLyric.isShowTaskbar',
+  'desktopLyric.pauseHide',
   'desktopLyric.audioVisualization',
   'desktopLyric.width',
   'desktopLyric.height',
@@ -82,7 +83,7 @@ export const watchConfigKeys = [
   'player.isShowLyricRoma',
   'player.isPlayLxlrc',
   'player.playbackRate',
-] as const
+] satisfies Array<keyof LX.AppSetting>
 
 export const buildLyricConfig = (appSetting: Partial<LX.AppSetting>): Partial<LX.DesktopLyric.Config> => {
   const setting: Partial<LX.DesktopLyric.Config> = {}

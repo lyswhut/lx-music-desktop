@@ -388,6 +388,7 @@
   "setting__desktop_lyric_line_gap_dec": "Decrease spacing",
   "setting__desktop_lyric_lock": "Lock lyric window",
   "setting__desktop_lyric_lock_screen": "Do not allow lyric window to be dragged out of main screen",
+  "setting__desktop_lyric_pause_hide_hide": "Decrease lyric window transparency when pause",
   "setting__desktop_lyric_played_color": "Played",
   "setting__desktop_lyric_reset": "Reset",
   "setting__desktop_lyric_reset_window": "Reset Desktop Lyric Options",
