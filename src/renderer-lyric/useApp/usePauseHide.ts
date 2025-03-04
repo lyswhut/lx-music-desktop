@@ -20,7 +20,7 @@ export default () => {
           timeout = setTimeout(() => {
             timeout = null
             isHide.value = true
-          }, 1000)
+          }, 200)
         }
       }, {
         immediate: true,
