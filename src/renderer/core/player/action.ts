@@ -564,6 +564,7 @@ export const playPrev = async(isAutoToggle = false): Promise<void> => {
  * 恢复播放
  */
 export const play = () => {
+  window.lx.isPlayedStop &&= false
   if (playMusicInfo.musicInfo == null) return
   if (isEmpty()) {
     if (createGettingUrlId(playMusicInfo.musicInfo) != gettingUrlId) setMusicUrl(playMusicInfo.musicInfo)

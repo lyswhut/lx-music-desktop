@@ -87,14 +87,13 @@ export default () => {
   }
   const handleEnded = () => {
     // setTimeout(() => {
+    setAllStatus(t('player__end'))
     if (window.lx.isPlayedStop) {
-      setAllStatus(t('player__end'))
       console.log('played stop')
       return
     }
     // resetPlayerMusicInfo()
     // window.app_event.stop()
-    setAllStatus(t('player__end'))
     void playNext(true)
     // })
   }
