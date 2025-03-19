@@ -650,6 +650,7 @@
   "sync__overwrite_label": "覆寫",
   "sync__overwrite_tip": "覆寫:",
   "sync_status_disabled": "未連線",
+  "tag__low_quality": "LQ",
   "tag__high_quality": "HQ",
   "tag__lossless": "SQ",
   "tag__lossless_24bit": "24bit",

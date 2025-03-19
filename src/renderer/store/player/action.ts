@@ -13,14 +13,15 @@ import {
   playedList,
   tempPlayList,
 } from './state'
+import { appSetting } from '@renderer/store/setting'
 import { getListMusicsFromCache } from '@renderer/store/list/action'
 import { downloadList } from '@renderer/store/download/state'
 import { setProgress } from './playProgress'
 import { playNext } from '@renderer/core/player'
+import { getPlayQuality } from '@renderer/core/music/utils'
 import { LIST_IDS } from '@common/constants'
 import { toRaw } from '@common/utils/vueTools'
 import { arrPush, arrUnshift } from '@common/utils/common'
-
 
 type PlayerMusicInfoKeys = keyof typeof musicInfo
 
@@ -196,7 +197,19 @@ export const setPlayMusicInfo = (listId: string | null, musicInfo: LX.Download.L
     window.app_event.musicToggled()
   }
 }
-
+/**
+ * 设置当前播放歌曲的音质(如果是在线歌曲)
+ * @param musicInfo 歌曲信息
+ */
+export const setPlayMusicInfoQuality = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem) => {
+  if (!('progress' in musicInfo)) {
+    playMusicInfo.quality = musicInfo.source !== 'local'
+      ? getPlayQuality(appSetting['player.playQuality'], musicInfo)
+      : undefined
+  } else {
+    playMusicInfo.quality = undefined
+  }
+}
 /**
  * 将歌曲添加到已播放列表
  * @param playMusicInfo playMusicInfo对象

@@ -650,6 +650,7 @@
   "sync__overwrite_label": "Overwrite",
   "sync__overwrite_tip": "Overwrite: ",
   "sync_status_disabled": "not connected",
+  "tag__low_quality": "LQ",
   "tag__high_quality": "HQ",
   "tag__lossless": "SQ",
   "tag__lossless_24bit": "24bit",
