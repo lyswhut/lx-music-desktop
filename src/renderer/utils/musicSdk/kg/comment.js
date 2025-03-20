@@ -1,7 +1,7 @@
 import { httpFetch } from '../../request'
 import { decodeName, dateFormat2 } from '../../index'
 import { signatureParams } from './util'
-import { getMusicInfoRaw } from './musicInfo'
+// import { getMusicInfoRaw } from './musicInfo'
 
 export default {
   _requestObj: null,
@@ -9,11 +9,12 @@ export default {
   async getComment({ hash }, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
 
-    const res_id = (await getMusicInfoRaw(hash)).classification?.[0]?.res_id
-    if (!res_id) throw new Error('获取评论失败')
+    // const res_id = (await getMusicInfoRaw(hash)).classification?.[0]?.res_id
+    // if (!res_id) throw new Error('获取评论失败')
 
     let timestamp = Date.now()
-    const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=${res_id}&p=${page}&pagesize=${limit}&uuid=0&ver=10`
+    const params = `dfid=0&mid=16249512204336365674023395779019&clienttime=${timestamp}&uuid=0&extdata=${hash}&appid=1005&code=fc4be23b4e972707f36b8a828a93ba8a&schash=${hash}&clientver=11409&p=${page}&clienttoken=&pagesize=${limit}&ver=10&kugouid=0`
+    // const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=${res_id}&p=${page}&pagesize=${limit}&uuid=0&ver=10`
     const _requestObj = httpFetch(`http://m.comment.service.kugou.com/r/v1/rank/newest?${params}&signature=${signatureParams(params)}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.24',
@@ -29,10 +30,11 @@ export default {
     // console.log(songmid)
     if (this._requestObj2) this._requestObj2.cancelHttp()
     let timestamp = Date.now()
-    const params = `appid=1005&clienttime=${timestamp}&clienttoken=0&clientver=11409&code=fc4be23b4e972707f36b8a828a93ba8a&dfid=0&extdata=${hash}&kugouid=0&mid=16249512204336365674023395779019&mixsongid=0&p=${page}&pagesize=${limit}&uuid=0&ver=10`
-    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/v1/weightlist?${params}&signature=${signatureParams(params)}`, {
+    const params = `dfid=0&mid=16249512204336365674023395779019&clienttime=${timestamp}&uuid=0&extdata=${hash}&appid=1005&code=fc4be23b4e972707f36b8a828a93ba8a&schash=${hash}&clientver=11409&p=${page}&clienttoken=&pagesize=${limit}&ver=10&kugouid=0`
+    // https://github.com/GitHub-ZC/wp_MusicApi/blob/bf9307dd138dc8ac6c4f7de29361209d4f5b665f/routes/v1/kugou/comment.js#L53
+    const _requestObj2 = httpFetch(`http://m.comment.service.kugou.com/r/v1/rank/topliked?${params}&signature=${signatureParams(params)}`, {
       headers: {
-        'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.24',
       },
     })
     const { body, statusCode } = await _requestObj2.promise
