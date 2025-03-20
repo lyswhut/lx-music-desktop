@@ -7,7 +7,7 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
 
     # - name: Get npm cache directory
     #   run: node -p -e '`NPM_CACHE_DIR=${require("child_process").execSync("npm config get cache").toString()}`' >> $GITHUB_ENV
