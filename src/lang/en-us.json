@@ -184,7 +184,7 @@
   "lyric_menu__size_add": "Increase font size\n(Right-click to fine-tune)",
   "lyric_menu__size_dec": "Decrease font size\n(Right-click to fine-tune)",
   "lyric_menu__size_reset": "Reset",
-  "media_device__empty_device_tip": "The audio output device is empty. If it cannot be played, please check whether the sound card driver has been installed or reinstall it!",
+  "media_device__empty_device_tip": "The audio output device is empty. If there is no playback, please check whether the sound card driver is installed. \nOr uninstall and reinstall the software, select \"install for me only\" during installation, and keep the default installation path.",
   "min": "Minimize",
   "music_album": "Album",
   "music_duplicate": "Duplicate song",

@@ -184,7 +184,7 @@
   "lyric_menu__size_add": "加大字体（右击可微调）",
   "lyric_menu__size_dec": "减小字体（右击可微调）",
   "lyric_menu__size_reset": "重置",
-  "media_device__empty_device_tip": "音频输出设备为空，若出现无法播放的情况，请检查声卡驱动是否已安装或重装声卡驱动！",
+  "media_device__empty_device_tip": "音频输出设备为空，若出现无法播放的情况，请检查声卡驱动是否已安装。或卸载并重新安装软件，安装时选「仅为我安装」，并保持默认安装路径。",
   "min": "最小化",
   "music_album": "专辑名",
   "music_duplicate": "重复歌曲",
