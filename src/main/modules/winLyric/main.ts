@@ -138,6 +138,7 @@ export const createWindow = () => {
       enableWebSQL: false,
       webgl: false,
       spellcheck: false, // 禁用拼写检查器
+      backgroundThrottling: false,
     },
   })
 
@@ -224,7 +225,7 @@ export const alwaysOnTopTools: AlwaysOnTopTools = {
         return
       }
       setAlwaysOnTop(true, 'screen-saver')
-    }, 1000)
+    }, 500)
   },
   clearLoop() {
     if (!this.timeout) return
