@@ -184,7 +184,7 @@
   "lyric_menu__size_add": "加大字體（右擊可微調）",
   "lyric_menu__size_dec": "減小字體（右擊可微調）",
   "lyric_menu__size_reset": "重設",
-  "media_device__empty_device_tip": "音訊輸出裝置為空，若出現無法播放的狀況，請檢查音效卡驅動是否已安裝或重裝音效卡驅動！",
+  "media_device__empty_device_tip": "音頻輸出設備為空，若出現無法播放的情況，請檢查聲卡驅動是否已安裝。\n或卸載並重新安裝軟件，安裝時選「僅為我安裝」，並保持默認安裝路徑。",
   "min": "最小化",
   "music_album": "專輯",
   "music_duplicate": "重複歌曲",
