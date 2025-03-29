@@ -335,12 +335,12 @@ export default {
   // text-align: center;
   height: 100%;
   width: 100%;
-  font-size: 16px;
+  font-size: var(--playDetail-lrc-font-size, 16px);
   z-index: 10;
   color: var(--color-400);
 
   .lyricSelectline {
-    padding: 8px 0;
+    padding: calc(var(--playDetail-lrc-font-size, 16px) / 2) 1px;
     overflow-wrap: break-word;
     transition: @transition-normal !important;
     transition-property: color, font-size;
