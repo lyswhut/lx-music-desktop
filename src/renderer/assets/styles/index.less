@@ -311,7 +311,7 @@ html {
 }
 
 .auto-hidden {
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 .center {
@@ -455,8 +455,8 @@ input, textarea {
   flex: none;
 
   .num {
-    .nobreak;
-    .center;
+    .nobreak();
+    .center();
     color: var(--color-font-label);
   }
   // box-shadow: 0 0 2px var(--color-primary-dark-500-alpha-800);
@@ -521,15 +521,15 @@ table {
       line-height: 16px;
       vertical-align: middle;
       box-sizing: border-box;
-      .mixin-ellipsis-1;
+      .mixin-ellipsis-1();
 
       &.auto {
         flex: auto;
       }
 
       &.num, .num {
-        .nobreak;
-        .center;
+        .nobreak();
+        .center();
         padding-left: 3px;
         padding-right: 3px;
         font-size: 11px;
@@ -545,7 +545,7 @@ table {
         align-items: center;
 
         >.name {
-          .mixin-ellipsis-1;
+          .mixin-ellipsis-1();
         }
       }
       .badge {

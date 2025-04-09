@@ -124,7 +124,7 @@ export default {
 .text {
   flex: auto;
   margin-bottom: 2px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 .label {

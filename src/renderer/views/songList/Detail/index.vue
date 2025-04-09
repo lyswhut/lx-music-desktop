@@ -200,7 +200,7 @@ export default {
   color: #fff;
   font-size: 12px;
   text-align: right;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 .songListHeaderMiddle {
@@ -208,7 +208,7 @@ export default {
   padding: 2px 7px;
   min-width: 0;
   h3 {
-    .mixin-ellipsis-1;
+    .mixin-ellipsis-1();
     line-height: 1.2;
     padding-bottom: 5px;
     color: var(--color-font);

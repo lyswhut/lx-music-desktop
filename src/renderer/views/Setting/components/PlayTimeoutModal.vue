@@ -137,13 +137,13 @@ export default {
   line-height: 36px;
   padding: 0 10px !important;
   width: 150px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   + .footerBtn {
     margin-left: 15px;
   }
 }
 .ruleLink {
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 </style>

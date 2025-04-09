@@ -156,7 +156,7 @@ defineExpose({
     // height: 2.6em;
     text-align: justify;
     line-height: 1.3;
-    .mixin-ellipsis-2;
+    .mixin-ellipsis-2();
   }
 }
 .songlist_info {
@@ -165,7 +165,7 @@ defineExpose({
   gap: 15px;
   margin-top: 8px;
   font-size: 12px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   text-align: justify;
   line-height: 1.2;
   // text-indent: 24px;
@@ -177,7 +177,7 @@ defineExpose({
 .author {
   margin-top: 6px;
   font-size: 12px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   text-align: justify;
   line-height: 1.3;
   // text-indent: 24px;
@@ -186,7 +186,7 @@ defineExpose({
 .time {
   margin-top: 3px;
   font-size: 12px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   text-align: justify;
   line-height: 1.3;
   // text-indent: 24px;

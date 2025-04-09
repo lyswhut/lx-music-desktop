@@ -112,7 +112,7 @@ export default {
 .name {
   flex: 0 1 auto;
   min-width: 0;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   color: var(--color-650);
 }
 .label {

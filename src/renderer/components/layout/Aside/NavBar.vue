@@ -119,7 +119,7 @@ export default {
   //   transition: @transition-normal;
   //   transition-property: color;
   //   color: @color-theme-font-label;
-  //   .mixin-ellipsis-1;
+  //   .mixin-ellipsis-1();
   // }
 }
 .navItem {
@@ -161,9 +161,9 @@ export default {
   justify-content: center;
 
   // border-radius: @radius-border;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   &:before {
-    .mixin-after;
+    .mixin-after();
     left: 0;
     top: 0;
     width: 3px;

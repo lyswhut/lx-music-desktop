@@ -176,12 +176,12 @@ export default {
 }
 .text {
   max-width: 100%;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 .albumName {
   font-size: 12px;
   opacity: 0.6;
-  // .mixin-ellipsis-1;
+  // .mixin-ellipsis-1();
 }
 .label {
   flex: none;

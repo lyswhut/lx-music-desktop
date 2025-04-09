@@ -229,7 +229,7 @@ export default {
   padding: 0 10px !important;
   width: calc(@item-width - 15px);
   min-width: 160px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 .newList {

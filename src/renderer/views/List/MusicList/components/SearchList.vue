@@ -343,12 +343,12 @@ export default {
 }
 .text {
   flex: auto;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 .albumName {
   font-size: 12px;
   opacity: 0.6;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 .source {
   flex: none;
