@@ -195,6 +195,8 @@
   "music_sort__title_multiple": "將已選取的 {num} 首歌曲的位置調整到：",
   "music_time": "長度",
   "music_toggle_clean": "取消變更",
+  "music_toggle_confirm": "確認",
+  "music_toggle_duplicate_tip": "列表中已存在相同的歌曲，是否將其移除並繼續？",
   "my_list": "我的清單",
   "no_item": "清單竟然是空的...",
   "not_agree": "不接受",

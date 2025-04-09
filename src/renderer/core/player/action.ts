@@ -235,6 +235,23 @@ const handlePlay = () => {
 /**
  * 播放列表内歌曲
  * @param listId 列表id
+ * @param id 歌曲id
+ */
+export const playListById = (listId: string, id: string) => {
+  const prevListId = playInfo.playerListId
+  setPlayListId(listId)
+  // pause()
+  const musicInfo = getList(listId).find(m => m.id == id)
+  if (!musicInfo) return
+  setPlayMusicInfo(listId, musicInfo)
+  if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()
+  clearTempPlayeList()
+  handlePlay()
+}
+
+/**
+ * 播放列表内歌曲
+ * @param listId 列表id
  * @param index 播放的歌曲位置
  */
 export const playList = (listId: string, index: number) => {
