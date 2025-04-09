@@ -195,6 +195,8 @@
   "music_sort__title_multiple": "Adjust the position of the selected {num} songs to: ",
   "music_time": "Length",
   "music_toggle_clean": "Cancel Change",
+  "music_toggle_confirm": "Confirm",
+  "music_toggle_duplicate_tip": "The same song already exists in the list, should I remove it and continue?",
   "my_list": "Your Library",
   "no_item": "Nothing's here...",
   "not_agree": "Decline",

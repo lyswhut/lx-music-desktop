@@ -18,7 +18,7 @@
               <button type="button" :class="$style.btn" @click="openDetail(item)">
                 <svg-icon name="share" />
               </button>
-              <button type="button" :class="$style.btn" @click="handleToggle(item)">
+              <button type="button" :class="$style.btn" @click="handlePlay(item)">
                 <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 287.386 287.386" space="preserve">
                   <use xlink:href="#icon-testPlay" />
                 </svg>
@@ -56,15 +56,19 @@
             </h2>
           </template>
         </div>
-        <base-btn :disabled="!toggleMusicInfo" :class="$style.btn" @click="handleClean">{{ $t('music_toggle_clean') }}</base-btn>
+        <base-btn :disabled="!toggleMusicInfo || musicInfo.id == toggleMusicInfo.id" :class="$style.btn" @click="handleConfirm">{{ $t('music_toggle_confirm') }}</base-btn>
       </div>
     </main>
   </material-modal>
 </template>
 
 <script>
+import { LIST_IDS } from '@common/constants'
 import { openUrl } from '@common/utils/electron'
+import { playNext } from '@renderer/core/player'
 import { getSourceI18nPrefix } from '@renderer/store'
+import { addTempPlayList } from '@renderer/store/player/action'
+import { playMusicInfo } from '@renderer/store/player/state'
 import { toNewMusicInfo, toOldMusicInfo } from '@renderer/utils'
 import musicSdk from '@renderer/utils/musicSdk'
 import { markRaw } from 'vue'
@@ -106,8 +110,8 @@ export default {
     show(n) {
       if (n) {
         this.isError = false
+        this.toggleMusicInfo = null
         const musicInfo = this.musicInfo
-        this.toggleMusicInfo = musicInfo.meta.toggleMusicInfo
         this.tabs = []
         this.lists = {}
         this.loading = true
@@ -143,17 +147,19 @@ export default {
     handleClose() {
       this.$emit('update:show', false)
     },
-    handleClean() {
-      this.handleToggle(null)
+    handleConfirm() {
+      this.$emit('toggle', this.toggleMusicInfo)
     },
     openDetail(minfo) {
       const url = musicSdk[minfo.source]?.getMusicDetailPageUrl(toOldMusicInfo(minfo))
       if (!url) return
       void openUrl(url)
     },
-    handleToggle(info) {
-      this.toggleMusicInfo = info
-      this.$emit('toggle', info)
+    handlePlay(musicInfo) {
+      this.toggleMusicInfo = musicInfo
+      const isPlaying = !!playMusicInfo.musicInfo
+      addTempPlayList([{ listId: LIST_IDS.PLAY_LATER, musicInfo, isTop: true }])
+      if (isPlaying) void playNext()
     },
   },
 }
