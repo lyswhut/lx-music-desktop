@@ -261,7 +261,7 @@ export default {
   // border-bottom: 1px solid #eee;
   h3 {
     font-size: 14px;
-    .mixin-ellipsis-1;
+    .mixin-ellipsis-1();
     line-height: 1.2;
   }
 }

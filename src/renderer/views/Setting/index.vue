@@ -191,7 +191,7 @@ export default {
 }
 .tocH2 {
   line-height: 1.5;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   font-size: 13px;
   color: var(--color-font);
   padding: 8px 10px;

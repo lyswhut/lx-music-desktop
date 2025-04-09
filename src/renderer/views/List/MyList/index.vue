@@ -275,7 +275,7 @@ export default {
   font-size: 12px;
   line-height: 38px;
   padding: 0 10px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 .headerBtns {
   flex: none;
@@ -373,7 +373,7 @@ export default {
   padding: 0 10px;
   font-size: 13px;
   line-height: @lists-item-height;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 .listsInput {
   width: 100%;

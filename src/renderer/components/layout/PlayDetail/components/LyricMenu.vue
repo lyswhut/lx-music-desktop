@@ -256,7 +256,7 @@ export default {
   transition: @transition-normal;
   transition-property: background-color, opacity;
   box-sizing: border-box;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   background-color: var(--color-content-background);
   border: none;
 

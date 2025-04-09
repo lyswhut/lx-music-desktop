@@ -256,7 +256,7 @@ export default {
   box-sizing: border-box;
 }
 .hotKeyItemTitle {
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   padding-bottom: 5px;
   color: var(--color-font-label);
   font-size: 12px;

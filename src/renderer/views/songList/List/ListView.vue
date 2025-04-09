@@ -133,7 +133,7 @@ onBeforeRouteLeave(() => {
     height: 2.6em;
     text-align: justify;
     line-height: 1.3;
-    .mixin-ellipsis-2;
+    .mixin-ellipsis-2();
   }
 }
 .songlist_info {
@@ -142,7 +142,7 @@ onBeforeRouteLeave(() => {
   gap: 15px;
   margin-top: 12px;
   font-size: 12px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   text-align: justify;
   line-height: 1.2;
   // text-indent: 24px;
@@ -154,7 +154,7 @@ onBeforeRouteLeave(() => {
 .author {
   margin-top: 6px;
   font-size: 12px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
   text-align: justify;
   line-height: 1.2;
   // text-indent: 24px;

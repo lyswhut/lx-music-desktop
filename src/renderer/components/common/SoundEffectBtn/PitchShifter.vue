@@ -83,7 +83,7 @@ const handleUpdatePlaybackRate = (value) => {
   min-height: 0;
   flex: none;
   &:before {
-    .mixin-after;
+    .mixin-after();
     position: absolute;
     top: 0;
     height: 1px;

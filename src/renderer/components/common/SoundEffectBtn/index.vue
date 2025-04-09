@@ -114,7 +114,7 @@ watch(visible, (visible) => {
   min-height: 0;
 
   &:before {
-    .mixin-after;
+    .mixin-after();
     position: absolute;
     left: 50%;
     height: 100%;

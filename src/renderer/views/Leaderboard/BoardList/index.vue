@@ -144,7 +144,7 @@ defineExpose({ hideMenu: handleMenuClick })
   padding: 0 10px;
   font-size: 13px;
   line-height: 36px;
-  .mixin-ellipsis-1;
+  .mixin-ellipsis-1();
 }
 
 
