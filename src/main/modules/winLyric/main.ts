@@ -127,6 +127,7 @@ export const createWindow = () => {
     minimizable: false,
     maximizable: false,
     fullscreenable: false,
+    roundedCorners: false,
     show: false,
     alwaysOnTop: isAlwaysOnTop,
     skipTaskbar: !isShowTaskbar,
