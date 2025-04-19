@@ -14,6 +14,8 @@ import { openDirInExplorer } from '@common/utils/electron'
 
 export const initGlobalData = () => {
   const envParams = parseEnvParams()
+  envParams.cmdParams.dt = !!envParams.cmdParams.dt
+
   global.envParams = {
     cmdParams: envParams.cmdParams,
     deeplink: envParams.deeplink,
