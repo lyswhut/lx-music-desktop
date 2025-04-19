@@ -87,7 +87,7 @@ export const createWindow = () => {
     resizable: false,
     maximizable: false,
     fullscreenable: true,
-    roundedCorners: false,
+    roundedCorners: global.envParams.cmdParams.dt,
     show: false,
     webPreferences: {
       session: ses,
@@ -109,7 +109,7 @@ export const createWindow = () => {
   browserWindow = new BrowserWindow(options)
 
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
-  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${!!global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()
 

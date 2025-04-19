@@ -77,6 +77,7 @@ export const createWindow = async(userApi: LX.UserApi.UserApiInfo) => {
     minimizable: false,
     maximizable: false,
     fullscreenable: false,
+    roundedCorners: false,
     hasShadow: false,
     show: false,
     webPreferences: {
