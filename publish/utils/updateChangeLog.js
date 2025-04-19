@@ -25,7 +25,7 @@ const updateChangeLog = async(newVerNum, newChangeLog) => {
   let changeLog = fs.readFileSync(changelogPath, 'utf-8')
   const prevVer = await getPrevVer()
   const log = `## [${newVerNum}](${pkg.repository.url.replace(/^git\+(http.+)\.git$/, '$1')}/compare/v${prevVer}...v${newVerNum}) - ${formatTime()}\n\n${newChangeLog}`
-  fs.writeFileSync(changelogPath, changeLog.replace(new RegExp('(## [?0.1.1]?)'), log + '\n$1'), 'utf-8')
+  fs.writeFileSync(changelogPath, changeLog.replace(/(## \[(?:\d+\.))/, log + '\n$1'), 'utf-8')
 }
 
 // const renderChangeLog = md => md_renderer(md)
