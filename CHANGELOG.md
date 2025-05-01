@@ -6,6 +6,41 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.11.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.10.0...v2.11.0) - 2025-05-01
+
+### 新增
+
+- 新增「快进/快退5秒」自定义快捷键设置（#2289）
+- 新增「设置 → 桌面歌词设置 → 暂停时提高歌词透明度」设置，默认启用（#2294）
+
+### 修复
+
+- 修复 Windows 下桌面歌词最小高度与宽度设置问题（#2244）
+- 修复 Windows 下界面缩放后移动桌面歌词会改变歌词窗口大小的问题（#2244）
+- 修复 tx 歌单搜索名字、描述出现乱码的问题（#2250）
+- 修复本地 FLAC 文件内嵌歌词无法读取的问题
+- 修复潜在播放暂停的问题
+- 修复 kw 歌单详情出现打开失败的问题（#2317）
+- 修复 kg 热门评论无法获取的问题
+- 修复桌面歌词被遮挡时会被暂停的问题（#2320）
+- 修复 kg 歌单打开失败的问题（thanks @Folltoshe）
+
+### 优化
+
+- 允许更小的桌面歌词窗口宽度
+- 允许拖动桌面歌词控制栏空白处移动歌词窗口（#2280）
+- 优化「自定义源管理」对话框在小窗口下的布局（#2247, @3gf8jv4dv）
+- 优化软件文案编排（#2259, #2266, #2269, #2296, @3gf8jv4dv）
+
+### 变更
+
+- 我的列表-歌曲菜单中的 歌曲换源 功能从之前的类似软连接的形式改成替换歌曲的形式，也就是说，现在该功能相当于快速在线搜索歌曲，确认换源后将自动将原来的歌曲删除再将选择的歌曲插入被删除歌曲的位置。
+
+### 其他
+
+- 更新项目文档（@3gf8jv4dv）
+- 更新 Electron 到 35.2.2
+
 ## [2.10.0](https://github.com/lyswhut/lx-music-desktop/compare/v2.9.0...v2.10.0) - 2025-01-27
 
 落雪祝大家新年快乐！
