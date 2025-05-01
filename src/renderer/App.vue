@@ -3,9 +3,13 @@
     <layout-aside id="left" />
     <div id="right">
       <layout-toolbar id="toolbar" />
-      <layout-view id="view" />
+      <div class="middle">
+        <layout-view id="view" />
+        <PlayListWindow v-if="isShowPlaylist" class="playlist-window" @close="closePlaylist()" />
+      </div>
       <layout-play-bar id="player" />
     </div>
+
     <layout-icons />
     <layout-change-log-modal />
     <layout-update-modal />
@@ -18,28 +22,21 @@
 
 <script setup>
 import { onMounted } from '@common/utils/vueTools'
-// import BubbleCursor from '@common/utils/effects/cursor-effects/bubbleCursor'
-// import '@common/utils/effects/snow.min'
 import useApp from '@renderer/core/useApp'
+import PlayListWindow from '@renderer/components/common/PlayListWindow.vue'
+import { isShowPlaylist } from '@renderer/store/player/state'
+import { setShowPlaylist } from '@renderer/store/player/action'
+
+const closePlaylist = () => {
+  setShowPlaylist(false)
+}
 
 useApp()
 
 onMounted(() => {
   document.getElementById('root').style.display = 'block'
-
-  // const styles = getComputedStyle(document.documentElement)
-  // window.lxData.bubbleCursor = new BubbleCursor({
-  //   fillStyle: styles.getPropertyValue('--color-primary-alpha-900'),
-  //   strokeStyle: styles.getPropertyValue('--color-primary-alpha-700'),
-  // })
 })
-
-// onBeforeUnmount(() => {
-//   window.lxData.bubbleCursor?.destroy()
-// })
-
 </script>
-
 
 <style lang="less">
 @import './assets/styles/index.less';
@@ -49,10 +46,8 @@ html {
   height: 100vh;
 }
 html, body {
-  // overflow: hidden;
   box-sizing: border-box;
 }
-
 body {
   user-select: none;
   height: 100%;
@@ -77,13 +72,6 @@ body {
 .transparent {
   background: transparent;
   padding: @shadow-app;
-  // #waiting-mask {
-  //   border-radius: @radius-border;
-  //   left: @shadow-app;
-  //   right: @shadow-app;
-  //   top: @shadow-app;
-  //   bottom: @shadow-app;
-  // }
   #body {
     border-radius: @radius-border;
   }
@@ -91,10 +79,6 @@ body {
     box-shadow: 0 0 @shadow-app rgba(0, 0, 0, 0.5);
     border-radius: @radius-border;
   }
-  // #container {
-    // border-radius: @radius-border;
-    // background-color: transparent;
-  // }
 }
 .disableTransparent {
   background-color: var(--color-content-background);
@@ -107,10 +91,6 @@ body {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
-
-  // #view { // 偏移5px距离解决非透明模式下右侧滚动条无法拖动的问题
-  //   margin-right: 5Px;
-  // }
 }
 .fullscreen {
   background-color: var(--color-content-background);
@@ -132,26 +112,45 @@ body {
   flex: none;
   width: @width-app-left;
 }
+
 #right {
   flex: auto;
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column;
   transition: background-color @transition-normal;
   background-color: var(--color-main-background);
-
   border-top-left-radius: @radius-border;
   border-bottom-left-radius: @radius-border;
   overflow: hidden;
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
 }
-#toolbar, #player {
+
+#toolbar,
+#player {
   flex: none;
 }
+
+/* 中间区域横向布局 */
+.middle {
+  flex: auto;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* 主内容区域自动伸缩 */
 #view {
   position: relative;
   flex: auto;
-  // display: flex;
   min-height: 0;
+}
+
+/* 播放列表窗口，默认宽度固定 */
+.playlist-window {
+  width: 300px;
+  flex: none;
+  border-left: 1px solid var(--color-border);
+  background-color: var(--color-main-background);
 }
 
 .view-container {
@@ -163,6 +162,4 @@ body {
 #view.show-modal > .view-container {
   opacity: .2;
 }
-
 </style>
-

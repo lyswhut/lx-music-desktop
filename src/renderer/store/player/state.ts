@@ -36,6 +36,8 @@ export const statusText = ref('')
 
 export const isShowPlayerDetail = ref(false)
 
+export const isShowPlaylist = ref(false)
+
 export const isShowPlayComment = ref(false)
 
 export const isShowLrcSelectContent = ref(false)

@@ -12,6 +12,7 @@ import {
   playMusicInfo,
   playedList,
   tempPlayList,
+  isShowPlaylist,
 } from './state'
 import { getListMusicsFromCache } from '@renderer/store/list/action'
 import { downloadList } from '@renderer/store/download/state'
@@ -59,6 +60,10 @@ export const setAllStatus = (val: string) => {
 
 export const setShowPlayerDetail = (val: boolean) => {
   isShowPlayerDetail.value = val
+}
+
+export const setShowPlaylist = (val: boolean) => {
+  isShowPlaylist.value = val
 }
 
 export const setShowPlayComment = (val: boolean) => {
