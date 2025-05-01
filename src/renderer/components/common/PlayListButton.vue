@@ -4,9 +4,10 @@
 </button>
 </template>
 <script setup>
+import { isShowPlaylist } from '@renderer/store/player/state'
 import { setShowPlaylist } from '@renderer/store/player/action'
 const togglePlaylist = () => {
-  setShowPlaylist(true)
+  setShowPlaylist(!isShowPlaylist.value)
 }
 </script>
 <style scoped>

@@ -4,8 +4,12 @@
     <div id="right">
       <layout-toolbar id="toolbar" />
       <div class="middle">
-        <layout-view id="view" />
-        <PlayListWindow v-if="isShowPlaylist" class="playlist-window" @close="closePlaylist()" />
+        <layout-view id="view" ref="viewRef" />
+        <PlayListWindow
+          v-if="isShowPlaylist"
+          :style="playlistStyle"
+          @close="closePlaylist"
+        />
       </div>
       <layout-play-bar id="player" />
     </div>
@@ -21,11 +25,27 @@
 </template>
 
 <script setup>
-import { onMounted } from '@common/utils/vueTools'
+import { nextTick, onMounted, ref, computed } from '@common/utils/vueTools'
 import useApp from '@renderer/core/useApp'
 import PlayListWindow from '@renderer/components/common/PlayListWindow.vue'
 import { isShowPlaylist } from '@renderer/store/player/state'
 import { setShowPlaylist } from '@renderer/store/player/action'
+
+const viewRef = ref(null)
+
+const playlistStyle = computed(() => {
+  const el = viewRef.value?.$el || viewRef.value
+  if (!el) return {}
+  const rect = el.getBoundingClientRect()
+  return {
+    position: 'absolute',
+    left: `${rect.left}px`,
+    top: `${rect.top}px`,
+    height: `${rect.height}px`,
+    width: `${rect.width}px`,
+    zIndex: 1000,
+  }
+})
 
 const closePlaylist = () => {
   setShowPlaylist(false)
@@ -33,8 +53,9 @@ const closePlaylist = () => {
 
 useApp()
 
-onMounted(() => {
+onMounted(async () => {
   document.getElementById('root').style.display = 'block'
+  await nextTick()
 })
 </script>
 
@@ -42,15 +63,10 @@ onMounted(() => {
 @import './assets/styles/index.less';
 @import './assets/styles/layout.less';
 
-html {
-  height: 100vh;
-}
 html, body {
-  box-sizing: border-box;
-}
-body {
-  user-select: none;
   height: 100%;
+  box-sizing: border-box;
+  user-select: none;
 }
 #root {
   height: 100%;
@@ -61,44 +77,6 @@ body {
   background-size: var(--background-image-size);
   transition: background-color @transition-normal;
   background-color: var(--color-content-background);
-  box-sizing: border-box;
-}
-
-.disableAnimation * {
-  transition: none !important;
-  animation: none !important;
-}
-
-.transparent {
-  background: transparent;
-  padding: @shadow-app;
-  #body {
-    border-radius: @radius-border;
-  }
-  #root {
-    box-shadow: 0 0 @shadow-app rgba(0, 0, 0, 0.5);
-    border-radius: @radius-border;
-  }
-}
-.disableTransparent {
-  background-color: var(--color-content-background);
-
-  #body {
-    border: 1Px solid var(--color-primary-light-500);
-  }
-
-  #right {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}
-.fullscreen {
-  background-color: var(--color-content-background);
-
-  #right {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
 }
 
 #container {
@@ -117,49 +95,35 @@ body {
   flex: auto;
   display: flex;
   flex-direction: column;
-  transition: background-color @transition-normal;
   background-color: var(--color-main-background);
   border-top-left-radius: @radius-border;
   border-bottom-left-radius: @radius-border;
-  overflow: hidden;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
 }
 
-#toolbar,
-#player {
-  flex: none;
-}
-
-/* 中间区域横向布局 */
 .middle {
   flex: auto;
   display: flex;
-  overflow: hidden;
+  position: relative;
   min-height: 0;
 }
 
-/* 主内容区域自动伸缩 */
 #view {
   position: relative;
   flex: auto;
   min-height: 0;
 }
 
-/* 播放列表窗口，默认宽度固定 */
 .playlist-window {
-  width: 300px;
-  flex: none;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border-left: 1px solid var(--color-border);
   background-color: var(--color-main-background);
-}
-
-.view-container {
-  transition: opacity @transition-normal;
-}
-#root.show-modal > .view-container {
-  opacity: .9;
-}
-#view.show-modal > .view-container {
-  opacity: .2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: @radius-border;
+  overflow: hidden;
+  z-index: 1000;
 }
 </style>
