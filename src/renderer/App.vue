@@ -4,8 +4,8 @@
     <div id="right">
       <layout-toolbar id="toolbar" />
       <div class="middle">
-        <layout-view id="view" ref="viewRef" />
-        <PlayListWindow id="playlist" v-if="isShowPlaylist" @close="closePlaylist" />
+        <layout-view id="view" />
+        <PlayListWindow v-if="isShowPlaylist" id="playlist" @close="closePlaylist" />
       </div>
       <layout-play-bar id="player" />
     </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, computed } from '@common/utils/vueTools'
+import { onMounted } from '@common/utils/vueTools'
 import useApp from '@renderer/core/useApp'
 import PlayListWindow from '@renderer/components/common/PlayListWindow.vue'
 import { isShowPlaylist } from '@renderer/store/player/state'
@@ -34,7 +34,6 @@ useApp()
 
 onMounted(() => {
   document.getElementById('root').style.display = 'block'
-  nextTick()
 })
 </script>
 
@@ -58,6 +57,7 @@ html, body {
   background-size: var(--background-image-size);
   transition: background-color @transition-normal;
   background-color: var(--color-content-background);
+  box-sizing: border-box;
 }
 
 #container {
@@ -87,11 +87,18 @@ html, body {
   position: relative;
   min-height: 0;
 }
-
+#toolbar, #player {
+  flex: none;
+}
 #view {
   position: relative;
   flex: auto;
+  // display: flex;
   min-height: 0;
+}
+
+.view-container {
+  transition: opacity @transition-normal;
 }
 #playlist {
   position: absolute;
