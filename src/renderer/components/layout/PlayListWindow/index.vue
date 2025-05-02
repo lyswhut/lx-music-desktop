@@ -15,52 +15,59 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import {
-  statusText,
-  musicInfo,
-  isShowPlayerDetail,
-  isPlay,
-  playInfo,
-  playMusicInfo,
+  // musicInfo,
+  // isPlay,
+  // playMusicInfo, playInfo,
+  tempPlayList,
 } from '@renderer/store/player/state'
-import { isPlay, playedList, playInfo, playMusicInfo, tempPlayList, musicInfo as _musicInfo } from '@renderer/store/player/state'
-import { togglePlay, playNext, playPrev } from '@renderer/core/player'
+// import { togglePlay, playNext, playPrev } from '@renderer/core/player'
 const emit = defineEmits(['close'])
 
-const songs = ref([
-  { title: '海阔天空', artist: 'Beyond', album: '乐与怒' },
-  { title: '夜曲', artist: '周杰伦', album: '十一月的萧邦' },
-  { title: '告白气球', artist: '周杰伦', album: '周杰伦的床边故事' },
-  { title: '平凡之路', artist: '朴树', album: '平凡之路' },
-])
-if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
-    for (let music of tempPlayList) {
-        songs.value.push(
-            { title: music.musicInfo.name, artist: music.musicInfo.singer, album: music.musicInfo.meta.albumName }
-        )
-    }
-    return
-  }
-
-  if (playMusicInfo.musicInfo == null) {
-    handleToggleStop()
-    console.log('musicInfo empty')
-    return
-  }
-
-  // console.log(playInfo.playerListId)
-  const currentListId = playInfo.playerListId
-  if (!currentListId) {
-    handleToggleStop()
-    console.log('currentListId empty')
-    return
-  }
-  const currentList = getList(currentListId)
-songs.value.push(
-    { title: musicInfo.name, artist: musicInfo.singer, album: musicInfo.album }
+const playlist = ref(tempPlayList)
+const songs = computed(() =>
+  playlist.value.map(music => ({
+    title: music.musicInfo.name,
+    artist: music.musicInfo.singer,
+    album: music.musicInfo.meta.albumName,
+  })),
 )
+// const showPlaylist = () => {
+//   if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
+//     for (let music of tempPlayList) {
+//       songs.value.push(
+//         {
+//           title: music.musicInfo.name,
+//           artist: music.musicInfo.singer,
+//           album: music.musicInfo.meta.albumName,
+//         },
+//       )
+//     }
+//     return
+//   }
 
+//   if (playMusicInfo.musicInfo == null) {
+//     handleToggleStop()
+//     console.log('musicInfo empty')
+//     return
+//   }
+
+//   // console.log(playInfo.playerListId)
+//   const currentListId = playInfo.playerListId
+//   if (!currentListId) {
+//     handleToggleStop()
+//     console.log('currentListId empty')
+//     return
+//   }
+//   // const currentList = getList(currentListId)
+//   // songs.value.push({
+//   //   title: music.musicInfo.name,
+//   //   artist: music.musicInfo.singer,
+//   //   album: music.musicInfo.meta.albumName,
+//   // })
+// }
+// showPlaylist()
 const emitClose = () => {
   emit('close')
 }

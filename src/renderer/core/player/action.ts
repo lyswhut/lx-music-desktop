@@ -243,7 +243,7 @@ export const playListById = (listId: string, id: string) => {
   // pause()
   const musicInfo = getList(listId).find(m => m.id == id)
   if (!musicInfo) return
-  setPlayMusicInfo(listId, musicInfo)
+  setPlayMusicInfo(listId, musicInfo)//todo 设置播放音乐
   if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()
   clearTempPlayeList()
   handlePlay()
@@ -258,7 +258,7 @@ export const playList = (listId: string, index: number) => {
   const prevListId = playInfo.playerListId
   setPlayListId(listId)
   // pause()
-  setPlayMusicInfo(listId, getList(listId)[index])
+  setPlayMusicInfo(listId, getList(listId)[index])//todo 设置播放音乐
   if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()
   clearTempPlayeList()
   handlePlay()
@@ -366,7 +366,7 @@ export const getNextPlayMusicInfo = async(): Promise<LX.Player.PlayMusicInfo | n
 
 const handlePlayNext = (playMusicInfo: LX.Player.PlayMusicInfo) => {
   // pause()
-  setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)
+  setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)//todo 设置播放音乐
   handlePlay()
 }
 /**
