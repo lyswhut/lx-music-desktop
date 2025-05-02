@@ -71,7 +71,7 @@ export const playedList = window.lxData.playedList = shallowReactive<LX.Player.P
 
 export const tempPlayList = shallowReactive<LX.Player.PlayMusicInfo[]>([])//todo
 
-export const PlayList = shallowReactive<LX.Player.PlayMusicInfo[]>([])
+export const currentPlayIndex = ref<number>(0)
 
 
 window.lxData.playInfo = playInfo

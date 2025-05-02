@@ -241,7 +241,8 @@ export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
   if (topList.length) arrUnshift(tempPlayList, topList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
   if (bottomList.length) arrPush(tempPlayList, bottomList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
 
-  if (!playMusicInfo.musicInfo) void playNext()
+  // if (!playMusicInfo.musicInfo) void playNext()
+  // 造成了奇怪的bug
 }
 /**
  * 从稍后播放列表移除歌曲

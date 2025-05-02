@@ -33,41 +33,7 @@ const songs = computed(() =>
     album: music.musicInfo.meta.albumName,
   })),
 )
-// const showPlaylist = () => {
-//   if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
-//     for (let music of tempPlayList) {
-//       songs.value.push(
-//         {
-//           title: music.musicInfo.name,
-//           artist: music.musicInfo.singer,
-//           album: music.musicInfo.meta.albumName,
-//         },
-//       )
-//     }
-//     return
-//   }
 
-//   if (playMusicInfo.musicInfo == null) {
-//     handleToggleStop()
-//     console.log('musicInfo empty')
-//     return
-//   }
-
-//   // console.log(playInfo.playerListId)
-//   const currentListId = playInfo.playerListId
-//   if (!currentListId) {
-//     handleToggleStop()
-//     console.log('currentListId empty')
-//     return
-//   }
-//   // const currentList = getList(currentListId)
-//   // songs.value.push({
-//   //   title: music.musicInfo.name,
-//   //   artist: music.musicInfo.singer,
-//   //   album: music.musicInfo.meta.albumName,
-//   // })
-// }
-// showPlaylist()
 const emitClose = () => {
   emit('close')
 }

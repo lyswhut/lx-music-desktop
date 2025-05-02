@@ -1,5 +1,5 @@
 import { isEmpty, setPause, setPlay, setResource, setStop } from '@renderer/plugins/player'
-import { isPlay, playedList, playInfo, playMusicInfo, tempPlayList, musicInfo as _musicInfo } from '@renderer/store/player/state'
+import { isPlay, playedList, playInfo, playMusicInfo, tempPlayList, musicInfo as _musicInfo, currentPlayIndex } from '@renderer/store/player/state'
 import {
   getList,
   clearPlayedList,
@@ -376,14 +376,15 @@ const handlePlayNext = (playMusicInfo: LX.Player.PlayMusicInfo) => {
  */
 export const playNext = async(isAutoToggle = false): Promise<void> => {
   console.log('skip next', isAutoToggle)
+  //todo 需要修改逻辑，不要删除
   if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
-    const playMusicInfo = tempPlayList[0]
-    removeTempPlayList(0)
+    const playMusicInfo = tempPlayList[++(currentPlayIndex.value) ]
+    // removeTempPlayList(0)
     handlePlayNext(playMusicInfo)
     console.log('play temp list')
     return
   }
-
+  ////////////预计此处往下的代码失去作用(被接管)/////////////
   if (playMusicInfo.musicInfo == null) {
     handleToggleStop()
     console.log('musicInfo empty')
