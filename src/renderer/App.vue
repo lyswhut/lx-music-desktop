@@ -5,7 +5,7 @@
       <layout-toolbar id="toolbar" />
       <div class="middle">
         <layout-view id="view" />
-        <PlayListWindow v-if="isShowPlaylist" id="playlist" @close="closePlaylist" />
+        <layout-play-list-window v-if="isShowPlaylist" id="playlist" @close="closePlaylist" />
       </div>
       <layout-play-bar id="player" />
     </div>
@@ -22,7 +22,6 @@
 <script setup>
 import { onMounted } from '@common/utils/vueTools'
 import useApp from '@renderer/core/useApp'
-import PlayListWindow from '@renderer/components/common/PlayListWindow.vue'
 import { isShowPlaylist } from '@renderer/store/player/state'
 import { setShowPlaylist } from '@renderer/store/player/action'
 
