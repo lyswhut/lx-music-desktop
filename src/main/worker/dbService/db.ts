@@ -36,6 +36,7 @@ export const init = (lxDataPath: string): boolean | null => {
     initTables(db)
     dbFileExists = false
   }
+  db.pragma('journal_mode = WAL')
 
   if (dbFileExists) migrateData(db)
 
