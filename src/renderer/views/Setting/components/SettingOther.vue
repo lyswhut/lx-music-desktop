@@ -1,6 +1,11 @@
 <template lang="pug">
 dt#other {{ $t('setting__other') }}
 dd
+  div
+    .gap-top
+      base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__basic_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
+
+dd
   h3#other_tray_theme {{ $t('setting__other_tray_theme') }}
   div
     base-checkbox.gap-left(

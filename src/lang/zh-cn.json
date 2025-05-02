@@ -348,6 +348,7 @@
   "setting__basic_theme": "主题颜色",
   "setting__basic_theme_auto_tip": "此乃动态主题，你可以预先设置一个亮色主题及暗色主题，此后将根据系统的亮、暗主题色自动切换为你预先设置的相应主题。\n\n注：鼠标右击此主题项即可打开亮、暗色主题设置窗口。",
   "setting__basic_to_tray": "关闭窗口时不退出软件将其最小化到系统托盘",
+  "setting__basic_transparent_window": "主窗口使用软件内置的圆角及阴影（关闭后将使用系统窗口圆角及阴影样式，重启软化后生效）",
   "setting__basic_window_size": "窗口尺寸",
   "setting__basic_window_size_big": "大",
   "setting__basic_window_size_huge": "巨大",
