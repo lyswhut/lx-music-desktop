@@ -339,7 +339,7 @@ export const getNextPlayMusicInfo = async(): Promise<LX.Player.PlayMusicInfo | n
       nextIndex = playerIndex === filteredList.length - 1 ? 0 : playerIndex + 1
       break
     case 'random':
-      nextIndex = getRandom(0, filteredList.length)
+      nextIndex = getRandom(0, filteredList.length)//todo
       break
     case 'list':
       nextIndex = playerIndex === filteredList.length - 1 ? -1 : playerIndex + 1
