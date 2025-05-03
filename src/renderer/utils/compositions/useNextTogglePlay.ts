@@ -32,6 +32,7 @@ export default () => {
     const N = tempPlayList.length
     const prevPlayIndex = currentPlaybackOrder.value[currentPlayIndex.value]
     if (mode === 'random') {
+      currentPlayIndex.value = 0
       const allIndexes = Array.from({ length: N }, (_, i) => i).filter(i => i !== prevPlayIndex)
       for (let i = allIndexes.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))

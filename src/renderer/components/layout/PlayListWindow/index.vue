@@ -16,25 +16,26 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import {
-  // musicInfo,
-  // isPlay,
-  // playMusicInfo, playInfo,
-  tempPlayList,
-} from '@renderer/store/player/state'
-// import { togglePlay, playNext, playPrev } from '@renderer/core/player'
+import { tempPlayList, currentPlaybackOrder } from '@renderer/store/player/state'
+
 const emit = defineEmits(['close'])
 // todo 点击item切换歌曲
 // todo 当前播放歌曲的item高亮
 const playlist = ref(tempPlayList)
-const songs = computed(() =>
-  playlist.value.map(music => ({
-    title: music.musicInfo.name,
-    artist: music.musicInfo.singer,
-    album: music.musicInfo.meta.albumName,
-  })),
-)
 
+const songs = computed(() => {
+  let showlist = []
+  for (const index of currentPlaybackOrder.value) {
+    const playMusicInfo = playlist.value[index]
+    showlist.push({
+      title: playMusicInfo.musicInfo.name,
+      artist: playMusicInfo.musicInfo.singer,
+      album: playMusicInfo.musicInfo.meta.albumName,
+    })
+  }
+  return showlist
+},
+)
 const emitClose = () => {
   emit('close')
 }
@@ -60,7 +61,7 @@ const emitClose = () => {
   font-size: 18px;
   font-weight: bold;
   text-align: center;
-}
+}p
 
 .close-button {
   position: absolute;
