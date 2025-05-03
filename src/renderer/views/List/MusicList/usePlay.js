@@ -1,6 +1,6 @@
 import { addTempPlayList, clearTempPlayeList, getList } from '@renderer/store/player/action'
 import { tempPlayList, currentPlayIndex, currentPlaybackOrder } from '@renderer/store/player/state'
-import { playNext } from '@renderer/core/player'
+import { handlePlayNext } from '@renderer/core/player'
 import { appSetting } from '@renderer/store/setting'
 // import { arrShuffle } from '@common/utils/common'
 // setup 函数或组件初始化中
@@ -11,24 +11,29 @@ export default ({ props, selectedList, list, removeAllSelect }) => {
   let clickIndex = -1
 
   const handlePlayMusic = (index) => {
-    currentPlayIndex.value = index
-    // todo 播放选中的歌曲
-    // todo 修改播放歌曲逻辑
-    // playList(props.listId, index)
-    // handlePlayMusicLater(index, true)
-    // todo 歌单本身就有乱序排序功能
-    if (tempPlayList.length > 0 ) {// 双击操作会切换到当前歌单
+    currentPlayIndex.value = 0
+    if (tempPlayList.length > 0) { // 双击操作会切换到当前歌单
       clearTempPlayeList()
     }
     const currentchooselist = getList(props.listId)
-    for(let music of currentchooselist) {
+    for (let music of currentchooselist) {
       addTempPlayList([{ listId: props.listId, musicInfo: music }])
     }
-    if (appSetting['player.togglePlayMethod'] == 'random') {
-      // todo 随机播放
-      // arrShuffle(tempPlayList)
+    // todo 重复代码块，可提取
+    const N = tempPlayList.length
+    if (appSetting['player.togglePlayMethod'] === 'random') {
+      const allIndexes = Array.from({ length: N }, (_, i) => i).filter(i => i !== index)
+      for (let i = allIndexes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[allIndexes[i], allIndexes[j]] = [allIndexes[j], allIndexes[i]]
+      }
+      currentPlaybackOrder.value = [index, ...allIndexes]
+    } else {
+      currentPlaybackOrder.value = Array.from({ length: N }, (_, i) => i)
+      currentPlayIndex.value = index
     }
-    playNext()
+    const playMusicInfo = tempPlayList[currentPlaybackOrder.value[currentPlayIndex.value]]
+    handlePlayNext(playMusicInfo)
   }
 
   const handlePlayMusicLater = (index, single) => {
