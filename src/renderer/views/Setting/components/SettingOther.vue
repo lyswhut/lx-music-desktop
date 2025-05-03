@@ -3,7 +3,8 @@ dt#other {{ $t('setting__other') }}
 dd
   div
     .gap-top
-      base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__basic_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
+      base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__other_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
+      svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_transparent_window_tip')")
 
 dd
   h3#other_tray_theme {{ $t('setting__other_tray_theme') }}
