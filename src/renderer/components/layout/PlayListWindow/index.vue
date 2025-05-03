@@ -41,7 +41,7 @@ const songs = computed(() => {
   const showlist = []
   for (const idx of currentPlaybackOrder.value) {
     const info = playlist.value[idx]
-    if (info && info.musicInfo) {
+    if (info?.musicInfo) {
       showlist.push({
         title: info.musicInfo.name,
         artist: info.musicInfo.singer,
@@ -136,18 +136,18 @@ function emitClose() {
 
 /* hover 状态稍微加深一下 */
 .song-item:hover {
-  background-color: #eaeaea;
+  background-color: #eaeaea!important;
 }
 
 /* 当前播放项高亮（深灰） */
 .active {
-  background-color: #555555 !important;
-  color: black !important;
+  background-color: #EBEBEB ;
+  color: black ;
 }
 
 /* 选中（左键或右键）状态，更深的灰 */
 .selected {
-  background-color: #333333 !important;
+  background-color: #ebebeb ;
   color: black !important;
 }
 
