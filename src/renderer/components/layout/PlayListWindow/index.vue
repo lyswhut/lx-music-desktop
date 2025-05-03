@@ -24,7 +24,8 @@ import {
 } from '@renderer/store/player/state'
 // import { togglePlay, playNext, playPrev } from '@renderer/core/player'
 const emit = defineEmits(['close'])
-
+// todo 点击item切换歌曲
+// todo 当前播放歌曲的item高亮
 const playlist = ref(tempPlayList)
 const songs = computed(() =>
   playlist.value.map(music => ({

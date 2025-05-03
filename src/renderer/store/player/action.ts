@@ -230,6 +230,8 @@ export const clearPlayedList = () => {
  * @param list 歌曲列表
  *///todo
 export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
+  // todo 添加到下一首播放而不是到最后一首
+  // todo 重复歌曲不添加
   const topList: Array<Omit<LX.Player.TempPlayListItem, 'top'>> = []
   const bottomList = list.filter(({ isTop, ...musicInfo }) => {
     if (isTop) {

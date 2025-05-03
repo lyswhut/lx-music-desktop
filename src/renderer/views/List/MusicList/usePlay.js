@@ -1,6 +1,8 @@
 import { addTempPlayList, clearTempPlayeList, getList } from '@renderer/store/player/action'
-import { tempPlayList, currentPlayIndex } from '@renderer/store/player/state'
+import { tempPlayList, currentPlayIndex, currentPlaybackOrder } from '@renderer/store/player/state'
 import { playNext } from '@renderer/core/player'
+import { appSetting } from '@renderer/store/setting'
+// import { arrShuffle } from '@common/utils/common'
 // setup 函数或组件初始化中
 
 
@@ -21,6 +23,10 @@ export default ({ props, selectedList, list, removeAllSelect }) => {
     const currentchooselist = getList(props.listId)
     for(let music of currentchooselist) {
       addTempPlayList([{ listId: props.listId, musicInfo: music }])
+    }
+    if (appSetting['player.togglePlayMethod'] == 'random') {
+      // todo 随机播放
+      // arrShuffle(tempPlayList)
     }
     playNext()
   }

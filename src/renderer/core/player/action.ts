@@ -490,6 +490,14 @@ export const playNext = async(isAutoToggle = false): Promise<void> => {
  * 上一曲
  */
 export const playPrev = async(isAutoToggle = false): Promise<void> => {
+  if (currentPlayIndex.value > 0) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
+    const playMusicInfo = tempPlayList[--(currentPlayIndex.value) ]
+    // removeTempPlayList(0)
+    handlePlayNext(playMusicInfo)
+    console.log('play temp list')
+    return
+  }
+  ////////////预计此处往下的代码失去作用(被接管)/////////////
   if (playMusicInfo.musicInfo == null) {
     handleToggleStop()
     return
