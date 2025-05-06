@@ -513,7 +513,7 @@
   "setting__other_resource_cache_tip": "包括图片、音频等缓存，清理后这些资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小",
   "setting__other_resource_cache_tip_confirm": "涉及图片、音频等缓存，清理后这些资源将需要重新下载，不建议清理，软件会根据磁盘空间动态管理缓存大小，是否仍要清理？",
   "setting__other_transparent_window": "主窗口使用软件内置的圆角及阴影",
-  "setting__other_transparent_window_tip": "关闭后将使用系统窗口圆角及阴影样式，重启软件后生效",
+  "setting__other_transparent_window_tip": "关闭后将使用系统原生窗口样式。更改后重启软件生效。",
   "setting__other_tray_theme": "托盘图标样式",
   "setting__other_tray_theme_auto": "跟随系统亮暗模式",
   "setting__other_tray_theme_black": "黑色",
