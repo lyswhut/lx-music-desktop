@@ -295,30 +295,25 @@ export const setPowerSaveBlocker = (enabled: boolean) => {
   }
 }
 
-
-let envProxy: null | { host: string, port: number } = null
 export const getProxy = () => {
-  if (global.lx.appSetting['network.proxy.enable'] && global.lx.appSetting['network.proxy.host']) {
+  const envProxyStr = envParams.cmdParams['proxy-server']
+  if (envProxyStr && typeof envProxyStr == 'string') {
+    const [host, port = ''] = envProxyStr.split(':')
     return {
-      host: global.lx.appSetting['network.proxy.host'],
-      port: parseInt(global.lx.appSetting['network.proxy.port'] || '80'),
-    }
-  }
-  if (envProxy) {
-    return {
-      host: envProxy.host,
-      port: envProxy.port,
-    }
-  } else {
-    const envProxyStr = envParams.cmdParams['proxy-server']
-    if (envProxyStr && typeof envProxyStr == 'string') {
-      const [host, port = ''] = envProxyStr.split(':')
-      return envProxy = {
-        host,
-        port: parseInt(port || '80'),
-      }
+      host,
+      port: parseInt(port || '80'),
     }
   }
 
-  return null
+  const custom = {
+    enable: global.lx.appSetting['network.proxy.type'] === 'custom',
+    host: global.lx.appSetting['network.proxy.host'],
+    port: global.lx.appSetting['network.proxy.port'],
+  }
+  return custom.enable && custom.host
+    ? {
+        host: custom.host,
+        port: parseInt(custom.port || '80'),
+      }
+    : null
 }

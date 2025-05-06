@@ -134,7 +134,7 @@ const setStatus = (downloadInfo: LX.Download.ListItem, status: LX.Download.Downl
 const fixKgLyric = (lrc: string) => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
 
 const getProxy = () => {
-  return proxy.enable && proxy.host ? {
+  return proxy.type === 'custom' && proxy.host ? {
     host: proxy.host,
     port: parseInt(proxy.port || '80'),
   } : proxy.envProxy ? {

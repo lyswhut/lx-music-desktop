@@ -596,9 +596,9 @@ declare global {
       'search.isFocusSearchBox': boolean
 
       /**
-       * 是否启用代理
+       * 代理类型
        */
-      'network.proxy.enable': boolean
+      'network.proxy.type': 'disable' | 'system' | 'custom'
 
       /**
        * 代理服务器地址

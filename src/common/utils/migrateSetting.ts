@@ -113,7 +113,7 @@ export default (setting: any): Partial<LX.AppSetting> => {
     setting['search.isShowHistorySearch'] = setting.search?.isShowHistorySearch
     setting['search.isFocusSearchBox'] = setting.search?.isFocusSearchBox
 
-    setting['network.proxy.enable'] = setting.network?.proxy?.enable
+    // setting['network.proxy.enable'] = setting.network?.proxy?.enable
     setting['network.proxy.host'] = setting.network?.proxy?.host
     setting['network.proxy.port'] = setting.network?.proxy?.port
 
