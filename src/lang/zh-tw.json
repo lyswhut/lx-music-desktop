@@ -513,7 +513,7 @@
   "setting__other_resource_cache_tip": "包括圖片、音訊等快取，清理後這些資源將需要重新下載，不建議清理，軟體會根據磁碟空間動態管理快取大小",
   "setting__other_resource_cache_tip_confirm": "涉及圖片、音訊等快取，清理後這些資源將需要重新下載，不建議清理，軟體會根據磁碟空間動態管理快取大小，是否仍要清理？",
   "setting__other_transparent_window": "主視窗使用軟體內建的圓角及陰影",
-  "setting__other_transparent_window_tip": "關閉後將使用系統視窗圓角及陰影樣式，重啟軟體後生效",
+  "setting__other_transparent_window_tip": "關閉後將使用系統原生視窗樣式。更改後重啟軟體生效。",
   "setting__other_tray_theme": "系統匣圖示樣式",
   "setting__other_tray_theme_auto": "跟隨系統亮暗模式",
   "setting__other_tray_theme_black": "黑色",
