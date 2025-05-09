@@ -11,6 +11,9 @@ declare namespace LX {
     | 'pause'
     | 'play'
     | 'next'
+    | 'seek'
+    | 'volume'
+    | 'mute'
 
     interface LyricInfo extends LX.Music.LyricInfo {
       rawlrcInfo: LX.Music.LyricInfo
@@ -29,6 +32,8 @@ declare namespace LX {
       lyricLineAllText: string
       lyric: string
       collect: boolean
+      volume: number
+      mute: boolean
     }
   }
 }
