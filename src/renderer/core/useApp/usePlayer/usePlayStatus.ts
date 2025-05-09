@@ -81,7 +81,7 @@ export default () => {
   //   buttons.lockLrc = setting.desktopLyric.isLock
   //   setButtons()
   // }
-  const rTaskbarThumbarClick = onPlayerAction(async({ params: action }) => {
+  const rTaskbarThumbarClick = onPlayerAction(async({ params: { action, data } }) => {
     switch (action) {
       case 'play':
         play()
@@ -104,6 +104,19 @@ export default () => {
         if (!playMusicInfo.musicInfo) return
         void removeListMusics({ listId: loveList.id, ids: ['progress' in playMusicInfo.musicInfo ? playMusicInfo.musicInfo.metadata.musicInfo.id : playMusicInfo.musicInfo.id] })
         if (await updateCollectStatus()) sendPlayerStatus({ collect })
+        break
+      case 'seek': {
+        let progress = data as number
+        if (progress < 0) progress = 0
+        else if (progress > playProgress.maxPlayTime) progress = playProgress.maxPlayTime
+        window.app_event.setProgress(progress)
+        break
+      }
+      case 'mute':
+        window.app_event.setVolumeIsMute(data as boolean)
+        break
+      case 'volume':
+        window.app_event.setVolume(data as number)
         break
       // case 'lrc':
       //   setVisibleDesktopLyric(true)

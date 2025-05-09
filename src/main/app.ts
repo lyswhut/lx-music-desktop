@@ -65,6 +65,8 @@ export const initGlobalData = () => {
       lyricLineAllText: '',
       lyric: '',
       collect: false,
+      volume: 0,
+      mute: false,
     },
   }
 
@@ -229,6 +231,15 @@ export const listenerAppEvent = (startApp: () => void) => {
     if (shouldUseDarkColors == global.lx.theme.shouldUseDarkColors) return
     global.lx.theme.shouldUseDarkColors = shouldUseDarkColors
     global.lx?.event_app.system_theme_change(shouldUseDarkColors)
+  })
+
+  global.lx.event_app.on('updated_config', (config, setting) => {
+    if (config.includes('player.volume')) {
+      global.lx.event_app.player_status({ volume: Math.trunc(setting['player.volume']! * 100) })
+    }
+    if (config.includes('player.isMute')) {
+      global.lx.event_app.player_status({ mute: setting['player.isMute'] })
+    }
   })
 }
 
