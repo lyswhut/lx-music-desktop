@@ -259,7 +259,10 @@ export default {
     })
 
     onMounted(() => {
-      dom_scrollContainer.value.addEventListener('scroll', onScroll, false)
+      dom_scrollContainer.value.addEventListener('scroll', onScroll, {
+        capture: false,
+        passive: true,
+      })
       cachedList = Array(props.list.length)
       startIndex = -1
       endIndex = -1
