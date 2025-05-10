@@ -476,7 +476,10 @@ export const hotKeyGetStatus = async() => {
 }
 
 // 主进程操作播放器状态
-export const onPlayerAction = (listener: LX.IpcRendererEventListenerParams<LX.Player.StatusButtonActions>): RemoveListener => {
+export const onPlayerAction = (listener: LX.IpcRendererEventListenerParams<{
+  action: LX.Player.StatusButtonActions
+  data?: unknown
+}>): RemoveListener => {
   rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.player_action_on_button_click, listener)
   return () => {
     rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.player_action_on_button_click, listener)
