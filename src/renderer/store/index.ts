@@ -8,15 +8,16 @@ process.versions.app = pkg.version
 
 export const apiSource = ref<string | null>(null)
 export const proxy: {
-  type: LX.AppSetting['network.proxy.type']
+  enable: boolean
   host: string
   port: string
+
   envProxy?: {
     host: string
     port: string
   }
 } = {
-  type: 'disable',
+  enable: false,
   host: '',
   port: '',
 }

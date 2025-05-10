@@ -10,12 +10,23 @@ import { httpOverHttp, httpsOverHttp } from 'tunnel'
 
 const httpsRxp = /^https:/
 const getRequestAgent = url => {
-  const options = proxy.type === 'custom' && proxy.host
-    ? { host: proxy.host, port: parseInt(proxy.port || '80') }
-    : proxy.envProxy
-      ? { host: proxy.envProxy.host, port: parseInt(proxy.envProxy.port || '80') }
-      : null
-  return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)({ proxy: options }) : undefined
+  let options
+  if (proxy.enable && proxy.host) {
+    options = {
+      proxy: {
+        host: proxy.host,
+        port: proxy.port,
+      },
+    }
+  } else if (proxy.envProxy) {
+    options = {
+      proxy: {
+        host: proxy.envProxy.host,
+        port: proxy.envProxy.port,
+      },
+    }
+  }
+  return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)(options) : undefined
 }
 
 

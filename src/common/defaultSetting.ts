@@ -128,7 +128,7 @@ const defaultSetting: LX.AppSetting = {
   'search.isShowHistorySearch': false,
   'search.isFocusSearchBox': false,
 
-  'network.proxy.type': 'disable',
+  'network.proxy.enable': false,
   'network.proxy.host': '',
   'network.proxy.port': '',
 

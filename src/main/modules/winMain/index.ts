@@ -108,7 +108,7 @@ export default () => {
         setProgressBar(-1, { mode: 'none' })
       }
     }
-    if (keys.some(k => k.includes('network.proxy.'))) {
+    if (keys.includes('network.proxy.enable') || (global.lx.appSetting['network.proxy.enable'] && keys.some(k => k.includes('network.proxy.')))) {
       setProxy()
     }
   })

@@ -65,6 +65,8 @@ export const createWindow = () => {
 
   const { shouldUseDarkColors, theme } = global.lx.theme
   const ses = session.fromPartition('persist:win-main')
+  const proxy = getProxy()
+  setSesProxy(ses, proxy?.host, String(proxy?.port))
 
   /**
    * Initial window options
@@ -102,11 +104,10 @@ export const createWindow = () => {
   }
   browserWindow = new BrowserWindow(options)
 
-  setProxy()
-  winEvent()
-
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
   void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+
+  winEvent()
 
   if (global.envParams.cmdParams.odt) handleOpenDevTools(browserWindow.webContents)
 
@@ -126,28 +127,24 @@ export const closeWindow = () => {
   browserWindow.close()
 }
 
-export const setProxy = () => {
-  if (!browserWindow) return
-  switch (global.lx.appSetting['network.proxy.type']) {
-    case 'system':
-      void browserWindow.webContents.session.setProxy({
-        mode: 'system',
-      })
-      break
-    case 'disable':
-      void browserWindow.webContents.session.setProxy({
-        mode: 'direct',
-      })
-      break
-    default:
-      const proxy = getProxy()
-      if (!proxy) break
-      void browserWindow.webContents.session.setProxy({
-        proxyRules: `http://${proxy.host}:${proxy.port}`,
-      })
-      break
+const setSesProxy = (ses: Electron.Session, host?: string, port?: string) => {
+  if (host) {
+    void ses.setProxy({
+      mode: 'fixed_servers',
+      proxyRules: `http://${host}:${port}`,
+    })
+  } else {
+    void ses.setProxy({
+      mode: 'direct',
+    })
   }
 }
+export const setProxy = () => {
+  if (!browserWindow) return
+  const proxy = getProxy()
+  setSesProxy(browserWindow.webContents.session, proxy?.host, String(proxy?.port))
+}
+
 
 export const sendEvent = <T = any>(name: string, params?: T) => {
   if (!browserWindow) return

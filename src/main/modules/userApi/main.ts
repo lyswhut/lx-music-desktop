@@ -19,41 +19,31 @@ const denyEvents = [
   'media-started-playing',
 ] as const
 
+
 export const getProxy = () => {
-  const envProxyStr = envParams.cmdParams['proxy-server']
-  if (envProxyStr && typeof envProxyStr == 'string') {
-    const [host, port = ''] = envProxyStr.split(':')
+  if (global.lx.appSetting['network.proxy.enable'] && global.lx.appSetting['network.proxy.host']) {
     return {
-      host,
-      port: parseInt(port || '80'),
+      host: global.lx.appSetting['network.proxy.host'],
+      port: global.lx.appSetting['network.proxy.port'],
     }
   }
-
-  switch (global.lx.appSetting['network.proxy.type']) {
-    case 'custom':
-      const custom = {
-        enable: global.lx.appSetting['network.proxy.type'] === 'custom',
-        host: global.lx.appSetting['network.proxy.host'],
-        port: global.lx.appSetting['network.proxy.port'],
-      }
-      return custom.enable && custom.host
-        ? {
-            host: custom.host,
-            port: parseInt(custom.port || '80'),
-          }
-        : {
-          host: '',
-          port: '',
-        }
-    default:
+  const envProxy = envParams.cmdParams['proxy-server']
+  if (envProxy) {
+    if (envProxy && typeof envProxy == 'string') {
+      const [host, port = ''] = envProxy.split(':')
       return {
-        host: '',
-        port: '',
+        host,
+        port,
       }
+    }
+  }
+  return {
+    host: '',
+    port: '',
   }
 }
 const handleUpdateProxy = (keys: Array<keyof LX.AppSetting>) => {
-  if (keys.some(k => k.startsWith('network.proxy.'))) {
+  if (keys.includes('network.proxy.enable') || (global.lx.appSetting['network.proxy.enable'] && keys.some(k => k.startsWith('network.proxy.')))) {
     sendEvent(USER_API_RENDERER_EVENT_NAME.proxyUpdate, getProxy())
   }
 }
