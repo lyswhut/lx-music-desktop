@@ -98,9 +98,6 @@ export default () => {
   watch(() => appSetting['network.proxy.enable'], enable => {
     proxy.enable = enable
   })
-  watch(() => appSetting['network.proxy.enable'], enable => {
-    proxy.enable = enable
-  })
   watch(() => appSetting['network.proxy.host'], host => {
     proxy.host = host
   })
