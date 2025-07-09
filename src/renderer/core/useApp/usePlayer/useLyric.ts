@@ -25,6 +25,7 @@ export default () => {
 
   watch(() => appSetting['player.isShowLyricTranslation'], setLyric)
   watch(() => appSetting['player.isShowLyricRoma'], setLyric)
+  watch(() => appSetting['player.isSwapLyricTranslationAndRoma'], setLyric)
   watch(() => appSetting['player.isPlayLxlrc'], setLyric)
 
   window.app_event.on('play', play)

@@ -160,6 +160,11 @@ declare global {
       'player.isShowLyricRoma': boolean
 
       /**
+       * 是否调换翻译歌词与罗马音歌词位置
+       */
+      'player.isSwapLyricTranslationAndRoma': boolean
+
+      /**
        * 是否将歌词从简体转换为繁体
        */
       'player.isS2t': boolean
