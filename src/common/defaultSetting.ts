@@ -38,6 +38,7 @@ const defaultSetting: LX.AppSetting = {
   'player.isMediaDeviceRemovedStopPlay': false,
   'player.isShowLyricTranslation': false,
   'player.isShowLyricRoma': false,
+  'player.isSwapLyricTranslationAndRoma': false,
   'player.isS2t': false,
   'player.isPlayLxlrc': !isMac,
   'player.isSavePlayTime': false,
