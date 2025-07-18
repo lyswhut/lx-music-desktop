@@ -42,8 +42,10 @@ const winEvent = () => {
   })
 
   browserWindow.once('ready-to-show', () => {
-    showWindow()
-    setThumbarButtons()
+    if (!global.envParams.cmdParams.hidden) {
+      showWindow()
+      setThumbarButtons()
+    }
     global.lx.event_app.main_window_ready_to_show()
   })
 
