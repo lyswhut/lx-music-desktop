@@ -37,6 +37,11 @@ declare namespace LX {
      */
     play?: string
 
+    /**
+     * 启动后最小化到系统托盘
+     */
+    hidden?: boolean
+
     [key: string]: boolean | number | string
   }
 
