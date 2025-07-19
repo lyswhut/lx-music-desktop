@@ -555,7 +555,7 @@
   "setting__play_task_bar": "Show playback progress on the taskbar",
   "setting__play_timeout": "Timed Pause",
   "setting__player_audio_visualization_tip": "The custom audio output device feature conflicts with the audio visualization feature. After the audio visualization is enabled, the audio output device will be reset to the default. At present, this problem cannot be resolved. Do you still want to enable it?",
-  "setting__player_awap_lyric_trans_roma": "Swap lyric translation and roman",
+  "setting__player_swap_lyric_trans_roma": "Swap the position of the translated and romanized lyrics",
   "setting__search": "Search",
   "setting__search_focus_search_box": "Automatically focus search box on startup",
   "setting__search_history": "Enable Search History",

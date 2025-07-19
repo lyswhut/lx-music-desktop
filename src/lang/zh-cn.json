@@ -555,7 +555,7 @@
   "setting__play_task_bar": "在任务栏上显示当前歌曲播放进度",
   "setting__play_timeout": "定时暂停",
   "setting__player_audio_visualization_tip": "自定义音频输出设备与音频可视化功能冲突，启用「音频可视化」后音频输出设备将会被重置为默认，目前此问题暂无法解决。是否仍要开启？",
-  "setting__player_awap_lyric_trans_roma": "调换歌词翻译与歌词罗马音位置",
+  "setting__player_swap_lyric_trans_roma": "调换歌词翻译与歌词罗马音位置",
   "setting__search": "搜索设置",
   "setting__search_focus_search_box": "启动时自动聚焦搜索框",
   "setting__search_history": "显示历史搜索记录",
