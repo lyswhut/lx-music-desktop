@@ -230,6 +230,11 @@ class Task extends EventEmitter {
   __handleComplete() {
     if (this.status == STATUS.error) return
     this.__clearTimeout()
+    if (this.progress.progress <= 0) {
+      this.status = STATUS.error
+      this.emit('error', new Error('Progress is 0, download failed.'))
+      return
+    }
     void this.__closeWriteStream().then(() => {
       if (this.progress.downloaded == this.progress.total) {
         this.status = STATUS.completed
