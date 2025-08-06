@@ -27,12 +27,12 @@ module.exports = {
 
   // target: 'patch',
   // filter: [
+  //   'electron',
   //   'vue',
   // ],
 
   // target: 'minor',
   // filter: [
-  //   'electron',
   //   'eslint',
   //   'eslint-webpack-plugin',
   //   'electron-debug',
