@@ -555,7 +555,7 @@
   "setting__play_task_bar": "在工具列上顯示目前歌曲播放進度",
   "setting__play_timeout": "定時暫停",
   "setting__player_audio_visualization_tip": "自訂音訊輸出裝置與音訊可視化功能衝突，啟用「音訊可視化」後音訊輸出裝置將會被重設為預設，目前此問題暫無法解決。是否仍要開啟？",
-  "setting__player_awap_lyric_trans_roma": "調換歌詞翻譯與歌詞羅馬音位置",
+  "setting__player_swap_lyric_trans_roma": "調換歌詞翻譯與歌詞羅馬音位置",
   "setting__search": "搜尋設定",
   "setting__search_focus_search_box": "啟動時自動聚焦搜尋框",
   "setting__search_history": "顯示歷史搜尋記錄",
