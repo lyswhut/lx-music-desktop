@@ -84,16 +84,16 @@ export const initSingleInstanceHandle = () => {
   }
 
   app.on('second-instance', (event, argv, cwd) => {
-    for (const param of argv) {
-      if (URL_SCHEME_RXP.test(param)) {
-        global.envParams.deeplink = param
-        break
-      }
-    }
-
     if (isExistMainWindow()) {
-      if (global.envParams.deeplink) global.lx.event_app.deeplink(global.envParams.deeplink)
-      else showMainWindow()
+      const envParams = parseEnvParams(argv)
+      if (envParams.deeplink) {
+        global.envParams.deeplink = envParams.deeplink
+        global.lx.event_app.deeplink(global.envParams.deeplink)
+        return
+      }
+      if (envParams.cmdParams.hidden !== true) {
+        showMainWindow()
+      }
     } else {
       app.quit()
     }
