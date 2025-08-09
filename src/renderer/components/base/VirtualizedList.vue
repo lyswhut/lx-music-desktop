@@ -270,9 +270,15 @@ export default {
       cachedList = Array(list.length)
       startIndex = -1
       endIndex = -1
-      void nextTick(() => {
-        updateView()
-      })
+      if (cachedList.length) {
+        void nextTick(() => {
+          requestAnimationFrame(() => {
+            updateView()
+          })
+        })
+      } else {
+        views.value = []
+      }
     }
     watch(() => props.itemHeight, () => {
       handleReset(props.list)
@@ -289,7 +295,15 @@ export default {
       cachedList = Array(props.list.length)
       startIndex = -1
       endIndex = -1
-      updateView()
+
+      if (props.list.length) {
+        void nextTick(() => {
+          requestAnimationFrame(() => {
+            console.log('updateView')
+            updateView()
+          })
+        })
+      }
       window.addEventListener('resize', handleResize)
     })
     onBeforeUnmount(() => {

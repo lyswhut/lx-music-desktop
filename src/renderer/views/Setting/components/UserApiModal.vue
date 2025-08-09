@@ -36,7 +36,7 @@ import { openUrl } from '@common/utils/electron'
 import apiSourceInfo from '@renderer/utils/musicSdk/api-source-info'
 import { userApi } from '@renderer/store'
 import { appSetting, updateSetting } from '@renderer/store/setting'
-import { ref } from '@common/utils/vueTools'
+import { computed, ref } from '@common/utils/vueTools'
 import { dialog } from '@renderer/plugins/Dialog'
 
 import UserApiOnlineImportModal from './UserApiOnlineImportModal.vue'
@@ -54,16 +54,14 @@ export default {
   emits: ['update:modelValue'],
   setup() {
     const isShowOnlineImportModal = ref(false)
+    const apiList = computed(() => userApi.list)
+
     return {
       userApi,
+      apiList,
       appSetting,
       isShowOnlineImportModal,
     }
-  },
-  computed: {
-    apiList() {
-      return this.userApi.list
-    },
   },
   methods: {
     async importUserApi(script) {
