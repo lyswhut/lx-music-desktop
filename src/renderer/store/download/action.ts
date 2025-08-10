@@ -166,22 +166,17 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
       : Promise.resolve(null),
   ]
   void Promise.all(tasks).then(([imgUrl, lyrics]) => {
-    const lrcData = {
-      lrc: '',
-      tlrc: null as string | null,
-      rlrc: null as string | null,
-    }
-    if (lyrics) {
-      lrcData.lrc = lyrics.lyric
-      if (appSetting['download.isEmbedLyricT'] && lyrics.tlyric) lrcData.tlrc = lyrics.tlyric
-      if (appSetting['download.isEmbedLyricR'] && lyrics.rlyric) lrcData.rlrc = lyrics.rlyric
-    }
-    void window.lx.worker.download.writeMeta(downloadInfo.metadata.filePath, {
+    const info = {
+      filePath: downloadInfo.metadata.filePath,
+      isEmbedLyricLx: appSetting['download.isEmbedLyricLx'],
+      isEmbedLyricT: appSetting['download.isEmbedLyricT'],
+      isEmbedLyricR: appSetting['download.isEmbedLyricR'],
       title: downloadInfo.metadata.musicInfo.name,
       artist: downloadInfo.metadata.musicInfo.singer?.replaceAll('、', ';'),
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
-    }, lrcData, getProxy())
+    }
+    void window.lx.worker.download.writeMeta(info, lyrics ?? { lyric: '' }, getProxy())
   })
 }
 
@@ -198,14 +193,14 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
   }).then(lrcs => {
     if (lrcs.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
-      const lrcData = {
-        lrc: lrcs.lyric,
-        tlrc: appSetting['download.isDownloadTLrc'] && lrcs.tlyric ? lrcs.tlyric : null,
-        rlrc: appSetting['download.isDownloadRLrc'] && lrcs.rlyric ? lrcs.rlyric : null,
+      const info = {
+        filePath: downloadInfo.metadata.filePath.substring(0, downloadInfo.metadata.filePath.lastIndexOf('.')) + '.lrc',
+        format: appSetting['download.lrcFormat'],
+        downloadLxlrc: appSetting['download.isDownloadLxLrc'],
+        downloadTlrc: appSetting['download.isDownloadTLrc'],
+        downloadRlrc: appSetting['download.isDownloadRLrc'],
       }
-      void window.lx.worker.download.saveLrc(lrcData,
-        downloadInfo.metadata.filePath.substring(0, downloadInfo.metadata.filePath.lastIndexOf('.')) + '.lrc',
-        appSetting['download.lrcFormat'])
+      void window.lx.worker.download.saveLrc(lrcs, info)
     }
   })
 }

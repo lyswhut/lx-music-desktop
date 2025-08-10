@@ -1,8 +1,17 @@
 import { setMeta } from '@common/utils/musicMeta'
-import { mergeLyrics } from './lrcTool'
+import { buildLyrics } from './lrcTool'
 
-export const writeMeta = (filePath: string, meta: Omit<LX.Music.MusicFileMeta, 'lyrics'>, lyricData: { lrc: string, tlrc: string | null, rlrc: string | null }, proxy?: { host: string, port: number }) => {
-  setMeta(filePath, { ...meta, lyrics: mergeLyrics(lyricData.lrc, lyricData.tlrc, lyricData.rlrc) || null }, proxy)
+export const writeMeta = ({ filePath, isEmbedLyricLx, isEmbedLyricT, isEmbedLyricR, ...meta }: {
+  filePath: string
+  isEmbedLyricLx: boolean
+  isEmbedLyricT: boolean
+  isEmbedLyricR: boolean
+  title: string
+  artist: string
+  album: string
+  APIC: string | null
+}, lyric: LX.Music.LyricInfo, proxy?: { host: string, port: number }) => {
+  setMeta(filePath, { ...meta, lyrics: buildLyrics(lyric, isEmbedLyricLx, isEmbedLyricT, isEmbedLyricR) }, proxy)
 }
 
 export { saveLrc } from './utils'

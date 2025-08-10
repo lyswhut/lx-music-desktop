@@ -61,14 +61,38 @@ const parseLrcTimeLabel = (lrc: string) => {
   return linesSet
 }
 
+const buildAwlyric = (lrcData: LX.Music.LyricInfo) => {
+  let lrc: string[] = []
+  if (lrcData.lyric) {
+    lrc.push(`lrc:${Buffer.from(lrcData.lyric.trim(), 'utf-8').toString('base64')}`)
+  }
+  if (lrcData.tlyric) {
+    lrc.push(`tlrc:${Buffer.from(lrcData.tlyric.trim(), 'utf-8').toString('base64')}`)
+  }
+  if (lrcData.rlyric) {
+    lrc.push(`rlrc:${Buffer.from(lrcData.rlyric.trim(), 'utf-8').toString('base64')}`)
+  }
+  if (lrcData.lxlyric) {
+    lrc.push(`awlrc:${Buffer.from(lrcData.lxlyric.trim(), 'utf-8').toString('base64')}`)
+  }
+  return lrc.length ? `[awlrc:${lrc.join(',')}]` : ''
+}
 
-export const mergeLyrics = (lrc: string, tlrc: string | null, rlrc: string | null) => {
-  if (!tlrc && !rlrc) return lrc
+export const buildLyrics = (lrcData: LX.Music.LyricInfo, downloadAwlrc: boolean, downloadTlrc: boolean, downloadRlrc: boolean) => {
+  if (!lrcData.tlyric && !lrcData.rlyric && !lrcData.lxlyric) return lrcData.lyric
 
-  const lrcTimeLabels = parseLrcTimeLabel(lrc)
-  // console.log(lrcTimeLabels)
-  if (tlrc) lrc += `\n\n${filterExtendedLyricLabel(lrcTimeLabels, tlrc)}\n`
-  if (rlrc) lrc += `\n\n${filterExtendedLyricLabel(lrcTimeLabels, rlrc)}\n`
-  // console.log(lrc)
+  const lrcTimeLabels = parseLrcTimeLabel(lrcData.lyric)
+
+  let lrc = lrcData.lyric
+  if (downloadTlrc && lrcData.tlyric) {
+    lrc = lrc.trim() + `\n\n${filterExtendedLyricLabel(lrcTimeLabels, lrcData.tlyric)}\n`
+  }
+  if (downloadRlrc && lrcData.rlyric) {
+    lrc = lrc.trim() + `\n\n${filterExtendedLyricLabel(lrcTimeLabels, lrcData.rlyric)}\n`
+  }
+  if (downloadAwlrc) {
+    const awlrc = buildAwlyric(lrcData)
+    if (awlrc) lrc = lrc.trim() + `\n\n${awlrc}\n`
+  }
   return lrc
 }

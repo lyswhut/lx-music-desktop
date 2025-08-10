@@ -1,27 +1,30 @@
 import { DOWNLOAD_STATUS, QUALITYS } from '@common/constants'
 import { filterFileName } from '@common/utils/common'
-import { mergeLyrics } from './lrcTool'
+import { buildLyrics } from './lrcTool'
 import fs from 'fs'
 import { clipFileNameLength, clipNameLength } from '@common/utils/tools'
 
 /**
  * 保存歌词文件
- * @param {*} filePath
- * @param {*} lrc
- * @param {*} format
  */
-export const saveLrc = async(lrcData: { lrc: string, tlrc: string | null, rlrc: string | null }, filePath: string, format: LX.LyricFormat) => {
+export const saveLrc = async(lrcData: LX.Music.LyricInfo, info: {
+  filePath: string
+  format: LX.LyricFormat
+  downloadLxlrc: boolean
+  downloadTlrc: boolean
+  downloadRlrc: boolean
+}) => {
   const iconv = await import('iconv-lite')
-  const lrc = mergeLyrics(lrcData.lrc, lrcData.tlrc, lrcData.rlrc)
-  switch (format) {
+  const lrc = buildLyrics(lrcData, info.downloadLxlrc, info.downloadTlrc, info.downloadRlrc)
+  switch (info.format) {
     case 'gbk':
-      fs.writeFile(filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), err => {
+      fs.writeFile(info.filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), err => {
         if (err) console.log(err)
       })
       break
     case 'utf8':
     default:
-      fs.writeFile(filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), err => {
+      fs.writeFile(info.filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), err => {
         if (err) console.log(err)
       })
       break
