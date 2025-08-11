@@ -53,14 +53,14 @@ export const parseLyric = (lrc: string): LX.Music.LyricInfo => {
       name: 'rlyric',
       verify: verifylrc,
     },
-    rxp: /(?:^|\n\s*)\[(?:awlrc):([^\]]+)]/i,
-    rxp2: /^(lrc|awlrc|tlrc|rlrc):([^,]+)$/i,
   } as const
+  const tagRxp = /(?:^|\n\s*)\[awlrc:([^\]]+)]/i
+  const lrcRxp = /^(lrc|awlrc|tlrc|rlrc):([^,]+)$/i
   const parse = (content: string) => {
     const lyricInfo: Partial<LX.Music.LyricInfo> = {}
     const lrcs = content.trim().split(',')
     for (const lrc of lrcs) {
-      const result = lrcTags.rxp2.exec(lrc.trim())
+      const result = lrcRxp.exec(lrc.trim())
       if (!result) continue
       const target = lrcTags[result[1].toLowerCase() as 'tlrc' | 'rlrc' | 'lrc' | 'awlrc']
       if (!target) continue
@@ -70,7 +70,7 @@ export const parseLyric = (lrc: string): LX.Music.LyricInfo => {
     return lyricInfo
   }
   let parsedInfo: Partial<LX.Music.LyricInfo> = {}
-  let lyric = lrc.replace(lrcTags.rxp, (_: string, p1: string) => {
+  let lyric = lrc.replace(tagRxp, (_: string, p1: string) => {
     parsedInfo = parse(p1)
     return ''
   }).trim()
