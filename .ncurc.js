@@ -33,6 +33,7 @@ module.exports = {
 
   // target: 'minor',
   // filter: [
+  //   'electron',
   //   'eslint',
   //   'eslint-webpack-plugin',
   //   'electron-debug',
