@@ -18,8 +18,12 @@ export const onSettingChanged = (listener: LX.IpcRendererEventListenerParams<Par
 export const setWindowBounds = (bounds: LX.DesktopLyric.NewBounds) => {
   rendererSend<LX.DesktopLyric.NewBounds>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_bounds, bounds)
 }
+let previousResizable: boolean | null = null
 export const setWindowResizeable = (resizable: boolean) => {
-  rendererSend<boolean>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_resizeable, resizable)
+  if (previousResizable === resizable) return
+  previousResizable = resizable
+  // https://github.com/electron/electron/issues/48352
+  // rendererSend<boolean>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_resizeable, resizable)
 }
 
 export const sendConnectMainWindowEvent = () => {
