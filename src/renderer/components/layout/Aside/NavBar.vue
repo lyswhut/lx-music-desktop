@@ -59,7 +59,7 @@ export default {
           to: '/list',
           tips: t('my_list'),
           icon: '#icon-love',
-          iconSize: '0 0 444.87 391.18',
+          iconSize: '0 0 1024 1024',
           size,
           name: 'List',
           enable: true,
