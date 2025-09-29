@@ -31,6 +31,9 @@ declare namespace LX {
       lyricLineText: string
       lyricLineAllText: string
       lyric: string
+      tlyric: string
+      rlyric: string
+      lxlyric: string
       collect: boolean
       volume: number
       mute: boolean
