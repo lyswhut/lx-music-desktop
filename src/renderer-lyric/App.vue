@@ -87,6 +87,9 @@ body {
   }
   &.hide {
     opacity: .05;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
