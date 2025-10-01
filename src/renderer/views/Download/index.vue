@@ -62,6 +62,8 @@
       <base-menu v-model="isShowItemMenu" :menus="menus" :xy="menuLocation" item-name="name" @menu-click="handleMenuClick" />
       <!-- <base-menu :menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :is-show="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick" /> -->
     </div>
+    <common-list-add-modal v-model:show="isShowListAdd" :music-info="selectedAddMusicInfo" teleport="#view" />
+    <common-list-add-multiple-modal v-model:show="isShowListAddMultiple" :music-list="selectedList" teleport="#view" @confirm="removeAllSelect" />
   </div>
 </template>
 
@@ -75,6 +77,7 @@ import useTab from './useTab'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
 import useTaskActions from './useTaskActions'
+import useMusicAdd from './useMusicAdd'
 import { downloadStatus } from '@renderer/store/download/state'
 import { appSetting } from '@renderer/store/setting'
 
@@ -114,6 +117,13 @@ export default {
     } = useTaskActions({ list, removeAllSelect, selectedList })
 
     const {
+      isShowListAdd,
+      isShowListAddMultiple,
+      selectedAddMusicInfo,
+      handleShowMusicAddModal,
+    } = useMusicAdd({ selectedList, list })
+
+    const {
       menus,
       menuLocation,
       isShowItemMenu,
@@ -126,6 +136,7 @@ export default {
       handleOpenFile,
       handlePlayMusic,
       handlePlayMusicLater,
+      handleShowMusicAddModal,
       handleSearch,
       handleOpenMusicDetail,
     })
@@ -208,6 +219,12 @@ export default {
       selectedList,
       listItemHeight,
       playTaskId,
+
+      isShowListAdd,
+      isShowListAddMultiple,
+      selectedAddMusicInfo,
+
+      removeAllSelect,
 
       menus,
       menuLocation,

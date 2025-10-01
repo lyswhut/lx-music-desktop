@@ -10,6 +10,7 @@ export default ({
   handleOpenFile,
   handlePlayMusic,
   handlePlayMusicLater,
+  handleShowMusicAddModal,
   handleSearch,
   handleOpenMusicDetail,
 }) => {
@@ -22,6 +23,7 @@ export default ({
     sourceDetail: true,
     search: true,
     remove: true,
+    addTo: true,
   })
   const t = useI18n()
   const menuLocation = shallowReactive({ x: 0, y: 0 })
@@ -53,6 +55,11 @@ export default ({
         name: t('list__file'),
         action: 'file',
         hide: !itemMenuControl.file,
+      },
+      {
+        name: t('list__add_to'),
+        action: 'addTo',
+        disabled: !itemMenuControl.addTo,
       },
       {
         name: t('list__source_detail'),
@@ -128,6 +135,9 @@ export default ({
         break
       case 'playLater':
         handlePlayMusicLater(index)
+        break
+      case 'addTo':
+        handleShowMusicAddModal(index)
         break
       case 'search':
         handleSearch(index)
