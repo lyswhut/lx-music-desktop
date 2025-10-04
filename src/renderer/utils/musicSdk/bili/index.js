@@ -1,4 +1,3 @@
-import leaderboard from './leaderboard'
 import songList from './songList'
 import musicSearch from './musicSearch'
 import { apis } from '../api-source'
@@ -6,7 +5,6 @@ import hotSearch from './hotSearch'
 import comment from './comment'
 
 const bili = {
-  leaderboard,
   songList,
   musicSearch,
   hotSearch,
@@ -16,8 +14,7 @@ const bili = {
     return apis('bili').getMusicUrl(songInfo, type)
   },
   getLyric(songInfo) {
-    // ignoring
-    return Promise.resolve({ lyric: '', tlyric: '', rlyric: '', lxlyric: '' })
+    throw new Error('Bilibili暂无歌词接口')
   },
   getPic(songInfo) {
     return apis('bili').getPic(songInfo)
