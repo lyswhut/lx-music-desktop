@@ -26,6 +26,7 @@
                 @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/faq/cannot-open-songlist')"
               >FAQ</span>
             </li>
+            <li>{{ $t('songlist__import_input_tip_5') }}</li>
           </ul>
         </div>
         <base-btn :class="$style.btn" @click="handleSubmit">{{ $t('songlist__import_input_btn_confirm') }}</base-btn>
