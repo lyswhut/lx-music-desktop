@@ -3,6 +3,12 @@ import { httpFetch } from '../../request'
 export default {
   limit_song: 20,
   successCode: 0,
+  sortList: [
+    {
+      name: '默认',
+      id: '0',
+    },
+  ],
 
   getList(sortId, tagId, page, tryNum = 0) {
     return Promise.resolve({
@@ -70,7 +76,9 @@ export default {
   getTags() {
     return Promise.resolve({
       tags: [],
-      hotTag: [],
+      hotTag: [{
+        name: '全部', id: '0', source: 'bili',
+      }],
       source: 'bili',
     })
   },
