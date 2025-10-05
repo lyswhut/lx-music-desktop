@@ -70,6 +70,14 @@ export const createWindow = () => {
   const proxy = getProxy()
   setSesProxy(ses, proxy?.host, proxy?.port)
 
+  const filter = {
+    urls: ['*://*/*bili*/*']
+  }
+  ses.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+      details.requestHeaders.Referer = 'https://www.bilibili.com'
+    callback({ requestHeaders: details.requestHeaders })
+  })
+
   /**
    * Initial window options
    */
