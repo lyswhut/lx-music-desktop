@@ -115,7 +115,7 @@ export default {
       return intv
     }
     const trimStr = str => typeof str == 'string' ? str.trim() : (str || '')
-    const filterStr = str => typeof str == 'string' ? str.replace(/\s|'|\.|,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[|!|！/g, '') : String(str || '')
+    const filterStr = str => typeof str == 'string' ? str.replace(/\s|'|\.,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[|!|！/g, '') : String(str || '')
     const fMusicName = filterStr(name).toLowerCase()
     const fSinger = filterStr(sortSingle(singer)).toLowerCase()
     const fAlbumName = filterStr(albumName).toLowerCase()
