@@ -23,14 +23,12 @@ export default {
           cv: '14090508',
           v: '14090508',
           tmeAppID: 'qqmusic',
-      
           phonetype: 'EBG-AN10',
           deviceScore: '553.47',
           devicelevel: '50',
           newdevicelevel: '20',
           rom: 'HuaWei/EMOTION/EmotionUI_14.2.0',
           os_ver: '12',
-      
           OpenUDID: '0',
           OpenUDID2: '0',
           QIMEI36: '0',
@@ -43,7 +41,6 @@ export default {
           wid: '0',
           uid: '0',
           sid: '0',
-      
           modeSwitch: '6',
           teenMode: '0',
           ui_mode: '2',
