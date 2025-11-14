@@ -210,15 +210,15 @@ export const getLocalMusicFileLyric = async(path: string): Promise<LX.Music.Lyri
   const metadata = await getFileMetadata(path)
   // console.log(metadata?.common)
   if (!metadata) return null
-  let lyricInfo = metadata.common.lyrics?.[0]
-  if (lyricInfo) {
-    let lyric: string | undefined
-    if (typeof lyricInfo == 'object') lyric = lyricInfo.text
-    else if (typeof lyricInfo == 'string') lyric = lyricInfo
-    if (lyric && lyric.length > 10) {
-      return { lyric }
-    }
-  }
+  // let lyricInfo = metadata.common.lyrics?.[0]
+  // if (lyricInfo) {
+  //   let lyric: string | undefined
+  //   if (typeof lyricInfo == 'object') lyric = lyricInfo.text
+  //   else if (typeof lyricInfo == 'string') lyric = lyricInfo
+  //   if (lyric && lyric.length > 10) {
+  //     return { lyric }
+  //   }
+  // }
   // console.log(metadata)
   for (const info of Object.values(metadata.native)) {
     for (const ust of info) {

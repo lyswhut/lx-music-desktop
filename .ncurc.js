@@ -6,6 +6,7 @@ module.exports = {
     'del',
     'comlink',
     'vue',
+    'vue-router',
     'image-size',
     'message2call',
     '@types/ws',
@@ -29,11 +30,12 @@ module.exports = {
   // filter: [
   //   'electron',
   //   'vue',
+  //   'vue-router',
   // ],
 
   // target: 'minor',
   // filter: [
-  //   'electron',
+  //  // 'electron',
   //   'eslint',
   //   'eslint-webpack-plugin',
   //   'electron-debug',
