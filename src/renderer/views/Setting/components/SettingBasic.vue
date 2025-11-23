@@ -68,8 +68,10 @@ dd
 
 dd
   h3#basic_font {{ $t('setting__basic_font') }}
-  div
-    base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
+  div(style="--selection-width: 12rem;")
+    base-selection.gap-left(:list="fontList" :model-value="fonts[0]" item-key="id" item-name="label" @update:model-value="updateFonts($event, fonts[1])")
+    base-selection.gap-left(v-if="fonts[0]" :list="fontList" :model-value="fonts[1]" item-key="id" item-name="label" @update:model-value="updateFonts(fonts[0], $event)")
+    //- base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
 
 dd
   h3#basic_lang {{ $t('setting__basic_lang') }}
@@ -300,6 +302,17 @@ export default {
       systemFontList.value = fonts.map(f => ({ id: f, label: f.replace(/(^"|"$)/g, '') }))
     })
 
+    const fonts = computed(() => {
+      if (!appSetting['common.font']) return ['', '']
+      let [f1 = '', f2 = ''] = appSetting['common.font'].split(',')
+      return [f1.trim(), f2.trim()]
+    })
+    const updateFonts = (font1, font2) => {
+      let font = []
+      if (font1) font.push(font1)
+      if (font2) font.push(font2)
+      updateSetting({ 'common.font': font.join(', ') })
+    }
     const fontSizeList = computed(() => {
       return [
         { id: 14, label: t('setting__basic_font_size_14px') },
@@ -319,6 +332,8 @@ export default {
       autoTheme,
       showAllTheme,
       themeList,
+      fonts,
+      updateFonts,
       // currentStting,
       // themes,
       // themeClassName,
