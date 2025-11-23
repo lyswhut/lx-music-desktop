@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.12.0-beta.12",
+  "version": "2.12.0-beta.13",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "scripts": {
