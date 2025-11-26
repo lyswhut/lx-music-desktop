@@ -72,7 +72,8 @@ const setList = (datas: SearchResult, page: number, text: string): ListInfoItem[
 }
 
 export const resetListInfo = (sourceId: LX.OnlineSource | 'all'): [] => {
-  let listInfo = listInfos[sourceId]!
+  let listInfo = listInfos[sourceId]
+  if (!listInfo) return []
   listInfo.page = 1
   listInfo.limit = 20
   listInfo.total = 0

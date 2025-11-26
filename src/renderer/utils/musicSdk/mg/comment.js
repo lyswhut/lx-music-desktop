@@ -6,7 +6,7 @@ export default {
   _requestObj: null,
   _requestObj2: null,
   _requestObj3: null,
-  async getComment(musicInfo, page = 1, limit = 10) {
+  async getComment(musicInfo, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
     if (!musicInfo.songId) {
       let id = await getSongId(musicInfo)
@@ -14,18 +14,20 @@ export default {
       musicInfo.songId = id
     }
 
-    const _requestObj = httpFetch(`https://music.migu.cn/v3/api/comment/listComments?targetId=${musicInfo.songId}&pageSize=${limit}&pageNo=${page}`, {
+    // const _requestObj = httpFetch(`https://music.migu.cn/v3/api/comment/listComments?targetId=${musicInfo.songId}&pageSize=${limit}&pageNo=${page}`, {
+    const _requestObj = httpFetch(`https://app.c.nf.migu.cn/MIGUM3.0/user/comment/stack/v1.0?pageSize=${limit}&queryType=1&resourceId=${musicInfo.songId}&resourceType=2&start=${(page - 1) * limit}`, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4195.1 Safari/537.36',
-        Referer: 'https://music.migu.cn',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        // Referer: 'https://music.migu.cn',
       },
     })
     const { body, statusCode } = await _requestObj.promise
     // console.log(body)
-    if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取评论失败')
-    return { source: 'mg', comments: this.filterComment(body.data.items), total: body.data.itemTotal, page, limit, maxPage: Math.ceil(body.data.itemTotal / limit) || 1 }
+    if (statusCode != 200 || body.code !== '000000') throw new Error('获取评论失败')
+    const total = parseInt(body.data.commentNums)
+    return { source: 'mg', comments: this.filterComment(body.data.comments), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
-  async getHotComment(musicInfo, page = 1, limit = 5) {
+  async getHotComment(musicInfo, page = 1, limit = 20) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
     if (!musicInfo.songId) {
@@ -34,51 +36,55 @@ export default {
       musicInfo.songId = id
     }
 
-    const _requestObj2 = httpFetch(`https://music.migu.cn/v3/api/comment/listTopComments?targetId=${musicInfo.songId}&pageSize=${limit}&pageNo=${page}`, {
+    // const _requestObj2 = httpFetch(`https://music.migu.cn/v3/api/comment/listTopComments?targetId=${musicInfo.songId}&pageSize=${limit}&pageNo=${page}`, {
+    const _requestObj2 = httpFetch(`https://app.c.nf.migu.cn/MIGUM3.0/user/comment/stack/v1.0?pageSize=${limit}&queryType=2&resourceId=${musicInfo.songId}&resourceType=2&hotCommentStart=${(page - 1) * limit}`, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4195.1 Safari/537.36',
-        Referer: 'https://music.migu.cn',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        // Referer: 'https://music.migu.cn',
       },
     })
     const { body, statusCode } = await _requestObj2.promise
     // console.log(body)
-    if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取热门评论失败')
-    return { source: 'mg', comments: this.filterComment(body.data.items), total: body.data.itemTotal, page, limit, maxPage: Math.ceil(body.data.itemTotal / limit) || 1 }
+    if (statusCode != 200 || body.code !== '000000') throw new Error('获取热门评论失败')
+    const total = parseInt(body.data.cfgHotCount)
+    return { source: 'mg', comments: this.filterComment(body.data.hotComments), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   async getReplyComment(musicInfo, replyId, page = 1, limit = 10) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
 
-    const _requestObj2 = httpFetch(`https://music.migu.cn/v3/api/comment/listCommentsById?commentId=${replyId}&pageSize=${limit}&pageNo=${page}`, {
+    // const _requestObj2 = httpFetch(`https://music.migu.cn/v3/api/comment/listCommentsById?commentId=${replyId}&pageSize=${limit}&pageNo=${page}`, {
+    const _requestObj2 = httpFetch(`https://app.c.nf.migu.cn/MIGUM3.0/user/comment/stack/${replyId}/v1.0?pageSize=${limit}&queryType=2&resourceId=${musicInfo.songId}&resourceType=2&start=${(page - 1) * limit}`, {
       headers: {
-        'User-Agent': 'Android712-AndroidPhone-8983-18-0-COMMENT-wifi',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
       },
     })
     const { body, statusCode } = await _requestObj2.promise
     // console.log(body)
-    if (statusCode != 200 || body.returnCode !== '000000') throw new Error('获取回复评论失败')
-    return { source: 'mg', comments: this.filterComment(body.data.items) }
+    if (statusCode != 200 || body.code !== '000000') throw new Error('获取回复评论失败')
+    const total = parseInt(body.data.replyTotalCount)
+    return { source: 'mg', comments: this.filterComment(body.data.mainCommentItem.replyComments), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   filterComment(rawList) {
     return rawList.map(item => ({
       id: item.commentId,
-      text: item.body,
-      time: item.createTime,
-      timeStr: dateFormat2(new Date(item.createTime).getTime()),
-      userName: item.author.name,
-      avatar: /^\/\//.test(item.author.avatar) ? `http:${item.author.avatar}` : item.author.avatar,
-      userId: item.author.id,
-      likedCount: item.praiseCount,
-      replyNum: item.replyTotal,
-      reply: item.replyCommentList.map(c => ({
-        id: c.commentId,
-        text: c.body,
-        time: c.createTime,
-        timeStr: dateFormat2(new Date(c.createTime).getTime()),
-        userName: c.author.name,
-        avatar: /^\/\//.test(c.author.avatar) ? `http:${c.author.avatar}` : c.author.avatar,
-        userId: c.author.id,
-        likedCount: c.praiseCount,
-        replyNum: c.replyTotal,
+      text: item.commentInfo,
+      time: item.commentTime,
+      timeStr: dateFormat2(new Date(item.commentTime).getTime()),
+      userName: item.user.nickName,
+      avatar: item.user.middleIcon || item.user.bigIcon || item.user.smallIcon,
+      userId: item.user.userId,
+      likedCount: item.opNumItem.thumbNum,
+      replyNum: item.replyTotalCount,
+      reply: item.replyComments.map(c => ({
+        id: c.replyId,
+        text: c.replyInfo,
+        time: c.replyTime,
+        timeStr: dateFormat2(new Date(c.replyTime).getTime()),
+        userName: c.user.nickName,
+        avatar: c.user.middleIcon || c.user.bigIcon || c.user.smallIcon,
+        userId: c.user.userId,
+        likedCount: null,
+        replyNum: null,
       })),
     }))
   },

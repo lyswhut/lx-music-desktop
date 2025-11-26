@@ -74,7 +74,8 @@ const setList = (datas: SearchResult, page: number, text: string): LX.Music.Musi
 }
 
 export const resetListInfo = (sourceId: LX.OnlineSource | 'all'): [] => {
-  let listInfo = listInfos[sourceId]!
+  let listInfo = listInfos[sourceId]
+  if (!listInfo) return []
   listInfo.list = []
   listInfo.page = 0
   listInfo.maxPage = 0
