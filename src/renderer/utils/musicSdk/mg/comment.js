@@ -6,6 +6,7 @@ export default {
   _requestObj: null,
   _requestObj2: null,
   _requestObj3: null,
+  lastCommentIds: new Map(),
   async getComment(musicInfo, page = 1, limit = 20) {
     if (this._requestObj) this._requestObj.cancelHttp()
     if (!musicInfo.songId) {
@@ -13,9 +14,11 @@ export default {
       if (!id) throw new Error('获取评论失败')
       musicInfo.songId = id
     }
-
+    if (page === 1) this.lastCommentIds.clear()
+    const lastCommentId = this.lastCommentIds.get(String(page)) || ''
+    if (!lastCommentId && page > 1) throw new Error('获取评论失败')
     // const _requestObj = httpFetch(`https://music.migu.cn/v3/api/comment/listComments?targetId=${musicInfo.songId}&pageSize=${limit}&pageNo=${page}`, {
-    const _requestObj = httpFetch(`https://app.c.nf.migu.cn/MIGUM3.0/user/comment/stack/v1.0?pageSize=${limit}&queryType=1&resourceId=${musicInfo.songId}&resourceType=2&start=${(page - 1) * limit}`, {
+    const _requestObj = httpFetch(`https://app.c.nf.migu.cn/MIGUM3.0/user/comment/stack/v1.0?pageSize=${limit}&queryType=1&resourceId=${musicInfo.songId}&resourceType=2&commentId=${lastCommentId}`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
         // Referer: 'https://music.migu.cn',
@@ -25,7 +28,9 @@ export default {
     // console.log(body)
     if (statusCode != 200 || body.code !== '000000') throw new Error('获取评论失败')
     const total = parseInt(body.data.commentNums)
-    return { source: 'mg', comments: this.filterComment(body.data.comments), total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
+    const list = this.filterComment(body.data.comments)
+    this.lastCommentIds.set(String(page + 1), list.length ? list[list.length - 1].id : '')
+    return { source: 'mg', comments: list, total, page, limit, maxPage: Math.ceil(total / limit) || 1 }
   },
   async getHotComment(musicInfo, page = 1, limit = 20) {
     if (this._requestObj2) this._requestObj2.cancelHttp()
