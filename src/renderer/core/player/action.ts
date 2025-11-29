@@ -5,6 +5,7 @@ import {
   clearPlayedList,
   clearTempPlayeList,
   setPlayMusicInfo,
+  setPlayMusicInfoQuality,
   addPlayedList,
   setMusicInfo,
   setAllStatus,
@@ -133,6 +134,7 @@ export const setMusicUrl = (musicInfo: LX.Music.MusicInfo | LX.Download.ListItem
   void getMusicPlayUrl(musicInfo, isRefresh).then((url) => {
     if (!url) return
     setResource(url)
+    setPlayMusicInfoQuality(musicInfo)
   }).catch((err: any) => {
     console.log(err)
     setAllStatus(err.message)
