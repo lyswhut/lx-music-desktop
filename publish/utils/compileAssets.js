@@ -18,7 +18,7 @@ module.exports = () => new Promise((resolve, reject) => {
       resolve()
     } else {
       console.log(chalk.red('Asset compilation failed.'))
-      reject()
+      reject(new Error('Asset compilation failed'))
     }
   })
 })
