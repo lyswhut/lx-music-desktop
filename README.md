@@ -47,6 +47,8 @@
 
 *移动版项目地址：https://github.com/lyswhut/lx-music-mobile*
 
+*LX Music 项目发展调整与新项目计划：https://github.com/lyswhut/lx-music-desktop/issues/1912*
+
 软件变化请查看[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)。
 
 软件下载请查看 [GitHub Releases](https://github.com/lyswhut/lx-music-desktop/releases)。
