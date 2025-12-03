@@ -43,7 +43,7 @@
     </button>
     <template #content>
       <div :class="$style.setting">
-        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_list_loop')" @click="toggleMode('listLoop')">
+        <button :class="$style.btn" :aria-label="$t('player__play_toggle_mode_list_loop')" @click="toggleMode('listLoop')"><!-- //todo直接把顺序播放删了然后把图标接到播放列表头上，反正这个模式和列表循环一模一样 -->
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-list-loop" />
           </svg>
