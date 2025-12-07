@@ -16,7 +16,7 @@
             @update:model-value="saveVolumeIsMute($event)"
           />
         </div>
-        <base-slider-bar :class="$style.slider" :value="volume" :min="0" :max="1" @change="handleUpdateVolume" />
+        <base-slider-bar :class="$style.slider" :value="volume" :min="0" :max="1" :step="0.01" @change="handleUpdateVolume" />
       </div>
     </template>
   </material-popup-btn>
