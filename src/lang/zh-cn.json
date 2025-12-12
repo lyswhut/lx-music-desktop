@@ -657,6 +657,7 @@
   "sync__overwrite_label": "覆盖",
   "sync__overwrite_tip": "覆盖:",
   "sync_status_disabled": "未连接",
+  "tag__low_quality": "LQ",
   "tag__high_quality": "HQ",
   "tag__lossless": "SQ",
   "tag__lossless_24bit": "24bit",

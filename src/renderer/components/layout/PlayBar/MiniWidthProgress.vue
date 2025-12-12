@@ -6,7 +6,7 @@
     </div>
     <div :class="$style.infoContent">
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
-        {{ title }}
+        {{ title }} <quality />
       </div>
       <div :class="$style.status">{{ statusText }}</div>
     </div>
@@ -51,6 +51,7 @@ import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
 import ControlBtns from './ControlBtns.vue'
 import PlayProgress from './PlayProgress.vue'
+import Quality from './Quality.vue'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
 import {
@@ -74,6 +75,7 @@ export default {
   components: {
     ControlBtns,
     PlayProgress,
+    Quality,
   },
   setup() {
     const router = useRouter()
@@ -118,6 +120,8 @@ export default {
         : ''
     })
 
+    const quality = computed(() => playMusicInfo.quality)
+
     // onBeforeUnmount(() => {
     // window.eventHub.emit(eventPlayerNames.setTogglePlay)
     // })
@@ -140,6 +144,7 @@ export default {
       playPrev,
       handleToMusicLocation,
       isShowPlayerDetail,
+      quality,
     }
   },
 }
