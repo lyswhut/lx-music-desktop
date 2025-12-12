@@ -181,7 +181,7 @@ export const getLocalMusicFileLyric = async(path: string): Promise<LX.Music.Lyri
     const { confidence, encoding } = detect(lrcBuf)
     console.log('lrc file encoding', confidence, encoding)
     if (confidence > 0.8) {
-      const iconv = await import('iconv-lite')
+      const iconv = (await import('iconv-lite')).default
       if (iconv.encodingExists(encoding)) {
         const lrc = iconv.decode(lrcBuf, encoding)
         if (lrc) {

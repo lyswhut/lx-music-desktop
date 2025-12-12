@@ -14,7 +14,7 @@ export const saveLrc = async(lrcData: LX.Music.LyricInfo, info: {
   downloadTlrc: boolean
   downloadRlrc: boolean
 }) => {
-  const iconv = await import('iconv-lite')
+  const iconv = (await import('iconv-lite')).default
   const lrc = buildLyrics(lrcData, info.downloadLxlrc, info.downloadTlrc, info.downloadRlrc)
   switch (info.format) {
     case 'gbk':

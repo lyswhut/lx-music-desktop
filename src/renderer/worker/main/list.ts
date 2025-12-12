@@ -304,7 +304,7 @@ export const createLocalMusicInfos = async(filePaths: string[]): Promise<LX.Musi
  * @param isMerge 是否合并
  */
 export const exportPlayListToText = async(savePath: string, lists: Array<LX.List.MyDefaultListInfoFull | LX.List.MyLoveListInfoFull | LX.List.UserListInfoFull>, isMerge: boolean) => {
-  const iconv = await import('iconv-lite')
+  const iconv = (await import('iconv-lite')).default
 
   if (isMerge) {
     await saveStrToFile(savePath,
@@ -328,7 +328,7 @@ export const exportPlayListToCSV = async(savePath: string,
   lists: Array<LX.List.MyDefaultListInfoFull | LX.List.MyLoveListInfoFull | LX.List.UserListInfoFull>,
   isMerge: boolean,
   header: string) => {
-  const iconv = await import('iconv-lite')
+  const iconv = (await import('iconv-lite')).default
 
   const filterStr = (str: string) => {
     if (!str) return ''
