@@ -2,7 +2,7 @@ import path from 'node:path'
 import { existsSync, mkdirSync, renameSync } from 'fs'
 import { app, shell, screen, nativeTheme, dialog } from 'electron'
 import { URL_SCHEME_RXP } from '@common/constants'
-import { getTheme, initHotKey, initSetting, parseEnvParams } from './utils'
+import { getProxy, getTheme, initHotKey, initSetting, parseEnvParams } from './utils'
 import { navigationUrlWhiteList } from '@common/config'
 import defaultSetting from '@common/defaultSetting'
 import { isExistWindow as isExistMainWindow, showWindow as showMainWindow } from './modules/winMain'
@@ -11,6 +11,7 @@ import { isMac, log } from '@common/utils'
 import createWorkers from './worker'
 import { migrateDBData } from './utils/migrate'
 import { openDirInExplorer } from '@common/utils/electron'
+import { setProxyByHost } from '@common/utils/request'
 
 export const initGlobalData = () => {
   const envParams = parseEnvParams()
@@ -236,13 +237,26 @@ export const listenerAppEvent = (startApp: () => void) => {
     global.lx?.event_app.system_theme_change(shouldUseDarkColors)
   })
 
-  global.lx.event_app.on('updated_config', (config, setting) => {
-    if (config.includes('player.volume')) {
+  const setProxy = () => {
+    const proxy = getProxy()
+    if (proxy) {
+      setProxyByHost(proxy.host, proxy.port ? String(proxy.port) : undefined)
+    } else setProxyByHost()
+  }
+  global.lx.event_app.on('updated_config', (keys, setting) => {
+    if (keys.includes('network.proxy.enable') || (global.lx.appSetting['network.proxy.enable'] && keys.some(k => k.includes('network.proxy.')))) {
+      setProxy()
+    }
+
+    if (keys.includes('player.volume')) {
       global.lx.event_app.player_status({ volume: Math.trunc(setting['player.volume']! * 100) })
     }
-    if (config.includes('player.isMute')) {
+    if (keys.includes('player.isMute')) {
       global.lx.event_app.player_status({ mute: setting['player.isMute'] })
     }
+  })
+  global.lx.event_app.on('app_inited', () => {
+    setProxy()
   })
 }
 

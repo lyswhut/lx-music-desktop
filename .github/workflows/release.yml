@@ -98,7 +98,14 @@ jobs:
           NPM_CACHE: ${{ env.NPM_CACHE }}
         uses: ./.github/actions/setup
 
+      - name: Prepare win7 undici env
+        run: |
+          npm install undici@5
+          Set-Content -Path .\src\common\utils\request.ts -Value "export * from './request_node16'"
+
       - name: Build src code
+        env:
+          BUILD_WIN7: true
         run: |
           git status --porcelain
           npm run build

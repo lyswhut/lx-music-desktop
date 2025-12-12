@@ -193,6 +193,7 @@
     "node-id3": "^0.2.9",
     "sortablejs": "^1.15.6",
     "tunnel": "^0.0.6",
+    "undici": "^7.16.0",
     "utf-8-validate": "^6.0.5",
     "vue": "~3.3.13",
     "vue-router": "^4.5.1",

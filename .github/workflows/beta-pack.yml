@@ -94,12 +94,46 @@ jobs:
           name: lx-music-desktop-win_arm64-green
           path: build/*win_arm64-green.7z
 
+      - name: Generate file MD5
+        run: |
+          cd build
+          Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
-      - name: Install old electron
-        run: npm install electron@22
+  Windows_7:
+    name: Windows_7
+    runs-on: windows-latest
+    env:
+      BUILD_WIN7: true
+    # needs: CheckCode
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v4
 
-      - name: Install python setuptools
-        run: pip.exe install setuptools
+      - name: Get npm cache directory
+        shell: pwsh
+        run: echo "NPM_CACHE=$(npm config get cache)" >> $env:GITHUB_ENV
+
+      - name: Setup Node Env
+        env:
+          NPM_CACHE: ${{ env.NPM_CACHE }}
+        uses: ./.github/actions/setup
+
+      - name: Prepare win7 undici env
+        run: |
+          npm install undici@5
+          Set-Content -Path .\src\common\utils\request.ts -Value "export * from './request_node16'"
+
+      - name: Build src code
+        env:
+          BUILD_WIN7: true
+        run: |
+          git status --porcelain
+          npm run build
+
+      - name: Prepare win7 electron env
+        run: |
+          npm install electron@22
+          pip.exe install setuptools
 
       - name: Build Package win7 Setup x64
         run: npm run pack:win7:setup:x64

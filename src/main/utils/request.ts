@@ -1,8 +1,5 @@
-import needle, { type NeedleHttpVerbs, type NeedleOptions, type BodyData, type NeedleCallback, type NeedleResponse } from 'needle'
 // import progress from 'request-progress'
-import { httpOverHttp, httpsOverHttp } from 'tunnel'
-import { type ClientRequest } from 'node:http'
-import { getProxy } from './index'
+import { request, type Options } from '@common/utils/request'
 // import fs from 'fs'
 
 export const requestMsg = {
@@ -14,53 +11,6 @@ export const requestMsg = {
   cancelRequest: '取消http请求',
 } as const
 
-
-const httpsRxp = /^https:/
-const getRequestAgent = (url: string) => {
-  const proxy = getProxy()
-  return proxy ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)({ proxy }) : undefined
-}
-
-export interface RequestOptions extends NeedleOptions {
-  method?: NeedleHttpVerbs
-  body?: BodyData
-  form?: BodyData
-  formData?: BodyData
-}
-export type RequestCallback = NeedleCallback
-type RequestResponse = NeedleResponse
-const request = (url: string, options: RequestOptions, callback: RequestCallback): ClientRequest => {
-  let data: BodyData = null
-  if (options.body) {
-    data = options.body
-  } else if (options.form) {
-    data = options.form
-    // data.content_type = 'application/x-www-form-urlencoded'
-    options.json = false
-  } else if (options.formData) {
-    data = options.formData
-    // data.content_type = 'multipart/form-data'
-    options.json = false
-  }
-  options.response_timeout = options.timeout
-
-  return needle.request(options.method ?? 'get', url, data, options, (err, resp, body) => {
-    if (!err) {
-      body = resp.body = resp.raw.toString()
-      try {
-        resp.body = JSON.parse(resp.body)
-      } catch (_) {}
-      body = resp.body
-    }
-    callback(err, resp, body)
-    // @ts-expect-error
-  }).request
-}
-
-
-const defaultHeaders = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-}
 // var proxyUrl = "http://" + user + ":" + password + "@" + host + ":" + port;
 // var proxiedRequest = request.defaults({'proxy': proxyUrl});
 
@@ -69,69 +19,12 @@ const defaultHeaders = {
 // }
 
 /**
- * promise 形式的请求方法
- * @param {*} url
- * @param {*} options
- */
-const buildHttpPromose = async(url: string, options: RequestOptions): Promise<RequestResponse> => {
-  return new Promise((resolve, reject) => {
-    void fetchData(url, options.method, options, (err, resp, body) => {
-      // options.isShowProgress && window.api.hideProgress()
-      // debugRequest && console.log(`\n---response------${url}------------`)
-      // debugRequest && console.log(body)
-      // obj.requestObj = null
-      // obj.cancelFn = null
-      if (err) {
-        reject(err)
-        return
-      }
-      resolve(resp)
-    })
-    // .then(request => {
-    //   // obj.requestObj = ro
-    //   // if (obj.isCancelled) obj.cancelHttp()
-    //   promise.abort = () => {
-    //     request.destroy(new Error('cancelled'))
-    //   }
-    // })
-  })
-  // let obj = {
-  //   isCancelled: false,
-  //   cancelHttp: () => {
-  //     if (!obj.requestObj) return obj.isCancelled = true
-  //     cancelHttp(obj.requestObj)
-  //     obj.requestObj = null
-  //     obj.promise = obj.cancelHttp = null
-  //     obj.cancelFn(new Error(requestMsg.cancelRequest))
-  //     obj.cancelFn = null
-  //   },
-  // }
-  // obj.promise = new Promise((resolve, reject) => {
-  //   obj.cancelFn = reject
-  //   debugRequest && console.log(`\n---send request------${url}------------`)
-  //   fetchData(url, options.method, options, (err, resp, body) => {
-  //     // options.isShowProgress && window.api.hideProgress()
-  //     debugRequest && console.log(`\n---response------${url}------------`)
-  //     debugRequest && console.log(body)
-  //     obj.requestObj = null
-  //     obj.cancelFn = null
-  //     if (err) { reject(err); return }
-  //     resolve(resp)
-  //   }).then(ro => {
-  //     obj.requestObj = ro
-  //     if (obj.isCancelled) obj.cancelHttp()
-  //   })
-  // })
-  // return obj
-}
-
-/**
  * 请求超时自动重试
  * @param {*} url
  * @param {*} options
  */
-export const httpFetch = async(url: string, options: RequestOptions = { method: 'get' }) => {
-  return buildHttpPromose(url, options).catch(async(err: any) => {
+export const httpFetch = async<T = unknown> (url: string, options: Options) => {
+  return request<T>(url, options).catch(async(err: any) => {
     // console.log('出错', err)
     if (err.message === 'socket hang up') {
       // window.globalObj.apiSource = 'temp'
@@ -166,24 +59,4 @@ export const httpFetch = async(url: string, options: RequestOptions = { method: 
   // return requestPromise
 }
 
-const fetchData = async(url: string, method: RequestOptions['method'], {
-  headers = {},
-  format = 'json',
-  timeout = 15000,
-  ...options
-}, callback: RequestCallback) => {
-  // console.log(url, options)
-  console.log('---start---', url)
-  headers = Object.assign({}, headers)
-
-  return request(url, {
-    ...options,
-    method,
-    headers: Object.assign({}, defaultHeaders, headers),
-    timeout,
-    agent: getRequestAgent(url),
-    json: format === 'json',
-  }, (err, resp, body) => {
-    callback(err, resp, body)
-  })
-}
+export type RequestOptions = Options

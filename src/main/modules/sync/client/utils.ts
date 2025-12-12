@@ -3,10 +3,9 @@ import { httpFetch, type RequestOptions } from '@main/utils/request'
 import { decodeData, encodeData } from '../utils'
 
 export const request = async(url: string, options: RequestOptions = { }) => {
-  return httpFetch(url, {
+  return httpFetch<string>(url, {
     ...options,
     timeout: options.timeout ?? 10000,
-    follow_max: 5,
   }).then(response => {
     return {
       text: response.body,
