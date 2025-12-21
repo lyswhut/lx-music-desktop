@@ -243,6 +243,7 @@ export default {
       // border-bottom: 2px solid var(--color-primary);
       // border-color: var(--color-primary);
       border: none;
+      min-width: 0;
 
       outline: none;
       // height: @height-toolbar * .7;
