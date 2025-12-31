@@ -150,9 +150,11 @@ export const createTray = () => {
   // tray.setToolTip('LX Music')
   // createMenu()
   tray.setIgnoreDoubleClickEvents(true)
-  tray.on('click', () => {
-    showMainWindow()
-  })
+  if (isWin) {
+    tray.on('click', () => {
+      showMainWindow()
+    })
+  }
 }
 
 export const destroyTray = () => {
