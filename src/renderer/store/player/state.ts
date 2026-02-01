@@ -53,10 +53,15 @@ export const playMusicInfo = shallowReactive<{
    * 是否属于 “稍后播放”
    */
   isTempPlay: boolean
+  /**
+   * 当前播放音质
+   */
+  quality?: LX.Quality
 }>({
   listId: null,
   musicInfo: null,
   isTempPlay: false,
+  quality: undefined,
 })
 export const playInfo = shallowReactive<LX.Player.PlayInfo>({
   playIndex: -1,

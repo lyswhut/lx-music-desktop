@@ -6,7 +6,7 @@
     </div>
     <div :class="$style.infoContent">
       <div :class="$style.title" :aria-label="title + $t('copy_tip')" @click="handleCopy(title)">
-        {{ title }}
+        {{ title }} <quality />
       </div>
       <div :class="$style.status">{{ statusText }}</div>
     </div>
@@ -48,6 +48,7 @@ import { computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { clipboardWriteText } from '@common/utils/electron'
 import ControlBtns from './ControlBtns.vue'
+import Quality from './Quality.vue'
 // import PlayProgress from './PlayProgress'
 import usePlayProgress from '@renderer/utils/compositions/usePlayProgress'
 // import { lyric } from '@renderer/core/share/lyric'
@@ -71,6 +72,7 @@ export default {
   name: 'CorePlayBar',
   components: {
     ControlBtns,
+    Quality,
     // PlayProgress,
   },
   setup() {
