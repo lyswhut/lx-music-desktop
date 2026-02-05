@@ -17,7 +17,7 @@ export default ({ selectedList, props, removeAllSelect, emit }: {
 }) => {
   let clickTime = 0
   let clickIndex = -1
-
+  // todo 待接管
   const handlePlayMusic = async(index: number, single: boolean) => {
     let targetSong = props.list[index]
     const defaultListMusics = await getListMusics(defaultList.id)
