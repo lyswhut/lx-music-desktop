@@ -1,5 +1,5 @@
 import { isLinux } from '@common/utils'
-import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
+import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, mouseCheckTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
 import { sendConfigChange } from './rendererEvent'
 import { buildLyricConfig, getLyricWindowBounds, initWindowSize, watchConfigKeys } from './utils'
 
@@ -11,6 +11,13 @@ let isShowTaskbar: boolean
 let isLockScreen: boolean
 let isHoverHide: boolean
 
+const updateMouseCheck = () => {
+  if (isLock && isHoverHide && !isLinux) {
+    mouseCheckTools.start()
+  } else {
+    mouseCheckTools.stop()
+  }
+}
 
 export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<LX.AppSetting>) => {
   if (!watchConfigKeys.some(key => keys.includes(key))) return
@@ -20,16 +27,15 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
     if (keys.includes('desktopLyric.isLock') && isLock != global.lx.appSetting['desktopLyric.isLock']) {
       isLock = global.lx.appSetting['desktopLyric.isLock']
       if (global.lx.appSetting['desktopLyric.isLock']) {
-        setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+        setIgnoreMouseEvents(true)
       } else {
-        setIgnoreMouseEvents(false, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+        setIgnoreMouseEvents(false)
       }
+      updateMouseCheck()
     }
     if (keys.includes('desktopLyric.isHoverHide') && isHoverHide != global.lx.appSetting['desktopLyric.isHoverHide']) {
       isHoverHide = global.lx.appSetting['desktopLyric.isHoverHide']
-      if (!isLinux) {
-        setIgnoreMouseEvents(global.lx.appSetting['desktopLyric.isLock'], { forward: global.lx.appSetting['desktopLyric.isHoverHide'] })
-      }
+      updateMouseCheck()
     }
     if (keys.includes('desktopLyric.isAlwaysOnTop') && isAlwaysOnTop != global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
       isAlwaysOnTop = global.lx.appSetting['desktopLyric.isAlwaysOnTop']
@@ -77,6 +83,7 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
       createWindow()
     } else {
       alwaysOnTopTools.clearLoop()
+      mouseCheckTools.stop()
       closeWindow()
     }
   }
