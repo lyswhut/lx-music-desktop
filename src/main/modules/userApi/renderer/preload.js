@@ -25,13 +25,14 @@ const eventNames = Object.values(EVENT_NAMES)
 const events = {
   request: null,
 }
-const allSources = ['kw', 'kg', 'tx', 'wy', 'mg', 'local']
+const allSources = ['kw', 'kg', 'tx', 'wy', 'mg', 'bili', 'local']
 const supportQualitys = {
   kw: ['128k', '320k', 'flac', 'flac24bit'],
   kg: ['128k', '320k', 'flac', 'flac24bit'],
   tx: ['128k', '320k', 'flac', 'flac24bit'],
   wy: ['128k', '320k', 'flac', 'flac24bit'],
   mg: ['128k', '320k', 'flac', 'flac24bit'],
+  bili: [],
   local: [],
 }
 const supportActions = {
@@ -41,6 +42,7 @@ const supportActions = {
   wy: ['musicUrl'],
   mg: ['musicUrl'],
   xm: ['musicUrl'],
+  bili: ['musicUrl'],
   local: ['musicUrl', 'lyric', 'pic'],
 }
 
@@ -219,7 +221,7 @@ const initEnv = (userApi) => {
             body = resp.body = resp.raw.toString()
             try {
               resp.body = JSON.parse(resp.body)
-            } catch (_) {}
+            } catch (_) { }
             body = resp.body
             callback.call(this, err, {
               statusCode: resp.statusCode,
