@@ -109,14 +109,21 @@ const inflateScript = async(script: string) => new Promise<string>((resolve, rej
 })
 export const importApi = async(scriptRaw: string): Promise<LX.UserApi.UserApiInfo> => {
   let scriptInfo = parseScriptInfo(scriptRaw)
+  userApis ??= []
+  const existingApi = userApis.find(api => api.name === scriptInfo.name)
+  const script = await deflateScript(scriptRaw)
+  if (existingApi) {
+    Object.assign(existingApi, scriptInfo)
+    scripts.set(existingApi.id, script)
+    saveData()
+    return existingApi
+  }
   const apiInfo = {
     id: `user_api_${Math.random().toString().substring(2, 5)}_${Date.now()}`,
     ...scriptInfo,
     allowShowUpdateAlert: true,
   }
-  userApis ??= []
   userApis.push(apiInfo)
-  const script = await deflateScript(scriptRaw)
   scripts.set(apiInfo.id, script)
   saveData()
   return apiInfo
