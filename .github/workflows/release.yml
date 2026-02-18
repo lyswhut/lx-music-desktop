@@ -14,7 +14,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Check out git repository
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@v6
 
   #     - name: Install Node.js
   #       uses: actions/setup-node@v4
@@ -46,7 +46,7 @@ jobs:
     # needs: CheckCode
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get npm cache directory
         shell: pwsh
@@ -87,7 +87,7 @@ jobs:
     # needs: CheckCode
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get npm cache directory
         shell: pwsh
@@ -135,7 +135,7 @@ jobs:
     # needs: CheckCode
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install python3 setuptools
         run: brew install python-setuptools
@@ -178,7 +178,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
 
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get npm cache directory
         shell: bash
