@@ -474,7 +474,7 @@
   "setting__list_scroll": "Remember position of scroll bar of playlist (Only valid for \"Your Library\" page)",
   "setting__list_source": "Show which music streaming service the song is from (Only valid for \"Your Library\" page)",
   "setting__list_cover_title": "List Cover Settings",
-  "setting__list_cover": "List Cover",
+  "setting__list_cover": "Album art",
   "setting__list_show_cover": "Show album art in list",
   "setting__list_cover_size_32px": "32px",
   "setting__list_cover_size_44px": "44px",
