@@ -283,8 +283,8 @@ export default {
     // 加载可见区域的封面
     const loadVisibleCovers = () => {
       if (!isShowCover || !listRef.value || !props.list) return
-      // 从虚拟列表组件获取滚动容器
-      const scrollContainer = listRef.value?.$el?.querySelector('.scroll')
+      // 从虚拟列表组件获取滚动容器（listRef.value.$el 就是滚动容器本身）
+      const scrollContainer = listRef.value?.$el
       const scrollTop = scrollContainer?.scrollTop ?? 0
       const viewHeight = scrollContainer?.clientHeight ?? 0
       const listItemHeightValue = listItemHeight.value || 50

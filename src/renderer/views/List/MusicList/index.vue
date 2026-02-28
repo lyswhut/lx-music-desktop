@@ -27,7 +27,7 @@
       <base-virtualized-list
         v-if="actionButtonsVisible" ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="handleCoverScroll($event, dom_listContent, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
+        @scroll="handleCoverScroll($event, listRef?.$el, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item" :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
@@ -69,7 +69,7 @@
       <base-virtualized-list
         v-else ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="handleCoverScroll($event, dom_listContent, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
+        @scroll="handleCoverScroll($event, listRef?.$el, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item"
@@ -193,7 +193,7 @@ export default {
     const onLoadedList = (currentList, currentListItemHeight) => {
       void restoreScroll(scrollIndex, isAnimation)
       // 列表加载完成后懒加载封面
-      loadCoversOnListLoaded(dom_listContent.value, currentListItemHeight, props.listId)
+      loadCoversOnListLoaded(listRef.value?.$el, currentListItemHeight, props.listId)
     }
 
     const {
