@@ -496,6 +496,16 @@ declare global {
       'list.actionButtonsVisible': boolean
 
       /**
+       * 是否在列表中显示歌曲封面
+       */
+      'list.isShowCover': boolean
+
+      /**
+       * 列表中歌曲封面大小
+       */
+      'list.coverSize': number
+
+      /**
        * 是否启用下载功能
        */
       'download.enable': boolean

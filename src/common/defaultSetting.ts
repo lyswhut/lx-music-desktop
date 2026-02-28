@@ -104,6 +104,8 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.isFontWeightExtended': true,
 
   'list.isClickPlayList': false,
+  'list.isShowCover': false,
+  'list.coverSize': 44,
   'list.isShowSource': true,
   'list.isSaveScrollLocation': true,
   'list.addMusicLocationType': 'top',

@@ -5,6 +5,7 @@
         <thead>
           <tr v-if="actionButtonsVisible">
             <th class="num" style="width: 5%;">#</th>
+            <th v-if="isShowCover" class="nobreak" :style="{ width: coverSize + 'px' }"></th>
             <th class="nobreak">{{ $t('music_name') }}</th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
@@ -13,6 +14,7 @@
           </tr>
           <tr v-else>
             <th class="num" style="width: 5%;">#</th>
+            <th v-if="isShowCover" class="nobreak" :style="{ width: coverSize + 'px' }"></th>
             <th class="nobreak">{{ $t('music_name') }}</th>
             <th class="nobreak" style="width: 25%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 28%;">{{ $t('music_album') }}</th>
@@ -25,7 +27,7 @@
       <base-virtualized-list
         v-if="actionButtonsVisible" ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="saveListPosition" @contextmenu.capture="handleListRightClick"
+        @scroll="handleCoverScroll($event, dom_listContent, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item" :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
@@ -40,6 +42,11 @@
               </div>
               <div v-else class="num">{{ index + 1 }}</div>
             </transition>
+          </div>
+          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize}px`, padding: '0 4px' }">
+            <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
+              <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
+            </div>
           </div>
           <div class="list-item-cell auto name" :aria-label="item.name">
             <span class="select name">{{ item.name }}</span>
@@ -56,7 +63,7 @@
       <base-virtualized-list
         v-else ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="saveListPosition" @contextmenu.capture="handleListRightClick"
+        @scroll="handleCoverScroll($event, dom_listContent, listItemHeight, listId)" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item"
@@ -72,6 +79,11 @@
               </div>
               <div v-else class="num">{{ index + 1 }}</div>
             </transition>
+          </div>
+          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize}px`, padding: '0 4px' }">
+            <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
+              <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
+            </div>
           </div>
           <div class="list-item-cell auto name">
             <span class="select name" :aria-label="item.name">{{ item.name }}</span>
@@ -120,7 +132,9 @@ import useMusicActions from './useMusicActions'
 import useSearch from './useSearch'
 import useListScroll from './useListScroll'
 import useMusicToggle from './useMusicToggle'
+import useCover from './useCover'
 import { appSetting } from '@renderer/store/setting'
+
 export default {
   name: 'MusicList',
   components: {
@@ -138,17 +152,31 @@ export default {
   setup(props, { emit }) {
     const actionButtonsVisible = appSetting['list.actionButtonsVisible']
 
+    // 封面相关逻辑
+    const {
+      isShowCover,
+      coverSize,
+      getCoverUrl,
+      handleCoverError,
+      handleScroll: handleCoverScroll,
+      loadCoversOnListLoaded,
+      setListRef,
+      setList,
+    } = useCover()
+
     let scrollIndex = null
     let isAnimation = false
     const handleRestoreScroll = (_scrollIndex, _isAnimation) => {
       scrollIndex = _scrollIndex
       isAnimation = _isAnimation
-      if (isAnimation) void restoreScroll(scrollIndex, isAnimation)
-      // console.log('handleRestoreScroll', scrollIndex, isAnimation)
+      if (isAnimation) {
+        void restoreScroll(scrollIndex, isAnimation)
+      }
     }
-    const onLoadedList = () => {
-      // console.log('restoreScroll', scrollIndex, isAnimation)
+    const onLoadedList = (currentList, currentListItemHeight) => {
       void restoreScroll(scrollIndex, isAnimation)
+      // 列表加载完成后懒加载封面
+      loadCoversOnListLoaded(dom_listContent.value, currentListItemHeight, props.listId)
     }
 
     const {
@@ -161,7 +189,11 @@ export default {
       setSelectedIndex,
       isShowSource,
       excludeListIds,
-    } = useListInfo({ props, onLoadedList })
+    } = useListInfo({ props, onLoadedList: (l, h) => { onLoadedList(l, h) } })
+
+    // 设置封面逻辑所需的引用
+    setListRef(listRef)
+    setList(list)
 
     const {
       selectedList,
@@ -351,6 +383,12 @@ export default {
 
       actionButtonsVisible,
 
+      isShowCover,
+      coverSize,
+      getCoverUrl,
+      handleCoverError,
+      handleCoverScroll,
+
       isShowMusicToggleModal,
       selectedToggleMusicInfo,
       toggleSource,
@@ -392,6 +430,20 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
+}
+.cover {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--color-500);
+  flex-shrink: 0;
+
+  .coverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 .playIcon {
   position: absolute;
