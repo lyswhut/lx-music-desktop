@@ -47,6 +47,8 @@ export default {
         { id: 44, label: t('setting__list_cover_size_44px') },
         { id: 56, label: t('setting__list_cover_size_56px') },
         { id: 72, label: t('setting__list_cover_size_72px') },
+        { id: 88, label: t('setting__list_cover_size_88px') },
+        { id: 104, label: t('setting__list_cover_size_104px') },
       ]
     })
 

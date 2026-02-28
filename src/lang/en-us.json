@@ -480,6 +480,8 @@
   "setting__list_cover_size_44px": "44px",
   "setting__list_cover_size_56px": "56px",
   "setting__list_cover_size_72px": "72px",
+  "setting__list_cover_size_88px": "88px",
+  "setting__list_cover_size_104px": "104px",
   "setting__network": "Network",
   "setting__network_proxy_host": "Host",
   "setting__network_proxy_password": "Password",
