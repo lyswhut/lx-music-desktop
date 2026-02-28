@@ -117,6 +117,7 @@
 
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
+import { computed } from '@common/utils/vueTools'
 import { assertApiSupport } from '@renderer/store/utils'
 import SearchList from './components/SearchList.vue'
 import MusicSortModal from './components/MusicSortModal.vue'
@@ -162,6 +163,7 @@ export default {
       loadCoversOnListLoaded,
       setListRef,
       setList,
+      getListItemHeight,
     } = useCover()
 
     let scrollIndex = null
@@ -197,10 +199,15 @@ export default {
 
     const {
       selectedList,
-      listItemHeight,
+      listItemHeight: baseListItemHeight,
       handleSelectData,
       removeAllSelect,
     } = useList({ listRef, list })
+
+    // 根据封面大小调整行高
+    const listItemHeight = computed(() => {
+      return getListItemHeight(baseListItemHeight.value)
+    })
 
     const {
       handlePlayMusic,
@@ -388,6 +395,7 @@ export default {
       getCoverUrl,
       handleCoverError,
       handleCoverScroll,
+      getListItemHeight,
 
       isShowMusicToggleModal,
       selectedToggleMusicInfo,

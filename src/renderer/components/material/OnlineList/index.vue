@@ -113,7 +113,7 @@
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
-import { reactive, ref } from '@common/utils/vueTools'
+import { computed, reactive, ref } from '@common/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
@@ -171,6 +171,18 @@ export default {
     const coverUrls = reactive(new Map())
     const fetchingPics = reactive(new Set())
 
+    /**
+     * 计算列表项高度（确保能容纳封面）
+     * @param {number} baseHeight - 基础行高
+     * @returns {number} 调整后的行高
+     */
+    const getListItemHeight = (baseHeight) => {
+      if (!isShowCover) return baseHeight
+      // 封面高度 + 上下内边距（各 8px）
+      const minHeight = coverSize + 16
+      return Math.max(baseHeight, minHeight)
+    }
+
     const getCoverUrl = (item) => {
       if (!isShowCover) return ''
       if (item.meta.picUrl) {
@@ -216,10 +228,15 @@ export default {
 
     const {
       selectedList,
-      listItemHeight,
+      listItemHeight: baseListItemHeight,
       handleSelectData,
       removeAllSelect,
     } = useList({ props, listRef })
+
+    // 根据封面大小调整行高
+    const listItemHeight = computed(() => {
+      return getListItemHeight(baseListItemHeight.value)
+    })
 
     // 加载可见区域的封面
     const loadVisibleCovers = () => {

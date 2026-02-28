@@ -139,6 +139,18 @@ export default () => {
     if (scrollTimer) clearTimeout(scrollTimer)
   })
 
+  /**
+   * 计算列表项高度（确保能容纳封面）
+   * @param {number} baseHeight - 基础行高
+   * @returns {number} 调整后的行高
+   */
+  const getListItemHeight = (baseHeight) => {
+    if (!isShowCover) return baseHeight
+    // 封面高度 + 上下内边距（各 8px）
+    const minHeight = coverSize + 16
+    return Math.max(baseHeight, minHeight)
+  }
+
   return {
     isShowCover,
     coverSize,
@@ -148,5 +160,6 @@ export default () => {
     loadCoversOnListLoaded,
     setListRef,
     setList,
+    getListItemHeight,
   }
 }
