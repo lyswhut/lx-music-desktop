@@ -27,14 +27,16 @@ export default () => {
    */
   const getCoverUrl = (item) => {
     if (!isShowCover) return ''
-    // 优先使用已缓存的封面
-    if (item.meta.picUrl) {
-      coverUrls.set(item.id, item.meta.picUrl)
-      return item.meta.picUrl
-    }
-    // 如果已经有缓存的 URL
-    if (coverUrls.has(item.id)) {
-      return coverUrls.get(item.id)
+    // 如果封面已加载完成，显示实际封面
+    if (loadedCovers.has(item.id)) {
+      // 优先使用已缓存的封面
+      if (item.meta.picUrl) {
+        return item.meta.picUrl
+      }
+      // 如果已经有缓存的 URL
+      if (coverUrls.has(item.id)) {
+        return coverUrls.get(item.id)
+      }
     }
     // 返回占位图片，等待懒加载
     return placeholderCover
@@ -71,11 +73,8 @@ export default () => {
    * @returns {boolean} 是否使用占位图
    */
   const isUsingPlaceholder = (item) => {
-    if (!isShowCover) return false
-    // 如果有缓存或已加载的封面，就不是占位图
-    if (item.meta.picUrl) return false
-    if (coverUrls.has(item.id)) return false
-    return true
+    // 只要封面未加载完成，就使用占位图
+    return isShowCover && !loadedCovers.has(item.id)
   }
 
   /**
@@ -86,15 +85,22 @@ export default () => {
   const fetchCover = async(musicInfo, listId) => {
     const musicId = musicInfo.id
     if (fetchingPics.has(musicId)) return
-    if (coverUrls.has(musicId)) return
 
     fetchingPics.add(musicId)
     try {
       let picUrl
-      if (musicInfo.source === 'local') {
-        picUrl = await getLocalPicUrl({ musicInfo, listId, isRefresh: false })
+      // 优先使用已缓存的封面 URL
+      if (musicInfo.meta.picUrl) {
+        picUrl = musicInfo.meta.picUrl
+      } else if (coverUrls.has(musicId)) {
+        picUrl = coverUrls.get(musicId)
       } else {
-        picUrl = await getOnlinePicUrl({ musicInfo, listId, isRefresh: false })
+        // 从网络或本地获取
+        if (musicInfo.source === 'local') {
+          picUrl = await getLocalPicUrl({ musicInfo, listId, isRefresh: false })
+        } else {
+          picUrl = await getOnlinePicUrl({ musicInfo, listId, isRefresh: false })
+        }
       }
       if (picUrl) {
         coverUrls.set(musicId, picUrl)
