@@ -45,7 +45,13 @@
           </div>
           <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
-              <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
+              <img
+                :src="getCoverUrl(item, index)"
+                :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                alt=""
+                @load="handleCoverLoad(item.id)"
+                @error="handleCoverError($event, index)"
+              >
             </div>
           </div>
           <div class="list-item-cell auto name" :aria-label="item.name" style="padding-left: 8px;">
@@ -82,7 +88,13 @@
           </div>
           <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
-              <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
+              <img
+                :src="getCoverUrl(item, index)"
+                :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                alt=""
+                @load="handleCoverLoad(item.id)"
+                @error="handleCoverError($event, index)"
+              >
             </div>
           </div>
           <div class="list-item-cell auto name" style="padding-left: 8px;">
@@ -159,6 +171,9 @@ export default {
       coverSize,
       getCoverUrl,
       handleCoverError,
+      handleCoverLoad,
+      isCoverLoaded,
+      isUsingPlaceholder,
       handleScroll: handleCoverScroll,
       loadCoversOnListLoaded,
       setListRef,
@@ -394,6 +409,9 @@ export default {
       coverSize,
       getCoverUrl,
       handleCoverError,
+      handleCoverLoad,
+      isCoverLoaded,
+      isUsingPlaceholder,
       handleCoverScroll,
       getListItemHeight,
 
@@ -440,17 +458,28 @@ export default {
   position: relative;
 }
 .cover {
-  flex: 0 0 auto;
-  border-radius: 4px;
-  overflow: hidden;
-  background-color: var(--color-500);
-  flex-shrink: 0;
+flex: 0 0 auto;
+border-radius: 4px;
+overflow: hidden;
+background-color: var(--color-500);
+flex-shrink: 0;
 
-  .coverImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.coverImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1; // 缓存封面直接显示
+
+  // 只有占位图才需要淡入效果
+  &.placeholder {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+
+    &.coverLoaded {
+      opacity: 1;
+    }
   }
+}
 }
 .playIcon {
   position: absolute;

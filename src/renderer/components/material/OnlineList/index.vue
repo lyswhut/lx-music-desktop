@@ -27,7 +27,7 @@
       </div>
       <div :class="$style.content">
         <div v-show="!noItem" ref="dom_listContent" :class="$style.content">
-          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @scroll="handleScroll" @contextmenu.capture="handleListRightClick">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -36,7 +36,13 @@
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
                 <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
-                    <img :src="getCoverUrl(item)" :class="$style.coverImg" alt="" @error="handleCoverError">
+                    <img
+                      :src="getCoverUrl(item)"
+                      :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      alt=""
+                      @load="handleCoverLoad(item.id)"
+                      @error="handleCoverError"
+                    >
                   </div>
                 </div>
                 <div class="list-item-cell auto name" style="padding-left: 8px;">
@@ -60,7 +66,7 @@
               </div>
             </template>
           </base-virtualized-list>
-          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @scroll="handleScroll" @contextmenu.capture="handleListRightClick">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -69,7 +75,13 @@
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
                 <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
-                    <img :src="getCoverUrl(item)" :class="$style.coverImg" alt="" @error="handleCoverError">
+                    <img
+                      :src="getCoverUrl(item)"
+                      :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      alt=""
+                      @load="handleCoverLoad(item.id)"
+                      @error="handleCoverError"
+                    >
                   </div>
                 </div>
                 <div class="list-item-cell auto name" style="padding-left: 8px;">
@@ -113,7 +125,7 @@
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
-import { computed, reactive, ref } from '@common/utils/vueTools'
+import { computed, reactive, ref, onMounted, watch, nextTick } from '@common/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
@@ -123,6 +135,7 @@ import useMusicActions from './useMusicActions'
 import { appSetting } from '@renderer/store/setting'
 import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
 import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
+import placeholderCover from '@renderer/assets/icons/64x64.png' // eslint-disable-line import/no-unresolved
 
 export default {
   name: 'MaterialOnlineList',
@@ -170,6 +183,7 @@ export default {
     // 封面缓存
     const coverUrls = reactive(new Map())
     const fetchingPics = reactive(new Set())
+    const loadedCovers = reactive(new Set()) // 已加载完成的封面
 
     /**
      * 计算列表项高度（确保能容纳封面）
@@ -192,11 +206,29 @@ export default {
       if (coverUrls.has(item.id)) {
         return coverUrls.get(item.id)
       }
-      return ''
+      // 返回占位图片，等待懒加载
+      return placeholderCover
     }
 
     const handleCoverError = (event) => {
       event.target.style.display = 'none'
+    }
+
+    const handleCoverLoad = (musicId) => {
+      loadedCovers.add(musicId)
+    }
+
+    const isCoverLoaded = (musicId) => {
+      return loadedCovers.has(musicId)
+    }
+
+    // 判断是否使用占位图片（用于决定是否需要过渡效果）
+    const isUsingPlaceholder = (item) => {
+      if (!isShowCover) return false
+      // 如果有缓存或已加载的封面，就不是占位图
+      if (item.meta.picUrl) return false
+      if (coverUrls.has(item.id)) return false
+      return true
     }
 
     const fetchCover = async(musicInfo) => {
@@ -241,8 +273,10 @@ export default {
     // 加载可见区域的封面
     const loadVisibleCovers = () => {
       if (!isShowCover || !listRef.value || !props.list) return
-      const scrollTop = dom_listContent.value?.scrollTop ?? 0
-      const viewHeight = dom_listContent.value?.clientHeight ?? 0
+      // 从虚拟列表组件获取滚动容器
+      const scrollContainer = listRef.value?.$el?.querySelector('.scroll')
+      const scrollTop = scrollContainer?.scrollTop ?? 0
+      const viewHeight = scrollContainer?.clientHeight ?? 0
       const listItemHeightValue = listItemHeight.value || 50
       const startIndex = Math.floor(scrollTop / listItemHeightValue)
       const endIndex = Math.min(props.list.length, Math.ceil((scrollTop + viewHeight) / listItemHeightValue) + 5)
@@ -347,8 +381,27 @@ export default {
       }
     }
     const scrollToTop = () => {
-      listRef.value.scrollTo(0, true)
+      listRef.value?.scrollTo(0, true)
     }
+
+    const handleScroll = () => {
+      loadVisibleCovers()
+    }
+
+    // 监听列表数据变化，加载可见区域封面
+    watch(() => props.list, () => {
+      if (isShowCover) {
+        void nextTick(() => {
+          loadVisibleCovers()
+        })
+      }
+    }, { immediate: true, deep: true })
+
+    onMounted(() => {
+      if (isShowCover) {
+        loadVisibleCovers()
+      }
+    })
 
     return {
       listItemHeight,
@@ -384,7 +437,11 @@ export default {
       coverSize,
       getCoverUrl,
       handleCoverError,
+      handleCoverLoad,
+      isCoverLoaded,
+      isUsingPlaceholder,
       loadVisibleCovers,
+      handleScroll,
     }
   },
 }
@@ -453,6 +510,17 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 1; // 缓存封面直接显示
+
+    // 只有占位图才需要淡入效果
+    &.placeholder {
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+
+      &.coverLoaded {
+        opacity: 1;
+      }
+    }
   }
 }
 

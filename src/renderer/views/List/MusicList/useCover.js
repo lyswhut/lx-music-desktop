@@ -2,6 +2,7 @@ import { reactive, onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
 import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
+import placeholderCover from '@renderer/assets/icons/64x64.png' // eslint-disable-line import/no-unresolved
 
 export default () => {
   const isShowCover = appSetting['list.isShowCover']
@@ -10,6 +11,7 @@ export default () => {
   // 封面缓存映射（使用 reactive 以便跟踪变化）
   const coverUrls = reactive(new Map())
   const fetchingPics = reactive(new Set())
+  const loadedCovers = reactive(new Set()) // 已加载完成的封面
 
   let scrollTimer = null
   let listRefValue = null
@@ -21,7 +23,7 @@ export default () => {
   /**
    * 获取封面 URL
    * @param {Object} item - 音乐项
-   * @returns {string} 封面 URL 或空字符串
+   * @returns {string} 封面 URL 或占位图片
    */
   const getCoverUrl = (item) => {
     if (!isShowCover) return ''
@@ -34,8 +36,8 @@ export default () => {
     if (coverUrls.has(item.id)) {
       return coverUrls.get(item.id)
     }
-    // 返回空字符串，等待懒加载
-    return ''
+    // 返回占位图片，等待懒加载
+    return placeholderCover
   }
 
   /**
@@ -44,6 +46,36 @@ export default () => {
    */
   const handleCoverError = (event) => {
     event.target.style.display = 'none'
+  }
+
+  /**
+   * 处理封面加载完成
+   * @param {string} musicId - 音乐ID
+   */
+  const handleCoverLoad = (musicId) => {
+    loadedCovers.add(musicId)
+  }
+
+  /**
+   * 检查封面是否已加载
+   * @param {string} musicId - 音乐ID
+   * @returns {boolean} 是否已加载
+   */
+  const isCoverLoaded = (musicId) => {
+    return loadedCovers.has(musicId)
+  }
+
+  /**
+   * 判断是否使用占位图片（用于决定是否需要过渡效果）
+   * @param {Object} item - 音乐项
+   * @returns {boolean} 是否使用占位图
+   */
+  const isUsingPlaceholder = (item) => {
+    if (!isShowCover) return false
+    // 如果有缓存或已加载的封面，就不是占位图
+    if (item.meta.picUrl) return false
+    if (coverUrls.has(item.id)) return false
+    return true
   }
 
   /**
@@ -156,6 +188,9 @@ export default () => {
     coverSize,
     getCoverUrl,
     handleCoverError,
+    handleCoverLoad,
+    isCoverLoaded,
+    isUsingPlaceholder,
     handleScroll,
     loadCoversOnListLoaded,
     setListRef,
