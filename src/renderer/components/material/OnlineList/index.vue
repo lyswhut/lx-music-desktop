@@ -38,7 +38,7 @@
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
                     <img
                       :src="getCoverUrl(item)"
-                      :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
                       alt=""
                       @load="handleCoverLoad(item.id)"
                       @error="handleCoverError"
@@ -77,7 +77,7 @@
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
                     <img
                       :src="getCoverUrl(item)"
-                      :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
                       alt=""
                       @load="handleCoverLoad(item.id)"
                       @error="handleCoverError"
@@ -199,16 +199,13 @@ export default {
 
     const getCoverUrl = (item) => {
       if (!isShowCover) return ''
-      // 如果封面已加载完成，显示实际封面
-      if (loadedCovers.value.includes(item.id)) {
-        // 优先使用已缓存的封面
-        if (item.meta.picUrl) {
-          return item.meta.picUrl
-        }
-        // 如果已经有缓存的 URL
-        if (coverUrls.has(item.id)) {
-          return coverUrls.get(item.id)
-        }
+      // 优先使用已缓存的封面 URL
+      if (item.meta.picUrl) {
+        return item.meta.picUrl
+      }
+      // 如果已经有缓存的 URL
+      if (coverUrls.has(item.id)) {
+        return coverUrls.get(item.id)
       }
       // 返回占位图片，等待懒加载
       return placeholderCover
@@ -226,12 +223,6 @@ export default {
 
     const isCoverLoaded = (musicId) => {
       return loadedCovers.value.includes(musicId)
-    }
-
-    // 判断是否使用占位图片（用于决定是否需要过渡效果）
-    const isUsingPlaceholder = (item) => {
-      // 只要封面未加载完成，就使用占位图
-      return isShowCover && !loadedCovers.value.includes(item.id)
     }
 
     const fetchCover = async(musicInfo) => {
@@ -256,10 +247,8 @@ export default {
         }
         if (picUrl) {
           coverUrls.set(musicId, picUrl)
-          const musicItem = props.list.find(m => m.id === musicId)
-          if (musicItem) {
-            musicItem.meta.picUrl = picUrl
-          }
+          // 注意：不在这里更新 musicItem.meta.picUrl
+          // 只有图片真正加载完成时（通过 @load 事件）才会显示实际封面
         }
       } catch (err) {
         console.log('Failed to fetch cover:', err)
@@ -293,14 +282,11 @@ export default {
 
       for (let i = startIndex; i < endIndex; i++) {
         const item = props.list[i]
-        // 只要未标记为已加载，就触发加载（包括有缓存的情况）
+        // 只要未在加载中且未标记为已加载，就触发加载
         if (item && !loadedCovers.value.includes(item.id) && !fetchingPics.has(item.id)) {
-          fetchCover(item).then(() => {
-            // 封面获取完成后标记为已加载（创建新数组触发响应式）
-            if (!loadedCovers.value.includes(item.id)) {
-              loadedCovers.value = [...loadedCovers.value, item.id]
-            }
-          }).catch(() => {})
+          // 只获取封面 URL，不立即标记为已加载
+          // 图片真正加载完成时（通过 @load 事件）才会标记为已加载
+          fetchCover(item).catch(() => {})
         }
       }
     }
@@ -453,7 +439,6 @@ export default {
       handleCoverError,
       handleCoverLoad,
       isCoverLoaded,
-      isUsingPlaceholder,
       loadVisibleCovers,
       handleScroll,
     }
@@ -524,16 +509,12 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 1; // 缓存封面直接显示
+    opacity: 0.6; // 默认显示占位图样式（透明度较低）
+    transition: opacity 0.3s ease;
 
-    // 只有占位图才需要淡入效果
-    &.placeholder {
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
-
-      &.coverLoaded {
-        opacity: 1;
-      }
+    // 封面加载完成后恢复正常透明度
+    &.coverLoaded {
+      opacity: 1;
     }
   }
 }

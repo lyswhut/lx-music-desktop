@@ -47,7 +47,7 @@
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
               <img
                 :src="getCoverUrl(item, index)"
-                :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
                 alt=""
                 @load="handleCoverLoad(item.id)"
                 @error="handleCoverError($event, index)"
@@ -90,7 +90,7 @@
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
               <img
                 :src="getCoverUrl(item, index)"
-                :class="[$style.coverImg, { [$style.placeholder]: isUsingPlaceholder(item), [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
                 alt=""
                 @load="handleCoverLoad(item.id)"
                 @error="handleCoverError($event, index)"
@@ -173,7 +173,6 @@ export default {
       handleCoverError,
       handleCoverLoad,
       isCoverLoaded,
-      isUsingPlaceholder,
       handleScroll: handleCoverScroll,
       loadCoversOnListLoaded,
       setListRef,
@@ -411,7 +410,6 @@ export default {
       handleCoverError,
       handleCoverLoad,
       isCoverLoaded,
-      isUsingPlaceholder,
       handleCoverScroll,
       getListItemHeight,
 
@@ -468,16 +466,12 @@ flex-shrink: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 1; // 缓存封面直接显示
+  opacity: 0.6; // 默认显示占位图样式（透明度较低）
+  transition: opacity 0.3s ease;
 
-  // 只有占位图才需要淡入效果
-  &.placeholder {
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
-
-    &.coverLoaded {
-      opacity: 1;
-    }
+  // 封面加载完成后恢复正常透明度
+  &.coverLoaded {
+    opacity: 1;
   }
 }
 }
