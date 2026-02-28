@@ -1,4 +1,4 @@
-import { reactive, onBeforeUnmount } from '@common/utils/vueTools'
+import { reactive, ref, onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
 import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
@@ -8,10 +8,10 @@ export default () => {
   const isShowCover = appSetting['list.isShowCover']
   const coverSize = appSetting['list.coverSize']
 
-  // 封面缓存映射（使用 reactive 以便跟踪变化）
+  // 封面缓存映射（使reactive 以便跟踪变化
   const coverUrls = reactive(new Map())
   const fetchingPics = reactive(new Set())
-  const loadedCovers = reactive(new Set()) // 已加载完成的封面
+  const loadedCovers = ref([]) // 已加载完成的封面 ID 数组（使ref 确保响应式）
 
   let scrollTimer = null
   let listRefValue = null
@@ -22,13 +22,13 @@ export default () => {
 
   /**
    * 获取封面 URL
-   * @param {Object} item - 音乐项
-   * @returns {string} 封面 URL 或占位图片
+   * @param {Object} item - 音乐
+   * @returns {string} 封面 URL 或占位图
    */
   const getCoverUrl = (item) => {
     if (!isShowCover) return ''
     // 如果封面已加载完成，显示实际封面
-    if (loadedCovers.has(item.id)) {
+    if (loadedCovers.value.includes(item.id)) {
       // 优先使用已缓存的封面
       if (item.meta.picUrl) {
         return item.meta.picUrl
@@ -55,30 +55,30 @@ export default () => {
    * @param {string} musicId - 音乐ID
    */
   const handleCoverLoad = (musicId) => {
-    loadedCovers.add(musicId)
+    if (!loadedCovers.value.includes(musicId)) { loadedCovers.value = [...loadedCovers.value, musicId] }
   }
 
   /**
    * 检查封面是否已加载
    * @param {string} musicId - 音乐ID
-   * @returns {boolean} 是否已加载
+   * @returns {boolean} 是否已加�?
    */
   const isCoverLoaded = (musicId) => {
-    return loadedCovers.has(musicId)
+    return loadedCovers.value.includes(musicId)
   }
 
   /**
    * 判断是否使用占位图片（用于决定是否需要过渡效果）
-   * @param {Object} item - 音乐项
-   * @returns {boolean} 是否使用占位图
+   * @param {Object} item - 音乐�?
+   * @returns {boolean} 是否使用占位�?
    */
   const isUsingPlaceholder = (item) => {
     // 只要封面未加载完成，就使用占位图
-    return isShowCover && !loadedCovers.has(item.id)
+    return isShowCover && !loadedCovers.value.includes(item.id)
   }
 
   /**
-   * 获取单个歌曲的封面
+   * 获取单个歌曲的封�?
    * @param {Object} musicInfo - 音乐信息
    * @param {string} listId - 列表 ID
    */
@@ -122,7 +122,7 @@ export default () => {
   /**
    * 懒加载当前可见区域的封面
    * @param {HTMLElement} domContent - 滚动容器元素
-   * @param {number} listItemHeight - 列表项高度
+   * @param {number} listItemHeight - 列表项高�?
    * @param {string} listId - 列表 ID
    */
   const loadVisibleCovers = (domContent, listItemHeight, listId) => {
@@ -133,13 +133,15 @@ export default () => {
     const startIndex = Math.floor(scrollTop / listItemHeight)
     const endIndex = Math.min(listValue.length, Math.ceil((scrollTop + viewHeight) / listItemHeight) + 5)
 
-    // 加载可见区域的封面
+    // 加载可见区域的封�?
     for (let i = startIndex; i < endIndex; i++) {
       const item = listValue[i]
-      if (item && !coverUrls.has(item.id) && !fetchingPics.has(item.id)) {
-        if (!item.meta.picUrl) {
-          fetchCover(item, listId).catch(() => {})
-        }
+      // 只要未标记为已加载，就触发加载（包括有缓存的情况�?
+      if (item && !loadedCovers.value.includes(item.id) && !fetchingPics.has(item.id)) {
+        fetchCover(item, listId).then(() => {
+          // 封面获取完成后标记为已加�?
+          if (!loadedCovers.value.includes(item.id)) { loadedCovers.value = [...loadedCovers.value, item.id] }
+        }).catch(() => {})
       }
     }
   }
@@ -148,7 +150,7 @@ export default () => {
    * 处理滚动事件（防抖）
    * @param {Event} event - 滚动事件
    * @param {HTMLElement} domContent - 滚动容器元素
-   * @param {number} listItemHeight - 列表项高度
+   * @param {number} listItemHeight - 列表项高�?
    * @param {string} listId - 列表 ID
    */
   const handleScroll = (event, domContent, listItemHeight, listId) => {
@@ -160,9 +162,9 @@ export default () => {
   }
 
   /**
-   * 列表加载完成后加载封面
+   * 列表加载完成后加载封�?
    * @param {HTMLElement} domContent - 滚动容器元素
-   * @param {number} listItemHeight - 列表项高度
+   * @param {number} listItemHeight - 列表项高�?
    * @param {string} listId - 列表 ID
    */
   const loadCoversOnListLoaded = (domContent, listItemHeight, listId) => {
@@ -184,7 +186,7 @@ export default () => {
    */
   const getListItemHeight = (baseHeight) => {
     if (!isShowCover) return baseHeight
-    // 封面高度 + 上下内边距（各 8px）
+    // 封面高度 + 上下内边距（�?8px�?
     const minHeight = coverSize + 16
     return Math.max(baseHeight, minHeight)
   }

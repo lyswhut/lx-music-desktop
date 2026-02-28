@@ -183,7 +183,7 @@ export default {
     // 封面缓存
     const coverUrls = reactive(new Map())
     const fetchingPics = reactive(new Set())
-    const loadedCovers = reactive(new Set()) // 已加载完成的封面
+    const loadedCovers = ref([]) // 已加载完成的封面 ID 数组（使用 ref 确保响应式）
 
     /**
      * 计算列表项高度（确保能容纳封面）
@@ -200,7 +200,7 @@ export default {
     const getCoverUrl = (item) => {
       if (!isShowCover) return ''
       // 如果封面已加载完成，显示实际封面
-      if (loadedCovers.has(item.id)) {
+      if (loadedCovers.value.includes(item.id)) {
         // 优先使用已缓存的封面
         if (item.meta.picUrl) {
           return item.meta.picUrl
@@ -219,17 +219,19 @@ export default {
     }
 
     const handleCoverLoad = (musicId) => {
-      loadedCovers.add(musicId)
+      if (!loadedCovers.value.includes(musicId)) {
+        loadedCovers.value = [...loadedCovers.value, musicId]
+      }
     }
 
     const isCoverLoaded = (musicId) => {
-      return loadedCovers.has(musicId)
+      return loadedCovers.value.includes(musicId)
     }
 
     // 判断是否使用占位图片（用于决定是否需要过渡效果）
     const isUsingPlaceholder = (item) => {
       // 只要封面未加载完成，就使用占位图
-      return isShowCover && !loadedCovers.has(item.id)
+      return isShowCover && !loadedCovers.value.includes(item.id)
     }
 
     const fetchCover = async(musicInfo) => {
@@ -291,10 +293,14 @@ export default {
 
       for (let i = startIndex; i < endIndex; i++) {
         const item = props.list[i]
-        if (item && !coverUrls.has(item.id) && !fetchingPics.has(item.id)) {
-          if (!item.meta.picUrl) {
-            fetchCover(item).catch(() => {})
-          }
+        // 只要未标记为已加载，就触发加载（包括有缓存的情况）
+        if (item && !loadedCovers.value.includes(item.id) && !fetchingPics.has(item.id)) {
+          fetchCover(item).then(() => {
+            // 封面获取完成后标记为已加载（创建新数组触发响应式）
+            if (!loadedCovers.value.includes(item.id)) {
+              loadedCovers.value = [...loadedCovers.value, item.id]
+            }
+          }).catch(() => {})
         }
       }
     }
