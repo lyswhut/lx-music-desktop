@@ -5,7 +5,7 @@
         <thead>
           <tr v-if="actionButtonsVisible">
             <th class="num" style="width: 5%;">#</th>
-            <th v-if="isShowCover" class="nobreak" :style="{ width: coverSize + 'px' }"></th>
+            <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
             <th class="nobreak">{{ $t('music_name') }}</th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
@@ -14,7 +14,7 @@
           </tr>
           <tr v-else>
             <th class="num" style="width: 5%;">#</th>
-            <th v-if="isShowCover" class="nobreak" :style="{ width: coverSize + 'px' }"></th>
+            <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
             <th class="nobreak">{{ $t('music_name') }}</th>
             <th class="nobreak" style="width: 25%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 28%;">{{ $t('music_album') }}</th>
@@ -43,12 +43,12 @@
               <div v-else class="num">{{ index + 1 }}</div>
             </transition>
           </div>
-          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize}px`, padding: '0 4px' }">
+          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
               <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
             </div>
           </div>
-          <div class="list-item-cell auto name" :aria-label="item.name">
+          <div class="list-item-cell auto name" :aria-label="item.name" style="padding-left: 8px;">
             <span class="select name">{{ item.name }}</span>
             <span v-if="isShowSource" class="no-select label-source">{{ item.source }}</span>
           </div>
@@ -80,12 +80,12 @@
               <div v-else class="num">{{ index + 1 }}</div>
             </transition>
           </div>
-          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize}px`, padding: '0 4px' }">
+          <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
             <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
               <img :src="getCoverUrl(item, index)" :class="$style.coverImg" alt="" @error="handleCoverError($event, index)">
             </div>
           </div>
-          <div class="list-item-cell auto name">
+          <div class="list-item-cell auto name" style="padding-left: 8px;">
             <span class="select name" :aria-label="item.name">{{ item.name }}</span>
             <span v-if="isShowSource" class="no-select label-source">{{ item.source }}</span>
           </div>
@@ -433,7 +433,6 @@ export default {
 }
 .cover {
   flex: 0 0 auto;
-  margin-right: 8px;
   border-radius: 4px;
   overflow: hidden;
   background-color: var(--color-500);

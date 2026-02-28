@@ -7,6 +7,7 @@
           <thead>
             <tr v-if="actionButtonsVisible">
               <th class="num" style="width: 5%;">#</th>
+              <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
               <th class="nobreak">{{ $t('music_name') }}</th>
               <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
               <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
@@ -15,6 +16,7 @@
             </tr>
             <tr v-else>
               <th class="num" style="width: 5%;">#</th>
+              <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
               <th class="nobreak">{{ $t('music_name') }}</th>
               <th class="nobreak" style="width: 24%;">{{ $t('music_singer') }}</th>
               <th class="nobreak" style="width: 27%;">{{ $t('music_album') }}</th>
@@ -32,7 +34,12 @@
                 @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
               >
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
-                <div class="list-item-cell auto name">
+                <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
+                  <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
+                    <img :src="getCoverUrl(item)" :class="$style.coverImg" alt="" @error="handleCoverError">
+                  </div>
+                </div>
+                <div class="list-item-cell auto name" style="padding-left: 8px;">
                   <span class="select name" :aria-label="item.name">{{ item.name }}</span>
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
@@ -60,7 +67,12 @@
                 @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
               >
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
-                <div class="list-item-cell auto name">
+                <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
+                  <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
+                    <img :src="getCoverUrl(item)" :class="$style.coverImg" alt="" @error="handleCoverError">
+                  </div>
+                </div>
+                <div class="list-item-cell auto name" style="padding-left: 8px;">
                   <span class="select name" :aria-label="item.name">{{ item.name }}</span>
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
@@ -101,7 +113,7 @@
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
-import { ref } from '@common/utils/vueTools'
+import { reactive, ref } from '@common/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
@@ -109,6 +121,9 @@ import useMusicDownload from './useMusicDownload'
 import useMusicAdd from './useMusicAdd'
 import useMusicActions from './useMusicActions'
 import { appSetting } from '@renderer/store/setting'
+import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
+import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
+
 export default {
   name: 'MaterialOnlineList',
   props: {
@@ -146,9 +161,58 @@ export default {
   emits: ['show-menu', 'play-list', 'togglePage'],
   setup(props, { emit }) {
     const actionButtonsVisible = appSetting['list.actionButtonsVisible']
+    const isShowCover = appSetting['list.isShowCover']
+    const coverSize = appSetting['list.coverSize']
     const rightClickSelectedIndex = ref(-1)
     const dom_listContent = ref(null)
     const listRef = ref(null)
+
+    // 封面缓存
+    const coverUrls = reactive(new Map())
+    const fetchingPics = reactive(new Set())
+
+    const getCoverUrl = (item) => {
+      if (!isShowCover) return ''
+      if (item.meta.picUrl) {
+        coverUrls.set(item.id, item.meta.picUrl)
+        return item.meta.picUrl
+      }
+      if (coverUrls.has(item.id)) {
+        return coverUrls.get(item.id)
+      }
+      return ''
+    }
+
+    const handleCoverError = (event) => {
+      event.target.style.display = 'none'
+    }
+
+    const fetchCover = async(musicInfo) => {
+      const musicId = musicInfo.id
+      if (fetchingPics.has(musicId)) return
+      if (coverUrls.has(musicId)) return
+
+      fetchingPics.add(musicId)
+      try {
+        let picUrl
+        if (musicInfo.source === 'local') {
+          picUrl = await getLocalPicUrl({ musicInfo, isRefresh: false })
+        } else {
+          picUrl = await getOnlinePicUrl({ musicInfo, isRefresh: false })
+        }
+        if (picUrl) {
+          coverUrls.set(musicId, picUrl)
+          const musicItem = props.list.find(m => m.id === musicId)
+          if (musicItem) {
+            musicItem.meta.picUrl = picUrl
+          }
+        }
+      } catch (err) {
+        console.log('Failed to fetch cover:', err)
+      } finally {
+        fetchingPics.delete(musicId)
+      }
+    }
 
     const {
       selectedList,
@@ -156,6 +220,25 @@ export default {
       handleSelectData,
       removeAllSelect,
     } = useList({ props, listRef })
+
+    // 加载可见区域的封面
+    const loadVisibleCovers = () => {
+      if (!isShowCover || !listRef.value || !props.list) return
+      const scrollTop = dom_listContent.value?.scrollTop ?? 0
+      const viewHeight = dom_listContent.value?.clientHeight ?? 0
+      const listItemHeightValue = listItemHeight.value || 50
+      const startIndex = Math.floor(scrollTop / listItemHeightValue)
+      const endIndex = Math.min(props.list.length, Math.ceil((scrollTop + viewHeight) / listItemHeightValue) + 5)
+
+      for (let i = startIndex; i < endIndex; i++) {
+        const item = props.list[i]
+        if (item && !coverUrls.has(item.id) && !fetchingPics.has(item.id)) {
+          if (!item.meta.picUrl) {
+            fetchCover(item).catch(() => {})
+          }
+        }
+      }
+    }
 
     const {
       handlePlayMusic,
@@ -279,6 +362,12 @@ export default {
 
       scrollToTop,
       actionButtonsVisible,
+
+      isShowCover,
+      coverSize,
+      getCoverUrl,
+      handleCoverError,
+      loadVisibleCovers,
     }
   },
 }
@@ -334,6 +423,19 @@ export default {
   p {
     font-size: 24px;
     color: var(--color-font-label);
+  }
+}
+.cover {
+  flex: 0 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: var(--color-500);
+  flex-shrink: 0;
+
+  .coverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
