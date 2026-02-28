@@ -57,6 +57,45 @@ let pitchShifterNodeTempValue = 1
 let defaultChannelCount = 2
 export const soundR = 0.5
 
+const resetConvolverState = () => {
+  if (!convolver?.buffer) return
+  const buffer = convolver.buffer
+  convolver.buffer = null
+  convolver.buffer = buffer
+  console.log('Convolver state reset')
+}
+
+let audioLagWatchdogInterval: ReturnType<typeof setInterval> | null = null
+let lastWatchdogContextTime = 0
+let lastWatchdogWallTime = 0
+
+const startAudioLagWatchdog = () => {
+  stopAudioLagWatchdog()
+  lastWatchdogContextTime = audioContext.currentTime
+  lastWatchdogWallTime = performance.now()
+  audioLagWatchdogInterval = setInterval(() => {
+    if (!audioContext || audioContext.state !== 'running' || !audio || audio.paused) {
+      lastWatchdogContextTime = audioContext?.currentTime ?? 0
+      lastWatchdogWallTime = performance.now()
+      return
+    }
+    const ctxDelta = audioContext.currentTime - lastWatchdogContextTime
+    const wallDelta = (performance.now() - lastWatchdogWallTime) / 1000
+    if (wallDelta > 0.5 && wallDelta - ctxDelta > 0.3) {
+      console.warn(`Audio processing lag detected (${(wallDelta - ctxDelta).toFixed(3)}s behind), resetting convolver`)
+      resetConvolverState()
+    }
+    lastWatchdogContextTime = audioContext.currentTime
+    lastWatchdogWallTime = performance.now()
+  }, 1000)
+}
+
+const stopAudioLagWatchdog = () => {
+  if (audioLagWatchdogInterval) {
+    clearInterval(audioLagWatchdogInterval)
+    audioLagWatchdogInterval = null
+  }
+}
 
 export const createAudio = () => {
   if (audio) return
@@ -216,9 +255,11 @@ export const setConvolver = (buffer: AudioBuffer | null, mainGain: number, sendG
   if (buffer) {
     convolverSourceGainNode.gain.value = mainGain
     convolverOutputGainNode.gain.value = sendGain
+    startAudioLagWatchdog()
   } else {
     convolverSourceGainNode.gain.value = 1
     convolverOutputGainNode.gain.value = 0
+    stopAudioLagWatchdog()
   }
 }
 
@@ -387,12 +428,23 @@ export const setResource = (src: string) => {
   if (audio) audio.src = src
 }
 
+const resumeAudioContext = () => {
+  if (!audioContext || audioContext.state == 'running') return
+  void audioContext.resume().catch((err) => {
+    console.error('resume AudioContext error', err)
+  })
+}
+
 export const setPlay = () => {
+  if (pitchShifterNodeLoadStatus == 'connected') connectNode()
+  resumeAudioContext()
+  resetConvolverState()
   void audio?.play()
 }
 
 export const setPause = () => {
   audio?.pause()
+  resetConvolverState()
 }
 
 export const setStop = () => {
@@ -400,6 +452,7 @@ export const setStop = () => {
     audio.src = ''
     audio.removeAttribute('src')
   }
+  resetConvolverState()
 }
 
 export const isEmpty = (): boolean => !audio?.src

@@ -166,6 +166,7 @@ const modules = {
     key_down: 'key_down',
     request_main_window_channel: 'request_main_window_channel',
     provide_main_window_channel: 'provide_main_window_channel',
+    mouse_enter_change: 'mouse_enter_change',
   },
   hotKey: {
     enable: 'enable',

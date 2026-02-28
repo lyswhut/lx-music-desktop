@@ -1,9 +1,10 @@
 import path from 'node:path'
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, screen } from 'electron'
 import { debounce, getPlatform, isLinux, isWin } from '@common/utils'
 import { initWindowSize, minHeight, minWidth } from './utils'
 import { mainSend } from '@common/mainIpc'
 import { encodePath } from '@common/utils/electron'
+import { WIN_LYRIC_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
 // require('./event')
 // require('./rendererEvent')
@@ -75,7 +76,10 @@ const winEvent = () => {
   browserWindow.once('ready-to-show', () => {
     showWindow()
     if (global.lx.appSetting['desktopLyric.isLock']) {
-      browserWindow!.setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+      browserWindow!.setIgnoreMouseEvents(true)
+      if (!isLinux && global.lx.appSetting['desktopLyric.isHoverHide']) {
+        mouseCheckTools.start()
+      }
     }
     // linux下每次重开时貌似要重新设置置顶
     // if (isLinux && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
@@ -154,6 +158,7 @@ export const isExistWindow = (): boolean => !!browserWindow
 
 export const closeWindow = () => {
   if (!browserWindow) return
+  mouseCheckTools.stop()
   browserWindow.close()
 }
 
@@ -203,7 +208,6 @@ export const getMainFrame = (): Electron.WebFrameMain | null => {
   if (!browserWindow) return null
   return browserWindow.webContents.mainFrame
 }
-
 interface AlwaysOnTopTools {
   timeout: NodeJS.Timeout | null
   setAlwaysOnTop: (isLoop: boolean) => void
@@ -232,5 +236,48 @@ export const alwaysOnTopTools: AlwaysOnTopTools = {
     if (!this.timeout) return
     clearInterval(this.timeout)
     this.timeout = null
+  },
+}
+
+interface MouseCheckTools {
+  timer: NodeJS.Timeout | null
+  isMouseInWindow: boolean
+  checkMousePosition: () => void
+  start: () => void
+  stop: () => void
+}
+
+export const mouseCheckTools: MouseCheckTools = {
+  timer: null,
+  isMouseInWindow: false,
+
+  checkMousePosition() {
+    if (!browserWindow) return
+    const point = screen.getCursorScreenPoint()
+    const bounds = browserWindow.getBounds()
+    const isInBounds = point.x >= bounds.x && point.x <= bounds.x + bounds.width &&
+                       point.y >= bounds.y && point.y <= bounds.y + bounds.height
+    if (isInBounds !== this.isMouseInWindow) {
+      this.isMouseInWindow = isInBounds
+      browserWindow.webContents.send(WIN_LYRIC_RENDERER_EVENT_NAME.mouse_enter_change, isInBounds)
+    }
+  },
+
+  start() {
+    this.stop()
+    this.timer = setInterval(() => {
+      this.checkMousePosition()
+    }, 100)
+  },
+
+  stop() {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
+    if (this.isMouseInWindow) {
+      this.isMouseInWindow = false
+      browserWindow?.webContents.send(WIN_LYRIC_RENDERER_EVENT_NAME.mouse_enter_change, false)
+    }
   },
 }
