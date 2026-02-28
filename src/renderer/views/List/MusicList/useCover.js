@@ -2,7 +2,6 @@ import { reactive, ref, onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
 import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
-import placeholderCover from '@renderer/assets/icons/64x64.png' // eslint-disable-line import/no-unresolved
 
 export default () => {
   const isShowCover = appSetting['list.isShowCover']

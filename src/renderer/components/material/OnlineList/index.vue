@@ -37,12 +37,12 @@
                 <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
                     <img
+                      v-if="isCoverLoaded(item.id)"
                       :src="getCoverUrl(item)"
-                      :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      :class="$style.coverImg"
                       alt=""
-                      @load="handleCoverLoad(item.id)"
-                      @error="handleCoverError"
                     >
+                    <div v-else :class="$style.emptyPic">L<span>X</span></div>
                   </div>
                 </div>
                 <div class="list-item-cell auto name" style="padding-left: 8px;">
@@ -76,12 +76,12 @@
                 <div v-if="isShowCover" class="list-item-cell" :style="{ flex: `0 0 ${coverSize + 16}px`, padding: '0 8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }">
                   <div :class="$style.cover" :style="{ width: coverSize + 'px', height: coverSize + 'px' }">
                     <img
+                      v-if="isCoverLoaded(item.id)"
                       :src="getCoverUrl(item)"
-                      :class="[$style.coverImg, { [$style.coverLoaded]: isCoverLoaded(item.id) }]"
+                      :class="$style.coverImg"
                       alt=""
-                      @load="handleCoverLoad(item.id)"
-                      @error="handleCoverError"
                     >
+                    <div v-else :class="$style.emptyPic">L<span>X</span></div>
                   </div>
                 </div>
                 <div class="list-item-cell auto name" style="padding-left: 8px;">
@@ -135,7 +135,6 @@ import useMusicActions from './useMusicActions'
 import { appSetting } from '@renderer/store/setting'
 import { getPicUrl as getOnlinePicUrl } from '@renderer/core/music/online'
 import { getPicUrl as getLocalPicUrl } from '@renderer/core/music/local'
-import placeholderCover from '@renderer/assets/icons/64x64.png' // eslint-disable-line import/no-unresolved
 
 export default {
   name: 'MaterialOnlineList',
@@ -207,8 +206,8 @@ export default {
       if (coverUrls.has(item.id)) {
         return coverUrls.get(item.id)
       }
-      // 返回占位图片，等待懒加载
-      return placeholderCover
+      // 返回空字符串，等待懒加载
+      return ''
     }
 
     const handleCoverError = (event) => {
@@ -509,12 +508,23 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.6; // 默认显示占位图样式（透明度较低）
-    transition: opacity 0.3s ease;
+  }
 
-    // 封面加载完成后恢复正常透明度
-    &.coverLoaded {
-      opacity: 1;
+  .emptyPic {
+    background-color: var(--color-primary-light-900-alpha-200);
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-light-400-alpha-200);
+    user-select: none;
+    font-size: 14px;
+    font-family: Consolas, "Courier New", monospace;
+
+    span {
+      padding-left: 2px;
     }
   }
 }
