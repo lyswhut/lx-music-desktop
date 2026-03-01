@@ -454,6 +454,13 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
+
+  :global {
+    // 歌曲名列最小宽度，防止被封面压缩
+    .list-item-cell.name {
+      min-width: 200px;
+    }
+  }
 }
 
 .list {

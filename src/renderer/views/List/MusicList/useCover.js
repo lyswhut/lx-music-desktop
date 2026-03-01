@@ -34,8 +34,8 @@ export default () => {
     if (coverUrls.has(item.id)) {
       return coverUrls.get(item.id)
     }
-    // 返回占位图片，等待懒加载
-    return placeholderCover
+    // 返回空字符串，等待懒加载
+    return ''
   }
 
   /**
