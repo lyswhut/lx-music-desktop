@@ -5,18 +5,14 @@
     </div>
     <div :class="$style.content">
       <div class="thead" :class="$style.thead">
-        <table>
-          <thead>
-            <tr>
-              <th class="num" style="width: 5%;">#</th>
-              <th class="nobreak">{{ $t('music_name') }}</th>
-              <th class="nobreak" style="width: 20%;">{{ $t('download__progress') }}</th>
-              <th class="nobreak" style="width: 22%;">{{ $t('download__status') }}</th>
-              <th class="nobreak" style="width: 10%;">{{ $t('download__quality') }}</th>
-              <th class="nobreak" style="width: 13%;">{{ $t('action') }}</th>
-            </tr>
-          </thead>
-        </table>
+        <div class="header-row">
+          <div class="header-cell num" style="flex: 0 0 5%;">#</div>
+          <div class="header-cell auto name" style="min-width: 200px;">{{ $t('music_name') }}</div>
+          <div class="header-cell" style="flex: 0 0 20%;">{{ $t('download__progress') }}</div>
+          <div class="header-cell" style="flex: 0 0 22%;">{{ $t('download__status') }}</div>
+          <div class="header-cell" style="flex: 0 0 10%;">{{ $t('download__quality') }}</div>
+          <div class="header-cell" style="flex: 0 0 13%;">{{ $t('action') }}</div>
+        </div>
       </div>
       <div v-if="list.length" ref="dom_listContent" :class="$style.content">
         <base-virtualized-list
@@ -255,6 +251,43 @@ export default {
   :global(.list-item) {
     &.active {
       color: var(--color-button-font);
+    }
+  }
+
+  :global {
+    // 歌曲名列最小宽度
+    .list-item-cell.name,
+    .header-cell.name {
+      min-width: 200px;
+    }
+
+    // 表头 flex 布局样式
+    .header-row {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      width: 100%;
+    }
+
+    .header-cell {
+      flex: none;
+      padding: 0 6px;
+      font-size: 12px;
+      text-align: left;
+      line-height: 38px;
+      color: var(--color-font);
+      box-sizing: border-box;
+      .mixin-ellipsis-1();
+
+      &.auto {
+        flex: auto;
+      }
+
+      &.num {
+        white-space: nowrap;
+        text-align: center;
+        color: var(--color-font-label);
+      }
     }
   }
 }

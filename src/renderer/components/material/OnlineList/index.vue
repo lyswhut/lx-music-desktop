@@ -3,27 +3,23 @@
     <!-- <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut"> -->
     <div :class="$style.list">
       <div class="thead">
-        <table>
-          <thead>
-            <tr v-if="actionButtonsVisible">
-              <th class="num" style="width: 5%;">#</th>
-              <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
-              <th class="nobreak">{{ $t('music_name') }}</th>
-              <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
-              <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
-              <th class="nobreak" style="width: 9%;">{{ $t('music_time') }}</th>
-              <th class="nobreak" style="width: 16%;">{{ $t('action') }}</th>
-            </tr>
-            <tr v-else>
-              <th class="num" style="width: 5%;">#</th>
-              <th v-if="isShowCover" class="nobreak" :style="{ width: (coverSize + 16) + 'px' }"></th>
-              <th class="nobreak">{{ $t('music_name') }}</th>
-              <th class="nobreak" style="width: 24%;">{{ $t('music_singer') }}</th>
-              <th class="nobreak" style="width: 27%;">{{ $t('music_album') }}</th>
-              <th class="nobreak" style="width: 10%;">{{ $t('music_time') }}</th>
-            </tr>
-          </thead>
-        </table>
+        <div v-if="actionButtonsVisible" class="header-row">
+          <div class="header-cell num" style="flex: 0 0 5%;">#</div>
+          <div v-if="isShowCover" class="header-cell" :style="{ flex: `0 0 ${coverSize + 16}px` }"></div>
+          <div class="header-cell auto name" style="min-width: 200px;">{{ $t('music_name') }}</div>
+          <div class="header-cell" style="flex: 0 0 22%;">{{ $t('music_singer') }}</div>
+          <div class="header-cell" style="flex: 0 0 22%;">{{ $t('music_album') }}</div>
+          <div class="header-cell" style="flex: 0 0 9%;">{{ $t('music_time') }}</div>
+          <div class="header-cell" style="flex: 0 0 16%;">{{ $t('action') }}</div>
+        </div>
+        <div v-else class="header-row">
+          <div class="header-cell num" style="flex: 0 0 5%;">#</div>
+          <div v-if="isShowCover" class="header-cell" :style="{ flex: `0 0 ${coverSize + 16}px` }"></div>
+          <div class="header-cell auto name" style="min-width: 200px;">{{ $t('music_name') }}</div>
+          <div class="header-cell" style="flex: 0 0 24%;">{{ $t('music_singer') }}</div>
+          <div class="header-cell" style="flex: 0 0 27%;">{{ $t('music_album') }}</div>
+          <div class="header-cell" style="flex: 0 0 10%;">{{ $t('music_time') }}</div>
+        </div>
       </div>
       <div :class="$style.content">
         <div v-show="!noItem" ref="dom_listContent" :class="$style.content">
@@ -457,8 +453,38 @@ export default {
 
   :global {
     // 歌曲名列最小宽度，防止被封面压缩
-    .list-item-cell.name {
+    .list-item-cell.name,
+    .header-cell.name {
       min-width: 200px;
+    }
+
+    // 表头 flex 布局样式
+    .header-row {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      width: 100%;
+    }
+
+    .header-cell {
+      flex: none;
+      padding: 0 6px;
+      font-size: 12px;
+      text-align: left;
+      line-height: 38px;
+      color: var(--color-font);
+      box-sizing: border-box;
+      .mixin-ellipsis-1();
+
+      &.auto {
+        flex: auto;
+      }
+
+      &.num {
+        white-space: nowrap;
+        text-align: center;
+        color: var(--color-font-label);
+      }
     }
   }
 }
