@@ -1,4 +1,4 @@
-import { encodePath, isUrl, throttle } from '@common/utils'
+import { encodePath, isUrl, throttle, isMac } from '@common/utils'
 import migrateSetting from '@common/utils/migrateSetting'
 import getStore from '@main/utils/store'
 import { STORE_NAMES, URL_SCHEME_RXP } from '@common/constants'
@@ -134,7 +134,7 @@ export const updateSetting = (setting?: Partial<LX.AppSetting>, isInit: boolean 
 /**
  * 初始化设置
  */
-export const initSetting = async() => {
+export const initSetting = async () => {
   const electronStore_config = getStore(STORE_NAMES.APP_SETTINGS)
 
   let setting = electronStore_config.get('setting') as LX.AppSetting | undefined
@@ -154,7 +154,7 @@ export const initSetting = async() => {
 /**
  * 初始化快捷键设置
  */
-export const initHotKey = async() => {
+export const initHotKey = async () => {
   const electronStore_hotKey = getStore(STORE_NAMES.HOTKEY)
 
   let localConfig = electronStore_hotKey.get('local') as LX.HotKeyConfig | null
@@ -293,7 +293,7 @@ export const setPowerSaveBlocker = (enabled: boolean) => {
   let isEnabled = powerSaveBlockerId != null && powerSaveBlocker.isStarted(powerSaveBlockerId)
   if (enabled) {
     if (isEnabled) return
-    powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension')
+    powerSaveBlockerId = powerSaveBlocker.start(isMac ? 'prevent-display-sleep' : 'prevent-app-suspension')
   } else {
     if (!isEnabled) return
     powerSaveBlocker.stop(powerSaveBlockerId!)
