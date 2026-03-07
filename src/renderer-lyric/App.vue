@@ -1,6 +1,6 @@
 <template>
-  <div id="container" :class="[{ lock: setting['desktopLyric.isLock'] }, { hide: isHide || (isHoverHide && isMouseEnter) }]">
-    <div id="main" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" @mousemove="handleMouseMoveMain">
+  <div id="container" :class="[{ lock: setting['desktopLyric.isLock'] }, { hide: isHide || isHoverHide }]">
+    <div id="main">
       <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
         <div v-show="!setting['desktopLyric.isLock']" class="control-bar">
           <layout-control-bar />
@@ -41,7 +41,7 @@ import usePauseHide from '@lyric/useApp/usePauseHide'
 const isShowResize = window.os != 'windows'
 useCommon()
 const { handleMouseDown, handleTouchDown } = useWindowSize()
-const { handleMouseMoveMain, isHoverHide, isMouseEnter } = useHoverHide()
+const isHoverHide = useHoverHide()
 useLyric()
 useTheme()
 const isHide = usePauseHide()
@@ -87,7 +87,8 @@ body {
   }
   &.hide {
     opacity: .05;
-    &:hover {
+
+    &:not(.lock):hover {
       opacity: 1;
     }
   }

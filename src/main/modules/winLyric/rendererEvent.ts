@@ -5,6 +5,7 @@ import { buildLyricConfig, getLyricWindowBounds } from './utils'
 import { sendNewDesktopLyricClient } from '@main/modules/winMain'
 import { getBounds, getMainFrame, sendEvent, setBounds, setResizeable } from './main'
 import { MessageChannelMain } from 'electron'
+import { mouseCheckTools } from './mouseCheckTools'
 
 
 export default () => {
@@ -26,7 +27,7 @@ export default () => {
   })
 
   mainOn<LX.DesktopLyric.NewBounds>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_bounds, ({ params: options }) => {
-    setBounds(getLyricWindowBounds(getBounds(), options))
+    setBounds(getLyricWindowBounds(getBounds()!, options))
   })
 
   mainOn<boolean>(WIN_LYRIC_RENDERER_EVENT_NAME.set_win_resizeable, ({ params: resizable }) => {
@@ -45,6 +46,16 @@ export default () => {
     // without going through the main process!
     console.log('request_main_window_channel')
   })
+
+  mainOn<boolean>(WIN_LYRIC_RENDERER_EVENT_NAME.mouse_enter_leave, ({ params: isEnter }) => {
+    if (isEnter) {
+      mouseCheckTools.setMouseInWindow(true)
+      mouseCheckTools.runCheck(sendMouseLeave)
+    } else {
+      mouseCheckTools.setMouseInWindow(false)
+      mouseCheckTools.cacnelCheck()
+    }
+  })
 }
 
 export const sendConfigChange = (setting: Partial<LX.DesktopLyric.Config>) => {
@@ -55,3 +66,6 @@ export const sendMainWindowInitedEvent = () => {
   sendEvent(WIN_LYRIC_RENDERER_EVENT_NAME.main_window_inited)
 }
 
+export const sendMouseLeave = () => {
+  sendEvent(WIN_LYRIC_RENDERER_EVENT_NAME.mouse_enter_leave, false)
+}
