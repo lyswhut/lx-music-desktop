@@ -134,7 +134,7 @@ export const updateSetting = (setting?: Partial<LX.AppSetting>, isInit: boolean 
 /**
  * 初始化设置
  */
-export const initSetting = async () => {
+export const initSetting = async() => {
   const electronStore_config = getStore(STORE_NAMES.APP_SETTINGS)
 
   let setting = electronStore_config.get('setting') as LX.AppSetting | undefined
@@ -154,7 +154,7 @@ export const initSetting = async () => {
 /**
  * 初始化快捷键设置
  */
-export const initHotKey = async () => {
+export const initHotKey = async() => {
   const electronStore_hotKey = getStore(STORE_NAMES.HOTKEY)
 
   let localConfig = electronStore_hotKey.get('local') as LX.HotKeyConfig | null
