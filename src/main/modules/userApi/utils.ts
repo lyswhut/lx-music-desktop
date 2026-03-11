@@ -109,14 +109,13 @@ const inflateScript = async(script: string) => new Promise<string>((resolve, rej
 })
 export const importApi = async(scriptRaw: string): Promise<LX.UserApi.UserApiInfo> => {
   let scriptInfo = parseScriptInfo(scriptRaw)
-  userApis ??= []
-  const existingApi = userApis.find(api => api.name === scriptInfo.name)
   const script = await deflateScript(scriptRaw)
-  if (existingApi) {
-    Object.assign(existingApi, scriptInfo)
-    scripts.set(existingApi.id, script)
-    saveData()
-    return existingApi
+  userApis ??= []
+  for (const api of userApis) {
+    const existingScript = scripts.get(api.id)
+    if (existingScript === script) {
+      throw new Error(`导入失败，脚本内容与已有的源「${api.name}」相同`)
+    }
   }
   const apiInfo = {
     id: `user_api_${Math.random().toString().substring(2, 5)}_${Date.now()}`,
