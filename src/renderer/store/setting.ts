@@ -121,3 +121,6 @@ export const setPlayDetailLyricAlign = (align: LX.AppSetting['playDetail.style.a
 export const setEnableAudioVisualization = (enable: boolean) => {
   updateSetting({ 'player.audioVisualization': enable })
 }
+export const saveAutoUpdate = (enable: boolean) => {
+  updateSetting({ 'common.autoUpdate': enable })
+}
