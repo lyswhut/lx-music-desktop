@@ -58,7 +58,7 @@ export default (setting: any): Partial<LX.AppSetting> => {
 
     setting['player.togglePlayMethod'] = setting.player?.togglePlayMethod
     setting['player.isShowTaskProgess'] = setting.player?.isShowTaskProgess
-    setting['player.volume'] = setting.player?.volume
+    setting['player.volume'] = setting.player?.volume ?? 0.5
     setting['player.isMute'] = setting.player?.isMute
     setting['player.mediaDeviceId'] = setting.player?.mediaDeviceId
     setting['player.isMediaDeviceRemovedStopPlay'] = setting.player?.isMediaDeviceRemovedStopPlay
