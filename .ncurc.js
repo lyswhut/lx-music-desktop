@@ -14,6 +14,8 @@ module.exports = {
     '@types/node',
     'electron-debug',
     'eslint-webpack-plugin',
+    'typescript',
+    'undici',
 
     'eslint-plugin-vue',
     'vue-eslint-parser',
@@ -35,11 +37,13 @@ module.exports = {
 
   // target: 'minor',
   // filter: [
-  //  // 'electron',
+  //   'electron',
   //   'eslint',
   //   'eslint-webpack-plugin',
   //   'electron-debug',
+  //   'typescript',
   //   '@types/node',
+  //   'undici',
 
   //   'eslint-plugin-vue',
   //   'vue-eslint-parser',

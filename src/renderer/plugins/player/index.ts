@@ -65,6 +65,16 @@ export const createAudio = () => {
   audio.autoplay = true
   audio.preload = 'auto'
   audio.crossOrigin = 'anonymous'
+
+  // https://developer.chrome.com/blog/autoplay
+  audio.addEventListener('playing', () => {
+    if (audioContext?.state == 'suspended') {
+      void audioContext.resume().catch((err) => {
+        console.error('Resume audio context failed:', err)
+        throw err
+      })
+    }
+  })
 }
 
 const initAnalyser = () => {

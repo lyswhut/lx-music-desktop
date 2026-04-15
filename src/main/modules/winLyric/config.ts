@@ -1,7 +1,8 @@
 import { isLinux } from '@common/utils'
 import { closeWindow, createWindow, getBounds, isExistWindow, alwaysOnTopTools, setBounds, setIgnoreMouseEvents, setSkipTaskbar } from './main'
-import { sendConfigChange } from './rendererEvent'
+import { sendConfigChange, sendMouseLeave } from './rendererEvent'
 import { buildLyricConfig, getLyricWindowBounds, initWindowSize, watchConfigKeys } from './utils'
+import { mouseCheckTools } from './mouseCheckTools'
 
 let isLock: boolean
 let isEnable: boolean
@@ -21,14 +22,21 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
       isLock = global.lx.appSetting['desktopLyric.isLock']
       if (global.lx.appSetting['desktopLyric.isLock']) {
         setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+        mouseCheckTools.runCheck(sendMouseLeave)
       } else {
         setIgnoreMouseEvents(false, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+        mouseCheckTools.cacnelCheck()
       }
     }
     if (keys.includes('desktopLyric.isHoverHide') && isHoverHide != global.lx.appSetting['desktopLyric.isHoverHide']) {
       isHoverHide = global.lx.appSetting['desktopLyric.isHoverHide']
       if (!isLinux) {
-        setIgnoreMouseEvents(global.lx.appSetting['desktopLyric.isLock'], { forward: global.lx.appSetting['desktopLyric.isHoverHide'] })
+        setIgnoreMouseEvents(global.lx.appSetting['desktopLyric.isLock'], { forward: isHoverHide })
+        if (isHoverHide) {
+          mouseCheckTools.runCheck(sendMouseLeave)
+        } else {
+          mouseCheckTools.cacnelCheck()
+        }
       }
     }
     if (keys.includes('desktopLyric.isAlwaysOnTop') && isAlwaysOnTop != global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
@@ -54,7 +62,7 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
     if (keys.includes('desktopLyric.isLockScreen') && isLockScreen != global.lx.appSetting['desktopLyric.isLockScreen']) {
       isLockScreen = global.lx.appSetting['desktopLyric.isLockScreen']
       if (global.lx.appSetting['desktopLyric.isLockScreen']) {
-        setBounds(getLyricWindowBounds(getBounds(), {
+        setBounds(getLyricWindowBounds(getBounds()!, {
           x: 0,
           y: 0,
           w: global.lx.appSetting['desktopLyric.width'],
@@ -77,6 +85,7 @@ export const setLrcConfig = (keys: Array<keyof LX.AppSetting>, setting: Partial<
       createWindow()
     } else {
       alwaysOnTopTools.clearLoop()
+      mouseCheckTools.cacnelCheck()
       closeWindow()
     }
   }

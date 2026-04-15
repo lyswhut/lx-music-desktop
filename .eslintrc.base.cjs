@@ -55,7 +55,6 @@ const vueRule = {
 exports.base = {
   extends: ['standard'],
   rules: baseRule,
-  parser: '@babel/eslint-parser',
 }
 
 exports.html = {

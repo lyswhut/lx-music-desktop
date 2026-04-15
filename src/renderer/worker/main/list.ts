@@ -243,9 +243,24 @@ export const filterDuplicateMusic = async(list: LX.Music.MusicInfo[], isFilterVa
 }
 
 export const searchListMusic = (list: LX.Music.MusicInfo[], text: string) => {
+  const fullMathNameResults = new Set<LX.Music.MusicInfo>()
+  const fullMathSingerResults = new Set<LX.Music.MusicInfo>()
+  const fullMathAlbumResults = new Set<LX.Music.MusicInfo>()
+  const textLower = text.toLowerCase()
+  for (const mInfo of list) {
+    if (mInfo.name?.toLowerCase().includes(textLower)) {
+      fullMathNameResults.add(mInfo)
+    } else if (mInfo.singer?.toLowerCase().includes(textLower)) {
+      fullMathSingerResults.add(mInfo)
+    } else if (mInfo.meta.albumName?.toLowerCase().includes(textLower)) {
+      fullMathAlbumResults.add(mInfo)
+    }
+  }
   let result: LX.Music.MusicInfo[] = []
   let rxp = new RegExp(text.split('').map(s => s.replace(/[.*+?^${}()|[\]\\]/, '\\$&')).join('.*') + '.*', 'i')
   for (const mInfo of list) {
+    if (fullMathNameResults.has(mInfo) || fullMathSingerResults.has(mInfo) || fullMathAlbumResults.has(mInfo)) continue
+
     const str = `${mInfo.name}${mInfo.singer}${mInfo.meta.albumName ? mInfo.meta.albumName : ''}`
     if (rxp.test(str)) result.push(mInfo)
   }
@@ -258,7 +273,12 @@ export const searchListMusic = (list: LX.Music.MusicInfo[], text: string) => {
       data: mInfo,
     })
   }
-  return sortedList.map(item => item.data).reverse()
+  return [
+    ...fullMathNameResults.values(),
+    ...fullMathSingerResults.values(),
+    ...fullMathAlbumResults.values(),
+    ...sortedList.map(item => item.data).reverse(),
+  ]
 }
 
 /**

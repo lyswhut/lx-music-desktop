@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
+    "rootDir": "./",
     "paths": {
-      "@main/*": ["src/main/*"],
-      "@renderer/*": ["src/renderer/*"],
-      "@lyric/*": ["src/renderer-lyric/*"],
-      "@static/*": ["src/static/*"],
-      "@common/*": ["src/common/*"],
+      "@main/*": ["./src/main/*"],
+      "@renderer/*": ["./src/renderer/*"],
+      "@lyric/*": ["./src/renderer-lyric/*"],
+      "@static/*": ["./src/static/*"],
+      "@common/*": ["./src/common/*"],
     }
   },
   "vueCompilerOptions": {

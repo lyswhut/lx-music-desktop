@@ -5,10 +5,10 @@
       "./types"
     ],
     "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
-      "@common/*": ["common/*"],
-      "@main/*": ["main/*"],
-      "@static/*": ["static/*"],
-      "@/*": ["./*"],
+      "@common/*": ["../common/*"],
+      "@main/*": ["../main/*"],
+      "@static/*": ["../static/*"],
+      "@/*": ["../*"],
     },
   },
 }

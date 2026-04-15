@@ -172,8 +172,8 @@ export const sendEvent = <T = any>(name: string, params?: T) => {
   mainSend(browserWindow, name, params)
 }
 
-export const getBounds = (): Electron.Rectangle => {
-  if (!browserWindow) throw new Error('window is not available')
+export const getBounds = (): Electron.Rectangle | null => {
+  if (!browserWindow) return null
   return browserWindow.getBounds()
 }
 

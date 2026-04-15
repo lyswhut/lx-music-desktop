@@ -1,7 +1,7 @@
 import { checkPath, joinPath, extname, basename, readFile, getFileStats } from '@common/utils/nodejs'
 import { formatPlayTime } from '@common/utils/common'
-import type { IComment } from 'music-metadata/lib/type'
 import { decodeKrc } from '@common/utils/lyricUtils/kg'
+import { type IAudioMetadata } from 'music-metadata'
 
 export const checkDownloadFileAvailable = async(musicInfo: LX.Download.ListItem, savePath: string): Promise<boolean> => {
   return musicInfo.isComplate && !/\.ape$/.test(musicInfo.metadata.fileName) &&
@@ -164,6 +164,7 @@ export const getLocalMusicFilePic = async(path: string) => {
 //   return lyricInfo
 // }
 
+type IComment = NonNullable<IAudioMetadata['common']['comment']> extends Array<infer U> ? U : never
 
 /**
  * 获取歌曲文件歌词

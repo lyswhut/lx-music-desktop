@@ -1,4 +1,4 @@
-import { encodePath, isUrl, throttle } from '@common/utils'
+import { encodePath, isUrl, throttle, isMac } from '@common/utils'
 import migrateSetting from '@common/utils/migrateSetting'
 import getStore from '@main/utils/store'
 import { STORE_NAMES, URL_SCHEME_RXP } from '@common/constants'
@@ -293,7 +293,7 @@ export const setPowerSaveBlocker = (enabled: boolean) => {
   let isEnabled = powerSaveBlockerId != null && powerSaveBlocker.isStarted(powerSaveBlockerId)
   if (enabled) {
     if (isEnabled) return
-    powerSaveBlockerId = powerSaveBlocker.start('prevent-app-suspension')
+    powerSaveBlockerId = powerSaveBlocker.start(isMac ? 'prevent-display-sleep' : 'prevent-app-suspension')
   } else {
     if (!isEnabled) return
     powerSaveBlocker.stop(powerSaveBlockerId!)
