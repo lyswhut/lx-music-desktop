@@ -14,7 +14,7 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Check out git repository
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@v6
 
   #     - name: Install Node.js
   #       uses: actions/setup-node@v4
@@ -46,7 +46,7 @@ jobs:
     # needs: CheckCode
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get npm cache directory
         shell: pwsh
@@ -65,7 +65,7 @@ jobs:
       - name: Build Package Setup x64
         run: npm run pack:win:setup:x64
       - name: Upload Artifact Setup x64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-x64-Setup
           path: build/*-x64-Setup.exe
@@ -73,7 +73,7 @@ jobs:
       - name: Build Package 7z x64
         run: npm run pack:win:7z:x64
       - name: Upload Artifact 7z x64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-win_x64-green
           path: build/*win_x64-green.7z
@@ -81,7 +81,7 @@ jobs:
       - name: Build Package Setup arm64
         run: npm run pack:win:setup:arm64
       - name: Upload Artifact Setup arm64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-arm64-Setup
           path: build/*-arm64-Setup.exe
@@ -89,7 +89,7 @@ jobs:
       - name: Build Package 7z arm64
         run: npm run pack:win:7z:arm64
       - name: Upload Artifact 7z arm64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-win_arm64-green
           path: build/*win_arm64-green.7z
@@ -138,7 +138,7 @@ jobs:
       - name: Build Package win7 Setup x64
         run: npm run pack:win7:setup:x64
       - name: Upload Artifact win7 Setup x64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-win7_x64-Setup
           path: build/*win7_x64-Setup.exe
@@ -146,7 +146,7 @@ jobs:
       - name: Build Package win7 7z x64
         run: npm run pack:win7:7z:x64
       - name: Upload Artifact win7 7z x64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-win7_x64-green
           path: build/*win7_x64-green.7z
@@ -154,7 +154,7 @@ jobs:
       - name: Build Package win7 7z x86
         run: npm run pack:win7:7z:x86
       - name: Upload Artifact win7 7z x86
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-win7_x86-green
           path: build/*win7_x86-green.7z
@@ -170,7 +170,7 @@ jobs:
     # needs: CheckCode
     steps:
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install python setuptools
         run: brew install python-setuptools
@@ -195,14 +195,14 @@ jobs:
           npm run pack:mac:dmg:arm64
 
       - name: Upload Artifact dmg
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-mac-dmg
           path: |
             build/*.dmg
             !build/*-arm64.dmg
       - name: Upload Artifact dmg
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-mac-dmg-arm64
           path: build/*-arm64.dmg
@@ -221,7 +221,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
 
       - name: Check out git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Get npm cache directory
         shell: bash
@@ -240,7 +240,7 @@ jobs:
       - name: Build Package deb amd64
         run: npm run pack:linux:deb:amd64
       - name: Upload Artifact deb amd64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-deb-amd64
           path: build/*_amd64.deb
@@ -248,7 +248,7 @@ jobs:
       - name: Build Package deb arm64
         run: npm run pack:linux:deb:arm64
       - name: Upload Artifact deb arm64
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-deb-arm64
           path: build/*_arm64.deb
@@ -256,7 +256,7 @@ jobs:
       - name: Build Package deb armv7l
         run: npm run pack:linux:deb:armv7l
       - name: Upload Artifact deb armv7l
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-deb-armv7l
           path: build/*_armv7l.deb
@@ -264,7 +264,7 @@ jobs:
       - name: Build Package x64 appImage
         run: npm run pack:linux:appImage
       - name: Upload Artifact x64 appImage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-x64-appImage
           path: build/*_x64.AppImage
@@ -272,7 +272,7 @@ jobs:
       - name: Build Package x64 rpm
         run: npm run pack:linux:rpm
       - name: Upload Artifact x64 rpm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-x64-rpm
           path: build/*.x64.rpm
@@ -280,7 +280,7 @@ jobs:
       - name: Build Package x64 pacman
         run: npm run pack:linux:pacman
       - name: Upload Artifact x64 pacman
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lx-music-desktop-x64-pacman
           path: build/*_x64.pacman
