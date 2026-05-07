@@ -40,6 +40,8 @@ export const isShowPlayComment = ref(false)
 
 export const isShowLrcSelectContent = ref(false)
 
+export const isShowPlayQueue = ref(false)
+
 export const playMusicInfo = shallowReactive<{
   /**
    * 当前播放歌曲的列表 id

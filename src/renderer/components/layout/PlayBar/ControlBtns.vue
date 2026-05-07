@@ -14,6 +14,7 @@
         <use xlink:href="#icon-desktop-lyric-off" />
       </svg>
     </button>
+    <common-play-queue-btn />
     <common-volume-btn />
     <common-toggle-play-mode-btn />
     <common-list-add-modal v-model:show="isShowAddMusicTo" :music-info="playMusicInfo.musicInfo" />
