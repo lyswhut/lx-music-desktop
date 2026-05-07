@@ -32,7 +32,7 @@
                 @click="handlePlayItem(tempSection.key, item.index)"
               >
                 <div :class="$style.itemMain">
-                  <div :class="$style.itemIcon">
+                  <div :class="[$style.itemIcon, $style.dragHandle]">
                     <svg v-if="item.isActive" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 1024 1024" space="preserve">
                       <use xlink:href="#icon-play" />
                     </svg>
@@ -121,6 +121,7 @@ const styles = useCssModule()
 const dom_btn = ref(null)
 const dom_tempList = ref(null)
 let sortable = null
+let suppressPlayUntil = 0
 
 const visible = computed({
   get: () => isShowPlayQueue.value,
@@ -162,15 +163,20 @@ watch(dom_tempList, (element) => {
   sortable = Sortable.create(element, {
     animation: 150,
     disabled: true,
+    forceFallback: true,
+    fallbackOnBody: true,
+    fallbackTolerance: 4,
     filter: `.${styles.noDrag}`,
+    handle: `.${styles.dragHandle}`,
     ghostClass: styles.dragingItem,
-    onUpdate(event) {
-      moveTempPlayList(event.oldIndex, event.newIndex)
-    },
     onStart() {
       window.app_event.dragStart()
     },
-    onEnd() {
+    onEnd(event) {
+      if (event.oldIndex != null && event.newIndex != null && event.oldIndex !== event.newIndex) {
+        moveTempPlayList(event.oldIndex, event.newIndex)
+      }
+      suppressPlayUntil = Date.now() + 200
       window.app_event.dragEnd()
     },
   })
@@ -220,6 +226,7 @@ const getSectionTitle = (key) => {
 }
 
 const handlePlayItem = (sectionKey, index) => {
+  if (Date.now() < suppressPlayUntil) return
   if (sectionKey === 'temp') {
     playTempPlayItem(index)
   } else if (playInfo.playerListId) {
@@ -387,6 +394,14 @@ onBeforeUnmount(() => {
     width: 100%;
     height: 100%;
     fill: currentColor;
+  }
+}
+
+.dragHandle {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
   }
 }
 
