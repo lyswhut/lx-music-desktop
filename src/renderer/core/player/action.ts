@@ -282,6 +282,15 @@ export const resetRandomNextMusicInfo = () => {
   }
 }
 
+export const resetRandomPlayQueue = () => {
+  resetRandomNextMusicInfo()
+  clearPlayedList()
+
+  if (!playMusicInfo.musicInfo || playMusicInfo.isTempPlay) return
+
+  addPlayedList({ ...(playMusicInfo as LX.Player.PlayMusicInfo) })
+}
+
 export const getNextPlayMusicInfo = async(): Promise<LX.Player.PlayMusicInfo | null> => {
   if (tempPlayList.length) { // 如果稍后播放列表存在歌曲则直接播放改列表的歌曲
     const playMusicInfo = tempPlayList[0]

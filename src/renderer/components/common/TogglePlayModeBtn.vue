@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { ref } from '@common/utils/vueTools'
+import { nextTick, ref } from '@common/utils/vueTools'
 // import useNextTogglePlay from '@renderer/utils/compositions/useNextTogglePlay'
 // import useToggleDesktopLyric from '@renderer/utils/compositions/useToggleDesktopLyric'
 // import { musicInfo, playMusicInfo } from '@renderer/store/player/state'
@@ -90,7 +90,9 @@ const {
 
 const toggleMode = (mode) => {
   btn_ref.value.hide()
-  toggleNextPlayMode(mode)
+  void nextTick(() => {
+    toggleNextPlayMode(mode)
+  })
 }
 
 </script>
