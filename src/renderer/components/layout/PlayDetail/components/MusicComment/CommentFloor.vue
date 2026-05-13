@@ -18,12 +18,13 @@ div(:class="$style.container")
               | {{ item.likedCount }}
           p.select(:class="$style.comment_text") {{ item.text }}
           div(v-if="item.images?.length" :class="$style.comment_images")
-            img(v-for="(url, index) in item.images" :key="index" :src="url" loading="lazy" decoding="async")
+            img(v-for="(url, index) in item.images" :key="index" :src="url" loading="lazy" decoding="async" @contextmenu.stop.prevent="handleSaveCommentImage(url, item, index)")
       comment-floor(v-if="item.reply && item.reply.length" :class="$style.reply_floor" :comments="item.reply")
 </template>
 
 <script>
 import commentDefImg from '@renderer/assets/images/defaultUser.jpg'
+import { saveImage } from '@renderer/utils/saveImage'
 
 export default {
   name: 'CommentFloor',
@@ -47,6 +48,18 @@ export default {
     },
     handleUserImg(event) {
       event.target.src = this.commentDefImg
+    },
+    handleSaveCommentImage(url, item, index) {
+      if (!url) return
+      const imageLabel = window.i18n.t('comment__image')
+      const baseNameParts = [imageLabel]
+      if (item?.userName) baseNameParts.push(item.userName)
+      baseNameParts.push(item?.id ?? String(index + 1))
+      void saveImage({
+        url,
+        defaultName: baseNameParts.filter(Boolean).join('-'),
+        title: window.i18n.t('comment__save_image_desc'),
+      })
     },
   },
 }

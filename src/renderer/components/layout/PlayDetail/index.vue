@@ -10,7 +10,7 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
       div.left(:class="$style.left")
         //- div(:class="$style.info")
         div(:class="$style.info")
-          img(v-if="musicInfo.pic" :class="$style.img" :src="musicInfo.pic")
+          img(v-if="musicInfo.pic" :class="$style.img" :src="musicInfo.pic" @contextmenu.stop.prevent="handleSaveCover")
           div.description(:class="['scroll', $style.description]")
             p {{ $t('player__music_name') }}{{ musicInfo.name }}
             p {{ $t('player__music_singer') }}{{ musicInfo.singer }}
@@ -47,6 +47,8 @@ import ControlBtnsLeftHeader from './ControlBtnsLeftHeader.vue'
 import ControlBtnsRightHeader from './ControlBtnsRightHeader.vue'
 import { registerAutoHideMounse, unregisterAutoHideMounse } from './autoHideMounse'
 import { appSetting } from '@renderer/store/setting'
+import { formatMusicName } from '@renderer/utils'
+import { saveImage } from '@renderer/utils/saveImage'
 import { closeWindow, maxWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
 
 export default {
@@ -93,6 +95,19 @@ export default {
       unregisterAutoHideMounse()
     }
 
+    const handleSaveCover = () => {
+      if (!musicInfo.pic) return
+      const coverLabel = window.i18n.t('player__cover')
+      const baseName = musicInfo.name
+        ? formatMusicName(appSetting['download.fileName'], musicInfo.name, musicInfo.singer)
+        : coverLabel
+      void saveImage({
+        url: musicInfo.pic,
+        defaultName: baseName ? `${baseName}-${coverLabel}` : coverLabel,
+        title: window.i18n.t('player__save_cover_desc'),
+      })
+    }
+
     watch(isFullscreen, isFullscreen => {
       (isFullscreen ? registerAutoHideMounse : unregisterAutoHideMounse)()
     })
@@ -109,6 +124,7 @@ export default {
       hideComment,
       handleAfterEnter,
       handleAfterLeave,
+      handleSaveCover,
       visibled,
       isFullscreen,
       fullscreenExit() {
