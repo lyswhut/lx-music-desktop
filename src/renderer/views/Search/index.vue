@@ -2,12 +2,13 @@
   <div :class="$style.container">
     <div :class="$style.header">
       <base-tab v-model="source" :list="sources" @change="handleSourceChange" />
-      <base-tab v-model="searchType" :list="searchTypes" @change="handleTypeChange" />
+      <base-tab v-if="source != WY_CLOUD_SOURCE" v-model="searchType" :list="searchTypes" @change="handleTypeChange" />
     </div>
     <div :class="$style.main">
-      <song-list-list v-if="searchType == 'songlist'" v-show="searchText" :page="page" :source-id="source" />
+      <wy-cloud-list v-if="source == WY_CLOUD_SOURCE" :page="page" :keyword="searchText" />
+      <song-list-list v-else-if="searchType == 'songlist'" v-show="searchText" :page="page" :source-id="source" />
       <music-list v-else v-show="searchText" :page="page" :source-id="source" />
-      <blank-view :visible="!searchText" :source="source" />
+      <blank-view v-if="source != WY_CLOUD_SOURCE" :visible="!searchText" :source="source" />
     </div>
   </div>
 </template>
@@ -20,9 +21,12 @@ import { sources as _sources } from '@renderer/store/search/music'
 
 import MusicList from './MusicList/index.vue'
 import SongListList from './SongListList/index.vue'
+import WyCloudList from './WyCloudList/index.vue'
 import BlankView from './components/BlankView.vue'
 import { computed, ref } from '@common/utils/vueTools'
 import { sourceNames } from '@renderer/store'
+
+const WY_CLOUD_SOURCE = 'wy_cloud'
 
 const source = ref('kw')
 const searchType = ref(null)
@@ -61,6 +65,7 @@ export default {
   components: {
     MusicList,
     SongListList,
+    WyCloudList,
     BlankView,
   },
   beforeRouteEnter: verifyQueryParams,
@@ -69,12 +74,19 @@ export default {
     const route = useRoute()
     const router = useRouter()
 
-    const sources = _sources.map(id => {
-      return {
+    const sources = _sources.reduce((list, id) => {
+      list.push({
         id,
         label: sourceNames.value[id],
+      })
+      if (id == 'wy') {
+        list.push({
+          id: WY_CLOUD_SOURCE,
+          label: '网易云网盘',
+        })
       }
-    })
+      return list
+    }, [])
     const handleSourceChange = (id) => {
       void router.replace({
         path: route.path,
@@ -105,6 +117,7 @@ export default {
 
 
     return {
+      WY_CLOUD_SOURCE,
       sources,
       source,
       handleSourceChange,
