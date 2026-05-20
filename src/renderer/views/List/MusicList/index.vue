@@ -379,6 +379,16 @@ export default {
       color: var(--color-button-font);
     }
   }
+
+  .active {
+    background-color: var(--color-primary-light-100-alpha-900);
+    color: var(--color-button-font);
+
+    &:hover {
+      background-color: var(--color-primary-light-100-alpha-900);
+    }
+  }
+
   :global {
     .label-source {
       color: var(--color-primary);
