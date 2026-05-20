@@ -103,6 +103,14 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.style.isFontWeightLine': true,
   'desktopLyric.style.isFontWeightExtended': true,
 
+  'taskbarLyric.enable': false,
+  'taskbarLyric.position': 'right',
+  'taskbarLyric.width': 360,
+  'taskbarLyric.showCover': true,
+  'taskbarLyric.showSongInfo': true,
+  'taskbarLyric.showCurrentLine': true,
+  'taskbarLyric.followTaskbarAutoHide': true,
+
   'list.isClickPlayList': false,
   'list.isShowSource': true,
   'list.isSaveScrollLocation': true,

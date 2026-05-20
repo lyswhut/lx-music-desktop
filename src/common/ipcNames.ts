@@ -140,6 +140,9 @@ const modules = {
     sync_remove_server_device: 'sync_remove_server_device',
 
     process_new_desktop_lyric_client: 'process_new_desktop_lyric_client',
+    process_new_taskbar_lyric_client: 'process_new_taskbar_lyric_client',
+    taskbar_lyric_set_state: 'taskbar_lyric_set_state',
+    taskbar_lyric_request_refresh: 'taskbar_lyric_request_refresh',
 
     player_action_set_buttons: 'player_action_set_buttons',
     // player_action_set_thumbnail_clip: 'player_action_set_thumbnail_clip',
