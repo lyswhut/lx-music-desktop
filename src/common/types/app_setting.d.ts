@@ -691,12 +691,39 @@ declare global {
        */
       'odc.isAutoClearSearchList': boolean
 
+      /**
+       * Enable the taskbar lyric bar
+       */
       'taskbarLyric.enable': boolean
+
+      /**
+       * Anchor the bar to the right or center of the taskbar
+       */
       'taskbarLyric.position': 'right' | 'center'
+
+      /**
+       * Preferred width of the taskbar lyric bar
+       */
       'taskbarLyric.width': number
+
+      /**
+       * Show album cover art in the bar
+       */
       'taskbarLyric.showCover': boolean
+
+      /**
+       * Show song title and artist info
+       */
       'taskbarLyric.showSongInfo': boolean
+
+      /**
+       * Show the current active lyric line
+       */
       'taskbarLyric.showCurrentLine': boolean
+
+      /**
+       * Track taskbar auto-hide visibility
+       */
       'taskbarLyric.followTaskbarAutoHide': boolean
     }
   }

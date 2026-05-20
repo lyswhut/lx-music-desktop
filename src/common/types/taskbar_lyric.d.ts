@@ -7,7 +7,7 @@ declare namespace LX {
       title: string
       artist: string
       lyricLine: string
-      albumCoverUrl: string
+      albumCoverUrl: string | null
     }
   }
 }

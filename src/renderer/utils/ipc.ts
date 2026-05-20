@@ -180,6 +180,10 @@ export const sendTaskbarLyricState = (state: LX.TaskbarLyric.State) => {
   rendererSend<LX.TaskbarLyric.State>(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, state)
 }
 
+export const requestTaskbarLyricRefresh = () => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_request_refresh)
+}
+
 
 export const sendOpenAPIAction = async(action: LX.OpenAPI.Actions) => {
   return rendererInvoke<LX.OpenAPI.Actions, LX.OpenAPI.Status>(WIN_MAIN_RENDERER_EVENT_NAME.open_api_action, action)
@@ -835,6 +839,18 @@ export const onNewDesktopLyricProcess = (listener: LX.IpcRendererEventListener):
   rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.process_new_desktop_lyric_client, listener)
   return () => {
     rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.process_new_desktop_lyric_client, listener)
+  }
+}
+
+/**
+ * Taskbar lyric process created event
+ * @param listener
+ * @returns
+ */
+export const onNewTaskbarLyricProcess = (listener: LX.IpcRendererEventListener): RemoveListener => {
+  rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.process_new_taskbar_lyric_client, listener)
+  return () => {
+    rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.process_new_taskbar_lyric_client, listener)
   }
 }
 
