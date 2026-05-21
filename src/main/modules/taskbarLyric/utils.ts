@@ -21,7 +21,7 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
 
   if (taskbarPosition == null) {
     return {
-      x: horizontalX,
+      x: Math.round(display.workArea.x + display.workArea.width - safeWidth),
       y: Math.max(display.workArea.y, display.workArea.y + display.workArea.height - safeHeight),
       width: safeWidth,
       height: safeHeight,
