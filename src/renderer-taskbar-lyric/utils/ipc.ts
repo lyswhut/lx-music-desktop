@@ -1,15 +1,23 @@
-export interface TaskbarLyricStatePayload {
-  enabled: boolean
-  isPlaying: boolean
-  songId: string | null
-  title: string
-  artist: string
-  lyricLine: string
-  albumCoverUrl: string | null
+import { ipcRenderer } from 'electron'
+import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
+
+export type TaskbarLyricStatePayload = LX.TaskbarLyric.State
+
+type TaskbarLyricStateListener = (state: TaskbarLyricStatePayload) => void
+type RemoveListener = () => void
+
+export const onTaskbarLyricState = (listener: TaskbarLyricStateListener): RemoveListener => {
+  const wrappedListener = (_event: Electron.IpcRendererEvent, state: TaskbarLyricStatePayload) => {
+    listener(state)
+  }
+
+  ipcRenderer.on(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, wrappedListener)
+
+  return () => {
+    ipcRenderer.removeListener(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, wrappedListener)
+  }
 }
 
-// Task 3 keeps the renderer static-first. Live IPC wiring will land in a later task.
-export const sendTaskbarLyricState = (_state: TaskbarLyricStatePayload) => {}
-
-// Placeholder for the later refresh handshake once playback state wiring is implemented.
-export const requestTaskbarLyricRefresh = () => {}
+export const requestTaskbarLyricRefresh = () => {
+  ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_request_refresh)
+}

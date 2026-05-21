@@ -25,3 +25,7 @@ export const state = shallowReactive<TaskbarLyricViewState>({
   showSongInfo: true,
   showCurrentLine: true,
 })
+
+export const patchState = (payload: Partial<LX.TaskbarLyric.State>) => {
+  Object.assign(state, payload)
+}

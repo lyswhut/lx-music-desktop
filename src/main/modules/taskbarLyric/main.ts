@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { BrowserWindow, screen } from 'electron'
+import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { encodePath } from '@common/utils/electron'
 import type { TaskbarLyricState } from './types'
 import { calcTaskbarLyricBounds } from './utils'
@@ -9,6 +10,15 @@ const TASKBAR_LYRIC_HEIGHT = 56
 
 let browserWindow: Electron.BrowserWindow | null = null
 let currentState: TaskbarLyricState | null = null
+
+const sendStateToWindow = (webContents?: Electron.WebContents) => {
+  if (!currentState) return
+
+  const target = webContents ?? browserWindow?.webContents
+  if (!target || target.isDestroyed()) return
+
+  target.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, currentState)
+}
 
 const getWindowBounds = () => {
   const display = screen.getPrimaryDisplay()
@@ -77,6 +87,10 @@ export const createWindow = () => {
     browserWindow?.showInactive()
   })
 
+  browserWindow.webContents.on('did-finish-load', () => {
+    sendStateToWindow()
+  })
+
   void browserWindow.loadURL(windowUrl)
 
   return browserWindow
@@ -94,6 +108,11 @@ export const refreshBounds = () => {
 
 export const updateWindowState = (state?: TaskbarLyricState) => {
   currentState = state ?? currentState
+  sendStateToWindow()
+}
+
+export const sendCurrentStateToWindow = (webContents?: Electron.WebContents) => {
+  sendStateToWindow(webContents)
 }
 
 export const isExistWindow = () => {

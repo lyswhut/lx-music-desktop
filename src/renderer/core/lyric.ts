@@ -5,7 +5,7 @@ import { isPlay, musicInfo } from '@renderer/store/player/state'
 import { setStatusText } from '@renderer/store/player/action'
 import { markRawList } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
-import { onNewDesktopLyricProcess } from '@renderer/utils/ipc'
+import { onNewDesktopLyricProcess, sendTaskbarLyricState } from '@renderer/utils/ipc'
 
 const getCurrentTime = () => {
   return getPlayerCurrentTime() * 1000
@@ -43,6 +43,23 @@ export const sendDesktopLyricInfo = (info: LX.DesktopLyric.LyricActions, transfe
   if (transferList) desktopLyricPort.postMessage(info, transferList)
   else desktopLyricPort.postMessage(info)
 }
+
+const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
+  return {
+    enabled: appSetting['taskbarLyric.enable'],
+    isPlaying: isPlay.value,
+    songId: musicInfo.id,
+    title: musicInfo.name,
+    artist: musicInfo.singer,
+    lyricLine: lyric.text,
+    albumCoverUrl: musicInfo.pic,
+  }
+}
+
+const syncTaskbarLyricState = () => {
+  sendTaskbarLyricState(getTaskbarLyricState())
+}
+
 const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
   switch (action) {
     case 'get_info':
@@ -81,6 +98,7 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
       break
   }
 }
+
 export const init = () => {
   lrc = new Lyric({
     shadowContent: false,
@@ -88,18 +106,21 @@ export const init = () => {
       setText(text, Math.max(line, 0))
       setStatusText(text)
       window.app_event.lyricLinePlay(text, line)
+      syncTaskbarLyricState()
       // console.log(line, text)
     },
     onSetLyric(lines, offset) { // listening lyrics seting event
       // console.log(lines) // lines is array of all lyric text
       setLines(markRawList([...lines]))
       setText(lines[0] ?? '', 0)
-      setOffset(offset) // 歌词延迟
-      setTempOffset(0) // 重置临时延迟
+      setOffset(offset) // Apply parsed lyric offset
+      setTempOffset(0) // Reset temporary offset
+      syncTaskbarLyricState()
     },
     onUpdateLyric(lines) {
       setLines(markRawList([...lines]))
       setText(lines[0] ?? '', 0)
+      syncTaskbarLyricState()
     },
     rate: appSetting['player.playbackRate'],
     // offset: 80,
@@ -186,6 +207,8 @@ export const setLyric = () => {
       lrc.play(time)
     })
   }
+
+  syncTaskbarLyricState()
 }
 
 export const setDisabledAutoPause = (disabledAutoPause: boolean) => {
@@ -208,11 +231,13 @@ export const play = () => {
   const currentTime = getCurrentTime()
   lrc.play(currentTime)
   sendDesktopLyricInfo({ action: 'set_play', data: currentTime })
+  syncTaskbarLyricState()
 }
 
 export const pause = () => {
   lrc.pause()
   sendDesktopLyricInfo({ action: 'set_pause' })
+  syncTaskbarLyricState()
 }
 
 export const stop = () => {
@@ -220,6 +245,7 @@ export const stop = () => {
   sendDesktopLyricInfo({ action: 'set_stop' })
   // setLines([])
   setText('', 0)
+  syncTaskbarLyricState()
 }
 
 export const sendInfo = () => {
@@ -240,4 +266,5 @@ export const sendInfo = () => {
       played_time: getCurrentTime(),
     },
   })
+  syncTaskbarLyricState()
 }
