@@ -17,12 +17,14 @@ const handleApplyPlaybackRate = debounce(setPlaybackRate, 300)
 
 export default () => {
   init()
+  sendInfo()
 
   const setPlayInfo = () => {
     stop()
     sendInfo()
   }
 
+  watch(() => appSetting['taskbarLyric.enable'], sendInfo)
   watch(() => appSetting['player.isShowLyricTranslation'], setLyric)
   watch(() => appSetting['player.isShowLyricRoma'], setLyric)
   watch(() => appSetting['player.isSwapLyricTranslationAndRoma'], setLyric)

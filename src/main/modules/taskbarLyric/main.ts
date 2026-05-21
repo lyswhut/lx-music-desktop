@@ -11,13 +11,23 @@ const TASKBAR_LYRIC_HEIGHT = 56
 let browserWindow: Electron.BrowserWindow | null = null
 let currentState: TaskbarLyricState | null = null
 
-const sendStateToWindow = (webContents?: Electron.WebContents) => {
-  if (!currentState) return
+const getDefaultState = (): TaskbarLyricState => {
+  return {
+    enabled: global.lx.appSetting['taskbarLyric.enable'],
+    isPlaying: false,
+    songId: null,
+    title: 'LX Music',
+    artist: '',
+    lyricLine: '',
+    albumCoverUrl: null,
+  }
+}
 
+const sendStateToWindow = (webContents?: Electron.WebContents) => {
   const target = webContents ?? browserWindow?.webContents
   if (!target || target.isDestroyed()) return
 
-  target.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, currentState)
+  target.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, currentState ?? getDefaultState())
 }
 
 const getWindowBounds = () => {
@@ -107,7 +117,7 @@ export const refreshBounds = () => {
 }
 
 export const updateWindowState = (state?: TaskbarLyricState) => {
-  currentState = state ?? currentState
+  currentState = state ?? currentState ?? getDefaultState()
   sendStateToWindow()
 }
 
