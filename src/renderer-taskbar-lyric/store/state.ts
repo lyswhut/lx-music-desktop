@@ -1,4 +1,4 @@
-import { shallowReactive } from '../../common/utils/vueTools'
+import { shallowReactive } from '@common/utils/vueTools'
 
 interface TaskbarLyricViewState {
   enabled: boolean

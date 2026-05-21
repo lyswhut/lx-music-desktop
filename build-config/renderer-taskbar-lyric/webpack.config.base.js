@@ -44,7 +44,6 @@ module.exports = {
           options: {
             appendTsSuffixTo: [/\.vue$/],
             configFile: path.join(__dirname, '../../src/renderer-taskbar-lyric/tsconfig.json'),
-            transpileOnly: true,
           },
         },
       },
