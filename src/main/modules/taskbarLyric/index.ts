@@ -28,7 +28,12 @@ const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
   if (global.lx.appSetting['taskbarLyric.enable'] && (
     keys.includes('taskbarLyric.showCover') ||
     keys.includes('taskbarLyric.showSongInfo') ||
-    keys.includes('taskbarLyric.showCurrentLine')
+    keys.includes('taskbarLyric.showCurrentLine') ||
+    keys.includes('taskbarLyric.style.backgroundColorMode') ||
+    keys.includes('taskbarLyric.style.backgroundColor') ||
+    keys.includes('taskbarLyric.style.backgroundOpacity') ||
+    keys.includes('taskbarLyric.style.fontColorMode') ||
+    keys.includes('taskbarLyric.style.fontColor')
   )) refreshWindowStateFromConfig()
 }
 

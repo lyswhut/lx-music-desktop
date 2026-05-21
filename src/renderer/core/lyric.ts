@@ -7,7 +7,7 @@ import { markRawList } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { loveList } from '@renderer/store/list/state'
 import { checkListExistMusic } from '@renderer/store/list/action'
-import { onNewDesktopLyricProcess, sendTaskbarLyricState } from '@renderer/utils/ipc'
+import { onNewDesktopLyricProcess, onThemeChange, sendTaskbarLyricState } from '@renderer/utils/ipc'
 
 const getCurrentTime = () => {
   return getPlayerCurrentTime() * 1000
@@ -48,6 +48,13 @@ export const sendDesktopLyricInfo = (info: LX.DesktopLyric.LyricActions, transfe
 
 let isCollected = false
 let collectStatusCheckInfo: { songId: string, promise: Promise<boolean> } | null = null
+const DEFAULT_THEME_COLOR = 'rgb(77, 175, 124)'
+let removeThemeChangeListener: null | (() => void) = null
+
+const getTaskbarLyricThemeColor = () => {
+  const color = window.getComputedStyle(document.documentElement).getPropertyValue('--color-theme').trim()
+  return color || DEFAULT_THEME_COLOR
+}
 
 const sendTaskbarLyricStateSnapshot = () => {
   sendTaskbarLyricState(getTaskbarLyricState())
@@ -103,6 +110,12 @@ const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
     showCover: appSetting['taskbarLyric.showCover'],
     showSongInfo: appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: appSetting['taskbarLyric.showCurrentLine'],
+    themeColor: getTaskbarLyricThemeColor(),
+    backgroundColorMode: appSetting['taskbarLyric.style.backgroundColorMode'],
+    backgroundColor: appSetting['taskbarLyric.style.backgroundColor'],
+    backgroundOpacity: appSetting['taskbarLyric.style.backgroundOpacity'],
+    fontColorMode: appSetting['taskbarLyric.style.fontColorMode'],
+    fontColor: appSetting['taskbarLyric.style.fontColor'],
   }
 }
 
@@ -197,6 +210,11 @@ export const init = () => {
     port.onmessageerror = (event) => {
       console.log('onmessageerror', event)
     }
+  })
+
+  removeThemeChangeListener?.()
+  removeThemeChangeListener = onThemeChange(() => {
+    sendTaskbarLyricStateSnapshot()
   })
 
   window.app_event.on('myListUpdate', handleLoveListUpdate)

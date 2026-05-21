@@ -725,6 +725,31 @@ declare global {
        * Show the current active lyric line
        */
       'taskbarLyric.showCurrentLine': boolean
+
+      /**
+       * Use theme color or a custom background color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundColorMode': 'theme' | 'custom'
+
+      /**
+       * Custom background color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundColor': string
+
+      /**
+       * Background opacity for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundOpacity': number
+
+      /**
+       * Use theme color or a custom font color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.fontColorMode': 'theme' | 'custom'
+
+      /**
+       * Custom font color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.fontColor': string
     }
   }
 

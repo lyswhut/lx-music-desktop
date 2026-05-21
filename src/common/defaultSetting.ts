@@ -110,6 +110,11 @@ const defaultSetting: LX.AppSetting = {
   'taskbarLyric.showCover': true,
   'taskbarLyric.showSongInfo': true,
   'taskbarLyric.showCurrentLine': true,
+  'taskbarLyric.style.backgroundColorMode': 'theme',
+  'taskbarLyric.style.backgroundColor': 'rgba(15, 23, 42, 1)',
+  'taskbarLyric.style.backgroundOpacity': 72,
+  'taskbarLyric.style.fontColorMode': 'theme',
+  'taskbarLyric.style.fontColor': 'rgba(248, 250, 252, 1)',
 
   'list.isClickPlayList': false,
   'list.isShowSource': true,

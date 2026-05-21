@@ -10,6 +10,7 @@ import { calcTaskbarLyricBounds, calcTaskbarLyricClampedOffsetX } from './utils'
 const TASKBAR_LYRIC_HEIGHT = 56
 const TASKBAR_LYRIC_ALWAYS_ON_TOP_LEVEL = 'pop-up-menu'
 const TASKBAR_LYRIC_ZORDER_INTERVAL = 1500
+const DEFAULT_THEME_COLOR = 'rgb(77, 175, 124)'
 
 let browserWindow: Electron.BrowserWindow | null = null
 let currentState: TaskbarLyricState | null = null
@@ -37,6 +38,16 @@ const ensureWindowZOrder = () => {
   }, TASKBAR_LYRIC_ZORDER_INTERVAL)
 }
 
+const getStyleState = () => {
+  return {
+    backgroundColorMode: global.lx.appSetting['taskbarLyric.style.backgroundColorMode'],
+    backgroundColor: global.lx.appSetting['taskbarLyric.style.backgroundColor'],
+    backgroundOpacity: global.lx.appSetting['taskbarLyric.style.backgroundOpacity'],
+    fontColorMode: global.lx.appSetting['taskbarLyric.style.fontColorMode'],
+    fontColor: global.lx.appSetting['taskbarLyric.style.fontColor'],
+  }
+}
+
 const getDefaultState = (): TaskbarLyricState => {
   return {
     enabled: global.lx.appSetting['taskbarLyric.enable'],
@@ -51,6 +62,8 @@ const getDefaultState = (): TaskbarLyricState => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    themeColor: DEFAULT_THEME_COLOR,
+    ...getStyleState(),
   }
 }
 
@@ -230,6 +243,8 @@ export const refreshWindowStateFromConfig = () => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    themeColor: currentState?.themeColor ?? DEFAULT_THEME_COLOR,
+    ...getStyleState(),
   }
   sendStateToWindow()
 }

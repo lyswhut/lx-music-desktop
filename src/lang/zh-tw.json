@@ -757,5 +757,11 @@
   "setting__taskbar_lyric_show_song_info": "顯示歌曲資訊",
   "setting__taskbar_lyric_show_current_line": "顯示目前歌詞",
   "setting__taskbar_lyric_position": "工作列歌詞位置",
+  "setting__taskbar_lyric_background": "背景顏色",
+  "setting__taskbar_lyric_font_color": "文字顏色",
+  "setting__taskbar_lyric_color": "顏色",
+  "setting__taskbar_lyric_opacity": "不透明度",
+  "setting__taskbar_lyric_theme_color": "主題",
+  "setting__taskbar_lyric_custom_color": "自訂",
   "setting__taskbar_lyric_width": "工作列歌詞寬度：{width}px"
 }
