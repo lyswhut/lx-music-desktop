@@ -1,5 +1,13 @@
 import type { TaskbarLyricBoundsOptions, TaskbarPosition } from './types'
 
+interface IgnoreMouseEventsTarget {
+  setIgnoreMouseEvents: (ignore: boolean, options?: Electron.IgnoreMouseEventsOptions) => void
+}
+
+export const enableTaskbarLyricIgnoreMouseEvents = (target: IgnoreMouseEventsTarget) => {
+  target.setIgnoreMouseEvents(true, { forward: true })
+}
+
 const getTaskbarRect = ({ display }: Pick<TaskbarLyricBoundsOptions, 'display'>): Electron.Rectangle | null => {
   if (display.workArea.x > display.x) {
     return {

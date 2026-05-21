@@ -4,7 +4,7 @@ import { BrowserWindow, screen } from 'electron'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { encodePath } from '@common/utils/electron'
 import type { TaskbarLyricState } from './types'
-import { calcTaskbarLyricBounds } from './utils'
+import { calcTaskbarLyricBounds, enableTaskbarLyricIgnoreMouseEvents } from './utils'
 
 const TASKBAR_LYRIC_HEIGHT = 56
 
@@ -97,6 +97,7 @@ export const createWindow = () => {
   })
 
   browserWindow.once('ready-to-show', () => {
+    enableTaskbarLyricIgnoreMouseEvents(browserWindow!)
     browserWindow?.showInactive()
   })
 
