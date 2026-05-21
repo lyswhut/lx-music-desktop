@@ -225,12 +225,12 @@ The window should anchor based on:
 - current display
 - configured alignment (`right` or `center`)
 - configured width
-- taskbar auto-hide state if available
 
 Expected behavior:
 
 - if taskbar is at bottom, the bar hugs the bottom edge
-- if taskbar is at top/left/right, the bar adapts accordingly
+- if taskbar is at top, the bar hugs the top edge
+- V1 supports primary-display horizontal taskbars only; left/right vertical taskbars are not supported
 - if monitor scaling changes, the bar recomputes bounds
 - if Explorer or display topology changes, the bar repositions
 
@@ -384,7 +384,8 @@ There is no dedicated automated test suite today, so V1 verification will be mos
 - Windows 11
 - 100%, 125%, 150% display scaling
 - bottom taskbar
-- top/left/right taskbar where supported
+- top taskbar
+- left/right vertical taskbars do not show the overlay in V1
 - taskbar auto-hide on/off
 - Explorer restart recovery
 

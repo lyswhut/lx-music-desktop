@@ -1,19 +1,16 @@
 <template>
-  <div class="taskbar-lyric-shell" :class="{ disabled: !state.enabled, playing: state.isPlaying }">
+  <div class="taskbar-lyric-shell" :class="{ disabled: !state.enabled }">
     <div v-if="state.showCover" class="cover">
       <img v-if="state.albumCoverUrl" :src="state.albumCoverUrl" alt="album cover">
       <div v-else class="cover-fallback">LX</div>
     </div>
     <div class="content">
-      <div class="meta-row">
-        <div v-if="state.showSongInfo" class="song-info">
-          <span class="title">{{ state.title }}</span>
-          <span class="separator">/</span>
-          <span class="artist">{{ state.artist }}</span>
-        </div>
-        <span class="status">{{ state.isPlaying ? 'Playing' : 'Standby' }}</span>
+      <div v-if="state.showSongInfo" class="song-info">
+        <span class="title">{{ state.title }}</span>
+        <span v-if="state.artist" class="separator">-</span>
+        <span v-if="state.artist" class="artist">{{ state.artist }}</span>
       </div>
-      <p v-if="state.showCurrentLine" class="lyric-line">{{ state.lyricLine }}</p>
+      <p v-if="state.showCurrentLine" class="lyric-line">{{ state.lyricLine || state.artist }}</p>
     </div>
   </div>
 </template>
@@ -45,39 +42,30 @@ body {
 .taskbar-lyric-shell {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
   height: 100%;
-  padding: 8px 14px;
-  border-radius: 16px;
+  padding: 4px 10px;
+  border-radius: 10px;
   background:
-    linear-gradient(135deg, rgba(15, 23, 42, 0.92), rgba(30, 41, 59, 0.72)),
-    rgba(15, 23, 42, 0.64);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(14px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+    linear-gradient(135deg, rgba(15, 23, 42, 0.88), rgba(30, 41, 59, 0.7)),
+    rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.2s ease;
 
   &.disabled {
     opacity: 0.78;
-  }
-
-  &.playing {
-    .status {
-      color: #34d399;
-      background-color: rgba(52, 211, 153, 0.14);
-    }
   }
 }
 
 .cover {
   flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(16, 185, 129, 0.86));
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.32);
 
   img {
     display: block;
@@ -92,9 +80,9 @@ body {
   place-items: center;
   width: 100%;
   height: 100%;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
 }
 
 .content {
@@ -103,23 +91,16 @@ body {
   min-width: 0;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-}
-
-.meta-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-width: 0;
+  gap: 2px;
 }
 
 .song-info {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 5px;
   min-width: 0;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.1;
 }
 
 .title,
@@ -137,25 +118,13 @@ body {
 
 .separator,
 .artist {
-  color: rgba(226, 232, 240, 0.7);
-}
-
-.status {
-  flex: none;
-  padding: 2px 8px;
-  border-radius: 999px;
-  color: #fbbf24;
-  background-color: rgba(251, 191, 36, 0.12);
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: rgba(226, 232, 240, 0.66);
 }
 
 .lyric-line {
   margin: 0;
   color: rgba(226, 232, 240, 0.94);
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: 11px;
+  line-height: 1.1;
 }
 </style>

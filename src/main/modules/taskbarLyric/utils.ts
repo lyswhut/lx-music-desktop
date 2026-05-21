@@ -60,8 +60,10 @@ const getTaskbarPosition = ({ display }: Pick<TaskbarLyricBoundsOptions, 'displa
   return null
 }
 
-export const calcTaskbarLyricBounds = ({ display, width, height, position }: TaskbarLyricBoundsOptions): Electron.Rectangle => {
+export const calcTaskbarLyricBounds = ({ display, width, height, position }: TaskbarLyricBoundsOptions): Electron.Rectangle | null => {
   const taskbarPosition = getTaskbarPosition({ display })
+  if (taskbarPosition === 'left' || taskbarPosition === 'right') return null
+
   const taskbarRect = getTaskbarRect({ display })
 
   const safeWidth = Math.max(0, Math.min(Math.round(width), taskbarRect?.width ?? display.width))
@@ -69,9 +71,6 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
   const horizontalX = position === 'center'
     ? Math.round((taskbarRect?.x ?? display.workArea.x) + ((taskbarRect?.width ?? display.workArea.width) - safeWidth) / 2)
     : Math.round((taskbarRect?.x ?? display.workArea.x) + (taskbarRect?.width ?? display.workArea.width) - safeWidth)
-  const verticalY = position === 'center'
-    ? Math.round((taskbarRect?.y ?? display.workArea.y) + ((taskbarRect?.height ?? display.workArea.height) - safeHeight) / 2)
-    : Math.round((taskbarRect?.y ?? display.workArea.y) + (taskbarRect?.height ?? display.workArea.height) - safeHeight)
 
   if (taskbarPosition == null) {
     return {
@@ -89,14 +88,6 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
     case 'top':
       x = horizontalX
       y = display.y
-      break
-    case 'left':
-      x = display.x
-      y = verticalY
-      break
-    case 'right':
-      x = (taskbarRect?.x ?? display.workArea.x) + (taskbarRect?.width ?? 0) - safeWidth
-      y = verticalY
       break
     case 'bottom':
     default:

@@ -1,12 +1,13 @@
 import { screen, powerMonitor } from 'electron'
 import { isWin } from '@common/utils'
-import { closeWindow, createWindow, refreshBounds } from './main'
+import { closeWindow, createWindow, refreshBounds, isExistWindow } from './main'
 
 let isRegistered = false
 
 const refreshBoundsIfEnabled = () => {
   if (!global.lx.appSetting['taskbarLyric.enable']) return
-  refreshBounds()
+  if (isExistWindow()) refreshBounds()
+  else createWindow()
 }
 
 const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
