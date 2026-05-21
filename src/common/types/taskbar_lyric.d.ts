@@ -8,6 +8,9 @@ declare namespace LX {
       artist: string
       lyricLine: string
       albumCoverUrl: string | null
+      showCover: boolean
+      showSongInfo: boolean
+      showCurrentLine: boolean
     }
   }
 }

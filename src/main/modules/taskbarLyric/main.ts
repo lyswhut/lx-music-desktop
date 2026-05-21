@@ -4,7 +4,7 @@ import { BrowserWindow, screen } from 'electron'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { encodePath } from '@common/utils/electron'
 import type { TaskbarLyricState } from './types'
-import { calcTaskbarLyricBounds } from './utils'
+import { calcTaskbarLyricBounds, enableTaskbarLyricIgnoreMouseEvents } from './utils'
 
 const TASKBAR_LYRIC_HEIGHT = 56
 
@@ -20,6 +20,9 @@ const getDefaultState = (): TaskbarLyricState => {
     artist: '',
     lyricLine: '',
     albumCoverUrl: null,
+    showCover: global.lx.appSetting['taskbarLyric.showCover'],
+    showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
+    showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
   }
 }
 
@@ -30,7 +33,7 @@ const sendStateToWindow = (webContents?: Electron.WebContents) => {
   target.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_set_state, currentState ?? getDefaultState())
 }
 
-const getWindowBounds = () => {
+const getWindowBounds = (): Electron.Rectangle | null => {
   const display = screen.getPrimaryDisplay()
   return calcTaskbarLyricBounds({
     display: {
@@ -54,15 +57,22 @@ const getWindowUrl = () => {
 
 export const createWindow = () => {
   if (browserWindow) {
-    refreshBounds()
+    const bounds = getWindowBounds()
+    if (!bounds) {
+      closeWindow()
+      return null
+    }
+
+    browserWindow.setBounds(bounds)
     return browserWindow
   }
 
   const windowUrl = getWindowUrl()
-  if (!windowUrl) return null
+  const bounds = getWindowBounds()
+  if (!windowUrl || !bounds) return null
 
   browserWindow = new BrowserWindow({
-    ...getWindowBounds(),
+    ...bounds,
     useContentSize: true,
     frame: false,
     transparent: true,
@@ -94,6 +104,7 @@ export const createWindow = () => {
   })
 
   browserWindow.once('ready-to-show', () => {
+    enableTaskbarLyricIgnoreMouseEvents(browserWindow!)
     browserWindow?.showInactive()
   })
 
@@ -113,7 +124,12 @@ export const closeWindow = () => {
 
 export const refreshBounds = () => {
   if (!browserWindow) return
-  browserWindow.setBounds(getWindowBounds())
+  const bounds = getWindowBounds()
+  if (!bounds) {
+    closeWindow()
+    return
+  }
+  browserWindow.setBounds(bounds)
 }
 
 export const updateWindowState = (state?: TaskbarLyricState) => {

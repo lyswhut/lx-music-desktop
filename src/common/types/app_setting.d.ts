@@ -720,11 +720,6 @@ declare global {
        * Show the current active lyric line
        */
       'taskbarLyric.showCurrentLine': boolean
-
-      /**
-       * Track taskbar auto-hide visibility
-       */
-      'taskbarLyric.followTaskbarAutoHide': boolean
     }
   }
 

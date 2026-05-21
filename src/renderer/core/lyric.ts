@@ -53,6 +53,9 @@ const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
     artist: musicInfo.singer,
     lyricLine: lyric.text,
     albumCoverUrl: musicInfo.pic,
+    showCover: appSetting['taskbarLyric.showCover'],
+    showSongInfo: appSetting['taskbarLyric.showSongInfo'],
+    showCurrentLine: appSetting['taskbarLyric.showCurrentLine'],
   }
 }
 
