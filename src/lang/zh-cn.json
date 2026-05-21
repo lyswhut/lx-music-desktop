@@ -408,7 +408,7 @@
   "setting__desktop_lyric_unplay_color": "未播放颜色",
   "setting__taskbar_lyric": "任务栏歌词",
   "setting__taskbar_lyric_enable": "启用任务栏歌词",
-  "setting__taskbar_lyric_experimental": "仅限 Windows 的实验性功能，视觉上贴附任务栏，并非真正的系统任务栏扩展",
+  "setting__taskbar_lyric_experimental": "仅限 Windows 的实验性功能，视觉上贴附任务栏，并非真正的系统任务栏扩展；当前仅支持主屏顶部或底部任务栏",
   "setting__taskbar_lyric_show_cover": "显示封面",
   "setting__taskbar_lyric_show_song_info": "显示歌曲信息",
   "setting__taskbar_lyric_show_current_line": "显示当前歌词",

@@ -408,7 +408,7 @@
   "setting__desktop_lyric_unplay_color": "Not Played",
   "setting__taskbar_lyric": "Taskbar Lyric",
   "setting__taskbar_lyric_enable": "Enable taskbar lyric",
-  "setting__taskbar_lyric_experimental": "Windows-only experimental feature that visually attaches to the taskbar rather than using a true system taskbar extension",
+  "setting__taskbar_lyric_experimental": "Windows-only experimental feature that visually attaches to the taskbar rather than using a true system taskbar extension; currently supports the primary display top or bottom taskbar only",
   "setting__taskbar_lyric_show_cover": "Show cover art",
   "setting__taskbar_lyric_show_song_info": "Show song info",
   "setting__taskbar_lyric_show_current_line": "Show current lyric line",
