@@ -1,7 +1,13 @@
+import { screen, powerMonitor } from 'electron'
 import { isWin } from '@common/utils'
 import { closeWindow, createWindow, refreshBounds } from './main'
 
 let isRegistered = false
+
+const refreshBoundsIfEnabled = () => {
+  if (!global.lx.appSetting['taskbarLyric.enable']) return
+  refreshBounds()
+}
 
 const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
   if (!keys.some(key => key.startsWith('taskbarLyric.'))) return
@@ -29,6 +35,12 @@ export default () => {
   global.lx.event_app.on('updated_config', (keys) => {
     handleConfigChange(keys)
   })
+
+  screen.on('display-added', refreshBoundsIfEnabled)
+  screen.on('display-removed', refreshBoundsIfEnabled)
+  screen.on('display-metrics-changed', refreshBoundsIfEnabled)
+  powerMonitor.on('resume', refreshBoundsIfEnabled)
+  powerMonitor.on('unlock-screen', refreshBoundsIfEnabled)
 }
 
 export * from './main'

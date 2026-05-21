@@ -9,6 +9,8 @@ export interface TaskbarLyricBoundsOptions {
   position: LX.AppSetting['taskbarLyric.position']
 }
 
+export type TaskbarPosition = 'top' | 'right' | 'bottom' | 'left'
+
 export interface TaskbarLyricState {
   enabled: boolean
   isPlaying: boolean
@@ -17,4 +19,7 @@ export interface TaskbarLyricState {
   artist: string
   lyricLine: string
   albumCoverUrl: string | null
+  showCover: boolean
+  showSongInfo: boolean
+  showCurrentLine: boolean
 }

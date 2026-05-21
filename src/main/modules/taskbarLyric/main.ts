@@ -20,6 +20,9 @@ const getDefaultState = (): TaskbarLyricState => {
     artist: '',
     lyricLine: '',
     albumCoverUrl: null,
+    showCover: global.lx.appSetting['taskbarLyric.showCover'],
+    showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
+    showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
   }
 }
 

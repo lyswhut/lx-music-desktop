@@ -1,11 +1,11 @@
-import type { TaskbarLyricBoundsOptions } from './types'
+import type { TaskbarLyricBoundsOptions, TaskbarPosition } from './types'
 
-const getTaskbarPosition = ({ display }: Pick<TaskbarLyricBoundsOptions, 'display'>) => {
+const getTaskbarPosition = ({ display }: Pick<TaskbarLyricBoundsOptions, 'display'>): TaskbarPosition | null => {
   if (display.workArea.x > display.x) return 'left'
   if (display.workArea.y > display.y) return 'top'
   if (display.workArea.x + display.workArea.width < display.x + display.width) return 'right'
   if (display.workArea.y + display.workArea.height < display.y + display.height) return 'bottom'
-  return 'bottom'
+  return null
 }
 
 export const calcTaskbarLyricBounds = ({ display, width, height, position }: TaskbarLyricBoundsOptions): Electron.Rectangle => {
@@ -18,6 +18,16 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
   const verticalY = position === 'center'
     ? Math.round(display.workArea.y + (display.workArea.height - safeHeight) / 2)
     : Math.round(display.workArea.y + display.workArea.height - safeHeight)
+
+  if (taskbarPosition == null) {
+    return {
+      x: horizontalX,
+      y: Math.max(display.workArea.y, display.workArea.y + display.workArea.height - safeHeight),
+      width: safeWidth,
+      height: safeHeight,
+    }
+  }
+
   let x: number
   let y: number
 

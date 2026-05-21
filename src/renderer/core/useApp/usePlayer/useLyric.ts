@@ -25,6 +25,9 @@ export default () => {
   }
 
   watch(() => appSetting['taskbarLyric.enable'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showCover'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showSongInfo'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showCurrentLine'], sendInfo)
   watch(() => appSetting['player.isShowLyricTranslation'], setLyric)
   watch(() => appSetting['player.isShowLyricRoma'], setLyric)
   watch(() => appSetting['player.isSwapLyricTranslationAndRoma'], setLyric)
