@@ -109,7 +109,6 @@ const defaultSetting: LX.AppSetting = {
   'taskbarLyric.showCover': true,
   'taskbarLyric.showSongInfo': true,
   'taskbarLyric.showCurrentLine': true,
-  'taskbarLyric.followTaskbarAutoHide': true,
 
   'list.isClickPlayList': false,
   'list.isShowSource': true,

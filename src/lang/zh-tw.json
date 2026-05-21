@@ -756,6 +756,5 @@
   "setting__taskbar_lyric_show_cover": "顯示封面",
   "setting__taskbar_lyric_show_song_info": "顯示歌曲資訊",
   "setting__taskbar_lyric_show_current_line": "顯示目前歌詞",
-  "setting__taskbar_lyric_follow_autohide": "跟隨工作列自動隱藏",
   "setting__taskbar_lyric_position": "工作列歌詞位置"
 }

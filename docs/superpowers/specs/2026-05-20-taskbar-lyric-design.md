@@ -288,7 +288,6 @@ Recommended keys:
 'taskbarLyric.showCover': boolean
 'taskbarLyric.showSongInfo': boolean
 'taskbarLyric.showCurrentLine': boolean
-'taskbarLyric.followTaskbarAutoHide': boolean
 ```
 
 ### Defaults
@@ -299,7 +298,6 @@ Recommended keys:
 - show cover: `true`
 - show song info: `true`
 - show current line: `true`
-- follow auto-hide: `true`
 
 ### Settings UI copy
 

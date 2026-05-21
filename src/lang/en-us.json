@@ -412,7 +412,6 @@
   "setting__taskbar_lyric_show_cover": "Show cover art",
   "setting__taskbar_lyric_show_song_info": "Show song info",
   "setting__taskbar_lyric_show_current_line": "Show current lyric line",
-  "setting__taskbar_lyric_follow_autohide": "Follow taskbar auto-hide",
   "setting__taskbar_lyric_position": "Taskbar lyric position",
   "setting__dislike_list_input_tip": "song_name@artist_name\nsong_name\n@artist_name",
   "setting__dislike_list_save_btn": "Save",
