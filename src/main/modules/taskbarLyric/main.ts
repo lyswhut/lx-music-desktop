@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { existsSync } from 'node:fs'
 import { BrowserWindow, screen } from 'electron'
 import { encodePath } from '@common/utils/electron'
 import type { TaskbarLyricState } from './types'
@@ -23,9 +24,12 @@ const getWindowBounds = () => {
 }
 
 const getWindowUrl = () => {
-  return process.env.NODE_ENV !== 'production'
-    ? 'http://localhost:9082/taskbar-lyric.html'
-    : `file://${path.join(encodePath(__dirname), 'taskbar-lyric.html')}`
+  if (process.env.NODE_ENV !== 'production') return 'http://localhost:9082/taskbar-lyric.html'
+
+  const filePath = path.join(__dirname, 'taskbar-lyric.html')
+  if (!existsSync(filePath)) return null
+
+  return `file://${encodePath(filePath)}`
 }
 
 export const createWindow = () => {
@@ -33,6 +37,9 @@ export const createWindow = () => {
     refreshBounds()
     return browserWindow
   }
+
+  const windowUrl = getWindowUrl()
+  if (!windowUrl) return null
 
   browserWindow = new BrowserWindow({
     ...getWindowBounds(),
@@ -70,7 +77,7 @@ export const createWindow = () => {
     browserWindow?.showInactive()
   })
 
-  void browserWindow.loadURL(getWindowUrl())
+  void browserWindow.loadURL(windowUrl)
 
   return browserWindow
 }

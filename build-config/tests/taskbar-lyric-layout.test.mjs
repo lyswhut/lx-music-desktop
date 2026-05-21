@@ -51,3 +51,28 @@ test('calcTaskbarLyricBounds centers the bar on the bottom taskbar', () => {
   assert.equal(bounds.width, 400)
   assert.equal(bounds.height, 60)
 })
+
+test('calcTaskbarLyricBounds anchors to the right edge when the taskbar is vertical on the right', () => {
+  const bounds = calcTaskbarLyricBounds({
+    display: {
+      x: 0,
+      y: 0,
+      width: 1920,
+      height: 1080,
+      workArea: {
+        x: 0,
+        y: 0,
+        width: 1860,
+        height: 1080,
+      },
+    },
+    width: 360,
+    height: 56,
+    position: 'right',
+  })
+
+  assert.equal(bounds.x, 1860)
+  assert.equal(bounds.y, 1024)
+  assert.equal(bounds.width, 360)
+  assert.equal(bounds.height, 56)
+})
