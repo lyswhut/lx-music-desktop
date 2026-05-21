@@ -105,7 +105,8 @@ const defaultSetting: LX.AppSetting = {
 
   'taskbarLyric.enable': false,
   'taskbarLyric.position': 'right',
-  'taskbarLyric.width': 360,
+  'taskbarLyric.width': 230,
+  'taskbarLyric.offsetX': 0,
   'taskbarLyric.showCover': true,
   'taskbarLyric.showSongInfo': true,
   'taskbarLyric.showCurrentLine': true,

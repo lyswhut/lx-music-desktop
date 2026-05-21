@@ -53,6 +53,7 @@ const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
     artist: musicInfo.singer,
     lyricLine: lyric.text,
     albumCoverUrl: musicInfo.pic,
+    offsetX: appSetting['taskbarLyric.offsetX'],
     showCover: appSetting['taskbarLyric.showCover'],
     showSongInfo: appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: appSetting['taskbarLyric.showCurrentLine'],
@@ -130,7 +131,6 @@ export const init = () => {
   })
 
   onNewDesktopLyricProcess(({ event }) => {
-    console.log('onNewDesktopLyricProcess')
     const [port] = event.ports
     desktopLyricPort = port
 

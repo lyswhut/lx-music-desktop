@@ -8,6 +8,10 @@ export const enableTaskbarLyricIgnoreMouseEvents = (target: IgnoreMouseEventsTar
   target.setIgnoreMouseEvents(true, { forward: true })
 }
 
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max)
+}
+
 const getTaskbarRect = ({ display }: Pick<TaskbarLyricBoundsOptions, 'display'>): Electron.Rectangle | null => {
   if (display.workArea.x > display.x) {
     return {
@@ -60,7 +64,7 @@ const getTaskbarPosition = ({ display }: Pick<TaskbarLyricBoundsOptions, 'displa
   return null
 }
 
-export const calcTaskbarLyricBounds = ({ display, width, height, position }: TaskbarLyricBoundsOptions): Electron.Rectangle | null => {
+export const calcTaskbarLyricBounds = ({ display, width, height, position, offsetX }: TaskbarLyricBoundsOptions): Electron.Rectangle | null => {
   const taskbarPosition = getTaskbarPosition({ display })
   if (taskbarPosition === 'left' || taskbarPosition === 'right') return null
 
@@ -68,9 +72,14 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
 
   const safeWidth = Math.max(0, Math.min(Math.round(width), taskbarRect?.width ?? display.width))
   const safeHeight = Math.max(0, Math.min(Math.round(height), taskbarRect?.height ?? display.height))
-  const horizontalX = position === 'center'
-    ? Math.round((taskbarRect?.x ?? display.workArea.x) + ((taskbarRect?.width ?? display.workArea.width) - safeWidth) / 2)
-    : Math.round((taskbarRect?.x ?? display.workArea.x) + (taskbarRect?.width ?? display.workArea.width) - safeWidth)
+  const horizontalAreaX = taskbarRect?.x ?? display.workArea.x
+  const horizontalAreaWidth = taskbarRect?.width ?? display.workArea.width
+  const baseHorizontalX = position === 'center'
+    ? Math.round(horizontalAreaX + (horizontalAreaWidth - safeWidth) / 2)
+    : Math.round(horizontalAreaX + horizontalAreaWidth - safeWidth)
+  const minX = Math.round(horizontalAreaX)
+  const maxX = Math.round(horizontalAreaX + horizontalAreaWidth - safeWidth)
+  const horizontalX = clamp(Math.round(baseHorizontalX + offsetX), minX, maxX)
 
   if (taskbarPosition == null) {
     return {
@@ -102,4 +111,18 @@ export const calcTaskbarLyricBounds = ({ display, width, height, position }: Tas
     width: safeWidth,
     height: safeHeight,
   }
+}
+
+export const calcTaskbarLyricClampedOffsetX = ({ display, width, position, offsetX }: Pick<TaskbarLyricBoundsOptions, 'display' | 'width' | 'position' | 'offsetX'>) => {
+  const taskbarRect = getTaskbarRect({ display })
+  const horizontalAreaX = taskbarRect?.x ?? display.workArea.x
+  const horizontalAreaWidth = taskbarRect?.width ?? display.workArea.width
+  const safeWidth = Math.max(0, Math.min(Math.round(width), horizontalAreaWidth))
+  const baseHorizontalX = position === 'center'
+    ? Math.round(horizontalAreaX + (horizontalAreaWidth - safeWidth) / 2)
+    : Math.round(horizontalAreaX + horizontalAreaWidth - safeWidth)
+  const minX = Math.round(horizontalAreaX)
+  const maxX = Math.round(horizontalAreaX + horizontalAreaWidth - safeWidth)
+  const actualX = clamp(Math.round(baseHorizontalX + offsetX), minX, maxX)
+  return actualX - baseHorizontalX
 }

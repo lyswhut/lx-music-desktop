@@ -413,6 +413,7 @@
   "setting__taskbar_lyric_show_song_info": "Show song info",
   "setting__taskbar_lyric_show_current_line": "Show current lyric line",
   "setting__taskbar_lyric_position": "Taskbar lyric position",
+  "setting__taskbar_lyric_width": "Taskbar lyric width: {width}px",
   "setting__dislike_list_input_tip": "song_name@artist_name\nsong_name\n@artist_name",
   "setting__dislike_list_save_btn": "Save",
   "setting__dislike_list_tips": "1. One line per entry. If there is an \"@\" symbol in the name of the song or artist, it needs to be replaced with \"#\"\n2. Specify a song by a certain artist: song_name@artist_name\n3. Specify a song: song_name\n4. Specify an artist: @artist_name",

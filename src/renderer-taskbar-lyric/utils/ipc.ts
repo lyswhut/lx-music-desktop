@@ -21,3 +21,11 @@ export const onTaskbarLyricState = (listener: TaskbarLyricStateListener): Remove
 export const requestTaskbarLyricRefresh = () => {
   ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_request_refresh)
 }
+
+export const sendTaskbarLyricDragMove = (offsetX: number) => {
+  ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_drag_move, { offsetX })
+}
+
+export const sendTaskbarLyricDragEnd = () => {
+  ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_drag_end)
+}

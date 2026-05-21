@@ -1,5 +1,9 @@
 <template>
-  <div class="taskbar-lyric-shell" :class="{ disabled: !state.enabled }">
+  <div
+    class="taskbar-lyric-shell"
+    :class="{ disabled: !state.enabled, dragging: isDragging }"
+    @pointerdown="handlePointerDown"
+  >
     <div v-if="state.showCover" class="cover">
       <img v-if="state.albumCoverUrl" :src="state.albumCoverUrl" alt="album cover">
       <div v-else class="cover-fallback">LX</div>
@@ -17,6 +21,45 @@
 
 <script setup lang="ts">
 import { state } from './store/state'
+import { onBeforeUnmount, ref } from 'vue'
+import { sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
+
+const isDragging = ref(false)
+let pointerId: number | null = null
+let startScreenX = 0
+let startOffsetX = 0
+
+const handlePointerMove = (event: PointerEvent) => {
+  if (!isDragging.value || event.pointerId !== pointerId) return
+  const offsetX = startOffsetX + (event.screenX - startScreenX)
+  sendTaskbarLyricDragMove(offsetX)
+}
+
+const stopDragging = (event?: PointerEvent) => {
+  if (!isDragging.value) return
+  if (event && pointerId != null && event.pointerId !== pointerId) return
+  isDragging.value = false
+  pointerId = null
+  sendTaskbarLyricDragEnd()
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', stopDragging)
+  window.removeEventListener('pointercancel', stopDragging)
+}
+
+const handlePointerDown = (event: PointerEvent) => {
+  if (event.button !== 0) return
+  isDragging.value = true
+  pointerId = event.pointerId
+  startScreenX = event.screenX
+  startOffsetX = state.offsetX
+  window.addEventListener('pointermove', handlePointerMove)
+  window.addEventListener('pointerup', stopDragging)
+  window.addEventListener('pointercancel', stopDragging)
+}
+
+onBeforeUnmount(() => {
+  stopDragging()
+})
 </script>
 
 <style lang="less">
@@ -53,9 +96,14 @@ body {
   border: 1px solid rgba(148, 163, 184, 0.16);
   backdrop-filter: blur(10px);
   transition: opacity 0.2s ease;
+  cursor: grab;
 
   &.disabled {
     opacity: 0.78;
+  }
+
+  &.dragging {
+    cursor: grabbing;
   }
 }
 

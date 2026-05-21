@@ -8,6 +8,7 @@ interface TaskbarLyricViewState {
   artist: string
   lyricLine: string
   albumCoverUrl: string | null
+  offsetX: number
   showCover: boolean
   showSongInfo: boolean
   showCurrentLine: boolean
@@ -21,6 +22,7 @@ export const state = shallowReactive<TaskbarLyricViewState>({
   artist: 'Taskbar lyric',
   lyricLine: 'Renderer target ready for state wiring.',
   albumCoverUrl: null,
+  offsetX: 0,
   showCover: true,
   showSongInfo: true,
   showCurrentLine: true,

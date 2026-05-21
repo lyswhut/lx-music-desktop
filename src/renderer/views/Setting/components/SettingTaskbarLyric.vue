@@ -36,6 +36,20 @@ dd
     )
 
 dd
+  h3#taskbar_lyric_width {{ $t('setting__taskbar_lyric_width', { width: appSetting['taskbarLyric.width'] }) }}
+  div(:class="$style.sliderLine")
+    base-slider-bar(
+      :class-name="$style.slider"
+      :value="appSetting['taskbarLyric.width']"
+      :min="180"
+      :max="420"
+      :step="10"
+      :disabled="!isWin"
+      @change="updateSetting({ 'taskbarLyric.width': $event })"
+    )
+    span(:class="$style.sliderValue") {{ appSetting['taskbarLyric.width'] }}px
+
+dd
   h3#taskbar_lyric_content {{ $t('setting__taskbar_lyric') }}
   div
     .gap-top
@@ -79,3 +93,21 @@ export default {
   },
 }
 </script>
+
+<style lang="less" module>
+.sliderLine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider {
+  width: 180px;
+}
+
+.sliderValue {
+  min-width: 52px;
+  font-size: 12px;
+  opacity: .8;
+}
+</style>

@@ -7,6 +7,7 @@ export interface TaskbarLyricBoundsOptions {
   width: number
   height: number
   position: LX.AppSetting['taskbarLyric.position']
+  offsetX: number
 }
 
 export type TaskbarPosition = 'top' | 'right' | 'bottom' | 'left'
@@ -19,7 +20,12 @@ export interface TaskbarLyricState {
   artist: string
   lyricLine: string
   albumCoverUrl: string | null
+  offsetX: number
   showCover: boolean
   showSongInfo: boolean
   showCurrentLine: boolean
+}
+
+export interface TaskbarLyricDragMoveParams {
+  offsetX: number
 }

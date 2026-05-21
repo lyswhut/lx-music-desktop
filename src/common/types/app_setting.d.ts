@@ -707,6 +707,11 @@ declare global {
       'taskbarLyric.width': number
 
       /**
+       * Horizontal offset from the configured taskbar lyric anchor
+       */
+      'taskbarLyric.offsetX': number
+
+      /**
        * Show album cover art in the bar
        */
       'taskbarLyric.showCover': boolean

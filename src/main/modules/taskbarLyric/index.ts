@@ -21,7 +21,8 @@ const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
 
   if (global.lx.appSetting['taskbarLyric.enable'] && (
     keys.includes('taskbarLyric.position') ||
-    keys.includes('taskbarLyric.width')
+    keys.includes('taskbarLyric.width') ||
+    keys.includes('taskbarLyric.offsetX')
   )) refreshBounds()
 }
 
