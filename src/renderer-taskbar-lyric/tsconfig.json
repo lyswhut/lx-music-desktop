@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": true,
+    "paths": {
+      "@common/*": ["../common/*"],
+      "@renderer/*": ["../renderer/*"],
+      "@lyric/*": ["../renderer-lyric/*"],
+      "@taskbar-lyric/*": ["../renderer-taskbar-lyric/*"],
+      "@static/*": ["../static/*"],
+      "@root/*": ["../*"]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+import { shallowReactive } from '../../common/utils/vueTools'
+
+interface TaskbarLyricViewState {
+  enabled: boolean
+  isPlaying: boolean
+  songId: string | null
+  title: string
+  artist: string
+  lyricLine: string
+  albumCoverUrl: string | null
+  showCover: boolean
+  showSongInfo: boolean
+  showCurrentLine: boolean
+}
+
+export const state = shallowReactive<TaskbarLyricViewState>({
+  enabled: false,
+  isPlaying: false,
+  songId: null,
+  title: 'LX Music',
+  artist: 'Taskbar lyric',
+  lyricLine: 'Renderer target ready for state wiring.',
+  albumCoverUrl: null,
+  showCover: true,
+  showSongInfo: true,
+  showCurrentLine: true,
+})

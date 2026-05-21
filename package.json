@@ -60,6 +60,7 @@
     "build:main": "cross-env NODE_ENV=production webpack --config build-config/main/webpack.config.prod.js --progress",
     "build:renderer": "cross-env NODE_ENV=production webpack --config build-config/renderer/webpack.config.prod.js --progress",
     "build:renderer-lyric": "cross-env NODE_ENV=production webpack --config build-config/renderer-lyric/webpack.config.prod.js --progress",
+    "build:renderer-taskbar-lyric": "cross-env NODE_ENV=production webpack --config build-config/renderer-taskbar-lyric/webpack.config.prod.js --progress",
     "build:renderer-scripts": "cross-env NODE_ENV=production webpack --config build-config/renderer-scripts/webpack.config.prod.js --progress",
     "lint": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly src",
     "lint:fix": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly --fix src",
