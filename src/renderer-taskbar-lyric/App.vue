@@ -3,6 +3,7 @@
     class="taskbar-lyric-shell"
     :class="{ disabled: !state.enabled, dragging: isDragging }"
     @pointerdown="handlePointerDown"
+    @contextmenu.prevent="handleContextMenu"
   >
     <div v-if="state.showCover" class="cover">
       <img v-if="state.albumCoverUrl" :src="state.albumCoverUrl" alt="album cover">
@@ -22,7 +23,7 @@
 <script setup lang="ts">
 import { state } from './store/state'
 import { onBeforeUnmount, ref } from 'vue'
-import { sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
+import { requestTaskbarLyricMenu, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
 
 const isDragging = ref(false)
 let pointerId: number | null = null
@@ -55,6 +56,11 @@ const handlePointerDown = (event: PointerEvent) => {
   window.addEventListener('pointermove', handlePointerMove)
   window.addEventListener('pointerup', stopDragging)
   window.addEventListener('pointercancel', stopDragging)
+}
+
+const handleContextMenu = () => {
+  stopDragging()
+  requestTaskbarLyricMenu()
 }
 
 onBeforeUnmount(() => {

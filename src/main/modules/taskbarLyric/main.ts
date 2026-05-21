@@ -1,8 +1,9 @@
 import path from 'node:path'
 import { existsSync } from 'node:fs'
-import { BrowserWindow, screen } from 'electron'
+import { BrowserWindow, Menu, screen } from 'electron'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { encodePath } from '@common/utils/electron'
+import { sendTaskbarButtonClick } from '@main/modules/winMain'
 import type { TaskbarLyricState } from './types'
 import { calcTaskbarLyricBounds, calcTaskbarLyricClampedOffsetX } from './utils'
 
@@ -14,6 +15,7 @@ let browserWindow: Electron.BrowserWindow | null = null
 let currentState: TaskbarLyricState | null = null
 let dragOffsetX: number | null = null
 let zOrderTimer: NodeJS.Timeout | null = null
+let isMenuPopupVisible = false
 
 const clearZOrderTimer = () => {
   if (!zOrderTimer) return
@@ -39,6 +41,7 @@ const getDefaultState = (): TaskbarLyricState => {
   return {
     enabled: global.lx.appSetting['taskbarLyric.enable'],
     isPlaying: false,
+    isCollected: false,
     songId: null,
     title: 'LX Music',
     artist: '',
@@ -94,6 +97,60 @@ const getWindowUrl = () => {
   if (!existsSync(filePath)) return null
 
   return `file://${encodePath(filePath)}`
+}
+
+const hasActiveSong = (state?: TaskbarLyricState | null) => {
+  return !!state?.songId
+}
+
+const closeTaskbarLyricBySetting = () => {
+  global.lx.event_app.update_config({
+    'taskbarLyric.enable': false,
+  })
+}
+
+const createTaskbarLyricMenuTemplate = (state?: TaskbarLyricState | null): Electron.MenuItemConstructorOptions[] => {
+  const enabled = hasActiveSong(state)
+  const isPlaying = !!state?.isPlaying
+  const isCollected = !!state?.isCollected
+
+  return [
+    {
+      label: '上一首',
+      enabled,
+      click: () => {
+        sendTaskbarButtonClick('prev')
+      },
+    },
+    {
+      label: isPlaying ? '暂停' : '播放',
+      enabled,
+      click: () => {
+        sendTaskbarButtonClick(isPlaying ? 'pause' : 'play')
+      },
+    },
+    {
+      label: '下一首',
+      enabled,
+      click: () => {
+        sendTaskbarButtonClick('next')
+      },
+    },
+    {
+      label: isCollected ? '取消收藏' : '收藏',
+      enabled,
+      click: () => {
+        sendTaskbarButtonClick(isCollected ? 'unCollect' : 'collect')
+      },
+    },
+    { type: 'separator' },
+    {
+      label: '关闭任务栏歌词',
+      click: () => {
+        closeTaskbarLyricBySetting()
+      },
+    },
+  ]
 }
 
 export const createWindow = () => {
@@ -163,6 +220,43 @@ export const closeWindow = () => {
   if (!browserWindow) return
   clearZOrderTimer()
   browserWindow.close()
+}
+
+export const refreshWindowStateFromConfig = () => {
+  currentState = {
+    ...(currentState ?? getDefaultState()),
+    enabled: global.lx.appSetting['taskbarLyric.enable'],
+    offsetX: dragOffsetX ?? global.lx.appSetting['taskbarLyric.offsetX'],
+    showCover: global.lx.appSetting['taskbarLyric.showCover'],
+    showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
+    showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+  }
+  sendStateToWindow()
+}
+
+export const showTaskbarLyricMenu = () => {
+  if (!browserWindow || browserWindow.isDestroyed() || isMenuPopupVisible) return
+  isMenuPopupVisible = true
+
+  browserWindow.setFocusable(true)
+  browserWindow.focus()
+  refreshWindowZOrder()
+
+  const menu = Menu.buildFromTemplate(createTaskbarLyricMenuTemplate(currentState))
+  menu.popup({
+    window: browserWindow,
+    callback: () => {
+      if (!browserWindow || browserWindow.isDestroyed()) {
+        isMenuPopupVisible = false
+        return
+      }
+      browserWindow.blur()
+      browserWindow.setFocusable(false)
+      browserWindow.showInactive()
+      refreshWindowZOrder()
+      isMenuPopupVisible = false
+    },
+  })
 }
 
 export const refreshBounds = () => {

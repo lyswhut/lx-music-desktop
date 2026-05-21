@@ -1,6 +1,6 @@
 import { screen, powerMonitor } from 'electron'
 import { isWin } from '@common/utils'
-import { closeWindow, createWindow, refreshBounds, isExistWindow } from './main'
+import { closeWindow, createWindow, refreshBounds, refreshWindowStateFromConfig, isExistWindow } from './main'
 
 let isRegistered = false
 
@@ -24,6 +24,12 @@ const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
     keys.includes('taskbarLyric.width') ||
     keys.includes('taskbarLyric.offsetX')
   )) refreshBounds()
+
+  if (global.lx.appSetting['taskbarLyric.enable'] && (
+    keys.includes('taskbarLyric.showCover') ||
+    keys.includes('taskbarLyric.showSongInfo') ||
+    keys.includes('taskbarLyric.showCurrentLine')
+  )) refreshWindowStateFromConfig()
 }
 
 export default () => {

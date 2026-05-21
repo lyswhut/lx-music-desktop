@@ -1,6 +1,6 @@
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { mainOn } from '@common/mainIpc'
-import { commitDragOffsetX, sendCurrentStateToWindow, updateDragOffsetX, updateWindowState } from '@main/modules/taskbarLyric'
+import { commitDragOffsetX, sendCurrentStateToWindow, showTaskbarLyricMenu, updateDragOffsetX, updateWindowState } from '@main/modules/taskbarLyric'
 import type { TaskbarLyricDragMoveParams, TaskbarLyricState } from '@main/modules/taskbarLyric/types'
 
 export default () => {
@@ -10,6 +10,10 @@ export default () => {
 
   mainOn(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_request_refresh, ({ event }) => {
     sendCurrentStateToWindow(event.sender)
+  })
+
+  mainOn(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_show_menu, () => {
+    showTaskbarLyricMenu()
   })
 
   mainOn<TaskbarLyricDragMoveParams>(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_drag_move, ({ params }) => {

@@ -3,6 +3,7 @@ declare namespace LX {
     interface State {
       enabled: boolean
       isPlaying: boolean
+      isCollected: boolean
       songId: string | null
       title: string
       artist: string

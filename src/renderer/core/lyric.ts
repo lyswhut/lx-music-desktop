@@ -1,10 +1,12 @@
 import Lyric from '@common/utils/lyric-font-player'
 import { getAnalyser, getCurrentTime as getPlayerCurrentTime } from '@renderer/plugins/player'
 import { lyric, setLines, setOffset, setTempOffset, setText } from '@renderer/store/player/lyric'
-import { isPlay, musicInfo } from '@renderer/store/player/state'
+import { isPlay, musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { setStatusText } from '@renderer/store/player/action'
 import { markRawList } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
+import { loveList } from '@renderer/store/list/state'
+import { checkListExistMusic } from '@renderer/store/list/action'
 import { onNewDesktopLyricProcess, sendTaskbarLyricState } from '@renderer/utils/ipc'
 
 const getCurrentTime = () => {
@@ -44,10 +46,54 @@ export const sendDesktopLyricInfo = (info: LX.DesktopLyric.LyricActions, transfe
   else desktopLyricPort.postMessage(info)
 }
 
+let isCollected = false
+let collectStatusCheckInfo: { songId: string, promise: Promise<boolean> } | null = null
+
+const sendTaskbarLyricStateSnapshot = () => {
+  sendTaskbarLyricState(getTaskbarLyricState())
+}
+
+const refreshTaskbarLyricCollectStatus = async() => {
+  const songId = playMusicInfo.musicInfo?.id
+  if (!songId) {
+    const changed = isCollected
+    isCollected = false
+    collectStatusCheckInfo = null
+    return changed
+  }
+
+  if (collectStatusCheckInfo?.songId == songId) return collectStatusCheckInfo.promise
+
+  let refreshPromise: Promise<boolean>
+  refreshPromise = checkListExistMusic(loveList.id, songId)
+    .then(status => {
+      if (playMusicInfo.musicInfo?.id != songId) return false
+      if (isCollected == status) return false
+      isCollected = status
+      return true
+    })
+    .finally(() => {
+      if (collectStatusCheckInfo?.songId == songId && collectStatusCheckInfo.promise === refreshPromise) collectStatusCheckInfo = null
+    })
+  collectStatusCheckInfo = {
+    songId,
+    promise: refreshPromise,
+  }
+  return refreshPromise
+}
+
+const syncTaskbarLyricCollectState = () => {
+  void refreshTaskbarLyricCollectStatus().then(changed => {
+    if (!changed) return
+    sendTaskbarLyricStateSnapshot()
+  })
+}
+
 const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
   return {
     enabled: appSetting['taskbarLyric.enable'],
     isPlaying: isPlay.value,
+    isCollected,
     songId: musicInfo.id,
     title: musicInfo.name,
     artist: musicInfo.singer,
@@ -61,7 +107,8 @@ const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
 }
 
 const syncTaskbarLyricState = () => {
-  sendTaskbarLyricState(getTaskbarLyricState())
+  sendTaskbarLyricStateSnapshot()
+  syncTaskbarLyricCollectState()
 }
 
 const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
@@ -104,6 +151,11 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
 }
 
 export const init = () => {
+  const handleLoveListUpdate = (ids: string[]) => {
+    if (!ids.includes(loveList.id)) return
+    syncTaskbarLyricCollectState()
+  }
+
   lrc = new Lyric({
     shadowContent: false,
     onPlay(line, text) {
@@ -146,6 +198,8 @@ export const init = () => {
       console.log('onmessageerror', event)
     }
   })
+
+  window.app_event.on('myListUpdate', handleLoveListUpdate)
 }
 
 export const setLyricOffset = (offset: number) => {
