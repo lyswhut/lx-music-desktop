@@ -4,6 +4,7 @@
     :style="shellStyle"
     :class="{ disabled: !state.enabled, dragging: isDragging }"
     @pointerdown="handlePointerDown"
+    @dblclick="handleDoubleClick"
     @contextmenu.prevent="handleContextMenu"
   >
     <div v-if="state.showCover" class="cover">
@@ -24,7 +25,7 @@
 <script setup lang="ts">
 import { state } from './store/state'
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { requestTaskbarLyricMenu, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
+import { requestTaskbarLyricMenu, requestTaskbarLyricShowMainInterface, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
 
 interface RGB {
   r: number
@@ -174,6 +175,11 @@ const handlePointerDown = (event: PointerEvent) => {
 const handleContextMenu = () => {
   stopDragging()
   requestTaskbarLyricMenu()
+}
+
+const handleDoubleClick = () => {
+  stopDragging()
+  requestTaskbarLyricShowMainInterface()
 }
 
 onBeforeUnmount(() => {

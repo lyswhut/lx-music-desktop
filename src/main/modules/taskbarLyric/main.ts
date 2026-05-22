@@ -4,6 +4,7 @@ import { BrowserWindow, Menu, screen } from 'electron'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import { encodePath } from '@common/utils/electron'
 import { sendTaskbarButtonClick } from '@main/modules/winMain'
+import { showWindow as showMainInterface } from '@main/modules/winMain/main'
 import type { TaskbarLyricState } from './types'
 import { calcTaskbarLyricBounds, calcTaskbarLyricClampedOffsetX } from './utils'
 
@@ -122,6 +123,10 @@ const closeTaskbarLyricBySetting = () => {
   })
 }
 
+export const showTaskbarLyricMainInterface = () => {
+  showMainInterface()
+}
+
 const createTaskbarLyricMenuTemplate = (state?: TaskbarLyricState | null): Electron.MenuItemConstructorOptions[] => {
   const enabled = hasActiveSong(state)
   const isPlaying = !!state?.isPlaying
@@ -157,6 +162,12 @@ const createTaskbarLyricMenuTemplate = (state?: TaskbarLyricState | null): Elect
       },
     },
     { type: 'separator' },
+    {
+      label: '显示主界面',
+      click: () => {
+        showTaskbarLyricMainInterface()
+      },
+    },
     {
       label: '关闭任务栏歌词',
       click: () => {

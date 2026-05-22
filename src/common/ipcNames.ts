@@ -143,6 +143,7 @@ const modules = {
     process_new_taskbar_lyric_client: 'process_new_taskbar_lyric_client',
     taskbar_lyric_set_state: 'taskbar_lyric_set_state',
     taskbar_lyric_show_menu: 'taskbar_lyric_show_menu',
+    taskbar_lyric_show_main_interface: 'taskbar_lyric_show_main_interface',
     taskbar_lyric_request_refresh: 'taskbar_lyric_request_refresh',
     taskbar_lyric_drag_move: 'taskbar_lyric_drag_move',
     taskbar_lyric_drag_end: 'taskbar_lyric_drag_end',

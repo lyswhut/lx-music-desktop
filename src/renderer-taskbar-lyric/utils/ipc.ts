@@ -26,6 +26,10 @@ export const requestTaskbarLyricMenu = () => {
   ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_show_menu)
 }
 
+export const requestTaskbarLyricShowMainInterface = () => {
+  ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_show_main_interface)
+}
+
 export const sendTaskbarLyricDragMove = (offsetX: number) => {
   ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_drag_move, { offsetX })
 }
