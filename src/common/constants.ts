@@ -21,6 +21,7 @@ export const APP_EVENT_NAMES = {
   winMainName: 'win_main',
   winLyricName: 'win_lyric',
   trayName: 'tray',
+  taskbarLyricName: 'taskbar_lyric',
 } as const
 
 export const LIST_IDS = {

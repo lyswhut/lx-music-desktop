@@ -96,6 +96,7 @@ export const createWindow = () => {
       sandbox: false,
       enableWebSQL: false,
       webgl: false,
+      backgroundThrottling: false,
       spellcheck: false, // 禁用拼写检查器
     },
   }

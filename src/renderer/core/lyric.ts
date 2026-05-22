@@ -1,11 +1,13 @@
 import Lyric from '@common/utils/lyric-font-player'
 import { getAnalyser, getCurrentTime as getPlayerCurrentTime } from '@renderer/plugins/player'
 import { lyric, setLines, setOffset, setTempOffset, setText } from '@renderer/store/player/lyric'
-import { isPlay, musicInfo } from '@renderer/store/player/state'
+import { isPlay, musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { setStatusText } from '@renderer/store/player/action'
 import { markRawList } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
-import { onNewDesktopLyricProcess } from '@renderer/utils/ipc'
+import { loveList } from '@renderer/store/list/state'
+import { checkListExistMusic } from '@renderer/store/list/action'
+import { onNewDesktopLyricProcess, onThemeChange, sendTaskbarLyricState } from '@renderer/utils/ipc'
 
 const getCurrentTime = () => {
   return getPlayerCurrentTime() * 1000
@@ -43,6 +45,85 @@ export const sendDesktopLyricInfo = (info: LX.DesktopLyric.LyricActions, transfe
   if (transferList) desktopLyricPort.postMessage(info, transferList)
   else desktopLyricPort.postMessage(info)
 }
+
+let isCollected = false
+let collectStatusCheckInfo: { songId: string, promise: Promise<boolean> } | null = null
+const DEFAULT_THEME_COLOR = 'rgb(77, 175, 124)'
+let removeThemeChangeListener: null | (() => void) = null
+
+const getTaskbarLyricThemeColor = () => {
+  const color = window.getComputedStyle(document.documentElement).getPropertyValue('--color-theme').trim()
+  return color || DEFAULT_THEME_COLOR
+}
+
+const sendTaskbarLyricStateSnapshot = () => {
+  sendTaskbarLyricState(getTaskbarLyricState())
+}
+
+const refreshTaskbarLyricCollectStatus = async() => {
+  const songId = playMusicInfo.musicInfo?.id
+  if (!songId) {
+    const changed = isCollected
+    isCollected = false
+    collectStatusCheckInfo = null
+    return changed
+  }
+
+  if (collectStatusCheckInfo?.songId == songId) return collectStatusCheckInfo.promise
+
+  let refreshPromise: Promise<boolean>
+  refreshPromise = checkListExistMusic(loveList.id, songId)
+    .then(status => {
+      if (playMusicInfo.musicInfo?.id != songId) return false
+      if (isCollected == status) return false
+      isCollected = status
+      return true
+    })
+    .finally(() => {
+      if (collectStatusCheckInfo?.songId == songId && collectStatusCheckInfo.promise === refreshPromise) collectStatusCheckInfo = null
+    })
+  collectStatusCheckInfo = {
+    songId,
+    promise: refreshPromise,
+  }
+  return refreshPromise
+}
+
+const syncTaskbarLyricCollectState = () => {
+  void refreshTaskbarLyricCollectStatus().then(changed => {
+    if (!changed) return
+    sendTaskbarLyricStateSnapshot()
+  })
+}
+
+const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
+  return {
+    enabled: appSetting['taskbarLyric.enable'],
+    isPlaying: isPlay.value,
+    isCollected,
+    songId: musicInfo.id,
+    title: musicInfo.name,
+    artist: musicInfo.singer,
+    lyricLine: lyric.text,
+    albumCoverUrl: musicInfo.pic,
+    offsetX: appSetting['taskbarLyric.offsetX'],
+    showCover: appSetting['taskbarLyric.showCover'],
+    showSongInfo: appSetting['taskbarLyric.showSongInfo'],
+    showCurrentLine: appSetting['taskbarLyric.showCurrentLine'],
+    themeColor: getTaskbarLyricThemeColor(),
+    backgroundColorMode: appSetting['taskbarLyric.style.backgroundColorMode'],
+    backgroundColor: appSetting['taskbarLyric.style.backgroundColor'],
+    backgroundOpacity: appSetting['taskbarLyric.style.backgroundOpacity'],
+    fontColorMode: appSetting['taskbarLyric.style.fontColorMode'],
+    fontColor: appSetting['taskbarLyric.style.fontColor'],
+  }
+}
+
+const syncTaskbarLyricState = () => {
+  sendTaskbarLyricStateSnapshot()
+  syncTaskbarLyricCollectState()
+}
+
 const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
   switch (action) {
     case 'get_info':
@@ -81,32 +162,40 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
       break
   }
 }
+
 export const init = () => {
+  const handleLoveListUpdate = (ids: string[]) => {
+    if (!ids.includes(loveList.id)) return
+    syncTaskbarLyricCollectState()
+  }
+
   lrc = new Lyric({
     shadowContent: false,
     onPlay(line, text) {
       setText(text, Math.max(line, 0))
       setStatusText(text)
       window.app_event.lyricLinePlay(text, line)
+      syncTaskbarLyricState()
       // console.log(line, text)
     },
     onSetLyric(lines, offset) { // listening lyrics seting event
       // console.log(lines) // lines is array of all lyric text
       setLines(markRawList([...lines]))
       setText(lines[0] ?? '', 0)
-      setOffset(offset) // 歌词延迟
-      setTempOffset(0) // 重置临时延迟
+      setOffset(offset) // Apply parsed lyric offset
+      setTempOffset(0) // Reset temporary offset
+      syncTaskbarLyricState()
     },
     onUpdateLyric(lines) {
       setLines(markRawList([...lines]))
       setText(lines[0] ?? '', 0)
+      syncTaskbarLyricState()
     },
     rate: appSetting['player.playbackRate'],
     // offset: 80,
   })
 
   onNewDesktopLyricProcess(({ event }) => {
-    console.log('onNewDesktopLyricProcess')
     const [port] = event.ports
     desktopLyricPort = port
 
@@ -122,6 +211,13 @@ export const init = () => {
       console.log('onmessageerror', event)
     }
   })
+
+  removeThemeChangeListener?.()
+  removeThemeChangeListener = onThemeChange(() => {
+    sendTaskbarLyricStateSnapshot()
+  })
+
+  window.app_event.on('myListUpdate', handleLoveListUpdate)
 }
 
 export const setLyricOffset = (offset: number) => {
@@ -186,6 +282,8 @@ export const setLyric = () => {
       lrc.play(time)
     })
   }
+
+  syncTaskbarLyricState()
 }
 
 export const setDisabledAutoPause = (disabledAutoPause: boolean) => {
@@ -208,11 +306,13 @@ export const play = () => {
   const currentTime = getCurrentTime()
   lrc.play(currentTime)
   sendDesktopLyricInfo({ action: 'set_play', data: currentTime })
+  syncTaskbarLyricState()
 }
 
 export const pause = () => {
   lrc.pause()
   sendDesktopLyricInfo({ action: 'set_pause' })
+  syncTaskbarLyricState()
 }
 
 export const stop = () => {
@@ -220,6 +320,7 @@ export const stop = () => {
   sendDesktopLyricInfo({ action: 'set_stop' })
   // setLines([])
   setText('', 0)
+  syncTaskbarLyricState()
 }
 
 export const sendInfo = () => {
@@ -240,4 +341,5 @@ export const sendInfo = () => {
       played_time: getCurrentTime(),
     },
   })
+  syncTaskbarLyricState()
 }

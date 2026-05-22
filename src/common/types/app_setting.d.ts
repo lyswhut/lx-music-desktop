@@ -690,6 +690,66 @@ declare global {
        * 是否在离开搜索界面时自动清空搜索结果列表
        */
       'odc.isAutoClearSearchList': boolean
+
+      /**
+       * Enable the taskbar lyric bar
+       */
+      'taskbarLyric.enable': boolean
+
+      /**
+       * Anchor the bar to the right or center of the taskbar
+       */
+      'taskbarLyric.position': 'right' | 'center'
+
+      /**
+       * Preferred width of the taskbar lyric bar
+       */
+      'taskbarLyric.width': number
+
+      /**
+       * Horizontal offset from the configured taskbar lyric anchor
+       */
+      'taskbarLyric.offsetX': number
+
+      /**
+       * Show album cover art in the bar
+       */
+      'taskbarLyric.showCover': boolean
+
+      /**
+       * Show song title and artist info
+       */
+      'taskbarLyric.showSongInfo': boolean
+
+      /**
+       * Show the current active lyric line
+       */
+      'taskbarLyric.showCurrentLine': boolean
+
+      /**
+       * Use theme color or a custom background color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundColorMode': 'theme' | 'custom'
+
+      /**
+       * Custom background color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundColor': string
+
+      /**
+       * Background opacity for the taskbar lyric bar
+       */
+      'taskbarLyric.style.backgroundOpacity': number
+
+      /**
+       * Use theme color or a custom font color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.fontColorMode': 'theme' | 'custom'
+
+      /**
+       * Custom font color for the taskbar lyric bar
+       */
+      'taskbarLyric.style.fontColor': string
     }
   }
 

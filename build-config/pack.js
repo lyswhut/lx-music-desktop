@@ -8,6 +8,7 @@ const Spinnies = require('spinnies')
 const mainConfig = './main/webpack.config.prod'
 const rendererConfig = './renderer/webpack.config.prod'
 const rendererLyricConfig = './renderer-lyric/webpack.config.prod'
+const rendererTaskbarLyricConfig = './renderer-taskbar-lyric/webpack.config.prod'
 const rendererScriptConfig = './renderer-scripts/webpack.config.prod'
 
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
@@ -24,6 +25,7 @@ function build() {
   spinners.add('main', { text: 'main building' })
   spinners.add('renderer', { text: 'renderer building' })
   spinners.add('renderer-lyric', { text: 'renderer-lyric building' })
+  spinners.add('renderer-taskbar-lyric', { text: 'renderer-taskbar-lyric building' })
   spinners.add('renderer-scripts', { text: 'renderer-scripts building' })
   let results = ''
 
@@ -66,6 +68,15 @@ function build() {
     }).catch(err => {
       spinners.fail('renderer-lyric', { text: 'renderer-lyric build fail :(' })
       console.log(`\n  ${errorLog}failed to build renderer-lyric process`)
+      console.error(`\n${err}\n`)
+      process.exit(1)
+    }),
+    pack(rendererTaskbarLyricConfig).then(result => {
+      results += result + '\n\n'
+      spinners.succeed('renderer-taskbar-lyric', { text: 'renderer-taskbar-lyric build success!' })
+    }).catch(err => {
+      spinners.fail('renderer-taskbar-lyric', { text: 'renderer-taskbar-lyric build fail :(' })
+      console.log(`\n  ${errorLog}failed to build renderer-taskbar-lyric process`)
       console.error(`\n${err}\n`)
       process.exit(1)
     }),

@@ -56,6 +56,7 @@ import SettingBasic from './components/SettingBasic.vue'
 import SettingPlay from './components/SettingPlay.vue'
 import SettingPlayDetail from './components/SettingPlayDetail.vue'
 import SettingDesktopLyric from './components/SettingDesktopLyric.vue'
+import SettingTaskbarLyric from './components/SettingTaskbarLyric.vue'
 import SettingSearch from './components/SettingSearch.vue'
 import SettingList from './components/SettingList.vue'
 import SettingDownload from './components/SettingDownload.vue'
@@ -76,6 +77,7 @@ export default {
     SettingPlay,
     SettingPlayDetail,
     SettingDesktopLyric,
+    SettingTaskbarLyric,
     SettingSearch,
     SettingList,
     SettingDownload,
@@ -101,6 +103,7 @@ export default {
         { id: 'SettingPlay', title: t('setting__play') },
         { id: 'SettingPlayDetail', title: t('setting__play_detail') },
         { id: 'SettingDesktopLyric', title: t('setting__desktop_lyric') },
+        { id: 'SettingTaskbarLyric', title: t('setting__taskbar_lyric') },
         { id: 'SettingSearch', title: t('setting__search') },
         { id: 'SettingList', title: t('setting__list') },
         { id: 'SettingDownload', title: t('setting__download') },

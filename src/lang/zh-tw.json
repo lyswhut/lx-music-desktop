@@ -750,4 +750,18 @@
   "user_api_import_online__input_loading": "匯入中...",
   "user_api_import_online__input_tip": "請輸入 HTTP 連結",
   "user_api_import_online__title": "從線上匯入自訂來源 API"
+  , "setting__taskbar_lyric": "工作列歌詞",
+  "setting__taskbar_lyric_enable": "啟用工作列歌詞",
+  "setting__taskbar_lyric_experimental": "僅限 Windows 的實驗性功能，會在視覺上貼附工作列，並非真正的系統工作列擴充；目前僅支援主螢幕頂部或底部工作列",
+  "setting__taskbar_lyric_show_cover": "顯示封面",
+  "setting__taskbar_lyric_show_song_info": "顯示歌曲資訊",
+  "setting__taskbar_lyric_show_current_line": "顯示目前歌詞",
+  "setting__taskbar_lyric_position": "工作列歌詞位置",
+  "setting__taskbar_lyric_background": "背景顏色",
+  "setting__taskbar_lyric_font_color": "文字顏色",
+  "setting__taskbar_lyric_color": "顏色",
+  "setting__taskbar_lyric_opacity": "不透明度",
+  "setting__taskbar_lyric_theme_color": "主題",
+  "setting__taskbar_lyric_custom_color": "自訂",
+  "setting__taskbar_lyric_width": "工作列歌詞寬度：{width}px"
 }
