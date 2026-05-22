@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.12.2-sunny.1",
+  "version": "2.12.3-sunny.1",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "scripts": {
