@@ -10,7 +10,7 @@ import { calcTaskbarLyricBounds, calcTaskbarLyricClampedOffsetX } from './utils'
 
 const TASKBAR_LYRIC_HEIGHT = 56
 const TASKBAR_LYRIC_ALWAYS_ON_TOP_LEVEL = 'pop-up-menu'
-const TASKBAR_LYRIC_ZORDER_INTERVAL = 1500
+const TASKBAR_LYRIC_ZORDER_INTERVAL = 500
 const DEFAULT_THEME_COLOR = 'rgb(77, 175, 124)'
 
 let browserWindow: Electron.BrowserWindow | null = null
