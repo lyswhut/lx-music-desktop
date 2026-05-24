@@ -147,6 +147,7 @@ const modules = {
     taskbar_lyric_request_refresh: 'taskbar_lyric_request_refresh',
     taskbar_lyric_drag_move: 'taskbar_lyric_drag_move',
     taskbar_lyric_drag_end: 'taskbar_lyric_drag_end',
+    taskbar_lyric_control: 'taskbar_lyric_control',
 
     player_action_set_buttons: 'player_action_set_buttons',
     // player_action_set_thumbnail_clip: 'player_action_set_thumbnail_clip',

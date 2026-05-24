@@ -2,22 +2,55 @@
   <div
     class="taskbar-lyric-shell"
     :style="shellStyle"
-    :class="{ disabled: !state.enabled, dragging: isDragging }"
+    :class="{ disabled: !state.enabled, dragging: isDragging, hovering: isHovering }"
     @pointerdown="handlePointerDown"
     @dblclick="handleDoubleClick"
     @contextmenu.prevent="handleContextMenu"
+    @pointerenter="handlePointerEnter"
+    @pointerleave="handlePointerLeave"
   >
     <div v-if="state.showCover" class="cover">
       <img v-if="state.albumCoverUrl" :src="state.albumCoverUrl" alt="album cover">
       <div v-else class="cover-fallback">LX</div>
     </div>
     <div class="content">
-      <div v-if="state.showSongInfo" class="song-info">
-        <span class="title">{{ state.title }}</span>
-        <span v-if="state.artist" class="separator">-</span>
-        <span v-if="state.artist" class="artist">{{ state.artist }}</span>
-      </div>
-      <p v-if="state.showCurrentLine" class="lyric-line">{{ state.lyricLine || state.artist }}</p>
+      <template v-if="showActionButtons">
+        <div class="action-buttons" @dblclick.stop>
+          <button type="button" class="action-button" title="上一首" aria-label="上一首" @pointerdown.stop @click.stop="handleActionClick('prev')">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M5.2 4.3a1 1 0 0 1 1 1v9.4a1 1 0 1 1-2 0V5.3a1 1 0 0 1 1-1Zm9.28.58a1 1 0 0 1-.1 1.62L9.6 10l4.78 3.5a1 1 0 0 1-1.18 1.62l-5.86-4.28a1 1 0 0 1 0-1.62l5.86-4.28a1 1 0 0 1 1.28.08Z" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="action-button action-button-primary"
+            :title="state.isPlaying ? '暂停' : '播放'"
+            :aria-label="state.isPlaying ? '暂停' : '播放'"
+            @pointerdown.stop
+            @click.stop="handleActionClick(state.isPlaying ? 'pause' : 'play')"
+          >
+            <svg v-if="state.isPlaying" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M6 4.5A1.5 1.5 0 0 1 7.5 6v8A1.5 1.5 0 0 1 6 15.5 1.5 1.5 0 0 1 4.5 14V6A1.5 1.5 0 0 1 6 4.5Zm8 0A1.5 1.5 0 0 1 15.5 6v8A1.5 1.5 0 0 1 14 15.5 1.5 1.5 0 0 1 12.5 14V6A1.5 1.5 0 0 1 14 4.5Z" fill="currentColor" />
+            </svg>
+            <svg v-else viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M6.24 4.86c0-.93 1.02-1.5 1.81-1.01l7.12 4.43a2.02 2.02 0 0 1 0 3.44l-7.12 4.43c-.8.49-1.8-.08-1.8-1.01V4.86Z" fill="currentColor" />
+            </svg>
+          </button>
+          <button type="button" class="action-button" title="下一首" aria-label="下一首" @pointerdown.stop @click.stop="handleActionClick('next')">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M14.8 4.3a1 1 0 0 1 1 1v9.4a1 1 0 1 1-2 0V5.3a1 1 0 0 1 1-1Zm-9.28.58a1 1 0 0 1 1.28-.08l5.86 4.28a1 1 0 0 1 0 1.62L6.8 15.12a1 1 0 1 1-1.18-1.62L10.4 10 5.62 6.5a1 1 0 0 1-.1-1.62Z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </template>
+      <template v-else>
+        <div v-if="state.showSongInfo" class="song-info">
+          <span class="title">{{ state.title }}</span>
+          <span v-if="state.artist" class="separator">-</span>
+          <span v-if="state.artist" class="artist">{{ state.artist }}</span>
+        </div>
+        <p v-if="state.showCurrentLine" class="lyric-line">{{ state.lyricLine || state.artist }}</p>
+      </template>
     </div>
   </div>
 </template>
@@ -25,7 +58,7 @@
 <script setup lang="ts">
 import { state } from './store/state'
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { requestTaskbarLyricMenu, requestTaskbarLyricShowMainInterface, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
+import { requestTaskbarLyricMenu, requestTaskbarLyricShowMainInterface, sendTaskbarLyricControl, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
 
 interface RGB {
   r: number
@@ -35,9 +68,14 @@ interface RGB {
 
 const lyricState = state as LX.TaskbarLyric.State
 const isDragging = ref(false)
+const isHovering = ref(false)
 let pointerId: number | null = null
 let startScreenX = 0
 let startOffsetX = 0
+
+const showActionButtons = computed(() => {
+  return isHovering.value && !isDragging.value
+})
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
@@ -161,6 +199,14 @@ const stopDragging = (event?: PointerEvent) => {
   window.removeEventListener('pointercancel', stopDragging)
 }
 
+const handlePointerEnter = () => {
+  isHovering.value = true
+}
+
+const handlePointerLeave = () => {
+  isHovering.value = false
+}
+
 const handlePointerDown = (event: PointerEvent) => {
   if (event.button !== 0) return
   isDragging.value = true
@@ -180,6 +226,11 @@ const handleContextMenu = () => {
 const handleDoubleClick = () => {
   stopDragging()
   requestTaskbarLyricShowMainInterface()
+}
+
+const handleActionClick = (action: 'prev' | 'next' | 'play' | 'pause') => {
+  stopDragging()
+  sendTaskbarLyricControl(action)
 }
 
 onBeforeUnmount(() => {
@@ -265,6 +316,48 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 2px;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: var(--taskbar-lyric-text);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--taskbar-lyric-text) 12%, transparent);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+  }
+}
+
+.action-button-primary {
+  background: color-mix(in srgb, var(--taskbar-lyric-text) 16%, transparent);
 }
 
 .song-info {
