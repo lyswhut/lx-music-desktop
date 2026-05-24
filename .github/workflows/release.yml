@@ -12,41 +12,9 @@ env:
   IS_CI: 'true'
 
 jobs:
-  # CheckCode:
-  #   name: Lint Code
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out git repository
-  #       uses: actions/checkout@v6
-
-  #     - name: Install Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20
-
-  #     - name: Cache file
-  #       uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           node_modules
-  #           $HOME/.cache/electron
-  #           $HOME/.cache/electron-builder
-  #           $HOME/.npm/_prebuilds
-  #         key: ${{ runner.os }}-build-caches-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-build-
-
-  #     - name: Install Dependencies
-  #       run: |
-  #         npm ci
-
-  #     - name: Lint src code
-  #       run: npm run lint
-
   Windows:
     name: Windows
     runs-on: windows-latest
-    # needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v6
@@ -68,26 +36,52 @@ jobs:
           git status --porcelain
           npm run build
 
-      - name: Release package
-        run: |
-          npm run publish:win:7z:x64
-          npm run publish:win:7z:arm64
-          npm run publish:win:setup:arm64
-          npm run publish:win:setup:x64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+      - name: Build Package Setup x64
+        run: npm run pack:win:setup:x64
+
+      - name: Upload Artifact Setup x64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-x64-Setup
+          path: build/*-x64-Setup.exe
+
+      - name: Build Package 7z x64
+        run: npm run pack:win:7z:x64
+
+      - name: Upload Artifact 7z x64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-win_x64-green
+          path: build/*win_x64-green.7z
+
+      - name: Build Package Setup arm64
+        run: npm run pack:win:setup:arm64
+
+      - name: Upload Artifact Setup arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-arm64-Setup
+          path: build/*-arm64-Setup.exe
+
+      - name: Build Package 7z arm64
+        run: npm run pack:win:7z:arm64
+
+      - name: Upload Artifact 7z arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-win_arm64-green
+          path: build/*win_arm64-green.7z
 
       - name: Generate file MD5
         run: |
           cd build
           Get-FileHash *.exe,*.7z -Algorithm MD5 | Format-List
 
-
   Windows_7:
     name: Windows_7
     runs-on: windows-latest
-    # needs: CheckCode
+    env:
+      BUILD_WIN7: true
     steps:
       - name: Check out git repository
         uses: actions/checkout@v6
@@ -118,14 +112,32 @@ jobs:
           npm install electron@22
           pip.exe install setuptools
 
-      - name: Release win7 package
-        run: |
-          npm run publish:win7:setup:x64
-          npm run publish:win7:7z:x64
-          npm run publish:win7:7z:x86
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+      - name: Build Package win7 Setup x64
+        run: npm run pack:win7:setup:x64
+
+      - name: Upload Artifact win7 Setup x64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-win7_x64-Setup
+          path: build/*win7_x64-Setup.exe
+
+      - name: Build Package win7 7z x64
+        run: npm run pack:win7:7z:x64
+
+      - name: Upload Artifact win7 7z x64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-win7_x64-green
+          path: build/*win7_x64-green.7z
+
+      - name: Build Package win7 7z x86
+        run: npm run pack:win7:7z:x86
+
+      - name: Upload Artifact win7 7z x86
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-win7_x86-green
+          path: build/*win7_x86-green.7z
 
       - name: Generate file MD5
         run: |
@@ -135,7 +147,6 @@ jobs:
   Mac:
     name: Mac
     runs-on: macos-latest
-    # needs: CheckCode
     steps:
       - name: Check out git repository
         uses: actions/checkout@v6
@@ -149,6 +160,7 @@ jobs:
 
       - name: Show Env
         run: echo "${{ env.NPM_CACHE }}"
+
       - name: Setup Node Env
         env:
           NPM_CACHE: ${{ env.NPM_CACHE }}
@@ -159,13 +171,24 @@ jobs:
           git status --porcelain
           npm run build
 
-      - name: Release package
+      - name: Build Package dmg
         run: |
-          npm run publish:mac:dmg
-          npm run publish:mac:dmg:arm64
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+          npm run pack:mac:dmg
+          npm run pack:mac:dmg:arm64
+
+      - name: Upload Artifact dmg
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-mac-dmg
+          path: |
+            build/*.dmg
+            !build/*-arm64.dmg
+
+      - name: Upload Artifact dmg arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-mac-dmg-arm64
+          path: build/*-arm64.dmg
 
       - name: Generate file MD5
         run: |
@@ -175,7 +198,6 @@ jobs:
   Linux:
     name: Linux
     runs-on: ubuntu-latest
-    # needs: CheckCode
     steps:
       - name: Install package
         run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
@@ -189,6 +211,7 @@ jobs:
 
       - name: Show Env
         run: echo "${{ env.NPM_CACHE }}"
+
       - name: Setup Node Env
         env:
           NPM_CACHE: ${{ env.NPM_CACHE }}
@@ -199,19 +222,130 @@ jobs:
           git status --porcelain
           npm run build
 
-      - name: Release package
-        run: |
-          npm run publish:linux:deb:amd64
-          npm run publish:linux:deb:arm64
-          npm run publish:linux:deb:armv7l
-          npm run publish:linux:appImage
-          npm run publish:linux:rpm
-          npm run publish:linux:pacman
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BT_TOKEN: ${{ secrets.BT_TOKEN }}
+      - name: Build Package deb amd64
+        run: npm run pack:linux:deb:amd64
+
+      - name: Upload Artifact deb amd64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-deb-amd64
+          path: build/*_amd64.deb
+
+      - name: Build Package deb arm64
+        run: npm run pack:linux:deb:arm64
+
+      - name: Upload Artifact deb arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-deb-arm64
+          path: build/*_arm64.deb
+
+      - name: Build Package deb armv7l
+        run: npm run pack:linux:deb:armv7l
+
+      - name: Upload Artifact deb armv7l
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-deb-armv7l
+          path: build/*_armv7l.deb
+
+      - name: Build Package x64 appImage
+        run: npm run pack:linux:appImage
+
+      - name: Upload Artifact x64 appImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-x64-appImage
+          path: build/*_x64.AppImage
+
+      - name: Build Package x64 rpm
+        run: npm run pack:linux:rpm
+
+      - name: Upload Artifact x64 rpm
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-x64-rpm
+          path: build/*.x64.rpm
+
+      - name: Build Package x64 pacman
+        run: npm run pack:linux:pacman
+
+      - name: Upload Artifact x64 pacman
+        uses: actions/upload-artifact@v4
+        with:
+          name: lx-music-desktop-x64-pacman
+          path: build/*_x64.pacman
 
       - name: Generate file MD5
         run: |
           cd build
           md5sum *.deb *.rpm *.pacman *.AppImage
+
+  Release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - Windows
+      - Windows_7
+      - Mac
+      - Linux
+    steps:
+      - name: Check out git repository
+        uses: actions/checkout@v6
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: Read version from package.json
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release-files
+          find release-artifacts -type f -exec cp {} release-files/ \;
+          ls -la release-files
+
+      - name: Delete duplicated draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --json tagName,isDraft,name | \
+          jq -r '.[] | select(.isDraft == true and .name == "${{ steps.version.outputs.version }}") | .tagName' | \
+          while read -r TAG_NAME; do
+            if [ -n "$TAG_NAME" ]; then
+              gh release delete "$TAG_NAME" --cleanup-tag --yes || true
+            fi
+          done
+
+      - name: Create or update tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Release already exists for ${{ steps.version.outputs.tag }}"
+          else
+            if git rev-parse "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+              echo "Tag ${{ steps.version.outputs.tag }} already exists"
+            else
+              git tag "${{ steps.version.outputs.tag }}"
+              git push origin "${{ steps.version.outputs.tag }}"
+            fi
+          fi
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            gh release upload "${{ steps.version.outputs.tag }}" release-files/* --clobber
+          else
+            gh release create "${{ steps.version.outputs.tag }}" release-files/* \
+              --title "${{ steps.version.outputs.version }}" \
+              --notes ""
+          fi
