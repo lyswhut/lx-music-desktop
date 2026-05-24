@@ -265,7 +265,7 @@ export const showTaskbarLyricMenu = () => {
   isMenuPopupVisible = true
 
   browserWindow.setFocusable(true)
-  browserWindow.focus()
+  browserWindow.setSkipTaskbar(true)
   refreshWindowZOrder()
 
   const menu = Menu.buildFromTemplate(createTaskbarLyricMenuTemplate(currentState))
@@ -276,6 +276,7 @@ export const showTaskbarLyricMenu = () => {
         isMenuPopupVisible = false
         return
       }
+      browserWindow.setSkipTaskbar(true)
       browserWindow.blur()
       browserWindow.setFocusable(false)
       browserWindow.showInactive()
@@ -297,6 +298,22 @@ export const refreshBounds = () => {
 
 export const updateWindowState = (state?: TaskbarLyricState) => {
   currentState = state ?? currentState ?? getDefaultState()
+  currentState.offsetX = dragOffsetX ?? global.lx.appSetting['taskbarLyric.offsetX']
+  sendStateToWindow()
+}
+
+export const updatePlayerStatus = (status: Partial<LX.Player.Status>) => {
+  const nextState = currentState ?? getDefaultState()
+
+  if (status.status != null) {
+    nextState.isPlaying = status.status === 'playing'
+  }
+  if (status.collect != null) nextState.isCollected = status.collect
+  if (status.name != null) nextState.title = status.name || 'LX Music'
+  if (status.singer != null) nextState.artist = status.singer
+  if (status.lyricLineText != null) nextState.lyricLine = status.lyricLineText
+
+  currentState = nextState
   currentState.offsetX = dragOffsetX ?? global.lx.appSetting['taskbarLyric.offsetX']
   sendStateToWindow()
 }

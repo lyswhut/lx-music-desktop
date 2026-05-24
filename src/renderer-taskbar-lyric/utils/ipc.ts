@@ -37,3 +37,7 @@ export const sendTaskbarLyricDragMove = (offsetX: number) => {
 export const sendTaskbarLyricDragEnd = () => {
   ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_drag_end)
 }
+
+export const sendTaskbarLyricControl = (action: 'prev' | 'next' | 'play' | 'pause') => {
+  ipcRenderer.send(WIN_MAIN_RENDERER_EVENT_NAME.taskbar_lyric_control, action)
+}

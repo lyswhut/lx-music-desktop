@@ -1,6 +1,6 @@
 import { screen, powerMonitor } from 'electron'
 import { isWin } from '@common/utils'
-import { closeWindow, createWindow, refreshBounds, refreshWindowStateFromConfig, isExistWindow } from './main'
+import { closeWindow, createWindow, refreshBounds, refreshWindowStateFromConfig, isExistWindow, updatePlayerStatus } from './main'
 
 let isRegistered = false
 
@@ -47,6 +47,11 @@ export default () => {
 
   global.lx.event_app.on('updated_config', (keys) => {
     handleConfigChange(keys)
+  })
+
+  global.lx.event_app.on('player_status', (status) => {
+    if (!global.lx.appSetting['taskbarLyric.enable']) return
+    updatePlayerStatus(status)
   })
 
   screen.on('display-added', refreshBoundsIfEnabled)
