@@ -11,36 +11,44 @@ export const useTaskbarLyricWindowDrag = () => {
   const isDragging = ref(false)
   const isHovering = ref(false)
 
-  let pointerId: number | null = null
-  let startScreenX = 0
+  let startClientX = 0
   let startOffsetX = 0
 
-  const handlePointerMove = (event: PointerEvent) => {
-    if (!isDragging.value || event.pointerId !== pointerId) return
-    const offsetX = startOffsetX + (event.screenX - startScreenX)
+  const detachDragListeners = () => {
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', stopDragging)
+    window.removeEventListener('blur', stopDragging)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }
+
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!isDragging.value) return
+    const offsetX = startOffsetX + (event.clientX - startClientX)
     sendTaskbarLyricDragMove(offsetX)
   }
 
-  const stopDragging = (event?: PointerEvent) => {
+  const stopDragging = () => {
     if (!isDragging.value) return
-    if (event && pointerId != null && event.pointerId !== pointerId) return
     isDragging.value = false
-    pointerId = null
     sendTaskbarLyricDragEnd()
-    window.removeEventListener('pointermove', handlePointerMove)
-    window.removeEventListener('pointerup', stopDragging)
-    window.removeEventListener('pointercancel', stopDragging)
+    detachDragListeners()
+  }
+
+  const handleVisibilityChange = () => {
+    if (document.hidden) stopDragging()
   }
 
   const handlePointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return
+    stopDragging()
+    event.preventDefault()
     isDragging.value = true
-    pointerId = event.pointerId
-    startScreenX = event.screenX
+    startClientX = event.clientX
     startOffsetX = state.offsetX
-    window.addEventListener('pointermove', handlePointerMove)
-    window.addEventListener('pointerup', stopDragging)
-    window.addEventListener('pointercancel', stopDragging)
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', stopDragging)
+    window.addEventListener('blur', stopDragging)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
   }
 
   const handlePointerEnter = () => {
