@@ -16,8 +16,12 @@ interface TaskbarLyricViewState {
   backgroundColorMode: 'theme' | 'custom'
   backgroundColor: string
   backgroundOpacity: number
-  fontColorMode: 'theme' | 'custom'
-  fontColor: string
+  songInfoFontColorMode: 'theme' | 'custom'
+  songInfoFontColor: string
+  lyricFontColorMode: 'theme' | 'custom'
+  lyricFontColor: string
+  songInfoFontSize: number
+  lyricFontSize: number
 }
 
 export const state = shallowReactive<TaskbarLyricViewState>({
@@ -36,8 +40,12 @@ export const state = shallowReactive<TaskbarLyricViewState>({
   backgroundColorMode: 'theme',
   backgroundColor: 'rgba(15, 23, 42, 1)',
   backgroundOpacity: 72,
-  fontColorMode: 'theme',
-  fontColor: 'rgba(248, 250, 252, 1)',
+  songInfoFontColorMode: 'theme',
+  songInfoFontColor: 'rgba(226, 232, 240, 1)',
+  lyricFontColorMode: 'theme',
+  lyricFontColor: 'rgba(248, 250, 252, 1)',
+  songInfoFontSize: 11,
+  lyricFontSize: 12,
 })
 
 export const patchState = (payload: Partial<LX.TaskbarLyric.State>) => {

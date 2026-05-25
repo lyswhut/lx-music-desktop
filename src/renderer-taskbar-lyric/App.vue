@@ -49,7 +49,19 @@
           <span v-if="state.artist" class="separator">-</span>
           <span v-if="state.artist" class="artist">{{ state.artist }}</span>
         </div>
-        <p v-if="state.showCurrentLine" class="lyric-line">{{ state.lyricLine || state.artist }}</p>
+        <div v-if="state.showCurrentLine" ref="lyricLineRef" class="lyric-line">
+          <div
+            v-if="shouldScrollLyric"
+            class="lyric-line-track"
+            :style="lyricLineTrackStyle"
+          >
+            <span class="lyric-line-text">{{ displayLyricText }}</span>
+            <span class="lyric-line-gap" aria-hidden="true"></span>
+            <span class="lyric-line-text" aria-hidden="true">{{ displayLyricText }}</span>
+          </div>
+          <span v-else class="lyric-line-text">{{ displayLyricText }}</span>
+          <span ref="lyricMeasureRef" class="lyric-line-measure">{{ displayLyricText }}</span>
+        </div>
       </template>
     </div>
   </div>
@@ -57,7 +69,7 @@
 
 <script setup lang="ts">
 import { state } from './store/state'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { requestTaskbarLyricMenu, requestTaskbarLyricShowMainInterface, sendTaskbarLyricControl, sendTaskbarLyricDragEnd, sendTaskbarLyricDragMove } from './utils/ipc'
 
 interface RGB {
@@ -69,12 +81,27 @@ interface RGB {
 const lyricState = state as LX.TaskbarLyric.State
 const isDragging = ref(false)
 const isHovering = ref(false)
+const lyricLineRef = ref<HTMLElement | null>(null)
+const lyricMeasureRef = ref<HTMLElement | null>(null)
+const shouldScrollLyric = ref(false)
+const lyricScrollDistance = ref(0)
 let pointerId: number | null = null
 let startScreenX = 0
 let startOffsetX = 0
+let lyricResizeObserver: ResizeObserver | null = null
 
 const showActionButtons = computed(() => {
   return isHovering.value && !isDragging.value
+})
+const displayLyricText = computed(() => lyricState.lyricLine || lyricState.artist)
+const lyricLineTrackStyle = computed(() => {
+  const distance = Math.max(lyricScrollDistance.value, 0)
+  const gap = 24
+  const duration = Math.max(8, distance / 28)
+  return {
+    '--taskbar-lyric-line-scroll-distance': `${distance + gap}px`,
+    '--taskbar-lyric-line-scroll-duration': `${duration.toFixed(2)}s`,
+  }
 })
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
@@ -149,7 +176,8 @@ const shellStyle = computed(() => {
   const backgroundOpacity = clamp((lyricState.backgroundOpacity ?? 72) / 100, 0, 1)
   const themeColor = parseRgb(lyricState.themeColor) ?? { r: 77, g: 175, b: 124 }
   const isLightTheme = getLuminance(themeColor) > 0.58
-  const isCustomFontMode = lyricState.fontColorMode === 'custom'
+  const isCustomSongInfoFontMode = lyricState.songInfoFontColorMode === 'custom'
+  const isCustomLyricFontMode = lyricState.lyricFontColorMode === 'custom'
 
   const backgroundBase = lyricState.backgroundColorMode === 'custom'
     ? parseRgb(lyricState.backgroundColor) ?? themeColor
@@ -163,24 +191,36 @@ const shellStyle = computed(() => {
       ? mix(themeColor, { r: 255, g: 255, b: 255 }, 0.72)
       : mix(themeColor, { r: 30, g: 41, b: 59 }, 0.6)
 
-  const primaryText = isCustomFontMode
-    ? parseRgb(lyricState.fontColor) ?? getReadableTextColor(backgroundBase)
-    : getReadableTextColor(backgroundBase)
+  const defaultLyricText = getReadableTextColor(backgroundBase)
+  const defaultSongInfoText = mix(defaultLyricText, backgroundBase, 0.34)
+  const lyricText = isCustomLyricFontMode
+    ? parseRgb(lyricState.lyricFontColor) ?? defaultLyricText
+    : defaultLyricText
+  const songInfoText = isCustomSongInfoFontMode
+    ? parseRgb(lyricState.songInfoFontColor) ?? defaultSongInfoText
+    : defaultSongInfoText
 
-  const secondaryText = isCustomFontMode
-    ? primaryText
-    : mix(primaryText, backgroundBase, 0.34)
-  const borderColor = mix(primaryText, backgroundBase, 0.76)
+  const borderColor = mix(lyricText, backgroundBase, 0.76)
   const borderOpacity = backgroundOpacity * 0.26
 
   return {
     '--taskbar-lyric-bg': withAlpha(backgroundBase, backgroundOpacity),
     '--taskbar-lyric-bg-strong': withAlpha(backgroundStrong, backgroundOpacity),
     '--taskbar-lyric-border': withAlpha(borderColor, borderOpacity),
-    '--taskbar-lyric-text': toRgbString(primaryText),
-    '--taskbar-lyric-text-secondary': toRgbString(secondaryText),
+    '--taskbar-lyric-text': toRgbString(lyricText),
+    '--taskbar-lyric-text-secondary': toRgbString(songInfoText),
+    '--taskbar-lyric-song-info-font-size': `${clamp(lyricState.songInfoFontSize ?? 11, 9, 18)}px`,
+    '--taskbar-lyric-line-font-size': `${clamp(lyricState.lyricFontSize ?? 12, 10, 22)}px`,
   }
 })
+
+const updateLyricScrollState = () => {
+  const containerWidth = lyricLineRef.value?.clientWidth ?? 0
+  const contentWidth = lyricMeasureRef.value?.scrollWidth ?? 0
+  const overflowWidth = Math.max(contentWidth - containerWidth, 0)
+  shouldScrollLyric.value = overflowWidth > 6
+  lyricScrollDistance.value = overflowWidth
+}
 
 const handlePointerMove = (event: PointerEvent) => {
   if (!isDragging.value || event.pointerId !== pointerId) return
@@ -234,7 +274,38 @@ const handleActionClick = (action: 'prev' | 'next' | 'play' | 'pause') => {
 }
 
 onBeforeUnmount(() => {
+  lyricResizeObserver?.disconnect()
+  lyricResizeObserver = null
   stopDragging()
+})
+
+onMounted(() => {
+  lyricResizeObserver = new ResizeObserver(() => {
+    updateLyricScrollState()
+  })
+  if (lyricLineRef.value) lyricResizeObserver.observe(lyricLineRef.value)
+  if (lyricMeasureRef.value) lyricResizeObserver.observe(lyricMeasureRef.value)
+  void nextTick(() => {
+    updateLyricScrollState()
+  })
+})
+
+watch(displayLyricText, () => {
+  void nextTick(() => {
+    updateLyricScrollState()
+  })
+})
+
+watch(() => lyricState.lyricFontSize, () => {
+  void nextTick(() => {
+    updateLyricScrollState()
+  })
+})
+
+watch(showActionButtons, () => {
+  void nextTick(() => {
+    updateLyricScrollState()
+  })
 })
 </script>
 
@@ -365,8 +436,9 @@ body {
   align-items: baseline;
   gap: 5px;
   min-width: 0;
-  font-size: 12px;
+  font-size: var(--taskbar-lyric-song-info-font-size, 11px);
   line-height: 1.1;
+  opacity: 0.82;
 }
 
 .title,
@@ -378,8 +450,8 @@ body {
 }
 
 .title {
-  color: var(--taskbar-lyric-text);
-  font-weight: 700;
+  color: var(--taskbar-lyric-text-secondary);
+  font-weight: 600;
 }
 
 .separator,
@@ -388,9 +460,47 @@ body {
 }
 
 .lyric-line {
+  position: relative;
   margin: 0;
-  color: var(--taskbar-lyric-text-secondary);
-  font-size: 11px;
+  color: var(--taskbar-lyric-text);
+  font-size: var(--taskbar-lyric-line-font-size, 12px);
   line-height: 1.1;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.lyric-line-track {
+  display: inline-flex;
+  align-items: center;
+  min-width: max-content;
+  animation: taskbar-lyric-marquee var(--taskbar-lyric-line-scroll-duration, 10s) linear infinite;
+  will-change: transform;
+}
+
+.lyric-line-text {
+  flex: none;
+}
+
+.lyric-line-gap {
+  width: 24px;
+  flex: none;
+}
+
+.lyric-line-measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@keyframes taskbar-lyric-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-1 * var(--taskbar-lyric-line-scroll-distance, 0px)));
+  }
 }
 </style>

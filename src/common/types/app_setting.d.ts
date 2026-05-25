@@ -744,12 +744,32 @@ declare global {
       /**
        * Use theme color or a custom font color for the taskbar lyric bar
        */
-      'taskbarLyric.style.fontColorMode': 'theme' | 'custom'
+      'taskbarLyric.style.songInfoFontColorMode': 'theme' | 'custom'
 
       /**
        * Custom font color for the taskbar lyric bar
        */
-      'taskbarLyric.style.fontColor': string
+      'taskbarLyric.style.songInfoFontColor': string
+
+      /**
+       * 任务栏歌词歌词文字颜色模式
+       */
+      'taskbarLyric.style.lyricFontColorMode': 'theme' | 'custom'
+
+      /**
+       * 任务栏歌词歌词文字颜色
+       */
+      'taskbarLyric.style.lyricFontColor': string
+
+      /**
+       * Taskbar lyric song info font size
+       */
+      'taskbarLyric.style.songInfoFontSize': number
+
+      /**
+       * Taskbar lyric lyric line font size
+       */
+      'taskbarLyric.style.lyricFontSize': number
     }
   }
 

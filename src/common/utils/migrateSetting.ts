@@ -140,6 +140,19 @@ export default (setting: any): Partial<LX.AppSetting> => {
     setting.version = '2.1.0'
   }
 
+  if (setting['taskbarLyric.style.songInfoFontColorMode'] == null) {
+    setting['taskbarLyric.style.songInfoFontColorMode'] = setting['taskbarLyric.style.fontColorMode']
+  }
+  if (setting['taskbarLyric.style.songInfoFontColor'] == null) {
+    setting['taskbarLyric.style.songInfoFontColor'] = setting['taskbarLyric.style.fontColor']
+  }
+  if (setting['taskbarLyric.style.lyricFontColorMode'] == null) {
+    setting['taskbarLyric.style.lyricFontColorMode'] = setting['taskbarLyric.style.fontColorMode']
+  }
+  if (setting['taskbarLyric.style.lyricFontColor'] == null) {
+    setting['taskbarLyric.style.lyricFontColor'] = setting['taskbarLyric.style.fontColor']
+  }
+
 
   return setting
 }

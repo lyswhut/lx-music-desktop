@@ -44,8 +44,12 @@ const getStyleState = () => {
     backgroundColorMode: global.lx.appSetting['taskbarLyric.style.backgroundColorMode'],
     backgroundColor: global.lx.appSetting['taskbarLyric.style.backgroundColor'],
     backgroundOpacity: global.lx.appSetting['taskbarLyric.style.backgroundOpacity'],
-    fontColorMode: global.lx.appSetting['taskbarLyric.style.fontColorMode'],
-    fontColor: global.lx.appSetting['taskbarLyric.style.fontColor'],
+    songInfoFontColorMode: global.lx.appSetting['taskbarLyric.style.songInfoFontColorMode'],
+    songInfoFontColor: global.lx.appSetting['taskbarLyric.style.songInfoFontColor'],
+    lyricFontColorMode: global.lx.appSetting['taskbarLyric.style.lyricFontColorMode'],
+    lyricFontColor: global.lx.appSetting['taskbarLyric.style.lyricFontColor'],
+    songInfoFontSize: global.lx.appSetting['taskbarLyric.style.songInfoFontSize'],
+    lyricFontSize: global.lx.appSetting['taskbarLyric.style.lyricFontSize'],
   }
 }
 

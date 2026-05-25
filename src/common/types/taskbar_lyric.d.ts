@@ -17,8 +17,12 @@ declare namespace LX {
       backgroundColorMode: LX.AppSetting['taskbarLyric.style.backgroundColorMode']
       backgroundColor: LX.AppSetting['taskbarLyric.style.backgroundColor']
       backgroundOpacity: LX.AppSetting['taskbarLyric.style.backgroundOpacity']
-      fontColorMode: LX.AppSetting['taskbarLyric.style.fontColorMode']
-      fontColor: LX.AppSetting['taskbarLyric.style.fontColor']
+      songInfoFontColorMode: LX.AppSetting['taskbarLyric.style.songInfoFontColorMode']
+      songInfoFontColor: LX.AppSetting['taskbarLyric.style.songInfoFontColor']
+      lyricFontColorMode: LX.AppSetting['taskbarLyric.style.lyricFontColorMode']
+      lyricFontColor: LX.AppSetting['taskbarLyric.style.lyricFontColor']
+      songInfoFontSize: LX.AppSetting['taskbarLyric.style.songInfoFontSize']
+      lyricFontSize: LX.AppSetting['taskbarLyric.style.lyricFontSize']
     }
   }
 }

@@ -85,34 +85,89 @@ dd
   h3#taskbar_lyric_font_color {{ $t('setting__taskbar_lyric_font_color') }}
   div(:class="$style.sectionFields")
     div(:class="$style.fieldRow")
-      span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_color') }}
+      span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_song_info_color') }}
       div(:class="$style.fieldControl")
         div(:class="$style.optionLine")
           base-checkbox(
-            id="setting_taskbar_lyric_font_theme"
-            name="setting_taskbar_lyric_font_mode"
+            id="setting_taskbar_lyric_song_info_font_theme"
+            name="setting_taskbar_lyric_song_info_font_mode"
             need
-            :model-value="appSetting['taskbarLyric.style.fontColorMode']"
+            :model-value="appSetting['taskbarLyric.style.songInfoFontColorMode']"
             value="theme"
             :label="$t('setting__taskbar_lyric_theme_color')"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.fontColorMode': $event })"
+            @update:model-value="updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': $event })"
           )
           base-checkbox(
-            id="setting_taskbar_lyric_font_custom"
-            name="setting_taskbar_lyric_font_mode"
+            id="setting_taskbar_lyric_song_info_font_custom"
+            name="setting_taskbar_lyric_song_info_font_mode"
             need
-            :model-value="appSetting['taskbarLyric.style.fontColorMode']"
+            :model-value="appSetting['taskbarLyric.style.songInfoFontColorMode']"
             value="custom"
             :label="$t('setting__taskbar_lyric_custom_color')"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.fontColorMode': $event })"
+            @update:model-value="updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': $event })"
           )
         div(:class="$style.colorLine")
           div(
-            ref="fontColorRef"
-            :class="[$style.colorSwatch, isFontColorDisabled ? $style.colorSwatchDisabled : '']"
+            ref="songInfoFontColorRef"
+            :class="[$style.colorSwatch, isSongInfoFontColorDisabled ? $style.colorSwatchDisabled : '']"
           )
+    div(:class="$style.fieldRow")
+      span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_line_color') }}
+      div(:class="$style.fieldControl")
+        div(:class="$style.optionLine")
+          base-checkbox(
+            id="setting_taskbar_lyric_lyric_font_theme"
+            name="setting_taskbar_lyric_lyric_font_mode"
+            need
+            :model-value="appSetting['taskbarLyric.style.lyricFontColorMode']"
+            value="theme"
+            :label="$t('setting__taskbar_lyric_theme_color')"
+            :disabled="!isWin"
+            @update:model-value="updateSetting({ 'taskbarLyric.style.lyricFontColorMode': $event })"
+          )
+          base-checkbox(
+            id="setting_taskbar_lyric_lyric_font_custom"
+            name="setting_taskbar_lyric_lyric_font_mode"
+            need
+            :model-value="appSetting['taskbarLyric.style.lyricFontColorMode']"
+            value="custom"
+            :label="$t('setting__taskbar_lyric_custom_color')"
+            :disabled="!isWin"
+            @update:model-value="updateSetting({ 'taskbarLyric.style.lyricFontColorMode': $event })"
+          )
+        div(:class="$style.colorLine")
+          div(
+            ref="lyricFontColorRef"
+            :class="[$style.colorSwatch, isLyricFontColorDisabled ? $style.colorSwatchDisabled : '']"
+          )
+    div(:class="$style.fieldRow")
+      span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_song_info_size') }}
+      div(:class="[$style.fieldControl, $style.sliderLine]")
+        base-slider-bar(
+          :class-name="$style.slider"
+          :value="appSetting['taskbarLyric.style.songInfoFontSize']"
+          :min="9"
+          :max="18"
+          :step="1"
+          :disabled="!isWin"
+          @change="updateSetting({ 'taskbarLyric.style.songInfoFontSize': $event })"
+        )
+        span(:class="$style.sliderValue") {{ appSetting['taskbarLyric.style.songInfoFontSize'] }}px
+    div(:class="$style.fieldRow")
+      span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_line_size') }}
+      div(:class="[$style.fieldControl, $style.sliderLine]")
+        base-slider-bar(
+          :class-name="$style.slider"
+          :value="appSetting['taskbarLyric.style.lyricFontSize']"
+          :min="10"
+          :max="22"
+          :step="1"
+          :disabled="!isWin"
+          @change="updateSetting({ 'taskbarLyric.style.lyricFontSize': $event })"
+        )
+        span(:class="$style.sliderValue") {{ appSetting['taskbarLyric.style.lyricFontSize'] }}px
 
 dd
   h3#taskbar_lyric_width {{ $t('setting__taskbar_lyric_width', { width: appSetting['taskbarLyric.width'] }) }}
@@ -183,13 +238,17 @@ export default {
   name: 'SettingTaskbarLyric',
   setup() {
     const backgroundColorRef = ref(null)
-    const fontColorRef = ref(null)
+    const songInfoFontColorRef = ref(null)
+    const lyricFontColorRef = ref(null)
     const backgroundColorSnapshot = ref(appSetting['taskbarLyric.style.backgroundColor'])
-    const fontColorSnapshot = ref(appSetting['taskbarLyric.style.fontColor'])
+    const songInfoFontColorSnapshot = ref(appSetting['taskbarLyric.style.songInfoFontColor'])
+    const lyricFontColorSnapshot = ref(appSetting['taskbarLyric.style.lyricFontColor'])
     let backgroundColorTools = null
-    let fontColorTools = null
+    let songInfoFontColorTools = null
+    let lyricFontColorTools = null
     const isBackgroundColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.backgroundColorMode'] !== 'custom')
-    const isFontColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.fontColorMode'] !== 'custom')
+    const isSongInfoFontColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.songInfoFontColorMode'] !== 'custom')
+    const isLyricFontColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.lyricFontColorMode'] !== 'custom')
 
     const initColorPickers = () => {
       if (backgroundColorRef.value) {
@@ -203,15 +262,26 @@ export default {
           backgroundColorSnapshot.value = appSetting['taskbarLyric.style.backgroundColor']
         })
       }
-      if (fontColorRef.value) {
-        fontColorTools = pickrTools.create(fontColorRef.value, appSetting['taskbarLyric.style.fontColor'], fontColorSwatches, color => {
-          updateSetting({ 'taskbarLyric.style.fontColor': color })
+      if (songInfoFontColorRef.value) {
+        songInfoFontColorTools = pickrTools.create(songInfoFontColorRef.value, appSetting['taskbarLyric.style.songInfoFontColor'], fontColorSwatches, color => {
+          updateSetting({ 'taskbarLyric.style.songInfoFontColor': color })
         }, () => {
-          updateSetting({ 'taskbarLyric.style.fontColor': fontColorSnapshot.value })
-          fontColorTools?.setColor(fontColorSnapshot.value)
+          updateSetting({ 'taskbarLyric.style.songInfoFontColor': songInfoFontColorSnapshot.value })
+          songInfoFontColorTools?.setColor(songInfoFontColorSnapshot.value)
         })
-        fontColorTools.pickr?.on('show', () => {
-          fontColorSnapshot.value = appSetting['taskbarLyric.style.fontColor']
+        songInfoFontColorTools.pickr?.on('show', () => {
+          songInfoFontColorSnapshot.value = appSetting['taskbarLyric.style.songInfoFontColor']
+        })
+      }
+      if (lyricFontColorRef.value) {
+        lyricFontColorTools = pickrTools.create(lyricFontColorRef.value, appSetting['taskbarLyric.style.lyricFontColor'], fontColorSwatches, color => {
+          updateSetting({ 'taskbarLyric.style.lyricFontColor': color })
+        }, () => {
+          updateSetting({ 'taskbarLyric.style.lyricFontColor': lyricFontColorSnapshot.value })
+          lyricFontColorTools?.setColor(lyricFontColorSnapshot.value)
+        })
+        lyricFontColorTools.pickr?.on('show', () => {
+          lyricFontColorSnapshot.value = appSetting['taskbarLyric.style.lyricFontColor']
         })
       }
     }
@@ -219,8 +289,10 @@ export default {
     const destroyColorPickers = () => {
       backgroundColorTools?.destroy()
       backgroundColorTools = null
-      fontColorTools?.destroy()
-      fontColorTools = null
+      songInfoFontColorTools?.destroy()
+      songInfoFontColorTools = null
+      lyricFontColorTools?.destroy()
+      lyricFontColorTools = null
     }
 
     onMounted(() => {
@@ -232,17 +304,22 @@ export default {
     watch(() => appSetting['taskbarLyric.style.backgroundColor'], color => {
       backgroundColorTools?.setColor(color)
     })
-    watch(() => appSetting['taskbarLyric.style.fontColor'], color => {
-      fontColorTools?.setColor(color)
+    watch(() => appSetting['taskbarLyric.style.songInfoFontColor'], color => {
+      songInfoFontColorTools?.setColor(color)
+    })
+    watch(() => appSetting['taskbarLyric.style.lyricFontColor'], color => {
+      lyricFontColorTools?.setColor(color)
     })
 
     return {
       appSetting,
       updateSetting,
       backgroundColorRef,
-      fontColorRef,
+      songInfoFontColorRef,
+      lyricFontColorRef,
       isBackgroundColorDisabled,
-      isFontColorDisabled,
+      isSongInfoFontColorDisabled,
+      isLyricFontColorDisabled,
       isWin,
     }
   },

@@ -32,8 +32,12 @@ const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
     keys.includes('taskbarLyric.style.backgroundColorMode') ||
     keys.includes('taskbarLyric.style.backgroundColor') ||
     keys.includes('taskbarLyric.style.backgroundOpacity') ||
-    keys.includes('taskbarLyric.style.fontColorMode') ||
-    keys.includes('taskbarLyric.style.fontColor')
+    keys.includes('taskbarLyric.style.songInfoFontColorMode') ||
+    keys.includes('taskbarLyric.style.songInfoFontColor') ||
+    keys.includes('taskbarLyric.style.lyricFontColorMode') ||
+    keys.includes('taskbarLyric.style.lyricFontColor') ||
+    keys.includes('taskbarLyric.style.songInfoFontSize') ||
+    keys.includes('taskbarLyric.style.lyricFontSize')
   )) refreshWindowStateFromConfig()
 }
 
