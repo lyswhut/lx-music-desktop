@@ -29,6 +29,7 @@ const handleConfigChange = (keys: Array<keyof LX.AppSetting>) => {
     keys.includes('taskbarLyric.showCover') ||
     keys.includes('taskbarLyric.showSongInfo') ||
     keys.includes('taskbarLyric.showCurrentLine') ||
+    keys.includes('taskbarLyric.swapTitleAndArtist') ||
     keys.includes('taskbarLyric.style.backgroundColorMode') ||
     keys.includes('taskbarLyric.style.backgroundColor') ||
     keys.includes('taskbarLyric.style.backgroundOpacity') ||

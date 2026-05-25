@@ -44,10 +44,22 @@
         </div>
       </template>
       <template v-else>
-        <div v-if="state.showSongInfo" class="song-info">
-          <span class="title">{{ state.title }}</span>
-          <span v-if="state.artist" class="separator">-</span>
-          <span v-if="state.artist" class="artist">{{ state.artist }}</span>
+        <div v-if="state.showSongInfo" ref="songInfoRef" class="song-info">
+          <div
+            v-if="shouldScrollSongInfo"
+            class="song-info-track"
+            :style="songInfoTrackStyle"
+          >
+            <span class="song-info-text">{{ displaySongInfoText }}</span>
+            <span class="song-info-gap" aria-hidden="true"></span>
+            <span class="song-info-text" aria-hidden="true">{{ displaySongInfoText }}</span>
+          </div>
+          <template v-else>
+            <span class="title">{{ primarySongInfoText }}</span>
+            <span v-if="secondarySongInfoText" class="separator">-</span>
+            <span v-if="secondarySongInfoText" class="artist">{{ secondarySongInfoText }}</span>
+          </template>
+          <span ref="songInfoMeasureRef" class="song-info-measure">{{ displaySongInfoText }}</span>
         </div>
         <div v-if="state.showCurrentLine" ref="lyricLineRef" class="lyric-line">
           <div
@@ -81,8 +93,12 @@ interface RGB {
 const lyricState = state as LX.TaskbarLyric.State
 const isDragging = ref(false)
 const isHovering = ref(false)
+const songInfoRef = ref<HTMLElement | null>(null)
+const songInfoMeasureRef = ref<HTMLElement | null>(null)
 const lyricLineRef = ref<HTMLElement | null>(null)
 const lyricMeasureRef = ref<HTMLElement | null>(null)
+const shouldScrollSongInfo = ref(false)
+const songInfoScrollDistance = ref(0)
 const shouldScrollLyric = ref(false)
 const lyricScrollDistance = ref(0)
 let pointerId: number | null = null
@@ -93,7 +109,21 @@ let lyricResizeObserver: ResizeObserver | null = null
 const showActionButtons = computed(() => {
   return isHovering.value && !isDragging.value
 })
+const primarySongInfoText = computed(() => lyricState.swapTitleAndArtist && lyricState.artist ? lyricState.artist : lyricState.title)
+const secondarySongInfoText = computed(() => lyricState.swapTitleAndArtist ? lyricState.title : lyricState.artist)
+const displaySongInfoText = computed(() => {
+  return secondarySongInfoText.value ? `${primarySongInfoText.value} - ${secondarySongInfoText.value}` : primarySongInfoText.value
+})
 const displayLyricText = computed(() => lyricState.lyricLine || lyricState.artist)
+const songInfoTrackStyle = computed(() => {
+  const distance = Math.max(songInfoScrollDistance.value, 0)
+  const gap = 24
+  const duration = Math.max(10, distance / 26)
+  return {
+    '--taskbar-song-info-scroll-distance': `${distance + gap}px`,
+    '--taskbar-song-info-scroll-duration': `${duration.toFixed(2)}s`,
+  }
+})
 const lyricLineTrackStyle = computed(() => {
   const distance = Math.max(lyricScrollDistance.value, 0)
   const gap = 24
@@ -214,6 +244,14 @@ const shellStyle = computed(() => {
   }
 })
 
+const updateSongInfoScrollState = () => {
+  const containerWidth = songInfoRef.value?.clientWidth ?? 0
+  const contentWidth = songInfoMeasureRef.value?.scrollWidth ?? 0
+  const overflowWidth = Math.max(contentWidth - containerWidth, 0)
+  shouldScrollSongInfo.value = overflowWidth > 6
+  songInfoScrollDistance.value = overflowWidth
+}
+
 const updateLyricScrollState = () => {
   const containerWidth = lyricLineRef.value?.clientWidth ?? 0
   const contentWidth = lyricMeasureRef.value?.scrollWidth ?? 0
@@ -281,18 +319,34 @@ onBeforeUnmount(() => {
 
 onMounted(() => {
   lyricResizeObserver = new ResizeObserver(() => {
+    updateSongInfoScrollState()
     updateLyricScrollState()
   })
+  if (songInfoRef.value) lyricResizeObserver.observe(songInfoRef.value)
+  if (songInfoMeasureRef.value) lyricResizeObserver.observe(songInfoMeasureRef.value)
   if (lyricLineRef.value) lyricResizeObserver.observe(lyricLineRef.value)
   if (lyricMeasureRef.value) lyricResizeObserver.observe(lyricMeasureRef.value)
   void nextTick(() => {
+    updateSongInfoScrollState()
     updateLyricScrollState()
+  })
+})
+
+watch(displaySongInfoText, () => {
+  void nextTick(() => {
+    updateSongInfoScrollState()
   })
 })
 
 watch(displayLyricText, () => {
   void nextTick(() => {
     updateLyricScrollState()
+  })
+})
+
+watch(() => lyricState.songInfoFontSize, () => {
+  void nextTick(() => {
+    updateSongInfoScrollState()
   })
 })
 
@@ -304,6 +358,7 @@ watch(() => lyricState.lyricFontSize, () => {
 
 watch(showActionButtons, () => {
   void nextTick(() => {
+    updateSongInfoScrollState()
     updateLyricScrollState()
   })
 })
@@ -432,13 +487,43 @@ body {
 }
 
 .song-info {
+  position: relative;
   display: flex;
   align-items: baseline;
   gap: 5px;
   min-width: 0;
+  color: var(--taskbar-lyric-text-secondary);
   font-size: var(--taskbar-lyric-song-info-font-size, 11px);
   line-height: 1.1;
   opacity: 0.82;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.song-info-track {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: max-content;
+  animation: taskbar-song-info-marquee var(--taskbar-song-info-scroll-duration, 12s) linear infinite;
+  will-change: transform;
+}
+
+.song-info-text {
+  flex: none;
+  color: inherit;
+}
+
+.song-info-gap {
+  width: 24px;
+  flex: none;
+}
+
+.song-info-measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  color: inherit;
+  white-space: nowrap;
 }
 
 .title,
@@ -501,6 +586,16 @@ body {
 
   to {
     transform: translateX(calc(-1 * var(--taskbar-lyric-line-scroll-distance, 0px)));
+  }
+}
+
+@keyframes taskbar-song-info-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-1 * var(--taskbar-song-info-scroll-distance, 0px)));
   }
 }
 </style>

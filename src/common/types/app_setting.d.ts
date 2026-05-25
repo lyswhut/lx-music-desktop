@@ -727,6 +727,11 @@ declare global {
       'taskbarLyric.showCurrentLine': boolean
 
       /**
+       * Swap the display order of song title and artist in taskbar lyric
+       */
+      'taskbarLyric.swapTitleAndArtist': boolean
+
+      /**
        * Use theme color or a custom background color for the taskbar lyric bar
        */
       'taskbarLyric.style.backgroundColorMode': 'theme' | 'custom'

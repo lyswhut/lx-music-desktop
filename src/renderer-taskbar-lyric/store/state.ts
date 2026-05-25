@@ -12,6 +12,7 @@ interface TaskbarLyricViewState {
   showCover: boolean
   showSongInfo: boolean
   showCurrentLine: boolean
+  swapTitleAndArtist: boolean
   themeColor: string
   backgroundColorMode: 'theme' | 'custom'
   backgroundColor: string
@@ -36,6 +37,7 @@ export const state = shallowReactive<TaskbarLyricViewState>({
   showCover: true,
   showSongInfo: true,
   showCurrentLine: true,
+  swapTitleAndArtist: false,
   themeColor: 'rgb(77, 175, 124)',
   backgroundColorMode: 'theme',
   backgroundColor: 'rgba(15, 23, 42, 1)',

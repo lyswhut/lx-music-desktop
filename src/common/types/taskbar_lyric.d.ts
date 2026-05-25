@@ -13,6 +13,7 @@ declare namespace LX {
       showCover: boolean
       showSongInfo: boolean
       showCurrentLine: boolean
+      swapTitleAndArtist: boolean
       themeColor: string
       backgroundColorMode: LX.AppSetting['taskbarLyric.style.backgroundColorMode']
       backgroundColor: LX.AppSetting['taskbarLyric.style.backgroundColor']

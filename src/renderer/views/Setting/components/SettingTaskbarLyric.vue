@@ -41,32 +41,26 @@ dd
     div(:class="$style.fieldRow")
       span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_color') }}
       div(:class="$style.fieldControl")
-        div(:class="$style.optionLine")
-          base-checkbox(
-            id="setting_taskbar_lyric_background_theme"
-            name="setting_taskbar_lyric_background_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.backgroundColorMode']"
-            value="theme"
-            :label="$t('setting__taskbar_lyric_theme_color')"
+        div(:class="$style.colorOptionGrid")
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.backgroundColorMode'] === 'theme' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.backgroundColorMode': $event })"
+            @click="updateSetting({ 'taskbarLyric.style.backgroundColorMode': 'theme' })"
           )
-          base-checkbox(
-            id="setting_taskbar_lyric_background_custom"
-            name="setting_taskbar_lyric_background_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.backgroundColorMode']"
-            value="custom"
-            :label="$t('setting__taskbar_lyric_custom_color')"
+            span(:class="[$style.colorOptionPreview, $style.colorOptionPreviewTheme]")
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_theme_color') }}
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.backgroundColorMode'] === 'custom' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.backgroundColorMode': $event })"
+            @click="handleCustomColorCardClick('background')"
           )
-        div(:class="$style.colorLine")
-          div(
-            ref="backgroundColorRef"
-            :class="[$style.colorSwatch, isBackgroundColorDisabled ? $style.colorSwatchDisabled : '']"
-          )
+            div(
+              ref="backgroundColorRef"
+              :class="$style.colorOptionPreview"
+            )
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_custom_color') }}
     div(:class="$style.fieldRow")
       span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_opacity') }}
       div(:class="[$style.fieldControl, $style.sliderLine]")
@@ -87,61 +81,49 @@ dd
     div(:class="$style.fieldRow")
       span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_song_info_color') }}
       div(:class="$style.fieldControl")
-        div(:class="$style.optionLine")
-          base-checkbox(
-            id="setting_taskbar_lyric_song_info_font_theme"
-            name="setting_taskbar_lyric_song_info_font_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.songInfoFontColorMode']"
-            value="theme"
-            :label="$t('setting__taskbar_lyric_theme_color')"
+        div(:class="$style.colorOptionGrid")
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.songInfoFontColorMode'] === 'theme' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': $event })"
+            @click="updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': 'theme' })"
           )
-          base-checkbox(
-            id="setting_taskbar_lyric_song_info_font_custom"
-            name="setting_taskbar_lyric_song_info_font_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.songInfoFontColorMode']"
-            value="custom"
-            :label="$t('setting__taskbar_lyric_custom_color')"
+            span(:class="[$style.colorOptionPreview, $style.colorOptionPreviewTheme]")
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_theme_color') }}
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.songInfoFontColorMode'] === 'custom' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': $event })"
+            @click="handleCustomColorCardClick('songInfo')"
           )
-        div(:class="$style.colorLine")
-          div(
-            ref="songInfoFontColorRef"
-            :class="[$style.colorSwatch, isSongInfoFontColorDisabled ? $style.colorSwatchDisabled : '']"
-          )
+            div(
+              ref="songInfoFontColorRef"
+              :class="$style.colorOptionPreview"
+            )
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_custom_color') }}
     div(:class="$style.fieldRow")
       span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_line_color') }}
       div(:class="$style.fieldControl")
-        div(:class="$style.optionLine")
-          base-checkbox(
-            id="setting_taskbar_lyric_lyric_font_theme"
-            name="setting_taskbar_lyric_lyric_font_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.lyricFontColorMode']"
-            value="theme"
-            :label="$t('setting__taskbar_lyric_theme_color')"
+        div(:class="$style.colorOptionGrid")
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.lyricFontColorMode'] === 'theme' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.lyricFontColorMode': $event })"
+            @click="updateSetting({ 'taskbarLyric.style.lyricFontColorMode': 'theme' })"
           )
-          base-checkbox(
-            id="setting_taskbar_lyric_lyric_font_custom"
-            name="setting_taskbar_lyric_lyric_font_mode"
-            need
-            :model-value="appSetting['taskbarLyric.style.lyricFontColorMode']"
-            value="custom"
-            :label="$t('setting__taskbar_lyric_custom_color')"
+            span(:class="[$style.colorOptionPreview, $style.colorOptionPreviewTheme]")
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_theme_color') }}
+          button(
+            type="button"
+            :class="[$style.colorOptionCard, appSetting['taskbarLyric.style.lyricFontColorMode'] === 'custom' ? $style.colorOptionCardActive : '']"
             :disabled="!isWin"
-            @update:model-value="updateSetting({ 'taskbarLyric.style.lyricFontColorMode': $event })"
+            @click="handleCustomColorCardClick('lyric')"
           )
-        div(:class="$style.colorLine")
-          div(
-            ref="lyricFontColorRef"
-            :class="[$style.colorSwatch, isLyricFontColorDisabled ? $style.colorSwatchDisabled : '']"
-          )
+            div(
+              ref="lyricFontColorRef"
+              :class="$style.colorOptionPreview"
+            )
+            span(:class="$style.colorOptionLabel") {{ $t('setting__taskbar_lyric_custom_color') }}
     div(:class="$style.fieldRow")
       span(:class="$style.fieldLabel") {{ $t('setting__taskbar_lyric_song_info_size') }}
       div(:class="[$style.fieldControl, $style.sliderLine]")
@@ -210,10 +192,18 @@ dd
         :disabled="!isWin"
         @update:model-value="updateSetting({ 'taskbarLyric.showCurrentLine': $event })"
       )
+    .gap-top
+      base-checkbox(
+        id="setting_taskbar_lyric_swap_title_and_artist"
+        :model-value="appSetting['taskbarLyric.swapTitleAndArtist']"
+        :label="$t('setting__taskbar_lyric_swap_title_and_artist')"
+        :disabled="!isWin"
+        @update:model-value="updateSetting({ 'taskbarLyric.swapTitleAndArtist': $event })"
+      )
 </template>
 
 <script>
-import { computed, onMounted, onBeforeUnmount, ref, watch } from '@common/utils/vueTools'
+import { onMounted, onBeforeUnmount, ref, watch } from '@common/utils/vueTools'
 import { isWin } from '@common/utils'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import { pickrTools } from '@renderer/utils/pickrTools'
@@ -246,10 +236,6 @@ export default {
     let backgroundColorTools = null
     let songInfoFontColorTools = null
     let lyricFontColorTools = null
-    const isBackgroundColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.backgroundColorMode'] !== 'custom')
-    const isSongInfoFontColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.songInfoFontColorMode'] !== 'custom')
-    const isLyricFontColorDisabled = computed(() => !isWin || appSetting['taskbarLyric.style.lyricFontColorMode'] !== 'custom')
-
     const initColorPickers = () => {
       if (backgroundColorRef.value) {
         backgroundColorTools = pickrTools.create(backgroundColorRef.value, appSetting['taskbarLyric.style.backgroundColor'], backgroundColorSwatches, color => {
@@ -286,6 +272,28 @@ export default {
       }
     }
 
+    const openPickr = (tools) => {
+      tools?.pickr?.show()
+    }
+
+    const handleCustomColorCardClick = (type) => {
+      if (!isWin) return
+      switch (type) {
+        case 'background':
+          updateSetting({ 'taskbarLyric.style.backgroundColorMode': 'custom' })
+          openPickr(backgroundColorTools)
+          break
+        case 'songInfo':
+          updateSetting({ 'taskbarLyric.style.songInfoFontColorMode': 'custom' })
+          openPickr(songInfoFontColorTools)
+          break
+        case 'lyric':
+          updateSetting({ 'taskbarLyric.style.lyricFontColorMode': 'custom' })
+          openPickr(lyricFontColorTools)
+          break
+      }
+    }
+
     const destroyColorPickers = () => {
       backgroundColorTools?.destroy()
       backgroundColorTools = null
@@ -317,9 +325,7 @@ export default {
       backgroundColorRef,
       songInfoFontColorRef,
       lyricFontColorRef,
-      isBackgroundColorDisabled,
-      isSongInfoFontColorDisabled,
-      isLyricFontColorDisabled,
+      handleCustomColorCardClick,
       isWin,
     }
   },
@@ -348,36 +354,67 @@ export default {
 
 .fieldControl {
   min-width: 0;
+  flex: 1;
 }
 
-.optionLine {
+.colorOptionGrid {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  align-items: stretch;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.colorLine {
+.colorOptionCard {
+  appearance: none;
+  border: 1px solid var(--color-primary-light-300);
+  background: transparent;
+  border-radius: 10px;
+  min-width: 84px;
+  padding: 8px 8px 9px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  min-height: 28px;
-  margin-top: 8px;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+
+  &:disabled {
+    opacity: .55;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-light-100-alpha-300);
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(1px);
+  }
 }
 
-.colorSwatch {
+.colorOptionCardActive {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-light-100-alpha-300);
+}
+
+.colorOptionPreview {
   width: 28px;
   height: 28px;
   border-radius: 8px;
   background-color: var(--pcr-color);
-  cursor: pointer;
-  transition: opacity .2s ease;
   box-shadow: 0 0 3px var(--color-primary-light-100-alpha-300);
 }
 
-.colorSwatchDisabled {
-  opacity: .45;
-  pointer-events: none;
-  cursor: default;
+.colorOptionPreviewTheme {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light-200));
+}
+
+.colorOptionLabel {
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .sliderLine {

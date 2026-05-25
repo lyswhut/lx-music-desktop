@@ -67,6 +67,7 @@ const getDefaultState = (): TaskbarLyricState => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    swapTitleAndArtist: global.lx.appSetting['taskbarLyric.swapTitleAndArtist'],
     themeColor: DEFAULT_THEME_COLOR,
     ...getStyleState(),
   }
@@ -258,6 +259,7 @@ export const refreshWindowStateFromConfig = () => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    swapTitleAndArtist: global.lx.appSetting['taskbarLyric.swapTitleAndArtist'],
     themeColor: currentState?.themeColor ?? DEFAULT_THEME_COLOR,
     ...getStyleState(),
   }

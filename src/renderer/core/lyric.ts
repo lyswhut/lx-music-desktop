@@ -110,6 +110,7 @@ const getTaskbarLyricState = (): LX.TaskbarLyric.State => {
     showCover: appSetting['taskbarLyric.showCover'],
     showSongInfo: appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: appSetting['taskbarLyric.showCurrentLine'],
+    swapTitleAndArtist: appSetting['taskbarLyric.swapTitleAndArtist'],
     themeColor: getTaskbarLyricThemeColor(),
     backgroundColorMode: appSetting['taskbarLyric.style.backgroundColorMode'],
     backgroundColor: appSetting['taskbarLyric.style.backgroundColor'],
