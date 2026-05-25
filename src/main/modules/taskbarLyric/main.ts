@@ -44,8 +44,12 @@ const getStyleState = () => {
     backgroundColorMode: global.lx.appSetting['taskbarLyric.style.backgroundColorMode'],
     backgroundColor: global.lx.appSetting['taskbarLyric.style.backgroundColor'],
     backgroundOpacity: global.lx.appSetting['taskbarLyric.style.backgroundOpacity'],
-    fontColorMode: global.lx.appSetting['taskbarLyric.style.fontColorMode'],
-    fontColor: global.lx.appSetting['taskbarLyric.style.fontColor'],
+    songInfoFontColorMode: global.lx.appSetting['taskbarLyric.style.songInfoFontColorMode'],
+    songInfoFontColor: global.lx.appSetting['taskbarLyric.style.songInfoFontColor'],
+    lyricFontColorMode: global.lx.appSetting['taskbarLyric.style.lyricFontColorMode'],
+    lyricFontColor: global.lx.appSetting['taskbarLyric.style.lyricFontColor'],
+    songInfoFontSize: global.lx.appSetting['taskbarLyric.style.songInfoFontSize'],
+    lyricFontSize: global.lx.appSetting['taskbarLyric.style.lyricFontSize'],
   }
 }
 
@@ -63,6 +67,7 @@ const getDefaultState = (): TaskbarLyricState => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    swapTitleAndArtist: global.lx.appSetting['taskbarLyric.swapTitleAndArtist'],
     themeColor: DEFAULT_THEME_COLOR,
     ...getStyleState(),
   }
@@ -254,6 +259,7 @@ export const refreshWindowStateFromConfig = () => {
     showCover: global.lx.appSetting['taskbarLyric.showCover'],
     showSongInfo: global.lx.appSetting['taskbarLyric.showSongInfo'],
     showCurrentLine: global.lx.appSetting['taskbarLyric.showCurrentLine'],
+    swapTitleAndArtist: global.lx.appSetting['taskbarLyric.swapTitleAndArtist'],
     themeColor: currentState?.themeColor ?? DEFAULT_THEME_COLOR,
     ...getStyleState(),
   }
