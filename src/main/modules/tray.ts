@@ -16,6 +16,15 @@ let isEnableTray: boolean = false
 let themeId: number
 let isShowStatusBarLyric: boolean = false
 
+type StatusBarControl = 'prev' | 'play' | 'next' | 'collect'
+interface StatusBarControlTray {
+  control: StatusBarControl
+  tray: Electron.Tray
+}
+
+let statusBarControlTrays: StatusBarControlTray[] = []
+const statusBarControlOrder: StatusBarControl[] = ['prev', 'play', 'next', 'collect']
+
 const playerState = {
   empty: false,
   collect: false,
@@ -23,6 +32,8 @@ const playerState = {
   next: true,
   prev: true,
 }
+
+const statusBarControlIconSize = 16
 
 const watchConfigKeys = [
   'desktopLyric.enable',
@@ -140,9 +151,113 @@ const getIconPath = (id: number) => {
   return path.join(global.staticPath, 'images/tray', theme.fileName + (isWin ? '.ico' : '.png'))
 }
 
+const getStatusBarControlInfo = (control: StatusBarControl): {
+  action: LX.Player.StatusButtonActions
+  tooltip: string
+  iconName: string
+} => {
+  switch (control) {
+    case 'prev':
+      return {
+        action: 'prev',
+        tooltip: i18n.getMessage('prev'),
+        iconName: 'prev',
+      }
+    case 'play':
+      return playerState.play
+        ? {
+            action: 'pause',
+            tooltip: i18n.getMessage('pause'),
+            iconName: 'pause',
+          }
+        : {
+            action: 'play',
+            tooltip: i18n.getMessage('play'),
+            iconName: 'play',
+          }
+    case 'next':
+      return {
+        action: 'next',
+        tooltip: i18n.getMessage('next'),
+        iconName: 'next',
+      }
+    case 'collect':
+      return playerState.collect
+        ? {
+            action: 'unCollect',
+            tooltip: i18n.getMessage('uncollect'),
+            iconName: 'collected',
+          }
+        : {
+            action: 'collect',
+            tooltip: i18n.getMessage('collect'),
+            iconName: 'collect',
+          }
+  }
+}
+
+const getStatusBarControlImage = (control: StatusBarControl) => {
+  const image = nativeImage
+    .createFromPath(path.join(global.staticPath, 'images/taskbar', getStatusBarControlInfo(control).iconName + '.png'))
+    .resize({ width: statusBarControlIconSize, height: statusBarControlIconSize, quality: 'best' })
+  image.setTemplateImage(true)
+  return image
+}
+
+const updateStatusBarControls = () => {
+  for (const { control, tray } of statusBarControlTrays) {
+    if (tray.isDestroyed()) continue
+    tray.setImage(getStatusBarControlImage(control))
+    tray.setToolTip(getStatusBarControlInfo(control).tooltip)
+  }
+}
+
+const createStatusBarControls = () => {
+  if (!isMac || !global.lx.appSetting['tray.enable']) return
+  if (statusBarControlTrays.length) {
+    updateStatusBarControls()
+    return
+  }
+
+  for (const control of [...statusBarControlOrder].reverse()) {
+    const controlTray = new Tray(getStatusBarControlImage(control))
+    controlTray.setIgnoreDoubleClickEvents(true)
+    controlTray.setToolTip(getStatusBarControlInfo(control).tooltip)
+    controlTray.on('click', () => {
+      if (playerState.empty) return
+      sendTaskbarButtonClick(getStatusBarControlInfo(control).action)
+    })
+    statusBarControlTrays.push({ control, tray: controlTray })
+  }
+}
+
+const destroyStatusBarControls = () => {
+  for (const { tray } of statusBarControlTrays) {
+    if (!tray.isDestroyed()) tray.destroy()
+  }
+  statusBarControlTrays = []
+}
+
+const syncStatusBarControls = () => {
+  if (!isMac || !tray || !isShowStatusBarLyric) {
+    destroyStatusBarControls()
+    return
+  }
+  const shouldRecreateTray = !statusBarControlTrays.length
+  createStatusBarControls()
+  if (shouldRecreateTray && tray && !tray.isDestroyed()) {
+    tray.destroy()
+    tray = null
+    createTray()
+    setLyric(global.lx.player_status.lyricLineText)
+  }
+}
+
 export const createTray = () => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   if ((tray && !tray.isDestroyed()) || !global.lx.appSetting['tray.enable']) return
+
+  if (isMac && global.lx.appSetting['player.isShowStatusBarLyric']) createStatusBarControls()
 
   // 托盘
   tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
@@ -158,8 +273,8 @@ export const createTray = () => {
 }
 
 export const destroyTray = () => {
-  if (!tray) return
-  tray.destroy()
+  destroyStatusBarControls()
+  if (tray) tray.destroy()
   isEnableTray = false
   isShowStatusBarLyric = false
   tray = null
@@ -339,6 +454,7 @@ const init = () => {
       tray?.setTitle('')
     }
   }
+  syncStatusBarControls()
   setTip()
   createMenu()
 }
