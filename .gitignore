@@ -71,3 +71,4 @@ publish/assets
 publish/utils/githubToken.js
 
 src/**/*-internal.js
+/.idea
