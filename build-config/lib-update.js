@@ -25,7 +25,6 @@ const unzip = async(filePath) => {
 }
 
 const files = [
-  'qrc_decode',
   'better_sqlite3',
 ]
 const moveFile = async(filePath) => {

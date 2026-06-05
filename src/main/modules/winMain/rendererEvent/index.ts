@@ -3,7 +3,6 @@ import { registerRendererEvents as list } from '@main/modules/commonRenderers/li
 import { registerRendererEvents as dislike } from '@main/modules/commonRenderers/dislike'
 import app, { sendConfigChange } from './app'
 import hotKey from './hotKey'
-import tx_decodeLyric from './tx_decodeLyric'
 import userApi from './userApi'
 import sync from './sync'
 import data from './data'
@@ -29,7 +28,6 @@ export default () => {
   dislike(sendEvent)
   app()
   hotKey()
-  tx_decodeLyric()
   userApi()
   sync()
   data()
