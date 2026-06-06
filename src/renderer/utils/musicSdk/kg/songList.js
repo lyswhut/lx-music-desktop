@@ -862,7 +862,7 @@ export default {
         name: decodeName(item.songname),
         albumName: decodeName(item.album_info.album_name),
         albumId: item.album_info.album_id,
-        songmid: item.audio_info.album_audio_id,
+        songmid: item.audio_info.audio_group_id,
         source: 'kg',
         interval: formatPlayTime(parseInt(item.audio_info.timelength) / 1000),
         img: null,

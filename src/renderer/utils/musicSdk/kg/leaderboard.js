@@ -126,6 +126,7 @@ export default {
           hash: item.hash_high,
         }
       }
+      // console.log(item)
       return {
         singer: formatSingerName(item.authors, 'author_name'),
         name: decodeName(item.songname),
