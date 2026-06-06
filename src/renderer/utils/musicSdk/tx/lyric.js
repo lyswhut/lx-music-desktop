@@ -1,6 +1,6 @@
 import { httpFetch } from '../../request'
 import getMusicInfo from './musicInfo'
-import { decodeQrc } from './qrcDecode'
+import { decodeQrc } from './utils/qrcDecode'
 
 const songIdMap = new Map()
 const promises = new Map()

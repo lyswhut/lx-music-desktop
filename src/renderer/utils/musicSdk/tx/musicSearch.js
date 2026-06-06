@@ -12,72 +12,53 @@ export default {
     if (retryNum > 5) return Promise.reject(new Error('搜索失败'))
     const searchRequest = signRequest({
       comm: {
-        ct: '11',
-        cv: '14090508',
-        v: '14090508',
+        _channelid: '0',
+        _os_version: '6.2.9200-2',
+        ct: '19',
+        cv: '2151',
+        guid: '1F70E520B2EAA7D25E11760783C53CA9',
+        patch: '118',
+        psrf_access_token_expiresAt: 0,
+        psrf_qqaccess_token: '',
+        psrf_qqopenid: '',
+        psrf_qqunionid: '',
         tmeAppID: 'qqmusic',
-        phonetype: 'EBG-AN10',
-        deviceScore: '553.47',
-        devicelevel: '50',
-        newdevicelevel: '20',
-        rom: 'HuaWei/EMOTION/EmotionUI_14.2.0',
-        os_ver: '12',
-        OpenUDID: '0',
-        OpenUDID2: '0',
-        QIMEI36: '0',
-        udid: '0',
-        chid: '0',
-        aid: '0',
-        oaid: '0',
-        taid: '0',
-        tid: '0',
-        wid: '0',
-        uid: '0',
-        sid: '0',
-        modeSwitch: '6',
-        teenMode: '0',
-        ui_mode: '2',
-        nettype: '1020',
-        v4ip: '',
+        tmeLoginType: 0,
+        uin: '0',
+        wid: '7223299733393904640',
       },
-      req: {
+      'music.search.SearchCgiService': {
         module: 'music.search.SearchCgiService',
-        method: 'DoSearchForQQMusicMobile',
+        method: 'DoSearchForQQMusicDesktop',
         param: {
-          search_type: 0,
-          searchid: Math.random().toString().slice(2),
-          query: str,
-          page_num: page,
-          num_per_page: limit,
-          highlight: 0,
-          nqc_flag: 0,
-          multi_zhida: 0,
-          cat: 2,
           grp: 1,
-          sin: 0,
-          sem: 0,
+          num_per_page: limit,
+          page_num: page,
+          query: str,
+          remoteplace: 'txt.newclient.top',
+          search_type: 0,
+          searchid: this.getSearchId(),
         },
       },
     })
     return searchRequest.then(({ body }) => {
       // console.log(body)
-      if (!body || !body.req || body.code != this.successCode || body.req.code != this.successCode) {
+      const req = body?.['music.search.SearchCgiService'] ?? body?.req
+      if (!req || body.code != this.successCode || req.code != this.successCode) {
         return this.musicSearch(str, page, limit, ++retryNum)
       }
-      return body.req.data
+      return req.data
     })
   },
-  // randomInt(min, max) {
-  //   return Math.floor(Math.random() * (max - min + 1)) + min
-  // },
-  // getSearchId() {
-  //   const e = BigInt(this.randomInt(1, 20))
-  //   const t = e * 18014398509481984n
-  //   const n = BigInt(this.randomInt(0, 4194304)) * 4294967296n
-  //   const a = BigInt(Date.now())
-  //   const r = (a * 1000n) % (24n * 60n * 60n * 1000n)
-  //   return String(t + n + r)
-  // },
+  /**
+   * PC 客户端版 searchid：32 位大写十六进制 GUID + 5 位补零随机数 = 37 字符。
+   * 对应 QQ 音乐 PC 端 searchid 形状（服务端只需要唯一的会话 ID，形状一致即可）。
+   */
+  getSearchId() {
+    let guid = ''
+    for (let i = 0; i < 32; i++) guid += Math.floor(Math.random() * 16).toString(16)
+    return guid.toUpperCase() + String(Math.floor(Math.random() * 100000)).padStart(5, '0')
+  },
   handleResult(rawList) {
     // console.log(rawList)
     if (!rawList || !Array.isArray(rawList)) return []
@@ -148,11 +129,13 @@ export default {
   },
   search(str, page = 1, limit) {
     if (limit == null) limit = this.limit
-    // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page, limit).then(({ body, meta }) => {
-      let list = this.handleResult(body.item_song)
+    return this.musicSearch(str, page, limit).then(data => {
+      // 桌面端结构：data.body.song.list；兼容旧移动端 data.body.item_song
+      const body = data.body ?? {}
+      let list = this.handleResult(body.song?.list ?? body.item_song)
 
-      this.total = meta.estimate_sum
+      const meta = data.meta ?? {}
+      this.total = meta.sum ?? meta.estimate_sum ?? 0
       this.page = page
       this.allPage = Math.ceil(this.total / limit)
 
