@@ -127,6 +127,9 @@ export default {
           background-image: -webkit-linear-gradient(left, var(--color-lyric-played), var(--color-lyric-played));
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
+          // 透明填充在浅背景上会与背景同色而“消失”，用真正的描边属性（非 text-shadow，不会糊成黑块）垫底
+          -webkit-text-stroke: 0.04em var(--color-lyric-shadow);
+          paint-order: stroke fill;
           background-size: 0 100%;
           padding-left: 0.12em;
           padding-right: 0.12em;
