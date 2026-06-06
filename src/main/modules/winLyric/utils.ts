@@ -81,6 +81,7 @@ export const watchConfigKeys = [
   'common.langId',
   'player.isShowLyricTranslation',
   'player.isShowLyricRoma',
+  'player.isShowLyricRomaWordByWord',
   'player.isShowLyricPhonetic',
   'player.isPlayLxlrc',
   'player.playbackRate',

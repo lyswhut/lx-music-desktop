@@ -540,6 +540,7 @@
   "setting__play_lyric_lxlrc": "使用卡拉 OK 式歌詞播放（如果可用）",
   "setting__play_lyric_lxlrc_tip": "此功能比較耗性能，低配置電腦不建議開啟！",
   "setting__play_lyric_roma": "顯示歌詞羅馬音（如果可用）",
+  "setting__play_lyric_roma_wbw": "音譯歌詞逐字高亮（關閉可降低多語言逐字渲染開銷）",
   "setting__play_lyric_phonetic": "顯示AI諧音歌詞（如果可用）",
   "setting__play_lyric_s2t": "將播放與下載的中文歌詞轉換為繁體",
   "setting__play_lyric_transition": "顯示歌詞翻譯（如果可用）",

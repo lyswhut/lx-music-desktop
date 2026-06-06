@@ -160,6 +160,11 @@ declare global {
       'player.isShowLyricRoma': boolean
 
       /**
+       * 音译歌词是否逐字高亮（关闭则降级为整行纯文本，降低多语言逐字渲染开销）
+       */
+      'player.isShowLyricRomaWordByWord': boolean
+
+      /**
        * 是否显示AI谐音歌词
        */
       'player.isShowLyricPhonetic': boolean

@@ -14,6 +14,8 @@ dd
     base-checkbox(id="setting_player_lyric_transition" :model-value="appSetting['player.isShowLyricTranslation']" :label="$t('setting__play_lyric_transition')" @update:model-value="updateSetting({'player.isShowLyricTranslation': $event})")
   .gap-top
     base-checkbox(id="setting_player_lyric_roma" :model-value="appSetting['player.isShowLyricRoma']" :label="$t('setting__play_lyric_roma')" @update:model-value="updateSetting({'player.isShowLyricRoma': $event})")
+  .gap-top(v-if="appSetting['player.isShowLyricRoma']")
+    base-checkbox(id="setting_player_lyric_roma_wbw" :model-value="appSetting['player.isShowLyricRomaWordByWord']" :label="$t('setting__play_lyric_roma_wbw')" @update:model-value="updateSetting({'player.isShowLyricRomaWordByWord': $event})")
   .gap-top
     base-checkbox(id="setting_player_lyric_phonetic" :model-value="appSetting['player.isShowLyricPhonetic']" :label="$t('setting__play_lyric_phonetic')" @update:model-value="updateSetting({'player.isShowLyricPhonetic': $event})")
   .gap-top

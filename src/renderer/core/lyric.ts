@@ -162,7 +162,10 @@ export const setLyric = () => {
   if (musicInfo.lrc) {
     // 音译显示在主歌词上方（逐字，跟随主歌词高亮）；翻译/AI谐音在下方
     const aboveLyrics = []
-    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) aboveLyrics.push(musicInfo.rlrc)
+    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) {
+      // 关闭逐字音译时去掉 <off,dur> 标记，font-player 见纯文本即不建 span/动画，降低多语言逐字渲染开销
+      aboveLyrics.push(appSetting['player.isShowLyricRomaWordByWord'] ? musicInfo.rlrc : musicInfo.rlrc.replace(/<\d+,\d+>/g, ''))
+    }
     const extendedLyrics = []
     if (appSetting['player.isShowLyricTranslation'] && musicInfo.tlrc) extendedLyrics.push(musicInfo.tlrc)
     if (appSetting['player.isShowLyricPhonetic'] && musicInfo.plrc) extendedLyrics.push(musicInfo.plrc)

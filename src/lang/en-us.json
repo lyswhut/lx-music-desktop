@@ -540,6 +540,7 @@
   "setting__play_lyric_lxlrc": "Playback with karaoke-style lyrics if available",
   "setting__play_lyric_lxlrc_tip": "This feature requires higher performance and is not recommended to be turned on for low performance devices!",
   "setting__play_lyric_roma": "Show romanized lyrics if available",
+  "setting__play_lyric_roma_wbw": "Word-by-word highlight for romanized lyrics (disable to reduce rendering cost)",
   "setting__play_lyric_phonetic": "Show AI phonetic lyrics if available",
   "setting__play_lyric_s2t": "Convert Chinese lyrics that are playing and downloading to traditional",
   "setting__play_lyric_transition": "Show translated lyrics if available",

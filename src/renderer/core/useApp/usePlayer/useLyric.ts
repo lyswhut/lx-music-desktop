@@ -25,6 +25,7 @@ export default () => {
 
   watch(() => appSetting['player.isShowLyricTranslation'], setLyric)
   watch(() => appSetting['player.isShowLyricRoma'], setLyric)
+  watch(() => appSetting['player.isShowLyricRomaWordByWord'], setLyric)
   watch(() => appSetting['player.isShowLyricPhonetic'], setLyric)
   watch(() => appSetting['player.isPlayLxlrc'], setLyric)
 

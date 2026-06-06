@@ -34,6 +34,7 @@ declare namespace LX {
       'common.langId': LX.AppSetting['common.langId']
       'player.isShowLyricTranslation': LX.AppSetting['player.isShowLyricTranslation']
       'player.isShowLyricRoma': LX.AppSetting['player.isShowLyricRoma']
+      'player.isShowLyricRomaWordByWord': LX.AppSetting['player.isShowLyricRomaWordByWord']
       'player.isShowLyricPhonetic': LX.AppSetting['player.isShowLyricPhonetic']
       'player.isPlayLxlrc': LX.AppSetting['player.isPlayLxlrc']
       'player.playbackRate': LX.AppSetting['player.playbackRate']
