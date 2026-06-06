@@ -82,7 +82,6 @@ export const watchConfigKeys = [
   'player.isShowLyricTranslation',
   'player.isShowLyricRoma',
   'player.isShowLyricPhonetic',
-  'player.isSwapLyricTranslationAndRoma',
   'player.isPlayLxlrc',
   'player.playbackRate',
 ] satisfies Array<keyof LX.AppSetting>
