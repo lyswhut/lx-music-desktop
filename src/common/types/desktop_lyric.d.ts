@@ -34,6 +34,7 @@ declare namespace LX {
       'common.langId': LX.AppSetting['common.langId']
       'player.isShowLyricTranslation': LX.AppSetting['player.isShowLyricTranslation']
       'player.isShowLyricRoma': LX.AppSetting['player.isShowLyricRoma']
+      'player.isShowLyricPhonetic': LX.AppSetting['player.isShowLyricPhonetic']
       'player.isSwapLyricTranslationAndRoma': LX.AppSetting['player.isSwapLyricTranslationAndRoma']
       'player.isPlayLxlrc': LX.AppSetting['player.isPlayLxlrc']
       'player.playbackRate': LX.AppSetting['player.playbackRate']
@@ -58,6 +59,7 @@ declare namespace LX {
       tlrc: string | null
       rlrc: string | null
       lxlrc: string | null
+      plrc: string | null
       // pic: string | null
       isPlay: boolean
       line: number
@@ -73,6 +75,7 @@ declare namespace LX {
       tlrc: string | null
       rlrc: string | null
       lxlrc: string | null
+      plrc: string | null
     }>
     | LyricAction<'set_offset', number>
     | LyricAction<'set_playbackRate', number>

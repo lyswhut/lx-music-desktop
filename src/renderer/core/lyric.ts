@@ -57,6 +57,7 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
           tlrc: musicInfo.tlrc,
           rlrc: musicInfo.rlrc,
           lxlrc: musicInfo.lxlrc,
+          plrc: musicInfo.plrc,
           // pic: musicInfo.pic,
           isPlay: isPlay.value,
           line: lyric.line,
@@ -159,14 +160,17 @@ export const setPlaybackRate = (rate: number) => {
 export const setLyric = () => {
   if (!musicInfo.id) return
   if (musicInfo.lrc) {
+    // 音译显示在主歌词上方（逐字，跟随主歌词高亮）；翻译/AI谐音在下方
+    const aboveLyrics = []
+    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) aboveLyrics.push(musicInfo.rlrc)
     const extendedLyrics = []
-    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) extendedLyrics.push(musicInfo.rlrc)
     if (appSetting['player.isShowLyricTranslation'] && musicInfo.tlrc) extendedLyrics.push(musicInfo.tlrc)
-    if (appSetting['player.isSwapLyricTranslationAndRoma']) extendedLyrics.reverse()
+    if (appSetting['player.isShowLyricPhonetic'] && musicInfo.plrc) extendedLyrics.push(musicInfo.plrc)
 
     lrc.setLyric(
       appSetting['player.isPlayLxlrc'] && musicInfo.lxlrc ? musicInfo.lxlrc : musicInfo.lrc,
       extendedLyrics,
+      aboveLyrics,
     )
     sendDesktopLyricInfo({
       action: 'set_lyric',
@@ -175,6 +179,7 @@ export const setLyric = () => {
         tlrc: musicInfo.tlrc,
         rlrc: musicInfo.rlrc,
         lxlrc: musicInfo.lxlrc,
+        plrc: musicInfo.plrc,
       },
     })
   }
@@ -234,6 +239,7 @@ export const sendInfo = () => {
       tlrc: musicInfo.tlrc,
       rlrc: musicInfo.rlrc,
       lxlrc: musicInfo.lxlrc,
+      plrc: musicInfo.plrc,
       // pic: musicInfo.pic,
       isPlay: isPlay.value,
       line: lyric.line,

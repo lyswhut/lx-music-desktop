@@ -131,7 +131,7 @@ export default {
         name: decodeName(item.songname),
         albumName: decodeName(item.remark),
         albumId: item.album_id,
-        songmid: item.audio_id,
+        songmid: item.album_audio_id,
         source: 'kg',
         interval: formatPlayTime(item.duration),
         img: null,

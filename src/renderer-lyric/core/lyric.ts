@@ -40,13 +40,16 @@ export const setPlaybackRate = (rate: number) => {
 
 export const setLyric = () => {
   if (!musicInfo.id) return
+  // 音译显示在主歌词上方（逐字，跟随主歌词高亮）；翻译/AI谐音在下方
+  const aboveLyrics = []
+  if (setting['player.isShowLyricRoma'] && lyrics.rlyric) aboveLyrics.push(lyrics.rlyric)
   const extendedLyrics = []
-  if (setting['player.isShowLyricRoma'] && lyrics.rlyric) extendedLyrics.push(lyrics.rlyric)
   if (setting['player.isShowLyricTranslation'] && lyrics.tlyric) extendedLyrics.push(lyrics.tlyric)
-  if (setting['player.isSwapLyricTranslationAndRoma']) extendedLyrics.reverse()
+  if (setting['player.isShowLyricPhonetic'] && lyrics.plyric) extendedLyrics.push(lyrics.plyric)
   lrc.setLyric(
     setting['player.isPlayLxlrc'] && lyrics.lxlyric ? lyrics.lxlyric : lyrics.lyric,
     extendedLyrics,
+    aboveLyrics,
   )
 }
 

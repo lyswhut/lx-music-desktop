@@ -7,6 +7,7 @@ export interface PlayerMusicInfo {
   tlrc: string | null
   rlrc: string | null
   lxlrc: string | null
+  plrc: string | null
   rawlrc: string | null
   // url: string | null
   name: string
@@ -21,6 +22,7 @@ export const musicInfo = window.lxData.musicInfo = reactive<PlayerMusicInfo>({
   tlrc: null,
   rlrc: null,
   lxlrc: null,
+  plrc: null,
   rawlrc: null,
   // url: null,
   name: '',

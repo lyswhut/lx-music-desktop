@@ -14,7 +14,7 @@ import {
   countRawLyric,
 } from './dbHelper'
 
-const keys = ['lyric', 'tlyric', 'rlyric', 'lxlyric'] as const
+const keys = ['lyric', 'tlyric', 'rlyric', 'lxlyric', 'plyric'] as const
 
 const toDBLyric = (id: string, source: LX.DBService.Lyricnfo['source'], lyricInfo: LX.Music.LyricInfo): LX.DBService.Lyricnfo[] => {
   return (keys.map(k => [k, lyricInfo[k]])

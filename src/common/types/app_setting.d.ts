@@ -160,6 +160,11 @@ declare global {
       'player.isShowLyricRoma': boolean
 
       /**
+       * 是否显示AI谐音歌词
+       */
+      'player.isShowLyricPhonetic': boolean
+
+      /**
        * 是否调换翻译歌词与罗马音歌词位置
        */
       'player.isSwapLyricTranslationAndRoma': boolean
