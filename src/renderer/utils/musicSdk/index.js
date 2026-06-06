@@ -3,8 +3,6 @@ import kg from './kg/index'
 import tx from './tx/index'
 import wy from './wy/index'
 import mg from './mg/index'
-import bd from './bd/index'
-import xm from './xm'
 import { supportQuality } from './api-source'
 
 
@@ -30,22 +28,12 @@ const sources = {
       name: '咪咕音乐',
       id: 'mg',
     },
-    {
-      name: '虾米音乐',
-      id: 'xm',
-    },
-    // {
-    //   name: '百度音乐',
-    //   id: 'bd',
-    // },
   ],
   kw,
   kg,
   tx,
   wy,
   mg,
-  bd,
-  xm,
 }
 export default {
   ...sources,
@@ -65,7 +53,7 @@ export default {
     const tasks = []
     const excludeSource = ['xm']
     for (const source of sources.sources) {
-      if (!sources[source.id].musicSearch || source.id == s || excludeSource.includes(source.id)) continue
+      if (!sources[source.id].musicSearch || source.id === s || excludeSource.includes(source.id)) continue
       tasks.push(sources[source.id].musicSearch.search(`${musicName} ${singer || ''}`.trim(), 1, limit).catch(_ => null))
     }
     return (await Promise.all(tasks)).filter(s => s)
@@ -76,7 +64,7 @@ export default {
     // console.log(lists)
     // console.log({ name, singer, albumName, interval, source: s })
 
-    const singersRxp = /、|&|;|；|\/|,|，|\|/
+    const singersRxp = /[、&;；/,，|]/
     const sortSingle = singer => singersRxp.test(singer)
       ? singer.split(singersRxp).sort((a, b) => a.localeCompare(b)).join('、')
       : (singer || '')
@@ -109,7 +97,7 @@ export default {
       return intv
     }
     const trimStr = str => typeof str == 'string' ? str.trim() : (str || '')
-    const filterStr = str => typeof str == 'string' ? str.replace(/\s|'|\.|,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[|!|！/g, '') : String(str || '')
+    const filterStr = str => typeof str == 'string' ? str.replace(/[\s'.,，&"、()（）`~\-<>|/\][!！]/g, '') : String(str || '')
     const fMusicName = filterStr(name).toLowerCase()
     const fSinger = filterStr(sortSingle(singer)).toLowerCase()
     const fAlbumName = filterStr(albumName).toLowerCase()
