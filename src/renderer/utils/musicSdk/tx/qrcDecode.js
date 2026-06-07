@@ -1,4 +1,4 @@
-import { inflateSync } from 'zlib'
+import { inflate, constants } from 'zlib'
 
 /**
  * QRC 歌词解密（3DES-ECB + zlib inflate）
@@ -218,12 +218,19 @@ const QRC_KEY = Buffer.from([
   0x58, 0x43, 0x21, 0x40, 0x21, 0x40, 0x23, 0x29, 0x28, 0x4e, 0x48, 0x4c,
 ])
 
+const handleInflate = (data) => new Promise((resolve, reject) => {
+  // Z_SYNC_FLUSH：容忍尾部不完整的 zlib 流（对应原实现忽略 Z_BUF_ERROR 的行为）
+  inflate(data, { finishFlush: constants.Z_SYNC_FLUSH }, (err, result) => {
+    if (err) reject(err)
+    else resolve(result)
+  })
+})
 /**
  * 解密腾讯 QRC 歌词。
  * @param {string} hexData 服务端返回的十六进制字符串
- * @returns {string} 解密并解压后的歌词文本（解析失败时返回空字符串）
+ * @returns {Promise<string>} 解密并解压后的歌词文本（解析失败时返回空字符串）
  */
-export const decodeQrc = (hexData) => {
+export const decodeQrc = async(hexData) => {
   if (!hexData || hexData.length % 2 !== 0) return ''
   const encrypted = Buffer.from(hexData, 'hex')
   if (encrypted.length === 0) return ''
@@ -237,8 +244,8 @@ export const decodeQrc = (hexData) => {
   }
 
   try {
-    // Z_SYNC_FLUSH：容忍尾部不完整的 zlib 流（对应原实现忽略 Z_BUF_ERROR 的行为）
-    return inflateSync(encrypted, { finishFlush: 2 }).toString('utf8')
+    const result = await handleInflate(encrypted)
+    return result.toString('utf8')
   } catch {
     return ''
   }

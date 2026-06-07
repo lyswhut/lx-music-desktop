@@ -1,7 +1,6 @@
 import { createCipheriv, createDecipheriv } from 'crypto'
 import { toMD5 } from '../utils'
 import { inflate } from 'zlib'
-import iconv from 'iconv-lite'
 
 
 const handleInflate = async(data) => {
@@ -19,16 +18,11 @@ const handleInflate = async(data) => {
 const buf_key = Buffer.from('yeelion')
 const buf_key_len = buf_key.length
 
-
-export const objStr2JSON = str => {
-  return JSON.parse(str.replace(/('(?=(,\s*')))|('(?=:))|((?<=([:,]\s*))')|((?<={)')|('(?=}))/g, '"'))
-}
-export const formatSinger = rawData => rawData.replace(/&/g, '、')
 export const decodeLyric = async(rawData, isGetLyricx) => {
   const buf = Buffer.isBuffer(rawData) ? rawData : Buffer.from(rawData)
   if (buf.toString('utf8', 0, 10).toLowerCase() !== 'tp=content') return ''
   const lrcData = await handleInflate(buf.subarray(buf.indexOf('\r\n\r\n') + 4))
-  if (!isGetLyricx) return iconv.decode(lrcData, 'utf8')
+  if (!isGetLyricx) return lrcData.toString('utf8')
   const buf_str = Buffer.from(lrcData.toString(), 'base64')
   const buf_str_len = buf_str.length
   const output = new Uint8Array(buf_str_len)
@@ -42,9 +36,62 @@ export const decodeLyric = async(rawData, isGetLyricx) => {
     }
   }
 
-  return iconv.decode(Buffer.from(output), 'utf8')
+  return Buffer.from(output).toString('utf8')
 }
 
+export const objStr2JSON = str => {
+  return JSON.parse(str.replace(/('(?=(,\s*')))|('(?=:))|((?<=([:,]\s*))')|((?<={)')|('(?=}))/g, '"'))
+}
+
+
+export const formatSinger = rawData => rawData.replace(/&/g, '、')
+
+// export const matchToken = headers => {
+//   try {
+//     return headers['set-cookie'][0].match(/kw_token=(\w+)/)[1]
+//   } catch (err) {
+//     return null
+//   }
+// }
+
+// const wait = time => new Promise(resolve => setTimeout(() => resolve(), time))
+
+
+// export const getToken = (retryNum = 0) => new Promise((resolve, reject) => {
+//   if (retryNum > 2) return Promise.reject(new Error('try max num'))
+
+//   if (kw_token.isGetingToken) return wait(1000).then(() => getToken(retryNum).then(token => resolve(token)))
+//   if (kw_token.token) return resolve(kw_token.token)
+//   kw_token.isGetingToken = true
+//   httpGet('http://www.kuwo.cn/', (err, resp) => {
+//     kw_token.isGetingToken = false
+//     if (err) return getToken(++retryNum)
+//     if (resp.statusCode != 200) return reject(new Error('获取失败'))
+//     const token = kw_token.token = matchToken(resp.headers)
+//     resolve(token)
+//   })
+// })
+
+// export const tokenRequest = async(url, options = {}) => {
+//   let token = kw_token.token
+//   if (!token) token = await getToken()
+//   if (!options.headers) {
+//     options.headers = {
+//       Referer: 'http://www.kuwo.cn/',
+//       csrf: token,
+//       cookie: 'kw_token=' + token,
+//     }
+//   }
+//   const requestObj = httpFetch(url, options)
+//   requestObj.promise = requestObj.promise.then(resp => {
+//     // console.log(resp)
+//     if (resp.statusCode == 200) {
+//       kw_token.token = matchToken(resp.headers)
+//     }
+//     return resp
+//   })
+//   return requestObj
+// }
 
 export const lrcTools = {
   rxps: {
@@ -71,6 +118,7 @@ export const lrcTools = {
         }
 
         prevWord.newTimeStr = `<${prevWord.startTime},${prevWord.endTime - prevWord.startTime}>`
+        // console.log(prevWord)
       }
     }
     return {
@@ -90,6 +138,7 @@ export const lrcTools = {
       }
       const wordTimes = words.match(this.rxps.wordTimeAll)
       if (!wordTimes) return
+      // console.log(wordTimes)
       let preTimeInfo
       for (const timeStr of wordTimes) {
         const result = this.rxps.wordTime.exec(timeStr)
@@ -103,7 +152,7 @@ export const lrcTools = {
     }
     result = this.rxps.tagLine.exec(line)
     if (!result) return
-    if (result[1] === 'kuwo') {
+    if (result[1] == 'kuwo') {
       let content = result[2]
       if (content != null && content.includes('][')) {
         content = content.substring(0, content.indexOf(']['))
@@ -111,7 +160,7 @@ export const lrcTools = {
       const valueOf = parseInt(content, 8)
       this.offset = Math.trunc(valueOf / 10)
       this.offset2 = Math.trunc(valueOf % 10)
-      if (this.offset === 0 || Number.isNaN(this.offset) || this.offset2 === 0 || Number.isNaN(this.offset2)) {
+      if (this.offset == 0 || Number.isNaN(this.offset) || this.offset2 == 0 || Number.isNaN(this.offset2)) {
         this.isOK = false
       }
     } else {
@@ -119,6 +168,7 @@ export const lrcTools = {
     }
   },
   parse(lrc) {
+    // console.log(lrc)
     const lines = lrc.split(/\r\n|\r|\n/)
     const tools = Object.create(this)
     tools.isOK = true
@@ -134,6 +184,7 @@ export const lrcTools = {
     if (!tools.lines.length) return ''
     let lrcs = tools.lines.join('\n')
     if (tools.tags.length) lrcs = `${tools.tags.join('\n')}\n${lrcs}`
+    // console.log(lrcs)
     return lrcs
   },
 }
