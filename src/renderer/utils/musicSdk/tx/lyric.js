@@ -32,11 +32,20 @@ const parseTools = {
   parseLyric(lrc) {
     lrc = lrc.trim()
     lrc = lrc.replace(/\r/g, '')
-    if (!lrc) return { lyric: '', lxlyric: '' }
+    if (!lrc) {
+      return {
+        lyric: '',
+        lxlyric: '',
+        lines: [],
+      }
+    }
     const lines = lrc.split('\n')
 
     const lxlrcLines = []
     const lrcLines = []
+    // 结构化字网格：{ startMsTime, timeStr, words:[{off, dur, text}] }
+    // 供音译逐字化复用主歌词每个字的相对偏移/时长（与 font-player 同索引联动对齐）
+    const wordLines = []
 
     for (let line of lines) {
       line = line.trim()
@@ -62,27 +71,42 @@ const parseTools = {
       lrcLines.push(`${startTimeStr}${words.replace(this.rxps.wordTimeAll, '')}`)
 
       let times = words.match(this.rxps.wordTimeAll)
-      if (!times) continue
-      times = times.map(time => {
-        const result = /\((\d+),(\d+)\)/.exec(time)
-        return `<${Math.max(parseInt(result[1]) - startMsTime, 0)},${result[2]}>`
-      })
+      if (!times) {
+        wordLines.push({ startMsTime, timeStr: startTimeStr, words: [] })
+        continue
+      }
+      // tx 逐字格式为 `word(off,dur)`，文字在时间标签之前；转为 lx 的 `<off,dur>word`
       const wordArr = words.split(this.rxps.wordTime)
-      const newWords = times.map((time, index) => `${time}${wordArr[index]}`).join('')
+      const grid = times.map((time, index) => {
+        const r = /\((\d+),(\d+)\)/.exec(time)
+        const off = Math.max(parseInt(r[1]) - startMsTime, 0)
+        const dur = parseInt(r[2])
+        return { off, dur, text: wordArr[index] ?? '' }
+      })
+      const newWords = grid.map(w => `<${w.off},${w.dur}>${w.text}`).join('')
       lxlrcLines.push(`${startTimeStr}${newWords}`)
+      wordLines.push({ startMsTime, timeStr: startTimeStr, words: grid })
     }
     return {
       lyric: lrcLines.join('\n'),
       lxlyric: lxlrcLines.join('\n'),
+      lines: wordLines,
     }
   },
   parseRlyric(lrc) {
     lrc = lrc.trim()
     lrc = lrc.replace(/\r/g, '')
-    if (!lrc) return { lyric: '', lxlyric: '' }
+    if (!lrc) {
+      return {
+        lyric: '',
+        lines: [],
+      }
+    }
     const lines = lrc.split('\n')
 
     const lrcLines = []
+    // 结构化音节网格：{ startMsTime, timeStr, syllables:[音节文字] }
+    const sylLines = []
 
     for (let line of lines) {
       line = line.trim()
@@ -95,9 +119,56 @@ const parseTools = {
 
       let words = line.replace(this.rxps.lineTime, '')
 
-      lrcLines.push(`${startTimeStr}${words.replace(this.rxps.wordTimeAll, '')}`)
+      const plain = words.replace(this.rxps.wordTimeAll, '')
+      lrcLines.push(`${startTimeStr}${plain}`)
+
+      // 拆出每个音节文字（去掉 `(off,dur)` 标记后按音节切分）
+      const syllables = words.match(this.rxps.wordTimeAll)
+        ? words.split(this.rxps.wordTime).filter(s => s !== '')
+        : null
+      sylLines.push({ startMsTime, timeStr: startTimeStr, syllables, plain })
     }
-    return lrcLines.join('\n')
+    return {
+      lyric: lrcLines.join('\n'),
+      lines: sylLines,
+    }
+  },
+  /**
+   * 音译逐字化：让音译每个音节直接复用主歌词同行同索引字的相对偏移/时长，
+   * 这样音译逐字与主歌词同时间网格、同索引，font-player 才能联动卡拉OK同步。
+   * 仅当某行音节数与主歌词字数一致时逐字化，否则该行降级为纯文本（仍带时间标签）。
+   * 任一行无法逐字化或网格缺失时，整体降级走 fixRlrcTimeTag 纯文本路径（返回 null）。
+   */
+  buildWordByWordRlyric(rlrcLines, mainLines) {
+    if (!rlrcLines.length || !mainLines.length) return null
+    // 主歌词按起始时间建索引，便于与音译行就近匹配
+    const mainByTime = new Map()
+    for (const ml of mainLines) {
+      if (!mainByTime.has(ml.startMsTime)) mainByTime.set(ml.startMsTime, ml)
+    }
+    let matched = 0
+    const out = []
+    for (const rl of rlrcLines) {
+      // 就近匹配主歌词行（容差 100ms）
+      let main = mainByTime.get(rl.startMsTime)
+      if (!main) {
+        for (const ml of mainLines) {
+          if (Math.abs(ml.startMsTime - rl.startMsTime) < 100) { main = ml; break }
+        }
+      }
+      if (main?.words?.length && rl.syllables && rl.syllables.length === main.words.length) {
+        let lxText = ''
+        for (let j = 0; j < rl.syllables.length; j++) {
+          lxText += `<${main.words[j].off},${main.words[j].dur}>${rl.syllables[j]}`
+        }
+        out.push(`${main.timeStr}${lxText}`)
+        matched++
+      } else {
+        out.push(`${(main ?? rl).timeStr}${rl.plain}`)
+      }
+    }
+    // 没有任何一行能逐字化时视为失败，让调用方回退
+    return matched ? out.join('\n') : null
   },
   removeTag(str) {
     return str.replace(/^[\S\s]*?LyricContent="/, '').replace(/"\/>[\S\s]*?$/, '')
@@ -181,14 +252,23 @@ const parseTools = {
       rlyric: '',
       lxlyric: '',
     }
+    let mainLines = []
     if (lrc) {
-      let { lyric, lxlyric } = this.parseLyric(this.removeTag(lrc))
+      let {
+        lyric,
+        lxlyric,
+        lines,
+      } = this.parseLyric(this.removeTag(lrc))
       info.lyric = lyric
       info.lxlyric = lxlyric
-      // console.log(lyric)
-      // console.log(lxlyric)
+      mainLines = lines
     }
-    if (rlrc) info.rlyric = this.fixRlrcTimeTag(this.parseRlyric(this.removeTag(rlrc)), info.lyric)
+    if (rlrc) {
+      const { lyric: rlyricPlain, lines: rlrcLines } = this.parseRlyric(this.removeTag(rlrc))
+      // 优先尝试逐字音译（复用主歌词字网格、与之同索引联动）；失败再回退纯文本对齐
+      const wbw = this.buildWordByWordRlyric(rlrcLines, mainLines)
+      info.rlyric = wbw ?? this.fixRlrcTimeTag(rlyricPlain, info.lyric)
+    }
     if (tlrc) info.tlyric = this.fixTlrcTimeTag(tlrc, info.lyric)
     // console.log(info.lyric)
     // console.log(info.tlyric)
