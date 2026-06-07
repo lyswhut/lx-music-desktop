@@ -58,6 +58,7 @@ declare namespace LX {
       qualitys: MusicQualityTypeKg[]
       _qualitys: _MusicQualityTypeKg
       hash: string // 歌曲hash
+      albumAudioId?: string // 专辑内歌曲ID(MixSongID)，用于歌词精确搜索
     }
     interface MusicInfo_kg extends MusicInfoBase<'kg'> {
       meta: MusicInfoMeta_kg
