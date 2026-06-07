@@ -8,6 +8,14 @@ import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
 import { encodePath } from '@common/utils/electron'
 
 let browserWindow: Electron.BrowserWindow | null = null
+let didShowStartupWindow = false
+
+const showStartupWindow = () => {
+  if (didShowStartupWindow || global.envParams.cmdParams.hidden) return
+  didShowStartupWindow = true
+  showWindow()
+  setThumbarButtons()
+}
 
 const winEvent = () => {
   if (!browserWindow) return
@@ -42,10 +50,7 @@ const winEvent = () => {
   })
 
   browserWindow.once('ready-to-show', () => {
-    if (!global.envParams.cmdParams.hidden) {
-      showWindow()
-      setThumbarButtons()
-    }
+    showStartupWindow()
     global.lx.event_app.main_window_ready_to_show()
   })
 
@@ -105,11 +110,13 @@ export const createWindow = () => {
     if (isLinux) options.resizable = true
   }
   browserWindow = new BrowserWindow(options)
+  didShowStartupWindow = false
+  winEvent()
 
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
-  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
-
-  winEvent()
+  void browserWindow
+    .loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+    .then(showStartupWindow)
 
   if (global.envParams.cmdParams.odt) handleOpenDevTools(browserWindow.webContents)
 
