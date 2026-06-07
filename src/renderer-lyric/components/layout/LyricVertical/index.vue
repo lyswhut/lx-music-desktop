@@ -122,6 +122,22 @@ export default {
       &.font-mode .extended .font-lrc {
         transition: @transition-slow;
         transition-property: font-size, color;
+        // 逐字扩展行（如酷狗逐字音译）：span 与主歌词同款卡拉OK填充
+        > span {
+          // 容器 .extended .font-lrc 上的 .stroke3 会被 span 继承，叠在透明填充文字上糊成黑块，须清除
+          text-shadow: none;
+          background-repeat: no-repeat;
+          background-color: var(--color-lyric-unplay);
+          background-image: -webkit-linear-gradient(top, var(--color-lyric-played), var(--color-lyric-played));
+          -webkit-text-fill-color: transparent;
+          -webkit-background-clip: text;
+          // 透明填充在浅背景上会与背景同色而“消失”，用真正的描边属性（非 text-shadow，不会糊成黑块）垫底
+          -webkit-text-stroke: 0.04em var(--color-lyric-shadow);
+          paint-order: stroke fill;
+          background-size: 0 100%;
+          padding: 0.14em;
+          margin: -0.08em;
+        }
       }
       // &.font-mode > .line {
       //   font-weight: bold;

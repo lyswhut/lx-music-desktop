@@ -6,17 +6,20 @@ export const lyrics = markRaw<{
   tlyric: string | null
   rlyric: string | null
   lxlyric: string | null
+  plyric: string | null
 }>({
   lyric: '',
   tlyric: '',
   rlyric: '',
   lxlyric: '',
+  plyric: '',
 })
 
 interface Line {
   text: string
   time: number
   extendedLyrics: string[]
+  aboveLyrics: string[]
   dom_line: HTMLDivElement
 }
 
