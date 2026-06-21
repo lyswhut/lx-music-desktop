@@ -111,7 +111,7 @@ export default {
         albumName,
         albumId,
         source: 'tx',
-        interval: formatPlayTime(item.interval),
+        interval: item.interval ? formatPlayTime(item.interval) : null,
         songId: item.id,
         albumMid: item.album?.mid ?? '',
         strMediaMid: item.file.media_mid,
@@ -129,13 +129,10 @@ export default {
   },
   search(str, page = 1, limit) {
     if (limit == null) limit = this.limit
-    return this.musicSearch(str, page, limit).then(data => {
-      // 桌面端结构：data.body.song.list；兼容旧移动端 data.body.item_song
-      const body = data.body ?? {}
-      let list = this.handleResult(body.song?.list ?? body.item_song)
+    return this.musicSearch(str, page, limit).then(({ body, meta }) => {
+      let list = this.handleResult(body.song.list)
 
-      const meta = data.meta ?? {}
-      this.total = meta.sum ?? meta.estimate_sum ?? 0
+      this.total = meta.sum
       this.page = page
       this.allPage = Math.ceil(this.total / limit)
 
