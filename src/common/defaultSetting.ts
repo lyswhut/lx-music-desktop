@@ -157,6 +157,11 @@ const defaultSetting: LX.AppSetting = {
   'odc.isAutoClearSearchInput': false,
   'odc.isAutoClearSearchList': false,
 
+  'halo.enable': false,
+  'halo.maxCharsPerLine': 20,
+  'halo.showProgress': false,
+  'halo.layout': 'center',
+
 }
 
 

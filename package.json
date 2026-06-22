@@ -180,6 +180,7 @@
     "message2call": "^0.1.3",
     "music-metadata": "^11.12.3",
     "needle": "github:lyswhut/needle#93299ac841b7e9a9f82ca7279b88aaaeda404060",
+    "node-hid": "^3.3.0",
     "node-id3": "^0.2.9",
     "sortablejs": "^1.15.7",
     "tunnel": "^0.0.6",
