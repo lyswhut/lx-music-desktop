@@ -33,6 +33,7 @@ const options = {
     'node_modules/electron-font-manager/package.json',
     'node_modules/electron-font-manager/build/Release/font_manager.node',
     'node_modules/node-gyp-build',
+    'node_modules/node-hid/**/*',
     'node_modules/bufferutil',
     'node_modules/utf-8-validate',
     'build/Release/qrc_decode.node',

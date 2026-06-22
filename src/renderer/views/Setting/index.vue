@@ -68,6 +68,7 @@ import SettingBackup from './components/SettingBackup.vue'
 import SettingOther from './components/SettingOther.vue'
 import SettingUpdate from './components/SettingUpdate.vue'
 import SettingAbout from './components/SettingAbout.vue'
+import SettingHalo from './components/SettingHalo.vue'
 
 export default {
   name: 'Setting',
@@ -88,6 +89,7 @@ export default {
     SettingOther,
     SettingUpdate,
     SettingAbout,
+    SettingHalo,
   },
   setup() {
     const t = useI18n()
@@ -107,6 +109,7 @@ export default {
         { id: 'SettingHotKey', title: t('setting__hot_key') },
         { id: 'SettingSync', title: t('setting__sync') },
         { id: 'SettingOpenAPI', title: t('setting__open_api') },
+        { id: 'SettingHalo', title: t('setting__halo') },
         { id: 'SettingNetwork', title: t('setting__network') },
         { id: 'SettingOdc', title: t('setting__odc') },
         { id: 'SettingBackup', title: t('setting__backup') },

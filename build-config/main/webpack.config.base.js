@@ -15,6 +15,7 @@ module.exports = {
   externals: {
     'font-list': 'font-list',
     'better-sqlite3': 'better-sqlite3',
+    'node-hid': 'node-hid',
     'electron-font-manager': 'electron-font-manager',
     bufferutil: 'bufferutil',
     'utf-8-validate': 'utf-8-validate',

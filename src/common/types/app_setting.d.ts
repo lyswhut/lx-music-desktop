@@ -690,6 +690,26 @@ declare global {
        * 是否在离开搜索界面时自动清空搜索结果列表
        */
       'odc.isAutoClearSearchList': boolean
+
+      /**
+       * 是否启用Halo音箱歌词同步
+       */
+      'halo.enable': boolean
+
+      /**
+       * Halo每行最大字符数
+       */
+      'halo.maxCharsPerLine': number
+
+      /**
+       * Halo是否显示歌词行号进度
+       */
+      'halo.showProgress': boolean
+
+      /**
+       * Halo文字布局
+       */
+      'halo.layout': 'left' | 'center' | 'right' | 'stretch' | 'scroll_left_to_right' | 'scroll_right_to_left'
     }
   }
 
