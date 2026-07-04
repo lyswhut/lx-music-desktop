@@ -27,6 +27,9 @@ import { initSetting } from './store/setting'
 import './worker'
 import { saveViewPrevState } from './utils/data'
 
+import initOpenApiSearch from './utils/openApiSearch'
+
+
 // sync(store, router)
 
 router.afterEach((to) => {
@@ -77,6 +80,9 @@ void getSetting().then(setting => {
   initPlugins(app)
   mountComponents(app)
   app.mount('#root')
+
+  // 注册 Open API 搜索 IPC handler（在 app 挂载后初始化）
+  initOpenApiSearch()
 })
 
 // bubbleCursor()
