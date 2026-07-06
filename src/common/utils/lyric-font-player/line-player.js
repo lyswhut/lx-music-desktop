@@ -2,6 +2,7 @@ import { getNow, TimeoutTools } from './utils'
 
 const timeFieldExp = /^(?:\[[\d:.]+\])+/g
 const timeExp = /\d{1,3}(:\d{1,3}){0,2}(?:\.\d{1,3})/g
+const msTimeRxp = /\[\d{1,3}(:\d{1,3}){0,2}\.\d{3}]/
 const tagRegMap = {
   title: 'ti',
   artist: 'ar',
@@ -82,6 +83,7 @@ export default class LinePlayer {
 
   _initLines() {
     this.lines = []
+    const isMsTime = msTimeRxp.test(this.lyric)
     const lines = this.lyric.split(/\r\n|\r|\n/)
     const linesMap = {}
     for (let i = 0; i < lines.length; i++) {
@@ -103,9 +105,10 @@ export default class LinePlayer {
             if (timeArr.length > 3) continue
             else if (timeArr.length < 3) for (let i = 3 - timeArr.length; i--;) timeArr.unshift('0')
             if (timeArr[2].indexOf('.') > -1) timeArr.splice(2, 1, ...timeArr[2].split('.'))
+            const msTime = timeArr[3] || '0'
 
             linesMap[timeStr] = {
-              time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(timeArr[3] || 0),
+              time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(isMsTime ? msTime : msTime.padEnd(3, '0')),
               text,
               extendedLyrics: [],
             }

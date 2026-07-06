@@ -42,7 +42,7 @@ const parseLyric = str => {
   let lxlyric = str.replace(/\[((\d+),\d+)\].*/g, str => {
     let result = str.match(/\[((\d+),\d+)\].*/)
     let time = parseInt(result[2])
-    let ms = time % 1000
+    let ms = (time % 1000).toString().padStart(3, '0')
     time /= 1000
     let m = parseInt(time / 60).toString().padStart(2, '0')
     time %= 60
