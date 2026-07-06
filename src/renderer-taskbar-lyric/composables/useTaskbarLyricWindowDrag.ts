@@ -16,10 +16,32 @@ export const useTaskbarLyricWindowDrag = () => {
   let startScreenX = 0
   let startOffsetX = 0
 
+  const releasePointerCapture = () => {
+    if (pointerId == null || !dragTarget) return
+    try {
+      if (dragTarget.hasPointerCapture(pointerId)) {
+        dragTarget.releasePointerCapture(pointerId)
+      }
+    } catch {
+      // The taskbar lyric window can be moved/repainted while dragging. Treat
+      // stale pointer capture state as already released.
+    }
+  }
+
+  const setPointerCapture = () => {
+    if (pointerId == null || !dragTarget) return
+    try {
+      dragTarget.setPointerCapture(pointerId)
+    } catch {
+      releasePointerCapture()
+    }
+  }
+
   const detachDragListeners = () => {
     window.removeEventListener('pointermove', handlePointerMove)
     window.removeEventListener('pointerup', handlePointerEnd)
     window.removeEventListener('pointercancel', handlePointerEnd)
+    window.removeEventListener('lostpointercapture', handlePointerEnd)
     window.removeEventListener('blur', handleWindowBlur)
     document.removeEventListener('visibilitychange', handleVisibilityChange)
   }
@@ -39,9 +61,7 @@ export const useTaskbarLyricWindowDrag = () => {
     if (!isDragging.value) return
     if (event && pointerId != null && event.pointerId !== pointerId) return
     isDragging.value = false
-    if (pointerId != null && dragTarget?.hasPointerCapture(pointerId)) {
-      dragTarget.releasePointerCapture(pointerId)
-    }
+    releasePointerCapture()
     pointerId = null
     dragTarget = null
     sendTaskbarLyricDragEnd()
@@ -67,12 +87,13 @@ export const useTaskbarLyricWindowDrag = () => {
     isDragging.value = true
     pointerId = event.pointerId
     dragTarget = event.currentTarget instanceof HTMLElement ? event.currentTarget : null
-    dragTarget?.setPointerCapture(pointerId)
     startScreenX = event.screenX
     startOffsetX = state.offsetX
+    setPointerCapture()
     window.addEventListener('pointermove', handlePointerMove)
     window.addEventListener('pointerup', handlePointerEnd)
     window.addEventListener('pointercancel', handlePointerEnd)
+    window.addEventListener('lostpointercapture', handlePointerEnd)
     window.addEventListener('blur', handleWindowBlur)
     document.addEventListener('visibilitychange', handleVisibilityChange)
   }

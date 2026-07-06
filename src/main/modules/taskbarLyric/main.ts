@@ -270,8 +270,8 @@ export const showTaskbarLyricMenu = () => {
   if (!browserWindow || browserWindow.isDestroyed() || isMenuPopupVisible) return
   isMenuPopupVisible = true
 
-  browserWindow.setFocusable(true)
   browserWindow.setSkipTaskbar(true)
+  browserWindow.setFocusable(false)
   refreshWindowZOrder()
 
   const menu = Menu.buildFromTemplate(createTaskbarLyricMenuTemplate(currentState))
@@ -283,7 +283,6 @@ export const showTaskbarLyricMenu = () => {
         return
       }
       browserWindow.setSkipTaskbar(true)
-      browserWindow.blur()
       browserWindow.setFocusable(false)
       browserWindow.showInactive()
       refreshWindowZOrder()
