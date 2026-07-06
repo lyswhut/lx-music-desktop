@@ -17,12 +17,19 @@ let browserWindow: Electron.BrowserWindow | null = null
 let currentState: TaskbarLyricState | null = null
 let dragOffsetX: number | null = null
 let zOrderTimer: NodeJS.Timeout | null = null
+let recoverTimers: NodeJS.Timeout[] = []
 let isMenuPopupVisible = false
 
 const clearZOrderTimer = () => {
   if (!zOrderTimer) return
   clearInterval(zOrderTimer)
   zOrderTimer = null
+}
+
+const clearRecoverTimers = () => {
+  if (!recoverTimers.length) return
+  for (const timer of recoverTimers) clearTimeout(timer)
+  recoverTimers = []
 }
 
 const refreshWindowZOrder = () => {
@@ -107,6 +114,23 @@ const getClampedOffsetX = (offsetX: number) => {
     position: global.lx.appSetting['taskbarLyric.position'],
     offsetX,
   })
+}
+
+const restoreWindowRuntimeState = (options: { refreshBounds?: boolean } = {}) => {
+  if (!browserWindow || browserWindow.isDestroyed()) return
+  if (options.refreshBounds) {
+    const bounds = getWindowBounds()
+    if (!bounds) {
+      closeWindow()
+      return
+    }
+    browserWindow.setBounds(bounds)
+  }
+  browserWindow.setIgnoreMouseEvents(false)
+  browserWindow.setSkipTaskbar(true)
+  browserWindow.setFocusable(false)
+  browserWindow.showInactive()
+  refreshWindowZOrder()
 }
 
 const getWindowUrl = () => {
@@ -228,6 +252,7 @@ export const createWindow = () => {
 
   browserWindow.on('closed', () => {
     clearZOrderTimer()
+    clearRecoverTimers()
     browserWindow = null
   })
 
@@ -293,12 +318,18 @@ export const showTaskbarLyricMenu = () => {
 
 export const refreshBounds = () => {
   if (!browserWindow) return
-  const bounds = getWindowBounds()
-  if (!bounds) {
-    closeWindow()
-    return
-  }
-  browserWindow.setBounds(bounds)
+  restoreWindowRuntimeState({ refreshBounds: true })
+}
+
+export const recoverWindowAfterSystemResume = () => {
+  if (!browserWindow || browserWindow.isDestroyed()) return
+  clearRecoverTimers()
+  restoreWindowRuntimeState({ refreshBounds: true })
+  recoverTimers = [300, 1000, 2000].map(delay => {
+    return setTimeout(() => {
+      restoreWindowRuntimeState({ refreshBounds: true })
+    }, delay)
+  })
 }
 
 export const updateWindowState = (state?: TaskbarLyricState) => {

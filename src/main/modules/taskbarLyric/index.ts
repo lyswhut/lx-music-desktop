@@ -1,12 +1,18 @@
 import { screen, powerMonitor } from 'electron'
 import { isWin } from '@common/utils'
-import { closeWindow, createWindow, refreshBounds, refreshWindowStateFromConfig, isExistWindow, updatePlayerStatus } from './main'
+import { closeWindow, createWindow, refreshBounds, refreshWindowStateFromConfig, isExistWindow, recoverWindowAfterSystemResume, updatePlayerStatus } from './main'
 
 let isRegistered = false
 
 const refreshBoundsIfEnabled = () => {
   if (!global.lx.appSetting['taskbarLyric.enable']) return
   if (isExistWindow()) refreshBounds()
+  else createWindow()
+}
+
+const recoverWindowIfEnabled = () => {
+  if (!global.lx.appSetting['taskbarLyric.enable']) return
+  if (isExistWindow()) recoverWindowAfterSystemResume()
   else createWindow()
 }
 
@@ -62,8 +68,8 @@ export default () => {
   screen.on('display-added', refreshBoundsIfEnabled)
   screen.on('display-removed', refreshBoundsIfEnabled)
   screen.on('display-metrics-changed', refreshBoundsIfEnabled)
-  powerMonitor.on('resume', refreshBoundsIfEnabled)
-  powerMonitor.on('unlock-screen', refreshBoundsIfEnabled)
+  powerMonitor.on('resume', recoverWindowIfEnabled)
+  powerMonitor.on('unlock-screen', recoverWindowIfEnabled)
 }
 
 export * from './main'
