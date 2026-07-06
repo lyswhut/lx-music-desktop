@@ -13,6 +13,7 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const mainConfig = require('./main/webpack.config.dev')
 const rendererConfig = require('./renderer/webpack.config.dev')
 const rendererLyricConfig = require('./renderer-lyric/webpack.config.dev')
+const rendererTaskbarLyricConfig = require('./renderer-taskbar-lyric/webpack.config.dev')
 const rendererScriptConfig = require('./renderer-scripts/webpack.config.dev')
 const { Arch } = require('electron-builder')
 const replaceLib = require('./build-before-pack')
@@ -22,6 +23,7 @@ const { debounce } = require('./utils')
 let electronProcess = null
 let hotMiddlewareRenderer
 let hotMiddlewareRendererLyric
+let hotMiddlewareRendererTaskbarLyric
 
 
 function startRenderer() {
@@ -120,6 +122,42 @@ function startRendererLyric() {
   })
 }
 
+function startRendererTaskbarLyric() {
+  return new Promise((resolve, reject) => {
+    const compiler = webpack(rendererTaskbarLyricConfig)
+    hotMiddlewareRendererTaskbarLyric = webpackHotMiddleware(compiler, {
+      log: false,
+      heartbeat: 2500,
+    })
+
+    compiler.hooks.compilation.tap('compilation', compilation => {
+      HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
+        hotMiddlewareRendererTaskbarLyric.publish({ action: 'reload' })
+        cb()
+      })
+    })
+
+    const server = new WebpackDevServer({
+      port: 9082,
+      hot: true,
+      historyApiFallback: true,
+      client: {
+        logging: 'warn',
+        overlay: true,
+      },
+      setupMiddlewares(middlewares, devServer) {
+        devServer.app.use(hotMiddlewareRendererTaskbarLyric)
+        setImmediate(() => {
+          devServer.middleware.waitUntilValid(resolve)
+        })
+        return middlewares
+      },
+    }, compiler)
+
+    server.start()
+  })
+}
+
 function startRendererScripts() {
   return new Promise((resolve, reject) => {
     // mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
@@ -147,6 +185,7 @@ function startMain() {
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
       hotMiddlewareRenderer.publish({ action: 'compiling' })
       hotMiddlewareRendererLyric.publish({ action: 'compiling' })
+      hotMiddlewareRendererTaskbarLyric.publish({ action: 'compiling' })
       done()
     })
 
@@ -222,6 +261,7 @@ function init() {
   spinners.add('main', { text: 'main compiling' })
   spinners.add('renderer', { text: 'renderer compiling' })
   spinners.add('renderer-lyric', { text: 'renderer-lyric compiling' })
+  spinners.add('renderer-taskbar-lyric', { text: 'renderer-taskbar-lyric compiling' })
   spinners.add('renderer-scripts', { text: 'renderer-scripts compiling' })
   function handleSuccess(name) {
     spinners.succeed(name, { text: name + ' compile success!' })
@@ -239,6 +279,10 @@ function init() {
     startRendererLyric().then(() => handleSuccess('renderer-lyric')).catch((err) => {
       console.error(err.message)
       return handleFail('renderer-lyric')
+    }),
+    startRendererTaskbarLyric().then(() => handleSuccess('renderer-taskbar-lyric')).catch((err) => {
+      console.error(err.message)
+      return handleFail('renderer-taskbar-lyric')
     }),
     startRendererScripts().then(() => handleSuccess('renderer-scripts')).catch((err) => {
       console.error(err.message)

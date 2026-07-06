@@ -17,12 +17,17 @@ const handleApplyPlaybackRate = debounce(setPlaybackRate, 300)
 
 export default () => {
   init()
+  sendInfo()
 
   const setPlayInfo = () => {
     stop()
     sendInfo()
   }
 
+  watch(() => appSetting['taskbarLyric.enable'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showCover'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showSongInfo'], sendInfo)
+  watch(() => appSetting['taskbarLyric.showCurrentLine'], sendInfo)
   watch(() => appSetting['player.isShowLyricTranslation'], setLyric)
   watch(() => appSetting['player.isShowLyricRoma'], setLyric)
   watch(() => appSetting['player.isSwapLyricTranslationAndRoma'], setLyric)
@@ -34,6 +39,7 @@ export default () => {
   window.app_event.on('error', pause)
   window.app_event.on('musicToggled', setPlayInfo)
   window.app_event.on('lyricUpdated', setLyric)
+  window.app_event.on('picUpdated', sendInfo)
   window.app_event.on('setPlaybackRate', handleApplyPlaybackRate)
 
   onBeforeUnmount(() => {
@@ -43,6 +49,7 @@ export default () => {
     window.app_event.off('error', pause)
     window.app_event.off('musicToggled', setPlayInfo)
     window.app_event.off('lyricUpdated', setLyric)
+    window.app_event.off('picUpdated', sendInfo)
     window.app_event.off('setPlaybackRate', handleApplyPlaybackRate)
   })
 }

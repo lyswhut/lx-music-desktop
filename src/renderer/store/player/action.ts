@@ -8,6 +8,7 @@ import {
   isShowPlayerDetail,
   isShowPlayComment,
   isShowLrcSelectContent,
+  isShowPlayQueue,
   playInfo,
   playMusicInfo,
   playedList,
@@ -17,6 +18,7 @@ import { getListMusicsFromCache } from '@renderer/store/list/action'
 import { downloadList } from '@renderer/store/download/state'
 import { setProgress } from './playProgress'
 import { playNext } from '@renderer/core/player'
+import { moveTempQueueItem } from '@renderer/core/player/queue.mjs'
 import { LIST_IDS } from '@common/constants'
 import { toRaw } from '@common/utils/vueTools'
 import { arrPush, arrUnshift } from '@common/utils/common'
@@ -67,6 +69,10 @@ export const setShowPlayComment = (val: boolean) => {
 
 export const setShowPlayLrcSelectContentLrc = (val: boolean) => {
   isShowLrcSelectContent.value = val
+}
+
+export const setShowPlayQueue = (val: boolean) => {
+  isShowPlayQueue.value = val
 }
 
 export const setPlayListId = (listId: string | null) => {
@@ -244,6 +250,11 @@ export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
  */
 export const removeTempPlayList = (index: number) => {
   tempPlayList.splice(index, 1)
+}
+
+export const moveTempPlayList = (oldIndex: number, newIndex: number) => {
+  const list = moveTempQueueItem(tempPlayList, oldIndex, newIndex)
+  tempPlayList.splice(0, tempPlayList.length, ...list)
 }
 /**
  * 清空稍后播放列表

@@ -105,7 +105,37 @@
 
 ## 源码使用方法
 
-请参阅：<https://lyswhut.github.io/lx-music-doc/desktop/use-source-code>
+更完整的说明请参阅：<https://lyswhut.github.io/lx-music-doc/desktop/use-source-code>
+
+### 环境要求
+
+- Node.js 16+（请以当前仓库 `package.json` 中的 `engines` 字段为准，当前建议使用 Node.js 22+）
+
+### 环境准备
+
+1. 安装 Node.js 环境（如已安装请跳过）：下载并安装 [Node.js](https://nodejs.org/)，安装结束后，打开命令行输入 `node -v`，输出 Node.js 的版本号即表示已安装完成。
+2. 安装 Visual Studio Build Tools（如已安装请跳过）：下载并安装 [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools)，安装程序后勾选「使用 C++ 的桌面开发」安装即可。
+3. 拉取代码：克隆本仓库代码。
+4. 安装依赖：在项目根目录打开命令行，执行 `npm install`，若此命令执行的过程中报错，可以尝试搜索报错内容寻找解决方法。
+
+### 开发及构建
+
+```bash
+# 开发模式
+npm run dev
+
+# 构建免安装版
+npm run pack:dir
+
+# 构建安装包（Windows）
+npm run pack:win
+
+# 构建安装包（macOS）
+npm run pack:mac
+
+# 构建安装包（Linux）
+npm run pack:linux
+```
 
 ## 项目协议
 

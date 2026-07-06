@@ -86,6 +86,7 @@ const popupStyle = reactive({
 const setTagPopupWidth = () => {
   window.setTimeout(() => {
     const dom_view = document.getElementById('view')
+    if (!dom_view) return
     popupStyle.width = dom_view.clientWidth * 0.96 + 'px'
     popupStyle.maxHeight = dom_view.clientHeight * 0.65 + 'px'
   }, 50)

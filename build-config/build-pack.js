@@ -1,8 +1,18 @@
 /* eslint-disable no-template-curly-in-string */
 
+process.env.ELECTRON_BUILDER_BINARIES_MIRROR ||= 'https://npmmirror.com/mirrors/electron-builder-binaries/'
+
+const fs = require('node:fs')
+const https = require('node:https')
+const os = require('node:os')
+const path = require('node:path')
+const { execFile } = require('node:child_process')
 const builder = require('electron-builder')
 const beforePack = require('./build-before-pack')
 const afterPack = require('./build-after-pack')
+
+const winCodeSignVersion = 'winCodeSign-2.6.0'
+const winCodeSignArchive = `${winCodeSignVersion}.7z`
 
 /**
 * @type {import('electron-builder').Configuration}
@@ -47,7 +57,7 @@ const options = {
   publish: [
     {
       provider: 'github',
-      owner: 'lyswhut',
+      owner: 'sunny1028',
       repo: 'lx-music-desktop',
     },
   ],
@@ -260,6 +270,100 @@ const createTarget = {
   },
 }
 
+const getElectronBuilderCacheDir = () => {
+  if (process.env.ELECTRON_BUILDER_CACHE) return path.resolve(process.env.ELECTRON_BUILDER_CACHE)
+  if (process.platform == 'win32' && process.env.LOCALAPPDATA) return path.join(process.env.LOCALAPPDATA, 'electron-builder', 'Cache')
+  if (process.platform == 'darwin') return path.join(os.homedir(), 'Library', 'Caches', 'electron-builder')
+  return path.join(process.env.XDG_CACHE_HOME || path.join(os.homedir(), '.cache'), 'electron-builder')
+}
+
+const getMirrorUrl = () => {
+  return process.env.NPM_CONFIG_ELECTRON_BUILDER_BINARIES_MIRROR ||
+    process.env.npm_config_electron_builder_binaries_mirror ||
+    process.env.npm_package_config_electron_builder_binaries_mirror ||
+    process.env.ELECTRON_BUILDER_BINARIES_MIRROR ||
+    'https://github.com/electron-userland/electron-builder-binaries/releases/download/'
+}
+
+const downloadFile = (url, savePath) => {
+  return new Promise((resolve, reject) => {
+    const request = https.get(url, response => {
+      if ([301, 302, 303, 307, 308].includes(response.statusCode) && response.headers.location) {
+        response.resume()
+        downloadFile(new URL(response.headers.location, url).toString(), savePath).then(resolve).catch(reject)
+        return
+      }
+      if (response.statusCode != 200) {
+        response.resume()
+        reject(new Error(`Download failed: ${response.statusCode} ${url}`))
+        return
+      }
+
+      const file = fs.createWriteStream(savePath)
+      response.pipe(file)
+      file.on('finish', () => {
+        file.close(resolve)
+      })
+      file.on('error', reject)
+    })
+    request.on('error', reject)
+  })
+}
+
+const run7z = (args) => {
+  return new Promise((resolve, reject) => {
+    const arch = process.arch == 'ia32' ? 'ia32' : process.arch == 'arm64' ? 'arm64' : 'x64'
+    const exe = path.join(__dirname, '..', 'node_modules', '7zip-bin', 'win', arch, '7za.exe')
+    execFile(exe, args, (error, stdout, stderr) => {
+      if (error) {
+        error.message += `\n${stdout}\n${stderr}`
+        reject(error)
+        return
+      }
+      resolve()
+    })
+  })
+}
+
+const ensureWinCodeSignCache = async() => {
+  if (process.platform != 'win32') return
+
+  const cacheDir = path.join(getElectronBuilderCacheDir(), 'winCodeSign')
+  const targetDir = path.join(cacheDir, winCodeSignVersion)
+  const rceditX64Path = path.join(targetDir, 'rcedit-x64.exe')
+  const signtoolPath = path.join(targetDir, 'windows-10', 'x64', 'signtool.exe')
+  if (fs.existsSync(rceditX64Path) && fs.existsSync(signtoolPath)) return
+
+  fs.mkdirSync(cacheDir, { recursive: true })
+  fs.rmSync(targetDir, { recursive: true, force: true })
+  fs.mkdirSync(targetDir, { recursive: true })
+
+  const archivePath = path.join(cacheDir, winCodeSignArchive)
+  if (!fs.existsSync(archivePath)) {
+    const baseUrl = getMirrorUrl().replace(/\/?$/, '/')
+    const downloadUrl = `${baseUrl}${winCodeSignVersion}/${winCodeSignArchive}`
+    const tempArchivePath = `${archivePath}.tmp`
+    fs.rmSync(tempArchivePath, { force: true })
+    console.log(`download ${winCodeSignArchive} from ${downloadUrl}`)
+    await downloadFile(downloadUrl, tempArchivePath)
+    fs.renameSync(tempArchivePath, archivePath)
+  }
+
+  await run7z([
+    'x',
+    '-bd',
+    '-y',
+    archivePath,
+    `-o${targetDir}`,
+    'appxAssets',
+    'openssl-ia32',
+    'windows-10',
+    'windows-6',
+    'rcedit-ia32.exe',
+    'rcedit-x64.exe',
+  ])
+}
+
 /**
  *
  * @param {'win' | 'mac' | 'linux' | 'dir'} target 构建目标平台
@@ -268,6 +372,8 @@ const createTarget = {
  * @param {'onTagOrDraft' | 'always' | 'never'} publishType 发布类型
  */
 const build = async(target, arch, packageType, publishType) => {
+  if (target == 'win' || target == 'dir') await ensureWinCodeSignCache()
+
   if (target == 'dir') {
     await builder.build({
       dir: true,

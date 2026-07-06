@@ -15,4 +15,12 @@ export const sendNewDesktopLyricClient = (port: Electron.MessagePortMain) => {
   getWebContents().postMessage(WIN_MAIN_RENDERER_EVENT_NAME.process_new_desktop_lyric_client, null, [port])
 }
 
+/**
+ * Send taskbar lyric process channel to the main renderer.
+ * @param port message port
+ */
+export const sendNewTaskbarLyricClient = (port: Electron.MessagePortMain) => {
+  getWebContents().postMessage(WIN_MAIN_RENDERER_EVENT_NAME.process_new_taskbar_lyric_client, null, [port])
+}
+
 

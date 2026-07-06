@@ -369,6 +369,13 @@ const handlePlayNext = (playMusicInfo: LX.Player.PlayMusicInfo) => {
   setPlayMusicInfo(playMusicInfo.listId, playMusicInfo.musicInfo, playMusicInfo.isTempPlay)
   handlePlay()
 }
+
+export const playTempPlayItem = (index: number) => {
+  const target = tempPlayList[index]
+  if (!target) return
+  removeTempPlayList(index)
+  handlePlayNext(target)
+}
 /**
  * 下一曲
  * @param isAutoToggle 是否自动切换
