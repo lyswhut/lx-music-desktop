@@ -36,6 +36,7 @@ interface RGB {
 const lyricState = state as LX.TaskbarLyric.State
 const isDragging = ref(false)
 let pointerId: number | null = null
+let dragTarget: HTMLElement | null = null
 let startScreenX = 0
 let startOffsetX = 0
 
@@ -139,13 +140,27 @@ const shellStyle = computed(() => {
     '--taskbar-lyric-bg': withAlpha(backgroundBase, backgroundOpacity),
     '--taskbar-lyric-bg-strong': withAlpha(backgroundStrong, backgroundOpacity),
     '--taskbar-lyric-border': withAlpha(borderColor, borderOpacity),
+    '--taskbar-lyric-drag-border': withAlpha(primaryText, 0.95),
     '--taskbar-lyric-text': toRgbString(primaryText),
     '--taskbar-lyric-text-secondary': toRgbString(secondaryText),
   }
 })
 
+const detachDragListeners = () => {
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerEnd)
+  window.removeEventListener('pointercancel', handlePointerEnd)
+  window.removeEventListener('blur', handleWindowBlur)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+}
+
 const handlePointerMove = (event: PointerEvent) => {
   if (!isDragging.value || event.pointerId !== pointerId) return
+  if ((event.buttons & 1) !== 1) {
+    stopDragging()
+    return
+  }
+
   const offsetX = startOffsetX + (event.screenX - startScreenX)
   sendTaskbarLyricDragMove(offsetX)
 }
@@ -154,22 +169,42 @@ const stopDragging = (event?: PointerEvent) => {
   if (!isDragging.value) return
   if (event && pointerId != null && event.pointerId !== pointerId) return
   isDragging.value = false
+  if (pointerId != null && dragTarget?.hasPointerCapture(pointerId)) {
+    dragTarget.releasePointerCapture(pointerId)
+  }
   pointerId = null
+  dragTarget = null
   sendTaskbarLyricDragEnd()
-  window.removeEventListener('pointermove', handlePointerMove)
-  window.removeEventListener('pointerup', stopDragging)
-  window.removeEventListener('pointercancel', stopDragging)
+  detachDragListeners()
+}
+
+const handlePointerEnd = (event: PointerEvent) => {
+  stopDragging(event)
+}
+
+const handleVisibilityChange = () => {
+  if (document.hidden) stopDragging()
+}
+
+const handleWindowBlur = () => {
+  stopDragging()
 }
 
 const handlePointerDown = (event: PointerEvent) => {
   if (event.button !== 0) return
+  stopDragging()
+  event.preventDefault()
   isDragging.value = true
   pointerId = event.pointerId
+  dragTarget = event.currentTarget instanceof HTMLElement ? event.currentTarget : null
+  dragTarget?.setPointerCapture(pointerId)
   startScreenX = event.screenX
   startOffsetX = state.offsetX
   window.addEventListener('pointermove', handlePointerMove)
-  window.addEventListener('pointerup', stopDragging)
-  window.addEventListener('pointercancel', stopDragging)
+  window.addEventListener('pointerup', handlePointerEnd)
+  window.addEventListener('pointercancel', handlePointerEnd)
+  window.addEventListener('blur', handleWindowBlur)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 }
 
 const handleContextMenu = () => {
@@ -220,7 +255,7 @@ body {
     var(--taskbar-lyric-bg);
   border: 1px solid var(--taskbar-lyric-border);
   backdrop-filter: blur(10px);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.16s ease;
   cursor: grab;
 
   &.disabled {
@@ -228,6 +263,7 @@ body {
   }
 
   &.dragging {
+    border-color: var(--taskbar-lyric-drag-border);
     cursor: grabbing;
   }
 }
