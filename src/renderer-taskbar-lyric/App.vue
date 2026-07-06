@@ -104,7 +104,7 @@ body {
     var(--taskbar-lyric-bg);
   border: 1px solid var(--taskbar-lyric-border);
   backdrop-filter: blur(10px);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.16s ease;
   cursor: grab;
 
   &.disabled {
@@ -112,6 +112,7 @@ body {
   }
 
   &.dragging {
+    border-color: var(--taskbar-lyric-drag-border);
     cursor: grabbing;
   }
 }

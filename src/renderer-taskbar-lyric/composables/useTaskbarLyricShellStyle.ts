@@ -116,6 +116,7 @@ export const useTaskbarLyricShellStyle = () => {
       '--taskbar-lyric-bg': withAlpha(backgroundBase, backgroundOpacity),
       '--taskbar-lyric-bg-strong': withAlpha(backgroundStrong, backgroundOpacity),
       '--taskbar-lyric-border': withAlpha(borderColor, borderOpacity),
+      '--taskbar-lyric-drag-border': withAlpha(lyricText, 0.95),
       '--taskbar-lyric-text': toRgbString(lyricText),
       '--taskbar-lyric-text-secondary': toRgbString(songInfoText),
       '--taskbar-lyric-song-info-font-size': `${clamp(lyricState.songInfoFontSize ?? 11, 9, 18)}px`,

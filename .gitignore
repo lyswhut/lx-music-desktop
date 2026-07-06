@@ -73,3 +73,4 @@ publish/utils/githubToken.js
 src/**/*-internal.js
 
 .worktrees/
+.codegraph/

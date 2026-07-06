@@ -11,31 +11,53 @@ export const useTaskbarLyricWindowDrag = () => {
   const isDragging = ref(false)
   const isHovering = ref(false)
 
-  let startClientX = 0
+  let pointerId: number | null = null
+  let dragTarget: HTMLElement | null = null
+  let startScreenX = 0
   let startOffsetX = 0
 
   const detachDragListeners = () => {
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', stopDragging)
-    window.removeEventListener('blur', stopDragging)
+    window.removeEventListener('pointermove', handlePointerMove)
+    window.removeEventListener('pointerup', handlePointerEnd)
+    window.removeEventListener('pointercancel', handlePointerEnd)
+    window.removeEventListener('blur', handleWindowBlur)
     document.removeEventListener('visibilitychange', handleVisibilityChange)
   }
 
-  const handleMouseMove = (event: MouseEvent) => {
-    if (!isDragging.value) return
-    const offsetX = startOffsetX + (event.clientX - startClientX)
+  const handlePointerMove = (event: PointerEvent) => {
+    if (!isDragging.value || event.pointerId !== pointerId) return
+    if ((event.buttons & 1) !== 1) {
+      stopDragging()
+      return
+    }
+
+    const offsetX = startOffsetX + (event.screenX - startScreenX)
     sendTaskbarLyricDragMove(offsetX)
   }
 
-  const stopDragging = () => {
+  const stopDragging = (event?: PointerEvent) => {
     if (!isDragging.value) return
+    if (event && pointerId != null && event.pointerId !== pointerId) return
     isDragging.value = false
+    if (pointerId != null && dragTarget?.hasPointerCapture(pointerId)) {
+      dragTarget.releasePointerCapture(pointerId)
+    }
+    pointerId = null
+    dragTarget = null
     sendTaskbarLyricDragEnd()
     detachDragListeners()
   }
 
+  const handlePointerEnd = (event: PointerEvent) => {
+    stopDragging(event)
+  }
+
   const handleVisibilityChange = () => {
     if (document.hidden) stopDragging()
+  }
+
+  const handleWindowBlur = () => {
+    stopDragging()
   }
 
   const handlePointerDown = (event: PointerEvent) => {
@@ -43,11 +65,15 @@ export const useTaskbarLyricWindowDrag = () => {
     stopDragging()
     event.preventDefault()
     isDragging.value = true
-    startClientX = event.clientX
+    pointerId = event.pointerId
+    dragTarget = event.currentTarget instanceof HTMLElement ? event.currentTarget : null
+    dragTarget?.setPointerCapture(pointerId)
+    startScreenX = event.screenX
     startOffsetX = state.offsetX
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', stopDragging)
-    window.addEventListener('blur', stopDragging)
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', handlePointerEnd)
+    window.addEventListener('pointercancel', handlePointerEnd)
+    window.addEventListener('blur', handleWindowBlur)
     document.addEventListener('visibilitychange', handleVisibilityChange)
   }
 
