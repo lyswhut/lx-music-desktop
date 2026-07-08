@@ -12,7 +12,7 @@ export const getRandom = (min: number, max: number): number => Math.floor(Math.r
 export const sizeFormate = (size: number): string => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 B'
-  let units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
   let number = Math.floor(Math.log(size) / Math.log(1024))
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
