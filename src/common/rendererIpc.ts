@@ -43,3 +43,20 @@ export const rendererOff = (name: string, listener: (...args: any[]) => any) => 
 export const rendererOffAll = (name: string) => {
   ipcRenderer.removeAllListeners(name)
 }
+
+/**
+ * 注册 renderer 端 handler，供 main 进程通过 webContents.ipc.invoke 调用
+ */
+export function rendererHandle(name: string, listener: (params?: any) => Promise<any> | any): void {
+  if (typeof (ipcRenderer as any).handle !== 'function') {
+    console.warn('ipcRenderer.handle not available, skipping:', name)
+    return
+  }
+  (ipcRenderer as any).handle(name, async (_event: any, params: any) => {
+    return listener(params)
+  })
+}
+
+export const rendererHandleRemove = (name: string) => {
+  (ipcRenderer as any).removeHandler(name)
+}
