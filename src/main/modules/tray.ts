@@ -116,6 +116,27 @@ const messages = {
     music_name: '標題: ',
     music_singer: '演出者: ',
   },
+  'ko-kr': {
+    collect: '즐겨찾기 추가',
+    uncollect: '즐겨찾기 해제',
+    play: '재생',
+    pause: '일시정지',
+    next: '다음 곡',
+    prev: '이전 곡',
+    hide_win_main: '메인 창 숨기기',
+    show_win_main: '메인 창 표시',
+    hide_win_lyric: '가사 창 닫기',
+    show_win_lyric: '가사 창 열기',
+    lock_win_lyric: '가사 창 잠금',
+    unlock_win_lyric: '가사 창 잠금 해제',
+    top_win_lyric: '가사 항상 위에 표시',
+    untop_win_lyric: '항상 위에 표시 해제',
+    show_statusbar_lyric: '상태 표시줄에 가사 표시',
+    hide_statusbar_lyric: '상태 표시줄 가사 숨기기',
+    exit: '종료',
+    music_name: '제목: ',
+    music_singer: '아티스트: ',
+  },
 } as const
 type Messages = typeof messages
 type Langs = keyof Messages
