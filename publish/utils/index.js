@@ -34,7 +34,7 @@ function fm(value) {
 exports.sizeFormate = size => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 b'
-  let units = ['b', 'kB', 'MB', 'GB', 'TB']
+  let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
   let number = Math.floor(Math.log(size) / Math.log(1024))
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }

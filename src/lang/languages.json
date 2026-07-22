@@ -16,5 +16,10 @@
     "name": "English",
     "locale": "en-us",
     "country": "us"
+  },
+  {
+    "name": "한국어",
+    "locale": "ko-kr",
+    "country": "kr"
   }
 ]

@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.12.3-beta.8",
+  "version": "2.12.3-beta.9",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "scripts": {
@@ -159,9 +159,9 @@
     "typescript": "5.9.3",
     "vue-eslint-parser": "^9.4.3",
     "vue-loader": "^17.4.2",
-    "webpack": "^5.108.4",
+    "webpack": "5.107.2",
     "webpack-cli": "^7.2.1",
-    "webpack-dev-server": "6.0.0",
+    "webpack-dev-server": "5.2.5",
     "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^6.0.1"
   },
