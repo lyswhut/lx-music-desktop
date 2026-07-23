@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.container">
+  <div :class="[$style.container, {[$style.big]: big}]">
     <div :class="[$style.search, {[$style.active]: focus}, {[$style.big]: big}, {[$style.small]: small}]">
       <div :class="$style.form">
         <input
@@ -319,6 +319,10 @@ export default {
       padding: 6px 10px;
     }
   }
+}
+
+.container.big {
+  width: 100%;
 }
 
 

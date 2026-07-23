@@ -1,25 +1,32 @@
 <template>
-  <ul ref="dom_lists_list" class="scroll" :class="$style.listsContent">
-    <li
-      v-for="(item, index) in list"
-      :key="item.id" :class="[$style.listsItem, { [$style.active]: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
-      :aria-label="item.name" @click="handleToggleList(item.id)" @contextmenu="handleRigthClick($event, index)"
-    >
-      <span :class="$style.listsLabel">
-        <transition name="list-active">
-          <svg-icon v-if="item.id == boardId" name="angle-right-solid" :class="$style.activeIcon" />
-        </transition>
-        {{ item.name }}
-      </span>
-    </li>
-  </ul>
-  <base-menu
-    v-model="isShowMenu"
-    :menus="menus"
-    :xy="menuLocation"
-    item-name="name"
-    @menu-click="handleMenuClick"
-  />
+  <div :class="$style.boardListWrap">
+    <ul ref="dom_lists_list" class="scroll" :class="$style.listsContent" @scroll="handleScroll">
+      <li
+        v-for="(item, index) in list"
+        :key="item.id" :class="[$style.listsItem, { [$style.active]: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
+        :aria-label="item.name" @click="handleToggleList(item.id)" @contextmenu="handleRigthClick($event, index)"
+      >
+        <span :class="$style.listsLabel">
+          <transition name="list-active">
+            <svg-icon v-if="item.id == boardId" name="angle-right-solid" :class="$style.activeIcon" />
+          </transition>
+          {{ item.name }}
+        </span>
+      </li>
+    </ul>
+    <base-menu
+      v-model="isShowMenu"
+      :menus="menus"
+      :xy="menuLocation"
+      item-name="name"
+      @menu-click="handleMenuClick"
+    />
+    <div v-if="showScrollTopBtn" :class="$style.scrollTopBtn" @click="scrollToTop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -47,6 +54,7 @@ const route = useRoute()
 
 const list = shallowReactive([])
 const rightClickItemIndex = ref(-1)
+const dom_lists_list = ref(null)
 
 const handleToggleList = (id) => {
   void router.replace({
@@ -87,6 +95,18 @@ watch(() => props.source, async(source) => {
 }, {
   immediate: true,
 })
+
+const showScrollTopBtn = ref(false)
+const scrollToTop = () => {
+  if (dom_lists_list.value) {
+    dom_lists_list.value.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+const handleScroll = () => {
+  if (dom_lists_list.value) {
+    showScrollTopBtn.value = dom_lists_list.value.scrollTop > 100
+  }
+}
 
 defineExpose({ hideMenu: handleMenuClick })
 
@@ -147,6 +167,39 @@ defineExpose({ hideMenu: handleMenuClick })
   .mixin-ellipsis-1();
 }
 
+.boardListWrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.scrollTopBtn {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background-color: #42b883 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(66, 184, 131, 0.4) !important;
+  z-index: 99999 !important;
+  transition: background-color 0.2s ease !important;
+
+  &:hover {
+    background-color: #36a070 !important;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
 
 </style>
-

@@ -27,6 +27,7 @@ const winEvent = () => {
   browserWindow.on('closed', () => {
     // global.lx.mainWindowClosed = true
     browserWindow = null
+    global.lx.mainWindow = null
   })
 
   // browserWindow.on('restore', () => {
@@ -105,6 +106,7 @@ export const createWindow = () => {
     if (isLinux) options.resizable = true
   }
   browserWindow = new BrowserWindow(options)
+  global.lx.mainWindow = browserWindow
 
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
   void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)

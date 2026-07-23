@@ -4,6 +4,8 @@
 import { type DislikeType, type AppType, type ListType } from '@main/event'
 import { type DBSeriveTypes } from '@main/worker/utils'
 
+import type { BrowserWindow } from 'electron'
+
 interface Lx {
   inited: boolean
   appSetting: LX.AppSetting
@@ -28,6 +30,7 @@ interface Lx {
   }
   theme: LX.ThemeSetting
   player_status: LX.Player.Status
+  mainWindow: BrowserWindow | null
 }
 
 declare global {
@@ -50,5 +53,3 @@ declare global {
   var lx: Lx
   var appWorder: AppWorder
 }
-
-

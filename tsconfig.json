@@ -9,13 +9,15 @@
     "resolveJsonModule": true,
     "rootDir": "./",
     "outDir": "./dist",
-    // "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
-    //   "@common/*": ["common/*"],
-    //   "@renderer/*": ["renderer/*"],
-    //   "@main/*": ["main/*"],
-    //   // "@lyric/*": ["renderer-lyric/*"],
-    //   "@static/*": ["static/*"],
-    //   "@root/*": ["./*"],
-    // },
-  },
+    "paths": {
+      "@common/*": ["./src/common/*"],
+      "@renderer/*": ["./src/renderer/*"],
+      "@main/*": ["./src/main/*"],
+      "@lyric/*": ["./src/renderer-lyric/*"],
+      "@mini/*": ["./src/renderer-mini/*"],
+      "@static/*": ["./src/static/*"],
+      "@root/*": ["./src/*"],
+      "@/*": ["./src/*"]
+    }
+  }
 }
