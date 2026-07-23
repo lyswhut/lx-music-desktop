@@ -2,26 +2,31 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "isolatedModules": true,
-    "paths": {                                           /* Specify a set of entries that re-map imports to additional lookup locations. */
+    "baseUrl": ".",
+    "paths": {
       "@common/*": ["../common/*"],
-      "@renderer/*": ["../renderer/*"],
-      // "@lyric/*": ["../renderer-lyric/*"],
+      "@renderer/*": ["./*"],
       "@static/*": ["../static/*"],
-      "@root/*": ["../*"],
+      "@root/*": ["../*"]
     },
-    "typeRoots": [                                       /* Specify multiple folders that act like './node_modules/@types'. */
-      "./types"
-    ],
+    "typeRoots": [
+      "./types",
+      "../common/types",
+      "./node_modules/@types"
+    ]
   },
   "vueCompilerOptions": {
     "plugins": [
       "@vue/language-plugin-pug"
     ]
-  }
-  // "include": [
-	//   "./**/*.ts",
-	//   // "./**/*.js",
-	//   "./**/*.vue",
-	//   "./**/*.json",
-	// ],
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.vue",
+    "./types/**/*.d.ts",
+    "../common/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

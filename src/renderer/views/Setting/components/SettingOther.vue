@@ -1,69 +1,71 @@
 <template lang="pug">
 dt#other {{ $t('setting__other') }}
-dd
-  div
-    .gap-top
-      base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__other_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
-      svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_transparent_window_tip')")
+dd.cards-row.other-cards-row
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_transparent_window') }}
+    .setting-card-body
+      .gap-top
+        base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__other_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
+        svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_transparent_window_tip')")
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_tray_theme') }}
+    .setting-card-body
+      .gap-top
+        base-checkbox.gap-left(
+          v-for="item in trayThemeList" :id="'setting_tray_theme_' + item.id" :key="item.id" :model-value="appSetting['tray.themeId']" name="setting_tray_theme"
+          need :label="item.label" :value="item.id" @update:model-value="updateSetting({'tray.themeId': $event})")
+  div.setting-card
+    .setting-card-header
+      | {{ $t('setting__other_resource_cache') }}
+      svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_resource_cache_tip')")
+    .setting-card-body
+      .gap-top
+        | {{ $t('setting__other_resource_cache_label') }}
+        span.auto-hidden {{ cacheSize }}
+      .gap-top
+        base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{ $t('setting__other_resource_cache_clear_btn') }}
 
-dd
-  h3#other_tray_theme {{ $t('setting__other_tray_theme') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in trayThemeList" :id="'setting_tray_theme_' + item.id" :key="item.id" :model-value="appSetting['tray.themeId']" name="setting_tray_theme"
-      need :label="item.label" :value="item.id" @update:model-value="updateSetting({'tray.themeId': $event})")
-dd
-  h3#other_resource_cache
-    | {{ $t('setting__other_resource_cache') }}
-    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_resource_cache_tip')")
-  div
-    .p
-      | {{ $t('setting__other_resource_cache_label') }}
-      span.auto-hidden {{ cacheSize }}
-    .p
-      base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{ $t('setting__other_resource_cache_clear_btn') }}
-
-dd
-  h3#other_other_source {{ $t('setting__other_other_cache') }}
-  div
-    .p
-      | {{ $t('setting__other_other_source_label') }}
-      span.auto-hidden {{ otherSourceCount }}
-    .p
-      | {{ $t('setting__other_music_url_label') }}
-      span.auto-hidden {{ musicUrlCount }}
-    .p
-      | {{ $t('setting__other_lyric_raw_label') }}
-      span.auto-hidden {{ lyricRawCount }}
-    .p
-      base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{ $t('setting__other_other_source_clear_btn') }}
-      base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
-      base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_dislike_list') }}
-  div
-    .p
-      | {{ $t('setting__other_dislike_list_label') }}
-      span.auto-hidden {{ dislikeRuleCount }}
-    .p
-      base-btn.btn(min @click="isShowDislikeList = true") {{ $t('setting__other_dislike_list_show_btn') }}
+dd.cards-row.other-cards-row
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_other_cache') }}
+    .setting-card-body
+      .gap-top(style="display: flex; flex-flow: row nowrap; align-items: center; justify-content: space-between;")
+        span(style="display: inline-flex; align-items: center;")
+          | {{ $t('setting__other_other_source_label') }}
+          span.auto-hidden {{ otherSourceCount }}
+        base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{ $t('setting__other_other_source_clear_btn') }}
+      .gap-top(style="display: flex; flex-flow: row nowrap; align-items: center; justify-content: space-between;")
+        span(style="display: inline-flex; align-items: center;")
+          | {{ $t('setting__other_music_url_label') }}
+          span.auto-hidden {{ musicUrlCount }}
+        base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
+      .gap-top(style="display: flex; flex-flow: row nowrap; align-items: center; justify-content: space-between;")
+        span(style="display: inline-flex; align-items: center;")
+          | {{ $t('setting__other_lyric_raw_label') }}
+          span.auto-hidden {{ lyricRawCount }}
+        base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_dislike_list') }}
+    .setting-card-body
+      .gap-top
+        | {{ $t('setting__other_dislike_list_label') }}
+        span.auto-hidden {{ dislikeRuleCount }}
+      .gap-top
+        base-btn.btn(min @click="isShowDislikeList = true") {{ $t('setting__other_dislike_list_show_btn') }}
   DislikeListModal(v-model="isShowDislikeList")
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_lyric_edited_cache') }}
-  div
-    .p
-      | {{ $t('setting__other_lyric_edited_label') }}
-      span.auto-hidden {{ lyricEditedCount }}
-    .p
-      base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{ $t('setting__other_lyric_edited_clear_btn') }}
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_listdata') }}
-  div
-    .p
-      base-btn.btn(min @click="handleClearListData") {{ $t('setting__other_listdata_clear_btn') }}
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_lyric_edited_cache') }}
+    .setting-card-body
+      .gap-top
+        | {{ $t('setting__other_lyric_edited_label') }}
+        span.auto-hidden {{ lyricEditedCount }}
+      .gap-top
+        base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{ $t('setting__other_lyric_edited_clear_btn') }}
+  div.setting-card
+    .setting-card-header {{ $t('setting__other_listdata') }}
+    .setting-card-body
+      .gap-top
+        base-btn.btn(min @click="handleClearListData") {{ $t('setting__other_listdata_clear_btn') }}
 
 </template>
 
@@ -244,3 +246,89 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+dd.cards-row.other-cards-row {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 15px !important;
+  padding: 0;
+  margin: 0 0 10px;
+  width: 100%;
+
+  > .setting-card {
+    margin: 0;
+    flex: 0 0 auto !important;
+    width: fit-content !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    background-color: rgba(77, 175, 124, 0.12);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    border: 1px solid rgba(77, 175, 124, 0.25);
+    overflow: hidden;
+
+    .setting-card-header {
+      padding: 8px 16px;
+      font-weight: bold;
+      font-size: 13px;
+      color: var(--color-primary);
+      border-bottom: 1px solid rgba(77, 175, 124, 0.25);
+      width: 100%;
+      box-sizing: border-box;
+      white-space: nowrap;
+    }
+
+    .setting-card-body {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      box-sizing: border-box;
+
+      .gap-top {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        width: fit-content !important;
+        display: block;
+        text-align: left;
+        white-space: nowrap;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        label {
+          justify-content: flex-start;
+          white-space: nowrap;
+        }
+      }
+
+      .gap-left {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        width: fit-content !important;
+        display: block;
+        text-align: left;
+        white-space: nowrap;
+
+        &:first-child {
+          margin-top: 0;
+        }
+
+        label {
+          justify-content: flex-start;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+</style>

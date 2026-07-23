@@ -690,6 +690,21 @@ declare global {
        * 是否在离开搜索界面时自动清空搜索结果列表
        */
       'odc.isAutoClearSearchList': boolean
+
+      /**
+       * 自动备份是否启用
+       */
+      'backup.auto.enable': boolean
+
+      /**
+       * 自动备份保存路径
+       */
+      'backup.auto.savePath': string
+
+      /**
+       * 自动备份最大数量
+       */
+      'backup.auto.maxNum': number
     }
   }
 

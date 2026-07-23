@@ -4,7 +4,7 @@ import { type WindowSize, windowSizeList } from '@common/config'
 import { nativeImage } from 'electron'
 
 export const getWindowSizeInfo = (windowSizeId: number | string): WindowSize => {
-  return windowSizeList.find(i => i.id == windowSizeId) ?? windowSizeList[0]
+  return windowSizeList.find(i => i.id == windowSizeId) ?? windowSizeList[3]
 }
 
 const getIconPath = (name: string): Electron.NativeImage => {

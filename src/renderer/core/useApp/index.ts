@@ -13,6 +13,7 @@ import useEventListener from './useEventListener'
 import useDeeplink from './useDeeplink'
 import usePlayer from './usePlayer'
 import useSettingSync from './useSettingSync'
+import useAutoBackup from './useAutoBackup'
 import { useRouter } from '@common/utils/vueRouter'
 import handleListAutoUpdate from './listAutoUpdate'
 
@@ -71,6 +72,7 @@ export default () => {
       sendInited()
 
       handleListAutoUpdate()
+      useAutoBackup()
       if (window.lx.isProd && appSetting['common.isAgreePact']) checkUpdate()
     })
   })
