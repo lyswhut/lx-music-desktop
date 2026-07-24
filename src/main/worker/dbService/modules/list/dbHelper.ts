@@ -17,7 +17,6 @@ import {
   createMusicInfoOrderClearStatement,
   createMusicInfoByListAndMusicInfoIdQueryStatement,
   createMusicInfoByMusicInfoIdQueryStatement,
-  createMusicInfoOrderStatement,
 } from './statements'
 
 const idFixRxp = /\.0$/
@@ -369,14 +368,3 @@ export const overwriteListData = (lists: LX.DBService.UserListInfo[], musicInfos
   })(lists, musicInfos)
 }
 
-
-/**
- * 获取列表内音乐的排序
- * @param listId 列表id
- * @param musicInfoId 音乐id
- * @returns 音乐排序信息
- */
-export const getMusicInfoOrder = (listId: string, musicInfoId: string) => {
-  const musicInfoOrderStatement = createMusicInfoOrderStatement()
-  return musicInfoOrderStatement.get({ listId, musicInfoId })
-}

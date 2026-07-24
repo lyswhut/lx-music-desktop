@@ -25,7 +25,7 @@
       <base-virtualized-list
         v-if="actionButtonsVisible" ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="saveListPosition" @contextmenu.capture="handleListRightClick"
+        @scroll="handleScroll" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item" :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
@@ -56,7 +56,7 @@
       <base-virtualized-list
         v-else ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
-        @scroll="saveListPosition" @contextmenu.capture="handleListRightClick"
+        @scroll="handleScroll" @contextmenu.capture="handleListRightClick"
       >
         <div
           class="list-item"
@@ -100,6 +100,11 @@
     <music-sort-modal v-model:show="isShowMusicSortModal" :music-info="selectedSortMusicInfo" :selected-num="selectedNum" @confirm="sortMusic" />
     <music-toggle-modal v-model:show="isShowMusicToggleModal" :music-info="selectedToggleMusicInfo" @toggle="toggleSource" />
     <base-menu v-model="isShowItemMenu" :menus="menus" :xy="menuLocation" item-name="name" @menu-click="handleMenuClick" />
+    <div v-if="showScrollTopBtn" :class="$style.scrollTopBtn" @click="scrollToTop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -121,6 +126,7 @@ import useSearch from './useSearch'
 import useListScroll from './useListScroll'
 import useMusicToggle from './useMusicToggle'
 import { appSetting } from '@renderer/store/setting'
+import { ref } from '@common/utils/vueTools'
 export default {
   name: 'MusicList',
   components: {
@@ -296,6 +302,13 @@ export default {
           break
       }
     }
+    const showScrollTopBtn = ref(false)
+    const handleScroll = () => {
+      saveListPosition()
+      if (listRef.value) {
+        showScrollTopBtn.value = listRef.value.getScrollTop() > 100
+      }
+    }
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
     }
@@ -337,6 +350,8 @@ export default {
       selectedDownloadMusicInfo,
 
       scrollToTop,
+      showScrollTopBtn,
+      handleScroll,
 
       isShowSearchBar,
       searchList,
@@ -428,4 +443,31 @@ export default {
   }
 }
 
+.scrollTopBtn {
+  position: fixed;
+  right: 24px;
+  bottom: 80px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ffffff;
+  z-index: 10;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: var(--color-primary-light-300);
+    transform: translateY(-2px);
+  }
+}
 </style>

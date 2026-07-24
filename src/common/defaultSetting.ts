@@ -157,6 +157,10 @@ const defaultSetting: LX.AppSetting = {
   'odc.isAutoClearSearchInput': false,
   'odc.isAutoClearSearchList': false,
 
+  'backup.auto.enable': false,
+  'backup.auto.savePath': path.join(os.homedir(), 'Desktop'),
+  'backup.auto.maxNum': 5,
+
 }
 
 
@@ -168,4 +172,3 @@ if (new Date().getMonth() < 2) {
 
 
 export default defaultSetting
-

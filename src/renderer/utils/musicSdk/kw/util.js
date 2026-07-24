@@ -1,43 +1,34 @@
+// import { httpGet, httpFetch } from '../../request'
+import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
+import { rendererInvoke } from '@common/rendererIpc'
 import { createCipheriv, createDecipheriv } from 'crypto'
 import { toMD5 } from '../utils'
-import { inflate } from 'zlib'
 
+// const kw_token = {
+//   token: null,
+//   isGetingToken: false,
+// }
 
-const handleInflate = async(data) => {
-  return new Promise((resolve, reject) => {
-    inflate(data, (err, result) => {
-      if (err) {
-        reject(err)
-        return
-      }
-      resolve(result)
-    })
-  })
-}
+// const translationMap = {
+//   "{'": '{"',
+//   "'}\n": '"}',
+//   "'}": '"}',
+//   "':'": '":"',
+//   "','": '","',
+//   "':{'": '":{"',
+//   "':['": '":["',
+//   "'}],'": '"}],"',
+//   "':[{'": '":[{"',
+//   "'},'": '"},"',
+//   "'},{'": '"},{"',
+//   "':[],'": '":[],"',
+//   "':{},'": '":{},"',
+//   "'}]}": '"}]}',
+// }
 
-const buf_key = Buffer.from('yeelion')
-const buf_key_len = buf_key.length
-
-export const decodeLyric = async(rawData, isGetLyricx) => {
-  const buf = Buffer.isBuffer(rawData) ? rawData : Buffer.from(rawData)
-  if (buf.toString('utf8', 0, 10).toLowerCase() !== 'tp=content') return ''
-  const lrcData = await handleInflate(buf.subarray(buf.indexOf('\r\n\r\n') + 4))
-  if (!isGetLyricx) return lrcData.toString('utf8')
-  const buf_str = Buffer.from(lrcData.toString(), 'base64')
-  const buf_str_len = buf_str.length
-  const output = new Uint8Array(buf_str_len)
-  let i = 0
-  while (i < buf_str_len) {
-    let j = 0
-    while (j < buf_key_len && i < buf_str_len) {
-      output[i] = buf_str[i] ^ buf_key[j]
-      i++
-      j++
-    }
-  }
-
-  return Buffer.from(output).toString('utf8')
-}
+// export const objStr2JSON = str => {
+//   return JSON.parse(str.replace(/(^{'|'}\n$|'}$|':'|','|':\[{'|'}\],'|':{'|'},'|'},{'|':\['|':\[\],'|':{},'|'}]})/g, s => translationMap[s]))
+// }
 
 export const objStr2JSON = str => {
   return JSON.parse(str.replace(/('(?=(,\s*')))|('(?=:))|((?<=([:,]\s*))')|((?<={)')|('(?=}))/g, '"'))
@@ -46,13 +37,13 @@ export const objStr2JSON = str => {
 
 export const formatSinger = rawData => rawData.replace(/&/g, '、')
 
-// export const matchToken = headers => {
-//   try {
-//     return headers['set-cookie'][0].match(/kw_token=(\w+)/)[1]
-//   } catch (err) {
-//     return null
-//   }
-// }
+export const matchToken = headers => {
+  try {
+    return headers['set-cookie'][0].match(/kw_token=(\w+)/)[1]
+  } catch (err) {
+    return null
+  }
+}
 
 // const wait = time => new Promise(resolve => setTimeout(() => resolve(), time))
 
@@ -71,6 +62,8 @@ export const formatSinger = rawData => rawData.replace(/&/g, '、')
 //     resolve(token)
 //   })
 // })
+
+export const decodeLyric = base64Data => rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.handle_kw_decode_lyric, base64Data)
 
 // export const tokenRequest = async(url, options = {}) => {
 //   let token = kw_token.token
@@ -95,8 +88,8 @@ export const formatSinger = rawData => rawData.replace(/&/g, '、')
 
 export const lrcTools = {
   rxps: {
-    wordLine: /^(\[\d{1,2}:.*\d{1,4}])\s*(\S+(?:\s+\S+)*)?\s*/,
-    tagLine: /\[(ver|ti|ar|al|offset|by|kuwo):\s*(\S+(?:\s+\S+)*)\s*]/,
+    wordLine: /^(\[\d{1,2}:.*\d{1,4}\])\s*(\S+(?:\s+\S+)*)?\s*/,
+    tagLine: /\[(ver|ti|ar|al|offset|by|kuwo):\s*(\S+(?:\s+\S+)*)\s*\]/,
     wordTimeAll: /<(-?\d+),(-?\d+)(?:,-?\d+)?>/g,
     wordTime: /<(-?\d+),(-?\d+)(?:,-?\d+)?>/,
   },
@@ -108,8 +101,8 @@ export const lrcTools = {
   getWordInfo(str, str2, prevWord) {
     const offset = parseInt(str)
     const offset2 = parseInt(str2)
-    let startTime = Math.trunc(Math.abs((offset + offset2) / (this.offset * 2)))
-    let endTime = Math.trunc(Math.abs((offset - offset2) / (this.offset2 * 2)) + startTime)
+    let startTime = Math.abs((offset + offset2) / (this.offset * 2))
+    let endTime = Math.abs((offset - offset2) / (this.offset2 * 2)) + startTime
     if (prevWord) {
       if (startTime < prevWord.endTime) {
         prevWord.endTime = startTime
@@ -117,14 +110,14 @@ export const lrcTools = {
           prevWord.startTime = prevWord.endTime
         }
 
-        prevWord.newTimeStr = `<${prevWord.startTime},${Math.trunc(prevWord.endTime - prevWord.startTime)}>`
+        prevWord.newTimeStr = `<${prevWord.startTime},${prevWord.endTime - prevWord.startTime}>`
         // console.log(prevWord)
       }
     }
     return {
       startTime,
       endTime,
-      timeStr: `<${startTime},${Math.trunc(endTime - startTime)}>`,
+      timeStr: `<${startTime},${endTime - startTime}>`,
     }
   },
   parseLine(line) {

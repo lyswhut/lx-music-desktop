@@ -18,12 +18,10 @@ import {
   updateMusicInfoOrder,
   updateMusicInfos,
   updateUserLists as updateUserListsFromDB,
-  getMusicInfoOrder,
 } from './dbHelper'
 
 let userLists: LX.DBService.UserListInfo[]
 let musicLists = new Map<string, LX.Music.MusicInfo[]>()
-let rawPoss = new Map<string, number>()
 
 const toDBMusicInfo = (musicInfos: LX.Music.MusicInfo[], listId: string, offset: number = 0): LX.DBService.MusicInfo[] => {
   return musicInfos.map((info, index) => {
@@ -43,10 +41,8 @@ const toDBMusicInfo = (musicInfos: LX.Music.MusicInfo[], listId: string, offset:
 export const getAllUserList = (): LX.List.UserListInfo[] => {
   userLists ??= queryAllUserList()
 
-  rawPoss.clear()
   return userLists.map(list => {
     const { position, ...newList } = list
-    rawPoss.set(list.id, position)
     return newList
   })
 }
@@ -59,15 +55,10 @@ export const getAllUserList = (): LX.List.UserListInfo[] => {
 export const createUserLists = (position: number, lists: LX.List.UserListInfo[]) => {
   userLists ??= queryAllUserList()
   if (position < 0 || position >= userLists.length) {
-    // 如果是最末尾，那么取最后一个列表的原始位置 + 1 作为新列表的原始位置，否则新列表的原始位置为 position
-    // 因为原始 pos 可能比 userLists.length 大，所以不能直接用 userLists.length 作为新列表的原始位置
-    const order = userLists.length ? (rawPoss.get(userLists.at(-1)!.id) ?? userLists.length) + 1 : 0
     const newLists: LX.DBService.UserListInfo[] = lists.map((list, index) => {
-      const pos = order + index
-      rawPoss.set(list.id, pos)
       return {
         ...list,
-        position: pos,
+        position: position + index,
       }
     })
     insertUserLists(newLists)
@@ -81,8 +72,6 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
     })
     insertUserLists(newUserLists, true)
     userLists = newUserLists
-    rawPoss.clear()
-    for (const list of userLists) rawPoss.set(list.id, list.position)
   }
 }
 
@@ -108,7 +97,6 @@ export const createUserLists = (position: number, lists: LX.List.UserListInfo[])
 export const removeUserLists = (ids: string[]) => {
   deleteUserLists(ids)
   userLists &&= queryAllUserList()
-  for (const id of ids) rawPoss.delete(id)
 }
 
 /**
@@ -159,8 +147,6 @@ export const updateUserListsPosition = (position: number, ids: string[]) => {
   })
   insertUserLists(newUserLists, true)
   userLists = newUserLists
-  rawPoss.clear()
-  for (const list of userLists) rawPoss.set(list.id, list.position)
 }
 
 /**
@@ -224,14 +210,10 @@ export const musicsAdd = (listId: string, musicInfos: LX.Music.MusicInfo[], addM
       arrUnshift(targetList, musicInfos)
       break
     case 'bottom':
-    default: {
-      // 如果是添加到最后，那么取最后一个歌曲的原始位置 + 1 作为新歌曲的原始位置，否则新歌曲的原始位置为 position
-      // 因为原始 pos 可能比 targetList.length 大，所以不能直接用 targetList.length 作为新歌曲的原始位置
-      const order = targetList.length ? (getMusicInfoOrder(listId, targetList.at(-1)!.id)?.order ?? targetList.length) + 1 : 0
-      insertMusicInfoList(toDBMusicInfo(musicInfos, listId, order))
+    default:
+      insertMusicInfoList(toDBMusicInfo(musicInfos, listId, targetList.length))
       arrPush(targetList, musicInfos)
       break
-    }
   }
 }
 
@@ -275,14 +257,10 @@ export const musicsMove = (fromId: string, toId: string, musicInfos: LX.Music.Mu
       arrUnshift(toList, musicInfos)
       break
     case 'bottom':
-    default:{
-      // 如果是添加到最后，那么取最后一个歌曲的原始位置 + 1 作为新歌曲的原始位置，否则新歌曲的原始位置为 position
-      // 因为原始 pos 可能比 targetList.length 大，所以不能直接用 targetList.length 作为新歌曲的原始位置
-      const order = toList.length ? (getMusicInfoOrder(toId, toList.at(-1)!.id)?.order ?? toList.length) + 1 : 0
-      moveMusicInfo(fromId, ids, toDBMusicInfo(musicInfos, toId, order))
+    default:
+      moveMusicInfo(fromId, ids, toDBMusicInfo(musicInfos, toId, toList.length))
       arrPush(toList, musicInfos)
       break
-    }
   }
 
   listSet = new Set<string>(ids)
@@ -385,8 +363,6 @@ export const listDataOverwrite = (myListData: MakeOptional<LX.List.ListDataFull,
   if (userLists) userLists.splice(0, userLists.length, ...dbLists)
   else userLists = dbLists
 
-  rawPoss.clear()
-  for (const list of userLists) rawPoss.set(list.id, list.position)
   musicLists.clear()
   musicLists.set(LIST_IDS.DEFAULT, listData.defaultList)
   musicLists.set(LIST_IDS.LOVE, listData.loveList)

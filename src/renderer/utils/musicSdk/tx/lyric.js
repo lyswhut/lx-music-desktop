@@ -1,14 +1,11 @@
 import { httpFetch } from '../../request'
 import getMusicInfo from './musicInfo'
-import { decodeQrc } from './qrcDecode'
+import { rendererInvoke } from '@common/rendererIpc'
+import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 
 const songIdMap = new Map()
 const promises = new Map()
-export const decodeLyric = async(lrc, tlrc, rlrc) => ({
-  lyric: await decodeQrc(lrc),
-  tlyric: await decodeQrc(tlrc),
-  rlyric: await decodeQrc(rlrc),
-})
+export const decodeLyric = (lrc, tlrc, rlrc) => rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.handle_tx_decode_lyric, { lrc, tlrc, rlrc })
 
 
 const parseTools = {
@@ -22,12 +19,12 @@ const parseTools = {
   },
   msFormat(timeMs) {
     if (Number.isNaN(timeMs)) return ''
-    let ms = (timeMs % 1000).toString().padStart(3, '0')
+    let ms = timeMs % 1000
     timeMs /= 1000
     let m = parseInt(timeMs / 60).toString().padStart(2, '0')
     timeMs %= 60
     let s = parseInt(timeMs).toString().padStart(2, '0')
-    return `[${m}:${s}.${ms}]`
+    return `[${m}:${s}.${String(ms).padStart(3, '0')}]`
   },
   parseLyric(lrc) {
     lrc = lrc.trim()
@@ -65,7 +62,7 @@ const parseTools = {
       if (!times) continue
       times = times.map(time => {
         const result = /\((\d+),(\d+)\)/.exec(time)
-        return `<${Math.trunc(Math.max(parseInt(result[1]) - startMsTime, 0))},${result[2]}>`
+        return `<${Math.max(parseInt(result[1]) - startMsTime, 0)},${result[2]}>`
       })
       const wordArr = words.split(this.rxps.wordTime)
       const newWords = times.map((time, index) => `${time}${wordArr[index]}`).join('')

@@ -35,6 +35,7 @@ const options = {
     'node_modules/node-gyp-build',
     'node_modules/bufferutil',
     'node_modules/utf-8-validate',
+    'build/Release/qrc_decode.node',
     'dist/**/*',
   ],
   asar: {

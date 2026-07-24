@@ -193,65 +193,6 @@ export default {
     return id
   },
   // 获取歌曲列表内的音乐
-  async getListDetail2(id, tryNum = 0) {
-    if (tryNum > 2) return Promise.reject(new Error('try max num'))
-
-    const requestObj_listDetail = httpFetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
-      method: 'post',
-      headers: {
-        Origin: 'https://y.qq.com',
-        Referer: `https://y.qq.com/n/yqq/playsquare/${id}.html`,
-      },
-      body: {
-        comm: {
-          cv: 4747474,
-          ct: 24,
-          format: 'json',
-          inCharset: 'utf-8',
-          outCharset: 'utf-8',
-          platform: 'yqq.json',
-          needNewCode: 1,
-          uin: 0,
-        },
-        req_1: {
-          module: 'music.srfDissInfo.aiDissInfo',
-          method: 'uniform_get_Dissinfo',
-          param: {
-            disstid: parseInt(id),
-            userinfo: 1,
-            tag: 1,
-            orderlist: 1,
-            song_begin: 0,
-            song_num: this.limit_song,
-            onlysonglist: 0,
-            enc_host_uin: '',
-          },
-        },
-      },
-    })
-    const { body } = await requestObj_listDetail.promise
-    // console.log(body)
-    if (body.code !== this.successCode) return this.getListDetail2(id, ++tryNum)
-    if (body.req_1.code !== this.successCode) throw new Error('failed')
-
-    const result = body.req_1.data
-    const dirinfo = result.dirinfo
-    return {
-      list: this.filterListDetail(result.songlist),
-      page: 1,
-      limit: this.limit_song,
-      total: result.total_song_sum,
-      source: 'tx',
-      info: {
-        name: dirinfo.title,
-        img: dirinfo.picurl,
-        desc: decodeName(dirinfo.desc ?? '').replace(/<br>/g, '\n'),
-        author: dirinfo.host_nick,
-        play_count: formatPlayCount(dirinfo.listennum),
-      },
-    }
-  },
-  // 获取歌曲列表内的音乐
   async getListDetail(id, tryNum = 0) {
     if (tryNum > 2) return Promise.reject(new Error('try max num'))
 
@@ -265,9 +206,7 @@ export default {
     })
     const { body } = await requestObj_listDetail.promise
 
-    // console.log(body)
     if (body.code !== this.successCode) return this.getListDetail(id, ++tryNum)
-    if (body.subcode !== this.successCode || !body.cdlist) return this.getListDetail2(id)
     const cdlist = body.cdlist[0]
     return {
       list: this.filterListDetail(cdlist.songlist),

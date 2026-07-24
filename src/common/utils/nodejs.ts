@@ -222,3 +222,7 @@ export const getAddress = (): string[] => {
   }
   return results
 }
+
+export const readDir = async(dirPath: string): Promise<string[]> => {
+  return fs.promises.readdir(dirPath)
+}

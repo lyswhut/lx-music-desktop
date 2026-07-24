@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@common/*": ["../common/*"],
+      "@mini/*": ["./*"],
+      "@static/*": ["../static/*"],
+      "@root/*": ["../*"]
+    },
+    "typeRoots": [
+      "./types",
+      "../common/types",
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.vue",
+    "./types/**/*.d.ts",
+    "../common/types/**/*.d.ts"
+  ]
+}

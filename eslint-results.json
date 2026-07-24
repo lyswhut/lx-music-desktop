@@ -1,0 +1,65 @@
+[
+  {
+    "file": "\\src\\renderer\\components\\base\\VirtualizedList.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\components\\layout\\Toolbar\\ControlBtns.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\Leaderboard\\index.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\Leaderboard\\MusicList\\index.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\List\\MusicList\\index.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\Setting\\components\\SettingDownload.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\songList\\List\\components\\SongList.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\songList\\List\\index.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  },
+  {
+    "file": "\\src\\renderer\\views\\songList\\List\\ListView.vue",
+    "hasEolLastErrors": false,
+    "eolErrors": [],
+    "otherErrorCount": 0,
+    "total": 0
+  }
+]

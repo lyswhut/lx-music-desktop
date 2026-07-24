@@ -78,6 +78,10 @@ const modules = {
 
     restart_window: 'restart_window',
 
+    // lang_s2t: 'lang_s2t',
+
+    handle_kw_decode_lyric: 'handle_kw_decode_lyric',
+    handle_tx_decode_lyric: 'handle_tx_decode_lyric',
     get_lyric_info: 'get_lyric_info',
     set_lyric_info: 'set_lyric_info',
     set_config: 'set_config',
@@ -164,6 +168,13 @@ const modules = {
     provide_main_window_channel: 'provide_main_window_channel',
     mouse_enter_leave: 'mouse_enter_leave',
   },
+  winMini: {
+    toggle_mini_window: 'toggle_mini_window',
+    close_mini_window: 'close_mini_window',
+    show_mini_window: 'show_mini_window',
+    request_main_window_channel: 'request_main_window_channel',
+    provide_main_window_channel: 'provide_main_window_channel',
+  },
   hotKey: {
     enable: 'enable',
     status: 'status',
@@ -192,4 +203,5 @@ export const PLAYER_EVENT_NAME = modules.player
 export const DISLIKE_EVENT_NAME = modules.dislike
 export const WIN_MAIN_RENDERER_EVENT_NAME = modules.winMain
 export const WIN_LYRIC_RENDERER_EVENT_NAME = modules.winLyric
+export const WIN_MINI_RENDERER_EVENT_NAME = modules.winMini
 export const HOTKEY_RENDERER_EVENT_NAME = modules.hotKey

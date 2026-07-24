@@ -145,25 +145,22 @@ export default {
     }))
   },
   filterList2(rawData) {
+    // console.log(rawData)
     const list = []
-    const allowedTypes = ['songlist', 'list', 'album']
-    // digest: 5 = list, 8 = songlist, 13 = album, 4 = artist
     rawData.forEach(item => {
-      item.list.forEach(item => {
-        if (!allowedTypes.includes(item.type)) return
-        list.push({
-          play_count: item.play_count && this.formatPlayCount(item.listencnt),
-          id: `digest-${item.digest}__${item.id}`,
-          author: item.uname,
-          name: item.name,
-          total: item.total,
-          // time: item.publish_time,
-          img: item.img,
-          grade: item.favorcnt && item.favorcnt / 10,
-          desc: item.desc,
-          source: 'kw',
-        })
-      })
+      if (!item.label) return
+      list.push(...item.list.map(item => ({
+        play_count: item.play_count && this.formatPlayCount(item.listencnt),
+        id: `digest-${item.digest}__${item.id}`,
+        author: item.uname,
+        name: item.name,
+        total: item.total,
+        // time: item.publish_time,
+        img: item.img,
+        grade: item.favorcnt && item.favorcnt / 10,
+        desc: item.desc,
+        source: 'kw',
+      })))
     })
     return list
   },

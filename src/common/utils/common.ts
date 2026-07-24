@@ -1,6 +1,5 @@
 // 非业务工具方法
 
-import { pathToFileURL } from 'url'
 /**
  * 获取两个数之间的随机整数，大于等于min，小于max
  * @param {*} min
@@ -12,7 +11,7 @@ export const getRandom = (min: number, max: number): number => Math.floor(Math.r
 export const sizeFormate = (size: number): string => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 B'
-  let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
+  let units = ['B', 'KB', 'MB', 'GB', 'TB']
   let number = Math.floor(Math.log(size) / Math.log(1024))
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
@@ -189,7 +188,7 @@ export const sortInsert = <T>(arr: Array<{ num: number, data: T }>, data: { num:
 }
 
 export const encodePath = (path: string) => {
-  return pathToFileURL(path).href
+  return encodeURI(path.replaceAll('\\', '/'))
 }
 
 
