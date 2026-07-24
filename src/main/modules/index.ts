@@ -4,6 +4,7 @@ import registerHotKey from './hotKey'
 import registerTray from './tray'
 import registerAppMenu from './appMenu'
 import registerWinLyric from './winLyric'
+import registerWinMini from './winMini'
 import registerCommonRenderers from './commonRenderers'
 
 let isRegistered = false
@@ -16,5 +17,6 @@ export default () => {
   registerTray()
   registerAppMenu()
   registerWinLyric()
+  registerWinMini()
   isRegistered = true
 }

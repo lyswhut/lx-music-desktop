@@ -1,21 +1,6 @@
 <template>
   <div ref="dom_lists" :class="$style.lists">
-    <div :class="$style.listHeader">
-      <h2 :class="$style.listsTitle">{{ $t('my_list') }}</h2>
-      <div :class="$style.headerBtns">
-        <button :class="$style.listsAdd" :aria-label="$t('lists__new_list_btn')" @click="isShowNewList = true">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
-            <use xlink:href="#icon-list-add" />
-          </svg>
-        </button>
-        <button :class="$style.listsAdd" :aria-label="$t('list_update_modal__title')" @click="isShowListUpdateModal = true">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" height="70%" viewBox="0 0 24 24" space="preserve">
-            <use xlink:href="#icon-refresh" />
-          </svg>
-        </button>
-      </div>
-    </div>
-    <ul ref="dom_lists_list" class="scroll" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
+    <ul ref="dom_lists_list" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}, {[$style.clicked]: rightClickItemIndex == -2}, {[$style.fetching]: fetchingListStatus[defaultList.id]}]"
         :aria-label="$t(defaultList.name)" :aria-selected="defaultList.id == listId"
@@ -27,9 +12,6 @@
           </svg>
         </div> -->
         <span :class="$style.listsLabel">
-          <transition name="list-active">
-            <svg-icon v-if="defaultList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
           {{ $t(defaultList.name) }}
         </span>
       </li>
@@ -39,9 +21,6 @@
         @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)"
       >
         <span :class="$style.listsLabel">
-          <transition name="list-active">
-            <svg-icon v-if="loveList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
           {{ $t(loveList.name) }}
         </span>
       </li>
@@ -52,9 +31,6 @@
         :data-index="index" :aria-label="item.name" :aria-selected="defaultList.id == listId" @contextmenu="handleListsItemRigthClick($event, index)"
       >
         <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">
-          <transition name="list-active">
-            <svg-icon v-if="item.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
           {{ item.name }}
         </span>
         <base-input
@@ -252,63 +228,23 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-@lists-item-height: 36px;
+@lists-item-height: 32px;
 .lists {
   flex: none;
-  width: 16%;
+  width: 100%;
   display: flex;
-  flex-flow: column nowrap;
-}
-.listHeader {
-  position: relative;
-  display: flex;
-  flex-flow: row nowrap;
-  border-bottom: var(--color-list-header-border-bottom);
-  &:hover {
-    .listsAdd {
-      opacity: 1;
-    }
-  }
-}
-.listsTitle {
-  flex: auto;
-  font-size: 12px;
-  line-height: 38px;
-  padding: 0 10px;
-  .mixin-ellipsis-1();
-}
-.headerBtns {
-  flex: none;
-  display: flex;
-}
-.listsAdd {
-  // position: absolute;
-  // right: 0;
-  margin-top: 6px;
-  background: none;
-  height: 30px;
-  border: none;
-  outline: none;
-  border-radius: @radius-border;
-  cursor: pointer;
-  opacity: .1;
-  transition: opacity @transition-normal;
-  color: var(--color-button-font);
-  svg {
-    vertical-align: bottom;
-  }
-  &:active {
-    opacity: .7 !important;
-  }
-  &:hover {
-    opacity: .6 !important;
-  }
+  flex-flow: row wrap;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 .listsContent {
   flex: auto;
-  min-width: 0;
-  overflow-y: scroll !important;
-  // border-right: 1px solid rgba(0, 0, 0, 0.12);
+  min-height: 0;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 4px 0;
+  list-style: none;
+  margin: 0;
 
   &.sortable {
     * {
@@ -321,7 +257,7 @@ export default {
       }
 
       &.dragingItem {
-        background-color: var(--color-primary-background-hover) !important;
+        background-color: var(--color-button-background-hover) !important;
       }
     }
   }
@@ -330,29 +266,32 @@ export default {
   position: relative;
   transition: .3s ease;
   transition-property: color, background-color, opacity;
-  background-color: transparent;
-  &:not(.active) {
-    &:hover {
-      background-color: var(--color-primary-background-hover);
-      cursor: pointer;
-    }
+  background-color: var(--color-button-background);
+  flex: 0 0 auto;
+  margin: 2px 3px;
+  border-radius: @radius-progress-border;
+  cursor: pointer;
+  color: var(--color-button-font);
+  font-size: 12px;
+  &:hover:not(.active) {
+    background-color: var(--color-button-background-hover);
   }
   &.active {
-    // background-color:
-    color: var(--color-primary);
+    color: #ffffff;
+    background-color: var(--color-primary);
   }
   &.selected {
     background-color: var(--color-primary-font-active);
   }
   &.clicked {
-    background-color: var(--color-primary-background-hover);
+    background-color: var(--color-button-background-hover);
   }
   &.fetching {
     opacity: .5;
   }
   &.editing {
-    padding: 0 10px;
-    background-color: var(--color-primary-background-hover);
+    padding: 0 6px;
+    background-color: var(--color-button-background-hover);
     .listsLabel {
       display: none;
     }
@@ -362,43 +301,35 @@ export default {
   }
 }
 .activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
+  height: .85em;
+  width: .85em;
+  margin-left: -0.4em;
   vertical-align: -0.05em;
 }
 .listsLabel {
   display: block;
-  height: @lists-item-height;
-  padding: 0 10px;
-  font-size: 13px;
-  line-height: @lists-item-height;
-  .mixin-ellipsis-1();
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 .listsInput {
-  width: 100%;
-  height: @lists-item-height;
-  // border: none;
+  width: 140px;
   padding: 0;
-  // padding-bottom: 1px;
-  line-height: @lists-item-height;
   background: none !important;
   border-radius: 0;
-  // outline: none;
-  font-size: 13px;
+  font-size: 12px;
   display: none;
-  // font-family: inherit;
 }
 
 .listsNew {
-  padding: 0 10px;
-  background-color: var(--color-primary-background-hover) !important;
+  padding: 0 6px;
+  background-color: var(--color-button-background-hover) !important;
   .listsInput {
     display: block;
   }
 }
 .newLeave {
-  margin-top: -@lists-item-height;
+  margin-left: -@lists-item-height;
   z-index: -1;
 }
 

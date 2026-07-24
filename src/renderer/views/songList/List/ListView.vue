@@ -1,5 +1,5 @@
 <template>
-  <SongList ref="list_ref" :list-info="listInfo" @toggle-page="togglePage" />
+  <SongList ref="list_ref" :list-info="listInfo" :use-outer-scroll="true" @toggle-page="togglePage" />
 </template>
 
 <script setup lang="ts">
@@ -183,5 +183,4 @@ onBeforeRouteLeave(() => {
     color: var(--color-font-label);
   }
 }
-
 </style>

@@ -25,6 +25,7 @@ export const initGlobalData = () => {
     inited: false,
     isSkipTrayQuit: false,
     // mainWindowClosed: true,
+    mainWindow: null,
     event_app: createAppEvent(),
     event_list: createListEvent(),
     event_dislike: createDislikeEvent(),

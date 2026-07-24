@@ -71,18 +71,18 @@ const handleDesktopLyricMessage = (event: LX.DesktopLyric.LyricActions) => {
 }
 
 export const init = () => {
-  onProvideMainWindowChannel(({ event }) => {
+  onProvideMainWindowChannel(({ event }: { event: Electron.IpcRendererEvent }) => {
     const [port] = event.ports
     mainWindowPort = port
 
     // ... register a handler to receive results ...
-    port.onmessage = ({ data }) => {
+    port.onmessage = ({ data }: { data: LX.DesktopLyric.LyricActions }) => {
       handleDesktopLyricMessage(data)
       // console.log('received result:', data)
     }
     // ... and start sending it work!
 
-    port.onmessageerror = (event) => {
+    port.onmessageerror = (event: MessageEvent) => {
       console.log('onmessageerror', event)
     }
 

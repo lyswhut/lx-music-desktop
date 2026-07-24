@@ -1,0 +1,110 @@
+[
+  {
+    "file": "src/renderer/components/base/VirtualizedList.vue",
+    "totalBytes": 11704,
+    "lastBytesHex": "20 7d 0a 20 20 7d 2c 0a 7d 0a 3c 2f 73 63 72 69 70 74 3e 0a",
+    "lastBytesAsText": "\" }\\n  },\\n}\\n</script>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 360,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/components/layout/Toolbar/ControlBtns.vue",
+    "totalBytes": 3735,
+    "lastBytesHex": "20 20 20 7d 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"   }\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 99,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/Leaderboard/index.vue",
+    "totalBytes": 8439,
+    "lastBytesHex": "20 6e 6f 77 72 61 70 3b 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\" nowrap;\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 313,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/Leaderboard/MusicList/index.vue",
+    "totalBytes": 2454,
+    "lastBytesHex": "34 70 78 3b 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"4px;\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 104,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/List/MusicList/index.vue",
+    "totalBytes": 15421,
+    "lastBytesHex": "70 78 29 3b 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"px);\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 437,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/Setting/components/SettingDownload.vue",
+    "totalBytes": 10296,
+    "lastBytesHex": "68 3a 20 36 30 70 78 3b 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"h: 60px;\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 226,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/songList/List/components/SongList.vue",
+    "totalBytes": 7973,
+    "lastBytesHex": "34 70 78 3b 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"4px;\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 302,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/songList/List/index.vue",
+    "totalBytes": 7173,
+    "lastBytesHex": "20 20 20 7d 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"   }\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 283,
+    "action": "OK (already has trailing newline)"
+  },
+  {
+    "file": "src/renderer/views/songList/List/ListView.vue",
+    "totalBytes": 4105,
+    "lastBytesHex": "65 6c 29 3b 0a 20 20 7d 0a 7d 0a 3c 2f 73 74 79 6c 65 3e 0a",
+    "lastBytesAsText": "\"el);\\n  }\\n}\\n</style>\\n\"",
+    "lastLineEnding": "LF",
+    "hasFinalNewline": true,
+    "dominantLineEnding": "LF",
+    "crlfCount": 0,
+    "lfOnlyCount": 172,
+    "action": "OK (already has trailing newline)"
+  }
+]

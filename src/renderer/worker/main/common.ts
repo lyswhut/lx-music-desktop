@@ -9,4 +9,6 @@ export {
   saveLxConfigFile,
   readLxConfigFile,
   saveStrToFile,
+  readDir,
+  removeFile,
 } from '@common/utils/nodejs'

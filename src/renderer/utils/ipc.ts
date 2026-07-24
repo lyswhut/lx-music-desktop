@@ -1,5 +1,5 @@
 import { rendererSend, rendererInvoke, rendererOn, rendererOff } from '@common/rendererIpc'
-import { HOTKEY_RENDERER_EVENT_NAME, WIN_MAIN_RENDERER_EVENT_NAME, CMMON_EVENT_NAME } from '@common/ipcNames'
+import { HOTKEY_RENDERER_EVENT_NAME, WIN_MAIN_RENDERER_EVENT_NAME, WIN_MINI_RENDERER_EVENT_NAME, CMMON_EVENT_NAME } from '@common/ipcNames'
 import { type ProgressInfo, type UpdateDownloadedEvent, type UpdateInfo } from 'electron-updater'
 import { markRaw } from '@common/utils/vueTools'
 import * as hotKeys from '@common/hotKey'
@@ -685,6 +685,13 @@ export const closeWindow = () => {
  */
 export const minWindow = () => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.min)
+}
+
+/**
+ * 切换迷你播放器窗口
+ */
+export const toggleMiniWindow = () => {
+  return rendererInvoke(WIN_MINI_RENDERER_EVENT_NAME.toggle_mini_window)
 }
 
 /**
