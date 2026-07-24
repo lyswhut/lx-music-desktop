@@ -18,13 +18,13 @@ export const init = () => {
     onSetLyric(lines, offset) { // listening lyrics seting event
       // console.log(lines) // lines is array of all lyric text
       setLines(markRawList([...lines]))
-      setText(lines[0] ?? '', 0)
+      setText(lines[0]?.text ?? '', 0)
       setOffset(offset) // 歌词延迟
       setTempOffset(0) // 重置临时延迟
     },
     onUpdateLyric(lines) {
       setLines(markRawList([...lines]))
-      setText(lines[0] ?? '', 0)
+      setText(lines[0]?.text ?? '', 0)
     },
   })
 }

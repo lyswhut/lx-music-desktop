@@ -1,6 +1,6 @@
 <template>
-  <div :class="$style.container">
-    <div v-show="!props.listInfo.noItemLabel" ref="dom_list_ref" :class="$style.listContent" class="scroll">
+  <div :class="[$style.container, { [$style.containerOuterScroll]: props.useOuterScroll }]">
+    <div v-show="!props.listInfo.noItemLabel" ref="dom_list_ref" :class="[$style.listContent, { [$style.listContentOuterScroll]: props.useOuterScroll }, { scroll: !props.useOuterScroll }]" @scroll="!props.useOuterScroll && handleScroll()">
       <ul>
         <li v-for="item in props.listInfo.list" :key="item.id" :class="$style.item" @click="toDetail(item)">
           <div :class="$style.image">
@@ -30,11 +30,16 @@
         <p v-text="props.listInfo.noItemLabel" />
       </div>
     </transition>
+    <div v-if="showScrollTopBtn" :class="$style.scrollTopBtn" @click="scrollToTop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from '@common/utils/vueTools'
+import { ref, onMounted, onBeforeUnmount, nextTick } from '@common/utils/vueTools'
 import type { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
@@ -42,17 +47,35 @@ import { useRoute, useRouter } from '@common/utils/vueRouter'
 const props = withDefaults(defineProps<{
   listInfo: ListInfo
   visibleSource?: boolean
+  useOuterScroll?: boolean
 }>(), {
   visibleSource: false,
+  useOuterScroll: false,
 })
 
 const router = useRouter()
 const route = useRoute()
 
 const dom_list_ref = ref<HTMLElement | null>(null)
+const dom_outerScrollContainer = ref<HTMLElement | null>(null)
+const showScrollTopBtn = ref(false)
 
 const emit = defineEmits(['toggle-page'])
 
+
+const findOuterScrollContainer = (el: HTMLElement | null): HTMLElement | null => {
+  while (el && el !== document.body) {
+    const style = window.getComputedStyle(el)
+    const overflowY = style.overflowY
+    if (overflowY === 'auto' || overflowY === 'scroll') {
+      return el
+    }
+    el = el.parentElement
+  }
+  return null
+}
+
+const getScrollContainer = (): HTMLElement | null => props.useOuterScroll ? dom_outerScrollContainer.value : dom_list_ref.value
 
 const togglePage = (page: number) => {
   emit('toggle-page', page)
@@ -70,15 +93,51 @@ const toDetail = (info: ListInfoItem) => {
   })
 }
 
+const scrollToTop = () => {
+  const container = getScrollContainer()
+  if (container) {
+    container.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+}
+
+const handleScroll = () => {
+  const container = getScrollContainer()
+  if (container) {
+    showScrollTopBtn.value = container.scrollTop > 100
+  }
+}
+
+onMounted(() => {
+  if (props.useOuterScroll) {
+    void nextTick(() => {
+      dom_outerScrollContainer.value = findOuterScrollContainer(dom_list_ref.value?.parentElement ?? null)
+      if (dom_outerScrollContainer.value) {
+        dom_outerScrollContainer.value.addEventListener('scroll', handleScroll)
+      }
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  if (props.useOuterScroll && dom_outerScrollContainer.value) {
+    dom_outerScrollContainer.value.removeEventListener('scroll', handleScroll)
+  }
+})
+
 defineExpose({
   scrollTo(top: number) {
-    dom_list_ref.value?.scrollTo({
+    const container = getScrollContainer()
+    container?.scrollTo({
       top,
       // behavior: 'smooth',
     })
   },
   getScrollTop() {
-    return dom_list_ref.value?.scrollTop ?? 0
+    const container = getScrollContainer()
+    return container?.scrollTop ?? 0
   },
 })
 
@@ -95,6 +154,13 @@ defineExpose({
   flex-flow: column nowrap;
   position: relative;
 }
+.containerOuterScroll {
+  overflow: visible;
+  height: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+}
 
 .listContent {
   position: absolute;
@@ -102,6 +168,22 @@ defineExpose({
   top: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 15px 15px 0;
+
+  ul {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+}
+.listContentOuterScroll {
+  position: static;
+  width: 100%;
+  height: auto;
   display: flex;
   flex-flow: column nowrap;
   font-size: 14px;
@@ -216,4 +298,30 @@ defineExpose({
   }
 }
 
+.scrollTopBtn {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background-color: #42b883 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(66, 184, 131, 0.4) !important;
+  z-index: 99999 !important;
+  transition: background-color 0.2s ease !important;
+
+  &:hover {
+    background-color: #36a070 !important;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
 </style>

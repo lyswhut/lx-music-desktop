@@ -1,10 +1,10 @@
 <template lang="pug">
-dd
-  h3 {{ $t('setting__sync_client_mode') }}
-  div
-    .p.small {{ $t('setting__sync_client_status', { status: clientStatus }) }}
-    .p.small {{ $t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' }) }}
-    .p
+div.setting-card
+  .setting-card-header {{ $t('setting__sync_client_mode') }}
+  .setting-card-body
+    .gap-top.small {{ $t('setting__sync_client_status', { status: clientStatus }) }}
+    .gap-top.small {{ $t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' }) }}
+    .p.gap-top
       .p.small {{ $t('setting__sync_client_host') }}
       div
         base-input.gap-left(:class="$style.hostInput" :model-value="appSetting['sync.client.host']" :disabled="sync.enable" :placeholder="$t('setting__sync_client_host_tip')" @update:model-value="setSyncClientHost")

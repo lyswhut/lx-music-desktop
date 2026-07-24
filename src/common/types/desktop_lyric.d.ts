@@ -39,7 +39,7 @@ declare namespace LX {
       'player.playbackRate': LX.AppSetting['player.playbackRate']
     }
 
-    type WinMainActions = 'get_info' | 'get_status' | 'get_analyser_data_array'
+    type WinMainActions = 'get_info' | 'get_status' | 'get_analyser_data_array' | 'toggle_play' | 'play_next' | 'play_prev'
 
     interface LyricActionBase <A> {
       action: A
@@ -51,6 +51,7 @@ declare namespace LX {
 
     type LyricActions = LyricAction<'set_info', {
       id: string | null
+      pic: string | null
       singer: string
       name: string
       album: string
@@ -58,15 +59,18 @@ declare namespace LX {
       tlrc: string | null
       rlrc: string | null
       lxlrc: string | null
-      // pic: string | null
       isPlay: boolean
       line: number
       played_time: number
+      progress: number
+      duration: number
     }>
     | LyricAction<'set_status', {
       isPlay: boolean
       line: number
       played_time: number
+      progress: number
+      duration: number
     }>
     | LyricAction<'set_lyric', {
       lrc: string | null
@@ -80,6 +84,7 @@ declare namespace LX {
     | LyricAction<'set_pause'>
     | LyricAction<'set_stop'>
     | LyricAction<'send_analyser_data_array', Uint8Array>
+    | LyricAction<'set_lyric_line', string>
 
 
     interface NewBounds {

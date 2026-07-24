@@ -91,7 +91,7 @@ const handleSearch = (text) => {
   // justify-content: center;
 }
 .noitemListContainer {
-  padding: 3% 15px 15px;
+  padding: 6px 15px 15px;
   // margin-top: -20px;
   min-height: 250px;
   max-height: 94.7%;

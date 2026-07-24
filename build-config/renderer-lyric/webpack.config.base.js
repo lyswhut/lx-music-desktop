@@ -13,6 +13,7 @@ module.exports = {
   target: 'electron-renderer',
   entry: {
     'renderer-lyric': path.join(__dirname, '../../src/renderer-lyric/main.ts'),
+    'renderer-mini': path.join(__dirname, '../../src/renderer-mini/main.ts'),
   },
   output: {
     filename: '[name].js',
@@ -28,6 +29,7 @@ module.exports = {
       '@main': path.join(__dirname, '../../src/main'),
       '@renderer': path.join(__dirname, '../../src/renderer'),
       '@lyric': path.join(__dirname, '../../src/renderer-lyric'),
+      '@mini': path.join(__dirname, '../../src/renderer-mini'),
       '@static': path.join(__dirname, '../../src/static'),
       '@common': path.join(__dirname, '../../src/common'),
     },
@@ -42,6 +44,7 @@ module.exports = {
           loader: 'ts-loader',
           options: {
             appendTsSuffixTo: [/\.vue$/],
+            configFile: path.join(__dirname, '../../src/renderer-lyric/tsconfig.json'),
           },
         },
       },
@@ -128,6 +131,15 @@ module.exports = {
     new HTMLPlugin({
       filename: 'lyric.html',
       template: path.join(__dirname, '../../src/renderer-lyric/index.html'),
+      chunks: ['renderer-lyric'],
+      isProd: process.env.NODE_ENV == 'production',
+      browser: process.browser,
+      __dirname,
+    }),
+    new HTMLPlugin({
+      filename: 'mini.html',
+      template: path.join(__dirname, '../../src/renderer-mini/index.html'),
+      chunks: ['renderer-mini'],
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
       __dirname,

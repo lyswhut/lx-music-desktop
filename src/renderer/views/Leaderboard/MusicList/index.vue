@@ -10,12 +10,18 @@
       @show-menu="hideListsMenu"
       @play-list="handlePlayList"
       @toggle-page="togglePage"
+      @scroll="handleScroll"
     />
+    <div v-if="showScrollTopBtn" :class="$style.scrollTopBtn" @click="scrollToTop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { watch } from '@common/utils/vueTools'
+import { watch, ref } from '@common/utils/vueTools'
 import useList from './useList'
 
 
@@ -53,6 +59,20 @@ const hideMenu = () => {
   listRef.value.handleMenuClick()
 }
 
+const showScrollTopBtn = ref(false)
+
+const scrollToTop = () => {
+  if (listRef.value) {
+    listRef.value.scrollToTop()
+  }
+}
+
+const handleScroll = () => {
+  if (listRef.value) {
+    showScrollTopBtn.value = listRef.value.getScrollTop() > 100
+  }
+}
+
 defineExpose({ hideMenu })
 
 
@@ -61,11 +81,10 @@ defineExpose({ hideMenu })
 
 <style lang="less" module>
 .container {
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
+  flex: auto;
+  display: block;
 }
 
 .list {
@@ -74,4 +93,30 @@ defineExpose({ hideMenu })
   flex: auto;
 }
 
+.scrollTopBtn {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background-color: #42b883 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(66, 184, 131, 0.4) !important;
+  z-index: 99999 !important;
+  transition: background-color 0.2s ease !important;
+
+  &:hover {
+    background-color: #36a070 !important;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
 </style>

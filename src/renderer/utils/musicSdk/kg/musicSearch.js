@@ -9,7 +9,7 @@ export default {
   page: 0,
   allPage: 1,
   musicSearch(str, page, limit) {
-    const searchRequest = httpFetch(`http://songsearch.kugou.com/song_search_v2?platform=AndroidFilter&iscorrection=1&keyword=${encodeURIComponent(str)}&hifiquality=0&pagesize=${limit}&PrivilegeFilter=0&page=${page}`)
+    const searchRequest = httpFetch(`https://songsearch.kugou.com/song_search_v2?keyword=${encodeURIComponent(str)}&page=${page}&pagesize=${limit}&userid=0&clientver=&platform=WebFilter&filter=2&iscorrection=1&privilege_filter=0&area_code=1`)
     return searchRequest.promise.then(({ body }) => body)
   },
   filterData(rawData) {
@@ -49,11 +49,10 @@ export default {
     }
     return {
       singer: decodeName(formatSingerName(rawData.Singers, 'name')),
-      name: decodeName(`${rawData.OriSongName}${rawData.Suffix ? ` ${rawData.Suffix}` : ''}`),
+      name: decodeName(rawData.SongName),
       albumName: decodeName(rawData.AlbumName),
       albumId: rawData.AlbumID,
       songmid: rawData.Audioid,
-      albumAudioId: rawData.MixSongID,
       source: 'kg',
       interval: formatPlayTime(rawData.Duration),
       _interval: rawData.Duration,

@@ -7,7 +7,7 @@ import { type ListInfo } from '@renderer/store/songList/state'
 
 export type { ListInfoItem } from '@renderer/store/songList/state'
 
-export const sources: Array<LX.OnlineSource | 'all'> = markRaw([])
+export const sources: Array<LX.OnlineSource | 'all'> = markRaw(['all'])
 
 export type SearchListInfo = Omit<ListInfo, 'source'>
 
@@ -45,4 +45,3 @@ for (const source of music.sources) {
   })
   maxPages[source.id as LX.OnlineSource] = 0
 }
-sources.push('all')

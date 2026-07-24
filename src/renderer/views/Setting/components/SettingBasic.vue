@@ -1,109 +1,103 @@
 <template lang="pug">
 dt#basic {{ $t('setting__basic') }}
 dd
-  div
-    .gap-top
-      base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({'common.isShowAnimation': $event})")
-    .gap-top
-      base-checkbox(id="setting_animate" :disabled="!appSetting['common.isShowAnimation']" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({'common.randomAnimate': $event})")
-    .gap-top
-      base-checkbox(id="setting_start_in_fullscreen" :model-value="appSetting['common.startInFullscreen']" :label="$t('setting__basic_start_in_fullscreen')" @update:model-value="updateSetting({'common.startInFullscreen': $event})")
-    .gap-top
-      base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
-    .p.gap-top
-      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+  div.setting-card.setting-card-full
+    .setting-card-header {{ $t('setting__basic_theme') }}
+    .setting-card-body
+      ul(:class="$style.theme")
+        li(v-for="theme in themeList" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
+          div(:class="$style.bg")
+          span(:class="$style.label") {{ theme.name }}
+        li(v-if="themeId == 'auto'" :aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
+          div(:class="$style.bg")
+            div(:class="$style.bgContent")
+              div(:class="$style.light")
+              div(:class="$style.dark")
+          span(:class="$style.label") {{ $t('theme_auto') }}
+        li(:aria-label="$t('theme_add')" :class="[$style.themeItem, $style.add]" @click="handleEditTheme()")
+          div(:class="$style.bg")
+            div(:class="$style.bgContent")
+              svg-icon(:class="$style.icon" name="plus")
+          span(:class="$style.label") {{ $t('theme_add') }}
 
-dd
-  h3#basic_theme {{ $t('setting__basic_theme') }}
-  div
-    ul(:class="$style.theme")
-      li(v-for="theme in themeList" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
-        div(:class="$style.bg")
-        span(:class="$style.label") {{ theme.name }}
-      li(v-if="showAllTheme || themeId == 'auto'" :aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
-        div(:class="$style.bg")
-          div(:class="$style.bgContent")
-            div(:class="$style.light")
-            div(:class="$style.dark")
-        span(:class="$style.label") {{ $t('theme_auto') }}
-      li(v-if="showAllTheme" :aria-label="$t('theme_add')" :class="[$style.themeItem, $style.add]" @click="handleEditTheme()")
-        div(:class="$style.bg")
-          div(:class="$style.bgContent")
-            svg-icon(:class="$style.icon" name="plus")
-        span(:class="$style.label") {{ $t('theme_add') }}
-      li(v-if="!showAllTheme" :aria-label="$t('theme_more_btn_show')" :class="[$style.themeItem, $style.moreThme]" @click="showAllTheme = true")
-        span(:class="$style.label") {{ $t('theme_more_btn_show') }}
-        svg-icon(name="angle-right-solid" :class="$style.activeIcon")
-
-dd
-  h3#basic_source {{ $t('setting__basic_source') }}
-  div
-    .gap-top(v-for="item in apiSources" :key="item.id")
-      base-checkbox(
-        :id="`setting_api_source_${item.id}`" name="setting_api_source"
-        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :aria-label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
-        span(:class="$style.sourceLabel")
-          | {{ item.name }}
-          span(v-if="item.desc" :class="$style.desc") {{ item.desc }}
-          span(v-if="item.statusLabel" :class="$style.status") {{ item.statusLabel }}
-    .p.gap-top
-      base-btn.btn(min @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
-
-dd
-  h3#basic_window_size {{ $t('setting__basic_window_size') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in windowSizeList" :id="`setting_window_size_${item.id}`" :key="item.id"
-      name="setting_window_size" need :model-value="appSetting['common.windowSizeId']" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)"
-      @update:model-value="updateSetting({'common.windowSizeId': $event})")
-
-dd
-  h3#basic_font_size {{ $t('setting__basic_font_size') }}
-  div
-    //- base-selection.gap-teft(:list="fontSizeList" :model-value="appSetting['common.fontSize']" @update:model-value="updateSetting({'common.fontSize': $event})")
-    base-checkbox.gap-left(
-      v-for="item in fontSizeList" :id="`setting_basic_font_size_${item.id}`" :key="item.id"
-      name="setting_basic_font_size" need :model-value="appSetting['common.fontSize']" :value="item.id"
-      :label="item.label" :disabled="isFullscreen" @update:model-value="updateSetting({'common.fontSize': $event})")
-
-dd
-  h3#basic_font {{ $t('setting__basic_font') }}
-  div(style="--selection-width: 12rem;")
-    base-selection.gap-left(:list="fontList" :model-value="fonts[0]" item-key="id" item-name="label" @update:model-value="updateFonts($event, fonts[1])")
-    base-selection.gap-left(v-if="fonts[0]" :list="fontList" :model-value="fonts[1]" item-key="id" item-name="label" @update:model-value="updateFonts(fonts[0], $event)")
-    //- base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
-
-dd
-  h3#basic_lang {{ $t('setting__basic_lang') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in langList" :id="`setting_lang_${item.locale}`" :key="item.locale" name="setting_lang"
-      need :model-value="appSetting['common.langId']" :value="item.locale" :label="item.name" @update:model-value="updateSetting({'common.langId': $event})")
-
-dd
-  h3#basic_sourcename {{ $t('setting__basic_sourcename') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in sourceNameTypes" :id="`setting_abasic_sourcename_${item.id}`" :key="item.id"
-      name="setting_basic_sourcename" need :model-value="appSetting['common.sourceNameType']" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.sourceNameType': $event})")
-dd
-  h3#basic_control_btn_position {{ $t('setting__basic_control_btn_position') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in controlBtnPositionList" :id="`setting_basic_control_btn_position_${item.id}`" :key="item.id"
-      name="setting_basic_control_btn_position" need :model-value="appSetting['common.controlBtnPosition']" :value="item.id" :label="item.name" @update:model-value="updateSetting({'common.controlBtnPosition': $event})")
-dd
-  h3#basic_playbar_progress_style {{ $t('setting__basic_playbar_progress_style') }}
-  div
-    base-checkbox.gap-left(
-      id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
-    base-checkbox.gap-left(
-      id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
-    base-checkbox.gap-left(
-      id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="full" :label="$t('setting__basic_playbar_progress_style_full')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+dd.cards-row.basic-cards-row
+    div.setting-card.row1-card-1
+      .setting-card-header {{ $t('setting__basic') }}
+      .setting-card-body
+        .gap-top
+          base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({'common.isShowAnimation': $event})")
+        .gap-top
+          base-checkbox(id="setting_animate" :disabled="!appSetting['common.isShowAnimation']" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({'common.randomAnimate': $event})")
+        .gap-top
+          base-checkbox(id="setting_start_in_fullscreen" :model-value="appSetting['common.startInFullscreen']" :label="$t('setting__basic_start_in_fullscreen')" @update:model-value="updateSetting({'common.startInFullscreen': $event})")
+        .gap-top
+          base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
+        .p.gap-top
+          base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+    div.setting-card.row1-card-2
+      .setting-card-header {{ $t('setting__basic_source') }}
+      .setting-card-body
+        .gap-top(v-for="item in apiSources" :key="item.id")
+          base-checkbox(
+            :id="`setting_api_source_${item.id}`" name="setting_api_source"
+            need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :aria-label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
+            span(:class="$style.sourceLabel")
+              | {{ item.name }}
+              span(v-if="item.desc" :class="$style.desc") {{ item.desc }}
+              span(v-if="item.statusLabel" :class="$style.status") {{ item.statusLabel }}
+        .p.gap-top
+          base-btn.btn(min @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
+    div.setting-card.row1-card-3
+      .setting-card-header {{ $t('setting__basic_window_size') }}
+      .setting-card-body
+        base-checkbox.gap-left(
+          v-for="item in windowSizeList" :id="`setting_window_size_${item.id}`" :key="item.id"
+          name="setting_window_size" need :model-value="appSetting['common.windowSizeId']" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)" @update:model-value="updateSetting({'common.windowSizeId': $event})")
+    div.setting-card.row1-card-4
+      .setting-card-header {{ $t('setting__basic_font_size') }}
+      .setting-card-body
+        //- base-selection.gap-teft(:list="fontSizeList" :model-value="appSetting['common.fontSize']" @update:model-value="updateSetting({'common.fontSize': $event})")
+        base-checkbox.gap-left(
+          v-for="item in fontSizeList" :id="`setting_basic_font_size_${item.id}`" :key="item.id"
+          name="setting_basic_font_size" need :model-value="appSetting['common.fontSize']" :value="item.id"
+          :label="item.label" :disabled="isFullscreen" @update:model-value="updateSetting({'common.fontSize': $event})")
+    div.setting-card.row1-card-5
+      .setting-card-header {{ $t('setting__basic_font') }}
+      .setting-card-body(style="--selection-width: 12rem;")
+        base-selection.gap-left(:list="fontList" :model-value="fonts[0]" item-key="id" item-name="label" @update:model-value="updateFonts($event, fonts[1])")
+        base-selection.gap-left(v-if="fonts[0]" :list="fontList" :model-value="fonts[1]" item-key="id" item-name="label" @update:model-value="updateFonts(fonts[0], $event)")
+        //- base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
+dd.cards-row.basic-cards-row
+    div.setting-card.row1-card-6
+      .setting-card-header {{ $t('setting__basic_lang') }}
+      .setting-card-body
+        base-checkbox.gap-left(
+          v-for="item in langList" :id="`setting_lang_${item.locale}`" :key="item.locale" name="setting_lang"
+          need :model-value="appSetting['common.langId']" :value="item.locale" :label="item.name" @update:model-value="updateSetting({'common.langId': $event})")
+    div.setting-card.row1-card-7
+      .setting-card-header {{ $t('setting__basic_sourcename') }}
+      .setting-card-body
+        base-checkbox.gap-left(
+          v-for="item in sourceNameTypes" :id="`setting_abasic_sourcename_${item.id}`" :key="item.id"
+          name="setting_basic_sourcename" need :model-value="appSetting['common.sourceNameType']" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.sourceNameType': $event})")
+    div.setting-card
+      .setting-card-header {{ $t('setting__basic_control_btn_position') }}
+      .setting-card-body
+        base-checkbox.gap-left(
+          v-for="item in controlBtnPositionList" :id="`setting_basic_control_btn_position_${item.id}`" :key="item.id"
+          name="setting_basic_control_btn_position" need :model-value="appSetting['common.controlBtnPosition']" :value="item.id" :label="item.name" @update:model-value="updateSetting({'common.controlBtnPosition': $event})")
+    div.setting-card
+      .setting-card-header {{ $t('setting__basic_playbar_progress_style') }}
+      .setting-card-body
+        base-checkbox.gap-left(
+          id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
+          need :model-value="appSetting['common.playBarProgressStyle']" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+        base-checkbox.gap-left(
+          id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
+          need :model-value="appSetting['common.playBarProgressStyle']" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+        base-checkbox.gap-left(
+          id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
+          need :model-value="appSetting['common.playBarProgressStyle']" value="full" :label="$t('setting__basic_playbar_progress_style_full')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
 
 ThemeSelectorModal(v-model="isShowThemeSelectorModal")
 ThemeEditModal(v-model="isShowThemeEditModal" :theme-id="editThemeId" @submit="handleRefreshTheme")
@@ -138,7 +132,6 @@ export default {
   setup() {
     const t = useI18n()
 
-    const showAllTheme = ref(false)
     const defaultThemesRaw = shallowReactive([])
     const defaultThemes = computed(() => {
       return defaultThemesRaw.map(theme => ({ ...theme, isDefault: true, name: t('theme_' + theme.id) }))
@@ -149,11 +142,7 @@ export default {
     })
     const themeList = computed(() => {
       if (!allThemes.value.length) return []
-      return showAllTheme.value
-        ? allThemes.value
-        : themeId.value == 'auto'
-          ? []
-          : [allThemes.value.find(t => t.id == themeId.value) ?? allThemes.value[0]]
+      return allThemes.value
     })
     const autoTheme = reactive({})
     const updateAutoTheme = (info) => {
@@ -330,7 +319,6 @@ export default {
       updateSetting,
       userThemes,
       autoTheme,
-      showAllTheme,
       themeList,
       fonts,
       updateFonts,
@@ -360,6 +348,115 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+.setting-card {
+  display: inline-flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: rgba(77, 175, 124, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(77, 175, 124, 0.25);
+  overflow: hidden;
+  margin: 0 0 15px;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+.setting-card-full {
+  display: flex !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin-bottom: 10px;
+}
+.setting-card-header {
+  padding: 8px 16px;
+  font-weight: bold;
+  font-size: 13px;
+  color: var(--color-primary);
+  border-bottom: 1px solid rgba(77, 175, 124, 0.25);
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+.setting-card-body {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+
+  :deep(.gap-left) {
+    margin-left: 0 !important;
+    margin-top: 10px;
+    width: fit-content !important;
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    :deep(label) {
+      justify-content: flex-start;
+      white-space: nowrap;
+    }
+  }
+
+  :deep(.gap-top) {
+    margin-top: 10px;
+    margin-left: 0 !important;
+    width: fit-content !important;
+    display: block;
+    text-align: left;
+    white-space: nowrap;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &.p {
+      margin-top: 10px;
+    }
+
+    :deep(label) {
+      justify-content: flex-start;
+      white-space: nowrap;
+    }
+  }
+}
+
+dd.cards-row.basic-cards-row {
+  display: flex;
+  flex-flow: row nowrap !important;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 0;
+  margin: 0 0 10px;
+  width: 100%;
+  overflow-x: auto;
+
+  > .setting-card {
+    margin: 0;
+    flex: 0 0 auto !important;
+    width: fit-content !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    display: flex;
+    flex-direction: column;
+
+    .setting-card-body {
+      flex: 1;
+      width: 100%;
+    }
+  }
+}
+</style>
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';

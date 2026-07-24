@@ -169,6 +169,7 @@ export default {
   // height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  margin-top: -16px;
 }
 
 .songListHeader {
@@ -247,4 +248,3 @@ export default {
   height: 100%;
 }
 </style>
-

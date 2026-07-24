@@ -1,10 +1,10 @@
 <template lang="pug">
-dd
-  h3 {{ syncEnableServerTitle }}
-  div
-    .p.small {{ $t('setting__sync_server_auth_code', { code: sync.server.status.code || '' }) }}
-    .p.small {{ $t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' }) }}
-    .p.small {{ $t('setting__sync_server_device', { devices: syncDevices }) }}
+div.setting-card
+  .setting-card-header {{ syncEnableServerTitle }}
+  .setting-card-body
+    .gap-top.small {{ $t('setting__sync_server_auth_code', { code: sync.server.status.code || '' }) }}
+    .gap-top.small {{ $t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' }) }}
+    .gap-top.small {{ $t('setting__sync_server_device', { devices: syncDevices }) }}
     .p.gap-top
       .p.small {{ $t('setting__sync_server_port') }}
       div
@@ -13,7 +13,7 @@ dd
     .p.gap-top
       base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
       base-btn.btn(min @click="isShowDeviceListModal = true") {{ $t('setting__sync_server_show_device_list') }}
-  ServerDeviceListModal(v-model="isShowDeviceListModal")
+ServerDeviceListModal(v-model="isShowDeviceListModal")
 </template>
 
 <script>

@@ -1,6 +1,15 @@
 <template>
   <div :class="$style.download">
     <div :class="$style.header">
+      <svg :class="$style.headerIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" aria-hidden="true" aria-label="下载管理" space="preserve">
+        <use xlink:href="#icon-download-2" />
+      </svg>
+      <div :class="$style.headerText">
+        <div :class="$style.headerTitle">下载管理</div>
+        <div :class="$style.headerDesc">管理所有下载的歌曲</div>
+      </div>
+    </div>
+    <div :class="$style.toc">
       <base-tab v-model="activeTab" :class="$style.tab" :list="tabs" />
     </div>
     <div :class="$style.content">
@@ -21,7 +30,7 @@
       <div v-if="list.length" ref="dom_listContent" :class="$style.content">
         <base-virtualized-list
           ref="listRef" v-slot="{ item, index }" :list="list" key-name="id" :item-height="listItemHeight"
-          container-class="scroll" content-class="list"
+          container-class="scroll" content-class="list" @scroll="handleScroll"
         >
           <div
             class="list-item"
@@ -61,6 +70,11 @@
       </div>
       <base-menu v-model="isShowItemMenu" :menus="menus" :xy="menuLocation" item-name="name" @menu-click="handleMenuClick" />
       <!-- <base-menu :menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :is-show="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick" /> -->
+    </div>
+    <div v-if="showScrollTopBtn" :class="$style.scrollTopBtn" @click="scrollToTop">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+      </svg>
     </div>
     <common-list-add-modal v-model:show="isShowListAdd" :music-info="selectedAddMusicInfo" teleport="#view" />
     <common-list-add-multiple-modal v-model:show="isShowListAddMultiple" :music-list="selectedList" teleport="#view" @confirm="removeAllSelect" />
@@ -203,6 +217,18 @@ export default {
       }
     }
 
+    const showScrollTopBtn = ref(false)
+    const scrollToTop = () => {
+      if (listRef.value) {
+        listRef.value.scrollTo(0, true)
+      }
+    }
+    const handleScroll = () => {
+      if (listRef.value) {
+        showScrollTopBtn.value = listRef.value.getScrollTop() > 100
+      }
+    }
+
     const getName = (downloadInfo) => {
       return formatMusicName(appSetting['download.fileName'], downloadInfo.metadata.musicInfo.name, downloadInfo.metadata.musicInfo.singer)
     }
@@ -238,6 +264,9 @@ export default {
 
       getName,
       getTypeName,
+      showScrollTopBtn,
+      scrollToTop,
+      handleScroll,
     }
   },
 }
@@ -252,12 +281,54 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  margin-top: -16px;
 
   :global(.list-item) {
     &.active {
       color: var(--color-button-font);
     }
   }
+}
+
+.header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+.headerIcon {
+  width: 40px;
+  height: 40px;
+  padding: 22px;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light-400-alpha-700);
+  border-radius: 12px;
+  flex: 0 0 auto;
+}
+.headerText {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-top: -8px;
+}
+.headerTitle {
+  font-size: 28px;
+  font-weight: normal;
+  color: var(--color-font);
+  line-height: 1.2;
+}
+.headerDesc {
+  font-size: 12px;
+  color: var(--color-font-desc);
+  opacity: 0.7;
+  margin-top: 20px;
+}
+.toc {
+  flex: 0 0 auto;
+  padding: 10px 15px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: var(--color-list-header-border-bottom);
 }
 .num {
   height: 100%;
@@ -302,5 +373,31 @@ export default {
   }
 }
 
-</style>
+.scrollTopBtn {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 80px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background-color: #42b883 !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(66, 184, 131, 0.4) !important;
+  z-index: 99999 !important;
+  transition: background-color 0.2s ease !important;
 
+  &:hover {
+    background-color: #36a070 !important;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+</style>

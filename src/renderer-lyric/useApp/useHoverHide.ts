@@ -23,7 +23,7 @@ export default () => {
     sendMouseEnterLeave(false)
   }
 
-  const removeMouseEnterLeaveListener = onMouseEnterLeave(({ params: isEnter }) => {
+  const removeMouseEnterLeaveListener = onMouseEnterLeave(({ params: isEnter }: { params: boolean }) => {
     isMouseEnter.value = isEnter
   })
   document.body.addEventListener('mousemove', handleMouseMove)

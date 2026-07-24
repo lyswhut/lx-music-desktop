@@ -4,7 +4,7 @@
     ref="dom_scrollContainer"
     :class="containerClass"
     tabindex="0"
-    style="outline: none; height: 100%; overflow-y: auto; position: relative; display: block; contain: strict;"
+    :style="useOuterScroll ? 'outline: none; position: relative; display: block;' : 'outline: none; height: 100%; overflow-y: auto; position: relative; display: block; contain: strict;'"
   >
     <component :is="contentEl" :class="contentClass" :style="contentStyle">
       <div v-for="item in views" :key="item.key" :style="item.style">
@@ -104,6 +104,10 @@ export default {
       type: String,
       default: 'virtualized-list',
     },
+    useOuterScroll: {
+      type: Boolean,
+      default: false,
+    },
     contentEl: {
       type: String,
       default: 'div',
@@ -129,6 +133,8 @@ export default {
   setup(props, { emit }) {
     const views = ref([])
     const dom_scrollContainer = ref(null)
+    let dom_outerScrollContainer = null
+    let listOffsetTop = 0
     let isListScrolling = false
     const isListScrollingRef = ref(false)
     let startIndex = -1
@@ -138,6 +144,30 @@ export default {
     let cancelScroll = null
     let isAutoScrolling = false
     let scrollToValue = 0
+
+    const getScrollContainer = () => dom_outerScrollContainer || dom_scrollContainer.value
+
+    const findOuterScrollContainer = el => {
+      while (el && el !== document.body) {
+        const style = window.getComputedStyle(el)
+        const overflowY = style.overflowY
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          return el
+        }
+        el = el.parentElement
+      }
+      return null
+    }
+
+    const calculateOffset = () => {
+      if (!dom_outerScrollContainer || !dom_scrollContainer.value) {
+        listOffsetTop = 0
+        return
+      }
+      const listRect = dom_scrollContainer.value.getBoundingClientRect()
+      const containerRect = dom_outerScrollContainer.getBoundingClientRect()
+      listOffsetTop = listRect.top - containerRect.top + dom_outerScrollContainer.scrollTop
+    }
 
     const createList = (startIndex, endIndex) => {
       const cache = cachedList.slice(startIndex, endIndex)
@@ -156,11 +186,15 @@ export default {
       return list
     }
 
-    const updateView = (currentScrollTop = dom_scrollContainer.value.scrollTop) => {
-      // const currentScrollTop = this.$refs.dom_scrollContainer.scrollTop
+    const updateView = (currentScrollTop = null) => {
+      const scrollContainer = getScrollContainer()
+      if (!scrollContainer) return
+      const actualScrollTop = currentScrollTop ?? scrollContainer.scrollTop
+      const relativeScrollTop = props.useOuterScroll ? Math.max(0, actualScrollTop - listOffsetTop) : actualScrollTop
+
       const itemHeight = props.itemHeight
-      const currentStartIndex = Math.floor(currentScrollTop / itemHeight)
-      const scrollContainerHeight = dom_scrollContainer.value.clientHeight
+      const currentStartIndex = Math.floor(relativeScrollTop / itemHeight)
+      const scrollContainerHeight = props.useOuterScroll ? scrollContainer.clientHeight : scrollContainer.clientHeight
       const currentEndIndex = currentStartIndex + Math.ceil(scrollContainerHeight / itemHeight)
       const continuous = currentStartIndex <= endIndex && currentEndIndex >= startIndex
       const currentStartRenderIndex = Math.max(currentStartIndex, 0)
@@ -183,7 +217,7 @@ export default {
         //   // console.log('scroll up')
         //   views.value = createList(currentStartRenderIndex, currentEndRenderIndex)
         // } else return
-        if (currentScrollTop == scrollTop && endIndex >= currentEndIndex) return
+        if (actualScrollTop == scrollTop && endIndex >= currentEndIndex) return
         requestAnimationFrame(() => {
           views.value = createList(currentStartRenderIndex, currentEndRenderIndex)
         })
@@ -194,7 +228,7 @@ export default {
       }
       startIndex = currentStartIndex
       endIndex = currentEndIndex
-      scrollTop = currentScrollTop
+      scrollTop = actualScrollTop
     }
 
     const setStopScrollStatus = debounce(() => {
@@ -205,14 +239,19 @@ export default {
       if (!isListScrolling) isListScrolling = isListScrollingRef.value = true
       setStopScrollStatus()
 
-      const currentScrollTop = dom_scrollContainer.value.scrollTop
+      const scrollContainer = getScrollContainer()
+      if (!scrollContainer) return
+      const currentScrollTop = scrollContainer.scrollTop
       if (Math.abs(currentScrollTop - scrollTop) > props.itemHeight * 0.6) {
         updateView(currentScrollTop)
       }
       emit('scroll', event)
     }
 
-    const scrollTo = (scrollTop, animate = false, onScrollEnd) => {
+    const scrollTo = (targetScrollTop, animate = false, onScrollEnd) => {
+      const scrollContainer = getScrollContainer()
+      if (!scrollContainer) return
+      const actualScrollTop = props.useOuterScroll ? targetScrollTop + listOffsetTop : targetScrollTop
       if (onScrollEnd) {
         void new Promise(resolve => {
           if (cancelScroll) {
@@ -223,8 +262,8 @@ export default {
         }).then(() => {
           if (animate) {
             isAutoScrolling = true
-            scrollToValue = scrollTop
-            cancelScroll = handleScroll(dom_scrollContainer.value, scrollTop, 300, () => {
+            scrollToValue = actualScrollTop
+            cancelScroll = handleScroll(scrollContainer, actualScrollTop, 300, () => {
               cancelScroll = null
               isAutoScrolling = false
               onScrollEnd(true)
@@ -234,12 +273,12 @@ export default {
               onScrollEnd('canceled')
             })
           } else {
-            dom_scrollContainer.value.scrollTop = scrollTop
+            scrollContainer.scrollTop = actualScrollTop
           }
         })
       } else {
-        dom_scrollContainer.value.scrollTo({
-          top: scrollTop,
+        scrollContainer.scrollTo({
+          top: actualScrollTop,
           behavior: animate ? 'smooth' : 'instant',
         })
       }
@@ -250,7 +289,10 @@ export default {
     }
 
     const getScrollTop = () => {
-      return isAutoScrolling ? scrollToValue : dom_scrollContainer.value.scrollTop
+      const scrollContainer = getScrollContainer()
+      if (!scrollContainer) return 0
+      if (isAutoScrolling) return props.useOuterScroll ? scrollToValue - listOffsetTop : scrollToValue
+      return props.useOuterScroll ? Math.max(0, scrollContainer.scrollTop - listOffsetTop) : scrollContainer.scrollTop
     }
 
     const handleResize = () => {
@@ -288,10 +330,21 @@ export default {
     })
 
     onMounted(() => {
-      dom_scrollContainer.value.addEventListener('scroll', onScroll, {
-        capture: false,
-        passive: true,
-      })
+      if (props.useOuterScroll) {
+        dom_outerScrollContainer = findOuterScrollContainer(dom_scrollContainer.value)
+        if (!dom_outerScrollContainer) dom_outerScrollContainer = dom_scrollContainer.value
+        calculateOffset()
+        dom_outerScrollContainer.addEventListener('scroll', onScroll, {
+          capture: false,
+          passive: true,
+        })
+        window.addEventListener('resize', calculateOffset)
+      } else {
+        dom_scrollContainer.value.addEventListener('scroll', onScroll, {
+          capture: false,
+          passive: true,
+        })
+      }
       cachedList = Array(props.list.length)
       startIndex = -1
       endIndex = -1
@@ -307,7 +360,12 @@ export default {
       window.addEventListener('resize', handleResize)
     })
     onBeforeUnmount(() => {
-      dom_scrollContainer.value.removeEventListener('scroll', onScroll)
+      if (props.useOuterScroll && dom_outerScrollContainer) {
+        dom_outerScrollContainer.removeEventListener('scroll', onScroll)
+        window.removeEventListener('resize', calculateOffset)
+      } else if (dom_scrollContainer.value) {
+        dom_scrollContainer.value.removeEventListener('scroll', onScroll)
+      }
       window.removeEventListener('resize', handleResize)
       if (cancelScroll) cancelScroll()
     })

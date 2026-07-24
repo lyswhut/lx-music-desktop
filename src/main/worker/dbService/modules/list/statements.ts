@@ -146,17 +146,6 @@ export const createMusicInfoByMusicInfoIdQueryStatement = () => {
 
 
 /**
- * 创建根据列表Id与音乐id查询音乐排序语句
- * @returns 查询语句
- */
-export const createMusicInfoOrderStatement = () => {
-  const db = getDB()
-  return db.prepare<[LX.DBService.ListMusicInfoQuery], LX.DBService.MusicInfoOrder>(`SELECT "listId", "musicInfoId", "order"
-    FROM "main"."my_list_music_info_order"
-    WHERE "listId"=@listId AND "musicInfoId"=@musicInfoId`)
-}
-
-/**
  * 创建音乐信息排序插入语句
  * @returns 插入语句
  */

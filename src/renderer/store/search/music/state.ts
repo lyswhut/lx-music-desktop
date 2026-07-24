@@ -17,7 +17,7 @@ interface ListInfos extends Partial<Record<LX.OnlineSource, ListInfo>> {
   'all': ListInfo
 }
 
-export const sources: Array<LX.OnlineSource | 'all'> = markRaw([])
+export const sources: Array<LX.OnlineSource | 'all'> = markRaw(['all'])
 
 export const listInfos: ListInfos = markRaw({
   all: reactive<ListInfo>({
@@ -45,4 +45,3 @@ for (const source of music.sources) {
   })
   maxPages[source.id as LX.OnlineSource] = 0
 }
-sources.push('all')

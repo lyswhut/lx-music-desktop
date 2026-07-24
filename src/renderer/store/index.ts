@@ -80,7 +80,7 @@ export const openAPI = reactive({
 
 
 export const windowSizeActive = computed(() => {
-  return windowSizeList.find(i => i.id === appSetting['common.windowSizeId']) ?? windowSizeList[0]
+  return windowSizeList.find(i => i.id === appSetting['common.windowSizeId']) ?? windowSizeList[3]
 })
 
 export const getSourceI18nPrefix = () => {

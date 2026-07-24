@@ -67,31 +67,31 @@ export default {
 }
  */
 
-// const buf_key = Buffer.from('yeelion')
-// const buf_key_len = buf_key.length
-// const buildParams = (id, isGetLyricx) => {
-//   let params = `user=12345,web,web,web&requester=localhost&req=1&rid=MUSIC_${id}`
-//   if (isGetLyricx) params += '&lrcx=1'
-//   const buf_str = Buffer.from(params)
-//   const buf_str_len = buf_str.length
-//   const output = new Uint16Array(buf_str_len)
-//   let i = 0
-//   while (i < buf_str_len) {
-//     let j = 0
-//     while (j < buf_key_len && i < buf_str_len) {
-//       output[i] = buf_key[j] ^ buf_str[i]
-//       i++
-//       j++
-//     }
-//   }
-//   return Buffer.from(output).toString('base64')
-// }
+const buf_key = Buffer.from('yeelion')
+const buf_key_len = buf_key.length
+const buildParams = (id, isGetLyricx) => {
+  let params = `user=12345,web,web,web&requester=localhost&req=1&rid=MUSIC_${id}`
+  if (isGetLyricx) params += '&lrcx=1'
+  const buf_str = Buffer.from(params)
+  const buf_str_len = buf_str.length
+  const output = new Uint16Array(buf_str_len)
+  let i = 0
+  while (i < buf_str_len) {
+    let j = 0
+    while (j < buf_key_len && i < buf_str_len) {
+      output[i] = buf_key[j] ^ buf_str[i]
+      i++
+      j++
+    }
+  }
+  return Buffer.from(output).toString('base64')
+}
 
 // console.log(buildParams('207527604', false))
 // console.log(buildParams('207527604', true))
 
 const timeExp = /^\[([\d:.]*)\]{1}/g
-const existTimeExp = /\[\d{1,2}:.*\d{1,4}]/
+const existTimeExp = /\[\d{1,2}:.*\d{1,4}\]/
 const lyricxTag = /^<-?\d+,-?\d+>/
 export default {
   /* sortLrcArr(arr) {
@@ -168,6 +168,14 @@ export default {
 
     if (!isLyricx && lrcT.length > lrc.length * 0.3 && lrc.length - lrcT.length > 6) {
       throw new Error('failed')
+      // if (lrc.length * 0.4 < lrcT.length) { // 翻译数量需大于歌词数量的0.4倍，否则认为没有翻译
+      //   const tItem = lrc.pop()
+      //   tItem.time = lrc[lrc.length - 1].time
+      //   lrcT.push(tItem)
+      // } else {
+      //   lrc = arr
+      //   lrcT = []
+      // }
     }
 
     return {
@@ -227,35 +235,35 @@ export default {
   // },
   getLyric(musicInfo, isGetLyricx = true) {
     // this.getLyric2(musicInfo)
-    const requestObj = httpFetch(`http://mlyric.kuwo.cn/mobi.s?f=web&type=lyric&lrcx=${isGetLyricx ? 1 : 0}&rid=${musicInfo.songmid}&encode=utf8`)
-    requestObj.promise = requestObj.promise.then(async({ statusCode, body, raw }) => {
+    const requestObj = httpFetch(`http://newlyric.kuwo.cn/newlyric.lrc?${buildParams(musicInfo.songmid, isGetLyricx)}`)
+    requestObj.promise = requestObj.promise.then(({ statusCode, body, raw }) => {
       if (statusCode != 200) return Promise.reject(new Error(JSON.stringify(body)))
-      const lrcText = await decodeLyric(raw, isGetLyricx)
-      // console.log(lrcText)
-      // let lrcInfo
-      // try {
-      //   lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
-      // } catch {
-      //   return Promise.reject(new Error('Get lyric failed'))
-      // }
-      let lrcInfo
-      // console.log(Buffer.from(base64Data, 'base64').toString())
-      try {
-        lrcInfo = this.parseLrc(lrcText)
-      } catch (err) {
-        return Promise.reject(new Error('Get lyric failed'))
-      }
-      // console.log(lrcInfo)
-      if (lrcInfo.tlyric) lrcInfo.tlyric = lrcInfo.tlyric.replace(lrcTools.rxps.wordTimeAll, '')
-      try {
-        lrcInfo.lxlyric = lrcTools.parse(lrcInfo.lyric)
-      } catch {
-        lrcInfo.lxlyric = ''
-      }
-      lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
-      if (!existTimeExp.test(lrcInfo.lyric)) return Promise.reject(new Error('Get lyric failed'))
-      // console.log(lrcInfo)
-      return lrcInfo
+      return decodeLyric({ lrcBase64: raw.toString('base64'), isGetLyricx }).then(base64Data => {
+        // let lrcInfo
+        // try {
+        //   lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
+        // } catch {
+        //   return Promise.reject(new Error('Get lyric failed'))
+        // }
+        let lrcInfo
+        // console.log(Buffer.from(base64Data, 'base64').toString())
+        try {
+          lrcInfo = this.parseLrc(Buffer.from(base64Data, 'base64').toString())
+        } catch (err) {
+          return Promise.reject(new Error('Get lyric failed'))
+        }
+        // console.log(lrcInfo)
+        if (lrcInfo.tlyric) lrcInfo.tlyric = lrcInfo.tlyric.replace(lrcTools.rxps.wordTimeAll, '')
+        try {
+          lrcInfo.lxlyric = lrcTools.parse(lrcInfo.lyric)
+        } catch {
+          lrcInfo.lxlyric = ''
+        }
+        lrcInfo.lyric = lrcInfo.lyric.replace(lrcTools.rxps.wordTimeAll, '')
+        if (!existTimeExp.test(lrcInfo.lyric)) return Promise.reject(new Error('Get lyric failed'))
+        // console.log(lrcInfo)
+        return lrcInfo
+      })
     })
     return requestObj
   },

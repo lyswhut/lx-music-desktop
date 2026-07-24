@@ -25,7 +25,7 @@
       </div>
       <div :class="$style.content">
         <div v-show="!noItem" ref="dom_listContent" :class="$style.content">
-          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" :use-outer-scroll="true" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick" @scroll="handleScroll">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -53,7 +53,7 @@
               </div>
             </template>
           </base-virtualized-list>
-          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" :use-outer-scroll="true" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick" @scroll="handleScroll">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -143,7 +143,7 @@ export default {
       default: false,
     },
   },
-  emits: ['show-menu', 'play-list', 'togglePage'],
+  emits: ['show-menu', 'play-list', 'togglePage', 'scroll'],
   setup(props, { emit }) {
     const actionButtonsVisible = appSetting['list.actionButtonsVisible']
     const rightClickSelectedIndex = ref(-1)
@@ -249,6 +249,12 @@ export default {
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
     }
+    const getScrollTop = () => {
+      return listRef.value.getScrollTop()
+    }
+    const handleScroll = () => {
+      emit('scroll', getScrollTop())
+    }
 
     return {
       listItemHeight,
@@ -278,7 +284,9 @@ export default {
       selectedDownloadMusicInfo,
 
       scrollToTop,
+      getScrollTop,
       actionButtonsVisible,
+      handleScroll,
     }
   },
 }
@@ -288,29 +296,23 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 .songList {
-  overflow: hidden;
-  height: 100%;
+  position: relative;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
-  position: relative;
 }
 
 .list {
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: relative;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-flow: column nowrap;
   font-size: 14px;
 }
 
 .content {
-  flex: auto;
-  min-height: 0;
   position: relative;
-  height: 100%;
+  width: 100%;
 }
 
 .pagination {

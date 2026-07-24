@@ -4,7 +4,7 @@ import { onThemeChange } from '@lyric/utils/ipc'
 import { RGB_Alpha_Shade } from '@common/theme/colorUtils'
 
 export default () => {
-  const rThemeChange = onThemeChange(({ params: setting }) => {
+  const rThemeChange = onThemeChange(({ params: setting }: LX.IpcRendererEventParams<LX.ThemeSetting>) => {
     window.setTheme(setting.theme.colors)
   })
   watch(() => [setting['desktopLyric.style.lyricUnplayColor'], setting['desktopLyric.style.lyricPlayedColor'], setting['desktopLyric.style.lyricShadowColor']], ([unplayColor, playedColor, shadowColor]) => {
