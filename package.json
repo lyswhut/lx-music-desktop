@@ -1,7 +1,7 @@
 {
   "name": "lx-music-desktop",
   "version": "2.12.2",
-  "description": "一个免费的音乐查找助手",
+  "description": "\u4e00\u4e2a\u514d\u8d39\u7684\u97f3\u4e50\u67e5\u627e\u52a9\u624b",
   "main": "./dist/main.js",
   "scripts": {
     "pack": "node build-config/pack.js && npm run pack:win:setup:x64",
@@ -208,6 +208,7 @@
     "braces": "latest",
     "node-gyp-build": "latest",
     "micromatch": "latest",
-    "http-cache-semantics": "latest"
+    "http-cache-semantics": "latest",
+    "nanoid": "3.3.18"
   }
 }
