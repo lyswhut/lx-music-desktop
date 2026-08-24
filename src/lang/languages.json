@@ -1,5 +1,15 @@
 [
   {
+    "name": "English",
+    "locale": "en-us",
+    "country": "us"
+  },
+  {
+    "name": "한국어",
+    "locale": "ko-kr",
+    "country": "kr"
+  },
+  {
     "name": "简体中文",
     "locale": "zh-cn",
     "alternate": "zh-hans",
@@ -11,15 +21,5 @@
     "locale": "zh-tw",
     "alternate": "zh-hk",
     "country": "cn"
-  },
-  {
-    "name": "English",
-    "locale": "en-us",
-    "country": "us"
-  },
-  {
-    "name": "한국어",
-    "locale": "ko-kr",
-    "country": "kr"
   }
 ]
