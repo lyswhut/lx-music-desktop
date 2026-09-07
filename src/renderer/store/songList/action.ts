@@ -122,6 +122,18 @@ export const getAndSetList = async(source: LX.OnlineSource, tabId: string, sortI
 }
 
 /**
+ * 获取详情数据（歌单或专辑，专辑 id 带 album__ 前缀）
+ * @param id 歌单/专辑id
+ * @param source 来源
+ * @param page 页数
+ */
+const getListDetailData = (id: string, source: LX.OnlineSource, page: number) => {
+  return /^album__/.test(id)
+    ? (musicSdk as any)[source]?.album.getAlbumDetail(id.replace('album__', ''), page)
+    : musicSdk[source]?.songList.getListDetail(id, page)
+}
+
+/**
  * 获取歌单内单页歌曲
  * @param id 歌单id
  * @param source 歌单源
@@ -132,7 +144,7 @@ export const getListDetail = async(id: string, source: LX.OnlineSource, page: nu
   let key = `sdetail__${source}__${id}__${page}`
   if (!isRefresh && cache.has(key)) return cache.get(key)
 
-  return musicSdk[source]?.songList.getListDetail(id, page).then((result: ListDetailInfo) => {
+  return getListDetailData(id, source, page).then((result: ListDetailInfo) => {
     result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m)) as LX.Music.MusicInfoOnline[]))
     cache.set(key, result)
     return result
@@ -154,7 +166,7 @@ export const getListDetailAll = async(id: string, source: LX.OnlineSource, isRef
     if (isRefresh && cache.has(key)) cache.delete(key)
     return cache.has(key)
       ? Promise.resolve(cache.get(key))
-      : musicSdk[source]?.songList.getListDetail(id, page).then((result: ListDetailInfo) => {
+      : getListDetailData(id, source, page).then((result: ListDetailInfo) => {
         result.list = markRawList(deduplicationList(result.list.map(m => toNewMusicInfo(m)) as LX.Music.MusicInfoOnline[]))
         cache.set(key, result)
         return result
