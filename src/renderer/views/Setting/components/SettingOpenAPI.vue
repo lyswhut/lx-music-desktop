@@ -14,6 +14,11 @@ dd.gap-top
       .p.small {{ $t('setting__open_api_port') }}
       div
         base-input.gap-left(:class="$style.portInput" :model-value="appSetting['openAPI.port']" type="number" :placeholder="$t('setting__open_api_port_tip')" @update:model-value="setPort")
+    .p.gap-top
+      .p.small 音源优先级
+      div
+        base-input(:class="$style.portInput" :model-value="sourceOrder" :placeholder="'kg,kw,mg,tx,wy'" @update:model-value="setSourceOrder")
+      .p.small.gap-top(style="opacity:0.7") 按逗号分隔，排前面的优先搜索。可只填 kg,kw 限定音源。
 
 dd.gap-top
   div
@@ -23,7 +28,7 @@ dd.gap-top
 </template>
 
 <script>
-// import { computed } from '@common/utils/vueTools'
+import { computed } from '@common/utils/vueTools'
 import { openAPI } from '@renderer/store'
 import { openUrl } from '@common/utils/electron'
 import { appSetting, updateSetting } from '@renderer/store/setting'
@@ -36,12 +41,20 @@ export default {
       updateSetting({ 'openAPI.port': port.trim() })
     }, 500)
 
+    const setSourceOrder = debounce(val => {
+      updateSetting({ 'openAPI.sourceOrder': val.trim() || 'kg,kw,mg,tx,wy' })
+    }, 500)
+
+    const sourceOrder = computed(() => appSetting['openAPI.sourceOrder'] ?? 'kg,kw,mg,tx,wy')
+
     return {
       appSetting,
       updateSetting,
       openAPI,
       openUrl,
       setPort,
+      setSourceOrder,
+      sourceOrder,
     }
   },
 }

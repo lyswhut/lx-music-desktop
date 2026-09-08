@@ -153,6 +153,36 @@ export const sendEvent = <T = any>(name: string, params?: T) => {
   mainSend(browserWindow, name, params)
 }
 
+/**
+ * 调用 renderer 端的 handler（rendererHandle 注册的）
+ */
+export const invokeRenderer = async<T = any>(name: string, params?: any): Promise<T> => {
+  if (!browserWindow) throw new Error('main window is undefined')
+  return (browserWindow.webContents as any).ipc.invoke(name, params)
+}
+
+/**
+ * 通过 IPC 请求 renderer 执行搜索（用于 tx/wy 加密源）
+ */
+export const sendSearchRequest = async(source: string, keyword: string, page: number, limit: number): Promise<any> => {
+  if (!browserWindow) throw new Error('main window is undefined')
+  const { searchViaIpc } = await import('@main/modules/openApi/ipcSearch')
+  return searchViaIpc(browserWindow, source, keyword, page, limit)
+}
+
+export const sendPlayRequest = async(listId: string, musicInfo: any): Promise<any> => {
+  if (!browserWindow) throw new Error('main window is undefined')
+  const songs = await global.lx.worker.dbService.getListMusics(listId) as any[]
+  const { playViaIpc } = await import('@main/modules/openApi/ipcSearch')
+  return playViaIpc(browserWindow, listId, musicInfo, songs)
+}
+
+export const sendQueueRequest = async(): Promise<any> => {
+  if (!browserWindow) throw new Error('main window is undefined')
+  const { queueViaIpc } = await import('@main/modules/openApi/ipcSearch')
+  return queueViaIpc(browserWindow)
+}
+
 export const showSelectDialog = async(options: Electron.OpenDialogOptions) => {
   if (!browserWindow) throw new Error('main window is undefined')
   return dialog.showOpenDialog(browserWindow, options)

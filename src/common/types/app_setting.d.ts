@@ -682,6 +682,11 @@ declare global {
       'openAPI.bindLan': boolean
 
       /**
+       * 音源优先级，逗号分隔
+       */
+      'openAPI.sourceOrder': string
+
+      /**
        * 是否在离开搜索界面时自动清空搜索框
        */
       'odc.isAutoClearSearchInput': boolean
