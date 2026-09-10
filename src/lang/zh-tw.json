@@ -344,6 +344,7 @@
   "setting__basic_sourcename_alias": "別名",
   "setting__basic_sourcename_real": "原名",
   "setting__basic_sourcename_title": "選取音樂串流平台名稱類型",
+  "setting__basic_auto_update": "啟動時自動更新自訂來源 API",
   "setting__basic_start_in_fullscreen": "以全螢幕模式啟動",
   "setting__basic_theme": "主題顏色",
   "setting__basic_theme_auto_tip": "此乃動態主題，你可以預先設定一個亮色主題及暗色主題，此後將根據系統的亮、暗主題色自動切換為你預先設定的相應主題。\n\n註：滑鼠右擊此主題項即可開啟亮、暗色主題設定視窗。",
@@ -744,5 +745,7 @@
   "user_api_import_online__input_confirm": "匯入",
   "user_api_import_online__input_loading": "匯入中...",
   "user_api_import_online__input_tip": "請輸入 HTTP 連結",
+  "user_api_import_online__script_empty": "取得到的腳本內容為空",
+  "user_api_import_online__script_too_large": "腳本檔案過大",
   "user_api_import_online__title": "從線上匯入自訂來源 API"
 }
