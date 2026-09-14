@@ -40,8 +40,8 @@ const replaceSqliteLib = async(arch) => {
   await fs.promises.unlink(targetPath).catch(_ => _)
   await fs.promises.copyFile(filePath, targetPath)
 }
-exports.copyLib = async(arch = process.arch) => {
-  if (process.platform === 'linux') {
+exports.copyLib = async(arch = process.arch, replaceLocal = false) => {
+  if (process.platform === 'linux' || replaceLocal) {
     await replaceSqliteLib(arch)
     return
   }
