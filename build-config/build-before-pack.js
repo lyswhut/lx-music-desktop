@@ -33,8 +33,8 @@ const archMap = {
 module.exports = async(context) => {
   await beforePack()
   const { arch } = context
-  const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/^[^\d]*?(\d+)/, '$1')
-  await copyLib(archMap[arch], parseInt(electronVersion) == 22)
+  // const electronVersion = context.packager?.info?._framework?.version ?? require('../package.json').devDependencies.electron.replace(/^[^\d]*?(\d+)/, '$1')
+  await copyLib(archMap[arch])
   // const electronNodeAbi = nodeAbi.getAbi(electronVersion, 'electron')
   // if (electronPlatformName !== 'linux' || process.env.FORCE) return
   // // const bindingFilePath = path.join(__dirname, '../node_modules/better-sqlite3/binding.gyp')
