@@ -5,7 +5,20 @@
         <thead>
           <tr v-if="actionButtonsVisible">
             <th class="num" style="width: 5%;">#</th>
-            <th class="nobreak">{{ $t('music_name') }}</th>
+            <th class="nobreak" style="display: flex; align-items: center; gap: 4px;">
+              {{ $t('music_name') }}
+              <button :class="[$style.sortBtn, { [$style.active]: sortState !== 'none' }]" title="按歌名排序" @click="toggleSort">
+                <svg v-if="sortState === 'none'" version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                </svg>
+                <svg v-else-if="sortState === 'asc'" version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 14l5-5 5 5z" />
+                </svg>
+                <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                </svg>
+              </button>
+            </th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
             <th class="nobreak" style="width: 9%;">{{ $t('music_time') }}</th>
@@ -13,7 +26,20 @@
           </tr>
           <tr v-else>
             <th class="num" style="width: 5%;">#</th>
-            <th class="nobreak">{{ $t('music_name') }}</th>
+            <th class="nobreak" style="display: flex; align-items: center; gap: 4px;">
+              {{ $t('music_name') }}
+              <button :class="[$style.sortBtn, { [$style.active]: sortState !== 'none' }]" title="按歌名排序" @click="toggleSort">
+                <svg v-if="sortState === 'none'" version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                </svg>
+                <svg v-else-if="sortState === 'asc'" version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 14l5-5 5 5z" />
+                </svg>
+                <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7 10l5 5 5-5z" />
+                </svg>
+              </button>
+            </th>
             <th class="nobreak" style="width: 25%;">{{ $t('music_singer') }}</th>
             <th class="nobreak" style="width: 28%;">{{ $t('music_album') }}</th>
             <th class="nobreak" style="width: 10%;">{{ $t('music_time') }}</th>
@@ -22,18 +48,19 @@
       </table>
     </div>
     <div v-show="list.length" ref="dom_listContent" :class="$style.content">
+      <letter-index v-if="sortState !== 'none'" :list="list" :sort-state="sortState" @scroll-to="handleScrollToIndex" />
       <base-virtualized-list
         v-if="actionButtonsVisible" ref="listRef" v-slot="{ item, index }" :list="list" key-name="id"
         :item-height="listItemHeight" container-class="scroll" content-class="list"
         @scroll="saveListPosition" @contextmenu.capture="handleListRightClick"
       >
         <div
-          class="list-item" :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
+          class="list-item" :class="[{ [$style.active]: playerInfo.isPlayList && (sortState === 'none' ? playerInfo.playIndex === index : sortedPlayIndex === index) }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
           @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
         >
           <div class="list-item-cell no-select" :class="$style.num" style="flex: 0 0 5%;">
             <transition name="play-active">
-              <div v-if="playerInfo.isPlayList && playerInfo.playIndex === index" :class="$style.playIcon">
+              <div v-if="playerInfo.isPlayList && (sortState === 'none' ? playerInfo.playIndex === index : sortedPlayIndex === index)" :class="$style.playIcon">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 512 512" space="preserve">
                   <use xlink:href="#icon-play-outline" />
                 </svg>
@@ -60,12 +87,12 @@
       >
         <div
           class="list-item"
-          :class="[{ [$style.active]: playerInfo.isPlayList && playerInfo.playIndex === index }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
+          :class="[{ [$style.active]: playerInfo.isPlayList && (sortState === 'none' ? playerInfo.playIndex === index : sortedPlayIndex === index) }, { selected: selectedIndex == index || rightClickSelectedIndex == index }, { active: selectedList.includes(item) }, { disabled: !assertApiSupport(item.source) }]"
           @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
         >
           <div class="list-item-cell no-select" :class="$style.num" style="flex: 0 0 5%;">
             <transition name="play-active">
-              <div v-if="playerInfo.isPlayList && playerInfo.playIndex === index" :class="$style.playIcon">
+              <div v-if="playerInfo.isPlayList && (sortState === 'none' ? playerInfo.playIndex === index : sortedPlayIndex === index)" :class="$style.playIcon">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 512 512" space="preserve">
                   <use xlink:href="#icon-play-outline" />
                 </svg>
@@ -109,6 +136,7 @@ import { assertApiSupport } from '@renderer/store/utils'
 import SearchList from './components/SearchList.vue'
 import MusicSortModal from './components/MusicSortModal.vue'
 import MusicToggleModal from './components/MusicToggleModal.vue'
+import LetterIndex from './components/LetterIndex.vue'
 import useListInfo from './useListInfo'
 import useList from './useList'
 import useMenu from './useMenu'
@@ -120,6 +148,7 @@ import useMusicActions from './useMusicActions'
 import useSearch from './useSearch'
 import useListScroll from './useListScroll'
 import useMusicToggle from './useMusicToggle'
+import useNameSort from './useNameSort'
 import { appSetting } from '@renderer/store/setting'
 export default {
   name: 'MusicList',
@@ -127,6 +156,7 @@ export default {
     SearchList,
     MusicSortModal,
     MusicToggleModal,
+    LetterIndex,
   },
   props: {
     listId: {
@@ -252,6 +282,12 @@ export default {
 
     const { saveListPosition, restoreScroll } = useListScroll({ props, listRef, list, handleRestoreScroll })
 
+    const {
+      sortState,
+      toggleSort,
+      sortedPlayIndex,
+    } = useNameSort({ list, listRef })
+
 
     const handleListItemClick = (event, index) => {
       if (rightClickSelectedIndex.value > -1) return
@@ -299,6 +335,11 @@ export default {
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
     }
+    const handleScrollToIndex = (index) => {
+      if (listRef.value) {
+        listRef.value.scrollToIndex(index, 0, true)
+      }
+    }
 
     return {
       listItemHeight,
@@ -312,6 +353,7 @@ export default {
       dom_listContent,
       listRef,
       excludeListIds,
+      handleScrollToIndex,
 
       menus,
       isShowItemMenu,
@@ -354,6 +396,10 @@ export default {
       isShowMusicToggleModal,
       selectedToggleMusicInfo,
       toggleSource,
+
+      sortState,
+      toggleSort,
+      sortedPlayIndex,
     }
   },
 }
@@ -412,6 +458,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   flex: auto;
+  position: relative;
 }
 
 .noItem {
@@ -425,6 +472,29 @@ export default {
   p {
     font-size: 24px;
     color: var(--color-font-label);
+  }
+}
+
+.sortBtn {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.active {
+    opacity: 1;
+    color: var(--color-primary);
   }
 }
 
