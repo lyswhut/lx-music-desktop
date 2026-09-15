@@ -1,4 +1,4 @@
-import { BrowserWindow, dialog, session } from 'electron'
+import { app, BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { getPlatform, isLinux, isWin } from '@common/utils'
@@ -41,13 +41,22 @@ const winEvent = () => {
     global.lx.event_app.main_window_blur()
   })
 
-  browserWindow.once('ready-to-show', () => {
+  // https://github.com/electron/electron/issues/48859
+  let isWindowShown = false
+  const win = browserWindow
+  const showWindowHandle = () => {
+    if (isWindowShown || browserWindow !== win) return
+    isWindowShown = true
     if (!global.envParams.cmdParams.hidden) {
       showWindow()
       setThumbarButtons()
     }
     global.lx.event_app.main_window_ready_to_show()
-  })
+  }
+  browserWindow.once('ready-to-show', showWindowHandle)
+  if (process.platform == 'linux' && app.commandLine.getSwitchValue('ozone-platform') == 'wayland') {
+    browserWindow.webContents.once('did-finish-load', showWindowHandle)
+  }
 
   browserWindow.on('show', () => {
     global.lx.event_app.main_window_show()

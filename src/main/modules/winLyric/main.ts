@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { debounce, getPlatform, isLinux, isWin } from '@common/utils'
 import { initWindowSize, minHeight, minWidth } from './utils'
 import { mainSend } from '@common/mainIpc'
@@ -72,18 +72,27 @@ const winEvent = () => {
   //   browserWindow.webContents.send('focus')
   // })
 
-  browserWindow.once('ready-to-show', () => {
+  // https://github.com/electron/electron/issues/48859
+  let isWindowShown = false
+  const win = browserWindow
+  const showWindowHandle = () => {
+    if (isWindowShown || browserWindow !== win) return
+    isWindowShown = true
     showWindow()
     if (global.lx.appSetting['desktopLyric.isLock']) {
-      browserWindow!.setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
+      browserWindow.setIgnoreMouseEvents(true, { forward: !isLinux && global.lx.appSetting['desktopLyric.isHoverHide'] })
     }
     // linux下每次重开时貌似要重新设置置顶
     // if (isLinux && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) {
     //   browserWindow!.setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
     // }
     if (global.lx.appSetting['desktopLyric.isAlwaysOnTop'] && global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) alwaysOnTopTools.startLoop()
-    browserWindow!.blur()
-  })
+    browserWindow.blur()
+  }
+  browserWindow.once('ready-to-show', showWindowHandle)
+  if (process.platform == 'linux' && app.commandLine.getSwitchValue('ozone-platform') == 'wayland') {
+    browserWindow.webContents.once('did-finish-load', showWindowHandle)
+  }
 }
 
 export const createWindow = () => {
