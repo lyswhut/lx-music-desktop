@@ -11,7 +11,7 @@
               <th class="nobreak" style="width: 22%;">{{ $t('music_singer') }}</th>
               <th class="nobreak" style="width: 22%;">{{ $t('music_album') }}</th>
               <th class="nobreak" style="width: 9%;">{{ $t('music_time') }}</th>
-              <th class="nobreak" style="width: 16%;">{{ $t('action') }}</th>
+              <th class="nobreak" style="width: 18%;">{{ $t('action') }}</th>
             </tr>
             <tr v-else>
               <th class="num" style="width: 5%;">#</th>
@@ -39,11 +39,11 @@
                   <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
                   <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
                 </div>
-                <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
-                <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
+                <div class="list-item-cell" style="flex: 0 0 21%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
+                <div class="list-item-cell" style="flex: 0 0 21%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 9%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
-                <div class="list-item-cell" style="flex: 0 0 16%; padding-left: 0; padding-right: 0;">
-                  <material-list-buttons :index="index" :remove-btn="false" :download-btn="assertApiSupport(item.source)" :play-btn="checkApiSource ? assertApiSupport(item.source) : true" @btn-click="handleListBtnClick" />
+                <div class="list-item-cell" style="flex: 0 0 18%; padding-left: 0; padding-right: 0;">
+                  <material-list-buttons :index="index" :remove-btn="false" :play-later-btn="checkApiSource ? assertApiSupport(item.source) : true" :download-btn="assertApiSupport(item.source)" :play-btn="checkApiSource ? assertApiSupport(item.source) : true" @btn-click="handleListBtnClick" />
                 </div>
               </div>
             </template>
@@ -56,7 +56,7 @@
           <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
             <template #default="{ item, index }">
               <div
-                class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
+                class="list-item" :class="[$style.quickActionItem, { selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
                 @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
               >
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
@@ -70,6 +70,19 @@
                 <div class="list-item-cell" style="flex: 0 0 24%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 27%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 10%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
+                <button
+                  v-if="checkApiSource ? assertApiSupport(item.source) : true"
+                  type="button"
+                  :class="$style.quickPlayLater"
+                  :aria-label="$t('list__play_later')"
+                  :title="$t('list__play_later')"
+                  @click.stop="handleQuickPlayLater(index)"
+                  @contextmenu.capture.stop
+                >
+                  <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" space="preserve">
+                    <use xlink:href="#icon-list-add" />
+                  </svg>
+                </button>
               </div>
             </template>
             <template #footer>
@@ -238,6 +251,9 @@ export default {
         case 'play':
           void handlePlayMusic(index, true)
           break
+        case 'playLater':
+          handlePlayMusicLater(index, true)
+          break
         case 'search':
           handleSearch(index)
           break
@@ -245,6 +261,9 @@ export default {
           handleShowMusicAddModal(index, true)
           break
       }
+    }
+    const handleQuickPlayLater = (index) => {
+      handlePlayMusicLater(index, true)
     }
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
@@ -257,6 +276,7 @@ export default {
       handleListItemRightClick,
       removeAllSelect,
       handleListBtnClick,
+      handleQuickPlayLater,
       rightClickSelectedIndex,
       dom_listContent,
       listRef,
@@ -318,6 +338,48 @@ export default {
   padding: 15px 0;
   // left: 50%;
   // transform: translateX(-50%);
+}
+.quickPlayLater {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  border: none;
+  border-radius: @form-radius;
+  background-color: var(--color-main-background);
+  color: var(--color-button-font);
+  box-shadow: 0 0 4px var(--color-primary-alpha-800);
+  cursor: pointer;
+  opacity: 0;
+  transform: translate(4px, -50%);
+  transition: @transition-fast;
+  transition-property: opacity, transform, background-color;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    background-color: var(--color-button-background-hover);
+  }
+
+  &:active {
+    background-color: var(--color-button-background-active);
+  }
+}
+
+.quickActionItem {
+  position: relative;
+}
+
+.quickActionItem:hover .quickPlayLater,
+.quickActionItem:focus-within .quickPlayLater,
+.quickPlayLater:focus {
+  opacity: 1;
+  transform: translate(0, -50%);
 }
 .noitem {
   position: absolute;
