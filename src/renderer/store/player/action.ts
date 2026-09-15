@@ -12,6 +12,7 @@ import {
   playMusicInfo,
   playedList,
   tempPlayList,
+  isShowPlaylist,
 } from './state'
 import { getListMusicsFromCache } from '@renderer/store/list/action'
 import { downloadList } from '@renderer/store/download/state'
@@ -59,6 +60,10 @@ export const setAllStatus = (val: string) => {
 
 export const setShowPlayerDetail = (val: boolean) => {
   isShowPlayerDetail.value = val
+}
+
+export const setShowPlaylist = (val: boolean) => {
+  isShowPlaylist.value = val
 }
 
 export const setShowPlayComment = (val: boolean) => {
@@ -223,8 +228,10 @@ export const clearPlayedList = () => {
 /**
  * 添加歌曲到稍后播放列表
  * @param list 歌曲列表
- */
+ *///todo
 export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
+  // todo 添加到下一首播放而不是到最后一首
+  // todo 重复歌曲不添加
   const topList: Array<Omit<LX.Player.TempPlayListItem, 'top'>> = []
   const bottomList = list.filter(({ isTop, ...musicInfo }) => {
     if (isTop) {
@@ -236,7 +243,8 @@ export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
   if (topList.length) arrUnshift(tempPlayList, topList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
   if (bottomList.length) arrPush(tempPlayList, bottomList.map(({ musicInfo, listId }) => ({ musicInfo, listId, isTempPlay: true })))
 
-  if (!playMusicInfo.musicInfo) void playNext()
+  // if (!playMusicInfo.musicInfo) void playNext()
+  // 造成了奇怪的bug
 }
 /**
  * 从稍后播放列表移除歌曲

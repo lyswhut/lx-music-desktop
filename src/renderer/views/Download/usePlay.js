@@ -4,6 +4,7 @@ import { LIST_IDS } from '@common/constants'
 
 export default ({ selectedList, list, listAll, removeAllSelect }) => {
   const handlePlayMusic = (index) => {
+    // todo 待接管
     playList(LIST_IDS.DOWNLOAD, listAll.value.indexOf(list.value[index]))
   }
 
