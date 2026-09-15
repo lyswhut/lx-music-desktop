@@ -40,13 +40,21 @@ export const setPlaybackRate = (rate: number) => {
 
 export const setLyric = () => {
   if (!musicInfo.id) return
+  const aboveLyrics = []
   const extendedLyrics = []
-  if (setting['player.isShowLyricRoma'] && lyrics.rlyric) extendedLyrics.push(lyrics.rlyric)
+  if (setting['player.isShowLyricRoma'] && lyrics.rlyric) {
+    // 关闭逐字音译时去掉 <off,dur> 标记，font-player 见纯文本即不建 span/动画，降低多语言逐字渲染开销
+    const rlyric = setting['player.isShowLyricRomaWordByWord'] ? lyrics.rlyric : lyrics.rlyric.replace(/<\d+,\d+>/g, '')
+    // 默认罗马音在主歌词下方；开启调换则提到主歌词上方（逐字，跟随主歌词高亮）
+    if (setting['player.isSwapLyricMainAndRoma']) aboveLyrics.push(rlyric)
+    else extendedLyrics.push(rlyric)
+  }
   if (setting['player.isShowLyricTranslation'] && lyrics.tlyric) extendedLyrics.push(lyrics.tlyric)
-  if (setting['player.isSwapLyricTranslationAndRoma']) extendedLyrics.reverse()
+  if (setting['player.isShowLyricPhonetic'] && lyrics.plyric) extendedLyrics.push(lyrics.plyric)
   lrc.setLyric(
     setting['player.isPlayLxlrc'] && lyrics.lxlyric ? lyrics.lxlyric : lyrics.lyric,
     extendedLyrics,
+    aboveLyrics,
   )
 }
 

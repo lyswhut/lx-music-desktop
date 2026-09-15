@@ -6,7 +6,9 @@ import { isPlay, setting } from '@lyric/store/state'
 export default () => {
   watch(() => setting['player.isShowLyricTranslation'], setLyric)
   watch(() => setting['player.isShowLyricRoma'], setLyric)
-  watch(() => setting['player.isSwapLyricTranslationAndRoma'], setLyric)
+  watch(() => setting['player.isShowLyricPhonetic'], setLyric)
+  watch(() => setting['player.isShowLyricRomaWordByWord'], setLyric)
+  watch(() => setting['player.isSwapLyricMainAndRoma'], setLyric)
   watch(() => setting['player.isPlayLxlrc'], setLyric)
   watch(() => setting['player.playbackRate'], (rate) => {
     setPlaybackRate(rate)
