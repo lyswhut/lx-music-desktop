@@ -344,6 +344,7 @@
   "setting__basic_sourcename_alias": "别名",
   "setting__basic_sourcename_real": "原名",
   "setting__basic_sourcename_title": "选择歌曲来源名称类型",
+  "setting__basic_auto_update": "启动时自动更新自定义源",
   "setting__basic_start_in_fullscreen": "以全屏模式启动",
   "setting__basic_theme": "主题颜色",
   "setting__basic_theme_auto_tip": "此乃动态主题，你可以预先设置一个亮色主题及暗色主题，此后将根据系统的亮、暗主题色自动切换为你预先设置的相应主题。\n\n注：鼠标右击此主题项即可打开亮、暗色主题设置窗口。",
@@ -744,5 +745,7 @@
   "user_api_import_online__input_confirm": "导入",
   "user_api_import_online__input_loading": "导入中...",
   "user_api_import_online__input_tip": "请输入 HTTP 链接",
+  "user_api_import_online__script_empty": "获取到的脚本内容为空",
+  "user_api_import_online__script_too_large": "脚本文件过大",
   "user_api_import_online__title": "在线导入自定义源"
 }
