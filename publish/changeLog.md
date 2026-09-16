@@ -6,3 +6,7 @@ Any Listen 的项目地址为 https://github.com/any-listen/any-listen
 ### 优化
 
 - 优化 tx 推荐歌单列表
+
+### 修复
+
+- 修复打开某些 kg 歌单时歌曲丢失的问题
