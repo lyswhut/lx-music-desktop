@@ -3,7 +3,6 @@
 对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
 Any Listen 的项目地址为 https://github.com/any-listen/any-listen
 
-### 修复
+### 优化
 
-- 修复自定义主题编辑器的颜色选择器默认值显示异常的问题（#2957）
-- 修复下载的 MP3 文件内嵌歌曲数据失败的问题（#2959）
+- 优化 tx 推荐歌单列表
