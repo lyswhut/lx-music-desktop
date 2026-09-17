@@ -461,17 +461,17 @@ export default {
       let isRequireUpdateSetting = false
       const newSetting = {}
       if (appSetting['theme.id'] == props.themeId) {
-        newSetting['theme.id'] = 'green'
+        newSetting['theme.id'] = 'macos27'
         isRequireUpdateSetting = true
       }
       if (theme.isDark) {
         if (appSetting['theme.darkId'] == props.themeId) {
-          newSetting['theme.darkId'] = 'black'
+          newSetting['theme.darkId'] = 'macos27_dark'
           isRequireUpdateSetting = true
         }
       } else {
         if (appSetting['theme.lightId'] == props.themeId) {
-          newSetting['theme.lightId'] = 'green'
+          newSetting['theme.lightId'] = 'macos27'
           isRequireUpdateSetting = true
         }
       }

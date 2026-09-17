@@ -11,7 +11,7 @@ dd
     .gap-top
       base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
     .p.gap-top
-      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+      base-btn.btn(outline @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
 dd
   h3#basic_theme {{ $t('setting__basic_theme') }}
@@ -47,7 +47,7 @@ dd
           span(v-if="item.desc" :class="$style.desc") {{ item.desc }}
           span(v-if="item.statusLabel" :class="$style.status") {{ item.statusLabel }}
     .p.gap-top
-      base-btn.btn(min @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
+      base-btn.btn(outline @click="isShowUserApiModal = true") {{ $t('setting__basic_source_user_api_btn') }}
 
 dd
   h3#basic_window_size {{ $t('setting__basic_window_size') }}
@@ -69,8 +69,8 @@ dd
 dd
   h3#basic_font {{ $t('setting__basic_font') }}
   div(style="--selection-width: 12rem;")
-    base-selection.gap-left(:list="fontList" :model-value="fonts[0]" item-key="id" item-name="label" @update:model-value="updateFonts($event, fonts[1])")
-    base-selection.gap-left(v-if="fonts[0]" :list="fontList" :model-value="fonts[1]" item-key="id" item-name="label" @update:model-value="updateFonts(fonts[0], $event)")
+    base-selection.gap-left(chrome="source" :list="fontList" :model-value="fonts[0]" item-key="id" item-name="label" @update:model-value="updateFonts($event, fonts[1])")
+    base-selection.gap-left(v-if="fonts[0]" chrome="source" :list="fontList" :model-value="fonts[1]" item-key="id" item-name="label" @update:model-value="updateFonts(fonts[0], $event)")
     //- base-selection.gap-teft(:list="fontList" :model-value="appSetting['common.font']" item-key="id" item-name="label" @update:model-value="updateSetting({'common.font': $event})")
 
 dd
@@ -158,9 +158,9 @@ export default {
     const autoTheme = reactive({})
     const updateAutoTheme = (info) => {
       let light = findTheme(info, appSetting['theme.lightId'])
-      light ??= info.themes.find(theme => theme.id == 'green')
+      light ??= info.themes.find(theme => theme.id == 'macos27')
       let dark = findTheme(info, appSetting['theme.darkId'])
-      dark ??= info.themes.find(theme => theme.id == 'black')
+      dark ??= info.themes.find(theme => theme.id == 'macos27_dark')
       autoTheme['--color-primary-theme-light'] = light.config.themeColors['--color-theme']
       autoTheme['--background-image-theme-light'] = light.isCustom
         ? light.config.extInfo['--background-image'] == 'none'
@@ -391,9 +391,9 @@ export default {
     }
 
     &.active {
-      color: var(--color-primary-font-active);
+      color: var(--color-primary);
       .bg {
-        border-color: var(--color-primary-font-active);
+        border-color: var(--color-primary);
       }
 
       &:hover {
@@ -433,9 +433,9 @@ export default {
     &.auto {
 
       &.active {
-        color: var(--color-primary-font-active);
+        color: var(--color-primary);
         .bg {
-          border-color: var(--color-primary-font-active);
+          border-color: var(--color-primary);
         }
       }
 
@@ -527,7 +527,7 @@ export default {
       flex-direction: row;
       width: auto;
       gap: 5px;
-      color: var(--color-primary-font-active);
+      color: var(--color-primary);
       .label {
         height: auto;
       }

@@ -1,6 +1,6 @@
 <template>
   <button
-    :class="[$style.btn, {[$style.min]: min}, {[$style.outline]: outline}]"
+    :class="[$style.btn, {[$style.min]: min}, {[$style.outline]: outline}, {[$style.primary]: primary}]"
     tabindex="0"
     :disabled="disabled"
   >
@@ -15,6 +15,10 @@ export default {
       type: Boolean,
     },
     outline: {
+      type: Boolean,
+      default: false,
+    },
+    primary: {
       type: Boolean,
       default: false,
     },
@@ -41,19 +45,51 @@ export default {
   transition: background-color 0.2s ease;
   background-color: var(--color-button-background);
   font-size: 14px;
+  &:not(.min) {
+    height: 32px;
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
   &[disabled] {
     opacity: .4;
     cursor: default;
   }
 
   &.outline {
-    background-color: transparent;
+    background-color: var(--color-panel);
+    border: 1px solid var(--color-line);
+    color: var(--color-font);
+    &:hover {
+      background-color: var(--color-well);
+    }
   }
 
-  &:hover {
+  &.primary {
+    color: var(--color-000);
+    background-color: var(--color-primary);
+    &[disabled] {
+      opacity: .78;
+    }
+    &:hover {
+      background-color: var(--color-primary-dark-100);
+    }
+    &:active {
+      background-color: var(--color-primary-dark-200);
+    }
+    &:not(.min) {
+      border-radius: 8px;
+    }
+  }
+
+  &:hover:not(.primary) {
     background-color: var(--color-button-background-hover);
   }
-  &:active {
+  &:active:not(.primary) {
     background-color: var(--color-button-background-active);
   }
 }

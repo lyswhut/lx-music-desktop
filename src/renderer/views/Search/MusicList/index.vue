@@ -71,6 +71,29 @@ const handleTogglePage = (page: number) => {
   top: 0;
   width: 100%;
   height: 100%;
+  :global {
+    .thead th {
+      font-size: 10px;
+      font-weight: 450;
+      line-height: 32px;
+      padding: 0 10px;
+      color: var(--color-secondary);
+    }
+    .list .list-item {
+      font-size: 12px;
+    }
+    .list-item-art {
+      width: 38px;
+      height: 38px;
+      border-radius: 5px;
+    }
+    .list-item-cell.name {
+      gap: 11px;
+    }
+    .list-item-cell.name .name {
+      font-weight: 570;
+    }
+  }
 }
 
 .list {

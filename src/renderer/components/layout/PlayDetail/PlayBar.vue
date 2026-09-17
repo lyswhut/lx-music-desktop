@@ -16,21 +16,21 @@
     </div>
     <div :class="$style.playControl">
       <div :class="$style.playBtn" :aria-label="$t('player__prev')" @click="playPrev()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
-          <use xlink:href="#icon-prevMusic" />
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <use xlink:href="#icon-line-prev" />
         </svg>
       </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
-          <use xlink:href="#icon-pause" />
+      <div :class="[$style.playBtn, $style.playMain]" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+        <svg v-if="isPlay" viewBox="0 0 24 24" aria-hidden="true">
+          <use xlink:href="#icon-line-pause-fill" />
         </svg>
-        <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
-          <use xlink:href="#icon-play" />
+        <svg v-else viewBox="0 0 24 24" aria-hidden="true">
+          <use xlink:href="#icon-line-play-fill" />
         </svg>
       </div>
       <div :class="$style.playBtn" :aria-label="$t('player__next')" @click="playNext()">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
-          <use xlink:href="#icon-nextMusic" />
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <use xlink:href="#icon-line-next" />
         </svg>
       </div>
     </div>
@@ -58,10 +58,11 @@ const {
 @import '@renderer/assets/styles/layout.less';
 
 .footer {
-  flex: 0 0 100px;
+  flex: 0 0 88px;
   overflow: hidden;
   display: flex;
   align-items: center;
+  border-top: 1px solid var(--color-primary-alpha-900);
 }
 .footerLeft {
   flex: auto;
@@ -114,29 +115,51 @@ const {
   color: var(--color-button-font);
 }
 .playBtn {
-  height: 40%;
-  padding: 5px;
   cursor: pointer;
   flex: none;
-  // transition: @transition-normal;
-  // transition-property: color;
-  color: var(--color-button-font);
+  color: var(--color-font);
   transition: opacity 0.2s ease;
   opacity: 1;
-  cursor: pointer;
-
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   +.playBtn {
-    margin-left: 10px;
+    margin-left: 16px;
   }
   svg {
-    fill: currentColor;
-    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
   }
   &:hover {
     opacity: 0.8;
   }
   &:active {
     opacity: 0.6;
+  }
+}
+
+.playMain {
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--color-font);
+  color: var(--color-app-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    stroke: none;
+  }
+  &:hover {
+    opacity: 0.92;
   }
 }
 

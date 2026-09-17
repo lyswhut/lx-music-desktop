@@ -236,17 +236,13 @@ export default {
 .search {
   position: absolute;
   width: 100%;
-  border-radius: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--color-line);
   transition: box-shadow .4s ease, background-color @transition-normal;
   display: flex;
   flex-flow: column nowrap;
-  background-color: var(--color-primary-light-600-alpha-100);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.07),
-                0 2px 4px rgba(0,0,0,0.07),
-                0 4px 8px rgba(0,0,0,0.07),
-                0 8px 16px rgba(0,0,0,0.07),
-                0 16px 32px rgba(0,0,0,0.07),
-                0 32px 64px rgba(0,0,0,0.07);
+  background-color: var(--color-panel);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-font) 8%, transparent);
 
   &.active {
     .form {
@@ -277,11 +273,12 @@ export default {
       // height: @height-toolbar * .7;
       padding: 0 5px;
       overflow: hidden;
-      font-size: 13.5px;
+      font-size: 13px;
+      color: var(--color-font);
       line-height: @height-toolbar * 0.52 + 5px;
       &::placeholder {
-        color: var(--color-button-font);
-        font-size: .98em;
+        color: var(--color-secondary);
+        font-size: 12px;
       }
     }
     button {
@@ -295,15 +292,16 @@ export default {
       cursor: pointer;
       height: 100%;
       padding: 6px 9px;
-      color: var(--color-button-font);
+      color: var(--color-secondary);
       transition: background-color .2s ease;
       opacity: 0.8;
 
       &:hover {
-        background-color: var(--color-button-background-hover);
+        background-color: var(--color-well);
+        color: var(--color-primary);
       }
       &:active {
-        background-color: var(--color-button-background-active);
+        background-color: var(--color-accent-soft);
       }
     }
   }
@@ -327,7 +325,7 @@ export default {
       flex-flow: row nowrap;
 
       &.select {
-        background-color: var(--color-primary-dark-100-alpha-700);
+        background-color: var(--color-accent-soft);
       }
       border-radius: 4px;
       // &:last-child {
@@ -347,13 +345,13 @@ export default {
 }
 .albumName {
   font-size: 12px;
-  opacity: 0.6;
+  color: var(--color-secondary);
   .mixin-ellipsis-1();
 }
 .source {
   flex: none;
-  font-size: 12px;
-  opacity: 0.5;
+  font-size: 11px;
+  color: var(--color-secondary);
   padding: 0 5px;
   display: flex;
   align-items: center;

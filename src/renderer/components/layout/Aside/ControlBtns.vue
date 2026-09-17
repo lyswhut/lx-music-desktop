@@ -1,24 +1,23 @@
 <template>
-  <div v-show="!isFullscreen" ref="dom_btns" :class="$style.controlBtn">
+  <div v-show="!isFullscreen" ref="dom_btns" :class="[$style.controlBtn, { [$style.windows]: !isMac }]">
     <button type="button" :class="[$style.btn, $style.close]" :aria-label="$t('close')" ignore-tip :title="$t('close')" @click="closeWindow">
-      <svg :class="$style.controlBtniIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
-        <use xlink:href="#icon-window-close" />
-      </svg>
+      <span :class="$style.glyph" aria-hidden="true">×</span>
     </button>
     <button type="button" :class="[$style.btn, $style.min]" :aria-label="$t('min')" ignore-tip :title="$t('min')" @click="minWindow">
-      <svg :class="$style.controlBtniIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
-        <use xlink:href="#icon-window-minimize" />
-      </svg>
+      <span :class="$style.glyph" aria-hidden="true">−</span>
+    </button>
+    <button type="button" :class="[$style.btn, $style.max]" :aria-label="$t('max')" ignore-tip :title="$t('max')" @click="maxWindow">
+      <span :class="$style.glyph" aria-hidden="true">+</span>
     </button>
   </div>
 </template>
 
 <script setup>
-import { minWindow, closeWindow } from '@renderer/utils/ipc'
+import { minWindow, closeWindow, maxWindow } from '@renderer/utils/ipc'
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
-// import { getRandom } from '../../utils'
 import { isFullscreen } from '@renderer/store'
 
+const isMac = window.os == 'mac' || document.documentElement.classList.contains('mac')
 const dom_btns = ref()
 
 const cssModule = useCssModule()
@@ -51,57 +50,78 @@ onBeforeUnmount(() => {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-@control-btn-width: @height-toolbar * .26;
-@control-btn-height: 6%;
 .controlBtn {
   box-sizing: border-box;
-  padding: 0 7px;
+  padding-left: 7px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
-  height: @control-btn-height;
+  gap: 8px;
+  width: auto;
+  height: 55px;
   -webkit-app-region: no-drag;
-  opacity: .5;
-  transition: opacity @transition-normal;
-  &.hover {
-    opacity: .8;
-    .controlBtniIcon {
-      opacity: 1;
-    }
-  }
-
 }
+
 .btn {
   position: relative;
-  width: @control-btn-width;
-  height: @control-btn-width;
+  width: 12px;
+  height: 12px;
   background: none;
-  border: none;
+  border: 1px solid #00000012;
   display: flex;
-  // justify-content: center;
-  // align-items: center;
+  align-items: center;
+  justify-content: center;
   outline: none;
-  padding: 1px;
+  padding: 0;
   cursor: pointer;
   border-radius: 50%;
-  color: var(--color-font);
+  color: #0008;
+  font-size: 9px;
+  line-height: 1;
 
-  &.min {
-    background-color: var(--color-btn-min);
-  }
-  // &.max {
-  //   background-color: var(--color-btn-max);
-  // }
   &.close {
-    background-color: var(--color-btn-close);
+    background-color: #ff6057;
+  }
+  &.min {
+    background-color: #febc2e;
+  }
+  &.max {
+    background-color: #29c941;
   }
 }
 
-.controlBtniIcon {
+.glyph {
   opacity: 0;
-  transition: opacity 0.2s ease-in-out;
+  font-weight: 700;
+  transform: translateY(-0.5px);
 }
 
+.controlBtn.hover .glyph {
+  opacity: 1;
+}
 
+.windows {
+  gap: 0;
+  height: 30px;
+  padding-left: 0;
+  .btn {
+    width: 46px;
+    height: 30px;
+    border-radius: 0;
+    border: 0;
+    background: none !important;
+    color: var(--color-font-label);
+    font-size: 14px;
+    .glyph {
+      opacity: 1;
+    }
+    &.min:hover,
+    &.max:hover {
+      background-color: var(--color-button-background-hover) !important;
+    }
+    &.close:hover {
+      background-color: var(--color-btn-close) !important;
+      color: #fff;
+    }
+  }
+}
 </style>

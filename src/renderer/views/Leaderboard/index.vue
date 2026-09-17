@@ -1,13 +1,19 @@
 <template>
   <div :class="$style.leaderboard">
-    <div :class="$style.lists">
-      <div :class="$style.listsSelect">
-        <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+    <div class="page-head" :class="$style.pageHead">
+      <div>
+        <h1>{{ $t('leaderboard') }}</h1>
+        <p>{{ $t('leaderboard__subtitle') }}</p>
       </div>
+      <base-selection :model-value="source" chrome="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+    </div>
+    <div :class="$style.body">
+    <div :class="$style.lists">
       <BoardList ref="boardListRef" :board-id="boardId" :source="source" @show-menu="$refs.musicListRef?.hideMenu()" />
     </div>
     <div :class="$style.list">
       <MusicList ref="musicListRef" :source="source" :board-id="boardId" @show-menu="$refs.boardListRef?.hideMenu()" />
+    </div>
     </div>
   </div>
 </template>
@@ -90,7 +96,20 @@ export default {
 .leaderboard {
   height: 100%;
   display: flex;
+  flex-flow: column nowrap;
   position: relative;
+  padding: 29px 32px 0;
+  box-sizing: border-box;
+}
+.pageHead {
+  flex: none;
+}
+.body {
+  min-height: 0;
+  min-width: 0;
+  flex: auto;
+  display: flex;
+  gap: 26px;
 }
 .header {
   flex: none;
@@ -104,7 +123,8 @@ export default {
 }
 .select {
   flex: none;
-  width: 80px;
+  width: auto;
+  min-width: 108px;
 }
 .content {
   flex: auto;
@@ -115,65 +135,16 @@ export default {
 
 .lists {
   flex: none;
-  width: 14.8%;
+  box-sizing: border-box;
+  width: 184px;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-flow: column nowrap;
+  overflow: hidden;
+  border-right: 1px solid var(--color-line);
+  padding-right: 17px;
 }
-.listsHeader {
-  position: relative;
-}
-
-.listsSelect {
-  font-size: 12px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-  >:global(.content) {
-    display: block;
-    width: 100%;
-  }
-  :global(.label-content) {
-    background-color: transparent !important;
-    line-height: 38px;
-    height: 38px;
-    border-radius: 0;
-    &:hover {
-      background: none !important;
-    }
-  }
-  :global(.label) {
-    color: var(--color-font) !important;
-  }
-  :global(.icon) {
-    opacity: .6;
-    transition: opacity .3s ease;
-  }
-
-  :global(.selection-list) {
-    max-height: 500px;
-    box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
-    li {
-      // background-color: var(--color-main-background);
-      line-height: 38px;
-      font-size: 13px;
-      &:hover {
-        background-color: var(--color-button-background-hover);
-      }
-      &:active {
-        background-color: var(--color-button-background-active);
-      }
-    }
-  }
-  // line-height: 38px;
-  // padding: 0 10px;
-  border-bottom: var(--color-list-header-border-bottom);
-  flex: none;
-}
-
 .list {
   position: relative;
   overflow: hidden;

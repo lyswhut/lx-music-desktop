@@ -11,8 +11,8 @@ dd
         base-input.gap-left(:class="$style.portInput" :model-value="appSetting['sync.server.port']" :disabled="sync.enable" type="number" :placeholder="$t('setting__sync_server_port_tip')" @update:model-value="setSyncServerPort")
 
     .p.gap-top
-      base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
-      base-btn.btn(min @click="isShowDeviceListModal = true") {{ $t('setting__sync_server_show_device_list') }}
+      base-btn.btn(outline :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
+      base-btn.btn(outline @click="isShowDeviceListModal = true") {{ $t('setting__sync_server_show_device_list') }}
   ServerDeviceListModal(v-model="isShowDeviceListModal")
 </template>
 

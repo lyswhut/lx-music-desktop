@@ -8,6 +8,7 @@ import {
   isShowPlayerDetail,
   isShowPlayComment,
   isShowLrcSelectContent,
+  isShowQueue,
   playInfo,
   playMusicInfo,
   playedList,
@@ -67,6 +68,14 @@ export const setShowPlayComment = (val: boolean) => {
 
 export const setShowPlayLrcSelectContentLrc = (val: boolean) => {
   isShowLrcSelectContent.value = val
+}
+
+export const setShowQueue = (val: boolean) => {
+  isShowQueue.value = val
+}
+
+export const toggleShowQueue = () => {
+  isShowQueue.value = !isShowQueue.value
 }
 
 export const setPlayListId = (listId: string | null) => {
@@ -244,6 +253,12 @@ export const addTempPlayList = (list: LX.Player.TempPlayListItem[]) => {
  */
 export const removeTempPlayList = (index: number) => {
   tempPlayList.splice(index, 1)
+}
+
+export const moveTempPlayList = (from: number, to: number) => {
+  if (from == to || from < 0 || to < 0 || from >= tempPlayList.length || to >= tempPlayList.length) return
+  const [item] = tempPlayList.splice(from, 1)
+  tempPlayList.splice(to, 0, item)
 }
 /**
  * 清空稍后播放列表

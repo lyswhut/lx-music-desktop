@@ -181,6 +181,11 @@ export const unmaximize = () => {
   if (!browserWindow) return
   browserWindow.unmaximize()
 }
+export const toggleMaximize = () => {
+  if (!browserWindow) return
+  if (browserWindow.isMaximized()) browserWindow.unmaximize()
+  else browserWindow.maximize()
+}
 export const toggleHide = () => {
   if (!browserWindow) return
   browserWindow.isVisible()

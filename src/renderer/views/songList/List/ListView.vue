@@ -115,7 +115,7 @@ onBeforeRouteLeave(() => {
   display: flex;
   background-position: center;
   background-size: cover;
-  border-radius: 4px;
+  border-radius: 12px;
   overflow: hidden;
   opacity: .9;
 

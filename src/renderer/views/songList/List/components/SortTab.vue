@@ -1,5 +1,13 @@
 <template>
-  <base-tab :model-value="sortId" :class="$style.tab" :list="list" item-label="name" @change="handleToggle" />
+  <base-selection
+    :model-value="sortId"
+    chrome="source"
+    :class="$style.select"
+    :list="list"
+    item-key="id"
+    item-name="name"
+    @update:model-value="handleToggle"
+  />
 </template>
 
 <script setup>
@@ -53,6 +61,12 @@ watch(() => props.source, async(source) => {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
+
+.select {
+  flex: none;
+  width: auto;
+  font-size: 12px;
+}
 
 .tagList {
   font-size: 12px;

@@ -1,20 +1,12 @@
 <template lang="pug">
 div(:class="$style.header")
   div(ref="dom_btns" :class="$style.controBtn")
-    button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip :title="$t('player__hide_detail_tip')" @click="hide")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="80%" viewBox="0 0 30.727 30.727" space="preserve")
-        use(xlink:href="#icon-window-hide")
-    button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" ignore-tip :title="$t('fullscreen_exit')" @click="fullscreenExit")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%")
+    button(type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip @click="hide")
+      svg(:class="$style.controBtnIcon" viewBox="0 0 24 24" aria-hidden="true")
+        use(xlink:href="#icon-line-down")
+    button(type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" ignore-tip @click="fullscreenExit")
+      svg(:class="$style.controBtnIcon" viewBox="0 0 24 24" aria-hidden="true")
         use(xlink:href="#icon-fullscreen-exit")
-    button(type="button" :class="$style.min" :aria-label="$t('min')" ignore-tip :title="$t('min')" @click="minWindow")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve")
-        use(xlink:href="#icon-window-minimize")
-
-    //- button(type="button" :class="$style.max" @click="max")
-    button(type="button" :class="$style.close" :aria-label="$t('close')" ignore-tip :title="$t('close')" @click="closeWindow")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve")
-        use(xlink:href="#icon-window-close")
 </template>
 
 
@@ -22,7 +14,7 @@ div(:class="$style.header")
 import { ref, onMounted, onBeforeUnmount, useCssModule } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
 import { setShowPlayerDetail } from '@renderer/store/player/action'
-import { closeWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
+import { setFullScreen } from '@renderer/utils/ipc'
 
 const dom_btns = ref()
 
@@ -70,7 +62,7 @@ const fullscreenExit = () => {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-@control-btn-width: @height-toolbar * .26;
+@control-btn-width: 12px;
 
 :global(.fullscreen) {
   .header {
@@ -88,7 +80,8 @@ const fullscreenExit = () => {
 }
 .header {
   position: relative;
-  flex: 0 0 @height-toolbar;
+  flex: 0 0 auto;
+  padding: 22px 26px 0;
   -webkit-app-region: drag;
   width: 100%;
 
@@ -117,14 +110,16 @@ const fullscreenExit = () => {
   }
   .controBtn {
     align-items: center;
-    padding: 0 @control-btn-width;
-    left: 0;
+    padding: 0;
+    left: 26px;
+    top: 22px;
     flex-direction: row-reverse;
-    height: @height-toolbar * .7;
+    gap: 8px;
+    height: 32px;
     transition: opacity @transition-normal;
-    opacity: .5;
+    opacity: 1;
     &.hover {
-      opacity: .8;
+      opacity: 1;
       .controBtnIcon {
         opacity: 1;
       }
@@ -136,11 +131,25 @@ const fullscreenExit = () => {
       border-radius: 50%;
       color: var(--color-font);
       + button {
-        margin-right: (@control-btn-width / 2);
+        margin-right: 0;
       }
 
       &.hide {
-        background-color: var(--color-btn-hide);
+        width: 32px;
+        height: 32px;
+        background-color: transparent;
+        color: var(--color-font-label);
+        .controBtnIcon {
+          opacity: 1;
+          width: 16px;
+          height: 16px;
+          fill: none;
+          stroke: currentColor;
+        }
+        &:hover {
+          background-color: var(--color-well, var(--color-button-background));
+          color: var(--color-primary);
+        }
       }
       &.min, &.fullscreenExit {
         background-color: var(--color-btn-min);

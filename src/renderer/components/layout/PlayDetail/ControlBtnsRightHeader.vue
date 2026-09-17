@@ -1,9 +1,9 @@
 <template lang="pug">
 div(:class="$style.header")
   div(ref="dom_btns" :class="$style.controBtn")
-    button(ref="dom_hide_btn" type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip :title="$t('player__hide_detail_tip')" @click="hide")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="35%" viewBox="0 0 30.727 30.727" space="preserve")
-        use(xlink:href="#icon-window-hide")
+    button(ref="dom_hide_btn" type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip @click="hide")
+      svg(:class="$style.controBtnIcon" viewBox="0 0 24 24" aria-hidden="true")
+        use(xlink:href="#icon-line-down")
     button(ref="dom_fullscreen_btn" type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" ignore-tip :title="$t('fullscreen_exit')" @click="fullscreenExit")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%")
         use(xlink:href="#icon-fullscreen-exit")
