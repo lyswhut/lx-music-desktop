@@ -554,17 +554,18 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   min-height: 0;
+  color: CanvasText;
   h2 {
     flex: none;
     font-size: 16px;
-    color: var(--color-font);
+    color: inherit;
     line-height: 1.3;
     text-align: center;
     padding: 15px;
   }
   h3 {
     font-size: 16px;
-    color: var(--color-font);
+    color: inherit;
     line-height: 1.3;
     padding-bottom: 15px;
     font-size: 15px;
@@ -759,7 +760,7 @@ export default {
   padding: 8px 15px;
   font-size: 13px;
   line-height: 1.25;
-  color: var(--color-font);
+  color: inherit;
   // p {
   //   + p {
   //     margin-top: 5px;
