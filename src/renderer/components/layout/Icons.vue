@@ -152,6 +152,9 @@
       <g id="icon-window-minimize-2" fill="currentColor">
         <path d="M19,13H5V11H19V13Z" />
       </g>
+      <g id="icon-window-maximize" fill="currentColor">
+        <path d="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
+      </g>
       <g id="icon-window-close" fill="currentColor">
         <path d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z" />
       </g>

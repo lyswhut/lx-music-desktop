@@ -313,13 +313,17 @@ export default {
 .lists.embedded .listsItem {
   border-radius: 7px;
   margin: 0 0 2px;
+  color: var(--color-font);
+  &:hover {
+    color: var(--color-primary);
+  }
   &:not(.active):hover {
     background-color: var(--color-nav-hover);
   }
 }
 .lists.embedded .listsLabel {
   margin: 0;
-  color: var(--color-nav-font, var(--color-font));
+  color: inherit;
 }
 .miniCover {
   flex: none;
@@ -357,8 +361,11 @@ export default {
 }
 .lists.embedded .listsItem.active {
   background-color: var(--color-accent-soft, color-mix(in srgb, var(--color-primary) 12%, var(--color-main-background)));
-  color: var(--color-primary);
+  color: var(--color-font);
   font-weight: 650;
+  &:hover {
+    color: var(--color-primary);
+  }
 }
 .listHeader {
   position: relative;

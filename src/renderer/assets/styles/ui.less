@@ -437,6 +437,7 @@
   justify-content: space-between;
 }
 
+a.chrome-nav-row,
 .chrome-nav-row {
   box-sizing: border-box;
   height: 35px;
@@ -444,7 +445,7 @@
   margin: 0 0 2px;
   padding: 0 10px;
   border-radius: 7px;
-  color: var(--color-nav-font);
+  color: var(--color-font);
   font-size: 12px;
   font-weight: 400;
   line-height: 1;
@@ -459,26 +460,28 @@
     height: 18px;
     fill: none;
     stroke: currentColor;
-    color: var(--color-secondary);
+    color: inherit;
   }
   &:hover,
   &:focus,
+  &:focus-visible,
   &:active {
     text-decoration: none;
-    color: var(--color-nav-font);
+    color: var(--color-primary);
   }
   &:hover:not(.active) {
     background-color: var(--color-nav-hover);
   }
   &.active {
     background-color: var(--color-accent-soft);
-    color: var(--color-primary);
+    color: var(--color-font);
     font-weight: 650;
     svg {
-      color: var(--color-primary);
+      color: inherit;
     }
     &:hover,
     &:focus,
+    &:focus-visible,
     &:active {
       background-color: var(--color-accent-soft);
       color: var(--color-primary);

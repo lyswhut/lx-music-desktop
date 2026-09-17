@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
   flex-flow: column nowrap;
   min-height: 0;
   padding: 0 12px;
-  color: var(--color-nav-font, var(--color-font));
+  color: var(--color-font);
   background: var(--color-glass, transparent);
   backdrop-filter: blur(36px) saturate(1.3);
   border-right: 1px solid var(--color-line, var(--color-primary-alpha-900));
@@ -104,7 +104,7 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 10px;
   padding: 5px 8px 29px;
-  color: var(--color-nav-font);
+  color: var(--color-font);
 }
 
 .brandMark {

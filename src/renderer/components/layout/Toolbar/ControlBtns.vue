@@ -5,6 +5,11 @@
         <use xlink:href="#icon-window-minimize-2" />
       </svg>
     </button>
+    <button type="button" :class="[$style.btn, $style.max]" :aria-label="$t('max')" ignore-tip :title="$t('max')" @click="maxWindow">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve">
+        <use xlink:href="#icon-window-maximize" />
+      </svg>
+    </button>
     <button type="button" :class="[$style.btn, $style.close]" :aria-label="$t('close')" ignore-tip :title="$t('close')" @click="closeWindow">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve">
         <use xlink:href="#icon-window-close-2" />
@@ -14,7 +19,7 @@
 </template>
 
 <script setup>
-import { minWindow, closeWindow } from '@renderer/utils/ipc'
+import { minWindow, maxWindow, closeWindow } from '@renderer/utils/ipc'
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
 // import { getRandom } from '../../utils'
 import { isFullscreen } from '@renderer/store'
