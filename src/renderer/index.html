@@ -24,7 +24,8 @@
       document.documentElement.setAttribute('lang', formatLang(lang))
     }
     window.setLang()
-    document.documentElement.classList.add(/os=(\w+)/.exec(window.location.search)[1])
+    window.os = /os=(\w+)/.exec(window.location.search)[1]
+    document.documentElement.classList.add(window.os)
     window.shouldUseDarkColors = /dark=true/.test(window.location.search)
     window.dt = /dt=true/.test(window.location.search)
     document.documentElement.classList.add(window.dt ? 'disableTransparent' : 'transparent')

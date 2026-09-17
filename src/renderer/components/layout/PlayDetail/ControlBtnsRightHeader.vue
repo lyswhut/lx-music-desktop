@@ -1,17 +1,18 @@
 <template lang="pug">
 div(:class="$style.header")
   div(ref="dom_btns" :class="$style.controBtn")
-    button(ref="dom_hide_btn" type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip :title="$t('player__hide_detail_tip')" @click="hide")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="35%" viewBox="0 0 30.727 30.727" space="preserve")
-        use(xlink:href="#icon-window-hide")
+    button(ref="dom_hide_btn" type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip @click="hide")
+      svg(:class="$style.controBtnIcon" viewBox="0 0 24 24" aria-hidden="true")
+        use(xlink:href="#icon-line-down")
     button(ref="dom_fullscreen_btn" type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" ignore-tip :title="$t('fullscreen_exit')" @click="fullscreenExit")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%")
         use(xlink:href="#icon-fullscreen-exit")
     button(type="button" :class="$style.min" :aria-label="$t('min')" ignore-tip :title="$t('min')" @click="minWindow")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
         use(xlink:href="#icon-window-minimize-2")
-
-    //- button(type="button" :class="$style.max" @click="max")
+    button(type="button" :class="$style.max" :aria-label="$t('max')" ignore-tip :title="$t('max')" @click="maxWindow")
+      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
+        use(xlink:href="#icon-window-maximize")
     button(type="button" :class="$style.close" :aria-label="$t('close')" ignore-tip :title="$t('close')" @click="closeWindow")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
         use(xlink:href="#icon-window-close-2")
@@ -22,7 +23,7 @@ div(:class="$style.header")
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
 import { setShowPlayerDetail } from '@renderer/store/player/action'
-import { closeWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
+import { closeWindow, minWindow, maxWindow, setFullScreen } from '@renderer/utils/ipc'
 
 const dom_btns = ref()
 const cssModule = useCssModule()
@@ -84,7 +85,7 @@ const fullscreenExit = () => {
     -webkit-app-region: no-drag;
     align-self: flex-start;
     .controBtn {
-      .close, .min {
+      .close, .min, .max {
         display: none;
       }
       .fullscreenExit {

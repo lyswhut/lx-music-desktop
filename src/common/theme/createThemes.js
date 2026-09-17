@@ -6,6 +6,70 @@ const { createThemeColors } = require('./utils')
 
 const defaultThemes = [
   {
+    id: 'macos27',
+    name: 'macOS 27',
+    isDark: false,
+    isDarkFont: false,
+    config: {
+      primary: 'rgb(35, 130, 91)',
+      font: 'rgb(32, 40, 35)',
+      '--color-app-background': 'rgb(252, 252, 250)',
+      '--color-main-background': 'rgb(252, 252, 250)',
+      '--color-nav-font': 'rgb(32, 40, 35)',
+      '--background-image': 'none',
+      '--background-image-position': 'center',
+      '--background-image-size': 'cover',
+
+      '--color-btn-hide': '#febc2e',
+      '--color-btn-min': '#29c941',
+      '--color-btn-close': '#ff6057',
+
+      '--color-badge-primary': 'var(--color-primary)',
+      '--color-badge-secondary': '#99723d',
+      '--color-badge-tertiary': '#687e70',
+
+      '--color-line': 'rgba(30, 53, 39, 0.10)',
+      '--color-secondary': 'rgb(94, 105, 98)',
+      '--color-muted': 'rgb(120, 131, 122)',
+      '--color-well': 'rgb(241, 243, 240)',
+      '--color-panel': 'rgb(255, 255, 255)',
+      '--color-accent-soft': 'rgba(35, 130, 91, 0.12)',
+      '--color-nav-hover': 'rgba(103, 138, 116, 0.06)',
+    },
+  },
+  {
+    id: 'macos27_dark',
+    name: 'macOS 27 Dark',
+    isDark: true,
+    isDarkFont: false,
+    config: {
+      primary: 'rgb(112, 217, 167)',
+      font: 'rgb(237, 241, 235)',
+      '--color-app-background': 'rgb(25, 30, 27)',
+      '--color-main-background': 'rgb(25, 30, 27)',
+      '--color-nav-font': 'rgb(237, 241, 235)',
+      '--background-image': 'none',
+      '--background-image-position': 'center',
+      '--background-image-size': 'cover',
+
+      '--color-btn-hide': '#febc2e',
+      '--color-btn-min': '#29c941',
+      '--color-btn-close': '#ff6057',
+
+      '--color-badge-primary': 'var(--color-primary)',
+      '--color-badge-secondary': '#c9a36a',
+      '--color-badge-tertiary': '#8d9b92',
+
+      '--color-line': 'rgba(215, 243, 222, 0.10)',
+      '--color-secondary': 'rgb(173, 182, 173)',
+      '--color-muted': 'rgb(120, 132, 125)',
+      '--color-well': 'rgb(42, 49, 43)',
+      '--color-panel': 'rgb(35, 42, 37)',
+      '--color-accent-soft': 'rgba(112, 217, 167, 0.16)',
+      '--color-nav-hover': 'rgba(215, 243, 222, 0.06)',
+    },
+  },
+  {
     id: 'green',
     name: '绿意盎然',
     isDark: false,

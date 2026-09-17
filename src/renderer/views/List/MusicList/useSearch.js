@@ -33,6 +33,7 @@ export default ({ setSelectedIndex, handlePlayMusic, listRef }) => {
   return {
     isShowSearchBar,
     searchList,
+    handleShowSearchBar,
     handleMusicSearchAction,
   }
 }

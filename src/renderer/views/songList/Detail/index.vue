@@ -1,31 +1,35 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.songListHeader">
-      <div :class="$style.songListHeaderLeft" :style="{ backgroundImage: 'url('+(picUrl || listDetailInfo.info.img)+')' }">
-        <!-- <span v-if="listDetailInfo.info.play_count" :class="$style.playNum">{{ listDetailInfo.info.play_count }}</span> -->
-      </div>
+      <div :class="$style.songListHeaderLeft" :style="{ backgroundImage: 'url('+(picUrl || listDetailInfo.info.img)+')' }" />
       <div :class="$style.songListHeaderMiddle">
-        <h3 :title="listDetailInfo.info.name">{{ listDetailInfo.info.name }}</h3>
-        <p :title="listDetailInfo.info.desc">{{ listDetailInfo.info.desc }}</p>
-      </div>
-      <div :class="$style.songListHeaderRight">
-        <base-btn
-          :class="$style.headerRightBtn"
-          :disabled="!!listDetailInfo.noItemLabel"
-          @click="playSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.list)"
-        >
-          {{ $t('list__play') }}
-        </base-btn>
-        <base-btn
-          :class="$style.headerRightBtn"
-          :disabled="!!listDetailInfo.noItemLabel"
-          @click="addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name)"
-        >
-          {{ $t('list__collect') }}
-        </base-btn>
-        <base-btn :class="$style.headerRightBtn" @click="handleBack">{{ $t('back') }}</base-btn>
+        <span :class="$style.eyebrow">{{ sourceLabel }}</span>
+        <h1 :title="listDetailInfo.info.name">{{ listDetailInfo.info.name }}</h1>
+        <p :title="cleanDesc">{{ cleanDesc }}</p>
+        <div :class="$style.tools">
+          <base-btn
+            primary
+            :disabled="!!listDetailInfo.noItemLabel"
+            @click="playSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.list)"
+          >
+            <svg :class="$style.playIcon" viewBox="0 0 24 24" aria-hidden="true">
+              <use xlink:href="#icon-line-play-fill" />
+            </svg>
+            {{ $t('lists__play_all') }}
+          </base-btn>
+          <base-btn
+            outline
+            :disabled="!!listDetailInfo.noItemLabel"
+            @click="addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name)"
+          >
+            {{ $t('list__collect') }}
+          </base-btn>
+          <base-btn outline @click="handleBack">{{ $t('back') }}</base-btn>
+          <span :class="$style.count">{{ $t('lists__song_count', { num: listDetailInfo.total || listDetailInfo.list.length }) }}</span>
+        </div>
       </div>
     </div>
+    <p :class="$style.hint">{{ $t('lists__list_hint') }}</p>
     <div :class="$style.list">
       <material-online-list
         ref="listRef"
@@ -42,13 +46,14 @@
 </template>
 
 <script lang="ts">
-import { ref, watch } from '@common/utils/vueTools'
+import { ref, watch, computed } from '@common/utils/vueTools'
 import { listDetailInfo } from '@renderer/store/songList/state'
 import { setVisibleListDetail } from '@renderer/store/songList/action'
 import { useRouter } from '@common/utils/vueRouter'
 import { addSongListDetail, playSongListDetail } from './action'
 import useList from './useList'
 import useKeyBack from './useKeyBack'
+import { sourceNames } from '@renderer/store'
 
 
 const source = ref<LX.OnlineSource>('kw')
@@ -141,8 +146,13 @@ export default {
       immediate: true,
     })
 
+    const sourceLabel = computed(() => sourceNames.value[source.value] ?? '')
+    const cleanDesc = computed(() => String(listDetailInfo.info.desc ?? '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
+
     return {
       source,
+      sourceLabel,
+      cleanDesc,
       id,
       page,
       picUrl,
@@ -162,89 +172,107 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .container {
-  // position: absolute;
-  // left: 0;
-  // top: 0;
-  // width: 100%;
-  // height: 100%;
   display: flex;
   flex-flow: column nowrap;
+  height: 100%;
+  padding: 29px 32px 0;
+  box-sizing: border-box;
 }
 
 .songListHeader {
   flex: none;
   display: flex;
   flex-flow: row nowrap;
-  height: 80px;
+  align-items: center;
+  min-height: 144px;
+  padding: 0;
+  margin-bottom: 20px;
+  gap: 20px;
+  box-sizing: border-box;
 }
 .songListHeaderLeft {
   flex: none;
-  margin-left: 15px;
-  height: 100%;
+  width: 144px;
+  height: 144px;
   aspect-ratio: 1 / 1;
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 11px;
   background-position: center;
   background-size: cover;
-  opacity: .9;
-  box-shadow: 0 0 2px 0 rgba(0,0,0,.2);
-}
-.playNum {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 4px;
-  background-color: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  font-size: 12px;
-  text-align: right;
-  .mixin-ellipsis-1();
+  background-color: var(--color-button-background);
+  box-shadow: 0 10px 24px #163b2825;
 }
 
 .songListHeaderMiddle {
   flex: auto;
-  padding: 2px 7px;
   min-width: 0;
-  h3 {
+  .eyebrow {
+    display: block;
+    font-size: 9px;
+    font-weight: 650;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+  }
+  h1 {
+    margin: 0 0 9px;
+    font-size: 30px;
+    line-height: 1.35;
+    font-weight: 720;
+    letter-spacing: -1.1px;
     .mixin-ellipsis-1();
-    line-height: 1.2;
-    padding-bottom: 5px;
     color: var(--color-font);
   }
   p {
-    .mixin-ellipsis(3);
+    margin: 8px 0;
+    max-width: 590px;
+    .mixin-ellipsis(2);
     font-size: 12px;
-    line-height: 1.2;
+    line-height: 1.4;
     color: var(--color-font-label);
   }
 }
-.songListHeaderRight {
-  flex: none;
+.tools {
   display: flex;
   align-items: center;
-  padding-right: 15px;
-
-  .headerRightBtn {
-    border-radius: 0;
-    &:first-child {
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-    }
-    &:last-child {
-      border-top-right-radius: 4px;
-      border-bottom-right-radius: 4px;
-    }
-  }
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.playIcon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  fill: currentColor;
+}
+.count {
+  font-size: 11px;
+  color: var(--color-font-label);
 }
 
+.hint {
+  flex: none;
+  margin: 0 0 12px;
+  font-size: 11px;
+  color: var(--color-font-label);
+}
 .list {
   position: relative;
   width: 100%;
   min-height: 0;
   flex: auto;
   height: 100%;
+  :global {
+    .thead th {
+      font-size: 10px;
+      font-weight: 450;
+      line-height: 32px;
+      padding: 0 10px;
+      color: var(--color-secondary, var(--color-font-label));
+    }
+  }
 }
 </style>
 

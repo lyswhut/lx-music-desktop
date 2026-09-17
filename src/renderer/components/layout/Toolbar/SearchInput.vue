@@ -1,5 +1,5 @@
 <template>
-  <material-search-input v-model="searchText" :list="tipList" :visible-list="visibleList" @event="handleEvent" />
+    <material-search-input v-model="searchText" small :placeholder="$t('search__placeholder')" :list="tipList" :visible-list="visibleList" @event="handleEvent" />
 </template>
 
 <script>

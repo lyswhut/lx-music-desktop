@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.main">
-    <div class="scroll" :class="$style.toc">
+    <div class="scroll scroll-ghost" :class="$style.toc">
       <ul :class="$style.tocList" role="toolbar">
         <li v-for="h2 in tocList" :key="h2.id" :class="$style.tocListItem" role="presentation">
           <h2
@@ -8,9 +8,11 @@
             role="tab" :aria-selected="avtiveComponentName == h2.id"
             :aria-label="h2.title" ignore-tip @click="toggleTab(h2.id)"
           >
-            <transition name="list-active">
-              <svg-icon v-if="avtiveComponentName == h2.id" name="angle-right-solid" :class="$style.activeIcon" />
-            </transition>
+            <span :class="$style.settingIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" :class="{ [$style.fillIcon]: h2.fill }">
+                <use :xlink:href="h2.icon" />
+              </svg>
+            </span>
             {{ h2.title }}
           </h2>
           <!-- <ul v-if="h2.children.length" :class="$style.tocList">
@@ -23,7 +25,7 @@
         </li>
       </ul>
     </div>
-    <div ref="dom_content_ref" class="scroll" :class="$style.setting">
+    <div ref="dom_content_ref" class="scroll scroll-ghost" :class="$style.setting">
       <dl>
         <component :is="avtiveComponentName" />
         <!-- <SettingBasic />
@@ -97,22 +99,22 @@ export default {
 
     const tocList = computed(() => {
       return [
-        { id: 'SettingBasic', title: t('setting__basic') },
-        { id: 'SettingPlay', title: t('setting__play') },
-        { id: 'SettingPlayDetail', title: t('setting__play_detail') },
-        { id: 'SettingDesktopLyric', title: t('setting__desktop_lyric') },
-        { id: 'SettingSearch', title: t('setting__search') },
-        { id: 'SettingList', title: t('setting__list') },
-        { id: 'SettingDownload', title: t('setting__download') },
-        { id: 'SettingHotKey', title: t('setting__hot_key') },
-        { id: 'SettingSync', title: t('setting__sync') },
-        { id: 'SettingOpenAPI', title: t('setting__open_api') },
-        { id: 'SettingNetwork', title: t('setting__network') },
-        { id: 'SettingOdc', title: t('setting__odc') },
-        { id: 'SettingBackup', title: t('setting__backup') },
-        { id: 'SettingOther', title: t('setting__other') },
-        { id: 'SettingUpdate', title: t('setting__update') },
-        { id: 'SettingAbout', title: t('setting__about') },
+        { id: 'SettingBasic', title: t('setting__basic'), icon: '#icon-line-gear' },
+        { id: 'SettingPlay', title: t('setting__play'), icon: '#icon-line-play-fill', fill: true },
+        { id: 'SettingPlayDetail', title: t('setting__play_detail'), icon: '#icon-line-lyric' },
+        { id: 'SettingDesktopLyric', title: t('setting__desktop_lyric'), icon: '#icon-line-screen' },
+        { id: 'SettingSearch', title: t('setting__search'), icon: '#icon-line-search' },
+        { id: 'SettingList', title: t('setting__list'), icon: '#icon-line-list' },
+        { id: 'SettingDownload', title: t('setting__download'), icon: '#icon-line-download' },
+        { id: 'SettingHotKey', title: t('setting__hot_key'), icon: '#icon-line-keyboard' },
+        { id: 'SettingSync', title: t('setting__sync'), icon: '#icon-line-sync' },
+        { id: 'SettingOpenAPI', title: t('setting__open_api'), icon: '#icon-line-code' },
+        { id: 'SettingNetwork', title: t('setting__network'), icon: '#icon-line-network' },
+        { id: 'SettingOdc', title: t('setting__odc'), icon: '#icon-line-spark' },
+        { id: 'SettingBackup', title: t('setting__backup'), icon: '#icon-line-folder' },
+        { id: 'SettingOther', title: t('setting__other'), icon: '#icon-line-sliders' },
+        { id: 'SettingUpdate', title: t('setting__update'), icon: '#icon-line-sync' },
+        { id: 'SettingAbout', title: t('setting__about'), icon: '#icon-line-info' },
       ]
     })
 
@@ -182,37 +184,87 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   height: 100%;
-  border-top: var(--color-list-header-border-bottom);
+  min-height: 0;
+  background: var(--color-main-background);
 }
 
 .toc {
-  flex: 0 0 16%;
-  overflow-y: scroll;
+  flex: 0 0 165px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 20px 12px;
+  border-right: 1px solid var(--color-line);
+  background: var(--color-well);
 }
 .tocH2 {
-  line-height: 1.5;
+  line-height: 1.3;
   .mixin-ellipsis-1();
-  font-size: 13px;
+  font-size: 11px;
+  font-weight: 400;
   color: var(--color-font);
   padding: 8px 10px;
+  min-height: 0;
+  border-radius: 7px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: @transition-fast;
-  transition-property: background-color, color;
+  transition-property: background-color, color, box-shadow;
 
   &:not(.active) {
     cursor: pointer;
     &:hover {
-      background-color: var(--color-button-background-hover);
+      background-color: var(--color-accent-soft);
+    }
+    .settingIcon {
+      background: transparent;
+      box-shadow: none;
     }
   }
   &.active {
-    color: var(--color-primary);
+    color: var(--color-font);
+    background-color: var(--color-panel);
+    box-shadow: 0 1px 5px color-mix(in srgb, var(--color-font) 3%, transparent);
+    .settingIcon {
+      background: var(--color-primary);
+      color: #fff;
+    }
   }
 }
-.activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
+.settingIcon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-secondary);
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+  }
+  .fillIcon {
+    fill: currentColor;
+    stroke: none;
+  }
+}
+
+@media (max-width: 960px) {
+  .toc {
+    flex-basis: 134px;
+    padding: 18px 8px;
+  }
+  .tocH2 {
+    padding: 8px 6px;
+    gap: 6px;
+    font-size: 10px;
+  }
 }
 // .tocH3 {
 //   font-size: 13px;
@@ -229,19 +281,23 @@ export default {
 // }
 
 .setting {
-  padding: 0 15px 15px;
-  font-size: 14px;
+  padding: 27px 30px 48px;
+  font-size: 13px;
   box-sizing: border-box;
-  overflow-y: auto;
   height: 100%;
+  min-width: 0;
   position: relative;
   width: 100%;
+  background: var(--color-main-background);
 
   :global {
-    dt {
-      border-left: 5px solid var(--color-primary-alpha-700);
-      padding: 3px 7px;
-      margin: 15px 0;
+      dt {
+      border-left: 0;
+      padding: 0 0 8px;
+      margin: 0;
+      font-size: 25px;
+      font-weight: 720;
+      letter-spacing: -0.7px;
 
       + dd h3 {
         margin-top: 0;
@@ -249,19 +305,123 @@ export default {
     }
 
     dd {
-      // margin-left: 15px;
-      // font-size: 13px;
-      > div {
-        padding: 0 15px;
+      > .gap-top {
+        max-width: 920px;
+        margin: 0 0 16px;
       }
-
+      > div,
+      > .gap-top {
+        padding: 0;
+        margin: 0 0 16px;
+        max-width: 920px;
+        border: 1px solid var(--color-line);
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--color-panel);
+      }
+      > .gap-top {
+        min-height: 53px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 13px 16px;
+        box-sizing: border-box;
+        font-size: 12px;
+      }
+      > .gap-left,
+      > .p {
+        max-width: 920px;
+        min-height: 53px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 13px 16px;
+        box-sizing: border-box;
+        font-size: 12px;
+      }
+      > div {
+        > .gap-top,
+        > .gap-left,
+        > .p {
+          min-height: 53px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          padding: 13px 16px;
+          box-sizing: border-box;
+          margin-top: 0;
+          border-bottom: 1px solid var(--color-line);
+          &:last-child {
+            border-bottom: 0;
+          }
+          + .gap-top {
+            margin-top: 0;
+          }
+        }
+        > *:not(.gap-top):not(.gap-left):not(.p) {
+          padding: 12px 16px;
+        }
+        > .p:not(:has(label)):has(.btn) {
+          justify-content: space-between;
+        }
+        &:has(> .gap-left) {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          min-height: 53px;
+          padding: 13px 16px;
+          gap: 8px 16px;
+          box-sizing: border-box;
+          overflow: visible;
+        }
+        > .gap-left {
+          min-height: auto;
+          padding: 0;
+          border-bottom: 0;
+          display: inline-flex;
+          justify-content: flex-start;
+          width: auto;
+          margin-left: 0;
+          + .gap-left {
+            margin-left: 0;
+          }
+        }
+      }
+      > .gap-top,
+      > div > .gap-top {
+        > :first-child:has(label) {
+          flex: 1 1 auto;
+          min-width: 0;
+          max-width: 100%;
+          display: block;
+        }
+        label {
+          width: 100%;
+          min-width: 0;
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
+          > span {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin-left: 0;
+            overflow-wrap: anywhere;
+          }
+        }
+      }
     }
     h3 {
-      font-size: 12px;
-      margin: 25px 0 15px;
+      font-size: 11px;
+      font-weight: 620;
+      margin: 22px 0 9px;
+      color: var(--color-secondary);
     }
     .p {
-      padding: 3px 0;
       line-height: 1.3;
       .btn {
         + .btn {
@@ -283,7 +443,8 @@ export default {
       }
     }
     .help-icon {
-      margin: 0 0.4em;
+      flex: none;
+      margin: 0;
     }
   }
 }

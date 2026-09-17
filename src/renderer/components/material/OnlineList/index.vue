@@ -2,7 +2,7 @@
   <div :class="$style.songList">
     <!-- <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut"> -->
     <div :class="$style.list">
-      <div class="thead">
+      <div v-show="list.length && !noItem" class="thead">
         <table>
           <thead>
             <tr v-if="actionButtonsVisible">
@@ -31,18 +31,21 @@
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
                 @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
               >
-                <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
+                <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ String(index + 1).padStart(2, '0') }}</div>
                 <div class="list-item-cell auto name">
-                  <span class="select name" :aria-label="item.name">{{ item.name }}</span>
-                  <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
-                  <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
-                  <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
-                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  <material-music-cover :src="item.meta?.picUrl" :name="item.name" />
+                  <div class="list-item-song-meta">
+                    <span class="select name" :aria-label="item.name">{{ item.name }}</span>
+                    <div v-if="qualityTag(item) || sourceTag" class="list-item-song-sub">
+                      <span v-if="qualityTag(item)" class="no-select badge" :class="qualityTag(item) == 'tag__high_quality' ? 'badge-theme-secondary' : 'badge-theme-primary'">{{ $t(qualityTag(item)) }}</span>
+                      <span v-if="sourceTag" class="no-select list-item-source">{{ item.source }}</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 22%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 9%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
-                <div class="list-item-cell" style="flex: 0 0 16%; padding-left: 0; padding-right: 0;">
+                <div class="list-item-cell list-item-actions" style="flex: 0 0 16%; padding-left: 0; padding-right: 0;">
                   <material-list-buttons :index="index" :remove-btn="false" :download-btn="assertApiSupport(item.source)" :play-btn="checkApiSource ? assertApiSupport(item.source) : true" @btn-click="handleListBtnClick" />
                 </div>
               </div>
@@ -59,13 +62,16 @@
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
                 @click="handleListItemClick($event, index)" @contextmenu="handleListItemRightClick($event, index)"
               >
-                <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
+                <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ String(index + 1).padStart(2, '0') }}</div>
                 <div class="list-item-cell auto name">
-                  <span class="select name" :aria-label="item.name">{{ item.name }}</span>
-                  <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
-                  <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
-                  <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
-                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  <material-music-cover :src="item.meta?.picUrl" :name="item.name" />
+                  <div class="list-item-song-meta">
+                    <span class="select name" :aria-label="item.name">{{ item.name }}</span>
+                    <div v-if="qualityTag(item) || sourceTag" class="list-item-song-sub">
+                      <span v-if="qualityTag(item)" class="no-select badge" :class="qualityTag(item) == 'tag__high_quality' ? 'badge-theme-secondary' : 'badge-theme-primary'">{{ $t(qualityTag(item)) }}</span>
+                      <span v-if="sourceTag" class="no-select list-item-source">{{ item.source }}</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="list-item-cell" style="flex: 0 0 24%;"><span class="select" :aria-label="item.singer">{{ item.singer }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 27%;"><span class="select" :aria-label="item.meta.albumName">{{ item.meta.albumName }}</span></div>
@@ -249,6 +255,14 @@ export default {
     const scrollToTop = () => {
       listRef.value.scrollTo(0, true)
     }
+    const qualityTag = (item) => {
+      const q = item?.meta?._qualitys
+      if (!q) return ''
+      if (q.flac24bit) return 'tag__lossless_24bit'
+      if (q.ape || q.flac || q.wav) return 'tag__lossless'
+      if (q['320k']) return 'tag__high_quality'
+      return ''
+    }
 
     return {
       listItemHeight,
@@ -279,6 +293,7 @@ export default {
 
       scrollToTop,
       actionButtonsVisible,
+      qualityTag,
     }
   },
 }
@@ -303,7 +318,6 @@ export default {
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
-  font-size: 14px;
 }
 
 .content {
@@ -329,11 +343,15 @@ export default {
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  // background-color: var(--color-000);
+  padding: 24px;
+  text-align: center;
 
   p {
-    font-size: 24px;
-    color: var(--color-font-label);
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.4;
+    color: var(--color-secondary);
   }
 }
 

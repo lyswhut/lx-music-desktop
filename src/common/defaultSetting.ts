@@ -18,7 +18,7 @@ const defaultSetting: LX.AppSetting = {
   'common.randomAnimate': true,
   'common.isAgreePact': false,
   'common.controlBtnPosition': isMac ? 'left' : 'right',
-  'common.playBarProgressStyle': 'mini',
+  'common.playBarProgressStyle': 'middle',
   'common.transparentWindow': !isMac,
   'common.tryAutoUpdate': true,
   'common.showChangeLog': true,
@@ -65,10 +65,10 @@ const defaultSetting: LX.AppSetting = {
   'player.soundEffect.panner.speed': 25,
   'player.soundEffect.pitchShifter.playbackRate': 1,
 
-  'playDetail.isZoomActiveLrc': false,
+  'playDetail.isZoomActiveLrc': true,
   'playDetail.isShowLyricProgressSetting': false,
   'playDetail.style.fontSize': 140,
-  'playDetail.style.align': 'center',
+  'playDetail.style.align': 'left',
   'playDetail.isDelayScroll': true,
 
   'desktopLyric.enable': false,
@@ -127,8 +127,8 @@ const defaultSetting: LX.AppSetting = {
   'download.isEmbedLyricR': false,
   'download.isUseOtherSource': false,
 
-  'search.isShowHotSearch': false,
-  'search.isShowHistorySearch': false,
+  'search.isShowHotSearch': true,
+  'search.isShowHistorySearch': true,
   'search.isFocusSearchBox': false,
 
   'network.proxy.enable': false,
@@ -150,9 +150,9 @@ const defaultSetting: LX.AppSetting = {
   'openAPI.bindLan': false,
 
   // 'theme.id': 'blue_plus',
-  'theme.id': 'green',
-  'theme.lightId': 'green',
-  'theme.darkId': 'black',
+  'theme.id': 'macos27',
+  'theme.lightId': 'macos27',
+  'theme.darkId': 'macos27_dark',
 
   'odc.isAutoClearSearchInput': false,
   'odc.isAutoClearSearchList': false,

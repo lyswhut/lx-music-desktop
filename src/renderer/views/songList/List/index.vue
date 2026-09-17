@@ -1,12 +1,18 @@
 <template>
   <div :class="$style.container">
-    <div :class="$style.header">
-      <div :class="$style.left">
-        <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
-        <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
+    <div class="page-head" :class="$style.pageHead">
+      <div>
+        <h1>{{ $t('songlist__title') }}</h1>
+        <p>{{ $t('songlist__subtitle') }}</p>
       </div>
-      <base-btn :class="$style.btn" outline min @click="visibleOpenSongListModal = true">{{ $t('songlist__import_input_show_btn') }}</base-btn>
-      <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+      <div :class="$style.pageTools">
+        <base-btn outline @click="visibleOpenSongListModal = true">{{ $t('songlist__import_input_show_btn') }}</base-btn>
+        <base-selection :model-value="source" chrome="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+      </div>
+    </div>
+    <div :class="$style.header">
+      <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
+      <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
     </div>
     <list-view :source="source" :tag-id="tagId" :sort-id="sortId" :page="page" />
     <open-list-modal v-model="visibleOpenSongListModal" :source-list="sourceList" />
@@ -20,7 +26,8 @@ import TagList from './components/TagList.vue'
 import SortTab from './components/SortTab.vue'
 import OpenListModal from './components/OpenListModal.vue'
 import ListView from './ListView.vue'
-import { sources, listInfo, isVisibleListDetail } from '@renderer/store/songList/state'
+import { sources, listInfo } from '@renderer/store/songList/state'
+import { setVisibleListDetail } from '@renderer/store/songList/action'
 import { sourceNames } from '@renderer/store'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
@@ -43,10 +50,8 @@ const verifyQueryParams = async function(this: any, to: { query: Query, path: st
   let _sortId = to.query.sortId
   let _page: string | undefined = to.query.page
 
-  if (isVisibleListDetail.value) {
-    next({ path: '/songList/detail', query: {} })
-    return
-  } else if (_source == null) {
+  setVisibleListDetail(false)
+  if (_source == null) {
     if (listInfo.key) {
       _source = listInfo.source
       _tagId = listInfo.tagId
@@ -124,15 +129,31 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   position: relative;
+  padding: 29px 32px 0;
+  box-sizing: border-box;
+}
+.pageHead {
+  flex: none;
+}
+.pageTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
 }
 .header {
   flex: none;
+  position: relative;
+  z-index: 12;
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  // padding-right: 5px;
-  // box-sizing: border-box;
-  padding-bottom: 5px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--color-line);
 }
 .left {
   flex: auto;
@@ -140,75 +161,11 @@ export default {
   flex-flow: row nowrap;
 }
 
-.btn {
-  color: var(--color-font);
-  transition: color @transition-fast;
-  background: none !important;
-  &:hover {
-    color: var(--color-primary-font-hover);
-  }
-}
-
-
 .select {
   font-size: 12px;
   width: auto;
   flex: none;
-  padding: 0 5px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-
-  :global {
-    .label-content {
-      background-color: transparent !important;
-      transition: color @transition-fast;
-      color: var(--color-font);
-      // line-height: 38px;
-      // height: 38px;
-      border-radius: 0;
-      &:hover {
-        // background: none !important;
-        color: var(--color-primary-font-hover);
-        .icon {
-          opacity: 1;
-          // color: var(--color-primary-font-hover);
-        }
-      }
-    }
-    // .label {
-    //   color: var(--color-font) !important;
-    // }
-    .icon {
-      svg {
-        width: .8em;
-      }
-      // opacity: .6;
-      // transition: color @transition-fast;
-      // color: var(--color-font-label);
-    }
-
-    .selection-list {
-      max-height: 500px;
-      box-shadow: 0 1px 4px 0 rgba(0,0,0,.2);
-      li {
-        // background-color: var(--color-main-background);
-        text-align: center;
-        line-height: 38px;
-        font-size: 13px;
-        &:hover {
-          background-color: var(--color-button-background-hover);
-        }
-        &:active {
-          background-color: var(--color-button-background-active);
-        }
-      }
-    }
-  }
+  padding: 0;
 }
 
 </style>

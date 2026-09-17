@@ -2,15 +2,13 @@
   <ul ref="dom_lists_list" class="scroll" :class="$style.listsContent">
     <li
       v-for="(item, index) in list"
-      :key="item.id" :class="[$style.listsItem, { [$style.active]: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
+      :key="item.id"
+      class="board-choice"
+      :class="[{ active: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
       :aria-label="item.name" @click="handleToggleList(item.id)" @contextmenu="handleRigthClick($event, index)"
     >
-      <span :class="$style.listsLabel">
-        <transition name="list-active">
-          <svg-icon v-if="item.id == boardId" name="angle-right-solid" :class="$style.activeIcon" />
-        </transition>
-        {{ item.name }}
-      </span>
+      <material-music-cover size="lg" :name="item.name" />
+      <span :class="$style.name">{{ item.name }}</span>
     </li>
   </ul>
   <base-menu
@@ -97,53 +95,25 @@ defineExpose({ hideMenu: handleMenuClick })
 
 .listsContent {
   flex: auto;
+  width: 100%;
   min-width: 0;
-  overflow-y: scroll;
-  // overflow-y: scroll !important;
-  // border-right: 1px solid rgba(0, 0, 0, 0.12);
-}
-.listsItem {
-  position: relative;
-  transition: .3s ease;
-  transition-property: color, background-color;
-  background-color: transparent;
-  &:hover:not(.active) {
-    background-color: var(--color-primary-background-hover);
-    cursor: pointer;
-  }
-  &.active {
-    // background-color:
-    color: var(--color-primary);
-  }
-  &.selected {
-    background-color: var(--color-primary-font-active);
-  }
-  &.clicked {
-    background-color: var(--color-primary-background-hover);
-  }
-  &.editing {
-    padding: 0 10px;
-    background-color: var(--color-primary-background-hover);
-    .listsLabel {
-      display: none;
-    }
-    .listsInput {
-      display: block;
-    }
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  &:global(.scroll) {
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
-.activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
+.clicked {
+  background-color: var(--color-well);
 }
-.listsLabel {
-  display: block;
-  height: 100%;
-  padding: 0 10px;
-  font-size: 13px;
-  line-height: 36px;
+.name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
   .mixin-ellipsis-1();
 }
 

@@ -5,21 +5,21 @@
         <li v-for="item in props.listInfo.list" :key="item.id" :class="$style.item" @click="toDetail(item)">
           <div :class="$style.image">
             <img :class="$style.img" loading="lazy" decoding="async" :src="item.img">
+            <span v-if="item.play_count != null" :class="$style.countOverlay">{{ item.play_count }}</span>
+            <span :class="$style.artPlay">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024" space="preserve">
+                <use xlink:href="#icon-play" />
+              </svg>
+            </span>
           </div>
           <div :class="$style.desc">
-            <h4>{{ item.name }}</h4>
-            <div>
-              <p :class="$style.author">{{ item.author }}</p>
-              <p v-if="item.time" :class="$style.time">{{ item.time }}</p>
-              <div :class="$style.songlist_info">
-                <span v-if="item.total != null"><svg-icon name="music" />{{ item.total }}</span>
-                <span v-if="item.play_count != null"><svg-icon name="headphones" />{{ item.play_count }}</span>
-                <span v-if="visibleSource">{{ item.source }}</span>
-              </div>
-            </div>
+            <h4 :title="item.name">{{ item.name }}</h4>
+            <p :class="$style.meta">
+              <template v-if="item.author">{{ item.author }}</template>
+              <template v-if="item.total != null"> · {{ item.total }}</template>
+            </p>
           </div>
         </li>
-        <li v-for="(i, index) in 6" :key="index" :class="$style.item" style="margin-bottom: 0;height: 0;" />
       </ul>
       <div :class="$style.pagination">
         <material-pagination :count="props.listInfo.total" :limit="props.listInfo.limit" :page="props.listInfo.page" @btn-click="togglePage" />
@@ -106,91 +106,108 @@ defineExpose({
   flex-flow: column nowrap;
   font-size: 14px;
   box-sizing: border-box;
-  padding: 15px 15px 0;
+  padding: 0;
 
   ul {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 19px;
+    align-items: start;
   }
 }
 .item {
-  max-width: 360px;
-  width: 32%;
+  min-width: 0;
+  width: 100%;
   box-sizing: border-box;
   display: flex;
-  // flex-flow: column nowrap;
-  // padding: 10px;
-  margin-bottom: 20px;
+  flex-flow: column nowrap;
   cursor: pointer;
-  transition: opacity @transition-normal;
-  &:hover {
-    opacity: .7;
+  text-align: left;
+  &:hover, &:focus-within {
+    .img {
+      transform: scale(1.035);
+    }
+    .artPlay {
+      opacity: 1;
+      transform: none;
+    }
+    .countOverlay {
+      opacity: 0;
+    }
   }
 }
 .image {
+  position: relative;
   flex: none;
-  width: 40%;
-  display: flex;
-  background-position: center;
-  background-size: cover;
-  border-radius: 4px;
-  overflow: hidden;
-  opacity: .9;
+  width: 100%;
   aspect-ratio: 1 / 1;
-
-  box-shadow: 0 0 2px 0 rgba(0,0,0,.2);
+  overflow: hidden;
+  border-radius: 9px;
+  background: var(--color-well);
+  box-shadow: 0 4px 13px color-mix(in srgb, var(--color-font) 7%, transparent);
 }
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.countOverlay {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  padding: 3px 6px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-font) 45%, transparent);
+  color: white;
+  font-size: 9px;
+  backdrop-filter: blur(6px);
+  z-index: 1;
+}
+
+.artPlay {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-panel) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-000) 38%, transparent);
+  color: var(--color-font);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-font) 12%, transparent);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity .18s ease, transform .18s ease;
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
 }
 
 .desc {
-  flex: auto;
-  padding: 2px 15px 2px 7px;
+  min-width: 0;
+  padding: 10px 0 0;
   overflow: hidden;
   h4 {
-    font-size: 14px;
-    // height: 2.6em;
-    text-align: justify;
-    line-height: 1.3;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    font-weight: 620;
     .mixin-ellipsis-2();
   }
 }
-.songlist_info {
-  display: flex;
-  flex-flow: row nowrap;
-  gap: 15px;
-  margin-top: 8px;
-  font-size: 12px;
+.meta {
+  margin: 1px 0 0;
+  font-size: 10px;
+  color: var(--color-secondary);
   .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.2;
-  // text-indent: 24px;
-  color: var(--color-font-label);
-  svg {
-    margin-right: 2px;
-  }
-}
-.author {
-  margin-top: 6px;
-  font-size: 12px;
-  .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.3;
-  // text-indent: 24px;
-  color: var(--color-font-label);
-}
-.time {
-  margin-top: 3px;
-  font-size: 12px;
-  .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.3;
-  // text-indent: 24px;
-  color: var(--color-font-label);
 }
 .pagination {
   text-align: center;
@@ -212,7 +229,7 @@ defineExpose({
 
   p {
     font-size: 24px;
-    color: var(--color-font-label);
+    color: var(--color-secondary);
   }
 }
 

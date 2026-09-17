@@ -1,14 +1,14 @@
 <template>
-  <div ref="dom_lists" :class="$style.lists">
-    <div :class="$style.listHeader">
-      <h2 :class="$style.listsTitle">{{ $t('my_list') }}</h2>
+  <div ref="dom_lists" :class="[$style.lists, { [$style.embedded]: embedded }]">
+    <div :class="[$style.listHeader, { 'chrome-group-title': embedded }]">
+        <h2 :class="$style.listsTitle">{{ hidePinned ? $t('lists__my_playlists') : $t('my_list') }}</h2>
       <div :class="$style.headerBtns">
-        <button :class="$style.listsAdd" :aria-label="$t('lists__new_list_btn')" @click="isShowNewList = true">
+        <button :class="embedded ? 'chrome-ib sm' : $style.listsAdd" :aria-label="$t('lists__new_list_btn')" @click="isShowNewList = true">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
-            <use xlink:href="#icon-list-add" />
+            <use :xlink:href="embedded ? '#icon-line-plus' : '#icon-list-add'" />
           </svg>
         </button>
-        <button :class="$style.listsAdd" :aria-label="$t('list_update_modal__title')" @click="isShowListUpdateModal = true">
+        <button v-if="!embedded" :class="$style.listsAdd" :aria-label="$t('list_update_modal__title')" @click="isShowListUpdateModal = true">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" height="70%" viewBox="0 0 24 24" space="preserve">
             <use xlink:href="#icon-refresh" />
           </svg>
@@ -17,6 +17,7 @@
     </div>
     <ul ref="dom_lists_list" class="scroll" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
       <li
+        v-if="!hidePinned"
         class="default-list" :class="[$style.listsItem, {[$style.active]: defaultList.id == listId}, {[$style.clicked]: rightClickItemIndex == -2}, {[$style.fetching]: fetchingListStatus[defaultList.id]}]"
         :aria-label="$t(defaultList.name)" :aria-selected="defaultList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -2)" @click="handleListToggle(defaultList.id)"
@@ -34,6 +35,7 @@
         </span>
       </li>
       <li
+        v-if="!hidePinned"
         class="default-list" :class="[$style.listsItem, {[$style.active]: loveList.id == listId}, {[$style.clicked]: rightClickItemIndex == -1}, {[$style.fetching]: fetchingListStatus[loveList.id]}]"
         :aria-label="$t(loveList.name)" :aria-selected="loveList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)"
@@ -51,11 +53,19 @@
         :class="[$style.listsItem, {[$style.active]: item.id == listId}, {[$style.clicked]: rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]"
         :data-index="index" :aria-label="item.name" :aria-selected="defaultList.id == listId" @contextmenu="handleListsItemRigthClick($event, index)"
       >
-        <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">
+        <span :class="[$style.listsLabel, { 'chrome-nav-row': embedded }]" @click="handleListToggle(item.id, index + 2)">
+          <span v-if="embedded" :class="$style.miniCover" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <use xlink:href="#icon-line-music" />
+            </svg>
+          </span>
           <transition name="list-active">
             <svg-icon v-if="item.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
           </transition>
-          {{ item.name }}
+          <span :class="$style.listsName">{{ item.name }}</span>
+          <svg v-if="embedded && item.source" :class="$style.syncMark" viewBox="0 0 24 24" aria-hidden="true">
+            <use xlink:href="#icon-line-sync" />
+          </svg>
         </span>
         <base-input
           :class="$style.listsInput" type="text" :value="item.name"
@@ -119,7 +129,15 @@ export default {
   props: {
     listId: {
       type: String,
-      required: true,
+      default: '',
+    },
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
+    hidePinned: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['show-menu'],
@@ -211,6 +229,7 @@ export default {
     })
 
     watch(() => userLists, (lists) => {
+      if (!props.listId || props.listId == defaultList.id || props.listId == loveList.id) return
       if (lists.some(l => l.id == props.listId)) return
       void router.replace({
         path: '/list',
@@ -258,6 +277,95 @@ export default {
   width: 16%;
   display: flex;
   flex-flow: column nowrap;
+  &.embedded {
+    width: 100%;
+    flex: auto;
+    min-height: 0;
+  }
+}
+.lists.embedded .listHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: none;
+  height: auto;
+  min-height: 0;
+  margin-top: 0;
+  padding-right: 0;
+  align-items: center;
+  background: var(--color-glass);
+}
+.lists.embedded .listsTitle {
+  flex: none;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.lists.embedded .headerBtns {
+  padding-right: 0;
+}
+.lists.embedded .headerBtns :global(.chrome-ib) {
+  margin-top: 0;
+}
+.lists.embedded .listsItem {
+  border-radius: 7px;
+  margin: 0 0 2px;
+  color: var(--color-font);
+  &:hover {
+    color: var(--color-primary);
+  }
+  &:not(.active):hover {
+    background-color: var(--color-nav-hover);
+  }
+}
+.lists.embedded .listsLabel {
+  margin: 0;
+  color: inherit;
+}
+.miniCover {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: var(--color-primary);
+  background: var(--color-well, var(--color-button-background));
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+  }
+}
+.listsName {
+  min-width: 0;
+  flex: auto;
+  .mixin-ellipsis-1();
+}
+.syncMark {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  color: var(--color-secondary, var(--color-font-label));
+}
+.lists.embedded .listsContent {
+  flex: none;
+  overflow-y: auto !important;
+}
+.lists.embedded .listsItem.active {
+  background-color: var(--color-accent-soft, color-mix(in srgb, var(--color-primary) 12%, var(--color-main-background)));
+  color: var(--color-font);
+  font-weight: 650;
+  &:hover {
+    color: var(--color-primary);
+  }
 }
 .listHeader {
   position: relative;
@@ -338,8 +446,9 @@ export default {
     }
   }
   &.active {
-    // background-color:
     color: var(--color-primary);
+    background-color: var(--color-primary-light-300-alpha-700);
+    font-weight: 600;
   }
   &.selected {
     background-color: var(--color-primary-font-active);
@@ -362,10 +471,7 @@ export default {
   }
 }
 .activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
+  display: none;
 }
 .listsLabel {
   display: block;

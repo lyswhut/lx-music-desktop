@@ -1,5 +1,6 @@
 import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
+import { windowSizeList } from '@common/config'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { getPlatform, isLinux, isWin } from '@common/utils'
 import { getProxy, openDevTools as handleOpenDevTools } from '@main/utils'
@@ -82,8 +83,10 @@ export const createWindow = () => {
     hasShadow: global.envParams.cmdParams.dt,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
-    resizable: false,
-    maximizable: false,
+    resizable: true,
+    maximizable: true,
+    minWidth: windowSizeList[0].width,
+    minHeight: windowSizeList[0].height,
     fullscreenable: true,
     roundedCorners: global.envParams.cmdParams.dt,
     show: false,
@@ -102,7 +105,6 @@ export const createWindow = () => {
   if (global.envParams.cmdParams.dt) options.backgroundColor = theme.colors['--color-primary-light-1000']
   if (global.lx.appSetting['common.startInFullscreen']) {
     options.fullscreen = true
-    if (isLinux) options.resizable = true
   }
   browserWindow = new BrowserWindow(options)
 
@@ -137,7 +139,7 @@ const setSesProxy = (ses: Electron.Session, host?: string, port?: string | numbe
     })
   } else {
     void ses.setProxy({
-      mode: 'direct',
+      mode: 'system',
     })
   }
 }
@@ -180,6 +182,11 @@ export const maximize = () => {
 export const unmaximize = () => {
   if (!browserWindow) return
   browserWindow.unmaximize()
+}
+export const toggleMaximize = () => {
+  if (!browserWindow) return
+  if (browserWindow.isMaximized()) browserWindow.unmaximize()
+  else browserWindow.maximize()
 }
 export const toggleHide = () => {
   if (!browserWindow) return
@@ -228,17 +235,8 @@ export const toggleDevTools = () => {
 
 export const setFullScreen = (isFullscreen: boolean): boolean => {
   if (!browserWindow) return false
-  if (isLinux) { // linux 需要先设置为可调整窗口大小才能全屏
-    if (isFullscreen) {
-      browserWindow.setResizable(isFullscreen)
-      browserWindow.setFullScreen(isFullscreen)
-    } else {
-      browserWindow.setFullScreen(isFullscreen)
-      browserWindow.setResizable(isFullscreen)
-    }
-  } else {
-    browserWindow.setFullScreen(isFullscreen)
-  }
+  if (isLinux) browserWindow.setResizable(true)
+  browserWindow.setFullScreen(isFullscreen)
   return isFullscreen
 }
 

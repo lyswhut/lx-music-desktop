@@ -101,35 +101,41 @@ export default {
 
 
 <style lang="less" module>
-@import '@renderer/assets/styles/layout.less';
-
 .btns {
-  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0;
+  line-height: 0;
 
   button {
-    background-color: transparent;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    margin: 0;
     border: none;
-    border-radius: @form-radius;
-    margin-right: 5px;
-    cursor: pointer;
-    padding: 4px 7px;
-    color: var(--color-button-font);
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--color-secondary);
     outline: none;
-    transition: background-color 0.2s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.16s ease, color 0.16s ease;
     line-height: 0;
-    &:last-child {
-      margin-right: 0;
-    }
 
     svg {
+      width: 16px;
       height: 16px;
     }
 
     &:hover {
-      background-color: var(--color-button-background-hover);
+      background-color: var(--color-well);
+      color: var(--color-primary);
     }
     &:active {
-      background-color: var(--color-button-background-active);
+      background-color: var(--color-accent-soft);
     }
   }
 }

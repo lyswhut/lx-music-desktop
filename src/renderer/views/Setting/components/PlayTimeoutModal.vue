@@ -133,9 +133,6 @@ export default {
 }
 .footerBtn {
   flex: auto;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 10px !important;
   width: 150px;
   .mixin-ellipsis-1();
   + .footerBtn {

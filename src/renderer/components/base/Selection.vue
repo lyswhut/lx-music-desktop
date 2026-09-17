@@ -1,6 +1,6 @@
 <template>
-  <div class="content" :class="[$style.select, show ? $style.active : '']">
-    <div ref="dom_btn" class="label-content" :class="$style.label" @click="handleShow">
+  <div class="content" :class="[$style.select, show ? $style.active : '', chrome == 'source' ? $style.source : '']">
+    <div ref="dom_btn" class="label-content" :class="[$style.label, chrome == 'source' ? 'chrome-field' : '']" @click="handleShow">
       <span class="label">{{ label }}</span>
       <div class="icon" :class="$style.icon">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.847 451.847" space="preserve">
@@ -38,6 +38,10 @@ export default {
       default: '',
     },
     itemKey: {
+      type: String,
+      default: '',
+    },
+    chrome: {
       type: String,
       default: '',
     },
@@ -211,6 +215,28 @@ export default {
   &.active {
     color: var(--color-button-font);
   }
+}
+
+.source {
+  width: auto;
+}
+
+.label:global(.chrome-field) {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background-color: var(--color-panel);
+  color: var(--color-font);
+  box-shadow: none;
+  &:hover {
+    background-color: var(--color-well);
+  }
+}
+
+.source.active .label:global(.chrome-field) {
+  background-color: var(--color-panel);
 }
 
 

@@ -1,11 +1,12 @@
 <template>
-  <div id="container" class="view-container">
+    <div id="container" class="view-container" :class="{ 'full-playing': isShowPlayerDetail }">
     <layout-aside id="left" />
     <div id="right">
       <layout-toolbar id="toolbar" />
       <layout-view id="view" />
-      <layout-play-bar id="player" />
+      <layout-queue-pane />
     </div>
+    <layout-play-bar id="player" />
     <layout-icons />
     <layout-change-log-modal />
     <layout-update-modal />
@@ -21,6 +22,7 @@ import { onMounted } from '@common/utils/vueTools'
 // import BubbleCursor from '@common/utils/effects/cursor-effects/bubbleCursor'
 // import '@common/utils/effects/snow.min'
 import useApp from '@renderer/core/useApp'
+import { isShowPlayerDetail } from '@renderer/store/player/state'
 
 useApp()
 
@@ -56,6 +58,7 @@ html, body {
 body {
   user-select: none;
   height: 100%;
+  letter-spacing: -0.12px;
 }
 #root {
   height: 100%;
@@ -123,34 +126,58 @@ body {
 
 #container {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--width-app-left, @width-app-left) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) var(--height-player, @height-player);
   height: 100%;
   background-color: var(--color-app-background);
 }
 
 #left {
-  flex: none;
-  width: @width-app-left;
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-height: 0;
+  width: auto;
+  a {
+    text-decoration: none;
+    &:hover,
+    &:focus,
+    &:active {
+      text-decoration: none;
+    }
+  }
 }
 #right {
-  flex: auto;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-flow: column nowrap;
+  position: relative;
   transition: background-color @transition-normal;
   background-color: var(--color-main-background);
-
-  border-top-left-radius: @radius-border;
-  border-bottom-left-radius: @radius-border;
   overflow: hidden;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
 }
-#toolbar, #player {
+#player {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
+#container.full-playing {
+  #left {
+    grid-row: 1;
+  }
+  #player {
+    grid-column: 1 / -1;
+  }
+}
+#toolbar {
   flex: none;
 }
 #view {
   position: relative;
   flex: auto;
-  // display: flex;
   min-height: 0;
 }
 

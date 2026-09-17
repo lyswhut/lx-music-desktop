@@ -1,10 +1,10 @@
 <template lang="pug">
 div(:class="$style.footerLeftControlBtns")
   button(:class="[$style.footerLeftControlBtn, $style.lrcBtn]" :aria-label="toggleDesktopLyricBtnTitle" @click="toggleDesktopLyric" @contextmenu="toggleLockDesktopLyric")
-    svg(v-show="appSetting['desktopLyric.enable']" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="125%" viewBox="0 0 512 512" space="preserve")
-      use(xlink:href="#icon-desktop-lyric-on")
-    svg(v-show="!appSetting['desktopLyric.enable']" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="125%" viewBox="0 0 512 512" space="preserve")
-      use(xlink:href="#icon-desktop-lyric-off")
+    svg(v-show="appSetting['desktopLyric.enable']" viewBox="0 0 24 24" width="16" height="16")
+      use(xlink:href="#icon-line-lyric")
+    svg(v-show="!appSetting['desktopLyric.enable']" viewBox="0 0 24 24" width="16" height="16")
+      use(xlink:href="#icon-line-lyric")
   button(:class="[$style.footerLeftControlBtn, { [$style.active]: appSetting['player.audioVisualization'] }]" :aria-label="$t('audio_visualization')" @click="toggleAudioVisualization")
     svg(version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="95%" viewBox="0 0 24 24" space="preserve")
       use(xlink:href="#icon-audio-wave")
@@ -121,8 +121,6 @@ export default {
   }
 
   .footerLeftControlBtn {
-    // width: 18px;
-    // height: 18px;
     opacity: .5;
     cursor: pointer;
     transition: opacity @transition-normal;
@@ -132,6 +130,10 @@ export default {
     background-color: transparent;
     border: none;
     padding: 0;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
 
     &:hover {
       opacity: .9;

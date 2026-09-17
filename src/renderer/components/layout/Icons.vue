@@ -152,6 +152,9 @@
       <g id="icon-window-minimize-2" fill="currentColor">
         <path d="M19,13H5V11H19V13Z" />
       </g>
+      <g id="icon-window-maximize" fill="currentColor">
+        <path d="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
+      </g>
       <g id="icon-window-close" fill="currentColor">
         <path d="M20 6.91L17.09 4L12 9.09L6.91 4L4 6.91L9.09 12L4 17.09L6.91 20L12 14.91L17.09 20L20 17.09L14.91 12L20 6.91Z" />
       </g>
@@ -219,6 +222,120 @@
       <g id="icon-font-increase" fill="currentColor">
         <!-- 0 0 24 24-->
         <path d="M5.12,14L7.5,7.67L9.87,14M6.5,5L1,19H3.25L4.37,16H10.62L11.75,19H14L8.5,5H6.5M18,7L13,12.07L14.41,13.5L17,10.9V17H19V10.9L21.59,13.5L23,12.07L18,7Z" />
+      </g>
+      <g id="icon-line-search" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </g>
+      <g id="icon-line-close" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 6 12 12M6 18 18 6" />
+      </g>
+      <g id="icon-line-gear" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m10 3-.6 2-2 .9-2-.5-2 3.2 1.5 1.5v2.4L3.4 14l2 3.3 2-.6 2 .9.6 2.4h4l.6-2.4 2-.9 2 .6 2-3.3-1.5-1.5v-2.4l1.5-1.5-2-3.2-2 .5-2-.9L14 3Z" />
+        <circle cx="12" cy="11.5" r="3.2" />
+      </g>
+      <g id="icon-line-play" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 3.5 21 12 7 20.5Z" />
+      </g>
+      <g id="icon-line-play-fill" fill="currentColor">
+        <path d="M7 3.5 21 12 7 20.5Z" />
+      </g>
+      <g id="icon-line-pause-fill" fill="currentColor">
+        <rect x="6" y="4" width="4" height="16" rx="1" />
+        <rect x="14" y="4" width="4" height="16" rx="1" />
+      </g>
+      <g id="icon-line-prev" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 4 7 12l13 8Z" />
+        <rect x="3" y="4" width="3" height="16" rx=".5" />
+      </g>
+      <g id="icon-line-next" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m4 4 13 8L4 20Z" />
+        <rect x="18" y="4" width="3" height="16" rx=".5" />
+      </g>
+      <g id="icon-line-lyric" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="15" rx="3" />
+        <path d="M7 8h10M7 12h7m-3 6-4 4v-4" />
+      </g>
+      <g id="icon-line-screen" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <path d="M8 21h8M12 17v4" />
+      </g>
+      <g id="icon-line-list" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 5h12M9 12h12M9 19h12M3 5h1M3 12h1M3 19h1" />
+      </g>
+      <g id="icon-line-download" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" />
+      </g>
+      <g id="icon-line-keyboard" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <path d="M5 9h1m3 0h1m3 0h1m3 0h1M5 12h1m3 0h1m3 0h1m3 0h1M6 16h12" />
+      </g>
+      <g id="icon-line-sync" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10a9 9 0 0 1 15-6l3 3M21 2v5h-5M21 14a9 9 0 0 1-15 6l-3-3M3 22v-5h5" />
+      </g>
+      <g id="icon-line-code" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m8 5-6 7 6 7m8-14 6 7-6 7m-3-16-2 20" />
+      </g>
+      <g id="icon-line-network" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0m-9 4a5 5 0 0 1 6 0m-3 4h.01" />
+      </g>
+      <g id="icon-line-spark" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5Z" />
+      </g>
+      <g id="icon-line-folder" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6V4h6l2 3h10v13H3Zm0 3h18" />
+      </g>
+      <g id="icon-line-sliders" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 3v7m0 4v7M12 3v12m0 4v2M19 3v2m0 4v12M2 10h6m1 9h6m1-14h6" />
+      </g>
+      <g id="icon-line-info" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v6m0-10v.1" />
+      </g>
+      <g id="icon-line-plus" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 4v16M4 12h16" />
+      </g>
+      <g id="icon-line-queue" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 5h16M3 10h12M3 15h8m5-2v8l6-4Z" />
+      </g>
+      <g id="icon-line-volume" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9h4l5-4v14l-5-4H4ZM17 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14" />
+      </g>
+      <g id="icon-line-mute" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9h4l5-4v14l-5-4H4ZM17 9l6 6m0-6-6 6" />
+      </g>
+      <g id="icon-line-grid" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </g>
+      <g id="icon-line-compass" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9" />
+        <path d="m16 8-2.5 5.5L8 16l2.5-5.5Z" />
+      </g>
+      <g id="icon-line-chart" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 20V12M12 20V5M19 20V9" />
+      </g>
+      <g id="icon-line-music" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 17V5l10-2v12M10 8l10-2" />
+        <ellipse cx="6.8" cy="17.5" rx="3.2" ry="2.5" />
+        <ellipse cx="16.8" cy="15.5" rx="3.2" ry="2.5" />
+      </g>
+      <g id="icon-line-heart" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.4 4.6c-2.2-2.2-5.8-1.5-8.4 1.3C9.4 3.1 5.8 2.4 3.6 4.6-1 9.2 6.7 15.3 12 20c5.3-4.7 13-10.8 8.4-15.4Z" />
+      </g>
+      <g id="icon-line-back" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m14 5-7 7 7 7" />
+      </g>
+      <g id="icon-line-forward" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m10 5 7 7-7 7" />
+      </g>
+      <g id="icon-line-trash" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 7h14M9 7V5h6v2M8 7l1 12h6l1-12" />
+      </g>
+      <g id="icon-line-down" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6" />
       </g>
     </defs>
   </svg>

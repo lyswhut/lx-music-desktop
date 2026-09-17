@@ -197,32 +197,42 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .right {
-  flex: 0 0 60%;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
   // padding: 0 30px;
   position: relative;
   transition: flex-basis @transition-normal;
 }
 .lyric {
-  text-align: center;
+  text-align: left;
   height: 100%;
+  min-width: 0;
   overflow: hidden;
+  overflow-x: hidden;
   font-size: var(--playDetail-lrc-font-size, 16px);
-  -webkit-mask-image: linear-gradient(transparent 0%, #fff 20%,  #fff 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #fff 6%, #fff 91%, transparent 100%);
   cursor: grab;
   &.draging {
     cursor: grabbing;
   }
   :global {
     .font-lrc {
-      color: var(--color-450);
+      color: var(--color-font-label);
     }
     .line-content {
-      line-height: 1.2;
-      padding: calc(var(--playDetail-lrc-font-size, 16px) / 2) 1px;
-      overflow-wrap: break-word;
-      color: var(--color-450);
+      line-height: 1.6;
+      letter-spacing: -0.7px;
+      padding: calc(var(--playDetail-lrc-font-size, 16px) / 2) 8px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      color: var(--color-font-label);
+      font-weight: 630;
       transition: @transition-normal;
-      transition-property: padding;
+      transition-property: padding, color, transform;
 
       .extended {
         font-size: 0.8em;
@@ -235,7 +245,7 @@ export default {
         }
       }
       &.line-mode.active .font-lrc, &.font-mode.played .font-lrc {
-        color: var(--color-primary-dark-200);
+        color: var(--color-primary);
       }
       &.font-mode .extended .font-lrc {
         transition: @transition-slow;
@@ -273,11 +283,14 @@ export default {
   :global {
     .line-content {
       &.active {
+        transform: scale(1.07);
+        transform-origin: left center;
         .extended {
           font-size: .94em;
+          letter-spacing: 0;
         }
         .line {
-          font-size: 1.1em;
+          font-size: 1.07em;
         }
       }
     }
@@ -355,7 +368,8 @@ export default {
 }
 
 .lyricSpace {
-  height: 70%;
+  height: 60px;
+  flex: none;
 }
 
 </style>

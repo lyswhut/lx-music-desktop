@@ -269,8 +269,8 @@ export default {
 
 .content {
   position: relative;
-  border-radius: 4px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, .25);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(21, 52, 44, 0.16), 0 1px 4px rgba(18, 47, 33, 0.1);
   overflow: hidden;
   // max-height: 80%;
   // max-width: 76%;

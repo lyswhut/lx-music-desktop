@@ -1,35 +1,67 @@
 <template>
   <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
     <div v-show="props.visible" :class="$style.noitem">
-      <div v-if="appSetting['search.isShowHotSearch'] || (appSetting['search.isShowHistorySearch'] && historyList.length)" class="scroll" :class="$style.noitemListContainer">
-        <dl v-if="appSetting['search.isShowHotSearch']" :class="[$style.noitemList, $style.noitemHotSearchList]">
-          <dt :class="$style.noitemListTitle">{{ $t('search__hot_search') }}</dt>
-          <dd v-for="(item, index) in hotSearchList" :key="index" :class="$style.noitemListItem" @click="handleSearch(item)">{{ item }}</dd>
-        </dl>
-        <dl v-if="appSetting['search.isShowHistorySearch'] && historyList.length" :class="$style.noitemList">
-          <dt :class="$style.noitemListTitle">
-            <span>{{ $t('history_search') }}</span><span :class="$style.historyClearBtn" :aria-label="$t('history_clear')" @click="clearHistoryList">
-              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 512 512" space="preserve">
-                <use xlink:href="#icon-eraser" />
-              </svg></span>
-          </dt>
-          <dd v-for="(item, index) in historyList" :key="index + item" :class="$style.noitemListItem" :aria-label="$t('history_remove')" @contextmenu="removeHistoryWord(index)" @click="handleSearch(item)">{{ item }}</dd>
-        </dl>
-      </div>
-      <div v-else :class="$style.noitem_label">
-        <p>{{ $t('search__welcome') }}</p>
+      <div :class="$style.columns">
+        <section>
+          <div class="section-head">
+            <h2>{{ $t('search__hot_search') }}</h2>
+            <span>{{ sourceLabel }}</span>
+          </div>
+          <div v-if="showHot && hotSearchList.length" class="hot-list">
+            <button
+              v-for="(item, index) in hotSearchList"
+              :key="index + item"
+              type="button"
+              class="hot-item"
+              @click="handleSearch(item)"
+            >
+              <span class="hot-item-rank">{{ String(index + 1).padStart(2, '0') }}</span>
+              <span class="hot-item-body">
+                <strong class="hot-item-title">{{ item }}</strong>
+              </span>
+              <span class="hot-item-tag">{{ $t('search__hot_action') }}</span>
+            </button>
+          </div>
+        </section>
+        <section>
+          <div class="section-head">
+            <h2>{{ $t('history_search') }}</h2>
+            <span
+              v-if="showHistory && historyList.length"
+              :class="$style.historyClearBtn"
+              :aria-label="$t('history_clear')"
+              @click="clearHistoryList"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <use xlink:href="#icon-line-trash" />
+              </svg>
+            </span>
+          </div>
+          <div v-if="showHistory && historyList.length" :class="$style.historyList">
+            <div v-for="(item, index) in historyList" :key="index + item" class="history-chip" :class="$style.historyItem">
+              <button type="button" :class="$style.historyWord" @click="handleSearch(item)">{{ item }}</button>
+              <button type="button" :class="$style.historyRemove" :aria-label="$t('history_remove')" @click.stop="removeHistoryWord(index)">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" space="preserve">
+                  <use xlink:href="#icon-window-close" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p v-else-if="showHistory" :class="$style.hint">{{ $t('search__history_empty') }}</p>
+        </section>
       </div>
     </div>
   </transition>
 </template>
 
 <script setup>
-import { watch, shallowRef } from '@common/utils/vueTools'
+import { watch, shallowRef, computed } from '@common/utils/vueTools'
 import { historyList } from '@renderer/store/search/state'
 import { getHistoryList, removeHistoryWord, clearHistoryList } from '@renderer/store/search/action'
 import { getList } from '@renderer/store/hotSearch'
-import { appSetting } from '@renderer/store/setting'
 import { useRouter } from '@common/utils/vueRouter'
+import { sourceNames } from '@renderer/store'
+import { appSetting } from '@renderer/store/setting'
 
 const props = defineProps({
   visible: Boolean,
@@ -40,29 +72,35 @@ const props = defineProps({
 })
 
 const hotSearchList = shallowRef([])
+const sourceLabel = computed(() => sourceNames.value[props.source] ?? '')
+const showHot = computed(() => appSetting['search.isShowHotSearch'])
+const showHistory = computed(() => appSetting['search.isShowHistorySearch'])
 
-if (appSetting['search.isShowHotSearch']) {
-  watch(() => props.visible, (visible) => {
-    if (!visible) return
-    void getList(props.source).then(list => {
-      hotSearchList.value = list
-    })
-  }, {
-    immediate: true,
-  })
-
-  watch(() => props.source, (source) => {
-    if (!props.visible) return
-    void getList(source).then(list => {
-      if (source != props.source) return
-      hotSearchList.value = list
-    })
+const loadHot = (source) => {
+  if (!props.visible || !showHot.value) {
+    hotSearchList.value = []
+    return
+  }
+  void getList(source).then(list => {
+    if (source != props.source) return
+    hotSearchList.value = list
+  }).catch(() => {
+    if (source != props.source) return
+    hotSearchList.value = []
   })
 }
 
-if (appSetting['search.isShowHistorySearch']) {
-  void getHistoryList()
-}
+watch([() => props.visible, () => props.source, showHot], () => {
+  loadHot(props.source)
+}, {
+  immediate: true,
+})
+
+watch([() => props.visible, showHistory], ([visible, historyOn]) => {
+  if (visible && historyOn) void getHistoryList()
+}, {
+  immediate: true,
+})
 
 const router = useRouter()
 const handleSearch = (text) => {
@@ -70,6 +108,7 @@ const handleSearch = (text) => {
     path: '/search',
     query: {
       text,
+      source: props.source,
     },
   })
 }
@@ -85,69 +124,90 @@ const handleSearch = (text) => {
   left: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-flow: column nowrap;
-  // justify-content: center;
 }
-.noitemListContainer {
-  padding: 3% 15px 15px;
-  // margin-top: -20px;
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 44px;
+  padding: 32px 0 24px;
   min-height: 250px;
-  max-height: 94.7%;
 }
-.noitemList {
-  +.noitemList {
-    margin-top: 15px;
+
+.historyList {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+}
+
+.historyItem {
+  &:hover {
+    .historyRemove {
+      opacity: 1;
+    }
   }
 }
-.noitemHotSearchList {
-  min-height: 106px;
-}
-.noitemListTitle {
-  color: var(--color-font);
-  padding: 5px 5px 8px;
-  font-size: 14px;
-}
-.noitemListItem {
-  display: inline-block;
-  margin: 3px 5px;
-  background-color: var(--color-button-background);
-  padding: 7px 10px;
-  border-radius: @radius-progress-border;
-  transition: background-color @transition-normal;
+
+.historyWord {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  font-size: 11px;
+  color: inherit;
   cursor: pointer;
-  color: var(--color-button-font);
   .mixin-ellipsis-1();
-  max-width: 150px;
-  font-size: 13px;
-  &:hover {
-    background-color: var(--color-button-background-hover);
-  }
-  &:active {
-    background-color: var(--color-button-background-active);
+}
+
+.historyRemove {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-secondary);
+  opacity: .55;
+  cursor: pointer;
+  svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
   }
 }
+
 .historyClearBtn {
-  padding: 0 5px;
-  margin-left: 5px;
-  color: var(--color-font-label);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--color-secondary);
   cursor: pointer;
-  transition: @transition-normal;
-  transition-property: color, opacity;
-  opacity: .3;
+  opacity: .7;
   &:hover {
-    color: var(--color-primary-font-hover);
-    opacity: .8;
-  }
-  &:active {
-    color: var(--color-primary-font-active);
+    color: var(--color-primary);
     opacity: 1;
+    background: var(--color-well);
   }
   svg {
-    vertical-align: middle;
-    width: 15px;
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
   }
+}
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--color-secondary);
 }
 
 .noitem_label {
@@ -157,8 +217,15 @@ const handleSearch = (text) => {
   justify-content: center;
   p {
     font-size: 24px;
-    color: var(--color-font-label);
+    color: var(--color-secondary);
     text-align: center;
+  }
+}
+
+@media (max-width: 920px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
 }
 </style>
