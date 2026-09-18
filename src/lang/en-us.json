@@ -344,6 +344,7 @@
   "setting__basic_sourcename_alias": "Alias",
   "setting__basic_sourcename_real": "Original",
   "setting__basic_sourcename_title": "Choose the music streaming service name",
+  "setting__basic_auto_update": "Automatically update custom API sources on startup",
   "setting__basic_start_in_fullscreen": "Start in fullscreen mode",
   "setting__basic_theme": "Theme",
   "setting__basic_theme_auto_tip": "This is a dynamic theme. You can preset a light theme and a dark theme, and then it will automatically switch to the corresponding theme you preset according to the system's light and dark theme colors.\n\nNOTE: Right-click this theme item to open the light and dark theme setting window.",
@@ -744,5 +745,7 @@
   "user_api_import_online__input_confirm": "Import",
   "user_api_import_online__input_loading": "Importing...",
   "user_api_import_online__input_tip": "Please enter an HTTP link",
+  "user_api_import_online__script_empty": "The fetched script is empty",
+  "user_api_import_online__script_too_large": "The script file is too large",
   "user_api_import_online__title": "Import Music API from network."
 }
