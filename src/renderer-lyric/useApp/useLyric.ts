@@ -4,10 +4,10 @@ import { getStatus } from '@lyric/core/mainWindowChannel'
 import { isPlay, setting } from '@lyric/store/state'
 
 export default () => {
-  watch(() => setting['player.isShowLyricTranslation'], setLyric)
-  watch(() => setting['player.isShowLyricRoma'], setLyric)
-  watch(() => setting['player.isSwapLyricTranslationAndRoma'], setLyric)
-  watch(() => setting['player.isPlayLxlrc'], setLyric)
+  watch(() => setting['desktopLyric.isShowLyricTranslation'], setLyric)
+  watch(() => setting['desktopLyric.isShowLyricRoma'], setLyric)
+  watch(() => setting['desktopLyric.isSwapLyricTranslationAndRoma'], setLyric)
+  watch(() => setting['desktopLyric.isPlayLxlrc'], setLyric)
   watch(() => setting['player.playbackRate'], (rate) => {
     setPlaybackRate(rate)
     if (isPlay.value) {

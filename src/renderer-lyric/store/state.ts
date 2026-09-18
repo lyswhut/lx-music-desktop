@@ -32,10 +32,10 @@ export const setting = shallowReactive<LX.DesktopLyric.Config>({
   'desktopLyric.style.isFontWeightExtended': false,
   'desktopLyric.style.isZoomActiveLrc': true,
   'common.langId': 'zh-cn',
-  'player.isShowLyricTranslation': false,
-  'player.isShowLyricRoma': false,
-  'player.isSwapLyricTranslationAndRoma': false,
-  'player.isPlayLxlrc': false,
+  'desktopLyric.isShowLyricTranslation': false,
+  'desktopLyric.isShowLyricRoma': false,
+  'desktopLyric.isSwapLyricTranslationAndRoma': false,
+  'desktopLyric.isPlayLxlrc': false,
   'player.playbackRate': 1,
 })
 
