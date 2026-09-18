@@ -22,7 +22,7 @@ const formatTimeLabel = (label) => {
     .replace(t_rxp_3, '.$1')
 }
 
-const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
+const parseExtendedLyric = (lrcLinesMap, extendedLyric, key = 'extendedLyrics') => {
   const extendedLines = extendedLyric.split(/\r\n|\n|\r/)
   for (let i = 0; i < extendedLines.length; i++) {
     const line = extendedLines[i].trim()
@@ -37,7 +37,7 @@ const parseExtendedLyric = (lrcLinesMap, extendedLyric) => {
         for (let time of times) {
           const timeStr = formatTimeLabel(time)
           const targetLine = lrcLinesMap[timeStr]
-          if (targetLine) targetLine.extendedLyrics.push(text)
+          if (targetLine) targetLine[key].push(text)
         }
       }
     }
@@ -62,6 +62,7 @@ export default class LinePlayer {
   _init() {
     if (this.lyric == null) this.lyric = ''
     if (this.extendedLyrics == null) this.extendedLyrics = []
+    if (this.aboveLyrics == null) this.aboveLyrics = []
     this._initTag()
     this._initLines()
     this.onSetLyric(this.lines, this.tags.offset + this.offset)
@@ -111,12 +112,14 @@ export default class LinePlayer {
               time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(isMsTime ? msTime : msTime.padEnd(3, '0')),
               text,
               extendedLyrics: [],
+              aboveLyrics: [],
             }
           }
         }
       }
     }
 
+    for (const lrc of this.aboveLyrics) parseExtendedLyric(linesMap, lrc, 'aboveLyrics')
     for (const lrc of this.extendedLyrics) parseExtendedLyric(linesMap, lrc)
     this.lines = Object.values(linesMap)
     this.lines.sort((a, b) => {
@@ -220,11 +223,12 @@ export default class LinePlayer {
     this.play(this._currentTime())
   }
 
-  setLyric(lyric, extendedLyrics) {
+  setLyric(lyric, extendedLyrics, aboveLyrics) {
     // console.log(extendedLyrics)
     if (this.isPlay) this.pause()
     this.lyric = lyric
     this.extendedLyrics = extendedLyrics
+    this.aboveLyrics = aboveLyrics
     this._init()
   }
 
