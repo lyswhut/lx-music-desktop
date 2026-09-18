@@ -319,6 +319,10 @@ declare global {
        * 是否启用桌面歌词
        */
       'desktopLyric.enable': boolean
+      'desktopLyric.isShowLyricTranslation': boolean
+      'desktopLyric.isShowLyricRoma': boolean
+      'desktopLyric.isSwapLyricTranslationAndRoma': boolean
+      'desktopLyric.isPlayLxlrc': boolean
 
       /**
        * 是否锁定桌面歌词

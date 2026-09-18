@@ -32,10 +32,10 @@ declare namespace LX {
       'desktopLyric.style.isFontWeightExtended': LX.AppSetting['desktopLyric.style.isFontWeightExtended']
       'desktopLyric.style.isZoomActiveLrc': LX.AppSetting['desktopLyric.style.isZoomActiveLrc']
       'common.langId': LX.AppSetting['common.langId']
-      'player.isShowLyricTranslation': LX.AppSetting['player.isShowLyricTranslation']
-      'player.isShowLyricRoma': LX.AppSetting['player.isShowLyricRoma']
-      'player.isSwapLyricTranslationAndRoma': LX.AppSetting['player.isSwapLyricTranslationAndRoma']
-      'player.isPlayLxlrc': LX.AppSetting['player.isPlayLxlrc']
+      'desktopLyric.isShowLyricTranslation': LX.AppSetting['desktopLyric.isShowLyricTranslation']
+      'desktopLyric.isShowLyricRoma': LX.AppSetting['desktopLyric.isShowLyricRoma']
+      'desktopLyric.isSwapLyricTranslationAndRoma': LX.AppSetting['desktopLyric.isSwapLyricTranslationAndRoma']
+      'desktopLyric.isPlayLxlrc': LX.AppSetting['desktopLyric.isPlayLxlrc']
       'player.playbackRate': LX.AppSetting['player.playbackRate']
     }
 
