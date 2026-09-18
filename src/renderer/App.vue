@@ -99,8 +99,11 @@ body {
 .disableTransparent {
   background-color: var(--color-content-background);
 
-  #body {
-    border: 1Px solid var(--color-primary-light-500);
+  &.linux #body {
+    border: 1px solid var(--color-primary-light-500);
+  }
+  &.windows:not(.windows-11, .fullscreen) #body {
+    border-top: 1px solid #aaa;
   }
 
   #right {

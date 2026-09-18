@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
-import { getPlatform, isLinux, isWin } from '@common/utils'
+import { getOSVersion, getPlatform, isLinux, isMac, isWin } from '@common/utils'
 import { getProxy, openDevTools as handleOpenDevTools } from '@main/utils'
 import { mainSend } from '@common/mainIpc'
 import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
@@ -39,6 +39,19 @@ const winEvent = () => {
 
   browserWindow.on('blur', () => {
     global.lx.event_app.main_window_blur()
+  })
+  browserWindow.on('enter-full-screen', () => {
+    global.lx.event_app.main_window_fullscreen(true)
+  })
+  browserWindow.on('leave-full-screen', () => {
+    global.lx.event_app.main_window_fullscreen(false)
+
+    // macOS needs here to set resizable to false after exiting full screen
+    if (isMac) {
+      if (browserWindow?.resizable) {
+        browserWindow.setResizable(false)
+      }
+    }
   })
 
   browserWindow.once('ready-to-show', () => {
@@ -107,7 +120,7 @@ export const createWindow = () => {
   browserWindow = new BrowserWindow(options)
 
   const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
-  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&osver=${encodeURIComponent(getOSVersion())}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
 
   winEvent()
 
@@ -228,13 +241,17 @@ export const toggleDevTools = () => {
 
 export const setFullScreen = (isFullscreen: boolean): boolean => {
   if (!browserWindow) return false
-  if (isLinux) { // linux 需要先设置为可调整窗口大小才能全屏
+  // https://github.com/any-listen/any-listen/issues/190
+  // in electron ^41.2.0, windows -dt mode need to set resizable to true before setting full screen
+  if (!!global.envParams.cmdParams.dt || isLinux) {
+    // linux 需要先设置为可调整窗口大小才能全屏
     if (isFullscreen) {
       browserWindow.setResizable(isFullscreen)
       browserWindow.setFullScreen(isFullscreen)
     } else {
       browserWindow.setFullScreen(isFullscreen)
-      browserWindow.setResizable(isFullscreen)
+      // windows/linux need to set resizable to true after exiting full screen
+      if (!isMac) browserWindow.setResizable(isFullscreen)
     }
   } else {
     browserWindow.setFullScreen(isFullscreen)

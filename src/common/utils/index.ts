@@ -1,4 +1,5 @@
 import log from 'electron-log/node'
+import os from 'node:os'
 
 
 export const isLinux = process.platform == 'linux'
@@ -13,7 +14,12 @@ export const getPlatform = (platform: NodeJS.Platform = process.platform) => {
     default: return 'linux'
   }
 }
-
+export const getOSVersion = (): string => {
+  const release = os.release()
+  const versionMatch = /^(\d+)/.exec(release)
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return versionMatch?.[1] || release
+}
 
 // https://stackoverflow.com/a/53387532
 export function compareVer(currentVer: string, targetVer: string): -1 | 0 | 1 {
