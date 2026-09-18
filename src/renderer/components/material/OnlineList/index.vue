@@ -102,6 +102,7 @@
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
 import { ref } from '@common/utils/vueTools'
+import { shouldCopyListTextOnContextMenu, formatListSelectionText } from '@renderer/utils/listContextMenu.mjs'
 import useList from './useList'
 import useMenu from './useMenu'
 import usePlay from './usePlay'
@@ -218,14 +219,17 @@ export default {
       menuClick(action, index)
     }
     const handleListRightClick = (event) => {
-      if (!event.target.classList.contains('select')) return
+      const selectionText = window.getSelection().toString()
+      if (!shouldCopyListTextOnContextMenu({
+        isSelectTextTarget: event.target.classList.contains('select'),
+        selectionText,
+      })) return
       event.stopImmediatePropagation()
       let classList = dom_listContent.value.classList
       classList.add('copying')
       window.requestAnimationFrame(() => {
-        let str = window.getSelection().toString()
         classList.remove('copying')
-        str = str.split(/\n\n/).map(s => s.replace(/\n/g, '  ')).join('\n').trim()
+        let str = formatListSelectionText(window.getSelection().toString())
         if (!str.length) return
         clipboardWriteText(str)
       })
