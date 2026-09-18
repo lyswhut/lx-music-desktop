@@ -6,6 +6,7 @@
     </div>
     <div :class="$style.main">
       <song-list-list v-if="searchType == 'songlist'" v-show="searchText" :page="page" :source-id="source" />
+      <album-list v-else-if="searchType == 'album'" v-show="searchText" :page="page" :source-id="source" />
       <music-list v-else v-show="searchText" :page="page" :source-id="source" />
       <blank-view :visible="!searchText" :source="source" />
     </div>
@@ -17,9 +18,12 @@ import { useRoute, useRouter } from '@common/utils/vueRouter'
 import { searchText } from '@renderer/store/search/state'
 import { getSearchSetting, setSearchSetting } from '@renderer/utils/data'
 import { sources as _sources } from '@renderer/store/search/music'
+import { sources as _songlistSources } from '@renderer/store/search/songlist'
+import { sources as _albumSources } from '@renderer/store/search/album'
 
 import MusicList from './MusicList/index.vue'
 import SongListList from './SongListList/index.vue'
+import AlbumList from './AlbumList/index.vue'
 import BlankView from './components/BlankView.vue'
 import { computed, ref } from '@common/utils/vueTools'
 import { sourceNames } from '@renderer/store'
@@ -27,6 +31,8 @@ import { sourceNames } from '@renderer/store'
 const source = ref('kw')
 const searchType = ref(null)
 const page = ref(1)
+
+const getSupportList = (type) => type == 'songlist' ? _songlistSources : type == 'album' ? _albumSources : _sources
 
 const verifyQueryParams = async(to, from, next) => {
   let _source = to.query.source
@@ -38,6 +44,15 @@ const verifyQueryParams = async(to, from, next) => {
     _source ??= setting.source
     _type ??= setting.type
 
+    next({
+      path: to.path,
+      query: { ...to.query, source: _source, type: _type, page: _page },
+    })
+    return
+  }
+  // 若当前源不支持该子页签类型，则自动回退到歌曲子页签
+  if (!getSupportList(_type).includes(_source)) {
+    _type = 'music'
     next({
       path: to.path,
       query: { ...to.query, source: _source, type: _type, page: _page },
@@ -61,6 +76,7 @@ export default {
   components: {
     MusicList,
     SongListList,
+    AlbumList,
     BlankView,
   },
   beforeRouteEnter: verifyQueryParams,
@@ -69,35 +85,46 @@ export default {
     const route = useRoute()
     const router = useRouter()
 
-    const sources = _sources.map(id => {
-      return {
-        id,
-        label: sourceNames.value[id],
-      }
+    const sources = computed(() => {
+      return _sources.map(id => {
+        return {
+          id,
+          label: sourceNames.value[id],
+        }
+      })
     })
     const handleSourceChange = (id) => {
+      // 若当前源不支持当前子页签类型，则自动回退到歌曲子页签
+      const type = getSupportList(searchType.value).includes(id) ? searchType.value : 'music'
       void router.replace({
         path: route.path,
         query: {
           ...route.query,
           source: id,
+          type,
           page: 1,
         },
       })
     }
 
     const searchTypes = computed(() => {
-      return [
+      const list = [
         { label: window.i18n.t('search__type_music'), id: 'music' },
         { label: window.i18n.t('search__type_songlist'), id: 'songlist' },
+        { label: window.i18n.t('search__type_album'), id: 'album' },
       ]
+      // mg 源不支持专辑搜索，处于 mg 页签时隐藏专辑子页签
+      return source.value == 'mg' ? list.filter(item => item.id != 'album') : list
     })
     const handleTypeChange = (type) => {
+      const list = getSupportList(type)
+      const _source = list.includes(source.value) ? source.value : list[0]
       void router.replace({
         path: route.path,
         query: {
           ...route.query,
           type,
+          source: _source,
           page: 1,
         },
       })

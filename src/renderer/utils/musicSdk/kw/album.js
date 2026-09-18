@@ -1,5 +1,5 @@
 import { httpFetch } from '../../request'
-import { decodeName } from '../../index'
+import { decodeName, formatPlayTime } from '../../index'
 import { formatSinger, objStr2JSON } from './util'
 
 // let requestObj_list
@@ -57,7 +57,7 @@ export default {
         albumId,
         songmid: item.id,
         source: 'kw',
-        interval: null,
+        interval: formatPlayTime(parseInt(item.duration)),
         img: item.pic,
         lrc: null,
         otherSource: null,
