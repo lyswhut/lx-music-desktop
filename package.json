@@ -1,6 +1,6 @@
 {
   "name": "lx-music-desktop",
-  "version": "2.12.6-beta.2",
+  "version": "2.12.6",
   "description": "一个免费的音乐查找助手",
   "main": "./dist/main.js",
   "scripts": {
@@ -123,7 +123,7 @@
     "css-loader": "^7.1.5",
     "css-minimizer-webpack-plugin": "^8.0.0",
     "del": "^6.1.1",
-    "electron": "42.11.3",
+    "electron": "42.11.6",
     "electron-builder": "^26.15.7",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "github:lyswhut/electron-devtools-installer#64596d615c1fc891eefd8aef1dfcb2c87aaadf03",
