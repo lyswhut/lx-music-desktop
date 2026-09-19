@@ -3,6 +3,8 @@ import {
   computed,
 } from '@common/utils/vueTools'
 import { useI18n } from '@renderer/plugins/i18n'
+import { resetRandomPlayQueue } from '@renderer/core/player'
+import { resolvePlayModeSelection } from '@renderer/core/player/playMode.mjs'
 
 // const playNextModes = [
 //   'listLoop',
@@ -25,10 +27,9 @@ export default () => {
   })
 
   const toggleNextPlayMode = (mode: LX.AppSetting['player.togglePlayMethod']) => {
-    if (mode == appSetting['player.togglePlayMethod']) return
-    // let index = playNextModes.indexOf(appSetting['player.togglePlayMethod'])
-    // if (++index >= playNextModes.length) index = 0
-    setTogglePlayMode(mode)
+    const { nextMode, shouldResetRandomQueue } = resolvePlayModeSelection(appSetting['player.togglePlayMethod'], mode)
+    if (nextMode != appSetting['player.togglePlayMethod']) setTogglePlayMode(nextMode)
+    if (shouldResetRandomQueue) resetRandomPlayQueue()
   }
 
   return {
