@@ -8,6 +8,17 @@ dd
   .gap-top
     base-checkbox(id="setting_play_detail_lyric_progress_enable" :model-value="appSetting['playDetail.isShowLyricProgressSetting']" :label="$t('setting__play_detail_lyric_progress')" @update:model-value="updateSetting({'playDetail.isShowLyricProgressSetting': $event})")
 
+  .gap-top
+    base-checkbox(id="setting_play_detail_lyric_text_lift" :model-value="appSetting['playDetail.lyricTextLiftEffect']" :label="$t('setting__play_detail_lyric_text_lift')" @update:model-value="updateSetting({'playDetail.lyricTextLiftEffect': $event})")
+  .gap-top(v-if="appSetting['playDetail.lyricTextLiftEffect']")
+    h3 {{ $t('setting__play_detail_lyric_text_lift_offset') }}
+    base-slider-bar(
+      :value="appSetting['playDetail.lyricTextLiftEffectOffset']"
+      :min="1"
+      :max="20"
+      @change="updateSetting({'playDetail.lyricTextLiftEffectOffset': Math.round($event)})"
+    )
+
 dd
   h3#play_detail_align {{ $t('setting__play_detail_align') }}
   div

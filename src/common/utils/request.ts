@@ -30,7 +30,10 @@ const dispatchers = [
 ] as const
 let proxyAgent: ProxyAgent | null = null
 let globalDispatcher = getGlobalDispatcher()
-const buildDispatcher = (redirectDispatcher: Dispatcher.DispatcherComposeInterceptor | null, retryNum = 3) => {
+const buildDispatcher = (
+  redirectDispatcher: Dispatcher.DispatcherComposeInterceptor | null,
+  retryNum = 3,
+) => {
   const otherInterceptors =
     retryNum == 3
       ? dispatchers
@@ -211,7 +214,10 @@ const buildRequestDispatcher = (options: Options) => {
   if (options.maxRedirect != null) {
     if (options.maxRedirect != defaultOptions.maxRedirect) {
       if (options.maxRedirect) {
-        dispatcher = buildDispatcher(interceptors.redirect({ maxRedirections: options.maxRedirect }), options.retryNum)
+        dispatcher = buildDispatcher(
+          interceptors.redirect({ maxRedirections: options.maxRedirect }),
+          options.retryNum,
+        )
       } else {
         dispatcher = buildDispatcher(null, options.retryNum)
       }
@@ -220,7 +226,10 @@ const buildRequestDispatcher = (options: Options) => {
   return dispatcher
 }
 
-export const request = async <T = unknown>(url: string, options: Options = {}): Promise<Response<T>> => {
+export const request = async <T = unknown>(
+  url: string,
+  options: Options = {},
+): Promise<Response<T>> => {
   const method = options.method?.toUpperCase() ?? 'GET'
   const timeout = options.timeout ?? defaultOptions.timeout
   const [headers, body] = buildRequestBody(options)

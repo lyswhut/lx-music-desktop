@@ -64,6 +64,7 @@
     "lint": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly src",
     "lint:fix": "eslint --ext .ts,.js,.vue -f node_modules/eslint-formatter-friendly --fix src",
     "postinstall": "node build-config/postinstall.js",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
     "dp": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:2081 npm run pack",
     "up": "cross-env ELECTRON_GET_USE_PROXY=true GLOBAL_AGENT_HTTPS_PROXY=http://127.0.0.1:2081 npm i"
   },
@@ -159,14 +160,14 @@
     "typescript": "5.9.3",
     "vue-eslint-parser": "^9.4.3",
     "vue-loader": "^17.4.2",
-    "webpack": "5.106.2",
+    "webpack": "5.111.1",
     "webpack-cli": "^7.2.3",
     "webpack-dev-server": "5.2.6",
     "webpack-hot-middleware": "github:lyswhut/webpack-hot-middleware#329c4375134b89d39da23a56a94db651247c74a1",
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "@simonwep/pickr": "1.9.1",
+    "@simonwep/pickr": "^1.10.2",
     "better-sqlite3": "^13.0.3",
     "bufferutil": "^4.1.0",
     "comlink": "~4.3.1",

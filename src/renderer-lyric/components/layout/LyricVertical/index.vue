@@ -39,6 +39,9 @@ export default {
       textAlign: setting['desktopLyric.style.align'],
       '--line-gap': Math.ceil(setting['desktopLyric.style.lineGap'] * 1.06) + 'px',
       '--line-extended-gap': Math.ceil(setting['desktopLyric.style.lineGap'] * 1.06 / 8).toFixed(2) + 'px',
+      '--lyric-lift-offset': setting['playDetail.lyricTextLiftEffect']
+        ? `-${(setting['playDetail.lyricTextLiftEffectOffset'] / 100).toFixed(2)}em`
+        : '0',
     }))
     const isComputeWidth = computed(() => {
       return setting['desktopLyric.style.isZoomActiveLrc'] && !setting['desktopLyric.isDelayScroll']

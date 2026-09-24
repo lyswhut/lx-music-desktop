@@ -3,8 +3,11 @@ import { updateUserListPosition } from '@renderer/store/list/action'
 import { userLists } from '@renderer/store/list/state'
 import useDarg from '@renderer/utils/compositions/useDrag'
 
-
-export default ({ dom_lists_list, handleSaveListName, handleMenuClick }: {
+export default ({
+  dom_lists_list,
+  handleSaveListName,
+  handleMenuClick,
+}: {
   dom_lists_list: Ref<HTMLElement | null>
   handleSaveListName: () => Promise<void> | void
   handleMenuClick: () => void
@@ -16,8 +19,8 @@ export default ({ dom_lists_list, handleSaveListName, handleMenuClick }: {
     dom_list: dom_lists_list,
     dragingItemClassName: styles.dragingItem,
     filter: 'default-list',
-    onUpdate(newIndex: number, oldIndex: number) {
-      void updateUserListPosition({ ids: [userLists[oldIndex - 2].id], position: newIndex - 2 })
+    onUpdate(newIndex: number | undefined, oldIndex: number | undefined) {
+      void updateUserListPosition({ ids: [userLists[oldIndex! - 2].id], position: newIndex! - 2 })
     },
   })
 
@@ -29,7 +32,8 @@ export default ({ dom_lists_list, handleSaveListName, handleMenuClick }: {
         case 'SELECT':
         case 'TEXTAREA':
           return
-        default: if ((event!.target as HTMLElement).isContentEditable) return
+        default:
+          if ((event!.target as HTMLElement).isContentEditable) return
       }
 
       isModDown.value = true

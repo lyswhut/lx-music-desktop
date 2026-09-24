@@ -67,7 +67,7 @@ export const getList = async(source: Source): Promise<string[]> => {
       setList(source, [])
       return Promise.resolve([])
     }
-    return music[source]?.hotSearch.getList().then(data => setList(source, data.list))
+    return music[source]?.hotSearch.getList().then((data: any) => setList(source, data.list))
   }
 }
 

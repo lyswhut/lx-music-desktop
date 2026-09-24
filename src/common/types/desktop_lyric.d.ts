@@ -37,6 +37,8 @@ declare namespace LX {
       'player.isSwapLyricTranslationAndRoma': LX.AppSetting['player.isSwapLyricTranslationAndRoma']
       'player.isPlayLxlrc': LX.AppSetting['player.isPlayLxlrc']
       'player.playbackRate': LX.AppSetting['player.playbackRate']
+      'playDetail.lyricTextLiftEffect': LX.AppSetting['playDetail.lyricTextLiftEffect']
+      'playDetail.lyricTextLiftEffectOffset': LX.AppSetting['playDetail.lyricTextLiftEffectOffset']
     }
 
     type WinMainActions = 'get_info' | 'get_status' | 'get_analyser_data_array'

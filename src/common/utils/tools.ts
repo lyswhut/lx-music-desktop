@@ -22,12 +22,12 @@ export const toNewMusicInfo = (oldMusicInfo: any): LX.Music.MusicInfo => {
     meta.qualitys = oldMusicInfo.types
     meta._qualitys = oldMusicInfo._types
     meta.albumId = oldMusicInfo.albumId
-    if (meta._qualitys.flac32bit && !meta._qualitys.flac24bit) {
-      meta._qualitys.flac24bit = meta._qualitys.flac32bit
+    if (meta._qualitys.flac32bit && !meta._qualitys.hires) {
+      meta._qualitys.hires = meta._qualitys.flac32bit
       delete meta._qualitys.flac32bit
 
       meta.qualitys = (meta.qualitys as any[]).map(quality => {
-        if (quality.type == 'flac32bit') quality.type = 'flac24bit'
+        if (quality.type == 'flac32bit') quality.type = 'hires'
         return quality
       })
     }
@@ -107,15 +107,15 @@ export const fixNewMusicInfoQuality = (musicInfo: LX.Music.MusicInfo) => {
   if (musicInfo.source == 'local') return musicInfo
 
   // @ts-expect-error
-  if (musicInfo.meta._qualitys.flac32bit && !musicInfo.meta._qualitys.flac24bit) {
+  if (musicInfo.meta._qualitys.flac32bit && !meta._qualitys.hires) {
     // @ts-expect-error
-    musicInfo.meta._qualitys.flac24bit = musicInfo.meta._qualitys.flac32bit
+    musicInfo.meta._qualitys.hires = musicInfo.meta._qualitys.flac32bit
     // @ts-expect-error
     delete musicInfo.meta._qualitys.flac32bit
 
     musicInfo.meta.qualitys = musicInfo.meta.qualitys.map(quality => {
       // @ts-expect-error
-      if (quality.type == 'flac32bit') quality.type = 'flac24bit'
+      if (quality.type == 'flac32bit') quality.type = 'hires'
       return quality
     })
   }

@@ -141,6 +141,12 @@ export default () => {
   window.key_event.on(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
   window.key_event.on(HOTKEY_PLAYER.seekbackward.action, handleSeekbackward)
   window.key_event.on(HOTKEY_PLAYER.seekforward.action, handleSeekforward)
+  // 空格键播放/暂停（输入框聚焦时按键管线不会派发，无冲突）
+  const handleSpaceToggle = (payload: any) => {
+    if (payload?.event?.repeat) return
+    togglePlay()
+  }
+  window.key_event.on('key_space_down', handleSpaceToggle)
 
   window.app_event.on('play', setPlayStatus)
   window.app_event.on('pause', setPauseStatus)
@@ -165,6 +171,7 @@ export default () => {
     window.key_event.off(HOTKEY_PLAYER.music_dislike.action, dislikeMusic)
     window.key_event.off(HOTKEY_PLAYER.seekbackward.action, handleSeekbackward)
     window.key_event.off(HOTKEY_PLAYER.seekforward.action, handleSeekforward)
+    window.key_event.off('key_space_down', handleSpaceToggle)
 
 
     window.app_event.off('play', setPlayStatus)

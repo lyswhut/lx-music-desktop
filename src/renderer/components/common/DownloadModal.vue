@@ -1,10 +1,18 @@
 <template>
   <material-modal :show="show" :bg-close="bgClose" :teleport="teleport" @close="handleClose">
     <main :class="$style.main">
-      <h2>{{ info.name }}<br>{{ info.singer }}</h2>
-      <base-btn v-for="quality in qualitys" :key="quality.type" :class="$style.btn" @click="handleClick(quality.type)">
-        {{ getTypeName(quality.type) }}{{ quality.size && ` - ${quality.size.toUpperCase()}` }}
-      </base-btn>
+      <h2>{{ info.name }}<br />{{ info.singer }}</h2>
+
+      <div :class="[$style.qualityList, qualitys.length > 4 && $style.scrollable]">
+        <base-btn
+          v-for="quality in qualitys"
+          :key="quality.type"
+          :class="$style.btn"
+          @click="handleClick(quality.type)"
+        >
+          {{ getTypeName(quality.type) }}{{ quality.size && ` - ${quality.size.toUpperCase()}` }}
+        </base-btn>
+      </div>
     </main>
   </material-modal>
 </template>
@@ -50,7 +58,7 @@ export default {
       return this.qualityList[this.musicInfo.source] || []
     },
     qualitys() {
-      return this.info.meta?.qualitys?.filter(quality => this.checkSource(quality.type)) || []
+      return this.info.meta?.qualitys?.filter((quality) => this.checkSource(quality.type)) || []
     },
   },
   methods: {
@@ -62,19 +70,21 @@ export default {
       this.$emit('update:show', false)
     },
     getTypeName(quality) {
-      switch (quality) {
-        case 'flac24bit':
-          return this.$t('download__lossless') + ' FLAC Hires'
-        case 'flac':
-        case 'ape':
-        case 'wav':
-          return this.$t('download__lossless') + ' ' + quality.toUpperCase()
-        case '320k':
-          return this.$t('download__high_quality') + ' ' + quality.toUpperCase()
-        case '192k':
-        case '128k':
-          return this.$t('download__normal') + ' ' + quality.toUpperCase()
+      const names = {
+        '96k': '低清音质 96 kbps',
+        '128k': '普通音质 128 kbps',
+        '192k': '中等音质 192 kbps',
+        '320k': '高清音质 320 kbps',
+        flac: '高清无损 FLAC',
+        hires: '高解析度 Hi-Res',
+        flac24bit: '高解析度无损 FLAC 24-bit',
+        vinyl: '黑胶音质 Vinyl',
+        dolby: '杜比全景声 Dolby Atmos',
+        atmos: '臻品音质 Atmos 2.0',
+        atmos_plus: '臻品全景声 Atmos+ 2.0',
+        master: '臻品母带 Master 3.0',
       }
+      return names[quality] ?? quality
     },
     checkSource(quality) {
       return this.sourceQualityList.includes(quality)
@@ -82,7 +92,6 @@ export default {
   },
 }
 </script>
-
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
@@ -94,6 +103,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+
   h2 {
     font-size: 13px;
     color: var(--color-font);
@@ -103,12 +113,38 @@ export default {
   }
 }
 
-.btn {
-  display: block;
-  margin-bottom: 15px;
-  &:last-child {
-    margin-bottom: 0;
+.qualityList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  &.scrollable {
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 5px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--color-secondary-background);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 3px;
+
+      &:hover {
+        background: var(--color-primary);
+      }
+    }
   }
 }
 
+.btn {
+  display: block;
+  flex-shrink: 0;
+}
 </style>

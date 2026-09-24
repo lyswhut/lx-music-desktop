@@ -95,6 +95,7 @@ export const sourceNames = computed(() => {
     kg: 'kg',
     mg: 'mg',
     wy: 'wy',
+    git: 'git',
     all: window.i18n.t(prefix + 'all' as any),
   }
   for (const { id } of music.sources) {

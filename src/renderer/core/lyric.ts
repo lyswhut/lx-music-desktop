@@ -161,7 +161,7 @@ export const setLyric = () => {
   if (musicInfo.lrc) {
     const extendedLyrics = []
     if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) extendedLyrics.push(musicInfo.rlrc)
-    if (appSetting['player.isShowLyricTranslation'] && musicInfo.tlrc) extendedLyrics.push(musicInfo.tlrc)
+    if (appSetting['player.isShowLyricTranslation'] && musicInfo.tlrc) { extendedLyrics.push(musicInfo.tlrc) }
     if (appSetting['player.isSwapLyricTranslationAndRoma']) extendedLyrics.reverse()
 
     lrc.setLyric(
@@ -202,6 +202,12 @@ export const setDisableAutoPauseBySource = (disabled: boolean, source: string) =
   setDisabledAutoPause(currentDisabled)
 }
 
+
+export const playAtTime = (time: number) => {
+  // 将歌词定位到指定时间（毫秒），用于拖动进度条时的实时同步
+  lrc.play(time)
+  sendDesktopLyricInfo({ action: 'set_play', data: time })
+}
 
 export const play = () => {
   // if (!musicInfo.lrc) return

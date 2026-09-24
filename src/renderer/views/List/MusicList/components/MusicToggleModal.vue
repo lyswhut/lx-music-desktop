@@ -7,8 +7,14 @@
           <div v-for="item in list" :key="item.id" :class="$style.listItem">
             <!-- <div :class="$style.num">{{ index + 1 }}</div> -->
             <div :class="$style.textContent">
-              <h3 :class="$style.text" :aria-label="`${item.name} - ${item.singer}`">{{ item.name }}</h3>
-              <h3 v-if="item.meta.albumName" :class="[$style.text, $style.albumName]" :aria-label="item.meta.albumName">
+              <h3 :class="$style.text" :aria-label="`${item.name} - ${item.singer}`">
+                {{ item.name }}
+              </h3>
+              <h3
+                v-if="item.meta.albumName"
+                :class="[$style.text, $style.albumName]"
+                :aria-label="item.meta.albumName"
+              >
                 {{ item.singer }}
                 <span v-if="item.meta.albumName"> / {{ item.meta.albumName }}</span>
               </h3>
@@ -19,7 +25,15 @@
                 <svg-icon name="share" />
               </button>
               <button type="button" :class="$style.btn" @click="handlePlay(item)">
-                <svg v-once version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="50%" viewBox="0 0 287.386 287.386" space="preserve">
+                <svg
+                  v-once
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xlink="http://www.w3.org/1999/xlink"
+                  height="50%"
+                  viewBox="0 0 287.386 287.386"
+                  space="preserve"
+                >
                   <use xlink:href="#icon-testPlay" />
                 </svg>
               </button>
@@ -43,7 +57,7 @@
             </div>
           </h2>
           <template v-if="toggleMusicInfo">
-            <span style="flex: none;">→</span>
+            <span style="flex: none">→</span>
             <h2>
               <div :class="$style.nameLabel">
                 <span :class="$style.name">{{ toggleMusicInfo.name }}</span>
@@ -51,12 +65,17 @@
               </div>
               <div :class="$style.singer">
                 {{ toggleMusicInfo.singer }}
-                <span v-if="toggleMusicInfo.meta.albumName"> / {{ toggleMusicInfo.meta.albumName }}</span>
+                <span v-if="toggleMusicInfo.meta.albumName">
+                  / {{ toggleMusicInfo.meta.albumName }}</span>
               </div>
             </h2>
           </template>
         </div>
-        <base-btn :disabled="!toggleMusicInfo || musicInfo.id == toggleMusicInfo.id" :class="$style.btn" @click="handleConfirm">{{ $t('music_toggle_confirm') }}</base-btn>
+        <base-btn
+          :disabled="!toggleMusicInfo || musicInfo.id == toggleMusicInfo.id"
+          :class="$style.btn"
+          @click="handleConfirm"
+          >{{ $t('music_toggle_confirm') }}</base-btn>
       </div>
     </main>
   </material-modal>
@@ -103,7 +122,11 @@ export default {
       return this.lists[this.source] ?? []
     },
     noItemLabel() {
-      return this.loading ? this.$t('list__loading') : this.isError ? this.$t('list__load_failed') : this.$t('no_item')
+      return this.loading
+        ? this.$t('list__loading')
+        : this.isError
+          ? this.$t('list__load_failed')
+          : this.$t('no_item')
     },
   },
   watch: {
@@ -115,31 +138,35 @@ export default {
         this.tabs = []
         this.lists = {}
         this.loading = true
-        const searchKey = this.searchKey = Math.random()
-        void musicSdk.searchMusic({
-          name: musicInfo.name,
-          singer: musicInfo.singer,
-          source: '',
-          albumName: musicInfo.meta.albumName,
-          interval: musicInfo.interval ?? '',
-        }).then((lists) => {
-          if (this.searchKey != searchKey) return
-          const prefix = getSourceI18nPrefix()
-          this.tabs = lists.map(item => {
-            return {
-              id: item.source,
-              label: window.i18n.t(prefix + item.source),
-            }
+        const searchKey = (this.searchKey = Math.random())
+        void musicSdk
+          .searchMusic({
+            name: musicInfo.name,
+            singer: musicInfo.singer,
+            source: '',
+            albumName: musicInfo.meta.albumName,
+            interval: musicInfo.interval ?? '',
           })
-          if (lists.length) this.source = lists[0].source
-          for (const s of lists) this.lists[s.source] = s.list.map(s => markRaw(toNewMusicInfo(s)))
-        }).catch(() => {
-          if (this.searchKey != searchKey) return
-          this.isError = true
-        }).finally(() => {
-          if (this.searchKey != searchKey) return
-          this.loading = false
-        })
+          .then((lists) => {
+            if (this.searchKey != searchKey) return
+            const prefix = getSourceI18nPrefix()
+            this.tabs = lists.map((item) => {
+              return {
+                id: item.source,
+                label: window.i18n.t(prefix + item.source),
+              }
+            })
+            if (lists.length) this.source = lists[0].source
+            for (const s of lists) { this.lists[s.source] = s.list.map((s) => markRaw(toNewMusicInfo(s))) }
+          })
+          .catch(() => {
+            if (this.searchKey != searchKey) return
+            this.isError = true
+          })
+          .finally(() => {
+            if (this.searchKey != searchKey) return
+            this.loading = false
+          })
       }
     },
   },
@@ -165,7 +192,6 @@ export default {
 }
 </script>
 
-
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
@@ -182,6 +208,7 @@ export default {
   // overflow: hidden;
   height: 100%;
 }
+
 .tab {
   flex: none;
 }
@@ -195,11 +222,12 @@ export default {
   transition-property: height;
   margin-top: 10px;
   padding: 0 7px;
+
   // position: relative;
   .listItem {
     position: relative;
     padding: 10px 5px;
-    transition: background-color .2s ease;
+    transition: background-color 0.2s ease;
     line-height: 1.4;
     // height: 100%;
     // overflow: hidden;
@@ -211,6 +239,7 @@ export default {
     &:hover {
       background-color: var(--color-primary-background-hover);
     }
+
     // &:last-child {
     //   border-bottom-left-radius: 4px;
     //   border-bottom-right-radius: 4px;
@@ -224,6 +253,7 @@ export default {
     text-align: center;
     color: var(--color-font-label);
   }
+
   .textContent {
     flex: auto;
     min-width: 0;
@@ -232,15 +262,18 @@ export default {
     align-items: flex-start;
     overflow: hidden;
   }
+
   .text {
     max-width: 100%;
     .mixin-ellipsis-1();
   }
+
   .albumName {
     font-size: 12px;
     opacity: 0.6;
     // .mixin-ellipsis-1();
   }
+
   .label {
     flex: none;
     font-size: 12px;
@@ -251,6 +284,7 @@ export default {
     // transform: rotate(45deg);
     // background-color:
   }
+
   .btns {
     flex: none;
     font-size: 12px;
@@ -258,6 +292,7 @@ export default {
     display: flex;
     align-items: center;
   }
+
   .btn {
     background-color: transparent;
     border: none;
@@ -269,6 +304,7 @@ export default {
     outline: none;
     transition: background-color 0.2s ease;
     line-height: 0;
+
     &:last-child {
       margin-right: 0;
     }
@@ -281,6 +317,7 @@ export default {
     &:hover {
       background-color: var(--color-primary-background-hover);
     }
+
     &:active {
       background-color: var(--color-primary-font-active);
     }
@@ -308,6 +345,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px 7px;
+
   .info {
     min-width: 0;
     display: flex;
@@ -323,13 +361,16 @@ export default {
       line-height: 1.5;
       word-break: break-all;
     }
+
     .nameLabel {
       display: flex;
       flex-flow: row nowrap;
     }
+
     .name {
       .mixin-ellipsis();
     }
+
     .label {
       flex: none;
       font-size: 12px;
@@ -341,6 +382,7 @@ export default {
       // transform: rotate(45deg);
       // background-color:
     }
+
     .singer {
       // font-size: 0.9em;
       color: var(--color-font-label);
@@ -359,11 +401,9 @@ export default {
     min-width: 70px;
     // .mixin-ellipsis-1();
 
-    +.btn {
+    + .btn {
       margin-left: 10px;
     }
   }
 }
-
-
 </style>

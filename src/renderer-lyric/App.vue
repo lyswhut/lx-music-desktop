@@ -1,26 +1,70 @@
 <template>
-  <div id="container" :class="[{ lock: setting['desktopLyric.isLock'] }, { hide: isHide || isHoverHide }]">
+  <div
+    id="container"
+    :class="[
+      { lock: setting['desktopLyric.isLock'] },
+      { hide: isHide || isHoverHide },
+    ]"
+  >
     <div id="main">
-      <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
+      <transition
+        enter-active-class="animated-fast fadeIn"
+        leave-active-class="animated-fast fadeOut"
+      >
         <div v-show="!setting['desktopLyric.isLock']" class="control-bar">
           <layout-control-bar />
         </div>
       </transition>
       <layout-lyric-vertical v-if="setting['desktopLyric.direction'] == 'vertical'" />
       <layout-lyric-horizontal v-else />
-      <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut">
+      <transition
+        enter-active-class="animated-fast fadeIn"
+        leave-active-class="animated-fast fadeOut"
+      >
         <common-audio-visualizer v-if="setting['desktopLyric.audioVisualization']" />
       </transition>
     </div>
     <template v-if="isShowResize">
-      <div class="resize resize-left" @mousedown.self="handleMouseDown('left', $event)" @touchstart.self="handleTouchDown('left', $event)" />
-      <div class="resize resize-top" @mousedown.self="handleMouseDown('top', $event)" @touchstart.self="handleTouchDown('top', $event)" />
-      <div class="resize resize-right" @mousedown.self="handleMouseDown('right', $event)" @touchstart.self="handleTouchDown('right', $event)" />
-      <div class="resize resize-bottom" @mousedown.self="handleMouseDown('bottom', $event)" @touchstart.self="handleTouchDown('bottom', $event)" />
-      <div class="resize resize-top-left" @mousedown.self="handleMouseDown('top-left', $event)" @touchstart.self="handleTouchDown('top-left', $event)" />
-      <div class="resize resize-top-right" @mousedown.self="handleMouseDown('top-right', $event)" @touchstart.self="handleTouchDown('top-right', $event)" />
-      <div class="resize resize-bottom-left" @mousedown.self="handleMouseDown('bottom-left', $event)" @touchstart.self="handleTouchDown('bottom-left', $event)" />
-      <div class="resize resize-bottom-right" @mousedown.self="handleMouseDown('bottom-right', $event)" @touchstart.self="handleTouchDown('bottom-right', $event)" />
+      <div
+        class="resize resize-left"
+        @mousedown.self="handleMouseDown('left', $event)"
+        @touchstart.self="handleTouchDown('left', $event)"
+      />
+      <div
+        class="resize resize-top"
+        @mousedown.self="handleMouseDown('top', $event)"
+        @touchstart.self="handleTouchDown('top', $event)"
+      />
+      <div
+        class="resize resize-right"
+        @mousedown.self="handleMouseDown('right', $event)"
+        @touchstart.self="handleTouchDown('right', $event)"
+      />
+      <div
+        class="resize resize-bottom"
+        @mousedown.self="handleMouseDown('bottom', $event)"
+        @touchstart.self="handleTouchDown('bottom', $event)"
+      />
+      <div
+        class="resize resize-top-left"
+        @mousedown.self="handleMouseDown('top-left', $event)"
+        @touchstart.self="handleTouchDown('top-left', $event)"
+      />
+      <div
+        class="resize resize-top-right"
+        @mousedown.self="handleMouseDown('top-right', $event)"
+        @touchstart.self="handleTouchDown('top-right', $event)"
+      />
+      <div
+        class="resize resize-bottom-left"
+        @mousedown.self="handleMouseDown('bottom-left', $event)"
+        @touchstart.self="handleTouchDown('bottom-left', $event)"
+      />
+      <div
+        class="resize resize-bottom-right"
+        @mousedown.self="handleMouseDown('bottom-right', $event)"
+        @touchstart.self="handleTouchDown('bottom-right', $event)"
+      />
     </template>
     <layout-icons />
   </div>
@@ -46,12 +90,10 @@ useLyric()
 useTheme()
 const isHide = usePauseHide()
 
-
 onMounted(() => {
   initLyricPlayer()
   sendConnectMainWindowEvent()
 })
-
 </script>
 
 <style lang="less">
@@ -63,7 +105,7 @@ body {
   height: 100vh;
   box-sizing: border-box;
   color: #fff;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 body {
@@ -78,7 +120,7 @@ body {
 #container {
   box-sizing: border-box;
   height: 100%;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   opacity: 1;
   &.lock {
     #main {
@@ -86,8 +128,7 @@ body {
     }
   }
   &.hide {
-    opacity: .05;
-
+    opacity: 0.05;
     &:not(.lock):hover {
       opacity: 1;
     }
@@ -176,7 +217,7 @@ body {
   min-height: 0;
   border-radius: @radius-border;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, .2);
+  background-color: rgba(0, 0, 0, 0.2);
 
   &:hover {
     .control-bar {

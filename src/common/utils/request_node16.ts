@@ -183,7 +183,10 @@ const buildRequestDispatcher = (options: Options) => {
   return buildDispatcher()
 }
 
-export const request = async <T = unknown>(url: string, options: Options = {}): Promise<Response<T>> => {
+export const request = async <T = unknown>(
+  url: string,
+  options: Options = {},
+): Promise<Response<T>> => {
   const method = (options.method?.toUpperCase() ?? 'GET') as Dispatcher.RequestOptions['method']
   const timeout = options.timeout ?? defaultOptions.timeout
   const [headers, body] = buildRequestBody(options)
@@ -206,6 +209,7 @@ export const request = async <T = unknown>(url: string, options: Options = {}): 
     body,
     signal: options.signal,
     dispatcher: buildRequestDispatcher(options),
+    // @ts-expect-error
     maxRedirections: options.maxRedirect ?? defaultOptions.maxRedirect,
   }).then(async(response) => {
     if (options.needBody) {

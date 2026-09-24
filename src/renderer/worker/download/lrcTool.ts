@@ -78,7 +78,12 @@ const buildAwlyric = (lrcData: LX.Music.LyricInfo) => {
   return lrc.length ? `[awlrc:${lrc.join(',')}]` : ''
 }
 
-export const buildLyrics = (lrcData: LX.Music.LyricInfo, downloadAwlrc: boolean, downloadTlrc: boolean, downloadRlrc: boolean) => {
+export const buildLyrics = (
+  lrcData: LX.Music.LyricInfo,
+  downloadAwlrc: boolean,
+  downloadTlrc: boolean,
+  downloadRlrc: boolean,
+) => {
   if (!lrcData.tlyric && !lrcData.rlyric && !lrcData.lxlyric) return lrcData.lyric
 
   const lrcTimeLabels = parseLrcTimeLabel(lrcData.lyric)

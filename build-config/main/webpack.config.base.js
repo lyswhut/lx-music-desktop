@@ -1,5 +1,4 @@
 const path = require('path')
-const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports = {
   target: 'electron-main',
@@ -40,6 +39,5 @@ module.exports = {
     ],
   },
   plugins: [
-    new ESLintPlugin(),
   ],
 }

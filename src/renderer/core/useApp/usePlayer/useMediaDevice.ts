@@ -46,7 +46,7 @@ export default () => {
       saveMediaDeviceId(deviceId)
     }).catch((err: any) => {
       console.log(err)
-      setMediaDeviceId('default').finally(() => {
+      void setMediaDeviceId('default').finally(() => {
         prevDeviceId = 'default'
         saveMediaDeviceId('default')
       })

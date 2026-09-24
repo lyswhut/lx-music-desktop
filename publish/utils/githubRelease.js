@@ -10,14 +10,10 @@ const assetsDir = '../assets'
 
 const getBuildFiles = () => {
   const files = []
-  const pathRegExp = [
-    /latest\.yml$/,
-    /\.exe$/,
-    /\.blockmap$/,
-  ]
+  const pathRegExp = [/latest\.yml$/, /\.exe$/, /\.blockmap$/]
   const names = fs.readdirSync(jp(assetsDir), 'utf8')
-  names.forEach(name => {
-    pathRegExp.forEach(regexp => {
+  names.forEach((name) => {
+    pathRegExp.forEach((regexp) => {
       if (regexp.test(name)) files.push(jp(assetsDir, name))
     })
   })
@@ -41,16 +37,15 @@ const options = {
   assets: getBuildFiles(),
 }
 
+module.exports = ({ isDraft = false, isPrerelease = false, target_commitish = 'master' }) =>
+  new Promise((resolve, reject) => {
+    options.target_commitish = target_commitish
+    options.draft = isDraft
+    options.prerelease = isPrerelease
 
-module.exports = ({ isDraft = false, isPrerelease = false, target_commitish = 'master' }) => new Promise((resolve, reject) => {
-  options.target_commitish = target_commitish
-  options.draft = isDraft
-  options.prerelease = isPrerelease
-
-  ghRelease(options, function(err, result) {
-    if (err) return reject(err)
-    resolve(result)
-    console.log(result) // create release response: https://developer.github.com/v3/repos/releases/#response-4
+    ghRelease(options, function (err, result) {
+      if (err) return reject(err)
+      resolve(result)
+      console.log(result) // create release response: https://developer.github.com/v3/repos/releases/#response-4
+    })
   })
-})
-

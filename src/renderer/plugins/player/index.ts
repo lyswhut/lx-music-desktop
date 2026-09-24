@@ -1,8 +1,13 @@
 interface HTMLAudioElementChrome extends HTMLAudioElement {
   setSinkId: (id: string) => Promise<void>
 }
+
+interface AudioContextChrome extends AudioContext {
+  setSinkId: (id: string) => Promise<void>
+}
+
 let audio: HTMLAudioElementChrome | null = null
-let audioContext: AudioContext
+let audioContext: AudioContextChrome
 let mediaSource: MediaElementAudioSourceNode
 let analyser: AnalyserNode
 // https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext
@@ -121,7 +126,7 @@ const initGain = () => {
 const initAdvancedAudioFeatures = () => {
   if (audioContext) return
   if (!audio) throw new Error('audio not defined')
-  audioContext = new window.AudioContext({ latencyHint: 'playback' })
+  audioContext = new window.AudioContext({ latencyHint: 'playback' }) as AudioContextChrome
   defaultChannelCount = audioContext.destination.channelCount
 
   initAnalyser()
@@ -451,7 +456,10 @@ export const setCurrentTime = (time: number) => {
 
 export const setMediaDeviceId = async(mediaDeviceId: string): Promise<void> => {
   if (!audio) return
-  return audio.setSinkId(mediaDeviceId)
+  const promises: Array<Promise<void>> = [audio.setSinkId(mediaDeviceId)]
+  // 开启音效后声音走 AudioContext，需要同时设置其输出设备（Chromium 110+）
+  if (audioContext) promises.push(audioContext.setSinkId(mediaDeviceId))
+  await Promise.all(promises)
 }
 
 export const setVolume = (volume: number) => {

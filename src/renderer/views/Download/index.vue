@@ -62,8 +62,17 @@
       <base-menu v-model="isShowItemMenu" :menus="menus" :xy="menuLocation" item-name="name" @menu-click="handleMenuClick" />
       <!-- <base-menu :menus="listItemMenu" :location="listMenu.menuLocation" item-name="name" :is-show="listMenu.isShowItemMenu" @menu-click="handleListItemMenuClick" /> -->
     </div>
-    <common-list-add-modal v-model:show="isShowListAdd" :music-info="selectedAddMusicInfo" teleport="#view" />
-    <common-list-add-multiple-modal v-model:show="isShowListAddMultiple" :music-list="selectedList" teleport="#view" @confirm="removeAllSelect" />
+    <common-list-add-modal
+      v-model:show="isShowListAdd"
+      :music-info="selectedAddMusicInfo"
+      teleport="#view"
+    />
+    <common-list-add-multiple-modal
+      v-model:show="isShowListAddMultiple"
+      :music-list="selectedList"
+      teleport="#view"
+      @confirm="removeAllSelect"
+    />
   </div>
 </template>
 
@@ -117,20 +126,10 @@ export default {
       handleOpenFile,
     } = useTaskActions({ list, removeAllSelect, selectedList })
 
-    const {
-      isShowListAdd,
-      isShowListAddMultiple,
-      selectedAddMusicInfo,
-      handleShowMusicAddModal,
-    } = useMusicAdd({ selectedList, list })
+    const { isShowListAdd, isShowListAddMultiple, selectedAddMusicInfo, handleShowMusicAddModal } =
+      useMusicAdd({ selectedList, list })
 
-    const {
-      menus,
-      menuLocation,
-      isShowItemMenu,
-      showMenu,
-      menuClick,
-    } = useMenu({
+    const { menus, menuLocation, isShowItemMenu, showMenu, menuClick } = useMenu({
       handleStartTask,
       handlePauseTask,
       handleRemoveTask,
@@ -207,7 +206,7 @@ export default {
       return formatMusicName(appSetting['download.fileName'], downloadInfo.metadata.musicInfo.name, downloadInfo.metadata.musicInfo.singer)
     }
     const getTypeName = (quality) => {
-      return quality == 'flac24bit' ? 'FLAC Hires' : quality?.toUpperCase()
+      return quality == 'hires' ? 'FLAC Hires' : quality?.toUpperCase()
     }
     return {
       listRef,
