@@ -376,6 +376,16 @@ declare global {
       'desktopLyric.y': number | null
 
       /**
+       * 迷你播放窗x坐标
+       */
+      'miniPlayer.x': number | null
+
+      /**
+       * 迷你播放窗y坐标
+       */
+      'miniPlayer.y': number | null
+
+      /**
        * 是否允许桌面歌词窗口拖出主屏幕之外
        */
       'desktopLyric.isLockScreen': boolean

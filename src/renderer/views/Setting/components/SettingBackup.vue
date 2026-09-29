@@ -2,7 +2,7 @@
 dt#backup {{ $t('setting__backup') }}
 dd
   h3#backup_part {{ $t('setting__backup_part') }}
-  div
+  div(:class="$style.partBtns")
     base-btn.btn.gap-left(min @click="handleImportPlayList") {{ $t('setting__backup_part_import_list') }}
     base-btn.btn.gap-left(min @click="handleExportPlayList") {{ $t('setting__backup_part_export_list') }}
     base-btn.btn.gap-left(min @click="handleImportSetting") {{ $t('setting__backup_part_import_setting') }}
@@ -387,5 +387,21 @@ export default {
 <style lang="less" module>
 .savePath {
   font-size: 12px;
+}
+
+// 「部分数据」卡片内的按钮：缩小间距与尺寸，使四个按钮在一行显示
+.partBtns {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+
+  :global(.gap-left) + :global(.gap-left) {
+    margin-left: 8px;
+  }
+
+  button {
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+  }
 }
 </style>

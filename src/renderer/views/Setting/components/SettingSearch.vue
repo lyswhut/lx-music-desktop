@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#search {{ $t('setting__search') }}
 dd
+  h3 {{ $t('setting__search') }}
   .gap-top
     base-checkbox(id="setting_search_showHot_enable" :model-value="appSetting['search.isShowHotSearch']" :label="$t('setting__search_hot')" @update:model-value="updateSetting({'search.isShowHotSearch': $event})")
   .gap-top

@@ -97,6 +97,9 @@ export const createWindow = () => {
       enableWebSQL: false,
       webgl: false,
       spellcheck: false, // 禁用拼写检查器
+      // 窗口隐藏（如打开迷你播放窗）时仍保持计时器与 rAF 正常运行，
+      // 否则歌词行推进依赖的 requestAnimationFrame 会被暂停，导致迷你窗歌词不同步
+      backgroundThrottling: false,
     },
   }
   if (global.envParams.cmdParams.dt) options.backgroundColor = theme.colors['--color-primary-light-1000']
@@ -204,6 +207,11 @@ export const showWindow = () => {
 export const hideWindow = () => {
   if (!browserWindow) return
   browserWindow.hide()
+}
+// 主窗口当前是否可见（不存在时返回 false）
+export const isWindowVisible = () => {
+  if (!browserWindow) return false
+  return browserWindow.isVisible()
 }
 export const setWindowBounds = (options: Partial<Electron.Rectangle>) => {
   if (!browserWindow) return

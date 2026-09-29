@@ -1,5 +1,16 @@
 <template>
   <div :class="$style.container">
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" width="34" height="34" space="preserve">
+          <use xlink:href="#icon-album" />
+        </svg>
+      </div>
+      <div :class="$style.pageInfo">
+        <h1 :class="$style.pageTitle">歌单</h1>
+        <p :class="$style.pageDesc">查看各大音乐平台的歌单</p>
+      </div>
+    </div>
     <div :class="$style.songListHeader">
       <div :class="$style.songListHeaderLeft" :style="{ backgroundImage: 'url('+(picUrl || listDetailInfo.info.img)+')' }">
         <!-- <span v-if="listDetailInfo.info.play_count" :class="$style.playNum">{{ listDetailInfo.info.play_count }}</span> -->
@@ -38,6 +49,7 @@
         @toggle-page="togglePage"
       />
     </div>
+    <common-back-to-top />
   </div>
 </template>
 
@@ -171,11 +183,48 @@ export default {
   flex-flow: column nowrap;
 }
 
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 30px 15px 14px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  color: var(--color-primary);
+  margin-right: 16px;
+}
+.pageInfo {
+  display: flex;
+  flex-flow: column nowrap;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: var(--color-font);
+  line-height: 1.3;
+}
+.pageDesc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--color-font-label);
+}
+
 .songListHeader {
   flex: none;
   display: flex;
   flex-flow: row nowrap;
   height: 80px;
+  margin-bottom: 15px;
 }
 .songListHeaderLeft {
   flex: none;

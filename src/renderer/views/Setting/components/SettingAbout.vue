@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#about {{ $t('setting__about') }}
 dd
+  h3 {{ $t('setting__about') }}
   .p.small
     | 本软件完全免费，代码已开源。开源地址：
     span.hover.underline(:aria-label="$t('setting__click_open')" @click="openUrl('https://github.com/lyswhut/lx-music-desktop#readme')") https://github.com/lyswhut/lx-music-desktop

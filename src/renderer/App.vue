@@ -125,12 +125,14 @@ body {
   position: relative;
   display: flex;
   height: 100%;
-  background-color: var(--color-app-background);
+  background-color: var(--color-primary-light-700);
 }
 
 #left {
   flex: none;
   width: @width-app-left;
+  position: relative;
+  z-index: 2;
 }
 #right {
   flex: auto;
@@ -139,10 +141,12 @@ body {
   transition: background-color @transition-normal;
   background-color: var(--color-main-background);
 
-  border-top-left-radius: @radius-border;
-  border-bottom-left-radius: @radius-border;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   overflow: hidden;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
 }
 #toolbar, #player {
   flex: none;

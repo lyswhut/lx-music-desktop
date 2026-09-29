@@ -18,7 +18,7 @@ const defaultSetting: LX.AppSetting = {
   'common.randomAnimate': true,
   'common.isAgreePact': false,
   'common.controlBtnPosition': isMac ? 'left' : 'right',
-  'common.playBarProgressStyle': 'mini',
+  'common.playBarProgressStyle': 'middle',
   'common.transparentWindow': !isMac,
   'common.tryAutoUpdate': true,
   'common.showChangeLog': true,
@@ -73,7 +73,7 @@ const defaultSetting: LX.AppSetting = {
 
   'desktopLyric.enable': false,
   'desktopLyric.isLock': false,
-  'desktopLyric.isAlwaysOnTop': false,
+  'desktopLyric.isAlwaysOnTop': true,
   'desktopLyric.isAlwaysOnTopLoop': false,
   'desktopLyric.isShowTaskbar': false,
   'desktopLyric.audioVisualization': false,
@@ -83,6 +83,8 @@ const defaultSetting: LX.AppSetting = {
   'desktopLyric.height': 300,
   'desktopLyric.x': null,
   'desktopLyric.y': null,
+  'miniPlayer.x': null,
+  'miniPlayer.y': null,
   'desktopLyric.isLockScreen': isWin,
   'desktopLyric.isDelayScroll': true,
   'desktopLyric.scrollAlign': 'center',
@@ -109,7 +111,7 @@ const defaultSetting: LX.AppSetting = {
   'list.addMusicLocationType': 'top',
   'list.actionButtonsVisible': false,
 
-  'download.enable': false,
+  'download.enable': true,
   'download.isSavePathGroupByListName': false,
   'download.savePath': path.join(os.homedir(), 'Desktop'),
   'download.fileName': '歌名 - 歌手',
@@ -127,9 +129,9 @@ const defaultSetting: LX.AppSetting = {
   'download.isEmbedLyricR': false,
   'download.isUseOtherSource': false,
 
-  'search.isShowHotSearch': false,
-  'search.isShowHistorySearch': false,
-  'search.isFocusSearchBox': false,
+  'search.isShowHotSearch': true,
+  'search.isShowHistorySearch': true,
+  'search.isFocusSearchBox': true,
 
   'network.proxy.enable': false,
   'network.proxy.host': '',

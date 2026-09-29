@@ -2,8 +2,16 @@
   <material-modal :show="props.modelValue" teleport="#view" width="60%" @close="emit('update:model-value', $event)" @after-enter="$refs.input.focus()">
     <main class="scroll" :class="$style.main">
       <h2>{{ $t('songlist__import_input_title') }}</h2>
+      <div :class="$style.sourceList">
+        <button
+          v-for="item in props.sourceList"
+          :key="item.id"
+          type="button"
+          :class="[$style.sourceItem, {[$style.sourceActive]: source == item.id}]"
+          @click="source = item.id"
+        >{{ item.name }}</button>
+      </div>
       <div :class="$style.inputContent">
-        <base-selection v-model="source" :class="$style.select" :list="props.sourceList" item-key="id" item-name="name" />
         <base-input
           ref="input"
           v-model.trim="text"
@@ -11,6 +19,7 @@
           :placeholder="$t('songlist__import_input_tip')"
           @submit="handleSubmit"
         />
+        <base-btn :class="$style.btn" @click="handleSubmit">{{ $t('songlist__import_input_btn_confirm') }}</base-btn>
       </div>
       <div :class="$style.footer">
         <div :class="$style.tips">
@@ -28,7 +37,6 @@
             </li>
           </ul>
         </div>
-        <base-btn :class="$style.btn" @click="handleSubmit">{{ $t('songlist__import_input_btn_confirm') }}</base-btn>
       </div>
     </main>
   </material-modal>
@@ -58,7 +66,13 @@ const source = ref('')
 
 watch(() => props.modelValue, (visible) => {
   if (!visible) return
-  source.value = openSongListInputInfo.source || route.query.source
+  if (openSongListInputInfo.source) {
+    source.value = openSongListInputInfo.source
+  } else if (route.query.source) {
+    source.value = route.query.source
+  } else {
+    source.value = props.sourceList[0]?.id ?? ''
+  }
   // text.value = openSongListInputInfo.text
 })
 
@@ -99,46 +113,42 @@ const handleSubmit = () => {
     padding: 15px 0 8px;
   }
 }
+.sourceList {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 4px;
+  padding-bottom: 10px;
+}
+.sourceItem {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-font-label);
+  transition: color .2s ease, background-color .2s ease;
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+.sourceActive {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light-300-alpha-700);
+}
 .inputContent {
   display: flex;
   flex-flow: row nowrap;
-}
-.select {
-  width: auto;
-  :global {
-    .label-content {
-      height: 100%;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    .selection-list {
-      li {
-        // background-color: var(--color-main-background);
-        text-align: center;
-        line-height: 32px;
-        font-size: 13px;
-        &:hover {
-          background-color: var(--color-button-background-hover);
-        }
-        &:active {
-          background-color: var(--color-button-background-active);
-        }
-      }
-    }
-  }
+  align-items: center;
 }
 .input {
   flex: auto;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  // width: 100%;
-  // height: 26px;
   padding: 8px 8px;
   color: var(--color-font);
 }
 .footer {
-  margin: 50px 0 15px;
+  margin: 15px 0;
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-end;
@@ -149,6 +159,9 @@ const handleSubmit = () => {
   font-size: 12px;
   color: var(--color-font);
   line-height: 1.5;
+  background-color: var(--color-primary-light-300-alpha-700);
+  border-radius: 6px;
+  padding: 10px 15px;
   ul {
     list-style: decimal;
     padding-left: 15px;
@@ -156,14 +169,9 @@ const handleSubmit = () => {
 }
 
 .btn {
-  // box-sizing: border-box;
-  // margin-left: 15px;
-  // margin-bottom: 15px;
-  // height: 36px;
-  // line-height: 36px;
-  // padding: 0 10px !important;
-  min-width: 80px;
-  // .mixin-ellipsis-1();
+  margin-left: 10px;
+  flex: none;
+  min-width: 72px;
 }
 
 

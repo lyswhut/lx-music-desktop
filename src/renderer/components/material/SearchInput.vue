@@ -86,7 +86,7 @@ export default {
   data() {
     return {
       isShow: false,
-      text: '',
+      text: this.modelValue,
       selectIndex: -1,
       focus: false,
       listStyle: {
@@ -203,8 +203,8 @@ export default {
 
 .container {
   position: relative;
-  width: 35%;
-  height: @height-toolbar * 0.52;
+  width: 100%;
+  height: 36px;
   -webkit-app-region: no-drag;
 }
 
@@ -310,13 +310,18 @@ export default {
 
 .big {
   width: 100%;
-  // input {
-  //   line-height: 30px;
-  // }
+  height: 36px;
   .form {
-    height: 30px;
+    height: 36px;
+    input {
+      font-size: 15px;
+      line-height: 36px;
+    }
     button {
-      padding: 6px 10px;
+      padding: 4px 16px;
+      svg {
+        width: 18px;
+      }
     }
   }
 }

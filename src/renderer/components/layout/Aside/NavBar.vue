@@ -1,11 +1,28 @@
 <template>
-  <div ref="dom_menu" :class="$style.menu">
+  <div ref="dom_menu" :class="[$style.menu, {[$style.collapsed]: collapsed}]">
+    <!-- 第一组：搜索、歌单、排行 -->
     <ul :class="$style.list" role="toolbar">
-      <li v-for="item in menus" :key="item.to" :class="$style.navItem" role="presentation">
-        <router-link :class="[$style.link, {[$style.active]: $route.meta.name == item.name}]" role="tab" :aria-selected="$route.meta.name == item.name" :to="item.to" :aria-label="item.tips">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" :height="item.size" :width="item.size" space="preserve">
+      <li v-for="item in group1Menus" :key="item.to" :class="$style.navItem" role="presentation">
+        <router-link :class="[$style.link, {[$style.active]: $route.meta.name == item.name}]" role="tab" :aria-selected="$route.meta.name == item.name" :to="item.to" :aria-label="item.tips" :title="collapsed ? item.tips : undefined">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" :height="item.size" :width="item.size" space="preserve" :class="$style.icon">
             <use :xlink:href="item.icon" />
           </svg>
+          <span :class="$style.label">{{ item.tips }}</span>
+        </router-link>
+      </li>
+    </ul>
+
+    <!-- 分隔线 -->
+    <div :class="$style.divider"></div>
+
+    <!-- 第二组：下载、歌曲列表、设置 -->
+    <ul :class="$style.list" role="toolbar">
+      <li v-for="item in group2Menus" :key="item.to" :class="$style.navItem" role="presentation">
+        <router-link :class="[$style.link, {[$style.active]: $route.meta.name == item.name}]" role="tab" :aria-selected="$route.meta.name == item.name" :to="item.to" :aria-label="item.tips" :title="collapsed ? item.tips : undefined">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" :viewBox="item.iconSize" :height="item.size" :width="item.size" space="preserve" :class="$style.icon">
+            <use :xlink:href="item.icon" />
+          </svg>
+          <span :class="$style.label">{{ item.tips }}</span>
         </router-link>
       </li>
     </ul>
@@ -16,17 +33,18 @@
 import { appSetting } from '@renderer/store/setting'
 import { useI18n } from '@root/lang'
 import { ref, computed } from '@common/utils/vueTools'
-import { useIconSize } from '@renderer/utils/compositions/useIconSize'
 
 export default {
   name: 'NavBar',
+  props: {
+    collapsed: Boolean,
+  },
   setup() {
     const t = useI18n()
     const dom_menu = ref<HTMLElement>()
-    const iconSize = useIconSize(dom_menu, 0.32)
 
-    const menus = computed(() => {
-      const size = iconSize.value
+    const allMenus = computed(() => {
+      const size = 18
       return [
         {
           to: '/search',
@@ -73,20 +91,24 @@ export default {
           enable: appSetting['download.enable'],
           name: 'Download',
         },
-        {
-          to: '/setting',
-          tips: t('setting'),
-          icon: '#icon-setting',
-          iconSize: '0 0 493.23 436.47',
-          size,
-          enable: true,
-          name: 'Setting',
-        },
       ].filter(m => m.enable)
     })
+
+    // 第一组：搜索、歌单、排行
+    const group1Menus = computed(() => {
+      return allMenus.value.filter(m => ['Search', 'SongList', 'Leaderboard'].includes(m.name))
+    })
+
+    // 第二组：下载、歌曲列表
+    const group2Menus = computed(() => {
+      return allMenus.value.filter(m => ['Download', 'List'].includes(m.name))
+    })
+
     return {
       appSetting,
-      menus,
+      allMenus,
+      group1Menus,
+      group2Menus,
       dom_menu,
     }
   },
@@ -98,115 +120,88 @@ export default {
 
 .menu {
   flex: auto;
-  // &.controlBtnLeft {
-  //   display: flex;
-  //   flex-flow: column nowrap;
-  //   justify-content: center;
-  //   padding-bottom: @control-btn-height;
-  // }
-  // padding: 5px;
-}
-.list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 16px;
+  overflow-y: auto;
   -webkit-app-region: no-drag;
-  // margin-bottom: 15px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-  // background-color: pink;
-  // dt {
-  //   padding-left: 5px;
-  //   font-size: 11px;
-  //   transition: @transition-normal;
-  //   transition-property: color;
-  //   color: @color-theme-font-label;
-  //   .mixin-ellipsis-1();
-  // }
 }
-.navItem {
-  position: relative;
-  &:before {
-    content: '';
-    display: block;
-    width: 100%;
-    padding-bottom: 84%;
-  }
-}
-.link {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
-  // left: 15%;
-  // top: 15%;
-  // width: 70%;
-  // height: 70%;
-  // display: block;
-  box-sizing: border-box;
-  // text-decoration: none;
-  // border-radius: 20%;
 
-  // padding: 18px 3px;
-  // margin: 5px 0;
-  // border-left: 5px solid transparent;
-  transition: @transition-fast;
-  transition-property: background-color, opacity;
-  color: var(--color-nav-font);
-  cursor: pointer;
-  // font-size: 11.5px;
-  text-align: center;
-  outline: none;
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.divider {
+  height: 1px;
+  margin: 8px 8px;
+  background-color: var(--color-primary-dark-200-alpha-200);
+}
+
+.navItem {
+  margin-bottom: 4px;
+}
+
+.link {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  // 左右留出间距，缩小选中/悬停背景的宽度
+  margin: 0 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color @transition-fast;
+  text-decoration: none;
+  color: var(--color-primary-dark-300);
 
-  // border-radius: @radius-border;
-  .mixin-ellipsis-1();
-  &:before {
-    .mixin-after();
-    left: 0;
-    top: 0;
-    width: 3px;
-    height: 100%;
-    background-color: var(--color-primary-dark-200-alpha-700);
-    border-radius: 4px;
-    transform: translateX(-100%);
-    transition: transform @transition-fast;
+  &:hover {
+    background-color: transparent;
   }
 
   &.active {
-    // border-left-color: @color-theme-active;
-    background-color: var(--color-primary-light-300-alpha-700);
-
-    &:before {
-      transform: translateX(0);
-    }
-
-    &:hover {
-      background-color: var(--color-primary-light-300-alpha-800);
-    }
-  }
-
-
-  &:hover {
-    color: var(--color-nav-font);
-
-    &:not(.active) {
-      opacity: .8;
-      background-color: var(--color-primary-light-400-alpha-700);
-    }
-  }
-  &:active:not(.active) {
-    opacity: .6;
-    background-color: var(--color-primary-light-300-alpha-600);
+    background-color: var(--color-primary-light-400);
+    color: var(--color-primary-dark-300);
   }
 }
 
-// .icon {
-//   // margin-bottom: 5px;
-//   &> svg {
-//     width: 32%;
-//   }
-// }
+.icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+
+  svg {
+    fill: currentColor;
+  }
+}
+
+.label {
+  flex: auto;
+  font-size: 16px;
+  line-height: 1.3;
+  .mixin-ellipsis-1();
+}
+
+.collapsed {
+  padding: 8px 0 16px;
+
+  .link {
+    justify-content: center;
+    gap: 0;
+    padding: 10px 0;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .divider {
+    display: none;
+  }
+}
 
 </style>
