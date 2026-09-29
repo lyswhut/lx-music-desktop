@@ -112,7 +112,7 @@ jobs:
 
       - name: Prepare win7 electron env
         run: |
-          npm install electron@22
+          npm install electron@22 better-sqlite3@12
           pip.exe install setuptools
 
       - name: Release win7 package

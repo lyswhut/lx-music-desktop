@@ -384,8 +384,10 @@ export default {
       },
     })
     if (!songInfo.list) {
-      if (songInfo.global_collection_id) return this.getUserListDetail2(songInfo.global_collection_id)
-      else return this.getUserListDetail4(songInfo, chain, page).catch(() => this.getUserListDetail5(chain))
+      if (songInfo.global_collection_id) {
+        return this.getListDetailByGcidChain(songInfo.global_collection_id, chain)
+          .catch(() => this.getUserListDetail2(songInfo.global_collection_id))
+      } else return this.getUserListDetail4(songInfo, chain, page).catch(() => this.getUserListDetail5(chain))
     }
     let list = await this.getMusicInfos(songInfo.list)
     // console.log(info, songInfo)
@@ -489,6 +491,53 @@ export default {
       }).then(data => data.info))
     }
     return Promise.all(tasks).then(([...datas]) => datas.flat())
+  },
+  async getListDetailByGcidChain(id, chain) {
+    const params = 'srcappid=2919&clientver=20000&clienttime=1789566751657&mid=1789566751657&uuid=1789566751657&dfid=-&listid=15&type=0&pagesize=50&global_collection_id=' + id + '&page=1&share_type=collect&appid=1058&chain=' + chain
+    const data = await this.createHttp(`https://m3ws.kugou.com/v2/zlist/list?${params}&signature=${signatureParams(params, 'web')}`, {
+      headers: {
+        mid: '1586163263991',
+        Referer: 'https://m3ws.kugou.com/share/index.php',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+        dfid: '-',
+        clienttime: '1586163263991',
+      },
+    })
+    const info = data.info[0]
+    if (!info) throw new Error('get list error')
+    let tasks = [Promise.resolve(data.list.info)]
+    let page = 1
+    let totalPage = Math.ceil(info.count / 50)
+    while (page < totalPage) {
+      const limit = 50
+      page += 1
+      const params = 'srcappid=2919&clientver=20000&clienttime=1789566751657&mid=1789566751657&uuid=1789566751657&dfid=-&listid=15&type=0&pagesize=' + limit + '&global_collection_id=' + id + '&page=' + page + '&share_type=collect&appid=1058&chain=' + chain
+      tasks.push(this.createHttp(`https://m3ws.kugou.com/v2/zlist/list?${params}&signature=${signatureParams(params, 'web')}`, {
+        headers: {
+          mid: '1586163263991',
+          Referer: 'https://m3ws.kugou.com/share/index.php',
+          'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+          dfid: '-',
+          clienttime: '1586163263991',
+        },
+      }).then(data => data.list.info))
+    }
+    const hashs = await Promise.all(tasks).then(([...datas]) => datas.flat())
+    let list = await this.getMusicInfos(hashs)
+    return {
+      list,
+      page: 1,
+      limit: this.listDetailLimit,
+      total: info.count,
+      source: 'kg',
+      info: {
+        name: info.name,
+        img: info.pic && info.pic.replace('{size}', 240),
+        desc: info.intro,
+        author: info.list_create_username,
+        // play_count: formatPlayCount(info.playcount),
+      },
+    }
   },
   async getUserListDetail2(global_collection_id) {
     let id = global_collection_id
@@ -613,7 +662,10 @@ export default {
   async getUserListDetail(link, page, retryNum = 0) {
     if (retryNum > 3) return Promise.reject(new Error('link try max num'))
     if (link.includes('#')) link = link.replace(/#.*$/, '')
-    if (link.includes('global_collection_id')) return this.getUserListDetail2(link.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
+    if (link.includes('global_collection_id') && link.includes('chain')) {
+      return this.getListDetailByGcidChain(link.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'), link.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'))
+    }
+    if (link.includes('chain=')) return this.getUserListDetail3(link.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
     if (link.includes('gcid_')) {
       let gcid = link.match(/gcid_\w+/)?.[0]
       if (gcid) {
@@ -621,7 +673,6 @@ export default {
         if (global_collection_id) return this.getUserListDetail2(global_collection_id)
       }
     }
-    if (link.includes('chain=')) return this.getUserListDetail3(link.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
     if (link.includes('.html')) {
       if (link.includes('zlist.html')) {
         link = link.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
@@ -632,6 +683,7 @@ export default {
         }
       } else if (!link.includes('song.html')) return this.getUserListDetail3(link.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
     }
+    if (link.includes('global_collection_id')) return this.getUserListDetail2(link.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
 
     const requestObj_listDetailLink = httpFetch(link, {
       headers: {
@@ -643,16 +695,18 @@ export default {
     // console.log(body, location)
     if (statusCode > 400) return this.getUserListDetail(link, page, ++retryNum)
     if (location) {
+      if (location.includes('global_collection_id') && location.includes('chain')) {
+        return this.getListDetailByGcidChain(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'), location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'))
+      }
       // console.log(location)
-      if (location.includes('global_collection_id')) return this.getUserListDetail2(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
+      if (location.includes('chain=')) return this.getUserListDetail3(location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
       if (location.includes('gcid_')) {
-        let gcid = link.match(/gcid_\w+/)?.[0]
+        let gcid = location.match(/gcid_\w+/)?.[0]
         if (gcid) {
           const global_collection_id = await this.decodeGcid(gcid)
           if (global_collection_id) return this.getUserListDetail2(global_collection_id)
         }
       }
-      if (location.includes('chain=')) return this.getUserListDetail3(location.replace(/^.*?chain=(\w+)(?:&.*$|#.*$|$)/, '$1'), page)
       if (location.includes('.html')) {
         if (location.includes('zlist.html')) {
           let link = location.replace(/^(.*)zlist\.html/, 'https://m3ws.kugou.com/zlist/list')
@@ -664,6 +718,7 @@ export default {
           return this.getUserListDetail(link, page, ++retryNum)
         } else return this.getUserListDetail3(location.replace(/.+\/(\w+).html(?:\?.*|&.*$|#.*$|$)/, '$1'), page)
       }
+      if (location.includes('global_collection_id')) return this.getUserListDetail2(location.replace(/^.*?global_collection_id=(\w+)(?:&.*$|#.*$|$)/, '$1'))
       // console.log('location', location)
       return this.getUserListDetail(location, page, ++retryNum)
     }

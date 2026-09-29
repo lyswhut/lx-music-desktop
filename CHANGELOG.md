@@ -6,6 +6,71 @@ Project versioning adheres to [Semantic Versioning](http://semver.org/).
 Commit convention is based on [Conventional Commits](http://conventionalcommits.org).
 Change log format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [2.12.6](https://github.com/lyswhut/lx-music-desktop/compare/v2.12.5...v2.12.6) - 2026-09-19
+
+目前新项目 Any Listen 的桌面版、Web 版已实现 LX Music 的大部分功能，并额外支持 WebDAV 歌曲播放、WebDAV 数据同步、独立播放列表等功能。
+以后的开发精力将主要集中在新项目上，之前大家在 LX Music 提的功能我们也会考虑在新项目中添加。
+对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
+Any Listen 的项目地址为 https://github.com/any-listen/any-listen
+
+### 优化
+
+- 优化 tx 推荐歌单列表
+- 优化禁用透明窗口的窗口边框显示效果
+
+### 修复
+
+- 修复打开某些 kg 歌单时歌曲丢失的问题
+- 修复 Windows 7 无法启动的问题
+- 修复禁用透明窗口时按 F11 无法全屏的问题
+
+## [2.12.5](https://github.com/lyswhut/lx-music-desktop/compare/v2.12.4...v2.12.5) - 2026-09-14
+
+目前新项目 Any Listen 的桌面版、Web 版已实现 LX Music 的大部分功能，并额外支持 WebDAV 歌曲播放、WebDAV 数据同步、独立播放列表等功能。
+以后的开发精力将主要集中在新项目上，之前大家在 LX Music 提的功能我们也会考虑在新项目中添加。
+对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
+Any Listen 的项目地址为 https://github.com/any-listen/any-listen
+
+### 修复
+
+- 修复自定义主题编辑器的颜色选择器默认值显示异常的问题（#2957）
+- 修复下载的 MP3 文件内嵌歌曲数据失败的问题（#2959）
+
+## [2.12.4](https://github.com/lyswhut/lx-music-desktop/compare/v2.12.3...v2.12.4) - 2026-09-12
+
+目前新项目 Any Listen 的桌面版、Web 版已实现 LX Music 的大部分功能，并额外支持 WebDAV 歌曲播放、WebDAV 数据同步、独立播放列表等功能。
+以后的开发精力将主要集中在新项目上，之前大家在 LX Music 提的功能我们也会考虑在新项目中添加。
+对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
+Any Listen 的项目地址为 https://github.com/any-listen/any-listen
+
+### 修复
+
+- 修复自定义主题背景图片无法显示的问题
+
+## [2.12.3](https://github.com/lyswhut/lx-music-desktop/compare/v2.12.2...v2.12.3) - 2026-09-12
+
+目前新项目 Any Listen 的桌面版、Web 版已实现 LX Music 的大部分功能，并额外支持 WebDAV 歌曲播放、WebDAV 数据同步、独立播放列表等功能。
+以后的开发精力将主要集中在新项目上，之前大家在 LX Music 提的功能我们也会考虑在新项目中添加。
+对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
+Any Listen 的项目地址为 https://github.com/any-listen/any-listen
+
+### 优化
+
+- 优化kw歌单列表数据显示
+- 同步服务在连接时允许URL重定向
+- Linux 点击托盘时将显示主界面（#2840）
+- 优化自动换源歌曲匹配机制
+
+### 修复
+
+- 修复 kg 搜索结果显示问题 (#2782)
+- 修复某些情况下开放 API 获取到的音量为 0 的问题 (#2790)
+- 修复 mg 图片、歌词获取
+- 修复某些 tx 歌单打开失败的问题 (#1060, @ght-000)
+- 修复在某些情况下添加、移动歌曲时可能导致保存的歌曲顺序不对的问题（#2842）
+- 修复歌词标签解析格式没有严格按照标准的问题（#2855）
+- 修复 tx 歌曲搜索失败的问题（#2848, @ikun0014）
+
 ## [2.12.2](https://github.com/lyswhut/lx-music-desktop/compare/v2.12.1...v2.12.2) - 2026-05-01
 
 我们很高兴地宣布新项目 Any Listen 的桌面版已发布，目前已支持列表跟随本地文件自动更新、加载并播放WebDAV上的歌曲等功能，更多功能仍在积极开发中，桌面版与Web版将同步更新。

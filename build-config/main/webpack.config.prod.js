@@ -37,6 +37,7 @@ module.exports = merge(baseConfig, {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"',
+        BUILD_WIN7: `'${process.env.BUILD_WIN7}'`,
       },
     }),
   ],

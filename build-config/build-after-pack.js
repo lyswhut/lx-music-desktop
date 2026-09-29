@@ -1,9 +1,12 @@
+const { afterPack } = require('./deps')
+
 const fs = require('fs').promises
 
 // https://github.com/electron-userland/electron-builder/issues/4630
 // https://github.com/electron-userland/electron-builder/issues/4630#issuecomment-782020139
 
 module.exports = async(context) => {
+  await afterPack()
   const { electronPlatformName, appOutDir } = context
   if (electronPlatformName !== 'darwin') return
   const {

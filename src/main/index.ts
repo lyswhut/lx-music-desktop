@@ -16,6 +16,7 @@ import registerModules from '@main/modules'
 // 初始化应用
 const init = () => {
   console.log('init')
+  if (process.env.BUILD_WIN7 == 'true') import('./utils/winLegacy')
   void initAppSetting().then(() => {
     registerModules()
     global.lx.event_app.app_inited()

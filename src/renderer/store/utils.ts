@@ -18,7 +18,7 @@ export const assertApiSupport = (source: LX.Source): boolean => {
 export const buildBgUrl = (originUrl: string, dataPath: string): string => {
   return isUrl(originUrl)
     ? `url(${originUrl})`
-    : `url(file:///${encodePath(joinPath(dataPath, originUrl).replaceAll('\\', '/'))})`
+    : `url(${encodePath(joinPath(dataPath, originUrl).replaceAll('\\', '/'))})`
 }
 
 export const getThemes = (callback: (themeInfo: LX.ThemeInfo) => void) => {

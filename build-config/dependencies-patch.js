@@ -6,20 +6,28 @@ const path = require('node:path')
 const rootPath = path.join(__dirname, '../')
 
 const patchs = [
+  // [
+  //   path.join(rootPath, './node_modules/ws/package.json'),
+  //   '\n      "browser": "./browser.js",',
+  //   '',
+  // ],
+  // [
+  //   path.join(rootPath, './node_modules/music-metadata/package.json'),
+  //   '"default": "./lib/core.js"',
+  //   '"default": "./lib/index.js"',
+  // ],
+  // [
+  //   path.join(rootPath, './node_modules/strtok3/package.json'),
+  //   '"default": "./lib/core.js"',
+  //   '"default": "./lib/index.js"',
+  // ],
   [
-    path.join(rootPath, './node_modules/ws/package.json'),
-    '\n      "browser": "./browser.js",',
-    '',
-  ],
-  [
-    path.join(rootPath, './node_modules/music-metadata/package.json'),
-    '"default": "./lib/core.js"',
-    '"default": "./lib/index.js"',
-  ],
-  [
-    path.join(rootPath, './node_modules/strtok3/package.json'),
-    '"default": "./lib/core.js"',
-    '"default": "./lib/index.js"',
+    path.join(rootPath, './node_modules/better-sqlite3/package.json'),
+    `{
+    "build-release": "node-gyp clean && node-gyp rebuild --release --force_build=1",`,
+    `{
+    "install": "node -e \\"process.exit(require('fs').existsSync('build/Release/better_sqlite3.node') ? 0 : 1)\\" || node-gyp rebuild --release --force_build=1",
+    "build-release": "node-gyp clean && node-gyp rebuild --release --force_build=1",`,
   ],
 ]
 

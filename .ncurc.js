@@ -16,7 +16,6 @@ module.exports = {
     'eslint-webpack-plugin',
     'typescript',
     'undici',
-    'better-sqlite3',
     '@types/better-sqlite3',
     'changelog-parser',
     'webpack-dev-server',
@@ -24,6 +23,8 @@ module.exports = {
     'eslint-plugin-vue',
     'vue-eslint-parser',
     // 'eslint-config-standard-with-typescript',
+
+    'webpack',
   ],
 
   // target: 'newest',
