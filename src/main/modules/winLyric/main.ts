@@ -11,10 +11,34 @@ import { encodePath } from '@common/utils/electron'
 let browserWindow: Electron.BrowserWindow | null = null
 let isWinBoundsUpdateing = false
 
+// Wayland 下合成器不允许客户端控制窗口层级，setAlwaysOnTop 只会记录状态而不会真正置顶窗口，
+// 只能改为调用 moveTop 请求提升窗口，最终是否生效由合成器决定
+// https://github.com/electron/electron/pull/50560
+const isWayland = isLinux && app.commandLine.getSwitchValue('ozone-platform') == 'wayland'
+
 const saveBoundsConfig = debounce((config: Partial<LX.AppSetting>) => {
   global.lx.event_app.update_config(config)
   if (isWinBoundsUpdateing) isWinBoundsUpdateing = false
 }, 500)
+
+const getWindowBoundsConfig = (bounds: Electron.Rectangle): Partial<LX.AppSetting> => {
+  const config: Partial<LX.AppSetting> = {
+    'desktopLyric.width': bounds.width,
+    'desktopLyric.height': bounds.height,
+  }
+  // Wayland 下 getBounds 返回的位置是无效值，直接保存会覆盖用户设置的位置
+  if (!isWayland) {
+    config['desktopLyric.x'] = bounds.x
+    config['desktopLyric.y'] = bounds.y
+  }
+  return config
+}
+
+// Wayland 下请求将窗口提升到最上层，缓解桌面歌词被其他窗口遮挡的问题
+const moveWindowTop = () => {
+  if (!browserWindow) return
+  browserWindow.moveTop()
+}
 
 const winEvent = () => {
   if (!browserWindow) return
@@ -34,13 +58,7 @@ const winEvent = () => {
     // bounds = browserWindow.getBounds()
     // console.log('move', isWinBoundsUpdateing)
     if (isWinBoundsUpdateing) {
-      const bounds = browserWindow!.getBounds()
-      saveBoundsConfig({
-        'desktopLyric.x': bounds.x,
-        'desktopLyric.y': bounds.y,
-        'desktopLyric.width': bounds.width,
-        'desktopLyric.height': bounds.height,
-      })
+      saveBoundsConfig(getWindowBoundsConfig(browserWindow!.getBounds()))
     } else if (isWin) { // Linux 不允许将窗口设置出屏幕之外，MacOS未知，故只在Windows下执行强制设置
       // 非主动调整窗口触发的窗口位置变化将重置回设置值
       browserWindow!.setBounds({
@@ -56,13 +74,7 @@ const winEvent = () => {
     // bounds = browserWindow.getBounds()
     // console.log(bounds)
     isWinBoundsUpdateing = true
-    const bounds = browserWindow!.getBounds()
-    saveBoundsConfig({
-      'desktopLyric.x': bounds.x,
-      'desktopLyric.y': bounds.y,
-      'desktopLyric.width': bounds.width,
-      'desktopLyric.height': bounds.height,
-    })
+    saveBoundsConfig(getWindowBoundsConfig(browserWindow!.getBounds()))
   })
 
   // browserWindow.on('restore', () => {
@@ -88,9 +100,11 @@ const winEvent = () => {
     // }
     if (global.lx.appSetting['desktopLyric.isAlwaysOnTop'] && global.lx.appSetting['desktopLyric.isAlwaysOnTopLoop']) alwaysOnTopTools.startLoop()
     browserWindow.blur()
+    // Wayland 下 setAlwaysOnTop 不会被合成器采纳，窗口显示后再尝试提升一次
+    if (isWayland && global.lx.appSetting['desktopLyric.isAlwaysOnTop']) moveWindowTop()
   }
   browserWindow.once('ready-to-show', showWindowHandle)
-  if (process.platform == 'linux' && app.commandLine.getSwitchValue('ozone-platform') == 'wayland') {
+  if (isWayland) {
     browserWindow.webContents.once('did-finish-load', showWindowHandle)
   }
 }
@@ -224,6 +238,7 @@ export const alwaysOnTopTools: AlwaysOnTopTools = {
   setAlwaysOnTop(isLoop) {
     this.clearLoop()
     setAlwaysOnTop(global.lx.appSetting['desktopLyric.isAlwaysOnTop'], 'screen-saver')
+    if (isWayland) moveWindowTop()
     // console.log(isLoop)
     if (isLoop) this.startLoop()
   },
@@ -235,6 +250,8 @@ export const alwaysOnTopTools: AlwaysOnTopTools = {
         return
       }
       setAlwaysOnTop(true, 'screen-saver')
+      // Wayland 下 setAlwaysOnTop 无效，只能持续请求提升窗口
+      if (isWayland) moveWindowTop()
     }, 500)
   },
   clearLoop() {
