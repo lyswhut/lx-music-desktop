@@ -4,6 +4,8 @@ import getLyric from './lyric'
 import getMusicInfo from './musicInfo'
 import musicSearch from './musicSearch'
 import songList from './songList'
+import albumSearch from './albumSearch'
+import album from './album'
 import hotSearch from './hotSearch'
 import comment from './comment'
 // import tipSearch from './tipSearch'
@@ -13,6 +15,8 @@ const wy = {
   leaderboard,
   musicSearch,
   songList,
+  albumSearch,
+  album,
   hotSearch,
   comment,
   getMusicUrl(songInfo, type) {
