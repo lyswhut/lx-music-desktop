@@ -84,6 +84,11 @@ declare global {
       'common.showChangeLog': boolean
 
       /**
+       * 是否自动更新用户自定义源
+       */
+      'common.autoUpdate': boolean
+
+      /**
        * 启动时自动播放歌曲
        */
       'player.startupAutoPlay': boolean

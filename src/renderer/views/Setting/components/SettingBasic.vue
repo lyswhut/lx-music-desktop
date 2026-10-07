@@ -3,24 +3,26 @@ dt#basic {{ $t('setting__basic') }}
 dd
   div
     .gap-top
-      base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({'common.isShowAnimation': $event})")
+      base-checkbox(id="setting_show_animate" :model-value="appSetting['common.isShowAnimation']" :label="$t('setting__basic_show_animation')" @update:model-value="updateSetting({ 'common.isShowAnimation': $event })")
     .gap-top
-      base-checkbox(id="setting_animate" :disabled="!appSetting['common.isShowAnimation']" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({'common.randomAnimate': $event})")
+      base-checkbox(id="setting_animate" :disabled="!appSetting['common.isShowAnimation']" :model-value="appSetting['common.randomAnimate']" :label="$t('setting__basic_animation')" @update:model-value="updateSetting({ 'common.randomAnimate': $event })")
     .gap-top
-      base-checkbox(id="setting_start_in_fullscreen" :model-value="appSetting['common.startInFullscreen']" :label="$t('setting__basic_start_in_fullscreen')" @update:model-value="updateSetting({'common.startInFullscreen': $event})")
+      base-checkbox(id="setting_start_in_fullscreen" :model-value="appSetting['common.startInFullscreen']" :label="$t('setting__basic_start_in_fullscreen')" @update:model-value="updateSetting({ 'common.startInFullscreen': $event })")
     .gap-top
-      base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({'tray.enable': $event})")
+      base-checkbox(id="setting_auto_update" :model-value="appSetting['common.autoUpdate']" :label="$t('setting__basic_auto_update')" @change="saveAutoUpdate")
+    .gap-top
+      base-checkbox(id="setting_to_tray" :model-value="appSetting['tray.enable']" :label="$t('setting__basic_to_tray')" @update:model-value="updateSetting({ 'tray.enable': $event })")
     .p.gap-top
-      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout')}} {{ timeLabel ? ` (${timeLabel})` : '' }}
+      base-btn.btn(min @click="isShowPlayTimeoutModal = true") {{ $t('setting__play_timeout') }} {{ timeLabel ? ` (${timeLabel})` : '' }}
 
 dd
   h3#basic_theme {{ $t('setting__basic_theme') }}
   div
     ul(:class="$style.theme")
-      li(v-for="theme in themeList" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, {[$style.active]: themeId == theme.id}]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
+      li(v-for="theme in themeList" :key="theme.id" :aria-label="theme.name" :style="theme.styles" :class="[$style.themeItem, { [$style.active]: themeId == theme.id }]" @click="toggleTheme(theme)" @contextmenu="handleEditTheme(theme)")
         div(:class="$style.bg")
         span(:class="$style.label") {{ theme.name }}
-      li(v-if="showAllTheme || themeId == 'auto'" :aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, {[$style.active]: themeId == 'auto'}]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
+      li(v-if="showAllTheme || themeId == 'auto'" :aria-label="$t('theme_auto_tip')" :style="autoTheme" :class="[$style.themeItem, $style.auto, { [$style.active]: themeId == 'auto' }]" @click="handleSetThemeAuto" @contextmenu="isShowThemeSelectorModal = true")
         div(:class="$style.bg")
           div(:class="$style.bgContent")
             div(:class="$style.light")
@@ -41,7 +43,7 @@ dd
     .gap-top(v-for="item in apiSources" :key="item.id")
       base-checkbox(
         :id="`setting_api_source_${item.id}`" name="setting_api_source"
-        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :aria-label="item.label" @update:model-value="updateSetting({'common.apiSource': $event})")
+        need :model-value="appSetting['common.apiSource']" :disabled="item.disabled" :value="item.id" :aria-label="item.label" @update:model-value="updateSetting({ 'common.apiSource': $event })")
         span(:class="$style.sourceLabel")
           | {{ item.name }}
           span(v-if="item.desc" :class="$style.desc") {{ item.desc }}
@@ -55,7 +57,7 @@ dd
     base-checkbox.gap-left(
       v-for="item in windowSizeList" :id="`setting_window_size_${item.id}`" :key="item.id"
       name="setting_window_size" need :model-value="appSetting['common.windowSizeId']" :disabled="isFullscreen" :value="item.id" :label="$t('setting__basic_window_size_' + item.name)"
-      @update:model-value="updateSetting({'common.windowSizeId': $event})")
+      @update:model-value="updateSetting({ 'common.windowSizeId': $event })")
 
 dd
   h3#basic_font_size {{ $t('setting__basic_font_size') }}
@@ -64,7 +66,7 @@ dd
     base-checkbox.gap-left(
       v-for="item in fontSizeList" :id="`setting_basic_font_size_${item.id}`" :key="item.id"
       name="setting_basic_font_size" need :model-value="appSetting['common.fontSize']" :value="item.id"
-      :label="item.label" :disabled="isFullscreen" @update:model-value="updateSetting({'common.fontSize': $event})")
+      :label="item.label" :disabled="isFullscreen" @update:model-value="updateSetting({ 'common.fontSize': $event })")
 
 dd
   h3#basic_font {{ $t('setting__basic_font') }}
@@ -78,32 +80,32 @@ dd
   div
     base-checkbox.gap-left(
       v-for="item in langList" :id="`setting_lang_${item.locale}`" :key="item.locale" name="setting_lang"
-      need :model-value="appSetting['common.langId']" :value="item.locale" :label="item.name" @update:model-value="updateSetting({'common.langId': $event})")
+      need :model-value="appSetting['common.langId']" :value="item.locale" :label="item.name" @update:model-value="updateSetting({ 'common.langId': $event })")
 
 dd
   h3#basic_sourcename {{ $t('setting__basic_sourcename') }}
   div
     base-checkbox.gap-left(
       v-for="item in sourceNameTypes" :id="`setting_abasic_sourcename_${item.id}`" :key="item.id"
-      name="setting_basic_sourcename" need :model-value="appSetting['common.sourceNameType']" :value="item.id" :label="item.label" @update:model-value="updateSetting({'common.sourceNameType': $event})")
+      name="setting_basic_sourcename" need :model-value="appSetting['common.sourceNameType']" :value="item.id" :label="item.label" @update:model-value="updateSetting({ 'common.sourceNameType': $event })")
 dd
   h3#basic_control_btn_position {{ $t('setting__basic_control_btn_position') }}
   div
     base-checkbox.gap-left(
       v-for="item in controlBtnPositionList" :id="`setting_basic_control_btn_position_${item.id}`" :key="item.id"
-      name="setting_basic_control_btn_position" need :model-value="appSetting['common.controlBtnPosition']" :value="item.id" :label="item.name" @update:model-value="updateSetting({'common.controlBtnPosition': $event})")
+      name="setting_basic_control_btn_position" need :model-value="appSetting['common.controlBtnPosition']" :value="item.id" :label="item.name" @update:model-value="updateSetting({ 'common.controlBtnPosition': $event })")
 dd
   h3#basic_playbar_progress_style {{ $t('setting__basic_playbar_progress_style') }}
   div
     base-checkbox.gap-left(
       id="setting_basic_playbar_progress_style_mini" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+      need :model-value="appSetting['common.playBarProgressStyle']" value="mini" :label="$t('setting__basic_playbar_progress_style_mini')" @update:model-value="updateSetting({ 'common.playBarProgressStyle': $event })")
     base-checkbox.gap-left(
       id="setting_basic_playbar_progress_style_middle" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+      need :model-value="appSetting['common.playBarProgressStyle']" value="middle" :label="$t('setting__basic_playbar_progress_style_middle')" @update:model-value="updateSetting({ 'common.playBarProgressStyle': $event })")
     base-checkbox.gap-left(
       id="setting_basic_playbar_progress_style_full" name="setting_basic_playbar_progress_style"
-      need :model-value="appSetting['common.playBarProgressStyle']" value="full" :label="$t('setting__basic_playbar_progress_style_full')" @update:model-value="updateSetting({'common.playBarProgressStyle': $event})")
+      need :model-value="appSetting['common.playBarProgressStyle']" value="full" :label="$t('setting__basic_playbar_progress_style_full')" @update:model-value="updateSetting({ 'common.playBarProgressStyle': $event })")
 
 ThemeSelectorModal(v-model="isShowThemeSelectorModal")
 ThemeEditModal(v-model="isShowThemeEditModal" :theme-id="editThemeId" @submit="handleRefreshTheme")
@@ -124,7 +126,7 @@ import ThemeSelectorModal from './ThemeSelectorModal.vue'
 import ThemeEditModal from './ThemeEditModal/index.vue'
 import PlayTimeoutModal from './PlayTimeoutModal.vue'
 import UserApiModal from './UserApiModal.vue'
-import { appSetting, updateSetting } from '@renderer/store/setting'
+import { appSetting, saveAutoUpdate, updateSetting } from '@renderer/store/setting'
 import { getThemes, applyTheme, findTheme, buildBgUrl } from '@renderer/store/utils'
 
 export default {
@@ -327,6 +329,7 @@ export default {
 
     return {
       appSetting,
+      saveAutoUpdate,
       updateSetting,
       userThemes,
       autoTheme,
@@ -392,6 +395,7 @@ export default {
 
     &.active {
       color: var(--color-primary-font-active);
+
       .bg {
         border-color: var(--color-primary-font-active);
       }
@@ -410,6 +414,7 @@ export default {
       padding: 2Px;
       transition: border-color .3s ease;
       border-radius: 5px;
+
       &:after {
         display: block;
         content: ' ';
@@ -434,6 +439,7 @@ export default {
 
       &.active {
         color: var(--color-primary-font-active);
+
         .bg {
           border-color: var(--color-primary-font-active);
         }
@@ -444,18 +450,22 @@ export default {
           content: none;
         }
       }
+
       .bgContent {
         position: relative;
         height: 100%;
         overflow: hidden;
         border-radius: 5px;
       }
-      .light, .dark {
+
+      .light,
+      .dark {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
+
         &:after {
           display: block;
           content: ' ';
@@ -466,25 +476,31 @@ export default {
           background-repeat: no-repeat;
         }
       }
+
       .light {
         &:after {
           clip-path: polygon(0 0, 100% 0, 0 100%);
         }
+
         svg {
           fill: var(--color-primary-theme-light);
         }
+
         &:after {
           background-color: var(--color-primary-theme-light);
           background-image: var(--background-image-theme-light);
         }
       }
+
       .dark {
         &:after {
           clip-path: polygon(0 100%, 100% 0, 100% 100%);
         }
+
         svg {
           fill: var(--color-primary-theme-dark);
         }
+
         &:after {
           background-color: var(--color-primary-theme-dark);
           background-image: var(--background-image-theme-dark);
@@ -497,6 +513,7 @@ export default {
         &:after {
           content: none;
         }
+
         .bgContent {
           transition: .3s ease;
           transition-property: border, color;
@@ -511,6 +528,7 @@ export default {
           align-items: center;
           justify-content: center;
         }
+
         .icon {
           // position: absolute;
           // font-size: 16px;
@@ -518,6 +536,7 @@ export default {
           height: auto;
         }
       }
+
       .label {
         color: var(--color-primary-dark-100-alpha-300);
       }
@@ -528,6 +547,7 @@ export default {
       width: auto;
       gap: 5px;
       color: var(--color-primary-font-active);
+
       .label {
         height: auto;
       }
@@ -551,5 +571,4 @@ export default {
     margin-left: 5px;
   }
 }
-
 </style>
