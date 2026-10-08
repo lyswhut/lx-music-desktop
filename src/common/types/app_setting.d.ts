@@ -89,6 +89,21 @@ declare global {
       'player.startupAutoPlay': boolean
 
       /**
+       * 自动备份保存目录
+       */
+      'backup.autoPath': string
+
+      /**
+       * 启动软件时自动备份歌单
+       */
+      'backup.autoEnable': boolean
+
+      /**
+       * 自动备份保留数量
+       */
+      'backup.autoKeepCount': number
+
+      /**
        * 切歌模式
        */
       'player.togglePlayMethod': 'listLoop' | 'random' | 'list' | 'singleLoop' | 'none'

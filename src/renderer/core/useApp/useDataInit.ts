@@ -2,6 +2,7 @@ import { getPlayInfo } from '@renderer/utils/ipc'
 import music from '@renderer/utils/musicSdk'
 import { log } from '@common/utils'
 import { getListMusics, getUserLists, registerAction } from '@renderer/store/list/action'
+import { runAutoBackupIfEnabled } from '@renderer/utils/autoBackup'
 
 
 import useInitUserApi from './useInitUserApi'
@@ -56,5 +57,6 @@ export default () => {
     await initPrevPlayInfo().catch(err => {
       log.error(err)
     }) // 初始化上次的歌曲播放信息
+    void runAutoBackupIfEnabled() // 启动时自动备份歌单
   }
 }

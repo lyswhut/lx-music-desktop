@@ -25,6 +25,15 @@
           <span :class="$style.label">{{ item.tips }}</span>
         </router-link>
       </li>
+      <!-- 本地音乐 -->
+      <li :class="$style.navItem" role="presentation">
+        <router-link :class="[$style.link, {[$style.active]: $route.meta.name == 'LocalMusic'}]" role="tab" :aria-selected="$route.meta.name == 'LocalMusic'" to="/local" aria-label="本地音乐" :title="collapsed ? '本地音乐' : undefined">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" height="18" width="18" space="preserve" :class="$style.icon">
+            <use xlink:href="#icon-localMusic" />
+          </svg>
+          <span :class="$style.label">本地音乐</span>
+        </router-link>
+      </li>
     </ul>
   </div>
 </template>

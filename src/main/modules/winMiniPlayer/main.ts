@@ -60,10 +60,11 @@ export const createWindow = () => {
   let x = global.lx.appSetting['miniPlayer.x']
   let y = global.lx.appSetting['miniPlayer.y']
   if (x == null || y == null) {
-    // 默认显示在屏幕右下角
+    // 默认显示在屏幕水平居中、垂直靠上的位置
     if (global.envParams.workAreaSize) {
-      x = global.envParams.workAreaSize.width - WIN_WIDTH - 12
-      y = global.envParams.workAreaSize.height - WIN_HEIGHT - 12
+      const { width, height } = global.envParams.workAreaSize
+      x = Math.max(0, Math.round((width - WIN_WIDTH) / 2))
+      y = Math.max(0, Math.round(height * 0.12))
     } else {
       x = y = 0
     }

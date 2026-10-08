@@ -20,8 +20,8 @@ const defaultSetting: LX.AppSetting = {
   'common.controlBtnPosition': isMac ? 'left' : 'right',
   'common.playBarProgressStyle': 'middle',
   'common.transparentWindow': !isMac,
-  'common.tryAutoUpdate': true,
-  'common.showChangeLog': true,
+  'common.tryAutoUpdate': false,
+  'common.showChangeLog': false,
 
   'player.startupAutoPlay': false,
   'player.togglePlayMethod': 'listLoop',
@@ -109,7 +109,11 @@ const defaultSetting: LX.AppSetting = {
   'list.isShowSource': true,
   'list.isSaveScrollLocation': true,
   'list.addMusicLocationType': 'top',
-  'list.actionButtonsVisible': false,
+  'list.actionButtonsVisible': true,
+
+  'backup.autoEnable': true,
+  'backup.autoPath': 'D:\\backup',
+  'backup.autoKeepCount': 3,
 
   'download.enable': true,
   'download.isSavePathGroupByListName': false,

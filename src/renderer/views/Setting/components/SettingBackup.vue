@@ -12,15 +12,28 @@ dd
   div
     base-btn.btn.gap-left(min @click="handleImportAllData") {{ $t('setting__backup_all_import') }}
     base-btn.btn.gap-left(min @click="handleExportAllData") {{ $t('setting__backup_all_export') }}
+div(data-line-break)
 dd
-  h3#backup_other {{ $t('setting__backup_other') }}
-  div
-    base-btn.btn.gap-left(min @click="handleExportPlayListToText") {{ $t('setting__backup_other_export_list_text') }}
-    base-btn.btn.gap-left(min @click="handleExportPlayListToCsv") {{ $t('setting__backup_other_export_list_csv') }}
+    h3#backup_other {{ $t('setting__backup_other') }}
+    div
+      base-btn.btn.gap-left(min @click="handleExportPlayListToText") {{ $t('setting__backup_other_export_list_text') }}
+      base-btn.btn.gap-left(min @click="handleExportPlayListToCsv") {{ $t('setting__backup_other_export_list_csv') }}
+dd
+  h3#backup_auto {{ $t('setting__backup_auto') }}
+  div(:class="$style.autoMeta")
+    base-checkbox.autoEnable(id="setting_backup_auto_enable" :model-value="appSetting['backup.autoEnable']" :label="$t('setting__backup_auto_enable')" @update:model-value="handleUpdateAutoEnable")
+    p(:class="$style.autoPath")
+      span(:class="$style.autoPathLabel") {{ $t('setting__backup_auto_path') }}
+      strong(:class="$style.autoPathValue") {{ appSetting['backup.autoPath'] || $t('setting__backup_auto_none') }}
+    base-btn.btn(:class="$style.autoPathChangeBtn" min @click="handleChangeAutoPath") {{ $t('setting__backup_auto_path_change') }}
+  div(:class="$style.autoActions")
+    span(:class="$style.autoCountLabel") {{ $t('setting__backup_auto_count') }}
+    base-selection(:class="$style.selectWidth" :model-value="appSetting['backup.autoKeepCount']" :list="backupCounts" item-key="id" item-name="id" @change="handleUpdateAutoCount")
+    base-btn.btn(min :disabled="isHandlingAutoBackup" @click="handleAutoBackup") {{ $t('setting__backup_auto_btn') }}
 </template>
 
 <script>
-import { toRaw } from '@common/utils/vueTools'
+import { ref } from '@common/utils/vueTools'
 // import { mergeSetting } from '@common/utils'
 // import { base as eventBaseName } from '@renderer/event/names'
 // import { defaultList, loveList, userLists } from '@renderer/core/share/list'
@@ -34,13 +47,14 @@ import {
   showSelectDialog,
   openSaveDir,
 } from '@renderer/utils/ipc'
+import { getAllLists } from '@renderer/utils/autoBackup'
 // import { currentStting } from '../setting'
 import { dialog } from '@renderer/plugins/Dialog'
+import { log } from '@common/utils'
 import useImportTip from '@renderer/utils/compositions/useImportTip'
 import { useI18n } from '@renderer/plugins/i18n'
-import { getListMusics, overwriteListFull, overwriteListMusics } from '@renderer/store/list/action'
+import { overwriteListFull, overwriteListMusics } from '@renderer/store/list/action'
 import { LIST_IDS } from '@common/constants'
-import { defaultList, loveList, userLists } from '@renderer/store/list/state'
 import { appSetting, updateSetting } from '@renderer/store/setting'
 import migrateSetting from '@common/utils/migrateSetting'
 
@@ -54,18 +68,6 @@ export default {
     // const setSettingVersion = useCommit('setSettingVersion')
     // const setList = useCommit('list', 'setList')
     const showImportTip = useImportTip()
-
-    const getAllLists = async() => {
-      const lists = []
-      lists.push(await getListMusics(defaultList.id).then(musics => ({ ...defaultList, list: toRaw(musics) })))
-      lists.push(await getListMusics(loveList.id).then(musics => ({ ...loveList, list: toRaw(musics) })))
-
-      for await (const list of userLists) {
-        lists.push(await getListMusics(list.id).then(musics => ({ ...toRaw(list), list: toRaw(musics) })))
-      }
-
-      return lists
-    }
 
     const importOldListData = async(lists) => {
       const allLists = await getAllLists()
@@ -369,8 +371,78 @@ export default {
     //   window.eventHub.off(eventBaseName.set_config, handleUpdateSetting)
     // })
 
+    const isHandlingAutoBackup = ref(false)
+
+    const handleUpdateAutoEnable = async(enabled) => {
+      updateSetting({ 'backup.autoEnable': enabled })
+      if (enabled && !appSetting['backup.autoPath']) await handleChangeAutoPath()
+    }
+
+    const backupCounts = [1, 2, 3, 5, 10, 20].map(id => ({ id }))
+
+    const handleUpdateAutoCount = ({ id }) => {
+      updateSetting({ 'backup.autoKeepCount': id })
+    }
+
+    const handleChangeAutoPath = async() => {
+      const result = await showSelectDialog({
+        title: t('setting__backup_auto_path_desc'),
+        properties: ['openDirectory'],
+        defaultPath: appSetting['backup.autoPath'] || undefined,
+      })
+      if (result.canceled || !result.filePaths.length) return
+      updateSetting({ 'backup.autoPath': result.filePaths[0] })
+    }
+
+    const handleAutoBackup = async() => {
+      if (isHandlingAutoBackup.value) return
+      let path = appSetting['backup.autoPath']
+      if (!path) {
+        const result = await showSelectDialog({
+          title: t('setting__backup_auto_path_desc'),
+          properties: ['openDirectory'],
+        })
+        if (result.canceled || !result.filePaths.length) return
+        path = result.filePaths[0]
+        updateSetting({ 'backup.autoPath': path })
+      }
+      isHandlingAutoBackup.value = true
+      try {
+        const date = new Date()
+        const pad = n => String(n).padStart(2, '0')
+        const fileName = `lx_datas_v2_${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}-${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}.lxmc`
+        const allData = {
+          type: 'allData_v2',
+          setting: { ...appSetting },
+          playList: await getAllLists(),
+        }
+        // 去除路径末尾的分隔符，避免生成 "D:\/xxx" 这类路径
+        const targetDir = path.replace(/[\\/]+$/, '')
+        const dirOk = await window.lx.worker.main.checkAndCreateDir(targetDir)
+        if (!dirOk) throw new Error(`Cannot create backup directory: ${targetDir}`)
+        await window.lx.worker.main.saveLxConfigFile(`${targetDir}/${fileName}`, allData)
+        void dialog.confirm({
+          message: t('setting__backup_auto_success'),
+          showCancel: false,
+          confirmButtonText: t('confirm_button_text'),
+        })
+      } catch (err) {
+        log.error('auto backup failed:', err)
+        void dialog.confirm({
+          message: `${t('setting__backup_auto_failed')}\n${err.message}`,
+          showCancel: false,
+          confirmButtonText: t('confirm_button_text'),
+        })
+      } finally {
+        isHandlingAutoBackup.value = false
+      }
+    }
+
     return {
       // currentStting,
+      appSetting,
+      updateSetting,
+      isHandlingAutoBackup,
       handleExportPlayList,
       handleImportPlayList,
       handleExportSetting,
@@ -379,12 +451,19 @@ export default {
       handleImportAllData,
       handleExportPlayListToText,
       handleExportPlayListToCsv,
+      handleChangeAutoPath,
+      handleUpdateAutoEnable,
+      handleUpdateAutoCount,
+      backupCounts,
+      handleAutoBackup,
     }
   },
 }
 </script>
 
 <style lang="less" module>
+@import '@renderer/assets/styles/layout.less';
+
 .savePath {
   font-size: 12px;
 }
@@ -403,5 +482,54 @@ export default {
     padding: 2px 6px !important;
     font-size: 11px !important;
   }
+}
+
+// 「自动备份」卡片：复选框与路径同行
+.autoMeta {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin-bottom: 10px;
+}
+.autoEnable {
+  flex: none;
+}
+
+// 「自动备份」卡片：路径显示与操作按钮
+.autoPath {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-font);
+  .mixin-ellipsis-1();
+
+  span {
+    color: var(--color-font-label);
+  }
+
+  strong {
+    font-weight: normal;
+    color: var(--color-font);
+  }
+}
+.autoPathChangeBtn {
+  flex: none;
+  margin-left: auto;
+}
+.autoActions {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 12px;
+}
+.autoCountLabel {
+  font-size: 12px;
+  color: var(--color-font-label);
+}
+.selectWidth {
+  width: 72px;
 }
 </style>

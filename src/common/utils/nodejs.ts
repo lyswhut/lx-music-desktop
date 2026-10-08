@@ -109,6 +109,8 @@ export const removeFile = async(path: string) => new Promise<void>((resolve, rej
 
 export const readFile = async(path: string) => fs.promises.readFile(path)
 
+export const readDir = async(path: string): Promise<string[]> => fs.promises.readdir(path)
+
 
 /**
  * 创建 MD5 hash
@@ -147,8 +149,16 @@ export const gunzipData = async(buf: Buffer): Promise<string> => {
  */
 export const saveLxConfigFile = async(path: string, data: any) => {
   if (!path.endsWith('.lxmc')) path += '.lxmc'
-  fs.writeFile(path, await gzipData(JSON.stringify(data)), 'binary', err => {
-    console.log(err)
+  const buf = await gzipData(JSON.stringify(data))
+  await new Promise<void>((resolve, reject) => {
+    fs.writeFile(path, buf, err => {
+      if (err) {
+        log.error('saveLxConfigFile error:', err)
+        reject(err)
+        return
+      }
+      resolve()
+    })
   })
 }
 

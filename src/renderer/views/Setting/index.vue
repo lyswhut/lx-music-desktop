@@ -531,9 +531,21 @@ export default {
       min-width: 0;
     }
 
-    [data-section]:not([data-section='SettingBasic']):not([data-section='SettingPlay']):not([data-section='SettingPlayDetail']):not([data-section='SettingDesktopLyric']):not([data-section='SettingHotKey'])[data-section='SettingBackup'] dt + dd + dd,
-    [data-section]:not([data-section='SettingBasic']):not([data-section='SettingPlay']):not([data-section='SettingPlayDetail']):not([data-section='SettingDesktopLyric']):not([data-section='SettingHotKey'])[data-section='SettingBackup'] dt + dd + dd + dd {
+    [data-section]:not([data-section='SettingBasic']):not([data-section='SettingPlay']):not([data-section='SettingPlayDetail']):not([data-section='SettingDesktopLyric']):not([data-section='SettingHotKey'])[data-section='SettingBackup'] dt + dd + dd {
       flex: 0 1 auto;
+    }
+
+    // 备份：「其他备份格式」与「自动备份」卡片换行到第二行，等宽显示
+    [data-section]:not([data-section='SettingBasic']):not([data-section='SettingPlay']):not([data-section='SettingPlayDetail']):not([data-section='SettingDesktopLyric']):not([data-section='SettingHotKey'])[data-section='SettingBackup'] [data-line-break] {
+      flex: 0 0 100%;
+      height: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    [data-section]:not([data-section='SettingBasic']):not([data-section='SettingPlay']):not([data-section='SettingPlayDetail']):not([data-section='SettingDesktopLyric']):not([data-section='SettingHotKey'])[data-section='SettingBackup'] [data-line-break] ~ dd {
+      flex: 1 1 0;
+      min-width: 0;
     }
 
     // 其他：第一行四张卡片（圆角阴影/托盘/资源缓存/其他缓存）等宽显示在同一行
