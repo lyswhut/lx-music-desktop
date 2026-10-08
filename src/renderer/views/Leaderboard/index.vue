@@ -1,14 +1,26 @@
 <template>
   <div :class="$style.leaderboard">
-    <div :class="$style.lists">
-      <div :class="$style.listsSelect">
-        <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="-12 0 448 448" width="34" height="34" space="preserve">
+          <use xlink:href="#icon-leaderboard" />
+        </svg>
+      </div>
+      <div :class="$style.pageInfo">
+        <h1 :class="$style.pageTitle">排行榜</h1>
+        <p :class="$style.pageDesc">查看各大音乐平台排行榜</p>
+      </div>
+    </div>
+    <div :class="$style.header">
+      <div :class="$style.sourceTabs">
+        <base-tab :model-value="source" :list="sourceList" item-key="id" item-label="name" @change="handleToggleSource" />
       </div>
       <BoardList ref="boardListRef" :board-id="boardId" :source="source" @show-menu="$refs.musicListRef?.hideMenu()" />
     </div>
     <div :class="$style.list">
       <MusicList ref="musicListRef" :source="source" :board-id="boardId" @show-menu="$refs.boardListRef?.hideMenu()" />
     </div>
+    <common-back-to-top />
   </div>
 </template>
 
@@ -90,88 +102,63 @@ export default {
 .leaderboard {
   height: 100%;
   display: flex;
+  flex-flow: column nowrap;
   position: relative;
+}
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 30px 15px 14px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  color: var(--color-primary);
+  margin-right: 16px;
+}
+.pageInfo {
+  flex: auto;
+  min-width: 0;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: var(--color-font);
+}
+.pageDesc {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--color-font-label);
 }
 .header {
   flex: none;
   width: 100%;
   display: flex;
-  flex-flow: row nowrap;
-
+  flex-flow: column nowrap;
+  border-bottom: var(--color-list-header-border-bottom);
 }
-.tab {
-  flex: auto;
-}
-.select {
+.sourceTabs {
   flex: none;
-  width: 80px;
+  width: 100%;
+  :global(.list) {
+    padding: 0 15px;
+    gap: 20px;
+  }
 }
 .content {
   flex: auto;
   display: flex;
   overflow: hidden;
   flex-flow: column nowrap;
-}
-
-.lists {
-  flex: none;
-  width: 14.8%;
-  display: flex;
-  flex-flow: column nowrap;
-}
-.listsHeader {
-  position: relative;
-}
-
-.listsSelect {
-  font-size: 12px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-  >:global(.content) {
-    display: block;
-    width: 100%;
-  }
-  :global(.label-content) {
-    background-color: transparent !important;
-    line-height: 38px;
-    height: 38px;
-    border-radius: 0;
-    &:hover {
-      background: none !important;
-    }
-  }
-  :global(.label) {
-    color: var(--color-font) !important;
-  }
-  :global(.icon) {
-    opacity: .6;
-    transition: opacity .3s ease;
-  }
-
-  :global(.selection-list) {
-    max-height: 500px;
-    box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
-    li {
-      // background-color: var(--color-main-background);
-      line-height: 38px;
-      font-size: 13px;
-      &:hover {
-        background-color: var(--color-button-background-hover);
-      }
-      &:active {
-        background-color: var(--color-button-background-active);
-      }
-    }
-  }
-  // line-height: 38px;
-  // padding: 0 10px;
-  border-bottom: var(--color-list-header-border-bottom);
-  flex: none;
 }
 
 .list {

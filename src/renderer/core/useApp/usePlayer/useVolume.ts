@@ -24,6 +24,12 @@ export default () => {
   const handleSetVolume = (num: number) => {
     const _volume = num < 0 ? 0 : num > 1 ? 1 : num
     setVolume(_volume)
+    // 音量为 0 时自动静音，大于 0 时自动取消静音
+    if (_volume <= 0) {
+      if (!isMute.value) setMute(true)
+    } else if (isMute.value) {
+      setMute(false)
+    }
   }
 
   const handleSetVolumeUp = (step = 0.04) => {

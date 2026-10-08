@@ -1,14 +1,24 @@
 <template>
   <div :class="$style.container">
+    <div :class="$style.pageTitle">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" width="28" height="28" space="preserve">
+        <use xlink:href="#icon-search-2" />
+      </svg>
+      <span>搜索</span>
+    </div>
+    <div :class="$style.searchBox">
+      <toolbar-search-input />
+    </div>
     <div :class="$style.header">
       <base-tab v-model="source" :list="sources" @change="handleSourceChange" />
-      <base-tab v-model="searchType" :list="searchTypes" @change="handleTypeChange" />
+      <base-tab v-model="searchType" variant="boxed" :list="searchTypes" @change="handleTypeChange" />
     </div>
     <div :class="$style.main">
       <song-list-list v-if="searchType == 'songlist'" v-show="searchText" :page="page" :source-id="source" />
       <music-list v-else v-show="searchText" :page="page" :source-id="source" />
       <blank-view :visible="!searchText" :source="source" />
     </div>
+    <common-back-to-top />
   </div>
 </template>
 
@@ -21,11 +31,12 @@ import { sources as _sources } from '@renderer/store/search/music'
 import MusicList from './MusicList/index.vue'
 import SongListList from './SongListList/index.vue'
 import BlankView from './components/BlankView.vue'
+import SearchInput from '@renderer/components/layout/Toolbar/SearchInput.vue'
 import { computed, ref } from '@common/utils/vueTools'
 import { sourceNames } from '@renderer/store'
 
 const source = ref('kw')
-const searchType = ref(null)
+const searchType = ref('music')
 const page = ref(1)
 
 const verifyQueryParams = async(to, from, next) => {
@@ -62,6 +73,7 @@ export default {
     MusicList,
     SongListList,
     BlankView,
+    ToolbarSearchInput: SearchInput,
   },
   beforeRouteEnter: verifyQueryParams,
   beforeRouteUpdate: verifyQueryParams,
@@ -126,12 +138,42 @@ export default {
   flex-flow: column nowrap;
 }
 
+.pageTitle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 30px 0 14px;
+  color: var(--color-primary);
+  font-size: 28px;
+  font-weight: 500;
+
+  svg {
+    fill: var(--color-primary);
+  }
+}
+
+.searchBox {
+  flex: none;
+  padding: 0 16px 12px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  > * {
+    max-width: 500px;
+    width: 100%;
+  }
+}
+
 .header {
   // padding: 5px 0;
   flex: none;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  padding-right: 16px;
 }
 
 .main {

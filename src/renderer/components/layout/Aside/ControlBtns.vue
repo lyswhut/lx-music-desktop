@@ -55,17 +55,17 @@ onBeforeUnmount(() => {
 @control-btn-height: 6%;
 .controlBtn {
   box-sizing: border-box;
-  padding: 0 7px;
+  padding: 0 4px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 6px;
   width: 100%;
-  height: @control-btn-height;
   -webkit-app-region: no-drag;
-  opacity: .5;
+  opacity: .6;
   transition: opacity @transition-normal;
   &.hover {
-    opacity: .8;
+    opacity: 1;
     .controlBtniIcon {
       opacity: 1;
     }

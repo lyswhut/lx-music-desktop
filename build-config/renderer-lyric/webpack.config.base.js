@@ -13,6 +13,7 @@ module.exports = {
   target: 'electron-renderer',
   entry: {
     'renderer-lyric': path.join(__dirname, '../../src/renderer-lyric/main.ts'),
+    'renderer-miniplayer': path.join(__dirname, '../../src/renderer-miniplayer/main.ts'),
   },
   output: {
     filename: '[name].js',
@@ -42,6 +43,8 @@ module.exports = {
           loader: 'ts-loader',
           options: {
             appendTsSuffixTo: [/\.vue$/],
+            // 多入口共用同一 tsconfig，避免 ts-loader 按入口目录解析出不同的 tsconfig
+            configFile: path.join(__dirname, '../../src/renderer-lyric/tsconfig.json'),
           },
         },
       },
@@ -128,6 +131,15 @@ module.exports = {
     new HTMLPlugin({
       filename: 'lyric.html',
       template: path.join(__dirname, '../../src/renderer-lyric/index.html'),
+      chunks: ['renderer-lyric'],
+      isProd: process.env.NODE_ENV == 'production',
+      browser: process.browser,
+      __dirname,
+    }),
+    new HTMLPlugin({
+      filename: 'miniplayer.html',
+      template: path.join(__dirname, '../../src/renderer-miniplayer/index.html'),
+      chunks: ['renderer-miniplayer'],
       isProd: process.env.NODE_ENV == 'production',
       browser: process.browser,
       __dirname,

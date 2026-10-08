@@ -7,7 +7,9 @@ import { boards, type Board, listDetailInfo, type ListDetailInfo } from './state
 const cache = new Map<string, any>()
 
 export const setBoard = (board: Board, source: LX.OnlineSource) => {
-  boards[source] = markRaw(board)
+  if (board && typeof board === 'object') {
+    boards[source] = markRaw(board)
+  }
 }
 
 export const setListDetail = (result: ListDetailInfo, id: string, page: number) => {

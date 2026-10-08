@@ -14,10 +14,7 @@ dd.gap-top
       .p.small {{ $t('setting__open_api_port') }}
       div
         base-input.gap-left(:class="$style.portInput" :model-value="appSetting['openAPI.port']" type="number" :placeholder="$t('setting__open_api_port_tip')" @update:model-value="setPort")
-
-dd.gap-top
-  div
-    .p
+    .p.gap-top
       | {{ $t('setting__open_api_tip') }}
       strong.hover.underline(aria-label="https://lyswhut.github.io/lx-music-doc/desktop/faq/open-api" @click="openUrl('https://lyswhut.github.io/lx-music-doc/desktop/open-api')") {{ $t('setting__open_api_tip_link') }}
 </template>

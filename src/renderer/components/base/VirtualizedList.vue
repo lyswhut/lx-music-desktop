@@ -156,7 +156,9 @@ export default {
       return list
     }
 
-    const updateView = (currentScrollTop = dom_scrollContainer.value.scrollTop) => {
+    const updateView = (currentScrollTop) => {
+      if (!dom_scrollContainer.value) return
+      if (currentScrollTop == null) currentScrollTop = dom_scrollContainer.value.scrollTop
       // const currentScrollTop = this.$refs.dom_scrollContainer.scrollTop
       const itemHeight = props.itemHeight
       const currentStartIndex = Math.floor(currentScrollTop / itemHeight)

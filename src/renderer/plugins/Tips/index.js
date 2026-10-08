@@ -75,6 +75,9 @@ setTimeout(() => {
 
   document.body.addEventListener('contextmenu', updateTips)
 
+  // 滚轮时刷新当前提示，使 aria-label 实时变化的元素（如音量）提示同步更新
+  document.body.addEventListener('wheel', updateTips, { passive: true })
+
   window.app_event.on('focus', () => {
     hideTips()
   })

@@ -6,7 +6,7 @@
       </svg>
     </button>
     <template #content>
-      <div :class="$style.setting">
+      <div :class="$style.setting" @wheel="handleWheel">
         <div :class="$style.info">
           <span>{{ Math.trunc(volume * 100) }}%</span>
           <base-checkbox
@@ -30,8 +30,15 @@ import { computed } from '@common/utils/vueTools'
 import { saveVolumeIsMute } from '@renderer/store/setting'
 import { volume, isMute } from '@renderer/store/player/volume'
 
+const VOLUME_STEP = 0.02 // 每格滚轮步进 2%
+
 const handleWheel = (event) => {
-  window.app_event.setVolume(Math.round(volume.value * 100 + (-event.deltaY / 100 * 2)) / 100)
+  event.preventDefault()
+  const delta = -event.deltaY > 0 ? VOLUME_STEP : -VOLUME_STEP
+  let next = volume.value + delta
+  if (next < 0) next = 0
+  if (next > 1) next = 1
+  window.app_event.setVolume(next)
 }
 
 const handleUpdateVolume = (val) => {

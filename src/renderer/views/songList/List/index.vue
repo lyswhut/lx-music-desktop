@@ -1,15 +1,24 @@
 <template>
   <div :class="$style.container">
-    <div :class="$style.header">
-      <div :class="$style.left">
-        <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
-        <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" width="34" height="34" space="preserve">
+          <use xlink:href="#icon-album" />
+        </svg>
       </div>
-      <base-btn :class="$style.btn" outline min @click="visibleOpenSongListModal = true">{{ $t('songlist__import_input_show_btn') }}</base-btn>
-      <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+      <div :class="$style.pageInfo">
+        <h1 :class="$style.pageTitle">歌单</h1>
+        <p :class="$style.pageDesc">查看各大音乐平台的歌单</p>
+      </div>
+    </div>
+    <base-tab :model-value="source" :list="sourceList" item-label="name" @change="handleToggleSource" />
+    <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
+    <div :class="$style.header">
+      <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
     </div>
     <list-view :source="source" :tag-id="tagId" :sort-id="sortId" :page="page" />
     <open-list-modal v-model="visibleOpenSongListModal" :source-list="sourceList" />
+    <common-back-to-top />
   </div>
 </template>
 
@@ -125,6 +134,41 @@ export default {
   flex-flow: column nowrap;
   position: relative;
 }
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 30px 15px 14px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  color: var(--color-primary);
+  margin-right: 16px;
+}
+.pageInfo {
+  display: flex;
+  flex-flow: column nowrap;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: var(--color-font);
+  line-height: 1.3;
+}
+.pageDesc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--color-font-label);
+}
 .header {
   flex: none;
   width: 100%;
@@ -133,82 +177,6 @@ export default {
   // padding-right: 5px;
   // box-sizing: border-box;
   padding-bottom: 5px;
-}
-.left {
-  flex: auto;
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-.btn {
-  color: var(--color-font);
-  transition: color @transition-fast;
-  background: none !important;
-  &:hover {
-    color: var(--color-primary-font-hover);
-  }
-}
-
-
-.select {
-  font-size: 12px;
-  width: auto;
-  flex: none;
-  padding: 0 5px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-
-  :global {
-    .label-content {
-      background-color: transparent !important;
-      transition: color @transition-fast;
-      color: var(--color-font);
-      // line-height: 38px;
-      // height: 38px;
-      border-radius: 0;
-      &:hover {
-        // background: none !important;
-        color: var(--color-primary-font-hover);
-        .icon {
-          opacity: 1;
-          // color: var(--color-primary-font-hover);
-        }
-      }
-    }
-    // .label {
-    //   color: var(--color-font) !important;
-    // }
-    .icon {
-      svg {
-        width: .8em;
-      }
-      // opacity: .6;
-      // transition: color @transition-fast;
-      // color: var(--color-font-label);
-    }
-
-    .selection-list {
-      max-height: 500px;
-      box-shadow: 0 1px 4px 0 rgba(0,0,0,.2);
-      li {
-        // background-color: var(--color-main-background);
-        text-align: center;
-        line-height: 38px;
-        font-size: 13px;
-        &:hover {
-          background-color: var(--color-button-background-hover);
-        }
-        &:active {
-          background-color: var(--color-button-background-active);
-        }
-      }
-    }
-  }
 }
 
 </style>

@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#update {{ $t('setting__update') }}
 dd
+  h3 {{ $t('setting__update') }}
   .gap-top
     base-checkbox(id="setting__update_tryAutoUpdate" :model-value="appSetting['common.tryAutoUpdate']" :label="$t('setting__update_try_auto_update')" @update:model-value="updateSetting({'common.tryAutoUpdate': $event})")
   .gap-top
