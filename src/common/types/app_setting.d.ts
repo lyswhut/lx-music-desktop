@@ -160,9 +160,19 @@ declare global {
       'player.isShowLyricRoma': boolean
 
       /**
-       * 是否调换翻译歌词与罗马音歌词位置
+       * 是否显示谐音歌词
        */
-      'player.isSwapLyricTranslationAndRoma': boolean
+      'player.isShowLyricPhonetic': boolean
+
+      /**
+       * 是否启用罗马音逐字高亮（关闭则降级为纯文本以降低渲染开销）
+       */
+      'player.isShowLyricRomaWordByWord': boolean
+
+      /**
+       * 是否调换主歌词与罗马音歌词位置（开启后罗马音显示在主歌词上方）
+       */
+      'player.isSwapLyricMainAndRoma': boolean
 
       /**
        * 是否将歌词从简体转换为繁体

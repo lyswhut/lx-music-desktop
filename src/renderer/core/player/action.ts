@@ -171,6 +171,7 @@ const handleRestorePlay = async(restorePlayInfo: LX.Player.SavedPlayInfo) => {
       tlrc: lyricInfo.tlyric,
       lxlrc: lyricInfo.lxlyric,
       rlrc: lyricInfo.rlyric,
+      plrc: lyricInfo.plyric,
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
     window.app_event.lyricUpdated()
@@ -222,6 +223,7 @@ const handlePlay = () => {
       tlrc: lyricInfo.tlyric,
       lxlrc: lyricInfo.lxlyric,
       rlrc: lyricInfo.rlyric,
+      plrc: lyricInfo.plyric,
       rawlrc: lyricInfo.rawlrcInfo.lyric,
     })
     window.app_event.lyricUpdated()

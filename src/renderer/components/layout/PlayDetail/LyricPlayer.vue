@@ -27,10 +27,14 @@
     <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
       <div v-if="isShowLrcSelectContent" ref="dom_lrc_select_content" tabindex="-1" :class="[$style.lyricSelectContent, 'select', 'scroll', 'lyricSelectContent']" @contextmenu="handleCopySelectText">
         <div v-for="(info, index) in lyric.lines" :key="index" :class="[$style.lyricSelectline, { [$style.lrcActive]: lyric.line == index }]">
+          <template v-for="(lrc, i) in info.aboveLyrics" :key="`a${i}`">
+            <span :class="$style.lyricSelectlineExtended">{{ cleanFontTag(lrc) }}</span>
+            <br>
+          </template>
           <span>{{ info.text }}</span>
           <template v-for="(lrc, i) in info.extendedLyrics" :key="i">
             <br>
-            <span :class="$style.lyricSelectlineExtended">{{ lrc }}</span>
+            <span :class="$style.lyricSelectlineExtended">{{ cleanFontTag(lrc) }}</span>
           </template>
         </div>
       </div>
@@ -179,6 +183,8 @@ export default {
       handleShowLyricMenu,
       handleUpdateLyric,
       lyricInfo,
+      // 去掉逐字时间标记 <offset,duration>，复制弹窗里以纯文本显示
+      cleanFontTag: lrc => lrc.replace(/<\d+,\d+>/g, ''),
     }
   },
   methods: {
@@ -240,6 +246,15 @@ export default {
       &.font-mode .extended .font-lrc {
         transition: @transition-slow;
         transition-property: font-size, color;
+      }
+      // 逐字扩展行（如酷狗逐字音译）：span 与主歌词同款卡拉OK填充
+      &.font-mode .extended .font-lrc > span {
+        background-repeat: no-repeat;
+        background-color: var(--color-450);
+        background-image: -webkit-linear-gradient(top, var(--color-primary-dark-200), var(--color-primary-dark-200));
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background-size: 0 100%;
       }
 
       &.font-mode > .line > .font-lrc {

@@ -95,6 +95,8 @@ declare namespace LX {
       rlyric?: string | null
       // 逐字歌词
       lxlyric?: string | null
+      // 谐音歌词
+      plyric?: string | null
     }
 
     interface LyricInfoSave {
