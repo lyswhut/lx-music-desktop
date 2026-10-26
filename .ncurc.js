@@ -23,6 +23,7 @@ module.exports = {
     'eslint-plugin-vue',
     'vue-eslint-parser',
     // 'eslint-config-standard-with-typescript',
+    '@simonwep/pickr',
 
     'webpack',
   ],
