@@ -3,13 +3,7 @@
 对于日常使用 LX Music 的人可以试试迁移到 Any Listen，若遇到任何问题可以发 issue 反馈。
 Any Listen 的项目地址为 https://github.com/any-listen/any-listen
 
-### 优化
-
-- 优化 tx 推荐歌单列表
-- 优化禁用透明窗口的窗口边框显示效果
-
 ### 修复
 
+- 修复无法打开 kg 歌单的问题
 - 修复打开某些 kg 歌单时歌曲丢失的问题
-- 修复 Windows 7 无法启动的问题
-- 修复禁用透明窗口时按 F11 无法全屏的问题
