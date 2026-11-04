@@ -453,6 +453,7 @@ input, textarea {
   border-bottom: var(--color-list-header-border-bottom);
   padding-right: 6px;
   flex: none;
+  background-color: var(--color-primary-alpha-900);
 
   .num {
     .nobreak();
@@ -495,7 +496,7 @@ table {
     transition-property: background-color, color;
     // border-bottom: 1px solid @color-theme_2-line;
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: 14px;
 
     &:hover {
       background-color: var(--color-primary-background-hover);
@@ -565,6 +566,29 @@ table {
     //   // opacity: 0;
     //   // transition: opacity .1s ease;
     // }
+  }
+}
+
+.with-cover {
+  .thead th {
+    font-size: 13px;
+  }
+  .list .list-item {
+    font-size: 15px;
+    .list-item-cell {
+      line-height: 22px;
+    }
+    .list-item-cell.num {
+      font-size: 13px;
+    }
+    // 封面用 height: 80%，单元格必须撑到整行高度才能算出百分比
+    .list-item-cell.name {
+      align-self: stretch;
+      font-size: 13px;
+    }
+    .list-item-cell:not(.name):not(.num) {
+      font-size: 13px;
+    }
   }
 }
 

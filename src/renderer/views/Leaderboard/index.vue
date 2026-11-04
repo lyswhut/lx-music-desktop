@@ -1,12 +1,34 @@
 <template>
-  <div :class="$style.leaderboard">
-    <div :class="$style.lists">
-      <div :class="$style.listsSelect">
-        <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+  <div ref="rootRef" :class="$style.leaderboard">
+    <div ref="topBarRef" :class="$style.topBar">
+      <div :class="$style.pageHeader">
+        <div :class="$style.pageIcon">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.22 425.2" height="32" width="32" space="preserve">
+            <use xlink:href="#icon-leaderboard" />
+          </svg>
+        </div>
+        <div :class="$style.pageInfo">
+          <span :class="$style.pageTitle">{{ $t('leaderboard') }}</span>
+          <span :class="$style.pageDesc">{{ $t('leaderboard__desc') }}</span>
+        </div>
       </div>
-      <BoardList ref="boardListRef" :board-id="boardId" :source="source" @show-menu="$refs.musicListRef?.hideMenu()" />
+      <div :class="$style.header">
+        <div :class="$style.sourceWrap">
+          <span :class="$style.subLabel">{{ $t('search__category') }}:</span>
+          <div :class="$style.sourceTab">
+            <button
+              v-for="item in sourceList"
+              :key="item.id"
+              type="button"
+              :class="[$style.sourceBtn, { [$style.sourceBtnActive]: source == item.id }]"
+              @click="handleToggleSource(item.id)"
+            >{{ item.name }}</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div :class="$style.list">
+    <BoardList ref="boardListRef" :board-id="boardId" :source="source" @show-menu="$refs.musicListRef?.hideMenu()" @board-change="handleBoardChange" />
+    <div ref="listRef" :class="$style.list">
       <MusicList ref="musicListRef" :source="source" :board-id="boardId" @show-menu="$refs.boardListRef?.hideMenu()" />
     </div>
   </div>
@@ -24,6 +46,9 @@ import { useRoute, useRouter } from '@common/utils/vueRouter'
 
 const source = ref('')
 const boardId = ref(null)
+
+// 记住每个音源上次浏览的榜单，切回该音源时直接复用已加载的数据
+const lastBoardIds = new Map()
 
 const verifyQueryParams = async function(to, from, next) {
   let _source = to.query.source
@@ -44,6 +69,7 @@ const verifyQueryParams = async function(to, from, next) {
   next()
   source.value = _source
   boardId.value = _boardId
+  if (_boardId) lastBoardIds.set(_source, _boardId)
   void setLeaderboardSetting({ source: _source, boardId: _boardId })
 }
 
@@ -58,18 +84,32 @@ export default {
   setup() {
     const musicListRef = ref(null)
     const boardListRef = ref(null)
+    const rootRef = ref(null)
+    const topBarRef = ref(null)
+    const listRef = ref(null)
     const sourceList = computed(() => {
       return sources.map(s => ({ id: s, name: sourceNames.value[s] }))
     })
     const router = useRouter()
     const route = useRoute()
     const handleToggleSource = (id) => {
+      if (id == source.value) return
       void router.replace({
         path: route.path,
         query: {
           source: id,
+          boardId: lastBoardIds.get(id),
         },
       })
+    }
+
+    const handleBoardChange = () => {
+      const root = rootRef.value
+      const listEl = listRef.value
+      if (!root || !listEl) return
+      const top = listEl.offsetTop - (topBarRef.value?.offsetHeight ?? 0)
+      if (top <= root.scrollTop) return
+      root.scrollTo({ top, behavior: 'smooth' })
     }
 
     return {
@@ -77,8 +117,12 @@ export default {
       boardId,
       sourceList,
       handleToggleSource,
+      handleBoardChange,
       musicListRef,
       boardListRef,
+      rootRef,
+      topBarRef,
+      listRef,
     }
   },
 }
@@ -90,15 +134,111 @@ export default {
 .leaderboard {
   height: 100%;
   display: flex;
+  flex-flow: column nowrap;
   position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+// 标题与音源标签行整体吸顶，不随内容滚动
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex: none;
+  background-color: var(--color-content-background);
+}
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px 15px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  svg {
+    width: 36px;
+    height: 36px;
+    fill: currentColor;
+  }
+}
+.pageInfo {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+}
+.pageTitle {
+  font-size: 28px;
+  font-weight: normal;
+  color: var(--color-primary);
+}
+.pageDesc {
+  font-size: 13px;
+  color: var(--color-font-label);
 }
 .header {
   flex: none;
-  width: 100%;
   display: flex;
   flex-flow: row nowrap;
-
+  align-items: center;
+  padding: 5px 20px;
+  background-color: var(--color-content-background);
+  border-bottom: 1px solid var(--color-primary-light-400-alpha-300);
 }
+.sourceWrap {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.subLabel {
+  color: var(--color-font-label);
+  font-size: 13px;
+  flex: none;
+  margin-right: 6px;
+}
+.sourceTab {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 4px;
+}
+.sourceBtn {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-font);
+  font-size: 13px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease;
+  border-radius: 4px;
+
+  &:hover:not(.sourceBtnActive) {
+    background-color: var(--color-button-background-hover);
+  }
+}
+.sourceBtnActive {
+  color: var(--color-primary);
+  font-weight: 500;
+  background-color: var(--color-primary-light-400-alpha-300);
+}
+
 .tab {
   flex: auto;
 }
@@ -113,77 +253,14 @@ export default {
   flex-flow: column nowrap;
 }
 
-.lists {
-  flex: none;
-  width: 14.8%;
-  display: flex;
-  flex-flow: column nowrap;
-}
-.listsHeader {
-  position: relative;
-}
-
-.listsSelect {
-  font-size: 12px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-  >:global(.content) {
-    display: block;
-    width: 100%;
-  }
-  :global(.label-content) {
-    background-color: transparent !important;
-    line-height: 38px;
-    height: 38px;
-    border-radius: 0;
-    &:hover {
-      background: none !important;
-    }
-  }
-  :global(.label) {
-    color: var(--color-font) !important;
-  }
-  :global(.icon) {
-    opacity: .6;
-    transition: opacity .3s ease;
-  }
-
-  :global(.selection-list) {
-    max-height: 500px;
-    box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
-    li {
-      // background-color: var(--color-main-background);
-      line-height: 38px;
-      font-size: 13px;
-      &:hover {
-        background-color: var(--color-button-background-hover);
-      }
-      &:active {
-        background-color: var(--color-button-background-active);
-      }
-    }
-  }
-  // line-height: 38px;
-  // padding: 0 10px;
-  border-bottom: var(--color-list-header-border-bottom);
-  flex: none;
-}
-
 .list {
   position: relative;
   overflow: hidden;
+  flex: none;
   height: 100%;
-  flex: auto;
+  min-height: 300px;
   display: flex;
   flex-flow: column nowrap;
-  // .noItem {
-
-  // }
 }
 
 </style>

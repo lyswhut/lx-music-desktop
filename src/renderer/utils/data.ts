@@ -12,6 +12,8 @@ import {
   getSongListSetting as getSongListSettingFromData,
   saveLeaderboardSetting as saveLeaderboardSettingFromData,
   getLeaderboardSetting as getLeaderboardSettingFromData,
+  saveLeaderboardCache as saveLeaderboardCacheFromData,
+  getLeaderboardCache as getLeaderboardCacheFromData,
   saveViewPrevState as saveViewPrevStateFromData,
 } from '@renderer/utils/ipc'
 import { throttle } from '@common/utils'
@@ -26,6 +28,22 @@ let listUpdateInfo: LX.List.ListUpdateInfo
 let searchSetting: typeof DEFAULT_SETTING['search']
 let songListSetting: typeof DEFAULT_SETTING['songList']
 let leaderboardSetting: typeof DEFAULT_SETTING['leaderboard']
+
+export interface LeaderboardCacheBoardEntry {
+  time: number
+  data: { source: string, list: Array<{ id: string, name: string, bangid: string }> }
+}
+export interface LeaderboardCachePreviewEntry {
+  time: number
+  songs: Array<{ name: string, singer: string }>
+  cover: string
+}
+export interface LeaderboardCacheData {
+  boards: Record<string, LeaderboardCacheBoardEntry | undefined>
+  previews: Record<string, LeaderboardCachePreviewEntry | undefined>
+}
+
+let leaderboardCachePromise: Promise<LeaderboardCacheData> | null = null
 
 const saveListPositionThrottle = throttle(() => {
   saveListPositionInfoFromData(listPosition)
@@ -42,6 +60,9 @@ const saveLeaderboardSettingThrottle = throttle(() => {
 const saveViewPrevStateThrottle = throttle((state) => {
   saveViewPrevStateFromData(state)
 }, 1000)
+const saveLeaderboardCacheThrottle = throttle(() => {
+  void leaderboardCachePromise?.then(cache => saveLeaderboardCacheFromData(cache))
+}, 2000)
 
 const initPosition = async() => {
   // eslint-disable-next-line require-atomic-updates
@@ -181,6 +202,19 @@ export const setLeaderboardSetting = async(setting: Partial<typeof DEFAULT_SETTI
   if (!leaderboardSetting) await getLeaderboardSetting()
   leaderboardSetting = Object.assign(leaderboardSetting, setting)
   saveLeaderboardSettingThrottle()
+}
+
+// 排行榜磁盘缓存（榜单列表 + 卡片预览数据），启动时恢复、加载成功后节流写回
+export const getLeaderboardCacheData = async(): Promise<LeaderboardCacheData> => {
+  // eslint-disable-next-line require-atomic-updates
+  leaderboardCachePromise ??= getLeaderboardCacheFromData().then((cache: any) => ({
+    boards: cache?.boards ?? {},
+    previews: cache?.previews ?? {},
+  }))
+  return leaderboardCachePromise
+}
+export const saveLeaderboardCacheData = (_cache: LeaderboardCacheData) => {
+  saveLeaderboardCacheThrottle()
 }
 
 export const saveViewPrevState = (state: typeof DEFAULT_SETTING['viewPrevState']) => {

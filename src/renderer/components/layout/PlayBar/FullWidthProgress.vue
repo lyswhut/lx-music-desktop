@@ -19,7 +19,6 @@
       <span>{{ maxPlayTimeStr }}</span>
     </div>
     <!-- <play-progress /> -->
-    <control-btns />
     <div :class="$style.playBtnContent">
       <div :class="$style.playBtn" :aria-label="$t('player__prev')" @click="playPrev()">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
@@ -40,6 +39,7 @@
         </svg>
       </div>
     </div>
+    <control-btns />
   </div>
 </template>
 
@@ -281,7 +281,6 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   padding-left: 10px;
-  padding-right: 15px;
   gap: 18px;
 }
 

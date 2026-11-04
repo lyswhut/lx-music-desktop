@@ -59,7 +59,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   font-size: 12px;
-  gap: 25px;
+  gap: 8px;
   padding: 0 15px;
 
   &.left {
@@ -74,47 +74,28 @@ export default {
 }
 .listItem {
   display: block;
-  // padding: 5px 15px;
   cursor: pointer;
-  transition: color @transition-normal;
-
+  transition: color @transition-fast, background-color @transition-fast;
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: var(--color-font-label);
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-font-hover);
+    background-color: var(--color-primary-light-400-alpha-300);
   }
-
 
   &.active {
     color: var(--color-primary);
+    background-color: var(--color-primary-light-400-alpha-300);
+    font-weight: 500;
     cursor: default;
-
-    >.label {
-      &:after {
-        // background-color: var(--color-primary);
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
   }
 }
 
 .label {
   display: block;
   position: relative;
-  padding: 8px 0;
-  &:after {
-    .mixin-after();
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 2px;
-    border-radius: 20px;
-    background-color: transparent;
-    transform: translateY(-4px);
-    opacity: 0;
-    background-color: var(--color-primary-alpha-300);
-    transition: @transition-fast;
-    transition-property: transform, opacity;
-  }
+  padding: 4px 0;
 }
 </style>

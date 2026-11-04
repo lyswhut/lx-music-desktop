@@ -135,7 +135,8 @@ export default {
         albumAudioId: item.album_audio_id,
         source: 'kg',
         interval: formatPlayTime(item.duration),
-        img: null,
+        // 榜单接口用 {size} 模板给封面地址，和歌单一样展开成固定尺寸
+        img: (item.album_sizable_cover && item.album_sizable_cover.replace('{size}', 240)) || null,
         lrc: null,
         hash: item.hash,
         otherSource: null,

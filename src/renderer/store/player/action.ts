@@ -15,6 +15,7 @@ import {
 } from './state'
 import { getListMusicsFromCache } from '@renderer/store/list/action'
 import { downloadList } from '@renderer/store/download/state'
+import { localMusicList } from '@renderer/store/localMusic/state'
 import { setProgress } from './playProgress'
 import { playNext } from '@renderer/core/player'
 import { LIST_IDS } from '@common/constants'
@@ -74,7 +75,9 @@ export const setPlayListId = (listId: string | null) => {
 }
 
 export const getList = (listId: string | null): Array<LX.Music.MusicInfo | LX.Download.ListItem> => {
-  return listId == LIST_IDS.DOWNLOAD ? downloadList : getListMusicsFromCache(listId)
+  if (listId == LIST_IDS.DOWNLOAD) return downloadList
+  if (listId == LIST_IDS.LOCAL) return localMusicList
+  return getListMusicsFromCache(listId)
 }
 
 /**

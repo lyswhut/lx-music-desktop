@@ -20,8 +20,8 @@
           <use xlink:href="#icon-prevMusic" />
         </svg>
       </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
+      <div :class="[$style.playBtn, $style.playToggleBtn]" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+        <svg v-if="isPlay" :class="$style.pauseGlyph" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-pause" />
         </svg>
         <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
@@ -58,29 +58,32 @@ const {
 @import '@renderer/assets/styles/layout.less';
 
 .footer {
-  flex: 0 0 100px;
+  flex: 0 0 auto;
   overflow: hidden;
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
+  width: 100%;
+  max-width: var(--playDetail-panel-width, 300px);
+  margin-top: 20px;
 }
 .footerLeft {
-  flex: auto;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
-  padding: 13px 13px 13px 30px;
   overflow: hidden;
 }
 
 .progressContainer {
   width: 100%;
   position: relative;
-  padding: 3px 0;
+  padding: 2px 0;
 }
 
 .progressContent {
   position: relative;
-  height: 16px;
-  padding: 5px 0;
+  height: 12px;
+  padding: 4px 0;
   width: 100%;
 }
 .progress {
@@ -94,8 +97,9 @@ const {
 }
 .timeLabel {
   width: 100%;
-  height: 18px;
+  height: 20px;
   display: flex;
+  justify-content: center;
   span {
     font-size: 13px;
   }
@@ -106,37 +110,55 @@ const {
 
 .playControl {
   flex: none;
-  height: 100%;
+  width: 100%;
+  height: 52px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  padding: 0 25px;
+  // 与上方封面竖直居中对齐
+  padding: 5px 0;
+  gap: 12px;
   color: var(--color-button-font);
 }
 .playBtn {
-  height: 40%;
-  padding: 5px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   flex: none;
-  // transition: @transition-normal;
-  // transition-property: color;
   color: var(--color-button-font);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   opacity: 1;
-  cursor: pointer;
 
-  +.playBtn {
-    margin-left: 10px;
-  }
   svg {
     fill: currentColor;
     filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
   }
   &:hover {
-    opacity: 0.8;
+    opacity: 0.85;
+    transform: scale(1.05);
   }
   &:active {
-    opacity: 0.6;
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+// 播放/暂停做成实心圆徽标，图标反白挖空；上一首/下一首保持裸图标
+.playToggleBtn {
+  height: 42px;
+  width: 42px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #fff;
+
+  // 播放三角的画面只占画布 58%，暂停竖条占满，两者要分开给尺寸才能一样粗
+  svg {
+    height: 51%;
+  }
+  .pauseGlyph {
+    height: 40%;
   }
 }
 

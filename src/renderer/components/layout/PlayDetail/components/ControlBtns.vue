@@ -111,12 +111,15 @@ export default {
 .footerLeftControlBtns {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  width: 100%;
+  // 两端各留 6px 间距，首尾图标与进度条两端对齐；空间不足时靠 gap 兜底
+  gap: 6px;
+  padding: 0 6px;
 
   button {
-    width: 20px;
+    width: 26px;
     color: var(--color-font);
   }
 
@@ -144,7 +147,7 @@ export default {
   }
 
   .lrcBtn {
-    width: 20px;
+    width: 26px;
   }
 }
 

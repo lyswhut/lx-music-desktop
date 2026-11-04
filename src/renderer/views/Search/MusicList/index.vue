@@ -8,8 +8,11 @@
       :list="listInfo.list"
       :no-item="listInfo.noItemLabel"
       :source-tag="sourceId == 'all'"
+      :infinite-scroll="true"
+      :loading-more="isLoadingMore"
+      show-cover
       check-api-source
-      @toggle-page="handleTogglePage"
+      @load-more="handleLoadMore"
       @play-list="handlePlayList"
     />
   </div>
@@ -18,7 +21,6 @@
 <script setup lang="ts">
 import { watch } from '@common/utils/vueTools'
 import { searchText } from '@renderer/store/search/state'
-import { useRouter, useRoute } from '@common/utils/vueRouter'
 import useList, { type SearchSource } from './useList'
 
 interface Props {
@@ -27,15 +29,15 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const router = useRouter()
-const route = useRoute()
 
 const {
   listRef,
   listInfo,
   search,
+  isLoadingMore,
+  handleLoadMore,
   handlePlayList,
-} = useList()
+} = useList(() => props.sourceId)
 
 watch(() => [props.sourceId, props.page], ([sourceId, page]) => {
   setTimeout(() => {
@@ -49,16 +51,6 @@ watch(searchText, (searchText) => {
 }, {
   immediate: true,
 })
-
-const handleTogglePage = (page: number) => {
-  void router.replace({
-    path: route.path,
-    query: {
-      ...route.query,
-      page,
-    },
-  })
-}
 
 
 </script>

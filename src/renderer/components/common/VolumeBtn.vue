@@ -1,41 +1,50 @@
 <template>
-  <material-popup-btn :class="$style.btnContent">
-    <button :class="$style.btn" :aria-label="isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`" @wheel="handleWheel">
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
-        <use :xlink:href="icon" />
-      </svg>
-    </button>
-    <template #content>
-      <div :class="$style.setting">
-        <div :class="$style.info">
-          <span>{{ Math.trunc(volume * 100) }}%</span>
-          <base-checkbox
-            id="player__volume_mute"
-            :model-value="isMute"
-            :label="$t('player__volume_mute_label')"
-            @update:model-value="saveVolumeIsMute($event)"
-          />
-        </div>
-        <base-slider-bar :class="$style.slider" :value="volume" :min="0" :max="1" :step="0.01" @change="handleUpdateVolume" />
-      </div>
-    </template>
-  </material-popup-btn>
+  <button ref="dom_btn" :class="$style.btn" :aria-label="isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`" @wheel="handleWheel" @click="handleToggleMute">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
+      <use :xlink:href="icon" />
+    </svg>
+  </button>
+  <Teleport to="#root">
+    <div v-if="showVolumeBubble" ref="dom_bubble" :class="$style.bubble" :style="bubbleStyle">
+      {{ isMute ? $t('player__volume_muted') : `${$t('player__volume')}${Math.trunc(volume * 100)}%` }}
+    </div>
+  </Teleport>
 </template>
 
 <script setup>
-import { computed } from '@common/utils/vueTools'
+import { computed, ref, reactive, watch, nextTick } from '@common/utils/vueTools'
 // import useNextTogglePlay from '@renderer/utils/compositions/useNextTogglePlay'
 // import useToggleDesktopLyric from '@renderer/utils/compositions/useToggleDesktopLyric'
 // import { musicInfo, playMusicInfo } from '@renderer/store/player/state'
 import { saveVolumeIsMute } from '@renderer/store/setting'
-import { volume, isMute } from '@renderer/store/player/volume'
+import { volume, isMute, showVolumeBubble, flashVolumeBubble } from '@renderer/store/player/volume'
+
+const dom_btn = ref(null)
+const dom_bubble = ref(null)
+const bubbleStyle = reactive({ top: '0px', left: '0px' })
+
+watch(showVolumeBubble, async(visible) => {
+  if (!visible || !dom_btn.value) return
+  await nextTick()
+  const rect = dom_btn.value.getBoundingClientRect()
+  if (!rect.width) return
+  const bubbleWidth = dom_bubble.value?.offsetWidth ?? 0
+  const bubbleHeight = dom_bubble.value?.offsetHeight ?? 0
+  let left = rect.left + rect.width / 2 - window.lx.rootOffset - bubbleWidth / 2
+  const maxLeft = document.body.clientWidth - bubbleWidth - 10
+  if (left < 10) left = 10
+  else if (left > maxLeft) left = maxLeft
+  bubbleStyle.left = left + 'px'
+  bubbleStyle.top = rect.top - window.lx.rootOffset - bubbleHeight - 6 + 'px'
+})
 
 const handleWheel = (event) => {
   window.app_event.setVolume(Math.round(volume.value * 100 + (-event.deltaY / 100 * 2)) / 100)
+  flashVolumeBubble()
 }
 
-const handleUpdateVolume = (val) => {
-  window.app_event.setVolume(val)
+const handleToggleMute = () => {
+  saveVolumeIsMute(!isMute.value)
 }
 
 const icon = computed(() => {
@@ -54,13 +63,26 @@ const icon = computed(() => {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
-.btnContent {
-  flex: none;
-  height: 100%;
+
+.bubble {
+  position: absolute;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--color-font);
+  background-color: var(--color-content-background);
+  border: 1px solid var(--color-primary-light-400-alpha-300);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+  pointer-events: none;
+  z-index: 100;
 }
 
 .btn {
   position: relative;
+  flex: none;
+  height: 100%;
   // color: var(--color-button-font);
   justify-content: center;
   align-items: center;
@@ -88,29 +110,6 @@ const icon = computed(() => {
       opacity: 1;
     }
   }
-}
-
-.setting {
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 2px 3px;
-  gap: 8px;
-  width: 140px;
-}
-
-.info {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  span {
-    line-height: 1.2;
-  }
-}
-
-.slider {
-  width: 100%;
 }
 
 </style>

@@ -151,6 +151,13 @@ watch(isFullscreen, isFullscreen => {
   window.lx.rootOffset = window.dt || isFullscreen ? 0 : 8
 }, { immediate: true })
 
+export const isAsideExpanded = ref(true)
+
+/**
+ * 是否处于迷你播放模式
+ */
+export const isMiniMode = ref(false)
+
 export const themeShouldUseDarkColors = ref(window.shouldUseDarkColors)
 
 

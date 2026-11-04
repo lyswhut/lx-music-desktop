@@ -1,18 +1,19 @@
 <template>
-  <div id="container" class="view-container">
-    <layout-aside id="left" />
-    <div id="right">
+  <div id="container" class="view-container" :class="{ 'mini-mode': isMiniMode }">
+    <layout-aside v-show="!isMiniMode" id="left" />
+    <div v-show="!isMiniMode" id="right">
       <layout-toolbar id="toolbar" />
       <layout-view id="view" />
       <layout-play-bar id="player" />
     </div>
+    <layout-mini-player v-if="isMiniMode" />
     <layout-icons />
     <layout-change-log-modal />
     <layout-update-modal />
     <layout-pact-modal />
     <layout-sync-mode-modal />
     <layout-sync-auth-code-modal />
-    <layout-play-detail />
+    <layout-play-detail v-if="!isMiniMode" />
   </div>
 </template>
 
@@ -21,11 +22,14 @@ import { onMounted } from '@common/utils/vueTools'
 // import BubbleCursor from '@common/utils/effects/cursor-effects/bubbleCursor'
 // import '@common/utils/effects/snow.min'
 import useApp from '@renderer/core/useApp'
+import { isMiniMode } from '@renderer/store'
+import { initMiniMode } from '@renderer/utils/compositions/useMiniMode'
 
 useApp()
 
 onMounted(() => {
   document.getElementById('root').style.display = 'block'
+  initMiniMode()
 
   // const styles = getComputedStyle(document.documentElement)
   // window.lxData.bubbleCursor = new BubbleCursor({
@@ -129,6 +133,16 @@ body {
   display: flex;
   height: 100%;
   background-color: var(--color-app-background);
+
+  &.mini-mode {
+    background: transparent;
+  }
+}
+
+// 迷你模式下让外层容器背景透明，露出真正的圆角窗口（仅透明窗口模式）
+.transparent #root:has(.mini-mode) {
+  background: transparent;
+  box-shadow: none;
 }
 
 #left {

@@ -19,15 +19,14 @@
       <span>{{ maxPlayTimeStr }}</span>
     </div>
     <!-- <play-progress /> -->
-    <control-btns />
     <div :class="$style.playBtnContent">
       <div :class="$style.playBtn" :aria-label="$t('player__prev')" @click="playPrev()">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-prevMusic" />
         </svg>
       </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
-        <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
+      <div :class="[$style.playBtn, $style.playToggleBtn]" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+        <svg v-if="isPlay" :class="$style.pauseGlyph" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-pause" />
         </svg>
         <svg v-else version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
@@ -40,6 +39,7 @@
         </svg>
       </div>
     </div>
+    <ControlBtns />
   </div>
 </template>
 
@@ -296,19 +296,21 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   padding-left: 10px;
-  padding-right: 15px;
-  gap: 18px;
+  gap: 12px;
 }
 
 .playBtn {
   flex: none;
-  height: 52%;
+  height: 32px;
   // margin-top: -2px;
   transition: @transition-fast;
   transition-property: color, opacity;
   color: var(--color-button-font);
   opacity: 1;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   svg {
     fill: currentColor;
@@ -319,6 +321,22 @@ export default {
   }
   &:active {
     opacity: 0.6;
+  }
+}
+// 播放/暂停做成实心圆徽标，图标反白挖空；上一首/下一首保持裸图标
+.playToggleBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #fff;
+
+  // 播放三角的画面只占画布 58%，暂停竖条占满，两者要分开给尺寸才能一样粗
+  svg {
+    height: 51%;
+  }
+  .pauseGlyph {
+    height: 40%;
   }
 }
 

@@ -52,13 +52,14 @@ const useKeyEvent = ({ handleSelectAllData, listRef }: {
 export default ({ props, listRef }: {
   props: {
     list: LX.Music.MusicInfoOnline[]
+    showCover?: boolean
   }
   listRef: Ref<any>
 }) => {
   const selectedList = ref<LX.Music.MusicInfoOnline[]>([])
   let lastSelectIndex = -1
   const listItemHeight = computed(() => {
-    return Math.ceil((isFullscreen.value ? getFontSizeWithScreen() : appSetting['common.fontSize']) * 2.3)
+    return Math.ceil((isFullscreen.value ? getFontSizeWithScreen() : appSetting['common.fontSize']) * (props.showCover ? 3.5 : 2.3))
   })
 
   const removeAllSelect = () => {

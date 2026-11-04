@@ -6,24 +6,24 @@
       </div>
       <div :class="$style.songListHeaderMiddle">
         <h3 :title="listDetailInfo.info.name">{{ listDetailInfo.info.name }}</h3>
-        <p :title="listDetailInfo.info.desc">{{ listDetailInfo.info.desc }}</p>
-      </div>
-      <div :class="$style.songListHeaderRight">
-        <base-btn
-          :class="$style.headerRightBtn"
-          :disabled="!!listDetailInfo.noItemLabel"
-          @click="playSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.list)"
-        >
-          {{ $t('list__play') }}
-        </base-btn>
-        <base-btn
-          :class="$style.headerRightBtn"
-          :disabled="!!listDetailInfo.noItemLabel"
-          @click="addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name)"
-        >
-          {{ $t('list__collect') }}
-        </base-btn>
-        <base-btn :class="$style.headerRightBtn" @click="handleBack">{{ $t('back') }}</base-btn>
+        <p :title="descText">{{ descText }}</p>
+        <div :class="$style.songListHeaderBtns">
+          <base-btn
+            :class="$style.actionBtn"
+            :disabled="!!listDetailInfo.noItemLabel"
+            @click="playSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.list)"
+          >
+            {{ $t('list__play') }}
+          </base-btn>
+          <base-btn
+            :class="$style.actionBtn"
+            :disabled="!!listDetailInfo.noItemLabel"
+            @click="addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name)"
+          >
+            {{ $t('list__collect') }}
+          </base-btn>
+          <base-btn :class="$style.actionBtn" @click="handleBack">{{ $t('back') }}</base-btn>
+        </div>
       </div>
     </div>
     <div :class="$style.list">
@@ -34,6 +34,7 @@
         :total="listDetailInfo.total"
         :list="listDetailInfo.list"
         :no-item="listDetailInfo.noItemLabel"
+        show-cover
         @play-list="handlePlayList"
         @toggle-page="togglePage"
       />
@@ -42,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { ref, watch } from '@common/utils/vueTools'
+import { ref, watch, computed } from '@common/utils/vueTools'
 import { listDetailInfo } from '@renderer/store/songList/state'
 import { setVisibleListDetail } from '@renderer/store/songList/action'
 import { useRouter } from '@common/utils/vueRouter'
@@ -129,6 +130,23 @@ export default {
 
     useKeyBack(handleBack)
 
+    // 歌单简介来自音源，可能带 HTML 标签与实体（如 <br />&nbsp;），去除后纯文本展示
+    const descText = computed(() => {
+      const desc = listDetailInfo.info.desc
+      if (!desc) return ''
+      return desc
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<\/?[^>]+>/g, '')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#39;/gi, "'")
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/&amp;/gi, '&')
+        .replace(/\s+/g, ' ')
+        .trim()
+    })
+
     watch([source, id, page, refresh], async([_source, _id, _page, _refresh]) => {
       if (!_source || !_id) return router.replace({ path: '/songList/list' })
       // console.log(_source, _id, _page, _refresh, picUrl.value)
@@ -147,6 +165,7 @@ export default {
       page,
       picUrl,
       listDetailInfo,
+      descText,
       listRef,
       togglePage,
       addSongListDetail,
@@ -175,13 +194,15 @@ export default {
   flex: none;
   display: flex;
   flex-flow: row nowrap;
-  height: 80px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
 }
 .songListHeaderLeft {
   flex: none;
   margin-left: 15px;
-  height: 100%;
-  aspect-ratio: 1 / 1;
+  width: 110px;
+  height: 110px;
   position: relative;
   overflow: hidden;
   border-radius: 4px;
@@ -209,34 +230,33 @@ export default {
   min-width: 0;
   h3 {
     .mixin-ellipsis-1();
-    line-height: 1.2;
-    padding-bottom: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding-bottom: 6px;
     color: var(--color-font);
   }
   p {
     .mixin-ellipsis(3);
     font-size: 12px;
-    line-height: 1.2;
+    line-height: 1.5;
     color: var(--color-font-label);
   }
 }
-.songListHeaderRight {
+.songListHeaderBtns {
   flex: none;
   display: flex;
   align-items: center;
-  padding-right: 15px;
+  gap: 8px;
+  padding-top: 8px;
+}
 
-  .headerRightBtn {
-    border-radius: 0;
-    &:first-child {
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
-    }
-    &:last-child {
-      border-top-right-radius: 4px;
-      border-bottom-right-radius: 4px;
-    }
-  }
+.actionBtn {
+  min-width: 30px;
+  height: 26px;
+  padding: 0 6px;
+  font-size: 13px;
+  border-radius: 6px;
 }
 
 .list {
@@ -247,4 +267,3 @@ export default {
   height: 100%;
 }
 </style>
-
