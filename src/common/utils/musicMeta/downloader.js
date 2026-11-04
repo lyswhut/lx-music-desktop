@@ -22,7 +22,7 @@ const sendRequest = (url, proxy) => {
   }
 
   // console.log(httpOptions)
-  return url.protocol === 'https:'
+  return urlParse.protocol === 'https:'
     ? https.request(httpOptions)
     : http.request(httpOptions)
 }
