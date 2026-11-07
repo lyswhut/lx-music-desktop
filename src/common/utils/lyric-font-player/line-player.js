@@ -101,7 +101,7 @@ export default class LinePlayer {
               linesMap[timeStr].extendedLyrics.push(text)
               continue
             }
-            const timeArr = timeStr.split(':')
+            const timeArr = time.split(':')
             if (timeArr.length > 3) continue
             else if (timeArr.length < 3) for (let i = 3 - timeArr.length; i--;) timeArr.unshift('0')
             if (timeArr[2].indexOf('.') > -1) timeArr.splice(2, 1, ...timeArr[2].split('.'))
