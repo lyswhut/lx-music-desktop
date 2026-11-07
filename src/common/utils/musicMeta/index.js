@@ -5,7 +5,7 @@ const flacMeta = require('./flacMeta')
 exports.setMeta = (filePath, meta, proxy) => {
   switch (path.extname(filePath)) {
     case '.mp3':
-      mp3Meta(filePath, meta, proxy)
+      mp3Meta(filePath, meta, proxy).catch(err => console.error(err))
       break
     case '.flac':
       flacMeta(filePath, meta, proxy)
