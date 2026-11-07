@@ -8,7 +8,7 @@ exports.setMeta = (filePath, meta, proxy) => {
       mp3Meta(filePath, meta, proxy).catch(err => console.error(err))
       break
     case '.flac':
-      flacMeta(filePath, meta, proxy)
+      flacMeta(filePath, meta, proxy).catch(err => console.error(err))
       break
   }
 }
