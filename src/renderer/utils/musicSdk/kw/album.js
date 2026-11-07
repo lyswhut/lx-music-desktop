@@ -6,6 +6,31 @@ import { formatSinger, objStr2JSON } from './util'
 export default {
   limit_list: 36,
   limit_song: 1000,
+  /**
+   * 专辑搜索
+   * @param {*} keywords 关键词
+   * @param {*} page 页码（从1开始）
+   * @param {*} limit 每页数量
+   */
+  search(keywords, page = 1, limit = 20) {
+    const requestObj = httpFetch(`https://search.kuwo.cn/r.s?all=${encodeURIComponent(keywords)}&ft=album&itemset=web_2013&client=kt&pn=${page - 1}&rn=${limit}&rformat=json&encoding=utf8`)
+    requestObj.promise = requestObj.promise.then(({ body }) => {
+      const data = objStr2JSON(body)
+      const list = (data.abslist ?? []).map(item => ({
+        id: item.albumid,
+        name: decodeName(item.name),
+        img: item.pic ? (item.pic.startsWith('http') ? item.pic : `https://img4.kuwo.cn/star/albumcover/256${item.pic}`) : null,
+        desc: decodeName(item.info ?? ''),
+        author: decodeName(item.artist ?? ''),
+        play_count: null,
+        time: item.publishDate ?? '',
+        song_count: null,
+        source: 'kw',
+      }))
+      return { list, total: parseInt(data.TOTAL, 10) || page * limit, page, limit, source: 'kw' }
+    })
+    return requestObj
+  },
   filterListDetail(rawList, albumName, albumId) {
     // console.log(rawList)
     // console.log(rawList.length, rawList2.length)

@@ -1,7 +1,32 @@
 import { getMusicInfosByList } from './musicInfo'
 import { createHttpFetch } from './util'
+import { decodeName } from '../../index'
 
 export default {
+  /**
+   * 专辑搜索
+   * @param {*} keywords 关键词
+   * @param {*} page 页码（从1开始）
+   * @param {*} limit 每页数量
+   */
+  search(keywords, page = 1, limit = 20) {
+    return createHttpFetch(`http://mobilecdnbj.kugou.com/api/v3/search/album?keyword=${encodeURIComponent(keywords)}&page=${page}&pagesize=${limit}&showtype=1`).then(body => {
+      const info = body?.data?.info ?? []
+      const list = info.map(item => ({
+        id: item.albumid,
+        name: decodeName(String(item.albumname ?? '').replace(/<[^>]+>/g, '')),
+        img: (item.imgurl ?? '').replace('{size}', '240'),
+        desc: decodeName(String(item.intro ?? '').replace(/<[^>]+>/g, '')),
+        author: decodeName(String(item.singername ?? '').replace(/<[^>]+>/g, '')),
+        play_count: null,
+        time: item.publishtime ?? '',
+        song_count: item.songcount ?? null,
+        source: 'kg',
+      }))
+      return { list, total: body?.data?.total ?? page * limit, page, limit, source: 'kg' }
+    })
+  },
+
   /**
    * 通过AlbumId获取专辑信息
    * @param {*} id
