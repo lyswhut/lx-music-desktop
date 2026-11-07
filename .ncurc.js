@@ -23,9 +23,11 @@ module.exports = {
     'eslint-plugin-vue',
     'vue-eslint-parser',
     // 'eslint-config-standard-with-typescript',
-    '@simonwep/pickr',
 
     'webpack',
+    'webpack-cli',
+    'webpack-merge',
+    'webpack-dev-server',
   ],
 
   // target: 'newest',
@@ -55,6 +57,5 @@ module.exports = {
   //   'vue-eslint-parser',
   //   'better-sqlite3',
   //   '@types/better-sqlite3',
-  //   'webpack-dev-server',
   // ],
 }
