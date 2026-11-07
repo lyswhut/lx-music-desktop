@@ -14,8 +14,8 @@ module.exports = async(filePath, meta, proxy) => {
 
   let picPath
   try {
-    if (meta.APIC && /^http/.test(meta.APIC)) {
-      const ext = path.extname(meta.APIC)
+    if (meta.APIC && /^https?:/.test(meta.APIC)) {
+      const ext = path.extname(meta.APIC.split('?')[0])
       picPath = filePath.replace(/\.mp3$/, '') + (ext ? ext.replace(extReg, '$1') : '.jpg')
       let picUrl = meta.APIC
       if (picUrl.includes('music.126.net')) picUrl += `${picUrl.includes('?') ? '&' : '?'}param=500y500`
