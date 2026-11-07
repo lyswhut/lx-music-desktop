@@ -1,16 +1,17 @@
 const fs = require('fs')
 const path = require('path')
 
-exports.jp = (...p) => p.length ? path.join(__dirname, ...p) : __dirname
+exports.jp = (...p) => (p.length ? path.join(__dirname, ...p) : __dirname)
 
-exports.copyFile = (source, target) => new Promise((resolve, reject) => {
-  const rd = fs.createReadStream(source)
-  rd.on('error', err => reject(err))
-  const wr = fs.createWriteStream(target)
-  wr.on('error', err => reject(err))
-  wr.on('close', () => resolve())
-  rd.pipe(wr)
-})
+exports.copyFile = (source, target) =>
+  new Promise((resolve, reject) => {
+    const rd = fs.createReadStream(source)
+    rd.on('error', (err) => reject(err))
+    const wr = fs.createWriteStream(target)
+    wr.on('error', (err) => reject(err))
+    wr.on('close', () => resolve())
+    rd.pipe(wr)
+  })
 
 /**
  * 时间格式化
@@ -23,7 +24,19 @@ exports.formatTime = (d, b) => {
   const month = fm(_date.getMonth() + 1)
   const day = fm(_date.getDate())
   if (!b) return year + '-' + month + '-' + day
-  return year + '-' + month + '-' + day + ' ' + fm(_date.getHours()) + ':' + fm(_date.getMinutes()) + ':' + fm(_date.getSeconds())
+  return (
+    year +
+    '-' +
+    month +
+    '-' +
+    day +
+    ' ' +
+    fm(_date.getHours()) +
+    ':' +
+    fm(_date.getMinutes()) +
+    ':' +
+    fm(_date.getSeconds())
+  )
 }
 
 function fm(value) {
@@ -31,17 +44,17 @@ function fm(value) {
   return value
 }
 
-exports.sizeFormate = size => {
+exports.sizeFormate = (size) => {
   // https://gist.github.com/thomseddon/3511330
   if (!size) return '0 b'
-  let units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
+  let units = ['b', 'kB', 'MB', 'GB', 'TB']
   let number = Math.floor(Math.log(size) / Math.log(1024))
   return `${(size / Math.pow(1024, Math.floor(number))).toFixed(2)} ${units[number]}`
 }
 
-exports.parseArgv = argv => {
+exports.parseArgv = (argv) => {
   const params = {}
-  argv.forEach(item => {
+  argv.forEach((item) => {
     const argv = item.split('=')
     switch (argv[0]) {
       case 'ver':

@@ -241,7 +241,7 @@ export const playListById = (listId: string, id: string) => {
   const prevListId = playInfo.playerListId
   setPlayListId(listId)
   // pause()
-  const musicInfo = getList(listId).find(m => m.id == id)
+  const musicInfo = getList(listId).find((m) => m.id == id)
   if (!musicInfo) return
   setPlayMusicInfo(listId, musicInfo)
   if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()

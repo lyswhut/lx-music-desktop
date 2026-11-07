@@ -36,7 +36,6 @@ export const setUserApi = async(apiId: string) => {
       if (api.id != appSetting['common.apiSource']) setApiSource(api.id)
     })
   } else {
-    // @ts-expect-error
     qualityList.value = musicSdk.supportQuality[apiId] ?? {}
     apiSource.value = apiId
     void setUserApiAction(apiId)

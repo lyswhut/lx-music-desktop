@@ -7,24 +7,27 @@ import { clipFileNameLength, clipNameLength, formatMusicName } from '@common/uti
 /**
  * 保存歌词文件
  */
-export const saveLrc = async(lrcData: LX.Music.LyricInfo, info: {
-  filePath: string
-  format: LX.LyricFormat
-  downloadLxlrc: boolean
-  downloadTlrc: boolean
-  downloadRlrc: boolean
-}) => {
+export const saveLrc = async(
+  lrcData: LX.Music.LyricInfo,
+  info: {
+    filePath: string
+    format: LX.LyricFormat
+    downloadLxlrc: boolean
+    downloadTlrc: boolean
+    downloadRlrc: boolean
+  },
+) => {
   const iconv = (await import('iconv-lite')).default
   const lrc = buildLyrics(lrcData, info.downloadLxlrc, info.downloadTlrc, info.downloadRlrc)
   switch (info.format) {
     case 'gbk':
-      fs.writeFile(info.filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), err => {
+      fs.writeFile(info.filePath, iconv.encode(lrc, 'gbk', { addBOM: true }), (err) => {
         if (err) console.log(err)
       })
       break
     case 'utf8':
     default:
-      fs.writeFile(info.filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), err => {
+      fs.writeFile(info.filePath, iconv.encode(lrc, 'utf8', { addBOM: true }), (err) => {
         if (err) console.log(err)
       })
       break
@@ -33,13 +36,15 @@ export const saveLrc = async(lrcData: LX.Music.LyricInfo, info: {
 
 export const getExt = (type: string): LX.Download.FileExt => {
   switch (type) {
-    case 'ape':
-      return 'ape'
     case 'flac':
+    case 'master':
+    case 'atmos_plus':
+    case 'atmos':
+    case 'hires':
     case 'flac24bit':
+    case 'vinyl':
+    case 'dolby':
       return 'flac'
-    case 'wav':
-      return 'wav'
     case '128k':
     case '192k':
     case '320k':
@@ -54,7 +59,11 @@ export const getExt = (type: string): LX.Download.FileExt => {
  * @param type
  * @param qualityList
  */
-export const getMusicType = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quality, qualityList: LX.QualityList): LX.Quality => {
+export const getMusicType = (
+  musicInfo: LX.Music.MusicInfoOnline,
+  type: LX.Quality,
+  qualityList: LX.QualityList,
+): LX.Quality => {
   let list = qualityList[musicInfo.source]
   if (!list) return '128k'
   if (!list.includes(type)) type = list[list.length - 1]
@@ -65,15 +74,16 @@ export const getMusicType = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quali
   return '128k'
 }
 
-// const checkExistList = (list: LX.Download.ListItem[], musicInfo: LX.Music.MusicInfo, type: LX.Quality, ext: string): boolean => {
-//   return list.some(s => s.id === musicInfo.id && (s.metadata.type === type || s.metadata.ext === ext))
-// }
-
-export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quality, fileName: string, qualityList: LX.QualityList, listId?: string) => {
+export const createDownloadInfo = (
+  musicInfo: LX.Music.MusicInfoOnline,
+  type: LX.Quality,
+  fileName: string,
+  qualityList: LX.QualityList,
+  listId?: string,
+) => {
   type = getMusicType(musicInfo, type, qualityList)
   let ext = getExt(type)
   const key = `${musicInfo.id}_${type}_${ext}`
-  // if (checkExistList(list, musicInfo, type, ext)) return null
   const downloadInfo: LX.Download.ListItem = {
     id: key,
     isComplate: false,
@@ -91,20 +101,13 @@ export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX
       ext,
       filePath: '',
       listId,
-      fileName: filterFileName(`${clipFileNameLength(formatMusicName(fileName, musicInfo.name, clipNameLength(musicInfo.singer)))}.${ext}`),
+      fileName: filterFileName(
+        `${clipFileNameLength(
+          formatMusicName(fileName, musicInfo.name, clipNameLength(musicInfo.singer)),
+        )}.${ext}`,
+      ),
     },
   }
-  // downloadInfo.metadata.filePath = joinPath(savePath, downloadInfo.metadata.fileName)
-  // commit('addTask', downloadInfo)
-
-  // 删除同路径下的同名文件
-  // TODO
-  // void removeFile(downloadInfo.metadata.filePath)
-  // .catch(err => {
-  //   if (err.code !== 'ENOENT') {
-  //     return commit('setStatusText', { downloadInfo, text: '文件删除失败' })
-  //   }
-  // })
 
   return downloadInfo
 }

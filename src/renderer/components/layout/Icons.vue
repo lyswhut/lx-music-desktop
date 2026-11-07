@@ -158,6 +158,12 @@
       <g id="icon-window-close-2" fill="currentColor">
         <path d="M13.46,12L19,17.54V19H17.54L12,13.46L6.46,19H5V17.54L10.54,12L5,6.46V5H6.46L12,10.54L17.54,5H19V6.46L13.46,12Z" />
       </g>
+      <g id="icon-window-maximize" fill="currentColor">
+        <path d="M4,4H20V20H4V4M6,8V18H18V8H6Z" />
+      </g>
+      <g id="icon-window-restore" fill="currentColor">
+        <path d="M4,8H8V4H20V16H16V20H4V8M16,8V14H18V6H10V8H16M6,12V18H14V12H6Z" />
+      </g>
       <g id="icon-list-loop" fill="currentColor">
         <!-- 0 0 24 24-->
         <path d="M0 0h24v24H0z" fill="none" />

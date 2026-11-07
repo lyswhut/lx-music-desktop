@@ -23,7 +23,7 @@ export const requestMsg = {
  * @param {*} url
  * @param {*} options
  */
-export const httpFetch = async<T = unknown> (url: string, options: Options) => {
+export const httpFetch = async <T = unknown>(url: string, options: Options) => {
   return request<T>(url, options).catch(async(err: any) => {
     // console.log('出错', err)
     if (err.message === 'socket hang up') {

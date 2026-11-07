@@ -1,7 +1,11 @@
 <template>
   <div :class="[$style.sliderContent, { [$style.disabled]: disabled }, className]">
     <div :class="[$style.slider]">
-      <div ref="dom_sliderBar" :class="$style.sliderBar" :style="{ transform: `scaleX(${(value - min) / (max - min) || 0})` }" />
+      <div
+        ref="dom_sliderBar"
+        :class="$style.sliderBar"
+        :style="{ transform: `scaleX(${(value - min) / (max - min) || 0})` }"
+      />
     </div>
     <div :class="$style.sliderMask" @mousedown="handleSliderMsDown" />
   </div>
@@ -47,25 +51,25 @@ export default {
     }
     const dom_sliderBar = ref(null)
 
-    const clampValue = val => {
+    const clampValue = (val) => {
       if (val < props.min) return props.min
       if (val > props.max) return props.max
       return val
     }
-    const getSteppedValue = val => {
+    const getSteppedValue = (val) => {
       const step = props.step > 0 ? props.step : 1
       const stepped = Math.round((val - props.min) / step) * step + props.min
       return clampValue(Number(stepped.toFixed(10)))
     }
     const getSliderWidth = () => dom_sliderBar.value?.clientWidth || 0
     const getRange = () => props.max - props.min
-    const emitSteppedValue = rawValue => {
+    const emitSteppedValue = (rawValue) => {
       const value = getSteppedValue(rawValue)
       emit('change', value)
       return value
     }
 
-    const handleSliderMsDown = event => {
+    const handleSliderMsDown = (event) => {
       if (props.disabled) return
       const width = getSliderWidth()
       if (!width) return
@@ -80,7 +84,7 @@ export default {
     const handleSliderMsUp = () => {
       sliderEvent.isMsDown = false
     }
-    const handleSliderMsMove = event => {
+    const handleSliderMsMove = (event) => {
       if (!sliderEvent.isMsDown || props.disabled) return
       const width = getSliderWidth()
       if (!width) return
@@ -116,13 +120,13 @@ export default {
   // margin-right: 10px;
   display: flex;
   align-items: center;
-  opacity: .5;
+  opacity: 0.5;
   transition: opacity @transition-normal;
   &:hover {
     opacity: 1;
   }
   &.disabled {
-    opacity: .3;
+    opacity: 0.3;
     .sliderMask {
       cursor: default;
     }
@@ -170,5 +174,4 @@ export default {
   height: 100%;
   cursor: pointer;
 }
-
 </style>

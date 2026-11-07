@@ -476,10 +476,12 @@ export const hotKeyGetStatus = async() => {
 }
 
 // 主进程操作播放器状态
-export const onPlayerAction = (listener: LX.IpcRendererEventListenerParams<{
-  action: LX.Player.StatusButtonActions
-  data?: unknown
-}>): RemoveListener => {
+export const onPlayerAction = (
+  listener: LX.IpcRendererEventListenerParams<{
+    action: LX.Player.StatusButtonActions
+    data?: unknown
+  }>,
+): RemoveListener => {
   rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.player_action_on_button_click, listener)
   return () => {
     rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.player_action_on_button_click, listener)
@@ -523,7 +525,7 @@ export const openSaveDir = async(options: Electron.SaveDialogOptions) => {
  * 在资源管理器中定位文件
  */
 export const openDirInExplorer = async(path: string) => {
-  return rendererSend<string>(WIN_MAIN_RENDERER_EVENT_NAME.open_dir_in_explorer, path)
+  rendererSend<string>(WIN_MAIN_RENDERER_EVENT_NAME.open_dir_in_explorer, path)
 }
 
 /**
@@ -695,6 +697,20 @@ export const maxWindow = () => {
 }
 
 /**
+ * 取消最大化窗口
+ */
+export const unmaxWindow = () => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.unmax)
+}
+
+/**
+ * 切换最大化状态
+ */
+export const toggleMaxWindow = () => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.toggle_max)
+}
+
+/**
  * 最小化、最大化窗口切换
  */
 export const minMaxWindowToggle = () => {
@@ -728,6 +744,20 @@ export const onFocus = (listener: LX.IpcRendererEventListener): RemoveListener =
   rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.focus, listener)
   return () => {
     rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.focus, listener)
+  }
+}
+
+/**
+ * 窗口最大化状态变化事件
+ * @param listener
+ * @returns
+ */
+export const onMaximizeStateChange = (
+  listener: LX.IpcRendererEventListenerParams<boolean>,
+): RemoveListener => {
+  rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.on_maximize_state_change, listener)
+  return () => {
+    rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.on_maximize_state_change, listener)
   }
 }
 
@@ -797,7 +827,7 @@ export const sendSyncAction = async(action: LX.Sync.SyncServiceActions) => {
  * 获取同步服务端连接设备历史列表
  * @returns
  */
-export const getSyncServerDevices = () => {
+export const getSyncServerDevices = async() => {
   return rendererInvoke<LX.Sync.ServerDevices>(WIN_MAIN_RENDERER_EVENT_NAME.sync_get_server_devices)
 }
 
@@ -805,7 +835,7 @@ export const getSyncServerDevices = () => {
  * 移除同步服务端连接设备
  * @returns
  */
-export const removeSyncServerDevice = (clientId: string) => {
+export const removeSyncServerDevice = async(clientId: string) => {
   return rendererInvoke<string>(WIN_MAIN_RENDERER_EVENT_NAME.sync_remove_server_device, clientId)
 }
 

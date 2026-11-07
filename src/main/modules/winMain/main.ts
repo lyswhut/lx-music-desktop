@@ -2,9 +2,9 @@ import { BrowserWindow, dialog, session } from 'electron'
 import path from 'node:path'
 import { createTaskBarButtons, getWindowSizeInfo } from './utils'
 import { getOSVersion, getPlatform, isLinux, isMac, isWin } from '@common/utils'
-import { getProxy, openDevTools as handleOpenDevTools } from '@main/utils'
+import { getProxy, openDevTools as handleOpenDevTools, updateSetting } from '@main/utils'
 import { mainSend } from '@common/mainIpc'
-import { sendFocus, sendTaskbarButtonClick } from './rendererEvent'
+import { sendFocus, sendTaskbarButtonClick, sendMaximizeStateChange } from './rendererEvent'
 import { encodePath } from '@common/utils/electron'
 
 let browserWindow: Electron.BrowserWindow | null = null
@@ -71,12 +71,36 @@ const winEvent = () => {
   browserWindow.on('hide', () => {
     global.lx.event_app.main_window_hide()
   })
+
+  browserWindow.on('maximize', () => {
+    sendMaximizeStateChange(true)
+  })
+  browserWindow.on('unmaximize', () => {
+    sendMaximizeStateChange(false)
+  })
+
+  // 用户手动调整窗口尺寸时保存（最大化/最小化/全屏状态除外）
+  browserWindow.on('resized', () => {
+    if (!browserWindow || browserWindow.isMaximized() || browserWindow.isMinimized() || browserWindow.isFullScreen()) return
+    const bounds = browserWindow.getBounds()
+    updateSetting({
+      'common.windowWidth': bounds.width,
+      'common.windowHeight': bounds.height,
+    })
+  })
 }
 
 
 export const createWindow = () => {
   closeWindow()
+
+  // 优先使用用户自定义窗口尺寸，否则使用预设尺寸
+  const customWidth = global.lx.appSetting['common.windowWidth']
+  const customHeight = global.lx.appSetting['common.windowHeight']
   const windowSizeInfo = getWindowSizeInfo(global.lx.appSetting['common.windowSizeId'])
+
+  const width = customWidth ?? windowSizeInfo.width
+  const height = customHeight ?? windowSizeInfo.height
 
   const { shouldUseDarkColors, theme } = global.lx.theme
   const ses = session.fromPartition('persist:win-main')
@@ -87,16 +111,18 @@ export const createWindow = () => {
    * Initial window options
    */
   const options: Electron.BrowserWindowConstructorOptions = {
-    height: windowSizeInfo.height,
+    height,
     useContentSize: true,
-    width: windowSizeInfo.width,
+    width,
+    minWidth: 750,
+    minHeight: 550,
     frame: false,
     transparent: !global.envParams.cmdParams.dt,
     hasShadow: global.envParams.cmdParams.dt,
     // enableRemoteModule: false,
     // icon: join(global.__static, isWin ? 'icons/256x256.ico' : 'icons/512x512.png'),
-    resizable: false,
-    maximizable: false,
+    resizable: !!global.envParams.cmdParams.dt,
+    maximizable: !!global.envParams.cmdParams.dt,
     fullscreenable: true,
     roundedCorners: global.envParams.cmdParams.dt,
     show: false,
@@ -112,15 +138,22 @@ export const createWindow = () => {
       spellcheck: false, // 禁用拼写检查器
     },
   }
-  if (global.envParams.cmdParams.dt) options.backgroundColor = theme.colors['--color-primary-light-1000']
+
+  if (global.envParams.cmdParams.dt) { options.backgroundColor = theme.colors['--color-primary-light-1000'] }
   if (global.lx.appSetting['common.startInFullscreen']) {
     options.fullscreen = true
     if (isLinux) options.resizable = true
   }
   browserWindow = new BrowserWindow(options)
 
-  const winURL = process.env.NODE_ENV !== 'production' ? 'http://localhost:9080' : `file://${path.join(encodePath(__dirname), 'index.html')}`
-  void browserWindow.loadURL(winURL + `?os=${getPlatform()}&osver=${encodeURIComponent(getOSVersion())}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`)
+  const winURL =
+    process.env.NODE_ENV !== 'production'
+      ? 'http://localhost:9080'
+      : `file://${path.join(encodePath(__dirname), 'index.html')}`
+  void browserWindow.loadURL(
+    winURL +
+      `?os=${getPlatform()}&osver=${encodeURIComponent(getOSVersion())}&dt=${global.envParams.cmdParams.dt}&dark=${shouldUseDarkColors}&theme=${encodeURIComponent(JSON.stringify(theme))}`,
+  )
 
   winEvent()
 
@@ -193,6 +226,10 @@ export const maximize = () => {
 export const unmaximize = () => {
   if (!browserWindow) return
   browserWindow.unmaximize()
+}
+export const isWindowMaximized = (): boolean => {
+  if (!browserWindow) return false
+  return browserWindow.isMaximized()
 }
 export const toggleHide = () => {
   if (!browserWindow) return

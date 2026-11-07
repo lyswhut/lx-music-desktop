@@ -35,10 +35,10 @@ dd
 
 dd
   h3#basic_play_quality {{ $t('setting__play_playQuality') }}
-  div
-    base-checkbox.gap-left(
+  .quality-list-vertical
+    base-checkbox(
       v-for="item in playQualityList" :id="`setting_play_quality_${item}`" :key="item"
-      name="setting_play_quality" need :model-value="appSetting['player.playQuality']" :value="item" :label="item"
+      name="setting_play_quality" need :model-value="appSetting['player.playQuality']" :value="item" :label="qualityNames[item] || item"
       @update:model-value="updateSetting({'player.playQuality': $event})")
 
 dd(:aria-label="$t('setting__play_mediaDevice_title')")
@@ -49,7 +49,7 @@ dd(:aria-label="$t('setting__play_mediaDevice_title')")
 
 <script>
 import { ref, onBeforeUnmount, watch } from '@common/utils/vueTools'
-import { hasInitedAdvancedAudioFeatures, setMediaDeviceId } from '@renderer/plugins/player'
+import { setMediaDeviceId } from '@renderer/plugins/player'
 import { dialog } from '@renderer/plugins/Dialog'
 import { useI18n } from '@renderer/plugins/i18n'
 import { appSetting, saveMediaDeviceId, updateSetting } from '@renderer/store/setting'
@@ -63,7 +63,21 @@ export default {
   name: 'SettingPlay',
   setup() {
     const t = useI18n()
-    const playQualityList = [...TRY_QUALITYS_LIST, '128k'].reverse()
+    const playQualityList = [...TRY_QUALITYS_LIST, '128k', '96k'].reverse()
+    const qualityNames = {
+      '96k': '低清音质 96 kbps',
+      '128k': '普通音质 128 kbps',
+      '192k': '中等音质 192 kbps',
+      '320k': '高清音质 320 kbps',
+      flac: '高清无损 FLAC',
+      hires: '高解析度 Hi-Res',
+      flac24bit: '高解析度无损 FLAC 24-bit',
+      vinyl: '黑胶音质 Vinyl',
+      dolby: '杜比全景声 Dolby Atmos',
+      atmos: '臻品音质 Atmos 2.0',
+      atmos_plus: '臻品全景声 Atmos+ 2.0',
+      master: '臻品母带 Master 3.0',
+    }
 
     const mediaDevices = ref([])
     const getMediaDevice = async() => {
@@ -81,28 +95,18 @@ export default {
 
     const mediaDeviceId = ref(appSetting['player.mediaDeviceId'])
     const handleMediaDeviceIdChnage = async() => {
-      if (hasInitedAdvancedAudioFeatures()) {
+      // AudioContext.setSinkId（Chromium 110+）支持后，音效开启时也可直接切换输出设备
+      try {
+        await setMediaDeviceId(mediaDeviceId.value)
+        appSetting['player.mediaDeviceId'] = mediaDeviceId.value
+        saveMediaDeviceId(mediaDeviceId.value)
+      } catch (error) {
+        console.error('Failed to set media device:', error)
         await dialog({
           message: t('setting__play_media_device_error_tip'),
           confirmButtonText: t('alert_button_text'),
         })
         mediaDeviceId.value = appSetting['player.mediaDeviceId']
-      } else if (appSetting['player.audioVisualization']) {
-        const confirm = await dialog.confirm({
-          message: t('setting__play_media_device_tip'),
-          cancelButtonText: t('cancel_button_text'),
-          confirmButtonText: t('confirm_button_text'),
-        })
-        if (confirm) {
-          updateSetting({
-            'player.audioVisualization': false,
-            'player.mediaDeviceId': mediaDeviceId.value,
-          })
-        } else {
-          mediaDeviceId.value = appSetting['player.mediaDeviceId']
-        }
-      } else {
-        appSetting['player.mediaDeviceId'] = mediaDeviceId.value
       }
     }
     watch(() => appSetting['player.mediaDeviceId'], val => {
@@ -148,8 +152,24 @@ export default {
       isMaxOutputChannelCount,
       handleUpdateMaxOutputChannelCount,
       playQualityList,
+      qualityNames,
       isMac,
     }
   },
 }
 </script>
+<style lang="less" scoped>
+.quality-list-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  :deep(label) {
+    cursor: pointer;
+
+    span {
+      cursor: pointer;
+    }
+  }
+}
+</style>

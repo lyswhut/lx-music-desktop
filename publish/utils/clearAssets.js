@@ -5,4 +5,3 @@ module.exports = () => {
   del.sync(['publish/assets/*'])
   // return copyFile(false)
 }
-

@@ -5,14 +5,14 @@ import getStore from '@main/utils/store'
 
 export default () => {
   mainHandle<LX.SoundEffect.EQPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_eq_preset, async() => {
-    return getStore(STORE_NAMES.SOUND_EFFECT).get('eqPreset') as LX.SoundEffect.EQPreset[] | null ?? []
+    return getStore(STORE_NAMES.SOUND_EFFECT).get<LX.SoundEffect.EQPreset[] | null>('eqPreset') ?? []
   })
   mainOn<LX.SoundEffect.EQPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_eq_preset, ({ params }) => {
     getStore(STORE_NAMES.SOUND_EFFECT).set('eqPreset', params)
   })
 
   mainHandle<LX.SoundEffect.ConvolutionPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.get_sound_effect_convolution_preset, async() => {
-    return getStore(STORE_NAMES.SOUND_EFFECT).get('convolutionPreset') as LX.SoundEffect.ConvolutionPreset[] | null ?? []
+    return getStore(STORE_NAMES.SOUND_EFFECT).get<LX.SoundEffect.ConvolutionPreset[] | null>('convolutionPreset') ?? []
   })
   mainOn<LX.SoundEffect.ConvolutionPreset[]>(WIN_MAIN_RENDERER_EVENT_NAME.save_sound_effect_convolution_preset, ({ params }) => {
     getStore(STORE_NAMES.SOUND_EFFECT).set('convolutionPreset', params)

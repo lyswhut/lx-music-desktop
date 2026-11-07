@@ -9,17 +9,20 @@ import { nativeTheme, powerSaveBlocker } from 'electron'
 import { joinPath } from '@common/utils/nodejs'
 import themes from '@common/theme/index.json'
 
-export const parseEnvParams = (argv = process.argv): { cmdParams: LX.CmdParams, deeplink: string | null } => {
+export const parseEnvParams = (
+  argv = process.argv,
+): { cmdParams: LX.CmdParams, deeplink: string | null } => {
   const cmdParams: LX.CmdParams = {}
   let deeplink = null
-  const rx = /^-\w+/
+  const rx = /^--?\w+/ // Support both -dt and --dt
   for (let param of argv) {
     if (URL_SCHEME_RXP.test(param)) {
       deeplink = param
     }
 
     if (!rx.test(param)) continue
-    param = param.substring(1)
+    // Remove leading dashes (- or --)
+    param = param.replace(/^--?/, '')
     let index = param.indexOf('=')
     if (index < 0) {
       cmdParams[param] = true
@@ -27,6 +30,12 @@ export const parseEnvParams = (argv = process.argv): { cmdParams: LX.CmdParams, 
       cmdParams[param.substring(0, index)] = param.substring(index + 1)
     }
   }
+
+  // Default to non-transparent mode (--dt) if not specified
+  if (cmdParams.dt === undefined) {
+    cmdParams.dt = true
+  }
+
   return {
     cmdParams,
     deeplink,
@@ -137,7 +146,7 @@ export const updateSetting = (setting?: Partial<LX.AppSetting>, isInit: boolean 
 export const initSetting = async() => {
   const electronStore_config = getStore(STORE_NAMES.APP_SETTINGS)
 
-  let setting = electronStore_config.get('setting') as LX.AppSetting | undefined
+  let setting = electronStore_config.get<LX.AppSetting | undefined>('setting')
 
   // migrate setting
   if (!setting) {
@@ -157,8 +166,8 @@ export const initSetting = async() => {
 export const initHotKey = async() => {
   const electronStore_hotKey = getStore(STORE_NAMES.HOTKEY)
 
-  let localConfig = electronStore_hotKey.get('local') as LX.HotKeyConfig | null
-  let globalConfig = electronStore_hotKey.get('global') as LX.HotKeyConfig | null
+  let localConfig = electronStore_hotKey.get<LX.HotKeyConfig | null>('local')
+  let globalConfig = electronStore_hotKey.get<LX.HotKeyConfig | null>('global')
 
   if (globalConfig) {
     // 移除v2.2.0及之前设置的全局媒体快捷键注册
@@ -210,7 +219,7 @@ export const openDevTools = (webContents: Electron.WebContents) => {
 
 let userThemes: LX.Theme[]
 export const getAllThemes = () => {
-  userThemes ??= getStore(STORE_NAMES.THEME).get('themes') as (LX.Theme[] | null) ?? []
+  userThemes ??= getStore(STORE_NAMES.THEME).get<LX.Theme[] | null>('themes') ?? []
   return {
     themes,
     userThemes,
@@ -255,7 +264,7 @@ export const getTheme = () => {
   // themeId = 'black'
   let theme = themes.find(theme => theme.id == themeId)
   if (!theme) {
-    userThemes = getStore(STORE_NAMES.THEME).get('themes') as LX.Theme[] | null ?? []
+    userThemes = getStore(STORE_NAMES.THEME).get<LX.Theme[] | null>('themes') ?? []
     theme = userThemes.find(theme => theme.id == themeId)
     if (theme) {
       if (theme.config.extInfo['--background-image'] != 'none') {

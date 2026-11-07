@@ -18,6 +18,35 @@ import { DOWNLOAD_STATUS } from '@common/constants'
 import { proxy } from '../index'
 import { buildSavePath } from './utils'
 
+// 音质顺序：从低到高
+export const QUALITY_ORDER: LX.Quality[] = [
+  '96k', '128k', '192k', '320k', 'flac', 'flac24bit', 'hires', 'vinyl', 'dolby', 'atmos', 'atmos_plus', 'master',
+]
+
+/**
+ * 根据回退策略获取备选音质列表
+ */
+export const getFallbackQualities = (
+  requestedQuality: LX.Quality,
+  availableQualities: LX.Quality[],
+  strategy: 'downgrade' | 'upgrade' | 'max' | 'min',
+): LX.Quality[] => {
+  const requestedIndex = QUALITY_ORDER.indexOf(requestedQuality)
+  if (requestedIndex < 0) return []
+  switch (strategy) {
+    case 'downgrade':
+      return QUALITY_ORDER.slice(0, requestedIndex).reverse().filter(q => availableQualities.includes(q))
+    case 'upgrade':
+      return QUALITY_ORDER.slice(requestedIndex + 1).filter(q => availableQualities.includes(q))
+    case 'max':
+      return [...QUALITY_ORDER].reverse().filter(q => availableQualities.includes(q) && q !== requestedQuality)
+    case 'min':
+      return QUALITY_ORDER.filter(q => availableQualities.includes(q) && q !== requestedQuality)
+    default:
+      return []
+  }
+}
+
 const waitingUpdateTasks = new Map<string, LX.Download.ListItem>()
 let timer: NodeJS.Timeout | null = null
 const throttleUpdateTask = (tasks: LX.Download.ListItem[]) => {
@@ -147,7 +176,6 @@ const getProxy = () => {
  * @param downloadInfo 下载任务信息
  */
 const saveMeta = (downloadInfo: LX.Download.ListItem) => {
-  if (downloadInfo.metadata.quality === 'ape') return
   const isUseOtherSource = appSetting['download.isUseOtherSource']
   const tasks: [Promise<string | null>, Promise<LX.Player.LyricInfo | null>] = [
     appSetting['download.isEmbedPic']
@@ -194,7 +222,11 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
     if (lrcs.lyric) {
       lrcs.lyric = fixKgLyric(lrcs.lyric)
       const info = {
-        filePath: downloadInfo.metadata.filePath.substring(0, downloadInfo.metadata.filePath.lastIndexOf('.')) + '.lrc',
+        filePath:
+          downloadInfo.metadata.filePath.substring(
+            0,
+            downloadInfo.metadata.filePath.lastIndexOf('.'),
+          ) + '.lrc',
         format: appSetting['download.lrcFormat'],
         downloadLxlrc: appSetting['download.isDownloadLxLrc'],
         downloadTlrc: appSetting['download.isDownloadTLrc'],
@@ -207,19 +239,66 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
 
 const getUrl = async(downloadInfo: LX.Download.ListItem, isRefresh: boolean = false) => {
   let toggleMusicInfo = downloadInfo.metadata.musicInfo.meta.toggleMusicInfo
-  return (toggleMusicInfo ? getMusicUrl({
-    musicInfo: toggleMusicInfo,
-    isRefresh,
-    quality: downloadInfo.metadata.quality,
-    allowToggleSource: false,
-  }) : Promise.reject(new Error('not found'))).catch(() => {
-    return getMusicUrl({
-      musicInfo: downloadInfo.metadata.musicInfo,
-      isRefresh: false,
-      quality: downloadInfo.metadata.quality,
-      allowToggleSource: appSetting['download.isUseOtherSource'],
+  const requestedQuality = downloadInfo.metadata.quality
+
+  const tryWithQuality = async(quality: LX.Quality): Promise<string> => {
+    return (toggleMusicInfo
+      ? getMusicUrl({
+        musicInfo: toggleMusicInfo,
+        isRefresh,
+        quality,
+        allowToggleSource: false,
+      })
+      : Promise.reject(new Error('not found'))).catch(async() => {
+      return getMusicUrl({
+        musicInfo: downloadInfo.metadata.musicInfo,
+        isRefresh: false,
+        quality,
+        allowToggleSource: appSetting['download.isUseOtherSource'],
+      })
     })
-  }).catch(() => '')
+  }
+
+  try {
+    // 首先尝试请求的音质
+    return await tryWithQuality(requestedQuality)
+  } catch {
+    // 请求音质不可用时按策略回退
+    const musicInfo = toggleMusicInfo ?? downloadInfo.metadata.musicInfo
+    const availableQualities = qualityList.value[musicInfo.source] ?? []
+
+    if (musicInfo.meta._qualitys) {
+      const musicAvailableQualities = Object.keys(musicInfo.meta._qualitys)
+        .filter(q => musicInfo.meta._qualitys[q as LX.Quality]) as LX.Quality[]
+      const filteredQualities = availableQualities.filter(q => musicAvailableQualities.includes(q))
+
+      const fallbackStrategy = appSetting['download.qualityFallbackStrategy'] as 'downgrade' | 'upgrade' | 'max' | 'min'
+      const fallbackQualities = getFallbackQualities(requestedQuality, filteredQualities, fallbackStrategy)
+
+      for (const fallbackQuality of fallbackQualities) {
+        try {
+          const url = await tryWithQuality(fallbackQuality)
+          if (url) {
+            // 更新下载任务的音质为实际使用的音质
+            downloadInfo.metadata.quality = fallbackQuality
+
+            if (fallbackQuality !== requestedQuality) {
+              setStatusText(downloadInfo, window.i18n.t('download_quality_fallback_notice', {
+                requested: requestedQuality,
+                actual: fallbackQuality,
+              }))
+            }
+
+            return url
+          }
+        } catch {
+          continue
+        }
+      }
+    }
+
+    return ''
+  }
 }
 const handleRefreshUrl = (downloadInfo: LX.Download.ListItem) => {
   setStatusText(downloadInfo, window.i18n.t('download_status_error_refresh_url'))
@@ -229,7 +308,7 @@ const handleRefreshUrl = (downloadInfo: LX.Download.ListItem) => {
     isRefresh: true,
     quality: downloadInfo.metadata.quality,
     allowToggleSource: false,
-  }) : Promise.reject(new Error('not found'))).catch(() => {
+  }) : Promise.reject(new Error('not found'))).catch(async() => {
     return getMusicUrl({
       musicInfo: downloadInfo.metadata.musicInfo,
       isRefresh: true,

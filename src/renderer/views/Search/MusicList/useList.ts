@@ -24,7 +24,7 @@ export default () => {
   })
 
   const search = (text: string, source: SearchSource, page: number) => {
-    listInfo.value = listInfos[source] as ListInfo
+    listInfo.value = listInfos[source]!
     if (text.length) void addHistoryWord(text)
     void searchMusic(text, page, source).then((list: LX.Music.MusicInfo[]) => {
       if (list.length) {

@@ -23,7 +23,7 @@ export const registerAction = (onListChanged: (listIds: string[]) => void) => {
  */
 export const getListMusicsFromCache = (listId: string | null): LX.Music.MusicInfo[] => {
   if (!listId) return []
-  if (allMusicList.has(listId)) return allMusicList.get(listId) as LX.Music.MusicInfo[]
+  if (allMusicList.has(listId)) return allMusicList.get(listId)!
   return []
 }
 

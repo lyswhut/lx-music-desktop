@@ -244,7 +244,11 @@ export const listenerAppEvent = (startApp: () => void) => {
     } else setProxyByHost()
   }
   global.lx.event_app.on('updated_config', (keys, setting) => {
-    if (keys.includes('network.proxy.enable') || (global.lx.appSetting['network.proxy.enable'] && keys.some(k => k.includes('network.proxy.')))) {
+    if (
+      keys.includes('network.proxy.enable') ||
+      (global.lx.appSetting['network.proxy.enable'] &&
+        keys.some((k) => k.includes('network.proxy.')))
+    ) {
       setProxy()
     }
 
@@ -324,7 +328,7 @@ export const initAppSetting = async() => {
     global.lx.appSetting = (await initSetting()).setting
     if (!dbFileExists) await migrateDBData().catch(err => { log.error(err) })
     initTheme()
-    if (envParams.cmdParams.dt == null) envParams.cmdParams.dt = !global.lx.appSetting['common.transparentWindow']
+    if (envParams.cmdParams.dt == null) { envParams.cmdParams.dt = !global.lx.appSetting['common.transparentWindow'] }
   }
   // global.lx.theme = getTheme()
 

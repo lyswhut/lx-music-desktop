@@ -43,6 +43,14 @@ export class AppEvent extends Event {
   }
 
   /**
+   * 拖动进度条时实时更新
+   * @param progress 当前拖动的进度
+   */
+  progressDragging(progress: number) {
+    this.emit('progressDragging', progress)
+  }
+
+  /**
    * 设置音量大小
    * @param volume 音量大小
    */

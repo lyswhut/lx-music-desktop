@@ -63,6 +63,12 @@ export const pickrTools: PickrTools = {
       },
     })
 
+    // pickr 1.10.x 起 default 配置色不再生效：其初始化回放的是内部 _color（恒为初始黑色），
+    // 且该回放被推迟到选择器可见时的 rAF 中。创建后立即显式补设一次，
+    // 否则预览色块与输入框默认显示为黑色，直到手动重置。change 仅由用户交互触发，
+    // 此处调用不会产生设置回写。
+    pickrTools.pickr.setColor(color)
+
     let swatchselectColor: any
 
     const throttleChange = throttle((color: any, source: string) => {

@@ -5,15 +5,16 @@ declare namespace LX {
       mode?: Electron.ProgressBarOptions['mode']
     }
 
-    type StatusButtonActions = 'unCollect'
-    | 'collect'
-    | 'prev'
-    | 'pause'
-    | 'play'
-    | 'next'
-    | 'seek'
-    | 'volume'
-    | 'mute'
+    type StatusButtonActions =
+      | 'unCollect'
+      | 'collect'
+      | 'prev'
+      | 'pause'
+      | 'play'
+      | 'next'
+      | 'seek'
+      | 'volume'
+      | 'mute'
 
     interface LyricInfo extends LX.Music.LyricInfo {
       rawlrcInfo: LX.Music.LyricInfo

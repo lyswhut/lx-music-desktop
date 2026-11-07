@@ -152,7 +152,7 @@ const handler: LX.Sync.ServerSyncHandlerListActions<LX.Sync.Server.Socket> = {
     await handleRemoteListAction(action)
     const userSpace = getUserSpace(socket.userInfo.name)
     const key = await userSpace.listManage.createSnapshot()
-    userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, key)
+    void userSpace.listManage.updateDeviceSnapshotKey(socket.keyInfo.clientId, key)
     const currentUserName = socket.userInfo.name
     const currentId = socket.keyInfo.clientId
     socket.broadcast((client) => {

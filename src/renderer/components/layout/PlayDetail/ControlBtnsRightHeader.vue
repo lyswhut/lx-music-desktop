@@ -10,22 +10,24 @@ div(:class="$style.header")
     button(type="button" :class="$style.min" :aria-label="$t('min')" ignore-tip :title="$t('min')" @click="minWindow")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
         use(xlink:href="#icon-window-minimize-2")
-
-    //- button(type="button" :class="$style.max" @click="max")
+    button(v-if="isMaximizable" type="button" :class="$style.max" :aria-label="isMaximized ? $t('restore') : $t('max')" ignore-tip :title="isMaximized ? $t('restore') : $t('max')" @click="toggleMaxWindow")
+      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
+        use(:xlink:href="isMaximized ? '#icon-window-restore' : '#icon-window-maximize'")
     button(type="button" :class="$style.close" :aria-label="$t('close')" ignore-tip :title="$t('close')" @click="closeWindow")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve")
         use(xlink:href="#icon-window-close-2")
 </template>
 
-
-<script setup>
+<script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
 import { setShowPlayerDetail } from '@renderer/store/player/action'
-import { closeWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
+import { closeWindow, minWindow, setFullScreen, toggleMaxWindow, onMaximizeStateChange, getEnvParams } from '@renderer/utils/ipc'
 
 const dom_btns = ref()
 const cssModule = useCssModule()
+const isMaximized = ref(false)
+const isMaximizable = ref(false)
 
 const handle_focus = () => {
   if (!dom_btns.value) return
@@ -34,28 +36,43 @@ const handle_focus = () => {
     node.classList.remove(cssModule.hover)
   }
 }
-const getBtnEl = (el) => el.tagName == 'BUTTON' || !el ? el : getBtnEl(el.parentNode)
-const handle_mouseover = (event) => {
+const getBtnEl = (el: any): HTMLButtonElement | null => (el.tagName == 'BUTTON' || !el ? el : getBtnEl(el.parentNode))
+const handle_mouseover = (event: MouseEvent) => {
   const btn = getBtnEl(event.target)
   if (!btn) return
   btn.classList.add(cssModule.hover)
 }
-const handle_mouseout = (event) => {
+const handle_mouseout = (event: MouseEvent) => {
   const btn = getBtnEl(event.target)
   if (!btn) return
   btn.classList.remove(cssModule.hover)
 }
 
+let removeMaximizeListener: (() => void) | null = null
 
-onMounted(() => {
+onMounted(async() => {
   window.app_event.on('focus', handle_focus)
   dom_btns.value.addEventListener('mouseover', handle_mouseover)
   dom_btns.value.addEventListener('mouseout', handle_mouseout)
+
+  // Check if window is maximizable (non-transparent mode)
+  const envParams = await getEnvParams()
+  isMaximizable.value = !!envParams.cmdParams.dt
+
+  // Listen for maximize state changes
+  if (isMaximizable.value) {
+    removeMaximizeListener = onMaximizeStateChange(({ params: maximized }) => {
+      isMaximized.value = maximized
+    })
+  }
 })
 onBeforeUnmount(() => {
   window.app_event.off('focus', handle_focus)
   dom_btns.value.removeEventListener('mouseover', handle_mouseover)
   dom_btns.value.removeEventListener('mouseout', handle_mouseout)
+  if (removeMaximizeListener) {
+    removeMaximizeListener()
+  }
 })
 
 const dom_hide_btn = ref()

@@ -47,6 +47,8 @@ const modules = {
     close: 'close',
     min: 'min',
     max: 'max',
+    unmax: 'unmax',
+    toggle_max: 'toggle_max',
     fullscreen: 'fullscreen',
     set_app_name: 'set_app_name',
     clear_cache: 'clear_cache',
@@ -75,14 +77,16 @@ const modules = {
     handle_request: 'handle_request',
     cancel_request: 'cancel_request',
 
-
     restart_window: 'restart_window',
+
+    // lang_s2t: 'lang_s2t',
 
     get_lyric_info: 'get_lyric_info',
     set_lyric_info: 'set_lyric_info',
     set_config: 'set_config',
     set_hot_key_config: 'set_hot_key_config',
     on_config_change: 'on_config_change',
+    on_maximize_state_change: 'on_maximize_state_change',
     key_down: 'key_down',
     quit: 'quit',
     min_toggle: 'min_toggle',
@@ -171,7 +175,6 @@ const modules = {
   },
 }
 
-
 for (const moduleName of Object.keys(modules) as Array<keyof typeof modules>) {
   let eventNames = modules[moduleName]
   for (const eventName of Object.keys(eventNames) as Array<keyof typeof eventNames>) {
@@ -185,7 +188,6 @@ for (const moduleName of Object.keys(modules) as Array<keyof typeof modules>) {
 //     eventNames[eventName] = `${moduleName}_${eventName}`
 //   }
 // }
-
 
 export const CMMON_EVENT_NAME = modules.common
 export const PLAYER_EVENT_NAME = modules.player

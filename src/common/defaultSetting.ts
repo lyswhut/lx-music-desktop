@@ -8,6 +8,8 @@ const defaultSetting: LX.AppSetting = {
   version: '2.1.0',
 
   'common.windowSizeId': 3,
+  'common.windowWidth': null,
+  'common.windowHeight': null,
   'common.fontSize': 16,
   'common.startInFullscreen': false,
   'common.langId': null,
@@ -70,6 +72,8 @@ const defaultSetting: LX.AppSetting = {
   'playDetail.style.fontSize': 140,
   'playDetail.style.align': 'center',
   'playDetail.isDelayScroll': true,
+  'playDetail.lyricTextLiftEffect': false,
+  'playDetail.lyricTextLiftEffectOffset': 6,
 
   'desktopLyric.enable': false,
   'desktopLyric.isLock': false,
@@ -126,6 +130,7 @@ const defaultSetting: LX.AppSetting = {
   'download.isEmbedLyricT': false,
   'download.isEmbedLyricR': false,
   'download.isUseOtherSource': false,
+  'download.qualityFallbackStrategy': 'downgrade',
 
   'search.isShowHotSearch': false,
   'search.isShowHistorySearch': false,

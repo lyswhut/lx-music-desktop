@@ -8,7 +8,7 @@ export default ({ dom_lists_list }: {
 
   const setListsScroll = () => {
     if (!dom_lists_list.value) return
-    let target = dom_lists_list.value.querySelector('.' + styles.active) as HTMLElement
+    const target = dom_lists_list.value.querySelector<HTMLElement>('.' + styles.active)
     if (!target) return
     let offsetTop = target.offsetTop
     let location = offsetTop - 150

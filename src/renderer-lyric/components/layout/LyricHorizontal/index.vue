@@ -40,6 +40,9 @@ export default {
       textAlign: setting['desktopLyric.style.align'],
       '--line-gap': setting['desktopLyric.style.lineGap'] + 'px',
       '--line-extended-gap': (setting['desktopLyric.style.lineGap'] / 3).toFixed(2) + 'px',
+      '--lyric-lift-offset': setting['playDetail.lyricTextLiftEffect']
+        ? `-${(setting['playDetail.lyricTextLiftEffectOffset'] / 100).toFixed(2)}em`
+        : '0',
     }))
     const isComputeHeight = computed(() => {
       return setting['desktopLyric.style.isZoomActiveLrc'] && !setting['desktopLyric.isDelayScroll']
@@ -125,8 +128,11 @@ export default {
 
       &.font-mode > .line > .font-lrc {
         > span {
+          display: inline-block;
+          white-space: pre;
           transition: @transition-slow;
-          transition-property: font-size;
+          transition-property: font-size, transform;
+          will-change: background-size, transform;
           font-size: 1em;
           background-repeat: no-repeat;
           background-color: var(--color-lyric-unplay);

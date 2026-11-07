@@ -147,7 +147,7 @@ export default () => {
       delaySavePlayInfo({
         time: newValue,
         maxTime: playProgress.maxPlayTime,
-        listId: playMusicInfo.listId as string,
+        listId: playMusicInfo.listId!,
         index: playInfo.playIndex,
       })
     }
@@ -157,7 +157,7 @@ export default () => {
       delaySavePlayInfo({
         time: playProgress.nowPlayTime,
         maxTime: maxPlayTime,
-        listId: playMusicInfo.listId as string,
+        listId: playMusicInfo.listId!,
         index: playInfo.playIndex,
       })
     }

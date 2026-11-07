@@ -135,6 +135,9 @@ export default {
     const lrcStyles = computed(() => {
       return {
         textAlign: appSetting['playDetail.style.align'],
+        '--lyric-lift-offset': appSetting['playDetail.lyricTextLiftEffect']
+          ? `-${(appSetting['playDetail.lyricTextLiftEffectOffset'] / 100).toFixed(2)}em`
+          : '0',
       }
     })
     const lrcFontSize = computed(() => {
@@ -244,8 +247,11 @@ export default {
 
       &.font-mode > .line > .font-lrc {
         > span {
+          display: inline-block;
+          white-space: pre;
           transition: @transition-normal;
-          transition-property: font-size;
+          transition-property: font-size, transform;
+          will-change: background-size, transform;
           font-size: 1em;
           background-repeat: no-repeat;
           background-color: var(--color-450);

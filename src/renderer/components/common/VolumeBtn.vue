@@ -1,7 +1,20 @@
 <template>
   <material-popup-btn :class="$style.btnContent">
-    <button :class="$style.btn" :aria-label="isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`" @wheel="handleWheel">
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 24 24" space="preserve">
+    <button
+      :class="$style.btn"
+      :aria-label="
+        isMute ? $t('player__volume_muted') : `${$t('player__volume')}${parseInt(volume * 100)}%`
+      "
+      @wheel="handleWheel"
+    >
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xlink="http://www.w3.org/1999/xlink"
+        width="100%"
+        viewBox="0 0 24 24"
+        space="preserve"
+      >
         <use :xlink:href="icon" />
       </svg>
     </button>
@@ -16,7 +29,14 @@
             @update:model-value="saveVolumeIsMute($event)"
           />
         </div>
-        <base-slider-bar :class="$style.slider" :value="volume" :min="0" :max="1" :step="0.01" @change="handleUpdateVolume" />
+        <base-slider-bar
+          :class="$style.slider"
+          :value="volume"
+          :min="0"
+          :max="1"
+          :step="0.01"
+          @change="handleUpdateVolume"
+        />
       </div>
     </template>
   </material-popup-btn>
@@ -31,7 +51,7 @@ import { saveVolumeIsMute } from '@renderer/store/setting'
 import { volume, isMute } from '@renderer/store/player/volume'
 
 const handleWheel = (event) => {
-  window.app_event.setVolume(Math.round(volume.value * 100 + (-event.deltaY / 100 * 2)) / 100)
+  window.app_event.setVolume(Math.round(volume.value * 100 + (-event.deltaY / 100) * 2) / 100)
 }
 
 const handleUpdateVolume = (val) => {
@@ -49,7 +69,6 @@ const icon = computed(() => {
           ? '#icon-volume-medium-outline'
           : '#icon-volume-high-outline'
 })
-
 </script>
 
 <style lang="less" module>
@@ -75,12 +94,12 @@ const icon = computed(() => {
 
   svg {
     transition: opacity @transition-fast;
-    opacity: .6;
+    opacity: 0.6;
     filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
   }
   &:hover {
     svg {
-      opacity: .9;
+      opacity: 0.9;
     }
   }
   &:active {
@@ -112,5 +131,4 @@ const icon = computed(() => {
 .slider {
   width: 100%;
 }
-
 </style>
