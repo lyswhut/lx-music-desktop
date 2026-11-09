@@ -10,6 +10,7 @@ import useUpdate from './useUpdate'
 import useDataInit from './useDataInit'
 import useHandleEnvParams from './useHandleEnvParams'
 import useEventListener from './useEventListener'
+import useDshBridge from './useDshBridge'
 import useDeeplink from './useDeeplink'
 import usePlayer from './usePlayer'
 import useSettingSync from './useSettingSync'
@@ -30,6 +31,7 @@ export default () => {
   const initOpenAPI = useOpenAPI()
   const initStatusbarLyric = useStatusbarLyric()
   useEventListener()
+  useDshBridge()
   const initPlayer = usePlayer()
   const handleEnvParams = useHandleEnvParams()
   const initData = useDataInit()

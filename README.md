@@ -32,6 +32,9 @@
 
 <p align="center">一个基于 Electron & Vue 开发的音乐软件</p>
 
+> [!WARNING]
+> **本仓库是 lx-music-desktop 的非官方魔改分支 `dsh-bridge`**，仅在官方 `v2.12.6` 基础上为 DSH 插件 `dsh-music-dj` 追加了本地回环 HTTP 联动接口（搜索 / 按 id 播放），**请勿与官方版本混淆**，也不要向官方仓库反馈本分支的问题。本分支不内置、不硬编码任何音源，也不修改音源脚本机制。接口说明、构建方式与风险声明详见 [docs/DSH_BRIDGE.md](docs/DSH_BRIDGE.md)。
+
 ## 说明
 
 所用技术栈：
