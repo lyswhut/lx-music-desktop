@@ -105,10 +105,14 @@ export default class LinePlayer {
             if (timeArr.length > 3) continue
             else if (timeArr.length < 3) for (let i = 3 - timeArr.length; i--;) timeArr.unshift('0')
             if (timeArr[2].indexOf('.') > -1) timeArr.splice(2, 1, ...timeArr[2].split('.'))
-            const msTime = timeArr[3] || '0'
+            let msTime = timeArr[3] || '0'
+            if (!isMsTime) {
+              if (msTime.length == 1) msTime = '0' + msTime
+              msTime = msTime + '0'
+            }
 
             linesMap[timeStr] = {
-              time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(isMsTime ? msTime : msTime.padEnd(3, '0')),
+              time: parseInt(timeArr[0]) * 60 * 60 * 1000 + parseInt(timeArr[1]) * 60 * 1000 + parseInt(timeArr[2]) * 1000 + parseInt(msTime),
               text,
               extendedLyrics: [],
             }
