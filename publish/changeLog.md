@@ -7,3 +7,4 @@ Any Listen 的项目地址为 https://github.com/any-listen/any-listen
 
 - 修复无法打开 kg 歌单的问题
 - 修复打开某些 kg 歌单时歌曲丢失的问题
+- 修复某些歌词时间标签解析错误的问题 (#2855, @qjwh)
