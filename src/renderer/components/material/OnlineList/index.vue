@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.songList">
     <!-- <transition enter-active-class="animated-fast fadeIn" leave-active-class="animated-fast fadeOut"> -->
-    <div :class="$style.list">
+    <div :class="[$style.list, { 'with-cover': showCover }]">
       <div class="thead">
         <table>
           <thead>
@@ -25,7 +25,7 @@
       </div>
       <div :class="$style.content">
         <div v-show="!noItem" ref="dom_listContent" :class="$style.content">
-          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-if="actionButtonsVisible" ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick" @scroll="handleListScroll">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -33,6 +33,7 @@
               >
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
                 <div class="list-item-cell auto name">
+                  <material-music-cover v-if="showCover" :music-info="item" @play="handlePlayMusic(index, true)" />
                   <span class="select name" :aria-label="item.name">{{ item.name }}</span>
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
@@ -48,12 +49,15 @@
               </div>
             </template>
             <template #footer>
-              <div :class="$style.pagination">
+              <div v-if="infiniteScroll" :class="$style.loadMore">
+                <span v-show="loadingMore">{{ $t('list__loading') }}</span>
+              </div>
+              <div v-else :class="$style.pagination">
                 <material-pagination :count="total" :limit="limit" :page="page" @btn-click="$emit('togglePage', $event)" />
               </div>
             </template>
           </base-virtualized-list>
-          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick">
+          <base-virtualized-list v-else ref="listRef" :list="list" key-name="id" :item-height="listItemHeight" container-class="scroll" content-class="list" @contextmenu.capture="handleListRightClick" @scroll="handleListScroll">
             <template #default="{ item, index }">
               <div
                 class="list-item" :class="[{ selected: rightClickSelectedIndex == index }, { active: selectedList.includes(item) }]"
@@ -61,6 +65,7 @@
               >
                 <div class="list-item-cell no-select num" style="flex: 0 0 5%;" @click.stop>{{ index + 1 }}</div>
                 <div class="list-item-cell auto name">
+                  <material-music-cover v-if="showCover" :music-info="item" @play="handlePlayMusic(index, true)" />
                   <span class="select name" :aria-label="item.name">{{ item.name }}</span>
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
@@ -73,7 +78,10 @@
               </div>
             </template>
             <template #footer>
-              <div :class="$style.pagination">
+              <div v-if="infiniteScroll" :class="$style.loadMore">
+                <span v-show="loadingMore">{{ $t('list__loading') }}</span>
+              </div>
+              <div v-else :class="$style.pagination">
                 <material-pagination :count="total" :limit="limit" :page="page" @btn-click="$emit('togglePage', $event)" />
               </div>
             </template>
@@ -142,8 +150,22 @@ export default {
       type: Boolean,
       default: false,
     },
+    showCover: {
+      type: Boolean,
+      default: false,
+    },
+    // 无限滚动模式：隐藏分页，滚动到列表底部附近时触发 loadMore 事件
+    infiniteScroll: {
+      type: Boolean,
+      default: false,
+    },
+    // 无限滚动模式下的加载中状态（防止重复触发）
+    loadingMore: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['show-menu', 'play-list', 'togglePage'],
+  emits: ['show-menu', 'play-list', 'togglePage', 'loadMore'],
   setup(props, { emit }) {
     const actionButtonsVisible = appSetting['list.actionButtonsVisible']
     const rightClickSelectedIndex = ref(-1)
@@ -247,12 +269,23 @@ export default {
       }
     }
     const scrollToTop = () => {
-      listRef.value.scrollTo(0, true)
+      // 组件切换/热更新等场景下虚拟列表可能未挂载，做空值保护
+      listRef.value?.scrollTo(0, true)
+    }
+
+    // 无限滚动：滚动到距离底部 600px 内时触发加载下一页
+    const handleListScroll = (event) => {
+      if (!props.infiniteScroll || props.loadingMore) return
+      if (!props.list.length || props.list.length >= props.total) return
+      const el = event.target
+      if (el.scrollHeight - el.scrollTop - el.clientHeight > 600) return
+      emit('loadMore')
     }
 
     return {
       listItemHeight,
       handleListItemClick,
+      handlePlayMusic,
       selectedList,
       handleListItemRightClick,
       removeAllSelect,
@@ -279,6 +312,7 @@ export default {
 
       scrollToTop,
       actionButtonsVisible,
+      handleListScroll,
     }
   },
 }
@@ -318,6 +352,12 @@ export default {
   padding: 15px 0;
   // left: 50%;
   // transform: translateX(-50%);
+}
+.loadMore {
+  padding: 12px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-font-label);
 }
 .noitem {
   position: absolute;

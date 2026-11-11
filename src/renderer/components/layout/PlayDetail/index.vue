@@ -6,6 +6,9 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
     //- div(:class="$style.bg2")
     ControlBtnsLeftHeader(v-if="appSetting['common.controlBtnPosition'] == 'left'")
     ControlBtnsRightHeader(v-else)
+    button(ref="dom_hide_btn" type="button" :class="$style.hideBtn" :aria-label="$t('player__hide_detail_tip')" ignore-tip :title="$t('player__hide_detail_tip')" @click="hide" @mouseenter="handleHideBtnMouseEnter" @mouseleave="handleHideBtnMouseLeave")
+      svg(:class="$style.hideBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.727 30.727" space="preserve")
+        use(xlink:href="#icon-window-hide")
     div(:class="[$style.main, {[$style.showComment]: isShowPlayComment}]")
       div.left(:class="$style.left")
         //- div(:class="$style.info")
@@ -15,19 +18,19 @@ transition(enter-active-class="animated slideInRight" leave-active-class="animat
             p {{ $t('player__music_name') }}{{ musicInfo.name }}
             p {{ $t('player__music_singer') }}{{ musicInfo.singer }}
             p(v-if="musicInfo.album") {{ $t('player__music_album') }}{{ musicInfo.album }}
+        transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
+          play-bar(v-if="visibled")
 
       transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
         LyricPlayer(v-if="visibled")
       music-comment(v-if="visibled" :class="$style.comment" :show="isShowPlayComment" :music-info="playMusicInfo.musicInfo" @close="hideComment")
-    transition(enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
-      play-bar(v-if="visibled")
     transition(enter-active-class="animated-slow fadeIn" leave-active-class="animated-slow fadeOut")
       common-audio-visualizer(v-if="appSetting['player.audioVisualization'] && visibled")
 </template>
 
 
 <script>
-import { ref, watch } from '@common/utils/vueTools'
+import { ref, watch, useCssModule } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
 import {
   isShowPlayerDetail,
@@ -60,11 +63,22 @@ export default {
   },
   setup() {
     const visibled = ref(false)
+    const dom_hide_btn = ref()
+    const cssModule = useCssModule()
 
     let clickTime = 0
 
     const hide = () => {
+      dom_hide_btn.value?.classList.remove(cssModule.hover)
       setShowPlayerDetail(false)
+    }
+
+    const handleHideBtnMouseEnter = () => {
+      dom_hide_btn.value?.classList.add(cssModule.hover)
+    }
+
+    const handleHideBtnMouseLeave = () => {
+      dom_hide_btn.value?.classList.remove(cssModule.hover)
     }
     const handleContextMenu = () => {
       if (window.performance.now() - clickTime > 400) {
@@ -105,6 +119,8 @@ export default {
       isShowPlayComment,
       musicInfo,
       hide,
+      handleHideBtnMouseEnter,
+      handleHideBtnMouseLeave,
       handleContextMenu,
       hideComment,
       handleAfterEnter,
@@ -212,6 +228,7 @@ export default {
     :global {
       .left {
         flex-basis: 18%;
+        --playDetail-panel-width: min(100%, 300px);
         .description p {
           font-size: 12px;
         }
@@ -230,7 +247,8 @@ export default {
   }
 }
 .left {
-  flex: 0 0 40%;
+  flex: 0 0 54%;
+  --playDetail-panel-width: min(100%, 420px, 52vh);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -243,7 +261,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  max-width: 300px;
+  width: var(--playDetail-panel-width);
   min-height: 0;
 }
 .img {
@@ -255,13 +273,13 @@ export default {
   opacity: .8;
 }
 .description {
-  max-width: 300px;
-  margin-top: 15px;
+  max-width: 100%;
+  margin-top: 18px;
   padding-bottom: 15px;
   min-height: 0;
   p {
-    line-height: 1.5;
-    font-size: 14px;
+    line-height: 1.6;
+    font-size: 16px;
     overflow-wrap: break-word;
   }
 }
@@ -278,5 +296,38 @@ export default {
   transform: scaleX(0);
 }
 
+.hideBtn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: 1px solid var(--color-font-label);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  color: var(--color-font-label);
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  z-index: 5;
+  -webkit-app-region: no-drag;
+
+  &.hover {
+    background-color: var(--color-button-background-hover);
+    border-color: var(--color-font);
+  }
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.hideBtnIcon {
+  width: 60%;
+  height: 60%;
+  fill: currentColor;
+}
 
 </style>

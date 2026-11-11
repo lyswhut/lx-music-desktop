@@ -1,18 +1,17 @@
 <template lang="pug">
-dd
-  h3 {{ syncEnableServerTitle }}
-  div
-    .p.small {{ $t('setting__sync_server_auth_code', { code: sync.server.status.code || '' }) }}
-    .p.small {{ $t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' }) }}
-    .p.small {{ $t('setting__sync_server_device', { devices: syncDevices }) }}
-    .p.gap-top
-      .p.small {{ $t('setting__sync_server_port') }}
-      div
-        base-input.gap-left(:class="$style.portInput" :model-value="appSetting['sync.server.port']" :disabled="sync.enable" type="number" :placeholder="$t('setting__sync_server_port_tip')" @update:model-value="setSyncServerPort")
+h3(:class="$style.sectionCardTitle") {{ syncEnableServerTitle }}
+div(:class="$style.sectionCardBody")
+  .p.small {{ $t('setting__sync_server_auth_code', { code: sync.server.status.code || '' }) }}
+  .p.small {{ $t('setting__sync_server_address', { address: sync.server.status.address.join(', ') || '' }) }}
+  .p.small {{ $t('setting__sync_server_device', { devices: syncDevices }) }}
+  .p.gap-top
+    .p.small {{ $t('setting__sync_server_port') }}
+    div
+      base-input.gap-left(:class="$style.portInput" :model-value="appSetting['sync.server.port']" :disabled="sync.enable" type="number" :placeholder="$t('setting__sync_server_port_tip')" @update:model-value="setSyncServerPort")
 
-    .p.gap-top
-      base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
-      base-btn.btn(min @click="isShowDeviceListModal = true") {{ $t('setting__sync_server_show_device_list') }}
+  .p.gap-top
+    base-btn.btn(min :disabled="!sync.server.status.status" @click="refreshSyncCode") {{ $t('setting__sync_server_refresh_code') }}
+    base-btn.btn(min @click="isShowDeviceListModal = true") {{ $t('setting__sync_server_show_device_list') }}
   ServerDeviceListModal(v-model="isShowDeviceListModal")
 </template>
 
@@ -74,6 +73,19 @@ export default {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
+
+// 设置分区卡片：标题色带 + 内容区，与其他设置页一致（外层卡片容器在 index.vue）
+.sectionCardTitle {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: var(--color-primary-light-200-alpha-600);
+}
+
+.sectionCardBody {
+  padding: 12px 16px;
+}
+
 .portInput[disabled], .hostInput[disabled] {
   opacity: .8 !important;
 }

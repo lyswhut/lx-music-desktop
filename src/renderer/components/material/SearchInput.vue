@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.container">
+  <div :class="[$style.container, {[$style.big]: big}]">
     <div :class="[$style.search, {[$style.active]: focus}, {[$style.big]: big}, {[$style.small]: small}]">
       <div :class="$style.form">
         <input
@@ -211,7 +211,7 @@ export default {
 .search {
   position: absolute;
   width: 100%;
-  border-radius: @form-radius;
+  border-radius: 8px;
   transition: box-shadow .4s ease, background-color @transition-normal;
   display: flex;
   flex-flow: column nowrap;
@@ -237,8 +237,8 @@ export default {
     input {
       flex: auto;
       // border: 1px solid;
-      border-top-left-radius: 3px;
-      border-bottom-left-radius: 3px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
       background-color: transparent;
       // border-bottom: 2px solid var(--color-primary);
       // border-color: var(--color-primary);
@@ -269,8 +269,8 @@ export default {
       transition: background-color .2s ease;
 
       &:last-child {
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
 
       &:hover {
@@ -288,6 +288,12 @@ export default {
     height: 0;
     transition-property: height;
     overflow: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background-color: var(--color-primary-light-600);
     li {
       cursor: pointer;
       padding: 8px 5px;
@@ -301,20 +307,24 @@ export default {
         background-color: var(--color-primary-dark-100-alpha-700);
       }
       &:last-child {
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
     }
   }
 }
 
 .big {
+  &.container {
+    width: 100%;
+    height: 40px;
+  }
   width: 100%;
-  // input {
-  //   line-height: 30px;
-  // }
   .form {
-    height: 30px;
+    height: 40px;
+    input {
+      line-height: 40px;
+    }
     button {
       padding: 6px 10px;
     }

@@ -1,15 +1,35 @@
 <template>
   <div :class="$style.container">
-    <div :class="$style.header">
-      <div :class="$style.left">
-        <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
-        <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" height="32" width="32" space="preserve">
+          <use xlink:href="#icon-album" />
+        </svg>
       </div>
-      <base-btn :class="$style.btn" outline min @click="visibleOpenSongListModal = true">{{ $t('songlist__import_input_show_btn') }}</base-btn>
-      <base-selection :model-value="source" :class="$style.select" :list="sourceList" item-key="id" item-name="name" @update:model-value="handleToggleSource" />
+      <div :class="$style.pageInfo">
+        <span :class="$style.pageTitle">{{ $t('song_list') }}</span>
+        <span :class="$style.pageDesc">{{ $t('song_list__desc') }}</span>
+      </div>
+    </div>
+    <div :class="$style.header">
+      <div :class="$style.sourceWrap">
+        <span :class="$style.subLabel">{{ $t('search__category') }}:</span>
+        <div :class="$style.sourceTab">
+          <button
+            v-for="item in sourceList"
+            :key="item.id"
+            type="button"
+            :class="[$style.sourceBtn, { [$style.sourceBtnActive]: source == item.id }]"
+            @click="handleToggleSource(item.id)"
+          >{{ item.name }}</button>
+        </div>
+      </div>
+    </div>
+    <div :class="$style.tagBar">
+      <tag-list :source="source" :tag-id="tagId" :sort-id="sortId" />
+      <sort-tab :source="source" :tag-id="tagId" :sort-id="sortId" />
     </div>
     <list-view :source="source" :tag-id="tagId" :sort-id="sortId" :page="page" />
-    <open-list-modal v-model="visibleOpenSongListModal" :source-list="sourceList" />
   </div>
 </template>
 
@@ -18,7 +38,6 @@ import { computed, ref } from '@common/utils/vueTools'
 import { getSongListSetting, setSongListSetting } from '@renderer/utils/data'
 import TagList from './components/TagList.vue'
 import SortTab from './components/SortTab.vue'
-import OpenListModal from './components/OpenListModal.vue'
 import ListView from './ListView.vue'
 import { sources, listInfo, isVisibleListDetail } from '@renderer/store/songList/state'
 import { sourceNames } from '@renderer/store'
@@ -80,13 +99,10 @@ export default {
     TagList,
     SortTab,
     ListView,
-    OpenListModal,
   },
   beforeRouteEnter: verifyQueryParams,
   beforeRouteUpdate: verifyQueryParams,
   setup() {
-    const visibleOpenSongListModal = ref(false)
-
     const sourceList = computed(() => {
       return sources.map(s => ({ id: s, name: sourceNames.value[s] }))
     })
@@ -110,7 +126,6 @@ export default {
       page,
       sourceList,
       handleToggleSource,
-      visibleOpenSongListModal,
     }
   },
 }
@@ -125,89 +140,108 @@ export default {
   flex-flow: column nowrap;
   position: relative;
 }
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px 15px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  svg {
+    width: 36px;
+    height: 36px;
+    fill: currentColor;
+  }
+}
+.pageInfo {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+}
+.pageTitle {
+  font-size: 28px;
+  font-weight: normal;
+  color: var(--color-primary);
+}
+.pageDesc {
+  font-size: 13px;
+  color: var(--color-font-label);
+}
 .header {
   flex: none;
-  width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  // padding-right: 5px;
-  // box-sizing: border-box;
-  padding-bottom: 5px;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--color-primary-light-400-alpha-300);
 }
-.left {
-  flex: auto;
+.sourceWrap {
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.subLabel {
+  color: var(--color-font-label);
+  font-size: 13px;
+  flex: none;
+  margin-right: 6px;
+}
+.sourceTab {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 4px;
+}
+.sourceBtn {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-font);
+  font-size: 13px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease;
+  border-radius: 4px;
+
+  &:hover:not(.sourceBtnActive) {
+    background-color: var(--color-button-background-hover);
+  }
+}
+.sourceBtnActive {
+  color: var(--color-primary);
+  font-weight: 500;
+  background-color: var(--color-primary-light-400-alpha-300);
+}
+.tagBar {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  padding: 5px 10px;
+  gap: 10px;
 }
 
 .btn {
+  flex: none;
   color: var(--color-font);
   transition: color @transition-fast;
   background: none !important;
+  margin-top: 8px;
   &:hover {
     color: var(--color-primary-font-hover);
-  }
-}
-
-
-.select {
-  font-size: 12px;
-  width: auto;
-  flex: none;
-  padding: 0 5px;
-
-  &:hover {
-    :global(.icon) {
-      opacity: 1;
-    }
-  }
-
-
-  :global {
-    .label-content {
-      background-color: transparent !important;
-      transition: color @transition-fast;
-      color: var(--color-font);
-      // line-height: 38px;
-      // height: 38px;
-      border-radius: 0;
-      &:hover {
-        // background: none !important;
-        color: var(--color-primary-font-hover);
-        .icon {
-          opacity: 1;
-          // color: var(--color-primary-font-hover);
-        }
-      }
-    }
-    // .label {
-    //   color: var(--color-font) !important;
-    // }
-    .icon {
-      svg {
-        width: .8em;
-      }
-      // opacity: .6;
-      // transition: color @transition-fast;
-      // color: var(--color-font-label);
-    }
-
-    .selection-list {
-      max-height: 500px;
-      box-shadow: 0 1px 4px 0 rgba(0,0,0,.2);
-      li {
-        // background-color: var(--color-main-background);
-        text-align: center;
-        line-height: 38px;
-        font-size: 13px;
-        &:hover {
-          background-color: var(--color-button-background-hover);
-        }
-        &:active {
-          background-color: var(--color-button-background-active);
-        }
-      }
-    }
   }
 }
 

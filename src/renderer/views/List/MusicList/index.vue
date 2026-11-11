@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.list">
+  <div :class="[$style.list, 'with-cover']">
     <div class="thead">
       <table>
         <thead>
@@ -42,6 +42,7 @@
             </transition>
           </div>
           <div class="list-item-cell auto name" :aria-label="item.name">
+            <material-music-cover :music-info="item" @play="handlePlayMusic(index, true)" />
             <span class="select name">{{ item.name }}</span>
             <span v-if="isShowSource" class="no-select label-source">{{ item.source }}</span>
           </div>
@@ -74,6 +75,7 @@
             </transition>
           </div>
           <div class="list-item-cell auto name">
+            <material-music-cover :music-info="item" @play="handlePlayMusic(index, true)" />
             <span class="select name" :aria-label="item.name">{{ item.name }}</span>
             <span v-if="isShowSource" class="no-select label-source">{{ item.source }}</span>
           </div>
@@ -297,12 +299,14 @@ export default {
       }
     }
     const scrollToTop = () => {
-      listRef.value.scrollTo(0, true)
+      // 组件切换/热更新等场景下虚拟列表可能未挂载，做空值保护
+      listRef.value?.scrollTo(0, true)
     }
 
     return {
       listItemHeight,
       handleListItemClick,
+      handlePlayMusic,
       selectedList,
       handleListItemRightClick,
       removeAllSelect,

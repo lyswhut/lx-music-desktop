@@ -1,5 +1,14 @@
 <template>
   <div :class="$style.main">
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg-icon name="tune-variant" />
+      </div>
+      <div :class="$style.pageInfo">
+        <span :class="$style.pageTitle">{{ $t('setting') }}</span>
+        <span :class="$style.pageDesc">{{ $t('setting__desc') }}</span>
+      </div>
+    </div>
     <div class="scroll" :class="$style.toc">
       <ul :class="$style.tocList" role="toolbar">
         <li v-for="h2 in tocList" :key="h2.id" :class="$style.tocListItem" role="presentation">
@@ -7,47 +16,22 @@
             :class="[$style.tocH2, {[$style.active]: avtiveComponentName == h2.id }]"
             role="tab" :aria-selected="avtiveComponentName == h2.id"
             :aria-label="h2.title" ignore-tip @click="toggleTab(h2.id)"
-          >
-            <transition name="list-active">
-              <svg-icon v-if="avtiveComponentName == h2.id" name="angle-right-solid" :class="$style.activeIcon" />
-            </transition>
-            {{ h2.title }}
-          </h2>
-          <!-- <ul v-if="h2.children.length" :class="$style.tocList">
-            <li v-for="h3 in h2.children" :key="h3.id" :class="$style.tocSubListItem">
-              <h3 :class="[$style.tocH3, toc.activeId == h3.id ? $style.active : null]" :aria-label="h3.title">
-                <a :href="'#' + h3.id" @click.stop="toc.activeId = h3.id">{{ h3.title }}</a>
-              </h3>
-            </li>
-          </ul> -->
+          >{{ h2.title }}</h2>
         </li>
       </ul>
     </div>
     <div ref="dom_content_ref" class="scroll" :class="$style.setting">
       <dl>
-        <component :is="avtiveComponentName" />
-        <!-- <SettingBasic />
-        <SettingPlay />
-        <SettingPlayDetail />
-        <SettingDesktopLyric />
-        <SettingSearch />
-        <SettingList />
-        <SettingDownload />
-        <SettingSync />
-        <SettingHotKey />
-        <SettingNetwork />
-        <SettingOdc />
-        <SettingBackup />
-        <SettingOther />
-        <SettingUpdate />
-        <SettingAbout /> -->
+        <div v-for="h2 in tocList" :id="h2.id" :key="h2.id" :class="$style.section">
+          <component :is="h2.id" />
+        </div>
       </dl>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, computed, nextTick } from '@common/utils/vueTools'
+import { ref, computed, nextTick, onMounted } from '@common/utils/vueTools'
 // import { currentStting } from './setting'
 import { useI18n } from '@renderer/plugins/i18n'
 import { useRoute } from '@common/utils/vueRouter'
@@ -120,15 +104,31 @@ export default {
       ? route.query.name
       : tocList.value[0].id)
 
-    const toggleTab = id => {
-      avtiveComponentName.value = id
-      void nextTick(() => {
-        dom_content_ref.value?.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        })
+    // 滚动定位到分区时，与顶部标签行保留的间距（与内容区上内边距一致）
+    const SCROLL_TOP_GAP = 14
+
+    const scrollToTab = id => {
+      const container = dom_content_ref.value
+      const el = container?.querySelector('#' + id)
+      if (!el) return
+      container.scrollTo({
+        top: Math.max(el.offsetTop - SCROLL_TOP_GAP, 0),
+        behavior: 'smooth',
       })
     }
+
+    const toggleTab = id => {
+      avtiveComponentName.value = id
+      scrollToTab(id)
+    }
+
+    onMounted(() => {
+      if (avtiveComponentName.value != tocList.value[0].id) {
+        void nextTick(() => {
+          scrollToTab(avtiveComponentName.value)
+        })
+      }
+    })
 
     return {
       tocList,
@@ -180,23 +180,75 @@ export default {
 
 .main {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   height: 100%;
-  border-top: var(--color-list-header-border-bottom);
+}
+
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px 10px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  svg {
+    width: 36px;
+    height: 36px;
+    fill: currentColor;
+  }
+}
+.pageInfo {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+}
+.pageTitle {
+  font-size: 28px;
+  font-weight: normal;
+  color: var(--color-primary);
+}
+.pageDesc {
+  font-size: 13px;
+  color: var(--color-font-label);
 }
 
 .toc {
-  flex: 0 0 16%;
-  overflow-y: scroll;
+  flex: 0 0 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--color-primary-light-400-alpha-300);
+  // 偏移与负扩散相抵，阴影只出现在下方，上方不投影
+  box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.15);
+}
+.tocList {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  padding: 0 6px;
+}
+.tocListItem {
+  flex: 0 0 auto;
 }
 .tocH2 {
   line-height: 1.5;
-  .mixin-ellipsis-1();
   font-size: 13px;
   color: var(--color-font);
-  padding: 8px 10px;
+  padding: 8px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
   transition: @transition-fast;
-  transition-property: background-color, color;
+  transition-property: background-color, color, border-color;
 
   &:not(.active) {
     cursor: pointer;
@@ -206,36 +258,28 @@ export default {
   }
   &.active {
     color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
   }
 }
-.activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
-}
-// .tocH3 {
-//   font-size: 13px;
-//   opacity: .8;
-// }
-
-// .tocList {
-//   .tocList {
-//     // padding-left: 15px;
-//   }
-// }
-// .tocSubListItem {
-//   padding-top: 10px;
-// }
 
 .setting {
-  padding: 0 15px 15px;
+  flex: 1 1 auto;
+  min-height: 0;
+  // 与上方标签行拉开距离
+  padding: 14px 15px 15px;
   font-size: 14px;
   box-sizing: border-box;
   overflow-y: auto;
-  height: 100%;
   position: relative;
   width: 100%;
+
+  .section {
+    &:first-child {
+      :global(dt) {
+        margin-top: 0;
+      }
+    }
+  }
 
   :global {
     dt {
@@ -256,7 +300,54 @@ export default {
       }
 
     }
-    h3 {
+
+    // 无标题的纯复选框设置块同样渲染为卡片，与下方带标题的卡片保持一致的浅色圆角底
+    dd.cardBlock {
+      border-radius: 8px;
+      background-color: var(--color-primary-light-300-alpha-700);
+      padding: 12px 0;
+      margin-bottom: 16px;
+    }
+
+    // 带标题的设置分区统一渲染为卡片（标题色带 + 浅色底），与 SettingBasic 中 .sectionCard 样式一致
+    dd:has(> h3) {
+      border-radius: 8px;
+      background-color: var(--color-primary-light-300-alpha-700);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+
+      > h3 {
+        margin: 0 0 12px;
+        padding: 8px 16px;
+        font-size: 13px;
+        background-color: var(--color-primary-light-200-alpha-600);
+        border-radius: 8px 8px 0 0;
+      }
+
+      > div {
+        padding: 0 16px;
+      }
+
+      > div + div {
+        margin-top: 8px;
+      }
+
+      > div:empty {
+        display: none;
+      }
+
+      // 卡片内的复选框/下拉选项组统一改为竖向一列，与"窗口尺寸"卡片一致
+      > div > .gap-left {
+        display: block;
+
+        + .gap-left {
+          margin-left: 0;
+          margin-top: 10px;
+        }
+      }
+    }
+    // 仅作用于 dd 的直接子标题，避免影响 .sectionCard 内部的标题色带
+    dd > h3 {
       font-size: 12px;
       margin: 25px 0 15px;
     }
@@ -312,4 +403,3 @@ export default {
 // }
 
 </style>
-

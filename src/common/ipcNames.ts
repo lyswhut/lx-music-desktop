@@ -71,6 +71,9 @@ const modules = {
     update_not_available: 'update_not_available',
     set_ignore_mouse_events: 'set_ignore_mouse_events',
     set_window_size: 'set_window_size',
+    // 迷你模式切换专用：先隐藏窗口，边界调整完再显示，避免用户看到中间状态
+    hide_window_transition: 'hide_window_transition',
+    set_window_bounds_transition: 'set_window_bounds_transition',
 
     handle_request: 'handle_request',
     cancel_request: 'cancel_request',
@@ -92,6 +95,7 @@ const modules = {
     save_other_source: 'save_other_source',
     clear_other_source: 'clear_other_source',
     get_other_source_count: 'get_other_source_count',
+    run_auto_backup: 'run_auto_backup',
     get_data: 'get_data',
     save_data: 'save_data',
     get_sound_effect_eq_preset: 'get_sound_effect_eq_preset',

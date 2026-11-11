@@ -111,7 +111,7 @@ const handleSearch = (text) => {
 }
 .noitemListItem {
   display: inline-block;
-  margin: 3px 5px;
+  margin: 2px 3px;
   background-color: var(--color-button-background);
   padding: 7px 10px;
   border-radius: @radius-progress-border;

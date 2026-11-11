@@ -1,5 +1,15 @@
 <template>
   <div v-show="!isFullscreen" ref="dom_btns" :class="$style.control">
+    <button type="button" :class="[$style.btn, $style.mini]" :aria-label="$t('mini_mode')" ignore-tip :title="$t('mini_mode')" @click="toggleMiniMode">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve">
+        <use xlink:href="#icon-mini-player" />
+      </svg>
+    </button>
+    <button type="button" :class="[$style.btn, $style.setting]" :aria-label="$t('setting')" ignore-tip :title="$t('setting')" @click="openSetting">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 493.23 436.47" space="preserve">
+        <use xlink:href="#icon-setting" />
+      </svg>
+    </button>
     <button type="button" :class="[$style.btn, $style.min]" :aria-label="$t('min')" ignore-tip :title="$t('min')" @click="minWindow">
       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%" viewBox="0 0 24 24" space="preserve">
         <use xlink:href="#icon-window-minimize-2" />
@@ -16,8 +26,16 @@
 <script setup>
 import { minWindow, closeWindow } from '@renderer/utils/ipc'
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
+import { useRouter } from '@common/utils/vueRouter'
 // import { getRandom } from '../../utils'
 import { isFullscreen } from '@renderer/store'
+import { toggleMiniMode } from '@renderer/utils/compositions/useMiniMode'
+
+const router = useRouter()
+
+const openSetting = () => {
+  void router.push({ path: '/setting' })
+}
 
 const dom_btns = ref()
 
@@ -30,7 +48,7 @@ const handle_focus = () => {
     node.classList.remove(cssModule.hover)
   }
 }
-const getBtnEl = (el) => el.tagName == 'BUTTON' || !el ? el : getBtnEl(el.parentNode)
+const getBtnEl = (el) => !el || el.tagName == 'BUTTON' ? el : getBtnEl(el.parentNode)
 const handle_mouseover = (event) => {
   const btn = getBtnEl(event.target)
   if (!btn) return
@@ -63,6 +81,8 @@ onBeforeUnmount(() => {
 .control {
   display: flex;
   align-self: flex-start;
+  margin-left: auto;
+  margin-top: 4px;
   -webkit-app-region: no-drag;
   height: 30px;
 
@@ -81,7 +101,7 @@ onBeforeUnmount(() => {
     color: var(--color-font-label);
     transition: background-color 0.2s ease-in-out;
     &.hover {
-      &.min, &.max {
+      &.min, &.max, &.setting, &.mini {
         background-color: var(--color-button-background-hover);
       }
       &.close {

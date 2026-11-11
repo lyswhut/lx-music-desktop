@@ -9,6 +9,7 @@ import { play, playList } from '@renderer/core/player'
 import { onBeforeUnmount } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { playMusicInfo } from '@renderer/store/player/state'
+import { preloadBoards } from '@renderer/store/leaderboard/preload'
 import { initDislikeInfo, registerRemoteDislikeAction } from '@renderer/core/dislikeList'
 
 const initPrevPlayInfo = async() => {
@@ -46,7 +47,7 @@ export default () => {
     ]).catch(err => {
       log.error(err)
     })
-    void music.init() // 初始化音乐sdk
+    const musicInitTask = music.init() // 初始化音乐sdk
     unregister = registerAction((ids) => {
       window.app_event.myListUpdate(ids)
     })
@@ -56,5 +57,11 @@ export default () => {
     await initPrevPlayInfo().catch(err => {
       log.error(err)
     }) // 初始化上次的歌曲播放信息
+    await musicInitTask.catch(err => {
+      log.error(err)
+    })
+    void preloadBoards().catch(err => {
+      log.error(err)
+    }) // 启动时预加载排行榜榜单数据
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <material-search-input v-model="searchText" :list="tipList" :visible-list="visibleList" @event="handleEvent" />
+  <material-search-input v-model="searchText" :big="big" :list="tipList" :visible-list="visibleList" @event="handleEvent" />
 </template>
 
 <script>
@@ -17,6 +17,12 @@ import { setSearchText } from '@renderer/store/search/action'
 import { getSearchSetting } from '@renderer/utils/data'
 
 export default {
+  props: {
+    big: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     const searchText = ref('')
     const visibleList = ref(false)
