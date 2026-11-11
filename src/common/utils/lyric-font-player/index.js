@@ -7,6 +7,7 @@ export default class Lyric {
   constructor({
     lyric = '',
     extendedLyrics = [],
+    aboveLyrics = [],
     offset = 0,
     rate = 1,
     lineContentClassName = 'line-content',
@@ -25,6 +26,7 @@ export default class Lyric {
   }) {
     this.lyric = lyric
     this.extendedLyrics = extendedLyrics
+    this.aboveLyrics = aboveLyrics
     this.offset = offset
     this.rate = rate
     this.onPlay = onPlay
@@ -62,7 +64,7 @@ export default class Lyric {
     this.playingLineNum = -1
     this.isLineMode = false
 
-    this.linePlayer.setLyric(this.lyric, this.extendedLyrics)
+    this.linePlayer.setLyric(this.lyric, this.extendedLyrics, this.aboveLyrics)
   }
 
   _handleLinePlayerOnPlay = (num, text, curTime) => {
@@ -124,6 +126,7 @@ export default class Lyric {
           rate: this.rate,
           lyric: line.text,
           extendedLyrics: line.extendedLyrics,
+          aboveLyrics: line.aboveLyrics,
           lineContentClassName: this.lineContentClassName,
           lineClassName: this.lineClassName,
           shadowClassName: this.shadowClassName,
@@ -140,6 +143,7 @@ export default class Lyric {
           text: line.text,
           time: line.time,
           extendedLyrics: line.extendedLyrics,
+          aboveLyrics: line.aboveLyrics,
           dom_line: fontPlayer.lineContent,
         }
       })
@@ -150,6 +154,7 @@ export default class Lyric {
           rate: this.rate,
           lyric: line.text,
           extendedLyrics: line.extendedLyrics,
+          aboveLyrics: line.aboveLyrics,
           lineContentClassName: this.lineContentClassName,
           lineClassName: this.lineClassName,
           shadowClassName: this.shadowClassName,
@@ -166,6 +171,7 @@ export default class Lyric {
           text: line.text.replace(fontTimeExp, ''),
           time: line.time,
           extendedLyrics: line.extendedLyrics,
+          aboveLyrics: line.aboveLyrics,
           dom_line: fontPlayer.lineContent,
         }
       })
@@ -201,9 +207,10 @@ export default class Lyric {
     this.linePlayer.offset = offset
   }
 
-  setLyric(lyric, extendedLyrics) {
+  setLyric(lyric, extendedLyrics, aboveLyrics = []) {
     this.lyric = lyric
     this.extendedLyrics = extendedLyrics
+    this.aboveLyrics = aboveLyrics
     this._init()
   }
 

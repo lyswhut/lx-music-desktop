@@ -89,30 +89,35 @@ export const buildLyricInfo = async(lyricInfo: MakeOptional<LX.Player.LyricInfo,
       lyricInfo.tlyric ? langS2T(lyricInfo.tlyric) : Promise.resolve(''),
       lyricInfo.rlyric ? langS2T(lyricInfo.rlyric) : Promise.resolve(''),
       lyricInfo.lxlyric ? langS2T(lyricInfo.lxlyric) : Promise.resolve(''),
+      lyricInfo.plyric ? langS2T(lyricInfo.plyric) : Promise.resolve(''),
     ]
     if (lyricInfo.rawlrcInfo) {
       tasks.push(lyricInfo.lyric ? langS2T(lyricInfo.lyric) : Promise.resolve(''))
       tasks.push(lyricInfo.tlyric ? langS2T(lyricInfo.tlyric) : Promise.resolve(''))
       tasks.push(lyricInfo.rlyric ? langS2T(lyricInfo.rlyric) : Promise.resolve(''))
       tasks.push(lyricInfo.lxlyric ? langS2T(lyricInfo.lxlyric) : Promise.resolve(''))
+      tasks.push(lyricInfo.plyric ? langS2T(lyricInfo.plyric) : Promise.resolve(''))
     }
-    return Promise.all(tasks).then(([lyric, tlyric, rlyric, lxlyric, lyric_raw, tlyric_raw, rlyric_raw, lxlyric_raw]) => {
+    return Promise.all(tasks).then(([lyric, tlyric, rlyric, lxlyric, plyric, lyric_raw, tlyric_raw, rlyric_raw, lxlyric_raw, plyric_raw]) => {
       const rawlrcInfo = lyric_raw ? {
         lyric: lyric_raw,
         tlyric: tlyric_raw,
         rlyric: rlyric_raw,
         lxlyric: lxlyric_raw,
+        plyric: plyric_raw,
       } : {
         lyric,
         tlyric,
         rlyric,
         lxlyric,
+        plyric,
       }
       return {
         lyric,
         tlyric,
         rlyric,
         lxlyric,
+        plyric,
         rawlrcInfo,
       }
     })

@@ -34,7 +34,9 @@ export const setting = shallowReactive<LX.DesktopLyric.Config>({
   'common.langId': 'zh-cn',
   'player.isShowLyricTranslation': false,
   'player.isShowLyricRoma': false,
-  'player.isSwapLyricTranslationAndRoma': false,
+  'player.isShowLyricPhonetic': false,
+  'player.isShowLyricRomaWordByWord': true,
+  'player.isSwapLyricMainAndRoma': false,
   'player.isPlayLxlrc': false,
   'player.playbackRate': 1,
 })

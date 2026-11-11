@@ -15,7 +15,11 @@ dd
   .gap-top
     base-checkbox(id="setting_player_lyric_roma" :model-value="appSetting['player.isShowLyricRoma']" :label="$t('setting__play_lyric_roma')" @update:model-value="updateSetting({'player.isShowLyricRoma': $event})")
   .gap-top
-    base-checkbox(id="setting_player_awap_lyric_trans_roma" :model-value="appSetting['player.isSwapLyricTranslationAndRoma']" :label="$t('setting__player_swap_lyric_trans_roma')" @update:model-value="updateSetting({'player.isSwapLyricTranslationAndRoma': $event})")
+    base-checkbox(id="setting_player_lyric_phonetic" :model-value="appSetting['player.isShowLyricPhonetic']" :label="$t('setting__play_lyric_phonetic')" @update:model-value="updateSetting({'player.isShowLyricPhonetic': $event})")
+  .gap-top
+    base-checkbox(id="setting_player_lyric_roma_word_by_word" :model-value="appSetting['player.isShowLyricRomaWordByWord']" :label="$t('setting__play_lyric_roma_word_by_word')" @update:model-value="updateSetting({'player.isShowLyricRomaWordByWord': $event})")
+  .gap-top
+    base-checkbox(id="setting_player_swap_lyric_main_roma" :model-value="appSetting['player.isSwapLyricMainAndRoma']" :label="$t('setting__player_swap_lyric_main_roma')" @update:model-value="updateSetting({'player.isSwapLyricMainAndRoma': $event})")
   .gap-top
     base-checkbox(id="setting_player_auto_skip_on_error" :model-value="appSetting['player.autoSkipOnError']" :label="$t('setting__play_auto_skip_on_error')" @update:model-value="updateSetting({'player.autoSkipOnError': $event})")
   .gap-top

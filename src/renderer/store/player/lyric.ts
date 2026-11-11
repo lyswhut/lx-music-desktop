@@ -4,6 +4,7 @@ export interface Line {
   text: string
   time: number
   extendedLyrics: string[]
+  aboveLyrics: string[]
   dom_line: HTMLDivElement
 }
 
