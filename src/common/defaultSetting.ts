@@ -72,6 +72,10 @@ const defaultSetting: LX.AppSetting = {
   'playDetail.isDelayScroll': true,
 
   'desktopLyric.enable': false,
+  'desktopLyric.isShowLyricTranslation': false,
+  'desktopLyric.isShowLyricRoma': false,
+  'desktopLyric.isSwapLyricTranslationAndRoma': false,
+  'desktopLyric.isPlayLxlrc': !isMac,
   'desktopLyric.isLock': false,
   'desktopLyric.isAlwaysOnTop': false,
   'desktopLyric.isAlwaysOnTopLoop': false,

@@ -12,6 +12,15 @@ dd
   .gap-top
     base-checkbox(id="setting_desktop_lyric_audio_visualization" :model-value="appSetting['desktopLyric.audioVisualization']" :label="$t('setting__desktop_lyric_audio_visualization')" @update:model-value="updateSetting({ 'desktopLyric.audioVisualization': $event })")
   .gap-top
+    base-checkbox(id="setting_desktop_lyric_isShowLyricTranslation" :model-value="appSetting['desktopLyric.isShowLyricTranslation']" :label="$t('setting__play_lyric_transition')" @update:model-value="updateSetting({ 'desktopLyric.isShowLyricTranslation': $event })")
+  .gap-top
+    base-checkbox(id="setting_desktop_lyric_isShowLyricRoma" :model-value="appSetting['desktopLyric.isShowLyricRoma']" :label="$t('setting__play_lyric_roma')" @update:model-value="updateSetting({ 'desktopLyric.isShowLyricRoma': $event })")
+  .gap-top
+    base-checkbox(id="setting_desktop_lyric_isSwapLyricTranslationAndRoma" :model-value="appSetting['desktopLyric.isSwapLyricTranslationAndRoma']" :label="$t('setting__player_swap_lyric_trans_roma')" @update:model-value="updateSetting({ 'desktopLyric.isSwapLyricTranslationAndRoma': $event })")
+  .gap-top
+    base-checkbox(id="setting_desktop_lyric_isPlayLxlrc" :model-value="appSetting['desktopLyric.isPlayLxlrc']" :label="$t('setting__play_lyric_lxlrc')" @update:model-value="updateSetting({ 'desktopLyric.isPlayLxlrc': $event })")
+    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__play_lyric_lxlrc_tip')")
+  .gap-top
     base-checkbox(id="setting_desktop_lyric_delayScroll" :model-value="appSetting['desktopLyric.isDelayScroll']" :label="$t('setting__desktop_lyric_delay_scroll')" @update:model-value="updateSetting({ 'desktopLyric.isDelayScroll': $event })")
   .gap-top
     base-checkbox(id="setting_desktop_lyric_alwaysOnTop" :model-value="appSetting['desktopLyric.isAlwaysOnTop']" :label="$t('setting__desktop_lyric_always_on_top')" @update:model-value="updateSetting({ 'desktopLyric.isAlwaysOnTop': $event })")
