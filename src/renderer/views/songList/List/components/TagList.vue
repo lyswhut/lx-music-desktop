@@ -1,31 +1,18 @@
 <template>
-  <div :class="[$style.tagList, {[$style.active]: popupVisible}]">
-    <div ref="dom_btn" :class="$style.label" @click.stop="handleShow">
-      <span>{{ tagName }}</span>
-      <div :class="$style.icon">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 451.847 451.847" space="preserve">
-          <use xlink:href="#icon-down" />
-        </svg>
-      </div>
-    </div>
-    <div :class="$style.popup" :style="popupStyle" :aria-hidden="!popupVisible" @click.stop>
-      <div :class="$style.list" class="scroll">
-        <div :class="$style.tag" @click="handleToggleTag('')">{{ $t('default') }}</div>
-        <dl v-for="tagInfo in list" :key="tagInfo.name">
-          <dt :class="$style.type">{{ tagInfo.name }}</dt>
-          <dd v-for="tag in tagInfo.list" :key="tag.id" :class="$style.tag" @click="handleToggleTag(tag.id)">{{ tag.name }}</dd>
-        </dl>
-      </div>
+  <div :class="$style.tagList">
+    <base-tab :model-value="activeCate" :class="$style.cateTab" :list="cateList" item-label="label" @change="activeCate = $event" />
+    <div :class="$style.tagRow">
+      <div v-if="activeCate === 0" :class="[$style.tag, { [$style.active]: !tagId }]" @click="handleToggleTag('')">{{ $t('default') }}</div>
+      <div v-for="tag in activeTags" :key="tag.id" :class="[$style.tag, { [$style.active]: tagId == tag.id }]" @click="handleToggleTag(tag.id)">{{ tag.name }}</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { watch, shallowReactive, ref, onMounted, onBeforeUnmount, computed, reactive } from '@common/utils/vueTools'
+import { watch, shallowReactive, ref, computed } from '@common/utils/vueTools'
 import { setTags, getTags } from '@renderer/store/songList/action'
 import { tags } from '@renderer/store/songList/state'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
-import { useI18n } from '@renderer/plugins/i18n'
 
 const props = defineProps({
   source: {
@@ -44,9 +31,13 @@ const props = defineProps({
 
 const router = useRouter()
 const route = useRoute()
-const t = useI18n()
 
 const list = shallowReactive([])
+const activeCate = ref(0)
+
+const cateList = computed(() => list.map((cate, index) => ({ id: index, label: cate.name })))
+const activeTags = computed(() => list[activeCate.value]?.list ?? [])
+
 const handleToggleTag = (id) => {
   void router.replace({
     path: route.path,
@@ -56,61 +47,27 @@ const handleToggleTag = (id) => {
       sortId: props.sortId,
     },
   })
-  handleHide()
 }
+
 watch(() => props.source, async(source) => {
   if (!source) return
-  // const source = (await getLeaderboardSetting()).source as LX.OnlineSource
+  // const setting = (await getSongListSetting()).source as LX.OnlineSource
   let tagInfo = tags[source]
-  // console.log(await getTags(source))
   if (tagInfo == null) setTags(tagInfo = await getTags(source), source)
 
   list.splice(0, list.length, ...[{ name: window.i18n.t('songlist__tag_info_hot_tag'), list: [...tagInfo.hotTag] }, ...tagInfo.tags])
+  activeCate.value = 0
 }, {
   immediate: true,
 })
-const tagName = computed(() => {
-  if (!props.tagId) return t('default')
-  for (const tags of list) {
-    const tag = tags.list.find(t => t.id == props.tagId)
-    if (tag) return tag.name
-  }
-  return props.tagId
-})
 
-const popupStyle = reactive({
-  width: '645px',
-  maxHeight: '250px',
-})
-
-const setTagPopupWidth = () => {
-  window.setTimeout(() => {
-    const dom_view = document.getElementById('view')
-    popupStyle.width = dom_view.clientWidth * 0.96 + 'px'
-    popupStyle.maxHeight = dom_view.clientHeight * 0.65 + 'px'
-  }, 50)
-}
-
-const dom_btn = ref<HTMLElement | null>(null)
-const popupVisible = ref(false)
-const handleShow = () => popupVisible.value = !popupVisible.value
-const handleHide = (evt) => {
-  // if (e && e.target.parentNode != this.$refs.dom_popup && this.show) return this.show = false
-  // console.log(this.$refs)
-  if (evt && (evt.target == dom_btn.value || dom_btn.value?.contains(evt.target))) return
-  popupVisible.value = false
-}
-
-
-onMounted(() => {
-  setTagPopupWidth()
-  document.addEventListener('click', handleHide)
-  window.addEventListener('resize', setTagPopupWidth)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleHide)
-  window.removeEventListener('resize', setTagPopupWidth)
+// 当前选中的标签不在激活分类时，自动切换到其所在分类
+watch(() => [props.tagId, list.length], () => {
+  if (!props.tagId) return
+  const index = list.findIndex(cate => cate.list.some(tag => tag.id == props.tagId))
+  if (index > -1) activeCate.value = index
+}, {
+  immediate: true,
 })
 
 </script>
@@ -121,116 +78,57 @@ onBeforeUnmount(() => {
 
 .tagList {
   font-size: 12px;
-  position: relative;
+  flex: auto;
+  min-width: 0;
+}
 
-  &.active {
-    .label {
-      .icon {
-        svg{
-          transform: rotate(180deg);
-        }
+// 分类标签行：选中效果覆盖为基础组件的相反样式——无加粗、带下划线
+.cateTab {
+  :global(li[aria-selected='true']) {
+    > span {
+      font-weight: normal;
+      position: relative;
+
+      &:after {
+        .mixin-after();
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        border-radius: 20px;
+        background-color: var(--color-primary-alpha-300);
       }
     }
-    .popup {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: initial;
-    }
   }
 }
 
-.label {
-  padding: 8px 15px;
-  // background-color: var(--color-button-background);
-  transition: color @transition-normal;
-  // border-top: 2px solid @color-tab-border-bottom;
-  // border-left: 2px solid @color-tab-border-bottom;
-  box-sizing: border-box;
-  text-align: center;
-  // border-top-left-radius: 3px;
-  color: var(--color-font);
-  cursor: pointer;
-
+.tagRow {
   display: flex;
-
-  span {
-    flex: auto;
-  }
-  .icon {
-    flex: none;
-    margin-left: 7px;
-    line-height: 0;
-    svg {
-      width: .8em;
-      transition: transform .2s ease;
-      transform: rotate(0);
-    }
-  }
-
-  &:hover {
-    color: var(--color-primary-font-hover);
-  }
-  &:active {
-    color: var(--color-primary-font-active);
-  }
-}
-
-.popup {
-  position: absolute;
-  top: 100%;
-  width: 645px;
-  left: 8px;
-  margin-top: 12px;
-  border-radius: 4px;
-  background-color: var(--color-content-background);
-  opacity: 0;
-  transform: scale(.95, .8);
-  transform-origin: 0 0 0;
-  transition: .25s ease;
-  transition-property: transform, opacity;
-  max-height: 250px;
-  z-index: 10;
-  pointer-events: none;
-  filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, .15));
-  display: flex;
-
-  &:before {
-    content: " ";
-    position: absolute;
-    top: -6px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--color-content-background);
-  }
-}
-.list {
-  padding: 10px;
-  box-sizing: border-box;
-  // box-shadow: 0 0 4px rgba(0, 0, 0, .2);
-}
-
-.type {
-  padding-top: 10px;
-  padding-bottom: 3px;
-  color: var(--color-font-label);
+  flex-flow: row wrap;
+  gap: 10px;
+  padding: 6px 15px 2px;
 }
 
 .tag {
   display: inline-block;
-  margin: 5px;
   background-color: var(--color-button-background);
-  padding: 8px 10px;
+  padding: 4px 12px;
   border-radius: @radius-progress-border;
   transition: background-color @transition-normal;
   cursor: pointer;
+
   &:hover {
     background-color: var(--color-button-background-hover);
   }
+
   &:active {
     background-color: var(--color-button-background-active);
+  }
+
+  &.active {
+    background-color: var(--color-primary);
+    color: #fff;
+    cursor: default;
   }
 }
 

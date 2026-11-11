@@ -2,7 +2,6 @@ import { computed, ref, reactive, nextTick } from '@common/utils/vueTools'
 import { useI18n } from '@renderer/plugins/i18n'
 import { userLists, defaultList, loveList } from '@renderer/store/list/state'
 import musicSdk from '@renderer/utils/musicSdk'
-import { addLocalFile } from './actions'
 
 export default ({
   emit,
@@ -20,7 +19,6 @@ export default ({
     rename: true,
     duplicate: true,
     sort: true,
-    local_file: true,
     sourceDetail: true,
     import: true,
     export: true,
@@ -47,11 +45,6 @@ export default ({
         name: t('lists__duplicate'),
         action: 'duplicate',
         disabled: !menuControl.duplicate,
-      },
-      {
-        name: t('lists__select_local_file'),
-        action: 'local_file',
-        disabled: !menuControl.local_file,
       },
       {
         name: t('lists__sync'),
@@ -160,9 +153,6 @@ export default ({
         break
       case 'sort':
         handleSortList(listInfo)
-        break
-      case 'local_file':
-        addLocalFile(listInfo)
         break
       case 'sourceDetail':
         handleOpenSourceDetailPage(listInfo)

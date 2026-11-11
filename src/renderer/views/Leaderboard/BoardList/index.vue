@@ -5,12 +5,7 @@
       :key="item.id" :class="[$style.listsItem, { [$style.active]: item.id == boardId }, { [$style.clicked]: rightClickItemIndex == index }]"
       :aria-label="item.name" @click="handleToggleList(item.id)" @contextmenu="handleRigthClick($event, index)"
     >
-      <span :class="$style.listsLabel">
-        <transition name="list-active">
-          <svg-icon v-if="item.id == boardId" name="angle-right-solid" :class="$style.activeIcon" />
-        </transition>
-        {{ item.name }}
-      </span>
+      <span :class="$style.listsLabel">{{ item.name }}</span>
     </li>
   </ul>
   <base-menu
@@ -79,9 +74,17 @@ const handleMenuClick = (action) => {
 
 
 watch(() => props.source, async(source) => {
-  // const source = (await getLeaderboardSetting()).source as LX.OnlineSource
+  if (!source) return
   let boardList = boards[source]
-  if (boardList == null) setBoard(boardList = await getBoardsList(source), source)
+  if (boardList == null) {
+    const board = await getBoardsList(source)
+    if (board && typeof board === 'object') {
+      setBoard(board, source)
+      boardList = board
+    } else {
+      return
+    }
+  }
   list.splice(0, list.length, ...boardList.list)
   if (!props.boardId && boardList.list.length) handleToggleList(boardList.list[0].id)
 }, {
@@ -98,22 +101,25 @@ defineExpose({ hideMenu: handleMenuClick })
 .listsContent {
   flex: auto;
   min-width: 0;
-  overflow-y: scroll;
-  // overflow-y: scroll !important;
-  // border-right: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  padding: 4px 15px 10px;
 }
 .listsItem {
+  flex: none;
   position: relative;
   transition: .3s ease;
   transition-property: color, background-color;
-  background-color: transparent;
+  background-color: var(--color-primary-light-300-alpha-700);
+  border-radius: 5px;
   &:hover:not(.active) {
-    background-color: var(--color-primary-background-hover);
+    background-color: var(--color-primary-light-400);
     cursor: pointer;
   }
   &.active {
-    // background-color:
-    color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: #fff;
   }
   &.selected {
     background-color: var(--color-primary-font-active);
@@ -132,18 +138,11 @@ defineExpose({ hideMenu: handleMenuClick })
     }
   }
 }
-.activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
-}
 .listsLabel {
   display: block;
-  height: 100%;
-  padding: 0 10px;
-  font-size: 13px;
-  line-height: 36px;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.4;
   .mixin-ellipsis-1();
 }
 

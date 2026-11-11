@@ -1,0 +1,5 @@
+import '@common/types/shims_vue'
+import '@common/types/theme'
+import '@common/types/player'
+import '@common/types/ipc_renderer'
+import '@common/types/app_setting'

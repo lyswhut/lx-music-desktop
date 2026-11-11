@@ -1,5 +1,5 @@
 import { rendererSend, rendererInvoke, rendererOn, rendererOff } from '@common/rendererIpc'
-import { HOTKEY_RENDERER_EVENT_NAME, WIN_MAIN_RENDERER_EVENT_NAME, CMMON_EVENT_NAME } from '@common/ipcNames'
+import { HOTKEY_RENDERER_EVENT_NAME, WIN_MAIN_RENDERER_EVENT_NAME, WIN_MINI_PLAYER_RENDERER_EVENT_NAME, CMMON_EVENT_NAME } from '@common/ipcNames'
 import { type ProgressInfo, type UpdateDownloadedEvent, type UpdateInfo } from 'electron-updater'
 import { markRaw } from '@common/utils/vueTools'
 import * as hotKeys from '@common/hotKey'
@@ -831,6 +831,26 @@ export const onNewDesktopLyricProcess = (listener: LX.IpcRendererEventListener):
   rendererOn(WIN_MAIN_RENDERER_EVENT_NAME.process_new_desktop_lyric_client, listener)
   return () => {
     rendererOff(WIN_MAIN_RENDERER_EVENT_NAME.process_new_desktop_lyric_client, listener)
+  }
+}
+
+/**
+ * 切换迷你播放窗显示状态
+ * @returns 切换后的显示状态
+ */
+export const toggleMiniPlayer = async() => {
+  return rendererInvoke<boolean>(WIN_MINI_PLAYER_RENDERER_EVENT_NAME.toggle_visible)
+}
+
+/**
+ * 迷你播放窗显示状态变化事件
+ * @param listener
+ * @returns
+ */
+export const onMiniPlayerVisibleChanged = (listener: LX.IpcRendererEventListenerParams<boolean>): RemoveListener => {
+  rendererOn<boolean>(WIN_MINI_PLAYER_RENDERER_EVENT_NAME.on_visible_changed, listener)
+  return () => {
+    rendererOff(WIN_MINI_PLAYER_RENDERER_EVENT_NAME.on_visible_changed, listener)
   }
 }
 

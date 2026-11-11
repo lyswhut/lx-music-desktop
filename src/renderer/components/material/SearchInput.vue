@@ -86,7 +86,7 @@ export default {
   data() {
     return {
       isShow: false,
-      text: '',
+      text: this.modelValue,
       selectIndex: -1,
       focus: false,
       listStyle: {
@@ -203,8 +203,9 @@ export default {
 
 .container {
   position: relative;
-  width: 35%;
-  height: @height-toolbar * 0.52;
+  z-index: 50;
+  width: 100%;
+  height: 36px;
   -webkit-app-region: no-drag;
 }
 
@@ -218,7 +219,7 @@ export default {
   background-color: var(--color-primary-light-300-alpha-700);
 
   &.active {
-    background-color: var(--color-primary-light-600-alpha-100);
+    background-color: var(--color-primary-light-600);
     box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
     .form {
       input {
@@ -283,6 +284,7 @@ export default {
   }
   .list {
     // background-color: @color-search-form-background;
+    background-color: var(--color-primary-light-600);
     font-size: 13px;
     transition: .3s ease;
     height: 0;
@@ -310,13 +312,17 @@ export default {
 
 .big {
   width: 100%;
-  // input {
-  //   line-height: 30px;
-  // }
   .form {
-    height: 30px;
+    height: 36px;
+    input {
+      font-size: 15px;
+      line-height: 36px;
+    }
     button {
-      padding: 6px 10px;
+      padding: 4px 16px;
+      svg {
+        width: 18px;
+      }
     }
   }
 }

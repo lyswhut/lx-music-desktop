@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#list {{ $t('setting__list') }}
 dd
+  h3 {{ $t('setting__list') }}
   .gap-top
     base-checkbox(id="setting_list_actionButtonsVisible_enable" :model-value="appSetting['list.actionButtonsVisible']" :label="$t('setting__list_action_btn')" @update:model-value="updateSetting({'list.actionButtonsVisible': $event})")
   .gap-top
@@ -11,7 +12,7 @@ dd
     base-checkbox(id="setting_list_clickAction_enable" :model-value="appSetting['list.isClickPlayList']" :label="$t('setting__list_click_action')" @update:model-value="updateSetting({'list.isClickPlayList': $event})")
 dd(:aria-label="$t('setting__basic_sourcename_title')")
   h3#list_addMusicLocationType {{ $t('setting__list_add_music_location_type') }}
-  div
+  div.lx-option-col
     base-checkbox.gap-left(
       id="setting_list_add_music_location_type_top" name="setting_list_add_music_location_type" need
       :model-value="appSetting['list.addMusicLocationType']" value="top" :label="$t('setting__list_add_music_location_type_top')"

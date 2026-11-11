@@ -164,6 +164,15 @@ const modules = {
     provide_main_window_channel: 'provide_main_window_channel',
     mouse_enter_leave: 'mouse_enter_leave',
   },
+  winMiniPlayer: {
+    toggle_visible: 'toggle_visible',
+    on_visible_changed: 'on_visible_changed',
+    get_player_status: 'get_player_status',
+    on_player_status: 'on_player_status',
+    player_action: 'player_action',
+    on_app_setting: 'on_app_setting',
+    close: 'close',
+  },
   hotKey: {
     enable: 'enable',
     status: 'status',
@@ -192,4 +201,5 @@ export const PLAYER_EVENT_NAME = modules.player
 export const DISLIKE_EVENT_NAME = modules.dislike
 export const WIN_MAIN_RENDERER_EVENT_NAME = modules.winMain
 export const WIN_LYRIC_RENDERER_EVENT_NAME = modules.winLyric
+export const WIN_MINI_PLAYER_RENDERER_EVENT_NAME = modules.winMiniPlayer
 export const HOTKEY_RENDERER_EVENT_NAME = modules.hotKey

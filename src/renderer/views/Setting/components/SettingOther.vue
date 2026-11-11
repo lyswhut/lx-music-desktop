@@ -8,7 +8,7 @@ dd
 
 dd
   h3#other_tray_theme {{ $t('setting__other_tray_theme') }}
-  div
+  div.lx-option-col
     base-checkbox.gap-left(
       v-for="item in trayThemeList" :id="'setting_tray_theme_' + item.id" :key="item.id" :model-value="appSetting['tray.themeId']" name="setting_tray_theme"
       need :label="item.label" :value="item.id" @update:model-value="updateSetting({'tray.themeId': $event})")
@@ -40,9 +40,10 @@ dd
       base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
       base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
 
+div(data-line-break)
 dd
   h3#other_lyric_edited {{ $t('setting__other_dislike_list') }}
-  div
+  div(:class="$style.inlineRow")
     .p
       | {{ $t('setting__other_dislike_list_label') }}
       span.auto-hidden {{ dislikeRuleCount }}
@@ -52,7 +53,7 @@ dd
 
 dd
   h3#other_lyric_edited {{ $t('setting__other_lyric_edited_cache') }}
-  div
+  div(:class="$style.inlineRow")
     .p
       | {{ $t('setting__other_lyric_edited_label') }}
       span.auto-hidden {{ lyricEditedCount }}
@@ -244,3 +245,16 @@ export default {
   },
 }
 </script>
+
+<style lang="less" module>
+.inlineRow {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 15px;
+
+  :global(.p) {
+    margin: 0;
+  }
+}
+</style>

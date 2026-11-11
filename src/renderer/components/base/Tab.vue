@@ -1,5 +1,5 @@
 <template>
-  <ul :class="[$style.list, $style[align]]" role="tablist">
+  <ul :class="[$style.list, $style[align], { [$style.boxed]: variant === 'boxed' }]" role="tablist">
     <li
       v-for="item in list"
       :key="item[itemKey]" :class="[$style.listItem, {[$style.active]: modelValue == item[itemKey]}]" tabindex="-1" role="tab"
@@ -36,6 +36,10 @@ export default {
       type: [String, Number],
       default: '',
     },
+    variant: {
+      type: String,
+      default: 'default',
+    },
   },
   emits: ['update:modelValue', 'change'],
   setup(props, { emit }) {
@@ -58,8 +62,8 @@ export default {
 .list {
   display: flex;
   flex-flow: row nowrap;
-  font-size: 12px;
-  gap: 25px;
+  font-size: 13px;
+  gap: 12px;
   padding: 0 15px;
 
   &.left {
@@ -71,10 +75,17 @@ export default {
   &.right {
     justify-content: flex-end;
   }
+
+  &.boxed {
+    gap: 0;
+    padding: 2px;
+    background-color: var(--color-primary-light-600);
+    border-radius: 7px;
+    overflow: visible;
+  }
 }
 .listItem {
   display: block;
-  // padding: 5px 15px;
   cursor: pointer;
   transition: color @transition-normal;
 
@@ -89,32 +100,48 @@ export default {
     cursor: default;
 
     >.label {
-      &:after {
-        // background-color: var(--color-primary);
-        opacity: 1;
-        transform: translateY(0);
-      }
+      font-weight: bold;
     }
   }
 }
 
 .label {
   display: block;
-  position: relative;
   padding: 8px 0;
-  &:after {
-    .mixin-after();
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 2px;
-    border-radius: 20px;
-    background-color: transparent;
-    transform: translateY(-4px);
-    opacity: 0;
-    background-color: var(--color-primary-alpha-300);
-    transition: @transition-fast;
-    transition-property: transform, opacity;
+}
+
+/* boxed 变体样式 */
+.boxed {
+  .listItem {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 5px;
+    transition: background-color @transition-fast, color @transition-fast;
+    margin-right: 2px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:hover {
+      color: var(--color-primary-dark-300);
+    }
+
+    &.active {
+      background-color: #fff;
+      color: var(--color-primary-dark-400);
+      cursor: default;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .label {
+    padding: 0;
+    font-size: 12px;
   }
 }
 </style>
+

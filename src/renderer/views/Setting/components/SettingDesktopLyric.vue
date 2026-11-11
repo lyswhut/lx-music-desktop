@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#desktop_lyric {{ $t('setting__desktop_lyric') }}
 dd
+  h3 {{ $t('setting__desktop_lyric') }}
   .gap-top
     base-checkbox(id="setting_desktop_lyric_enable" :model-value="appSetting['desktopLyric.enable']" :label="$t('setting__desktop_lyric_enable')" @update:model-value="updateSetting({ 'desktopLyric.enable': $event })")
   .gap-top
@@ -35,7 +36,7 @@ dd
 
 dd
   h3#setting__desktop_lyric_font_weight {{ $t('setting__desktop_lyric_font_weight') }}
-  div
+  div(:class="$style.optionCol")
     base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_font" :model-value="appSetting['desktopLyric.style.isFontWeightFont']" :label="$t('setting__desktop_lyric_font_weight_font')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightFont': $event })")
     base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_line" :model-value="appSetting['desktopLyric.style.isFontWeightLine']" :label="$t('setting__desktop_lyric_font_weight_line')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightLine': $event })")
     base-checkbox.gap-left(id="setting_setting__desktop_lyric_font_weight_extended" :model-value="appSetting['desktopLyric.style.isFontWeightExtended']" :label="$t('setting__desktop_lyric_font_weight_extended')" @update:model-value="updateSetting({ 'desktopLyric.style.isFontWeightExtended': $event })")
@@ -43,22 +44,24 @@ dd
 
 dd
   h3#desktop_lyric_direction {{ $t('setting__desktop_lyric_direction') }}
-  div
+  div(:class="$style.optionCol")
     base-checkbox.gap-left(id="setting_desktop_lyric_direction_horizontal" :model-value="appSetting['desktopLyric.direction']" need value="horizontal" :label="$t('setting__desktop_lyric_direction_horizontal')" @update:model-value="updateSetting({ 'desktopLyric.direction': $event })")
     base-checkbox.gap-left(id="setting_desktop_lyric_direction_vertical" :model-value="appSetting['desktopLyric.direction']" need value="vertical" :label="$t('setting__desktop_lyric_direction_vertical')" @update:model-value="updateSetting({ 'desktopLyric.direction': $event })")
 
 dd
   h3#desktop_lyric_scroll_align {{ $t('setting__desktop_lyric_scroll_align') }}
-  div
+  div(:class="$style.optionCol")
     base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_top" :model-value="appSetting['desktopLyric.scrollAlign']" need value="top" :label="$t('setting__desktop_lyric_scroll_align_top')" @update:model-value="updateSetting({ 'desktopLyric.scrollAlign': $event })")
     base-checkbox.gap-left(id="setting_desktop_lyric_scroll_align_center" :model-value="appSetting['desktopLyric.scrollAlign']" need value="center" :label="$t('setting__desktop_lyric_scroll_align_center')" @update:model-value="updateSetting({ 'desktopLyric.scrollAlign': $event })")
 
 dd
   h3#desktop_lyric_align {{ $t('setting__desktop_lyric_align') }}
-  div
+  div(:class="$style.optionCol")
     base-checkbox.gap-left(id="setting_desktop_lyric_align_left" :model-value="appSetting['desktopLyric.style.align']" need value="left" :label="$t('setting__desktop_lyric_align_left')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
     base-checkbox.gap-left(id="setting_desktop_lyric_align_center" :model-value="appSetting['desktopLyric.style.align']" need value="center" :label="$t('setting__desktop_lyric_align_center')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
     base-checkbox.gap-left(id="setting_desktop_lyric_align_right" :model-value="appSetting['desktopLyric.style.align']" need value="right" :label="$t('setting__desktop_lyric_align_right')" @update:model-value="updateSetting({ 'desktopLyric.style.align': $event })")
+
+div(data-line-break)
 
 dd
   h3#desktop_lyric_line_gap {{ $t('setting__desktop_lyric_line_gap', { num: appSetting['desktopLyric.style.lineGap'] }) }}
@@ -80,12 +83,11 @@ dd
         div(:class="$style.item")
           div(ref="lyric_shadow_color_ref" :class="$style.color")
           div(:class="$style.label") {{ $t('setting__desktop_lyric_shadow_color') }}
-    .p.gap-top
-      base-btn.btn(min @click="resetColor") {{ $t('setting__desktop_lyric_color_reset') }}
+        base-btn.btn(min :class="$style.resetBtn" @click="resetColor") {{ $t('setting__desktop_lyric_color_reset') }}
 dd
   h3#desktop_lyric_font {{ $t('setting__desktop_lyric_font') }}
   div
-    base-selection.gap-teft(:list="fontList" :model-value="appSetting['desktopLyric.style.font']" item-key="id" item-name="label" @update:model-value="updateSetting({ 'desktopLyric.style.font': $event })")
+    base-selection.gap-teft(style="--selection-width: 100%;" :list="fontList" :model-value="appSetting['desktopLyric.style.font']" item-key="id" item-name="label" @update:model-value="updateSetting({ 'desktopLyric.style.font': $event })")
 
 dd
   h3#desktop_lyric_reset {{ $t('setting__desktop_lyric_reset') }}
@@ -307,6 +309,17 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
+.optionCol {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  gap: 10px;
+
+  :global(.gap-left) {
+    margin-left: 0;
+  }
+}
+
 .groupContent {
   display: flex;
   flex-flow: row wrap;
@@ -317,6 +330,10 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+}
+.resetBtn {
+  align-self: center;
+  margin-left: 10px;
 }
 .color {
   width: 80%;

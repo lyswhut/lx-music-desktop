@@ -1,5 +1,18 @@
 <template>
   <div :class="$style.download">
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" width="34" height="34" space="preserve">
+          <use xlink:href="#icon-download-2" />
+        </svg>
+      </div>
+      <div :class="$style.pageMain">
+        <h1 :class="$style.pageTitle">{{ $t('download') }}</h1>
+        <button type="button" :class="$style.actionBtn" @click="handleChangeSavePath">
+          {{ $t('setting__download_path_change_btn') }}
+        </button>
+      </div>
+    </div>
     <div :class="$style.header">
       <base-tab v-model="activeTab" :class="$style.tab" :list="tabs" />
     </div>
@@ -64,12 +77,14 @@
     </div>
     <common-list-add-modal v-model:show="isShowListAdd" :music-info="selectedAddMusicInfo" teleport="#view" />
     <common-list-add-multiple-modal v-model:show="isShowListAddMultiple" :music-list="selectedList" teleport="#view" @confirm="removeAllSelect" />
+    <common-back-to-top />
   </div>
 </template>
 
 <script>
 // import { checkPath, openDirInExplorer, openUrl } from '@common/utils/electron'
 
+import { showSelectDialog } from '@renderer/utils/ipc'
 import { ref } from '@common/utils/vueTools'
 import useListInfo from './useListInfo'
 import useList from './useList'
@@ -79,7 +94,8 @@ import usePlay from './usePlay'
 import useTaskActions from './useTaskActions'
 import useMusicAdd from './useMusicAdd'
 import { downloadStatus } from '@renderer/store/download/state'
-import { appSetting } from '@renderer/store/setting'
+import { appSetting, updateSetting } from '@renderer/store/setting'
+import { useI18n } from '@renderer/plugins/i18n'
 import { formatMusicName } from '@renderer/utils'
 
 export default {
@@ -209,6 +225,18 @@ export default {
     const getTypeName = (quality) => {
       return quality == 'flac24bit' ? 'FLAC Hires' : quality?.toUpperCase()
     }
+    const t = useI18n()
+    // 与设置页“下载路径-更改”按钮一致：弹出目录选择框并更新下载路径
+    const handleChangeSavePath = () => {
+      void showSelectDialog({
+        title: t('setting__download_select_save_path'),
+        defaultPath: appSetting['download.savePath'],
+        properties: ['openDirectory'],
+      }).then(result => {
+        if (result.canceled) return
+        updateSetting({ 'download.savePath': result.filePaths[0] })
+      })
+    }
     return {
       listRef,
       list,
@@ -238,6 +266,7 @@ export default {
 
       getName,
       getTypeName,
+      handleChangeSavePath,
     }
   },
 }
@@ -257,6 +286,62 @@ export default {
     &.active {
       color: var(--color-button-font);
     }
+  }
+}
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  padding: 30px 15px 14px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  color: var(--color-primary);
+  margin-right: 16px;
+}
+.pageMain {
+  flex: auto;
+  min-width: 0;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: var(--color-font);
+  line-height: 1.3;
+  .mixin-ellipsis-1();
+}
+.actionBtn {
+  flex: none;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 3px 8px;
+  border: none;
+  border-radius: @form-radius;
+  background-color: var(--color-button-background);
+  color: var(--color-button-font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color @transition-fast;
+
+  &:hover {
+    background-color: var(--color-button-background-hover);
+  }
+  &:active {
+    background-color: var(--color-button-background-active);
   }
 }
 .num {

@@ -105,6 +105,7 @@
 
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
+import { computed } from '@common/utils/vueTools'
 import { assertApiSupport } from '@renderer/store/utils'
 import SearchList from './components/SearchList.vue'
 import MusicSortModal from './components/MusicSortModal.vue'
@@ -136,7 +137,7 @@ export default {
   },
   emits: ['show-menu'],
   setup(props, { emit }) {
-    const actionButtonsVisible = appSetting['list.actionButtonsVisible']
+    const actionButtonsVisible = computed(() => appSetting['list.actionButtonsVisible'])
 
     let scrollIndex = null
     let isAnimation = false

@@ -147,6 +147,8 @@ export const isShowChangeLog = ref(false)
 
 
 export const isFullscreen = ref(false)
+
+export const isAsideCollapsed = ref(false)
 watch(isFullscreen, isFullscreen => {
   window.lx.rootOffset = window.dt || isFullscreen ? 0 : 8
 }, { immediate: true })

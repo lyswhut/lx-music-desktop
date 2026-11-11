@@ -1,6 +1,7 @@
 <template lang="pug">
 dt#odc {{ $t('setting__odc') }}
 dd
+  h3 {{ $t('setting__odc') }}
   .gap-top
     base-checkbox(id="setting_odc_isAutoClearSearchInput" :model-value="appSetting['odc.isAutoClearSearchInput']" :label="$t('setting__odc_clear_search_input')" @update:model-value="updateSetting({'odc.isAutoClearSearchInput': $event})")
   .gap-top

@@ -89,6 +89,21 @@ declare global {
       'player.startupAutoPlay': boolean
 
       /**
+       * 自动备份保存目录
+       */
+      'backup.autoPath': string
+
+      /**
+       * 启动软件时自动备份歌单
+       */
+      'backup.autoEnable': boolean
+
+      /**
+       * 自动备份保留数量
+       */
+      'backup.autoKeepCount': number
+
+      /**
        * 切歌模式
        */
       'player.togglePlayMethod': 'listLoop' | 'random' | 'list' | 'singleLoop' | 'none'
@@ -374,6 +389,16 @@ declare global {
        * 桌面歌词窗口y坐标
        */
       'desktopLyric.y': number | null
+
+      /**
+       * 迷你播放窗x坐标
+       */
+      'miniPlayer.x': number | null
+
+      /**
+       * 迷你播放窗y坐标
+       */
+      'miniPlayer.y': number | null
 
       /**
        * 是否允许桌面歌词窗口拖出主屏幕之外

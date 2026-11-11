@@ -1,18 +1,28 @@
 <template>
   <div ref="dom_lists" :class="$style.lists">
-    <div :class="$style.listHeader">
-      <h2 :class="$style.listsTitle">{{ $t('my_list') }}</h2>
-      <div :class="$style.headerBtns">
-        <button :class="$style.listsAdd" :aria-label="$t('lists__new_list_btn')" @click="isShowNewList = true">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 24 24" space="preserve">
-            <use xlink:href="#icon-list-add" />
-          </svg>
-        </button>
-        <button :class="$style.listsAdd" :aria-label="$t('list_update_modal__title')" @click="isShowListUpdateModal = true">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="transform: rotate(45deg);" height="70%" viewBox="0 0 24 24" space="preserve">
-            <use xlink:href="#icon-refresh" />
-          </svg>
-        </button>
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 444.87 391.18" width="34" height="34" space="preserve">
+          <use xlink:href="#icon-love" />
+        </svg>
+      </div>
+      <div :class="$style.pageMain">
+        <h1 :class="$style.pageTitle">{{ $t('my_list') }}</h1>
+        <div :class="$style.pageActions">
+          <button type="button" :class="$style.actionBtn" @click="isShowNewList = true">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="15" height="15" space="preserve">
+              <use xlink:href="#icon-list-add" />
+            </svg>
+            {{ $t('lists__new_list_btn') }}
+          </button>
+          <button type="button" :class="$style.actionBtn" @click="isShowOpenListModal = true">{{ $t('songlist__import_input_show_btn') }}</button>
+          <button type="button" :class="$style.actionBtn" @click="isShowListUpdateModal = true">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="15" height="15" style="transform: rotate(45deg);" space="preserve">
+              <use xlink:href="#icon-refresh" />
+            </svg>
+            {{ $t('list_update_modal__title') }}
+          </button>
+        </div>
       </div>
     </div>
     <ul ref="dom_lists_list" class="scroll" :class="[$style.listsContent, { [$style.sortable]: isModDown }]">
@@ -26,24 +36,14 @@
             <use xlink:href="#icon-right" />
           </svg>
         </div> -->
-        <span :class="$style.listsLabel">
-          <transition name="list-active">
-            <svg-icon v-if="defaultList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
-          {{ $t(defaultList.name) }}
-        </span>
+        <span :class="$style.listsLabel">{{ $t(defaultList.name) }}</span>
       </li>
       <li
         class="default-list" :class="[$style.listsItem, {[$style.active]: loveList.id == listId}, {[$style.clicked]: rightClickItemIndex == -1}, {[$style.fetching]: fetchingListStatus[loveList.id]}]"
         :aria-label="$t(loveList.name)" :aria-selected="loveList.id == listId"
         @contextmenu="handleListsItemRigthClick($event, -1)" @click="handleListToggle(loveList.id)"
       >
-        <span :class="$style.listsLabel">
-          <transition name="list-active">
-            <svg-icon v-if="loveList.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
-          {{ $t(loveList.name) }}
-        </span>
+        <span :class="$style.listsLabel">{{ $t(loveList.name) }}</span>
       </li>
       <li
         v-for="(item, index) in userLists"
@@ -51,12 +51,7 @@
         :class="[$style.listsItem, {[$style.active]: item.id == listId}, {[$style.clicked]: rightClickItemIndex == index}, {[$style.fetching]: fetchingListStatus[item.id]}]"
         :data-index="index" :aria-label="item.name" :aria-selected="defaultList.id == listId" @contextmenu="handleListsItemRigthClick($event, index)"
       >
-        <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">
-          <transition name="list-active">
-            <svg-icon v-if="item.id == listId" name="angle-right-solid" :class="$style.activeIcon" />
-          </transition>
-          {{ item.name }}
-        </span>
+        <span :class="$style.listsLabel" @click="handleListToggle(item.id, index + 2)">{{ item.name }}</span>
         <base-input
           :class="$style.listsInput" type="text" :value="item.name"
           :placeholder="item.name" @keyup.enter="handleSaveListName(index, $event)" @blur="handleSaveListName(index, $event)"
@@ -75,6 +70,7 @@
     <DuplicateMusicModal v-model:visible="isShowDuplicateMusicModal" :list-info="duplicateListInfo" />
     <ListSortModal v-model:visible="isShowListSortModal" :list-info="sortListInfo" />
     <ListUpdateModal v-model:visible="isShowListUpdateModal" />
+    <OpenListModal v-model="isShowOpenListModal" :source-list="openSourceList" />
   </div>
 </template>
 
@@ -85,11 +81,14 @@ import musicSdk from '@renderer/utils/musicSdk'
 import DuplicateMusicModal from './components/DuplicateMusicModal.vue'
 import ListSortModal from './components/ListSortModal.vue'
 import ListUpdateModal from './components/ListUpdateModal.vue'
+import OpenListModal from '@renderer/views/songList/List/components/OpenListModal.vue'
 
 import { defaultList, loveList, userLists, fetchingListStatus } from '@renderer/store/list/state'
 import { removeUserList } from '@renderer/store/list/action'
+import { sources as songListSources } from '@renderer/store/songList/state'
+import { sourceNames } from '@renderer/store'
 
-import { ref, watch } from '@common/utils/vueTools'
+import { ref, watch, computed } from '@common/utils/vueTools'
 import { useRouter } from '@common/utils/vueRouter'
 import { LIST_IDS } from '@common/constants'
 
@@ -115,6 +114,7 @@ export default {
     DuplicateMusicModal,
     ListSortModal,
     ListUpdateModal,
+    OpenListModal,
   },
   props: {
     listId: {
@@ -129,6 +129,8 @@ export default {
 
     const dom_lists_list = ref(null)
     const rightClickItemIndex = ref(-10)
+    const isShowOpenListModal = ref(false)
+    const openSourceList = computed(() => songListSources.map(s => ({ id: s, name: sourceNames.value[s] })))
 
     const { handleImportList, handleExportList } = useShare()
     const { isShowListUpdateModal, handleUpdateSourceList } = useListUpdate()
@@ -227,6 +229,8 @@ export default {
       userLists,
       fetchingListStatus,
       dom_lists_list,
+      isShowOpenListModal,
+      openSourceList,
       isShowListUpdateModal,
       isShowListSortModal,
       sortListInfo,
@@ -252,63 +256,80 @@ export default {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-@lists-item-height: 36px;
 .lists {
   flex: none;
-  width: 16%;
+  width: 100%;
   display: flex;
   flex-flow: column nowrap;
 }
-.listHeader {
-  position: relative;
+.pageHeader {
   display: flex;
   flex-flow: row nowrap;
-  border-bottom: var(--color-list-header-border-bottom);
-  &:hover {
-    .listsAdd {
-      opacity: 1;
-    }
-  }
+  align-items: center;
+  padding: 30px 15px 14px;
 }
-.listsTitle {
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+.pageMain {
   flex: auto;
-  font-size: 12px;
-  line-height: 38px;
-  padding: 0 10px;
+  min-width: 0;
+  display: flex;
+  flex-flow: column nowrap;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 1.3;
+  color: var(--color-font);
   .mixin-ellipsis-1();
 }
-.headerBtns {
+.pageActions {
   flex: none;
   display: flex;
+  flex-flow: row nowrap;
+  margin-top: 10px;
 }
-.listsAdd {
-  // position: absolute;
-  // right: 0;
-  margin-top: 6px;
-  background: none;
-  height: 30px;
+.actionBtn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  margin-right: 8px;
   border: none;
-  outline: none;
-  border-radius: @radius-border;
-  cursor: pointer;
-  opacity: .1;
-  transition: opacity @transition-normal;
+  border-radius: 7px;
+  background-color: rgba(0, 0, 0, 0.06);
   color: var(--color-button-font);
-  svg {
-    vertical-align: bottom;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color @transition-fast;
+
+  &:last-child {
+    margin-right: 0;
   }
-  &:active {
-    opacity: .7 !important;
-  }
+
   &:hover {
-    opacity: .6 !important;
+    background-color: rgba(0, 0, 0, 0.1);
   }
 }
 .listsContent {
-  flex: auto;
+  flex: none;
   min-width: 0;
-  overflow-y: scroll !important;
-  // border-right: 1px solid rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-flow: row wrap;
+  gap: 8px;
+  padding: 4px 15px 10px;
 
   &.sortable {
     * {
@@ -316,30 +337,26 @@ export default {
     }
 
     .listsItem {
-      &:hover, &.active, &.selected, &.clicked {
-        background-color: transparent !important;
-      }
-
       &.dragingItem {
-        background-color: var(--color-primary-background-hover) !important;
+        opacity: .4;
       }
     }
   }
 }
 .listsItem {
+  flex: none;
   position: relative;
   transition: .3s ease;
   transition-property: color, background-color, opacity;
-  background-color: transparent;
-  &:not(.active) {
-    &:hover {
-      background-color: var(--color-primary-background-hover);
-      cursor: pointer;
-    }
+  background-color: var(--color-primary-light-300-alpha-700);
+  border-radius: 5px;
+  &:hover:not(.active) {
+    background-color: var(--color-primary-light-400);
+    cursor: pointer;
   }
   &.active {
-    // background-color:
-    color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: #fff;
   }
   &.selected {
     background-color: var(--color-primary-font-active);
@@ -361,44 +378,38 @@ export default {
     }
   }
 }
-.activeIcon {
-  height: .9em;
-  width: .9em;
-  margin-left: -0.45em;
-  vertical-align: -0.05em;
-}
 .listsLabel {
   display: block;
-  height: @lists-item-height;
-  padding: 0 10px;
-  font-size: 13px;
-  line-height: @lists-item-height;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.4;
   .mixin-ellipsis-1();
 }
 .listsInput {
-  width: 100%;
-  height: @lists-item-height;
+  width: 130px;
+  height: 25px;
   // border: none;
-  padding: 0;
+  padding: 0 6px;
   // padding-bottom: 1px;
-  line-height: @lists-item-height;
+  line-height: 25px;
   background: none !important;
   border-radius: 0;
   // outline: none;
-  font-size: 13px;
+  font-size: 12px;
   display: none;
+  box-sizing: border-box;
   // font-family: inherit;
 }
 
 .listsNew {
   padding: 0 10px;
-  background-color: var(--color-primary-background-hover) !important;
+  background-color: var(--color-primary-light-300-alpha-700) !important;
+  border-radius: 5px;
   .listsInput {
     display: block;
   }
 }
 .newLeave {
-  margin-top: -@lists-item-height;
   z-index: -1;
 }
 
