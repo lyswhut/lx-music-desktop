@@ -1,4 +1,6 @@
 import http from 'node:http'
+import fs from 'node:fs'
+import path from 'node:path'
 import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
@@ -28,6 +30,65 @@ let httpServer: http.Server
 let sockets = new Set<Socket>()
 let responses = new Map<http.ServerResponse<http.IncomingMessage>, SubscribeKeys[]>()
 let playerStatusKeys: SubscribeKeys[]
+
+const getWebRoot = (): string => {
+  const candidates = [
+    path.resolve(process.cwd(), 'src/main/modules/openApi/web'),
+    path.resolve(__dirname, 'web'),
+    path.resolve(__dirname, '../web'),
+    path.resolve(__dirname, '../../web'),
+  ]
+  return candidates.find(candidate => fs.existsSync(candidate)) ?? candidates[0]
+}
+
+const getContentType = (filePath: string): string => {
+  const ext = path.extname(filePath).toLowerCase()
+  switch (ext) {
+    case '.html':
+      return 'text/html; charset=utf-8'
+    case '.css':
+      return 'text/css; charset=utf-8'
+    case '.js':
+      return 'application/javascript; charset=utf-8'
+    case '.json':
+      return 'application/json; charset=utf-8'
+    case '.svg':
+      return 'image/svg+xml; charset=utf-8'
+    case '.woff':
+      return 'font/woff'
+    case '.woff2':
+      return 'font/woff2'
+    case '.ttf':
+      return 'font/ttf'
+    case '.otf':
+      return 'font/otf'
+    default:
+      return 'application/octet-stream'
+  }
+}
+
+const serveWebFile = (res: http.ServerResponse, filePath: string) => {
+  const webRoot = getWebRoot()
+  const safePath = path.normalize(filePath).replace(/^\.+[\\/]+/, '')
+  const fullPath = path.resolve(webRoot, safePath)
+  if (!fullPath.startsWith(webRoot)) {
+    sendResponse(res, 403, 'Forbidden')
+    return
+  }
+
+  fs.readFile(fullPath, (err, data) => {
+    if (err) {
+      sendResponse(res, 404, 'Not Found')
+      return
+    }
+
+    res.writeHead(200, {
+      'Content-Type': getContentType(fullPath),
+      'Access-Control-Allow-Origin': '*',
+    })
+    res.end(data)
+  })
+}
 
 const defaultFilter = [
   'status',
@@ -85,57 +146,20 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
 const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
   playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
   httpServer = http.createServer((req, res): void => {
+    const requestUrl = new URL(req.url ?? '/', 'http://127.0.0.1')
+    const pathname = decodeURIComponent(requestUrl.pathname)
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
     let code = 200
     let msg = 'OK'
+    if (pathname === '/lx-player') {
+      const filePath = 'index.html'
+      serveWebFile(res, filePath)
+      return
+    }
     switch (endUrl) {
       case '/status':
         handleSendStatus(res, query)
         return
-        // case '/test':
-        //   code = 200
-        //   res.setHeader('Content-Type', 'text/html; charset=utf-8')
-        //   msg = `<!DOCTYPE html>
-        //   <html lang="en">
-        //     <head>
-        //       <meta charset="UTF-8" />
-        //       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        //       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        //       <title>Nodejs Server-Sent Events</title>
-        //     </head>
-        //     <body>
-        //       <h1>Hello SSE!</h1>
-
-        //       <h2>List of Server-sent events</h2>
-        //       <ul id="sse-list"></ul>
-
-        //       <script>
-        //         const subscription = new EventSource('/subscribe-player-status');
-
-        //       // Default events
-        //       subscription.addEventListener('open', () => {
-        //           console.log('Connection opened')
-        //       });
-
-      //       subscription.addEventListener('error', (err) => {
-      //           console.error(err)
-      //       });
-      //       subscription.addEventListener('lyricLineText', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('progress', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('name', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       subscription.addEventListener('singer', (event) => {
-      //           console.log(event.data)
-      //       });
-      //       </script>
-      //     </body>
-      //   </html>`
-      //   break
       case '/lyric':
         msg = global.lx.player_status.lyric
         break

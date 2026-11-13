@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f4ed">
+  <title>留声 · LX Music</title>
+  <style>
+    @font-face{font-family:Manrope;src:url("./fonts/manrope-latin.woff2") format("woff2");font-style:normal;font-weight:400 800;font-display:swap}
+    @font-face{font-family:"DM Mono";src:url("./fonts/dm-mono-regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+    @font-face{font-family:"DM Mono";src:url("./fonts/dm-mono-medium.woff2") format("woff2");font-style:normal;font-weight:500;font-display:swap}
+    :root{font-family:Manrope,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:#192522;background:#f3f4ed;font-synthesis:none;text-rendering:optimizeLegibility;--ink:#192522;--muted:#7c8580;--line:#dfe3d8;--green:#17694b;--lime:#d8ed80;--coral:#ef765a;--paper:#fbfcf7}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 86% 11%,#e7edd9 0,transparent 29%),radial-gradient(ellipse at 9% 92%,#f1e6d7 0,transparent 28%),#f3f4ed}button,input{font:inherit}button{cursor:pointer;color:inherit} .shell{max-width:1240px;margin:auto;padding:28px 36px 36px}.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:23px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:0;font-size:18px}.brand-mark{width:35px;height:35px;border-radius:11px;background:var(--green);color:#eff5db;display:grid;place-items:center;font-size:17px}.brand small{display:block;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:0;margin-top:1px}.connection{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}.led{width:8px;height:8px;border-radius:50%;background:#b2b9b1}.led.on{background:#44a974;box-shadow:0 0 0 4px #44a9741a}.led.err{background:var(--coral)}.connect-form{display:flex;align-items:center;gap:8px}.api-input{width:208px;background:transparent;border:0;border-bottom:1px solid var(--line);padding:7px 2px;color:var(--muted);font:11px "DM Mono",monospace;outline:none}.api-input:focus{border-color:var(--green);color:var(--ink)}.quiet-btn{background:transparent;border:1px solid var(--line);padding:8px 13px;border-radius:5px;font-size:11px;font-weight:700}.quiet-btn:hover{border-color:var(--green);color:var(--green)}.main{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(330px,.88fr);gap:58px;padding:48px 0 0}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--green);font:500 10px "DM Mono",monospace;letter-spacing:0;text-transform:uppercase}.eyebrow:before{content:"";width:19px;height:1px;background:var(--green)}.track-area{padding:20px 0 0}.track-head{display:grid;grid-template-columns:clamp(200px,25vw,310px) 1fr;gap:27px;align-items:end}.cover-wrap{position:relative;aspect-ratio:1;max-width:310px;width:100%;background:#dce5d0;box-shadow:15px 15px 0 #dfe3d8;border-radius:3px;overflow:hidden}.cover-wrap:after{content:"";position:absolute;inset:0;background:linear-gradient(145deg,transparent 55%,#142e2624);pointer-events:none}.cover{width:100%;height:100%;object-fit:cover;display:block}.cover-placeholder{position:absolute;inset:0;display:grid;place-items:center;color:#607668;background:repeating-linear-gradient(135deg,#e6eadf,#e6eadf 10px,#dfe5d7 10px,#dfe5d7 11px)}.cover-placeholder span{font-size:54px;font-weight:800;opacity:.65}.cover:not([src=""])+.cover-placeholder{display:none}.track-copy{padding-bottom:6px;min-width:0}.track-copy .eyebrow{margin-bottom:14px}.track-copy h1{font-size:clamp(26px,3.1vw,43px);line-height:1.15;letter-spacing:0;margin:0 0 9px;overflow-wrap:anywhere}.artist{font-size:14px;color:#64706b;margin:0}.album{font-size:11px;color:#929a93;margin:7px 0 0}.live-line{margin-top:22px;padding:12px 0;border-top:1px solid var(--line);font-size:12px;color:var(--green);min-height:43px}.player{max-width:660px;margin:38px 0 0}.time-row{display:flex;justify-content:space-between;color:var(--muted);font:10px "DM Mono",monospace;margin-bottom:10px}.range{appearance:none;width:100%;height:3px;background:linear-gradient(to right,var(--green) 0%,var(--green) var(--fill,0%),#d7ddd3 var(--fill,0%),#d7ddd3 100%);outline:none;cursor:pointer}.range::-webkit-slider-thumb{appearance:none;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid var(--paper);box-shadow:0 0 0 1px var(--green)}.range::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:var(--green);border:2px solid var(--paper);box-shadow:0 0 0 1px var(--green)}.controls{display:flex;align-items:center;justify-content:space-between;margin-top:24px}.transport{display:flex;align-items:center;gap:21px}.text-control{border:0;background:none;padding:5px;color:#57635c;font-size:12px;font-weight:700}.text-control:hover,.text-control.active{color:var(--green)}.play-btn{width:48px;height:48px;border:0;border-radius:50%;background:var(--green);color:white;font-size:17px;box-shadow:0 5px 15px #17694b2c}.play-btn:hover{background:#10563c;transform:translateY(-1px)}.side-controls{display:flex;align-items:center;gap:14px}.volume{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}.volume .range{width:78px;--fill:50%}.volume .range::-webkit-slider-thumb{width:9px;height:9px}.volume .range::-moz-range-thumb{width:6px;height:6px}.lyric-panel{border-left:1px solid var(--line);padding:2px 0 0 32px;min-height:480px;display:flex;flex-direction:column}.lyric-top{display:flex;justify-content:space-between;align-items:center}.lyric-top h2{font-size:13px;margin:0;font-weight:800}.lyric-top span{font:10px "DM Mono",monospace;color:#9ba39b}.lyrics{overflow:auto;max-height:405px;margin-top:31px;padding-right:14px;scrollbar-width:thin;scrollbar-color:#c8d0c4 transparent}.lyric-line{font-size:16px;line-height:1.65;color:#a1a8a0;margin:0 0 17px;transition:color .2s,font-size .2s;overflow-wrap:anywhere}.lyric-line.current{font-size:20px;font-weight:700;color:var(--green)}.empty-lyrics{color:#98a097;font-size:13px;line-height:1.8;padding-top:35px}.footer{border-top:1px solid var(--line);margin-top:39px;padding-top:16px;display:flex;justify-content:space-between;align-items:center;color:#909990;font:10px "DM Mono",monospace}.footer a{color:var(--green);text-decoration:none}.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);background:#1c3028;color:white;padding:11px 16px;border-radius:4px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100% - 32px);z-index:3}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:760px){.shell{padding:19px 20px 25px}.topbar{align-items:flex-start;gap:16px}.connection{flex-wrap:wrap;justify-content:flex-end}.connect-form{width:100%;justify-content:flex-end}.api-input{width:min(210px,52vw)}.main{grid-template-columns:1fr;gap:39px;padding-top:33px}.track-head{grid-template-columns:minmax(140px,42vw) 1fr;gap:20px}.track-copy h1{font-size:clamp(23px,7vw,36px)}.track-copy .eyebrow{font-size:9px}.track-copy .artist{font-size:12px}.player{margin-top:32px}.lyric-panel{border-left:0;border-top:1px solid var(--line);padding:25px 0 0;min-height:280px}.lyrics{max-height:270px;margin-top:22px}.lyric-line{font-size:14px}.lyric-line.current{font-size:18px}.footer{margin-top:25px}.volume{gap:6px}.volume .range{width:61px}}
+    @media(max-width:420px){.shell{padding-left:15px;padding-right:15px}.brand{font-size:16px}.connection{font-size:10px}.quiet-btn{padding:7px 10px}.track-head{gap:15px}.cover-wrap{box-shadow:8px 8px 0 #dfe3d8}.controls{margin-top:18px}.transport{gap:12px}.side-controls{gap:8px}.volume .range{width:48px}.footer{font-size:9px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">♫</div><div>留声<small>LX MUSIC REMOTE</small></div></div>
+      <div class="connection"><span id="led" class="led"></span><span id="connectionText">尚未连接</span><form id="connectForm" class="connect-form"><input id="apiBase" class="api-input" aria-label="API 地址" value="" spellcheck="false"><button class="quiet-btn" type="submit">连接</button></form></div>
+    </header>
+    <main class="main">
+      <section>
+        <div class="eyebrow">NOW PLAYING <span id="playState">· STOPPED</span></div>
+        <div class="track-area">
+          <div class="track-head">
+            <div class="cover-wrap"><img id="cover" class="cover" src="" alt="歌曲封面"><div class="cover-placeholder"><span>♫</span></div></div>
+            <div class="track-copy"><div class="eyebrow">当前曲目</div><h1 id="songName">等待播放</h1><p id="artist" class="artist">连接 LX Music 以获取播放状态</p><p id="album" class="album"></p><div id="lyricLine" class="live-line">实时歌词将在这里显示</div></div>
+          </div>
+          <div class="player">
+            <div class="time-row"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+            <input id="progress" class="range" type="range" min="0" max="1000" value="0" aria-label="播放进度">
+            <div class="controls">
+              <div class="transport"><button class="text-control" data-action="skip-prev" title="上一首">上一首</button><button id="playPause" class="play-btn" data-action="play" title="播放或暂停">▶</button><button class="text-control" data-action="skip-next" title="下一首">下一首</button></div>
+              <div class="side-controls"><div class="volume"><button id="mute" class="text-control" title="静音">音量</button><input id="volume" class="range" type="range" min="1" max="100" value="50" aria-label="音量"></div><button id="collect" class="text-control" title="收藏当前歌曲">♡ 收藏</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="lyric-panel"><div class="lyric-top"><h2>歌词</h2><span id="lyricSource">LRC · 实时同步</span></div><div id="lyrics" class="lyrics"><div class="empty-lyrics">连接播放器后，当前歌曲歌词会显示在这里。</div></div></section>
+    </main>
+    <footer class="footer"><span>LOCAL PLAYER CONTROL</span><a href="https://lxmusic.toside.cn/desktop/open-api" target="_blank" rel="noreferrer">LX Music Open API ↗</a></footer>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script>
+    const DEFAULT_API_BASE = window.location.origin || 'http://127.0.0.1:23330';
+    const fields = 'status,name,singer,albumName,duration,progress,playbackRate,picUrl,lyricLineText,collect,volume,mute';
+    const state = { base: '', data: {}, source: null, lyricKey: '', lyricRows: [], dragging: false, volumeDragging: false, toastTimer: 0, volumeLockUntil: 0 };
+    const $ = (id) => document.getElementById(id);
+    const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+    function toast(message) { const node = $('toast'); node.textContent = message; node.classList.add('show'); clearTimeout(state.toastTimer); state.toastTimer = setTimeout(() => node.classList.remove('show'), 3000); }
+    function formatTime(value) { if (!Number.isFinite(Number(value))) return '0:00'; const seconds = Math.max(0, Math.floor(Number(value))); return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`; }
+    function setConnected(connected, message, error = false) { $('led').className = `led${connected ? ' on' : error ? ' err' : ''}`; $('connectionText').textContent = message; }
+    function setCover(source) {
+      const image = $('cover');
+      if (!source) { image.setAttribute('src', ''); image.dataset.coverUrl = ''; return; }
+      if (image.dataset.coverUrl === source) return;
+      image.dataset.coverUrl = source;
+      const candidates = [source];
+      try {
+        const url = new URL(source, location.href);
+        if (url.protocol === 'http:' && location.protocol === 'https:') candidates[0] = url.href.replace(/^http:/, 'https:');
+        if (url.protocol === 'http:' || url.protocol === 'https:') candidates.push(`https://images.weserv.nl/?url=${encodeURIComponent(url.href)}`);
+      } catch { /* Keep the original source for browser-supported data URLs. */ }
+      let index = 0;
+      image.onerror = () => {
+        index++;
+        if (index < candidates.length) image.src = candidates[index];
+        else image.setAttribute('src', '');
+      };
+      image.src = candidates[0];
+    }
+    function update(data) {
+      if (Object.prototype.hasOwnProperty.call(data, 'volume')) {
+        const volume = Number(data.volume);
+        if (state.volumeDragging || Date.now() < state.volumeLockUntil && Number.isFinite(volume)) return;
+      }
+      Object.assign(state.data, data);
+      const current = state.data;
+      $('songName').textContent = current.name || '暂无播放'; $('artist').textContent = current.singer || '等待歌曲信息'; $('album').textContent = current.albumName || '';
+      $('playState').textContent = `· ${(current.status || 'stopped').toUpperCase()}`;
+      $('playPause').textContent = current.status === 'playing' ? 'Ⅱ' : '▶'; $('playPause').dataset.action = current.status === 'playing' ? 'pause' : 'play';
+      $('lyricLine').textContent = current.lyricLineText || '♪';
+      setCover(current.picUrl);
+      const duration = Number(current.duration) || 0; const progress = Number(current.progress) || 0;
+      $('totalTime').textContent = formatTime(duration); $('currentTime').textContent = formatTime(progress);
+      if (!state.dragging) $('progress').value = duration ? Math.round(progress / duration * 1000) : 0;
+      $('progress').style.setProperty('--fill', `${duration ? Math.min(100, progress / duration * 100) : 0}%`);
+      if (current.volume != null && !state.volumeDragging) {
+        $('volume').value = Math.max(1, Math.min(100, Number(current.volume)));
+        $('volume').style.setProperty('--fill', `${$('volume').value}%`);
+      }
+      $('mute').textContent = current.mute ? '已静音' : '音量'; $('collect').textContent = current.collect ? '♥ 已收藏' : '♡ 收藏'; $('collect').classList.toggle('active', Boolean(current.collect));
+      const key = `${current.name || ''}\u0000${current.singer || ''}`;
+      if (key !== state.lyricKey && (current.name || current.singer)) loadLyrics(key);
+      syncLyrics(progress);
+    }
+    async function api(path, params = {}) {
+      const url = new URL(path, `${state.base}/`);
+      Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`API 返回 ${response.status}`);
+      return response;
+    }
+    async function loadLyrics(key) {
+      state.lyricKey = key; state.lyricRows = [];
+      try {
+        const response = await api('/lyric'); const text = await response.text();
+        const parsed = text.split(/\r?\n/).flatMap((line) => {
+          const times = [...line.matchAll(/\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]/g)];
+          const content = line.replace(/\[[^\]]*\]/g, '').trim();
+          return times.map((match) => ({ time: Number(match[1]) * 60 + Number(match[2]) + Number(`0.${match[3] || 0}`), text: content }));
+        }).filter((row) => row.text).sort((a, b) => a.time - b.time);
+        state.lyricRows = parsed; renderLyrics();
+      } catch (error) { $('lyrics').innerHTML = '<div class="empty-lyrics">暂时无法读取歌词。</div>'; }
+    }
+    function renderLyrics() {
+      if (!state.lyricRows.length) { $('lyrics').innerHTML = '<div class="empty-lyrics">这首歌曲暂无 LRC 歌词。</div>'; return; }
+      $('lyrics').innerHTML = state.lyricRows.map((row, index) => `<p class="lyric-line" data-time="${row.time}" data-index="${index}">${escapeHTML(row.text)}</p>`).join('');
+    }
+    function syncLyrics(progress) {
+      if (!state.lyricRows.length) return;
+      let active = 0;
+      for (let index = 0; index < state.lyricRows.length; index++) { if (state.lyricRows[index].time <= progress) active = index; else break; }
+      const previous = $('lyrics').querySelector('.current'); const next = $('lyrics').querySelector(`[data-index="${active}"]`);
+      if (previous !== next) { previous?.classList.remove('current'); next?.classList.add('current'); next?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    }
+    async function connect() {
+      const raw = $('apiBase').value.trim().replace(/\/+$/, '');
+      try { state.base = new URL(raw).origin; } catch { toast('请输入有效的 API 地址'); return; }
+      localStorage.setItem('lx-api-base', state.base); state.source?.close(); setConnected(false, '正在连接…');
+      try {
+        const response = await api('/status', { filter: fields }); update(await response.json());
+        state.source = new EventSource(`${state.base}/subscribe-player-status?filter=${encodeURIComponent(fields)}`);
+        const eventNames = fields.split(',');
+        eventNames.forEach((name) => state.source.addEventListener(name, (event) => {
+          let value = event.data; try { value = JSON.parse(value); } catch { /* Plain-text SSE values are valid too. */ }
+          update({ [name]: value }); setConnected(true, '已连接 · 实时同步');
+        }));
+        state.source.onopen = () => setConnected(true, '已连接 · 实时同步');
+        state.source.onerror = () => setConnected(false, '连接中断，正在重试', true);
+      } catch (error) { setConnected(false, '连接失败', true); toast(`连接失败：${error.message}。请检查 API 服务和跨域设置。`); }
+    }
+    async function command(path, params) { try { await api(path, params); if (path === '/play' || path === '/pause' || path.startsWith('/skip')) setTimeout(refreshStatus, 300); } catch (error) { toast(`操作失败：${error.message}`); } }
+    async function refreshStatus() { try { update(await (await api('/status', { filter: fields })).json()); } catch { /* SSE reconnects automatically. */ } }
+    $('connectForm').addEventListener('submit', (event) => { event.preventDefault(); connect(); });
+    document.querySelectorAll('[data-action]').forEach((button) => button.addEventListener('click', () => command(`/${button.dataset.action}`)));
+    $('progress').addEventListener('input', (event) => { state.dragging = true; const duration = Number(state.data.duration) || 0; $('currentTime').textContent = formatTime(Number(event.target.value) / 1000 * duration); event.target.style.setProperty('--fill', `${event.target.value / 10}%`); });
+    $('progress').addEventListener('change', (event) => { state.dragging = false; const duration = Number(state.data.duration) || 0; command('/seek', { offset: (Number(event.target.value) / 1000 * duration).toFixed(2) }); });
+    $('volume').addEventListener('input', (event) => {
+      state.volumeDragging = true;
+      state.volumeLockUntil = Date.now() + 500;
+      event.target.style.setProperty('--fill', `${event.target.value}%`);
+    });
+    $('volume').addEventListener('change', (event) => {
+      const volume = Number(event.target.value);
+      state.volumeDragging = false;
+      state.volumeLockUntil = Date.now() + 500;
+      state.data.volume = volume;
+      $('volume').value = volume;
+      $('volume').style.setProperty('--fill', `${volume}%`);
+      command('/volume', { volume });
+    });
+    $('mute').addEventListener('click', () => command('/mute', { mute: String(!state.data.mute) }));
+    $('collect').addEventListener('click', () => command(state.data.collect ? '/uncollect' : '/collect'));
+    $('apiBase').value = localStorage.getItem('lx-api-base') || DEFAULT_API_BASE;
+    void connect();
+  </script>
+</body>
+</html>
