@@ -1,6 +1,8 @@
 import { httpFetch } from '../../request'
 import tipSearch from './tipSearch'
 import musicSearch from './musicSearch'
+import albumSearch from './albumSearch'
+import album from './album'
 import { formatSinger } from './util'
 import leaderboard from './leaderboard'
 import lyric from './lyric'
@@ -34,8 +36,12 @@ const kw = {
 
   tipSearch,
   musicSearch,
+  albumSearch,
   leaderboard,
   songList,
+  album: {
+    getAlbumDetail: (id, page) => album.getAlbumListDetail(id, page),
+  },
   hotSearch,
   comment,
   getLyric(songInfo, isGetLyricx) {
