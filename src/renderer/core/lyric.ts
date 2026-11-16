@@ -57,6 +57,7 @@ const handleDesktopLyricMessage = (action: LX.DesktopLyric.WinMainActions) => {
           tlrc: musicInfo.tlrc,
           rlrc: musicInfo.rlrc,
           lxlrc: musicInfo.lxlrc,
+          plrc: musicInfo.plrc,
           // pic: musicInfo.pic,
           isPlay: isPlay.value,
           line: lyric.line,
@@ -159,14 +160,22 @@ export const setPlaybackRate = (rate: number) => {
 export const setLyric = () => {
   if (!musicInfo.id) return
   if (musicInfo.lrc) {
+    const aboveLyrics = []
     const extendedLyrics = []
-    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) extendedLyrics.push(musicInfo.rlrc)
+    if (appSetting['player.isShowLyricRoma'] && musicInfo.rlrc) {
+      // 关闭逐字音译时去掉 <off,dur> 标记，font-player 见纯文本即不建 span/动画，降低多语言逐字渲染开销
+      const rlrc = appSetting['player.isShowLyricRomaWordByWord'] ? musicInfo.rlrc : musicInfo.rlrc.replace(/<\d+,\d+>/g, '')
+      // 默认罗马音在主歌词下方；开启调换则提到主歌词上方（逐字，跟随主歌词高亮）
+      if (appSetting['player.isSwapLyricMainAndRoma']) aboveLyrics.push(rlrc)
+      else extendedLyrics.push(rlrc)
+    }
     if (appSetting['player.isShowLyricTranslation'] && musicInfo.tlrc) extendedLyrics.push(musicInfo.tlrc)
-    if (appSetting['player.isSwapLyricTranslationAndRoma']) extendedLyrics.reverse()
+    if (appSetting['player.isShowLyricPhonetic'] && musicInfo.plrc) extendedLyrics.push(musicInfo.plrc)
 
     lrc.setLyric(
       appSetting['player.isPlayLxlrc'] && musicInfo.lxlrc ? musicInfo.lxlrc : musicInfo.lrc,
       extendedLyrics,
+      aboveLyrics,
     )
     sendDesktopLyricInfo({
       action: 'set_lyric',
@@ -175,6 +184,7 @@ export const setLyric = () => {
         tlrc: musicInfo.tlrc,
         rlrc: musicInfo.rlrc,
         lxlrc: musicInfo.lxlrc,
+        plrc: musicInfo.plrc,
       },
     })
   }
@@ -234,6 +244,7 @@ export const sendInfo = () => {
       tlrc: musicInfo.tlrc,
       rlrc: musicInfo.rlrc,
       lxlrc: musicInfo.lxlrc,
+      plrc: musicInfo.plrc,
       // pic: musicInfo.pic,
       isPlay: isPlay.value,
       line: lyric.line,
