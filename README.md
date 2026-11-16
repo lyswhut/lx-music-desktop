@@ -2,6 +2,8 @@
 
 <h1 align="center">LX Music 桌面版</h1>
 
+<p align="center">简体中文 | <a href="./README.en.md">English</a></p>
+
 <p align="center">
   <a href="https://github.com/lyswhut/lx-music-desktop/releases"><img src="https://img.shields.io/github/release/lyswhut/lx-music-desktop" alt="Release version"></a>
   <a href="https://github.com/lyswhut/lx-music-desktop/actions/workflows/release.yml"><img src="https://github.com/lyswhut/lx-music-desktop/workflows/Build/badge.svg" alt="Build status"></a>
