@@ -50,8 +50,9 @@ const winEvent = () => {
   //   }
   // })
 
+  const currentWindow = browserWindow
   browserWindow.on('closed', () => {
-    browserWindow = null
+    if (browserWindow === currentWindow) browserWindow = null
   })
 
   browserWindow.on('move', () => {
@@ -154,6 +155,7 @@ export const createWindow = () => {
     show: false,
     alwaysOnTop: isAlwaysOnTop,
     skipTaskbar: !isShowTaskbar,
+    type: isWin && !isShowTaskbar ? 'toolbar' : undefined,
     webPreferences: {
       contextIsolation: false,
       webSecurity: false,
@@ -214,6 +216,10 @@ export const setIgnoreMouseEvents = (ignore: boolean, options?: Electron.IgnoreM
 
 export const setSkipTaskbar = (skip: boolean) => {
   if (!browserWindow) return
+  if (isWin) {
+    createWindow()
+    return
+  }
   browserWindow.setSkipTaskbar(skip)
 }
 

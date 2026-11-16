@@ -141,5 +141,10 @@ export default (setting: any): Partial<LX.AppSetting> => {
   }
 
 
+  setting['desktopLyric.isShowLyricTranslation'] ??= setting['player.isShowLyricTranslation']
+  setting['desktopLyric.isShowLyricRoma'] ??= setting['player.isShowLyricRoma']
+  setting['desktopLyric.isSwapLyricTranslationAndRoma'] ??= setting['player.isSwapLyricTranslationAndRoma']
+  setting['desktopLyric.isPlayLxlrc'] ??= setting['player.isPlayLxlrc']
+
   return setting
 }
