@@ -1,69 +1,71 @@
 <template lang="pug">
 dt#other {{ $t('setting__other') }}
 dd
-  div
-    .gap-top
-      base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__other_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
-      svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_transparent_window_tip')")
+  div(:class="$style.cardRow")
+    div(:class="$style.sectionCard")
+      h3#other_options(:class="$style.sectionCardTitle") {{ $t('setting__other_options') }}
+      div(:class="$style.sectionCardBody")
+        .gap-top
+          base-checkbox(id="setting_transparent_window" :model-value="appSetting['common.transparentWindow']" :label="$t('setting__other_transparent_window')" @update:model-value="updateSetting({'common.transparentWindow': $event})")
+          svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_transparent_window_tip')")
+    div(:class="$style.sectionCard")
+      h3#other_tray_theme(:class="$style.sectionCardTitle") {{ $t('setting__other_tray_theme') }}
+      div(:class="$style.sectionCardBody")
+        .gap-top(v-for="item in trayThemeList" :key="item.id")
+          base-checkbox(
+            :id="'setting_tray_theme_' + item.id" name="setting_tray_theme"
+            :model-value="appSetting['tray.themeId']" need :label="item.label" :value="item.id" @update:model-value="updateSetting({'tray.themeId': $event})")
+    div(:class="$style.sectionCard")
+      h3#other_resource_cache(:class="$style.sectionCardTitle")
+        | {{ $t('setting__other_resource_cache') }}
+        svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_resource_cache_tip')")
+      div(:class="$style.sectionCardBody")
+        .p
+          | {{ $t('setting__other_resource_cache_label') }}
+          span.auto-hidden {{ cacheSize }}
+        .p
+          base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{ $t('setting__other_resource_cache_clear_btn') }}
 
 dd
-  h3#other_tray_theme {{ $t('setting__other_tray_theme') }}
-  div
-    base-checkbox.gap-left(
-      v-for="item in trayThemeList" :id="'setting_tray_theme_' + item.id" :key="item.id" :model-value="appSetting['tray.themeId']" name="setting_tray_theme"
-      need :label="item.label" :value="item.id" @update:model-value="updateSetting({'tray.themeId': $event})")
-dd
-  h3#other_resource_cache
-    | {{ $t('setting__other_resource_cache') }}
-    svg-icon(class="help-icon" name="help-circle-outline" :aria-label="$t('setting__other_resource_cache_tip')")
-  div
-    .p
-      | {{ $t('setting__other_resource_cache_label') }}
-      span.auto-hidden {{ cacheSize }}
-    .p
-      base-btn.btn(min :disabled="isDisabledResourceCacheClear" @click="clearResourceCache") {{ $t('setting__other_resource_cache_clear_btn') }}
-
-dd
-  h3#other_other_source {{ $t('setting__other_other_cache') }}
-  div
-    .p
-      | {{ $t('setting__other_other_source_label') }}
-      span.auto-hidden {{ otherSourceCount }}
-    .p
-      | {{ $t('setting__other_music_url_label') }}
-      span.auto-hidden {{ musicUrlCount }}
-    .p
-      | {{ $t('setting__other_lyric_raw_label') }}
-      span.auto-hidden {{ lyricRawCount }}
-    .p
-      base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{ $t('setting__other_other_source_clear_btn') }}
-      base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
-      base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_dislike_list') }}
-  div
-    .p
-      | {{ $t('setting__other_dislike_list_label') }}
-      span.auto-hidden {{ dislikeRuleCount }}
-    .p
-      base-btn.btn(min @click="isShowDislikeList = true") {{ $t('setting__other_dislike_list_show_btn') }}
+  div(:class="[$style.cardRow, $style.rowCache]")
+    div(:class="$style.sectionCard")
+      h3#other_other_source(:class="$style.sectionCardTitle") {{ $t('setting__other_other_cache') }}
+      div(:class="$style.sectionCardBody")
+        .p
+          | {{ $t('setting__other_other_source_label') }}
+          span.auto-hidden {{ otherSourceCount }}
+        .p
+          | {{ $t('setting__other_music_url_label') }}
+          span.auto-hidden {{ musicUrlCount }}
+        .p
+          | {{ $t('setting__other_lyric_raw_label') }}
+          span.auto-hidden {{ lyricRawCount }}
+        .p(:class="$style.btnRow")
+          base-btn.btn(min :disabled="isDisabledOtherSourceCacheClear" @click="handleClearOtherSourceCache") {{ $t('setting__other_other_source_clear_btn') }}
+          base-btn.btn(min :disabled="isDisabledMusicUrlCacheClear" @click="handleClearMusicUrlCache") {{ $t('setting__other_music_url_clear_btn') }}
+          base-btn.btn(min :disabled="isDisabledLyricRawCacheClear" @click="handleClearLyricRawCache") {{ $t('setting__other_lyric_raw_clear_btn') }}
+    div(:class="$style.sectionCard")
+      h3#other_dislike_list(:class="$style.sectionCardTitle") {{ $t('setting__other_dislike_list') }}
+      div(:class="$style.sectionCardBody")
+        .p
+          | {{ $t('setting__other_dislike_list_label') }}
+          span.auto-hidden {{ dislikeRuleCount }}
+        .p
+          base-btn.btn(min @click="isShowDislikeList = true") {{ $t('setting__other_dislike_list_show_btn') }}
+    div(:class="$style.sectionCard")
+      h3#other_lyric_edited(:class="$style.sectionCardTitle") {{ $t('setting__other_lyric_edited_cache') }}
+      div(:class="$style.sectionCardBody")
+        .p
+          | {{ $t('setting__other_lyric_edited_label') }}
+          span.auto-hidden {{ lyricEditedCount }}
+        .p
+          base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{ $t('setting__other_lyric_edited_clear_btn') }}
+    div(:class="$style.sectionCard")
+      h3#other_listdata(:class="$style.sectionCardTitle") {{ $t('setting__other_listdata') }}
+      div(:class="$style.sectionCardBody")
+        .p
+          base-btn.btn(min @click="handleClearListData") {{ $t('setting__other_listdata_clear_btn') }}
   DislikeListModal(v-model="isShowDislikeList")
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_lyric_edited_cache') }}
-  div
-    .p
-      | {{ $t('setting__other_lyric_edited_label') }}
-      span.auto-hidden {{ lyricEditedCount }}
-    .p
-      base-btn.btn(min :disabled="isDisabledLyricEditedCacheClear" @click="handleClearLyricEditedCache") {{ $t('setting__other_lyric_edited_clear_btn') }}
-
-dd
-  h3#other_lyric_edited {{ $t('setting__other_listdata') }}
-  div
-    .p
-      base-btn.btn(min @click="handleClearListData") {{ $t('setting__other_listdata_clear_btn') }}
 
 </template>
 
@@ -244,3 +246,61 @@ export default {
   },
 }
 </script>
+
+<style lang="less" module>
+// 设置分区卡片：头部色带 + 浅色主题底，与 SettingBasic 保持一致
+.sectionCard {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-primary-light-300-alpha-700);
+}
+
+// 一行多列的卡片布局
+.cardRow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.sectionCardTitle {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  background-color: var(--color-primary-light-200-alpha-600);
+}
+
+.sectionCardBody {
+  padding: 12px;
+}
+
+// 卡片行中的加宽卡片（跨两列）
+.wideCard {
+  grid-column: span 2;
+}
+
+// 缓存管理按钮强制一行不换行
+.btnRow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 6px;
+
+  :deep(button) {
+    flex: none;
+    white-space: nowrap;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+// 缓存管理行自定义列宽：第一卡收窄、第三卡（已调整歌词）加宽让按钮文字一行显示
+.rowCache {
+  grid-auto-flow: unset;
+  grid-auto-columns: unset;
+  grid-template-columns: 1.6fr 1fr 1.3fr 1fr;
+  gap: 10px;
+}
+</style>

@@ -581,6 +581,21 @@ declare global {
       'download.isUseOtherSource': boolean
 
       /**
+       * 是否启用自动备份歌单
+       */
+      'backup.autoBackup.enable': boolean
+
+      /**
+       * 自动备份歌单的保存路径
+       */
+      'backup.autoBackup.path': string
+
+      /**
+       * 自动备份保留的备份文件数量
+       */
+      'backup.autoBackup.maxBackupCount': number
+
+      /**
        * 主题id
        */
       'theme.id': string

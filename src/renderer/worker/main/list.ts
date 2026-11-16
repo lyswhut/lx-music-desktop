@@ -1,9 +1,34 @@
 // import { throttle } from '@common/utils'
 
+import fs from 'node:fs/promises'
+
 import { SPLIT_CHAR } from '@common/constants'
 import { filterFileName, sortInsert, similar, arrPushByPosition, arrShuffle } from '@common/utils/common'
 import { joinPath, saveStrToFile } from '@common/utils/nodejs'
 import { createLocalMusicInfo } from '@renderer/utils/music'
+
+const MUSIC_FILE_EXTS = new Set(['mp3', 'flac', 'ogg', 'oga', 'wav', 'm4a'])
+
+/**
+ * 扫描文件夹（含子文件夹）内的音乐文件
+ * @param dirPath 文件夹路径
+ */
+export const scanLocalMusicDir = async(dirPath: string): Promise<string[]> => {
+  const files: string[] = []
+  const walk = async(dir: string): Promise<void> => {
+    const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => [])
+    for (const entry of entries) {
+      const fullPath = joinPath(dir, entry.name)
+      if (entry.isDirectory()) {
+        await walk(fullPath)
+      } else if (entry.isFile() && MUSIC_FILE_EXTS.has(entry.name.split('.').pop()?.toLowerCase() ?? '')) {
+        files.push(fullPath)
+      }
+    }
+  }
+  await walk(dirPath)
+  return files
+}
 
 
 /**

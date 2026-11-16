@@ -89,7 +89,9 @@ export const search = async(text: string, page: number, sourceId: LX.OnlineSourc
   if (!text) return resetListInfo(sourceId)
   const key = `${page}__${text}`
   if (sourceId == 'all') {
-    listInfo!.noItemLabel = window.i18n.t('list__loading')
+    if (listInfo?.key == key && listInfo?.list.length) return listInfo?.list
+    // 仅第一页显示加载遮罩，追加翻页时保持列表可见
+    if (page == 1) listInfo!.noItemLabel = window.i18n.t('list__loading')
     listInfo!.key = key
     let task = []
     for (const source of sources) {
@@ -111,7 +113,8 @@ export const search = async(text: string, page: number, sourceId: LX.OnlineSourc
     })
   } else {
     if (listInfo?.key == key && listInfo?.list.length) return listInfo?.list
-    listInfo!.noItemLabel = window.i18n.t('list__loading')
+    // 仅第一页显示加载遮罩，追加翻页时保持列表可见
+    if (page == 1) listInfo!.noItemLabel = window.i18n.t('list__loading')
     listInfo!.key = key
     return music[sourceId].musicSearch.search(text, page, listInfo!.limit).then((data: SearchResult) => {
       if (key != listInfo!.key) return []

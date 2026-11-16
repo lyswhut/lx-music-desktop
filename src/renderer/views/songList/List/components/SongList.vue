@@ -5,23 +5,24 @@
         <li v-for="item in props.listInfo.list" :key="item.id" :class="$style.item" @click="toDetail(item)">
           <div :class="$style.image">
             <img :class="$style.img" loading="lazy" decoding="async" :src="item.img">
+            <div :class="$style.mask" />
+            <div :class="$style.playBtn">
+              <svg-icon name="play" />
+            </div>
+            <div v-if="item.play_count != null" :class="$style.playCount">
+              <svg-icon name="headphones" />{{ item.play_count }}
+            </div>
           </div>
           <div :class="$style.desc">
             <h4>{{ item.name }}</h4>
-            <div>
-              <p :class="$style.author">{{ item.author }}</p>
-              <p v-if="item.time" :class="$style.time">{{ item.time }}</p>
-              <div :class="$style.songlist_info">
-                <span v-if="item.total != null"><svg-icon name="music" />{{ item.total }}</span>
-                <span v-if="item.play_count != null"><svg-icon name="headphones" />{{ item.play_count }}</span>
-                <span v-if="visibleSource">{{ item.source }}</span>
-              </div>
-            </div>
           </div>
         </li>
         <li v-for="(i, index) in 6" :key="index" :class="$style.item" style="margin-bottom: 0;height: 0;" />
       </ul>
-      <div :class="$style.pagination">
+      <div v-if="infiniteScroll" :class="$style.loadMore">
+        <span v-show="loadingMore">{{ $t('list__loading') }}</span>
+      </div>
+      <div v-else :class="$style.pagination">
         <material-pagination :count="props.listInfo.total" :limit="props.listInfo.limit" :page="props.listInfo.page" @btn-click="togglePage" />
       </div>
     </div>
@@ -34,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from '@common/utils/vueTools'
+import { ref, onMounted, onBeforeUnmount } from '@common/utils/vueTools'
 import type { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
@@ -42,8 +43,14 @@ import { useRoute, useRouter } from '@common/utils/vueRouter'
 const props = withDefaults(defineProps<{
   listInfo: ListInfo
   visibleSource?: boolean
+  // 无限滚动模式：隐藏分页，滚动到列表底部附近时触发 load-more 事件
+  infiniteScroll?: boolean
+  // 无限滚动模式下的加载中状态（防止重复触发）
+  loadingMore?: boolean
 }>(), {
   visibleSource: false,
+  infiniteScroll: false,
+  loadingMore: false,
 })
 
 const router = useRouter()
@@ -51,12 +58,31 @@ const route = useRoute()
 
 const dom_list_ref = ref<HTMLElement | null>(null)
 
-const emit = defineEmits(['toggle-page'])
+const emit = defineEmits(['toggle-page', 'load-more'])
 
 
 const togglePage = (page: number) => {
   emit('toggle-page', page)
 }
+
+// 无限滚动：滚动到距离底部 600px 内时触发加载下一页
+const handleListScroll = () => {
+  if (!props.infiniteScroll || props.loadingMore) return
+  const el = dom_list_ref.value
+  if (!el) return
+  const info = props.listInfo
+  if (!info.list.length) return
+  if (info.total && info.list.length >= info.total) return
+  if (el.scrollHeight - el.scrollTop - el.clientHeight > 600) return
+  emit('load-more')
+}
+
+onMounted(() => {
+  dom_list_ref.value?.addEventListener('scroll', handleListScroll, { passive: true })
+})
+onBeforeUnmount(() => {
+  dom_list_ref.value?.removeEventListener('scroll', handleListScroll)
+})
 
 const toDetail = (info: ListInfoItem) => {
   void router.push({
@@ -115,22 +141,46 @@ defineExpose({
   }
 }
 .item {
-  max-width: 360px;
-  width: 32%;
+  max-width: 220px;
+  width: 18%;
   box-sizing: border-box;
   display: flex;
-  // flex-flow: column nowrap;
-  // padding: 10px;
+  flex-flow: column nowrap;
   margin-bottom: 20px;
   cursor: pointer;
-  transition: opacity @transition-normal;
   &:hover {
-    opacity: .7;
+    animation: card-bounce .55s cubic-bezier(.28, .84, .42, 1);
+    .image {
+      opacity: 1;
+      .mask {
+        opacity: 1;
+      }
+      .playBtn {
+        opacity: 1;
+      }
+    }
+  }
+}
+@keyframes card-bounce {
+  0% {
+    transform: translateY(0);
+  }
+  28% {
+    transform: translateY(-11px);
+  }
+  54% {
+    transform: translateY(0);
+  }
+  72% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 .image {
   flex: none;
-  width: 40%;
+  width: 100%;
   display: flex;
   background-position: center;
   background-size: cover;
@@ -138,65 +188,114 @@ defineExpose({
   overflow: hidden;
   opacity: .9;
   aspect-ratio: 1 / 1;
-
+  position: relative;
   box-shadow: 0 0 2px 0 rgba(0,0,0,.2);
+  transition: opacity @transition-normal;
+}
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity @transition-normal;
+}
+.playBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45px;
+  height: 45px;
+  background-color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity @transition-normal;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  svg {
+    width: 28px;
+    height: 28px;
+    color: #666;
+    margin-left: 3px;
+  }
 }
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+.songCount {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+.playCount {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
 
 .desc {
   flex: auto;
-  padding: 2px 15px 2px 7px;
+  padding: 8px 0 0;
   overflow: hidden;
   h4 {
-    font-size: 14px;
-    // height: 2.6em;
+    font-size: 13px;
     text-align: justify;
     line-height: 1.3;
     .mixin-ellipsis-2();
   }
 }
-.songlist_info {
-  display: flex;
-  flex-flow: row nowrap;
-  gap: 15px;
-  margin-top: 8px;
-  font-size: 12px;
-  .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.2;
-  // text-indent: 24px;
-  color: var(--color-font-label);
-  svg {
-    margin-right: 2px;
-  }
-}
 .author {
-  margin-top: 6px;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
   font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  max-width: 70%;
   .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.3;
-  // text-indent: 24px;
-  color: var(--color-font-label);
-}
-.time {
-  margin-top: 3px;
-  font-size: 12px;
-  .mixin-ellipsis-1();
-  text-align: justify;
-  line-height: 1.3;
-  // text-indent: 24px;
-  color: var(--color-font-label);
 }
 .pagination {
   text-align: center;
   padding: 15px 0;
-  // left: 50%;
-  // transform: translateX(-50%);
+}
+.loadMore {
+  padding: 12px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-font-label);
 }
 .noitem {
   position: absolute;
@@ -208,7 +307,6 @@ defineExpose({
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  // background-color: var(--color-000);
 
   p {
     font-size: 24px;

@@ -128,9 +128,13 @@ export default {
   methods: {
     setWidth() {
       setTimeout(() => {
-        this.$refs.dom_container.style.width = Math.floor(this.$refs.dom_container.parentNode.clientWidth * 0.5) + 'px'
+        // 组件可能在定时器回调前已卸载/隐藏，做空值保护
+        const container = this.$refs.dom_container
+        if (!container?.parentNode) return
+        container.style.width = Math.floor(container.parentNode.clientWidth * 0.5) + 'px'
 
         setTimeout(() => {
+          if (!this.$refs.dom_container) return
           this.handleToggleTab(this.tabActiveId, true)
         })
       })

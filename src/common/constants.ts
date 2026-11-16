@@ -28,6 +28,7 @@ export const LIST_IDS = {
   LOVE: 'love',
   TEMP: 'temp',
   DOWNLOAD: 'download',
+  LOCAL: 'local',
   PLAY_LATER: null,
 } as const
 
@@ -41,6 +42,7 @@ export const DATA_KEYS = {
   ignoreVersion: 'ignoreVersion',
 
   leaderboardSetting: 'leaderboardSetting',
+  leaderboardCache: 'leaderboardCache',
   songListSetting: 'songListSetting',
   searchSetting: 'searchSetting',
 

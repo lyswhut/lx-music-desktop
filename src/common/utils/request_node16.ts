@@ -2,6 +2,7 @@ import qs from 'node:querystring'
 import {
   FormData,
   getGlobalDispatcher,
+  interceptors,
   request as nodeRrequest,
   ProxyAgent,
   setGlobalDispatcher,
@@ -180,7 +181,10 @@ const buildRequestBody = (options: Options) => {
 }
 
 const buildRequestDispatcher = (options: Options) => {
-  return buildDispatcher()
+  // undici 7 的 request() 不再收 maxRedirections，重定向次数要经 redirect 拦截器挂到 dispatcher 上
+  return buildDispatcher().compose(interceptors.redirect({
+    maxRedirections: options.maxRedirect ?? defaultOptions.maxRedirect,
+  }))
 }
 
 export const request = async <T = unknown>(url: string, options: Options = {}): Promise<Response<T>> => {
@@ -206,7 +210,6 @@ export const request = async <T = unknown>(url: string, options: Options = {}): 
     body,
     signal: options.signal,
     dispatcher: buildRequestDispatcher(options),
-    maxRedirections: options.maxRedirect ?? defaultOptions.maxRedirect,
   }).then(async(response) => {
     if (options.needBody) {
       return {

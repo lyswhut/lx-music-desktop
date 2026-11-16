@@ -1,13 +1,12 @@
 <template lang="pug">
-dd
-  h3 {{ $t('setting__sync_client_mode') }}
-  div
-    .p.small {{ $t('setting__sync_client_status', { status: clientStatus }) }}
-    .p.small {{ $t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' }) }}
-    .p
-      .p.small {{ $t('setting__sync_client_host') }}
-      div
-        base-input.gap-left(:class="$style.hostInput" :model-value="appSetting['sync.client.host']" :disabled="sync.enable" :placeholder="$t('setting__sync_client_host_tip')" @update:model-value="setSyncClientHost")
+h3(:class="$style.sectionCardTitle") {{ $t('setting__sync_client_mode') }}
+div(:class="$style.sectionCardBody")
+  .p.small {{ $t('setting__sync_client_status', { status: clientStatus }) }}
+  .p.small {{ $t('setting__sync_client_address', { address: sync.client.status.address.join(', ') || '' }) }}
+  .p
+    .p.small {{ $t('setting__sync_client_host') }}
+    div
+      base-input.gap-left(:class="$style.hostInput" :model-value="appSetting['sync.client.host']" :disabled="sync.enable" :placeholder="$t('setting__sync_client_host_tip')" @update:model-value="setSyncClientHost")
 </template>
 
 <script>
@@ -59,11 +58,24 @@ export default {
 </script>
 
 <style lang="less" module>
+// 设置分区卡片：标题色带 + 内容区，与其他设置页一致（外层卡片容器在 index.vue）
+.sectionCardTitle {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: var(--color-primary-light-200-alpha-600);
+}
+
+.sectionCardBody {
+  padding: 12px 16px;
+}
+
 .hostInput[disabled] {
   opacity: .8 !important;
 }
 
 .hostInput {
-  min-width: 380px;
+  min-width: 0;
+  width: 100%;
 }
 </style>

@@ -21,6 +21,8 @@ import {
   showSelectDialog,
   showDialog,
   showSaveDialog,
+  hideWindow,
+  setWindowBoundsTransition,
 } from '@main/modules/winMain'
 import { quitApp } from '@main/app'
 import { getAllThemes, removeTheme, saveTheme, setPowerSaveBlocker } from '@main/utils'
@@ -101,6 +103,16 @@ export default () => {
 
   mainOn<Partial<Electron.Rectangle>>(WIN_MAIN_RENDERER_EVENT_NAME.set_window_size, ({ params }) => {
     setWindowBounds(params)
+  })
+
+  // 迷你模式切换：第一步，隐藏窗口（等待隐藏完成后再切换布局）
+  mainHandle(WIN_MAIN_RENDERER_EVENT_NAME.hide_window_transition, async() => {
+    hideWindow()
+  })
+
+  // 迷你模式切换：第二步，隐藏状态下调整边界后重新显示
+  mainHandle<Partial<Electron.Rectangle> & { maximize?: boolean }>(WIN_MAIN_RENDERER_EVENT_NAME.set_window_bounds_transition, async({ params }) => {
+    setWindowBoundsTransition(params)
   })
 
   mainOn<boolean>(WIN_MAIN_RENDERER_EVENT_NAME.set_ignore_mouse_events, ({ params: isIgnored }) => {

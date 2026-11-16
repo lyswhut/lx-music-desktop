@@ -135,6 +135,8 @@ export default {
     const lrcStyles = computed(() => {
       return {
         textAlign: appSetting['playDetail.style.align'],
+        // 正在播放的歌词颜色跟随设置页（桌面歌词设置）中的“已播放颜色”
+        '--playDetail-lrc-played-color': appSetting['desktopLyric.style.lyricPlayedColor'],
       }
     })
     const lrcFontSize = computed(() => {
@@ -197,7 +199,7 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .right {
-  flex: 0 0 60%;
+  flex: 0 0 46%;
   // padding: 0 30px;
   position: relative;
   transition: flex-basis @transition-normal;
@@ -234,8 +236,11 @@ export default {
           transition-property: font-size, color;
         }
       }
-      &.line-mode.active .font-lrc, &.font-mode.played .font-lrc {
-        color: var(--color-primary-dark-200);
+      &.line-mode.active .font-lrc {
+        color: var(--playDetail-lrc-played-color, var(--color-450));
+      }
+      &.font-mode.played .font-lrc {
+        color: var(--color-450);
       }
       &.font-mode .extended .font-lrc {
         transition: @transition-slow;
@@ -249,11 +254,15 @@ export default {
           font-size: 1em;
           background-repeat: no-repeat;
           background-color: var(--color-450);
-          background-image: -webkit-linear-gradient(top, var(--color-primary-dark-200), var(--color-primary-dark-200));
+          background-image: -webkit-linear-gradient(top, var(--color-450), var(--color-450));
           -webkit-text-fill-color: transparent;
           -webkit-background-clip: text;
           background-size: 0 100%;
         }
+      }
+      // 正在播放的行：逐字填充色跟随设置页的“已播放颜色”
+      &.active.font-mode > .line > .font-lrc > span {
+        background-image: -webkit-linear-gradient(top, var(--playDetail-lrc-played-color, var(--color-450)), var(--playDetail-lrc-played-color, var(--color-450)));
       }
     }
   }

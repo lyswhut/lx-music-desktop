@@ -231,6 +231,38 @@ export const setWindowBounds = (options: Partial<Electron.Rectangle>) => {
   if (!browserWindow) return
   browserWindow.setBounds(options)
 }
+
+/**
+ * 迷你模式切换专用：窗口处于隐藏状态时调整边界，再重新显示并聚焦。
+ * 隐藏期间渲染进程已完成布局切换，因此用户只会看到窗口以最终形态出现。
+ */
+export const setWindowBoundsTransition = (options: Partial<Electron.Rectangle> & { maximize?: boolean }) => {
+  if (!browserWindow) return
+  const { maximize: shouldMaximize, ...bounds } = options
+  // 最大化状态下 setBounds 不会生效，需先取消最大化（如从最大化窗口直接进入迷你模式）
+  if (!shouldMaximize && browserWindow.isMaximized()) browserWindow.unmaximize()
+  if (bounds.width != null || bounds.height != null || bounds.x != null || bounds.y != null) {
+    browserWindow.setBounds(bounds)
+  }
+  if (shouldMaximize) browserWindow.maximize()
+  // show() 时系统会先短暂显示窗口缓存的旧帧（切换前的布局），
+  // 因此以全透明方式显示，待新布局首帧绘制完成后再恢复不透明度（超时兜底防止事件未触发）
+  const win = browserWindow
+  let restored = false
+  const restoreOpacity = () => {
+    if (restored) return
+    restored = true
+    if (!win.isDestroyed()) win.setOpacity(1)
+  }
+  win.setOpacity(0)
+  win.show()
+  win.focus()
+  // 等待渲染进程完成一次（或两次）重绘，确保新布局已上屏
+  win.webContents.executeJavaScript(
+    'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+  ).then(restoreOpacity).catch(() => {})
+  setTimeout(restoreOpacity, 300)
+}
 export const setProgressBar = (progress: number, options?: Electron.ProgressBarOptions) => {
   if (!browserWindow) return
   browserWindow.setProgressBar(progress, options)

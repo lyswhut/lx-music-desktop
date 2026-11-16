@@ -1,30 +1,34 @@
 <template lang="pug">
 dt#hot_key {{ $t('setting__hot_key') }}
 dd
-  h3#hot_key_local_title {{ $t('setting__hot_key_local_title') }}
-  div
-    base-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('setting__is_enable')" @change="handleHotKeySaveConfig")
-  div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
-    div(v-for="(item, index) in allHotKeys.local" :key="index" :class="$style.hotKeyItem")
-      h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
-      base-input(
-        :class="$style.hotKeyItemInput" readonly :auto-paste="false"
-        :placeholder="$t('setting__hot_key_unset_input')" :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
-        @keyup.prevent
-        @focus="handleHotKeyFocus($event, item, 'local')"
-        @blur="handleHotKeyBlur($event, item, 'local')")
-dd
-  h3#hot_key_global_title {{ $t('setting__hot_key_global_title') }}
-  div
-    base-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('setting__is_enable')" @change="handleEnableHotKey")
-  div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
-    div(v-for="(item, index) in allHotKeys.global" :key="index" :class="$style.hotKeyItem")
-      h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
-      base-input(
-        :class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
-        :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" :auto-paste="false" readonly :placeholder="$t('setting__hot_key_unset_input')" @input.prevent
-        @focus="handleHotKeyFocus($event, item, 'global')"
-        @blur="handleHotKeyBlur($event, item, 'global')")
+  div(:class="$style.cardRow")
+    div(:class="$style.sectionCard")
+      h3#hot_key_local_title(:class="$style.sectionCardTitle") {{ $t('setting__hot_key_local_title') }}
+      div(:class="$style.sectionCardBody")
+        div
+          base-checkbox(id="setting_download_hotKeyLocal" v-model="current_hot_key.local.enable" :label="$t('setting__is_enable')" @change="handleHotKeySaveConfig")
+        div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.local.enable ? 1 : .6 }")
+          div(v-for="(item, index) in allHotKeys.local" :key="index" :class="$style.hotKeyItem")
+            h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
+            base-input(
+              :class="$style.hotKeyItemInput" readonly :auto-paste="false"
+              :placeholder="$t('setting__hot_key_unset_input')" :value="hotKeyConfig.local[item.name] && formatHotKeyName(hotKeyConfig.local[item.name].key)"
+              @keyup.prevent
+              @focus="handleHotKeyFocus($event, item, 'local')"
+              @blur="handleHotKeyBlur($event, item, 'local')")
+    div(:class="$style.sectionCard")
+      h3#hot_key_global_title(:class="$style.sectionCardTitle") {{ $t('setting__hot_key_global_title') }}
+      div(:class="$style.sectionCardBody")
+        div
+          base-checkbox(id="setting_download_hotKeyGlobal" v-model="current_hot_key.global.enable" :label="$t('setting__is_enable')" @change="handleEnableHotKey")
+        div(:class="$style.hotKeyContainer" :style="{ opacity: current_hot_key.global.enable ? 1 : .6 }")
+          div(v-for="(item, index) in allHotKeys.global" :key="index" :class="$style.hotKeyItem")
+            h4(:class="$style.hotKeyItemTitle") {{ $t('setting__hot_key_' + item.name) }}
+            base-input(
+              :class="[$style.hotKeyItemInput, hotKeyConfig.global[item.name] && hotKeyStatus[hotKeyConfig.global[item.name].key] && hotKeyStatus[hotKeyConfig.global[item.name].key].status === false ? $style.hotKeyFailed : null]"
+              :value="hotKeyConfig.global[item.name] && formatHotKeyName(hotKeyConfig.global[item.name].key)" :auto-paste="false" readonly :placeholder="$t('setting__hot_key_unset_input')" @input.prevent
+              @focus="handleHotKeyFocus($event, item, 'global')"
+              @blur="handleHotKeyBlur($event, item, 'global')")
 </template>
 
 <script>
@@ -241,6 +245,33 @@ export default {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
+
+// 与其他设置分区一致的卡片行/卡片结构，保证左右边缘对齐
+.cardRow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.sectionCard {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-primary-light-300-alpha-700);
+}
+
+.sectionCardTitle {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: var(--color-primary-light-200-alpha-600);
+}
+
+.sectionCardBody {
+  padding: 12px 16px;
+}
 
 .hotKeyContainer {
   display: flex;

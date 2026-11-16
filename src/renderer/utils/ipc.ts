@@ -40,6 +40,11 @@ export const getOtherSourceCount = async() => {
   return rendererInvoke<number>(WIN_MAIN_RENDERER_EVENT_NAME.get_other_source_count)
 }
 
+// 立即执行一次歌单自动备份
+export const runAutoBackup = async() => {
+  await rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.run_auto_backup)
+}
+
 // export const updateDislikeInfo = async(dislikeInfo: LX.Dislike.ListItem[]) => {
 //   await rendererInvoke<LX.Dislike.ListItem[]>(WIN_MAIN_RENDERER_EVENT_NAME.update_dislike_music_infos, dislikeInfo)
 // }
@@ -266,6 +271,15 @@ export const saveLeaderboardSetting = (source: typeof DEFAULT_SETTING['leaderboa
 }
 export const getLeaderboardSetting = async() => {
   return (await rendererInvoke<string, typeof DEFAULT_SETTING['leaderboard']>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.leaderboardSetting)) ?? { ...DEFAULT_SETTING.leaderboard }
+}
+export const saveLeaderboardCache = (cache: unknown) => {
+  rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
+    path: DATA_KEYS.leaderboardCache,
+    data: cache,
+  })
+}
+export const getLeaderboardCache = async() => {
+  return rendererInvoke<unknown>(WIN_MAIN_RENDERER_EVENT_NAME.get_data, DATA_KEYS.leaderboardCache)
 }
 export const saveSongListSetting = (setting: typeof DEFAULT_SETTING['songList']) => {
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.save_data, {
@@ -544,13 +558,34 @@ export const clearCache = async() => {
  * 设置窗口大小
  * @param {*} width
  * @param {*} height
+ * @param {*} position 可选的窗口位置
  */
-export const setWindowSize = (width: number, height: number) => {
+export const setWindowSize = (width: number, height: number, position?: { x: number, y: number }) => {
   const params: Partial<Electron.Rectangle> = {
     width,
     height,
+    ...position,
   }
   rendererSend(WIN_MAIN_RENDERER_EVENT_NAME.set_window_size, params)
+}
+
+/**
+ * 迷你模式切换第一步：隐藏窗口并等待隐藏完成（隐藏期间切换布局不会被打用户看到）
+ */
+export const hideWindowTransition = async(): Promise<void> => {
+  await rendererInvoke(WIN_MAIN_RENDERER_EVENT_NAME.hide_window_transition)
+}
+
+/**
+ * 迷你模式切换第二步：隐藏状态下设置窗口大小与位置后重新显示并聚焦（主进程内原子完成）
+ */
+export const setWindowBoundsTransition = async(width: number, height: number, position?: { x: number, y: number }, maximize = false): Promise<void> => {
+  await rendererInvoke<Partial<Electron.Rectangle> & { maximize?: boolean }>(WIN_MAIN_RENDERER_EVENT_NAME.set_window_bounds_transition, {
+    width,
+    height,
+    ...position,
+    maximize,
+  })
 }
 
 

@@ -1,10 +1,10 @@
 // import fs from 'fs'
 import path from 'node:path'
-import { type WindowSize, windowSizeList } from '@common/config'
+import { type WindowSize, defaultWindowSizeId, windowSizeList } from '@common/config'
 import { nativeImage } from 'electron'
 
 export const getWindowSizeInfo = (windowSizeId: number | string): WindowSize => {
-  return windowSizeList.find(i => i.id == windowSizeId) ?? windowSizeList[0]
+  return windowSizeList.find(i => i.id == windowSizeId) ?? windowSizeList[defaultWindowSizeId]
 }
 
 const getIconPath = (name: string): Electron.NativeImage => {

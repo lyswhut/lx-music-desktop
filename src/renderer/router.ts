@@ -55,6 +55,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/localMusic',
+      name: 'LocalMusic',
+      component: require('./views/LocalMusic/index.vue').default,
+      meta: {
+        name: 'LocalMusic',
+      },
+    },
+    {
       path: '/setting',
       name: 'Setting',
       component: require('./views/Setting/index.vue').default,

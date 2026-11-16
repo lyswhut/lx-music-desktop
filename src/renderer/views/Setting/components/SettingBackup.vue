@@ -1,22 +1,36 @@
 <template lang="pug">
 dt#backup {{ $t('setting__backup') }}
 dd
-  h3#backup_part {{ $t('setting__backup_part') }}
-  div
-    base-btn.btn.gap-left(min @click="handleImportPlayList") {{ $t('setting__backup_part_import_list') }}
-    base-btn.btn.gap-left(min @click="handleExportPlayList") {{ $t('setting__backup_part_export_list') }}
-    base-btn.btn.gap-left(min @click="handleImportSetting") {{ $t('setting__backup_part_import_setting') }}
-    base-btn.btn.gap-left(min @click="handleExportSetting") {{ $t('setting__backup_part_export_setting') }}
-dd
-  h3#backup_all {{ $t('setting__backup_all') }}
-  div
-    base-btn.btn.gap-left(min @click="handleImportAllData") {{ $t('setting__backup_all_import') }}
-    base-btn.btn.gap-left(min @click="handleExportAllData") {{ $t('setting__backup_all_export') }}
-dd
-  h3#backup_other {{ $t('setting__backup_other') }}
-  div
-    base-btn.btn.gap-left(min @click="handleExportPlayListToText") {{ $t('setting__backup_other_export_list_text') }}
-    base-btn.btn.gap-left(min @click="handleExportPlayListToCsv") {{ $t('setting__backup_other_export_list_csv') }}
+  div(:class="$style.cardRow")
+    div(:class="[$style.sectionCard, $style.wideCard]")
+      h3#backup_part(:class="$style.sectionCardTitle") {{ $t('setting__backup_part') }}
+      div(:class="$style.sectionCardBody")
+        base-btn.btn.gap-left(min @click="handleImportPlayList") {{ $t('setting__backup_part_import_list') }}
+        base-btn.btn.gap-left(min @click="handleExportPlayList") {{ $t('setting__backup_part_export_list') }}
+        base-btn.btn.gap-left(min @click="handleImportSetting") {{ $t('setting__backup_part_import_setting') }}
+        base-btn.btn.gap-left(min @click="handleExportSetting") {{ $t('setting__backup_part_export_setting') }}
+    div(:class="$style.sectionCard")
+      h3#backup_all(:class="$style.sectionCardTitle") {{ $t('setting__backup_all') }}
+      div(:class="$style.sectionCardBody")
+        base-btn.btn.gap-left(min @click="handleImportAllData") {{ $t('setting__backup_all_import') }}
+        base-btn.btn.gap-left(min @click="handleExportAllData") {{ $t('setting__backup_all_export') }}
+  div(:class="$style.cardRow")
+    div(:class="$style.sectionCard")
+      h3#backup_other(:class="$style.sectionCardTitle") {{ $t('setting__backup_other') }}
+      div(:class="$style.sectionCardBody")
+        base-btn.btn.gap-left(min @click="handleExportPlayListToText") {{ $t('setting__backup_other_export_list_text') }}
+        base-btn.btn.gap-left(min @click="handleExportPlayListToCsv") {{ $t('setting__backup_other_export_list_csv') }}
+    div(:class="$style.sectionCard")
+      h3#backup_auto(:class="$style.sectionCardTitle") {{ $t('setting__backup_auto') }}
+      div(:class="$style.sectionCardBody")
+        .p(:class="$style.autoRow")
+          base-checkbox(id="setting_backup_auto_enable" :model-value="appSetting['backup.autoBackup.enable']" :label="$t('setting__backup_auto_enable')" @update:model-value="handleAutoBackupEnable")
+          span.auto-hidden.hover(:class="$style.savePath" :aria-label="$t('setting__backup_auto_path_open')" @click="openBackupDir") {{ appSetting['backup.autoBackup.path'] || $t('setting__backup_auto_path_unset') }}
+          base-btn.btn(min @click="handleChangeBackupPath") {{ $t('setting__backup_auto_change_path') }}
+        .p.gap-top(:class="$style.autoRow")
+          span(:class="$style.rowLabel") {{ $t('setting__backup_auto_count') }}
+          base-selection(:class="$style.selectWidth" :model-value="appSetting['backup.autoBackup.maxBackupCount']" :list="backupCounts" item-key="id" item-name="id" @change="handleUpdateBackupCount")
+          base-btn.btn(min :disabled="!appSetting['backup.autoBackup.enable'] || !appSetting['backup.autoBackup.path']" @click="handleBackupNow") {{ $t('setting__backup_auto_now') }}
 </template>
 
 <script>
@@ -33,6 +47,8 @@ import {
 import {
   showSelectDialog,
   openSaveDir,
+  openDirInExplorer,
+  runAutoBackup,
 } from '@renderer/utils/ipc'
 // import { currentStting } from '../setting'
 import { dialog } from '@renderer/plugins/Dialog'
@@ -369,8 +385,68 @@ export default {
     //   window.eventHub.off(eventBaseName.set_config, handleUpdateSetting)
     // })
 
+    // =========================自动备份========================
+    const backupCounts = new Array(10).fill(null).map((_, i) => ({ id: i + 1 }))
+
+    const selectBackupPath = async() => {
+      const result = await showSelectDialog({
+        title: t('setting__backup_auto_select_path'),
+        properties: ['openDirectory'],
+        defaultPath: appSetting['backup.autoBackup.path'] || appSetting['download.savePath'],
+      })
+      if (result.canceled) return null
+      updateSetting({ 'backup.autoBackup.path': result.filePaths[0] })
+      return result.filePaths[0]
+    }
+
+    const handleAutoBackupEnable = async(enable) => {
+      // 启用时若还没设置备份路径，先选择目录
+      if (enable && !appSetting['backup.autoBackup.path']) {
+        const path = await selectBackupPath()
+        if (!path) return
+        updateSetting({ 'backup.autoBackup.enable': true })
+        return
+      }
+      updateSetting({ 'backup.autoBackup.enable': enable })
+    }
+
+    const handleChangeBackupPath = () => {
+      void selectBackupPath()
+    }
+
+    const openBackupDir = () => {
+      if (!appSetting['backup.autoBackup.path']) return
+      void openDirInExplorer(appSetting['backup.autoBackup.path'])
+    }
+
+    const handleUpdateBackupCount = ({ id }) => {
+      updateSetting({ 'backup.autoBackup.maxBackupCount': id })
+    }
+
+    const handleBackupNow = async() => {
+      try {
+        await runAutoBackup()
+        void dialog({
+          message: t('setting__backup_auto_success'),
+          confirmButtonText: t('alert_button_text'),
+        })
+      } catch (error) {
+        void dialog({
+          message: t('setting__backup_auto_failed') + (error?.message ? `\n${error.message}` : ''),
+          confirmButtonText: t('alert_button_text'),
+        })
+      }
+    }
+
     return {
       // currentStting,
+      appSetting,
+      backupCounts,
+      handleAutoBackupEnable,
+      handleChangeBackupPath,
+      openBackupDir,
+      handleUpdateBackupCount,
+      handleBackupNow,
       handleExportPlayList,
       handleImportPlayList,
       handleExportSetting,
@@ -387,5 +463,64 @@ export default {
 <style lang="less" module>
 .savePath {
   font-size: 12px;
+}
+
+// 自动备份卡：路径/更改路径/备份数量/立即备份 一行显示
+.autoRow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 10px;
+
+  .rowLabel {
+    flex: none;
+    font-size: 12px;
+  }
+
+  .savePath {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// 设置分区卡片：头部色带 + 浅色主题底，与 SettingBasic 保持一致
+.sectionCard {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-primary-light-300-alpha-700);
+}
+
+// 一行两列的卡片布局
+.cardRow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.wideCard {
+  grid-column: span 2;
+}
+
+.selectWidth {
+  width: 90px;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.sectionCardTitle {
+  margin: 0;
+  padding: 8px 16px;
+  font-size: 13px;
+  background-color: var(--color-primary-light-200-alpha-600);
+}
+
+.sectionCardBody {
+  padding: 12px 16px;
 }
 </style>

@@ -1,5 +1,13 @@
 <template>
-  <base-tab :model-value="sortId" :class="$style.tab" :list="list" item-label="name" @change="handleToggle" />
+  <div :class="$style.sortSegmented">
+    <button
+      v-for="item in list"
+      :key="item.id"
+      type="button"
+      :class="[$style.segmentedBtn, { [$style.segmentedBtnActive]: sortId == item.id }]"
+      @click="handleToggle(item.id)"
+    >{{ item.name }}</button>
+  </div>
 </template>
 
 <script setup>
@@ -53,6 +61,46 @@ watch(() => props.source, async(source) => {
 
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
+
+.sortSegmented {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  flex: none;
+  border: 1px solid var(--color-primary);
+  border-radius: 13px;
+  overflow: hidden;
+  height: 26px;
+}
+
+.segmentedBtn {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 13px;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(.segmentedBtnActive) {
+    background-color: var(--color-primary-light-400-alpha-300);
+  }
+}
+
+.segmentedBtnActive {
+  background-color: var(--color-primary);
+  color: #fff;
+
+  &:hover {
+    background-color: var(--color-primary);
+  }
+}
 
 .tagList {
   font-size: 12px;
@@ -169,6 +217,4 @@ watch(() => props.source, async(source) => {
     background-color: var(--color-button-background-active);
   }
 }
-
-
 </style>
