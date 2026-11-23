@@ -2,7 +2,7 @@ import { computed, ref, reactive, nextTick } from '@common/utils/vueTools'
 import { useI18n } from '@renderer/plugins/i18n'
 import { userLists, defaultList, loveList } from '@renderer/store/list/state'
 import musicSdk from '@renderer/utils/musicSdk'
-import { addLocalFile } from './actions'
+import { addLocalFile, addLocalFolder } from './actions'
 
 export default ({
   emit,
@@ -51,6 +51,11 @@ export default ({
       {
         name: t('lists__select_local_file'),
         action: 'local_file',
+        disabled: !menuControl.local_file,
+      },
+      {
+        name: t('lists__select_local_folder'),
+        action: 'local_folder',
         disabled: !menuControl.local_file,
       },
       {
@@ -163,6 +168,9 @@ export default ({
         break
       case 'local_file':
         addLocalFile(listInfo)
+        break
+      case 'local_folder':
+        addLocalFolder(listInfo)
         break
       case 'sourceDetail':
         handleOpenSourceDetailPage(listInfo)
