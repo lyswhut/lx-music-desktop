@@ -3,6 +3,7 @@ import kg from './kg/index'
 import tx from './tx/index'
 import wy from './wy/index'
 import mg from './mg/index'
+import sd from './sd/index'
 import bd from './bd/index'
 import xm from './xm'
 import { supportQuality } from './api-source'
@@ -32,6 +33,10 @@ const sources = {
       id: 'mg',
     },
     {
+      name: '汽水音乐',
+      id: 'sd',
+    },
+    {
       name: '虾米音乐',
       id: 'xm',
     },
@@ -45,6 +50,7 @@ const sources = {
   tx,
   wy,
   mg,
+  sd,
   bd,
   xm,
 }

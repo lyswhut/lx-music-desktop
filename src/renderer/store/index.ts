@@ -94,6 +94,7 @@ export const sourceNames = computed(() => {
     tx: 'tx',
     kg: 'kg',
     mg: 'mg',
+    sd: 'sd',
     wy: 'wy',
     all: window.i18n.t(prefix + 'all' as any),
   }
