@@ -9,21 +9,32 @@ import { httpOverHttp, httpsOverHttp } from 'tunnel'
 // import fs from 'fs'
 
 const httpsRxp = /^https:/
-const getRequestAgent = url => {
+const parseValidProxyOverride = (proxyOverride) => {
+  if (!proxyOverride || typeof proxyOverride !== 'object') return null
+  const host = String(proxyOverride.host ?? '').trim()
+  if (!host) return null
+  const rawPort = String(proxyOverride.port ?? '').trim()
+  if (!/^\d+$/.test(rawPort)) return null
+  const port = Number(rawPort)
+  if (!Number.isInteger(port) || port < 1 || port > 65535) return null
+  return { host, port }
+}
+
+const getRequestAgent = (url, proxyOverride) => {
   let options
-  if (proxy.enable && proxy.host) {
+  const validOverride = parseValidProxyOverride(proxyOverride)
+  if (validOverride) {
     options = {
-      proxy: {
-        host: proxy.host,
-        port: proxy.port,
-      },
+      proxy: validOverride,
     }
-  } else if (proxy.envProxy) {
-    options = {
-      proxy: {
-        host: proxy.envProxy.host,
-        port: proxy.envProxy.port,
-      },
+  } else if (proxyOverride !== false) {
+    const validGlobal = proxy.enable ? parseValidProxyOverride(proxy) : null
+    const validEnv = !validGlobal && proxy.envProxy ? parseValidProxyOverride(proxy.envProxy) : null
+    const selected = validGlobal ?? validEnv
+    if (selected) {
+      options = {
+        proxy: selected,
+      }
     }
   }
   return options ? (httpsRxp.test(url) ? httpsOverHttp : httpOverHttp)(options) : undefined
@@ -45,6 +56,7 @@ const request = (url, options, callback) => {
   }
   options.response_timeout = options.timeout
 
+  // 返回 Needle 顶层请求流对象而非首跳 .request 快照，确保 301/302 重定向后 cancelHttp 仍中止当前活动连接
   return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
     if (!err) {
       body = resp.body = resp.raw.toString()
@@ -54,7 +66,7 @@ const request = (url, options, callback) => {
       body = resp.body
     }
     callback(err, resp, body)
-  }).request
+  })
 }
 
 
@@ -95,6 +107,10 @@ const buildHttpPromose = (url, options) => {
     }).then(ro => {
       obj.requestObj = ro
       if (obj.isCancelled) obj.cancelHttp()
+    }).catch(err => {
+      obj.requestObj = null
+      obj.cancelFn = null
+      reject(err)
     })
   })
   return obj
@@ -134,8 +150,15 @@ export const cancelHttp = requestObj => {
   // console.log(requestObj)
   if (!requestObj) return
   // console.log('cancel:', requestObj)
-  if (!requestObj.abort) return
-  requestObj.abort()
+  try {
+    if (typeof requestObj.request?.abort === 'function') requestObj.request.abort()
+  } catch {}
+  try {
+    if (typeof requestObj.abort === 'function') requestObj.abort()
+  } catch {}
+  try {
+    if (typeof requestObj.destroy === 'function') requestObj.destroy()
+  } catch {}
 }
 
 
@@ -280,6 +303,7 @@ const fetchData = async(url, method, {
   headers = {},
   format = 'json',
   timeout = 15000,
+  proxy: proxyOverride,
   ...options
 }, callback) => {
   // console.log(url, options)
@@ -300,7 +324,7 @@ const fetchData = async(url, method, {
     method,
     headers: Object.assign({}, defaultHeaders, headers),
     timeout,
-    agent: getRequestAgent(url),
+    agent: getRequestAgent(url, proxyOverride),
     json: format === 'json',
   }, (err, resp, body) => {
     if (err) return callback(err, null)

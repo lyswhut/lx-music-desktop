@@ -1,6 +1,6 @@
 declare namespace LX {
   namespace Player {
-    type MusicChangeReason = 'user' | 'ended' | 'error' | 'removed' | 'selection'
+    type MusicChangeReason = 'user' | 'ended' | 'error' | 'removed' | 'selection' | 'version'
 
     interface ProgressBarOptions {
       progress: number

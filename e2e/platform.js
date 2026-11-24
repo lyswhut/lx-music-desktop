@@ -123,9 +123,41 @@ async function searchAndPlay(window, keyword, offset = 0) {
   })
 
   await step(window, errors, 'P6-推荐理由为可验证事实（来源标注，无伪声学距离）', async() => {
-    const body = await window.evaluate(() => document.body.innerText)
-    if (!/相似歌曲推荐|相关歌曲推荐|两个平台共同推荐/.test(body)) throw new Error('推荐理由未标注真实来源')
-    if (/听感距离|节奏高度一致/.test(body)) throw new Error('出现伪声学描述')
+    const rows = await window.locator('[data-explore-path-item]').evaluateAll(nodes => nodes.map(el => {
+      const reasonEl = el.querySelector('[data-explore-reason]')
+      const badges = Array.from(el.querySelectorAll('[data-explore-provider]')).map(b => b.getAttribute('data-explore-provider') || '')
+      return {
+        hasReasonEl: Boolean(reasonEl),
+        text: (reasonEl?.textContent || '').trim(),
+        sourceCount: Number(reasonEl?.getAttribute('data-explore-source-count') || '0'),
+        badges,
+      }
+    }))
+    if (!rows.length) throw new Error('未找到路径行节点 [data-explore-path-item]')
+    const singleReasonMap = {
+      wy: '网易相似歌曲推荐',
+      tx: 'QQ 音乐相关歌曲推荐',
+      ytm: 'YouTube Music 相关歌曲推荐',
+    }
+    for (const [idx, row] of rows.entries()) {
+      if (!row.hasReasonEl) throw new Error(`第 ${idx + 1} 条路径行缺少推荐理由节点 [data-explore-reason]`)
+      if (!row.text) throw new Error(`第 ${idx + 1} 条路径推荐理由为空`)
+      if (/听感距离|节奏高度一致/.test(row.text)) throw new Error(`第 ${idx + 1} 条出现伪声学描述: ${row.text}`)
+      const uniqueBadges = new Set(row.badges.filter(b => Object.prototype.hasOwnProperty.call(singleReasonMap, b)))
+      if (row.sourceCount < 1 || row.sourceCount > 3 || row.badges.length !== row.sourceCount || uniqueBadges.size !== row.sourceCount) {
+        throw new Error(`第 ${idx + 1} 条来源徽章数量或唯一性不匹配: sourceCount=${row.sourceCount}, badges=${JSON.stringify(row.badges)}`)
+      }
+      if (row.sourceCount === 3) {
+        if (row.text !== '三个平台共同推荐') throw new Error(`第 ${idx + 1} 条三源理由不匹配: ${row.text}`)
+      } else if (row.sourceCount === 2) {
+        if (row.text !== '两个平台共同推荐') throw new Error(`第 ${idx + 1} 条双源理由不匹配: ${row.text}`)
+      } else {
+        const expected = singleReasonMap[row.badges[0]]
+        if (!expected || row.text !== expected) {
+          throw new Error(`第 ${idx + 1} 条单源理由与徽章不一致: badge=${row.badges[0]}, text=${row.text}`)
+        }
+      }
+    }
   })
 
   await step(window, errors, 'P7-设置页：推荐不依赖 AI 开关', async() => {

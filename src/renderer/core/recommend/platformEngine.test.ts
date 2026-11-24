@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { explorePlatformOnce } from './platformEngine'
+import { explorePlatformOnce, PlatformRecallFailedError } from './platformEngine'
 import type { PlatformRecallAnchor, PlatformRecallResult } from './platformRecall'
+import type { SimilarProviderId } from './similarFusion'
 import { addDislikeInfo, clearDislikeInfo } from '@renderer/store/dislikeList/action'
 
 const mocks = vi.hoisted(() => ({
@@ -19,7 +20,7 @@ const anchor: PlatformRecallAnchor = {
   artist: '周杰伦', title: '晴天', album: '叶惠美', intervalSec: 269, id: 'wy_186016', source: 'wy', seedIds: { wy: '186016' },
 }
 const musicInfo = (id: string, name: string, singer: string) => ({ id, name, singer, source: 'wy', interval: '04:00', meta: {} } as any)
-const fused = (id: string, name: string, singer: string, providers: Array<['wy' | 'tx', number]> = [['wy', 1]]) => ({
+const fused = (id: string, name: string, singer: string, providers: Array<[SimilarProviderId, number]> = [['wy', 1]]) => ({
   artist: singer,
   title: name,
   album: 'Album',
@@ -153,5 +154,79 @@ describe('平台相似推荐引擎', () => {
     expect(result.meta.state).toBe('ok')
     expect(result.meta.error).toContain('tx')
     expect(mocks.addQueue).toHaveBeenCalledTimes(1)
+  })
+
+  it('三平台共同推荐与 YouTube Music 单源理由准确标注，all-failed 抛出携带本轮 providers 的 PlatformRecallFailedError', async() => {
+    mocks.recall.mockResolvedValueOnce(recallResult({
+      items: [
+        fused('wy_1', '三源曲', 'A', [['wy', 1], ['tx', 2], ['ytm', 1]]),
+        fused('wy_2', '仅YTM', 'B', [['ytm', 2]]),
+      ],
+    }))
+    const okRes = await explorePlatformOnce({ anchor })
+    expect(okRes.candidates[0].reason).toBe('三个平台共同推荐')
+    expect(okRes.candidates[0].source).toBe('aggregated')
+    expect(okRes.candidates[1].reason).toBe('YouTube Music 相关歌曲推荐')
+    expect(okRes.candidates[1].source).toBe('ytm')
+
+    const failedProviders = [
+      { provider: 'wy' as const, status: 'error' as const, seedId: null, fromCache: false, error: 'wy down' },
+      { provider: 'ytm' as const, status: 'region-blocked' as const, seedId: null, fromCache: false },
+    ]
+    mocks.recall.mockResolvedValueOnce(recallResult({ state: 'all-failed', items: [], providers: failedProviders, error: 'wy: wy down' }))
+    await expect(explorePlatformOnce({ anchor })).rejects.toSatisfy((err: unknown) => {
+      return err instanceof PlatformRecallFailedError && err.providers.length === 2 && err.providers[1].status === 'region-blocked'
+    })
+  })
+
+  it('提交前复核 YTM 独有候选播放能力：源失效时剔除并返回 no-playable-source', async() => {
+    mocks.recall.mockResolvedValueOnce(recallResult({
+      items: [fused('wy_only_ytm', '桥接曲', 'C', [['ytm', 1]])],
+    }))
+    const result = await explorePlatformOnce({
+      anchor,
+      canPlaySource: source => source === 'tx',
+    })
+    expect(result.candidates).toEqual([])
+    expect(result.meta.state).toBe('no-playable-source')
+    expect(mocks.addQueue).not.toHaveBeenCalled()
+  })
+
+  it('提交前复核覆盖所有含 YTM 证据的融合候选（如 wy+ytm）：wy 不可播时晋升可播 tx，全不可播时返回 no-playable-source', async() => {
+    const wyInfo = { id: 'wy_dup', name: '跨源曲', singer: 'A', source: 'wy', meta: { albumName: '' } } as any
+    const txInfo = { id: 'tx_dup', name: '跨源曲', singer: 'A', source: 'tx', meta: { albumName: '' } } as any
+    const mergedItem = {
+      id: 'wy_dup',
+      artist: 'A',
+      title: '跨源曲',
+      album: '',
+      musicInfo: wyInfo,
+      alternativeMusicInfos: [txInfo],
+      fusionScore: 0.03,
+      sources: [
+        { provider: 'wy' as const, rank: 1, musicInfo: wyInfo },
+        { provider: 'ytm' as const, rank: 1, musicInfo: txInfo },
+      ],
+    }
+
+    mocks.recall.mockResolvedValueOnce(recallResult({ items: [mergedItem] }))
+    const promoted = await explorePlatformOnce({
+      anchor,
+      canPlaySource: source => source === 'tx',
+    })
+    expect(promoted.candidates).toHaveLength(1)
+    expect(promoted.candidates[0].musicInfo?.id).toBe('tx_dup')
+    expect(mocks.addQueue).toHaveBeenCalledTimes(1)
+    expect(mocks.addQueue.mock.calls[0][0][0].musicInfo.id).toBe('tx_dup')
+
+    mocks.addQueue.mockClear()
+    mocks.recall.mockResolvedValueOnce(recallResult({ items: [mergedItem] }))
+    const dropped = await explorePlatformOnce({
+      anchor,
+      canPlaySource: () => false,
+    })
+    expect(dropped.candidates).toEqual([])
+    expect(dropped.meta.state).toBe('no-playable-source')
+    expect(mocks.addQueue).not.toHaveBeenCalled()
   })
 })

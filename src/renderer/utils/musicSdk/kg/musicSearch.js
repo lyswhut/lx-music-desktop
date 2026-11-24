@@ -10,7 +10,9 @@ export default {
   allPage: 1,
   musicSearch(str, page, limit) {
     const searchRequest = httpFetch(`http://songsearch.kugou.com/song_search_v2?platform=AndroidFilter&iscorrection=1&keyword=${encodeURIComponent(str)}&hifiquality=0&pagesize=${limit}&PrivilegeFilter=0&page=${page}`)
-    return searchRequest.promise.then(({ body }) => body)
+    const promise = searchRequest.promise.then(({ body }) => body)
+    promise.cancel = () => searchRequest.cancelHttp?.()
+    return promise
   },
   filterData(rawData) {
     const types = []
@@ -84,15 +86,19 @@ export default {
     })
     return list
   },
-  search(str, page = 1, limit, retryNum = 0) {
+  search(str, page = 1, limit, retryNum = 0, cancelState = { cancelled: false, request: null }) {
+    if (cancelState.cancelled) return Promise.reject(new Error('request cancelled'))
     if (++retryNum > 3) return Promise.reject(new Error('try max num'))
     if (limit == null) limit = this.limit
     // http://newlyric.kuwo.cn/newlyric.lrc?62355680
-    return this.musicSearch(str, page, limit).then(result => {
-      if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum)
+    const request = this.musicSearch(str, page, limit)
+    cancelState.request = request
+    const promise = request.then(result => {
+      if (cancelState.cancelled) throw new Error('request cancelled')
+      if (!result || result.error_code !== 0) return this.search(str, page, limit, retryNum, cancelState)
       let list = this.handleResult(result.data.lists)
 
-      if (list == null) return this.search(str, page, limit, retryNum)
+      if (list == null) return this.search(str, page, limit, retryNum, cancelState)
 
       this.total = result.data.total
       this.page = page
@@ -106,5 +112,10 @@ export default {
         source: 'kg',
       })
     })
+    promise.cancel = () => {
+      cancelState.cancelled = true
+      cancelState.request?.cancel?.()
+    }
+    return promise
   },
 }

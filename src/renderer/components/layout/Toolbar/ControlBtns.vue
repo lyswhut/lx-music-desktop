@@ -64,28 +64,33 @@ onBeforeUnmount(() => {
   display: flex;
   align-self: flex-start;
   -webkit-app-region: no-drag;
-  height: 30px;
+  height: 32px;
 
   .btn {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    width: 46px;
-    height: 30px;
+    width: 44px;
+    height: 32px;
     background: none;
     border: none;
     outline: none;
     padding: 1px;
     cursor: pointer;
     color: var(--color-font-label);
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.16s ease, color 0.16s ease;
     &.hover {
       &.min, &.max {
-        background-color: var(--color-button-background-hover);
+        background-color: var(--ui-surface-hover);
+        color: var(--color-font);
       }
       &.close {
         background-color: var(--color-btn-close);
+        color: #222;
+        @supports (color: oklch(from red l c h)) {
+          color: ~"oklch(from var(--color-btn-close) clamp(0.16, (0.65 - l) * 999, 0.99) 0 0)";
+        }
       }
     }
   }

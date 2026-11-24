@@ -33,14 +33,17 @@ export default {
 .btn {
   display: inline-block;
   border: none;
-  border-radius: @form-radius;
+  border-radius: var(--ui-radius-pill);
   cursor: pointer;
-  padding: 8px 15px;
+  padding: 7px 16px;
   color: var(--color-button-font);
   outline: none;
-  transition: background-color 0.2s ease;
+  font-weight: 500;
+  transition: background-color @transition-fast, color @transition-fast, opacity @transition-fast;
   background-color: var(--color-button-background);
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.2;
+  vertical-align: middle;
   &[disabled] {
     opacity: .4;
     cursor: default;
@@ -48,18 +51,23 @@ export default {
 
   &.outline {
     background-color: transparent;
+    box-shadow: inset 0 0 0 1px var(--ui-border-subtle);
   }
 
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: var(--color-button-background-hover);
   }
-  &:active {
+  &:active:not([disabled]) {
     background-color: var(--color-button-background-active);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
   }
 }
 
 .min {
-  padding: 3px 8px;
+  padding: 4px 11px;
   font-size: 12px;
 }
 

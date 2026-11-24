@@ -27,7 +27,7 @@
           <use xlink:href="#icon-prevMusic" />
         </svg>
       </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+      <div :class="[$style.playBtn, $style.playPrimary]" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
         <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-pause" />
         </svg>
@@ -155,15 +155,14 @@ export default {
 .player {
   position: relative;
   height: @height-player;
-  border-top: 1px solid var(--color-primary-alpha-900);
+  border-top: 1px solid var(--ui-border-subtle);
   box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   contain: strict;
-  padding: 6px;
+  padding: 10px 16px;
   z-index: 2;
-  // box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
   * {
     box-sizing: border-box;
   }
@@ -175,117 +174,104 @@ export default {
     width: 100%;
     height: 100%;
     background-color: var(--color-main-background);
-    opacity: .9;
+    opacity: .96;
     z-index: -1;
   }
 }
 
 .picContent {
-  height: 100%;
-  aspect-ratio: 1 / 1;
-
-  // color: var(--color-primary);
-  // transition: @transition-normal;
-  // transition-property: color;
+  height: 48px;
+  width: 48px;
   flex: none;
   opacity: 1;
-  transition: opacity @transition-fast;
-  // transition-property: opacity;
+  transition: transform @transition-fast, opacity @transition-fast;
   display: flex;
   justify-content: center;
-  // align-items: center;
+  align-items: center;
   cursor: pointer;
 
   &:hover {
-    opacity: .8;
+    transform: scale(1.03);
+    opacity: .92;
   }
 
-  // svg {
-  //   fill: currentColor;
-  // }
   img {
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-    max-width: 100%;
-    max-height: 100%;
-    transition: @transition-normal;
-    transition-property: border-color;
-    // border-radius: 50%;
-    border-radius: @radius-border;
-    // border: 2px solid @color-theme_2-background_1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: var(--ui-shadow-sm);
+    border-radius: var(--ui-radius-sm);
   }
 
   .emptyPic {
-    background-color: var(--color-primary-light-900-alpha-200);
-    border-radius: @radius-border;
+    background-color: var(--ui-surface-active);
+    border-radius: var(--ui-radius-sm);
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-primary-light-400-alpha-200);
+    color: var(--color-primary);
     user-select: none;
-    font-size: 20px;
-    font-family: Consolas, "Courier New", monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
 
     span {
-      padding-left: 3px;
+      padding-left: 2px;
     }
   }
 }
 
 .infoContent {
-  padding: 0 10px;
-  flex: auto;
+  padding: 0 12px;
+  flex: 1.2 1 110px;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: flex-start;
-  font-size: 13px;
   color: var(--color-font);
-  min-width: 0;
-  line-height: 1.5;
+  min-width: 72px;
+  gap: 2px;
 }
 
 .title {
   max-width: 100%;
-  font-size: 12px;
-  color: var(--color-font-label);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-font);
+  cursor: pointer;
   .mixin-ellipsis-1();
+  &:hover {
+    color: var(--color-primary);
+  }
 }
 .status {
-  padding-top: 3px;
-  height: 23px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--color-font-label);
   .mixin-ellipsis-1();
   max-width: 100%;
 }
 
 .timeContent {
-  width: 30%;
-  // position: relative;
-  flex: none;
-  color: var(--color-550);
-  font-size: 13px;
-  // padding-left: 10px;
+  flex: 1 1 140px;
+  min-width: 96px;
+  max-width: 30%;
+  color: var(--color-font-label);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
 }
 .progress {
-  // position: absolute;
-  // top: 0;
-  // left: 0;
-  // width: 100%;
-  flex: auto;
-  // width: 160px;
+  flex: 1 1 auto;
+  min-width: 36px;
   position: relative;
-  // padding-bottom: 6px;
   margin: 0 8px;
   padding: 8px 0;
-  // height: 15px;
-  // .progressBar {
-  //   height: 4px;
-  //   // border-radius: 0;
-  // }
 }
 .time {
   display: flex;
@@ -299,30 +285,88 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  padding-left: 10px;
-  padding-right: 15px;
-  gap: 18px;
+  padding-left: 6px;
+  gap: 6px;
 }
 
 .playBtn {
   flex: none;
-  height: 52%;
-  // margin-top: -2px;
-  transition: @transition-fast;
-  transition-property: color, opacity;
-  color: var(--color-button-font);
-  opacity: 1;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color @transition-fast, color @transition-fast, transform 0.12s ease, opacity @transition-fast;
+  color: var(--color-font);
+  opacity: 0.85;
   cursor: pointer;
 
   svg {
     fill: currentColor;
-    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
   }
   &:hover {
-    opacity: 0.8;
+    opacity: 1;
+    background-color: var(--ui-surface-hover);
   }
   &:active {
-    opacity: 0.6;
+    transform: scale(0.94);
+  }
+}
+
+.playPrimary {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  opacity: 1;
+  background-color: var(--color-primary);
+  color: var(--ui-on-primary, #fff);
+  box-shadow: inset 0 0 0 1px var(--ui-border-strong), var(--ui-primary-shadow);
+
+  &:hover {
+    background-color: var(--ui-primary-hover-bg, var(--color-primary-dark-100));
+    transform: scale(1.04);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@media (max-width: 960px) {
+  .player {
+    padding: 10px 8px;
+  }
+  .picContent {
+    width: 38px;
+    height: 38px;
+  }
+  .infoContent {
+    padding: 0 5px;
+    min-width: 52px;
+  }
+  .timeContent {
+    flex: 0.7 1 90px;
+    min-width: 82px;
+    font-size: 10px;
+  }
+  .progress {
+    margin: 0 3px;
+    min-width: 18px;
+  }
+  .playBtnContent {
+    padding-left: 2px;
+    gap: 2px;
+  }
+  .playBtn {
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+  }
+  .playPrimary {
+    width: 30px;
+    height: 30px;
+    padding: 7px;
   }
 }
 

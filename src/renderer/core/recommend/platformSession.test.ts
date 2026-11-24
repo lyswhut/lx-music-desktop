@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EventEmitter } from 'node:events'
+import { effectScope, nextTick } from 'vue'
 import type * as SessionModule from './session'
 
 const mocks = vi.hoisted(() => {
@@ -23,6 +24,7 @@ const mocks = vi.hoisted(() => {
     addQueue: vi.fn(),
     removeQueue: vi.fn(),
     playNow: vi.fn(),
+    playNext: vi.fn(),
     getListMusics: vi.fn(),
     onProfileSignal: vi.fn(),
     recordSkip: vi.fn(),
@@ -35,10 +37,13 @@ const mocks = vi.hoisted(() => {
 vi.mock('./engine', () => ({ exploreOnce: mocks.explore }))
 vi.mock('./platformRecall', () => ({ recallPlatformSimilar: mocks.platformRecall }))
 vi.mock('./llm', () => ({ llmComplete: mocks.llm, llmCompleteWithValidation: mocks.llmValidated }))
-vi.mock('@renderer/store/setting', () => ({ appSetting: mocks.setting }))
+vi.mock('@renderer/store/setting', async() => {
+  const { reactive } = await import('vue')
+  return { appSetting: reactive(mocks.setting) }
+})
 vi.mock('@renderer/store/player/state', () => ({ playInfo: { isSelectionQueue: false }, playMusicInfo: mocks.player, tempPlayList: mocks.queue, isPlay: mocks.isPlay }))
 vi.mock('@renderer/store/player/action', () => ({ addTempPlayList: mocks.addQueue, removeTempPlayList: mocks.removeQueue }))
-vi.mock('@renderer/core/player', () => ({ playMusicInfoNow: mocks.playNow }))
+vi.mock('@renderer/core/player', () => ({ playMusicInfoNow: mocks.playNow, playNext: mocks.playNext }))
 vi.mock('@renderer/utils/data', () => ({ getRecommendMetrics: async() => null, saveRecommendMetrics: vi.fn() }))
 vi.mock('./feature', () => ({ startFeatureCollection: vi.fn(), stopFeatureCollection: vi.fn() }))
 vi.mock('./profile', () => ({ getProfileState: () => null, onProfileSignal: mocks.onProfileSignal, recordRecommendedSkip: mocks.recordSkip }))
@@ -63,12 +68,19 @@ const recallOk = (items = [fusedItem('wy_1', '花海', '周杰伦')]) => ({
 })
 
 let session: typeof SessionModule
+let setting: typeof mocks.setting
 beforeEach(async() => {
   vi.resetModules()
   vi.useFakeTimers()
   vi.clearAllMocks()
   mocks.setting['recommend.autoRefill'] = true
   mocks.setting['recommend.radio'] = false
+  mocks.setting['recommend.providers.wy'] = true
+  mocks.setting['recommend.providers.tx'] = true
+  mocks.setting['recommend.ytm.enable'] = true
+  mocks.setting['recommend.ytm.proxy.enable'] = false
+  mocks.setting['recommend.ytm.proxy.host'] = ''
+  mocks.setting['recommend.ytm.proxy.port'] = ''
   mocks.isPlay.value = false
   delete mocks.setting['recommend.engine']
   mocks.player.musicInfo = {
@@ -86,6 +98,7 @@ beforeEach(async() => {
   mocks.getListMusics.mockResolvedValue([])
   mocks.platformRecall.mockResolvedValue(recallOk())
   vi.stubGlobal('window', { lx: { isProd: true }, app_event: new EventEmitter() })
+  setting = (await import('@renderer/store/setting')).appSetting
   session = await import('./session')
 })
 
@@ -450,5 +463,327 @@ describe('platform session retained source history', () => {
       expect.objectContaining({ artist: 'Primary', title: 'Song' }),
       expect.objectContaining({ artist: 'Alias', title: 'Song' }),
     ]))
+  })
+})
+
+describe('会话状态机缺陷修复回归（配置热切换 / all-failed 徽章 / version 换源 / 单曲操作 / 显式刷新）', () => {
+  it('在途计划期间切换推荐来源立即取消旧计划并释放单飞锁，同时保全既有队列归属与剩余计数', async() => {
+    const scope = effectScope()
+    try {
+      scope.run(() => { session.initRecommendRadio() })
+      await session.startSession()
+      expect(session.sessionView.value.remaining).toBe(1)
+
+      let releaseStale!: (v: ReturnType<typeof recallOk>) => void
+      mocks.platformRecall.mockImplementationOnce(async() => new Promise(resolve => { releaseStale = resolve }))
+      session.refillNow()
+      await vi.waitFor(() => { expect(releaseStale).toBeDefined() })
+
+      // 召回途中关闭 tx 来源：旧计划失效且单飞锁释放，已有队列项仍归本会话（remaining === 1）
+      mocks.platformRecall.mockResolvedValueOnce(recallOk([fusedItem('wy_fresh', '新来源曲', '新歌手')]))
+      setting['recommend.providers.tx'] = false
+      await nextTick()
+      expect(session.sessionView.value.remaining).toBe(1)
+
+      // 旧计划迟到返回被丢弃
+      releaseStale(recallOk([fusedItem('wy_stale', '过期曲', '旧歌手')]))
+      await vi.advanceTimersByTimeAsync(1200)
+
+      expect(session.sessionView.value.path.map(p => p.id)).not.toContain('wy_stale')
+      expect(session.sessionView.value.path.map(p => p.id)).toContain('wy_fresh')
+      // 收台时两批同会话入队项均被正确清理
+      session.endSession()
+      expect(mocks.queue).toEqual([])
+    } finally {
+      scope.stop()
+    }
+  })
+
+  it('第 2 轮 all-failed 刷新 lastPlatformProviders 为本轮失败状态并清空上轮部分错误', async() => {
+    mocks.platformRecall.mockResolvedValueOnce({
+      ...recallOk(),
+      error: 'tx: timeout',
+      providers: [
+        { provider: 'wy' as const, status: 'success' as const, seedId: '186016', fromCache: false },
+        { provider: 'tx' as const, status: 'error' as const, seedId: null, fromCache: false },
+      ],
+    })
+    await session.startSession()
+    expect(session.lastPlatformProviders.value[0].status).toBe('success')
+    expect(session.lastPlatformSourceError.value).toContain('tx: timeout')
+
+    mocks.platformRecall.mockResolvedValueOnce({
+      state: 'all-failed' as const,
+      items: [],
+      providers: [
+        { provider: 'wy' as const, status: 'error' as const, seedId: null, fromCache: false },
+        { provider: 'tx' as const, status: 'error' as const, seedId: null, fromCache: false },
+      ],
+      error: 'wy: down；tx: down',
+    })
+    session.refillNow()
+    await vi.advanceTimersByTimeAsync(0)
+
+    // 不再残留第 1 轮的 wy=success 绿徽章和上轮 partial source error
+    expect(session.lastPlatformProviders.value.every(p => p.status === 'error')).toBe(true)
+    expect(session.lastPlatformSourceError.value).toBe('')
+    expect(session.lastErrorText.value).toContain('down')
+  })
+
+  it("reason='version' 同曲切换音源不触发短听跳过负反馈，并保留路径推荐来源徽章", async() => {
+    setting['recommend.autoRefill'] = false
+    await session.startSession()
+    changeSong('wy_1')
+    emitEvent('play')
+    await vi.advanceTimersByTimeAsync(5000)
+    // 同曲换源（reason='version'）
+    mocks.player.musicInfo = { id: 'tx_1_ver', name: '花海', singer: '周杰伦', source: 'tx', interval: '04:00', meta: {} }
+    emitEvent('musicToggled', 'version')
+    expect(mocks.recordSkip).not.toHaveBeenCalled()
+    expect(session.sessionView.value.path[0].recommendSources).toEqual([{ provider: 'wy', rank: 1 }])
+  })
+
+  it('dislikePathItem 标记不再推荐、清除相反喜欢态、移除本会话队列项并在正播时切下一首', async() => {
+    await session.startSession()
+    const manual = { listId: 'manual', musicInfo: { id: 'wy_1', name: '花海', singer: '周杰伦', source: 'wy', meta: {} } }
+    mocks.queue.push(manual)
+
+    // 先喜欢当前播放的推荐曲，再单曲点不再推荐
+    changeSong('wy_1')
+    session.applyFeedback('good')
+    expect(session.sessionView.value.likedTracks).toHaveLength(1)
+
+    session.dislikePathItem('wy_1')
+    expect(session.sessionView.value.likedTracks).toEqual([])
+    expect(session.sessionView.value.dislikedTracks).toEqual(expect.arrayContaining([{ artist: '周杰伦', title: '花海' }]))
+    // 仅移除本会话推荐队列项，保留用户手动加入项
+    expect(mocks.queue).toEqual([manual])
+    expect(mocks.playNext).toHaveBeenCalledOnce()
+  })
+
+  it('陌生 ID 的繁简跨源换源（爱在西元前 → 愛在西元前）归并为同一条 played 路径并保留双源 ID 与来源徽章', async() => {
+    setting['recommend.autoRefill'] = false
+    const simplified = fusedItem('wy_xiyuan', '爱在西元前', '周杰伦')
+    simplified.musicInfo.interval = '03:54'
+    simplified.musicInfo.meta = { albumName: '范特西' } as any
+    simplified.album = '范特西'
+    mocks.platformRecall.mockResolvedValueOnce(recallOk([simplified]))
+    await session.startSession()
+    expect(session.sessionView.value.path).toHaveLength(1)
+
+    // 切至陌生 ID 的繁体版本同录音
+    mocks.player.musicInfo = {
+      id: 'tx_xiyuan_trad',
+      name: '愛在西元前',
+      singer: '周杰倫',
+      source: 'tx',
+      interval: '03:54',
+      meta: { albumName: '范特西' },
+    }
+    emitEvent('musicToggled', 'version')
+
+    expect(session.sessionView.value.path).toHaveLength(1)
+    expect(session.sessionView.value.path[0].state).toBe('played')
+    expect(session.sessionView.value.path[0].recommendSources).toEqual([{ provider: 'wy', rank: 1 }])
+    // 两个源 ID 都能定位到该路径条目
+    session.playPathItem('wy_xiyuan')
+    expect(mocks.playNow).toHaveBeenCalledTimes(1)
+    session.playPathItem('tx_xiyuan_trad')
+    expect(mocks.playNow).toHaveBeenCalledTimes(2)
+  })
+
+  it('召回途中切换 recommend.engine（→local）或改动全局代理（即使独立 YTM 代理启用）实时失效旧计划且 0 LLM', async() => {
+    const scope = effectScope()
+    try {
+      scope.run(() => { session.initRecommendRadio() })
+      await session.startSession()
+
+      // 1) 独立 YTM 代理有效时改动全局代理 host 也必须失效在途计划
+      setting['recommend.ytm.proxy.enable'] = true
+      setting['recommend.ytm.proxy.host'] = '127.0.0.1'
+      setting['recommend.ytm.proxy.port'] = '7890'
+      await nextTick()
+      await vi.advanceTimersByTimeAsync(1200)
+
+      let releaseGlobalStale!: (v: ReturnType<typeof recallOk>) => void
+      mocks.platformRecall.mockImplementationOnce(async() => new Promise(resolve => { releaseGlobalStale = resolve }))
+      session.refillNow()
+      await vi.waitFor(() => { expect(releaseGlobalStale).toBeDefined() })
+
+      mocks.platformRecall.mockResolvedValueOnce(recallOk([fusedItem('wy_after_global_proxy', '新代理曲', '歌手')]))
+      setting['network.proxy.enable'] = true
+      setting['network.proxy.host'] = '10.0.0.2'
+      setting['network.proxy.port'] = '8080'
+      await nextTick()
+      releaseGlobalStale(recallOk([fusedItem('wy_old_proxy', '旧代理曲', '旧歌手')]))
+      await vi.advanceTimersByTimeAsync(1200)
+      expect(session.sessionView.value.path.map(p => p.id)).not.toContain('wy_old_proxy')
+      expect(session.sessionView.value.path.map(p => p.id)).toContain('wy_after_global_proxy')
+
+      // 2) 召回途中切换引擎为 local：旧平台结果丢弃，新计划走 local 且 0 LLM
+      let releaseEngineStale!: (v: ReturnType<typeof recallOk>) => void
+      mocks.platformRecall.mockImplementationOnce(async() => new Promise(resolve => { releaseEngineStale = resolve }))
+      session.refillNow()
+      await vi.waitFor(() => { expect(releaseEngineStale).toBeDefined() })
+
+      mocks.explore.mockResolvedValueOnce({
+        engine: 'local',
+        anchor: { artist: '周杰伦', title: '晴天', album: '' },
+        position: '',
+        featureSheet: {} as any,
+        analysis: { summary: '', aiUsed: false, error: null },
+        rawAnalysis: {} as any,
+        candidates: [],
+        meta: { sourceCounts: {}, recallError: null, aiRankError: null },
+      })
+      setting['recommend.engine'] = 'local'
+      await nextTick()
+      releaseEngineStale(recallOk([fusedItem('wy_stale_engine', '旧引擎曲', '旧歌手')]))
+      await vi.advanceTimersByTimeAsync(1200)
+      expect(session.sessionView.value.path.map(p => p.id)).not.toContain('wy_stale_engine')
+      expect(mocks.explore).toHaveBeenCalledTimes(1)
+      expect(mocks.llm).not.toHaveBeenCalled()
+    } finally {
+      scope.stop()
+    }
+  })
+
+  it('R2 回归：local 切回 ai 时清空旧 analysisCache，后续 AI 续补不再误复用本地分析', async() => {
+    const scope = effectScope()
+    try {
+      setting['recommend.engine'] = 'local'
+      scope.run(() => { session.initRecommendRadio() })
+      const fakeLocalAnalysis = { summary: 'local-only' } as any
+      mocks.explore.mockResolvedValueOnce({
+        engine: 'local',
+        anchor: { artist: '周杰伦', title: '晴天', album: '' },
+        position: '',
+        featureSheet: {} as any,
+        analysis: { summary: 'local', aiUsed: false, error: null },
+        rawAnalysis: fakeLocalAnalysis,
+        candidates: [{
+          id: 'wy_l1',
+          artist: '周杰伦',
+          title: '花海',
+          album: '魔杰座',
+          reason: '本地推荐',
+          journeyRole: 'open',
+          musicInfo: { id: 'wy_l1', name: '花海', singer: '周杰伦', source: 'wy', interval: '04:00', meta: { albumName: '魔杰座' } } as any,
+        }],
+        meta: { sourceCounts: {}, recallError: null, aiRankError: null },
+      })
+      await session.startSession()
+      expect(mocks.explore).toHaveBeenCalledTimes(1)
+
+      mocks.explore.mockResolvedValueOnce({
+        engine: 'ai',
+        anchor: { artist: '周杰伦', title: '晴天', album: '' },
+        position: '',
+        featureSheet: {} as any,
+        analysis: { summary: 'ai', aiUsed: true, error: null },
+        rawAnalysis: { summary: 'ai-fresh' } as any,
+        candidates: [],
+        meta: { sourceCounts: {}, recallError: null, aiRankError: null },
+      })
+      setting['recommend.engine'] = 'ai'
+      setting['ai.enable'] = true
+      await nextTick()
+      await vi.advanceTimersByTimeAsync(1200)
+
+      expect(mocks.explore).toHaveBeenCalledTimes(2)
+      const secondCallOpts = mocks.explore.mock.calls[1][0]
+      expect(secondCallOpts.reuseAnalysis).toBeUndefined()
+    } finally {
+      scope.stop()
+    }
+  })
+
+  it('R2 回归：换源试听（reason=user 但为同录音异源 ID）不触发短听跳过负反馈，且繁简反馈严格互斥', async() => {
+    setting['recommend.autoRefill'] = false
+    const simplified = fusedItem('wy_xiyuan', '爱在西元前', '周杰伦')
+    simplified.musicInfo.interval = '03:54'
+    simplified.musicInfo.meta = { albumName: '范特西' } as any
+    simplified.album = '范特西'
+    mocks.platformRecall.mockResolvedValueOnce(recallOk([simplified]))
+    await session.startSession()
+
+    // 播放简体推荐曲 5 秒后，经换源弹窗跨源试听（发出 reason='user'）切到繁体同录音异源 ID
+    mocks.player.musicInfo = simplified.musicInfo
+    emitEvent('musicToggled', 'user')
+    emitEvent('play')
+    await vi.advanceTimersByTimeAsync(5000)
+    session.applyFeedback('good')
+    expect(session.sessionView.value.likedTracks).toHaveLength(1)
+
+    mocks.player.musicInfo = {
+      id: 'tx_xiyuan_preview',
+      name: '愛在西元前',
+      singer: '周杰倫',
+      source: 'tx',
+      interval: '03:54',
+      meta: { albumName: '范特西' },
+    }
+    emitEvent('musicToggled', 'user')
+
+    // 绝不因换源试听误记短听跳过，也不多出重复路径行
+    expect(mocks.recordSkip).not.toHaveBeenCalled()
+    expect(session.sessionView.value.path).toHaveLength(1)
+
+    // 在繁体同录音下点「不再推荐」必须清除简体「喜欢」记录（严格互斥）
+    session.applyFeedback('dislike')
+    expect(session.sessionView.value.likedTracks).toEqual([])
+    expect(session.sessionView.value.dislikedTracks.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('R3 回归：空闲 AI 会话关闭自动续补时，编辑未启用的全局代理 host 不触发收费 AI 续补；dislikePathItem 不误切不同录音合作曲', async() => {
+    const scope = effectScope()
+    try {
+      setting['recommend.engine'] = 'ai'
+      setting['recommend.autoRefill'] = false
+      setting['network.proxy.enable'] = false
+      scope.run(() => { session.initRecommendRadio() })
+
+      mocks.explore.mockResolvedValueOnce({
+        engine: 'ai',
+        anchor: { artist: '周杰伦', title: '晴天', album: '' },
+        position: '',
+        featureSheet: {} as any,
+        analysis: { summary: 'ai', aiUsed: true, error: null },
+        rawAnalysis: { summary: 'ai-cached' } as any,
+        candidates: [{
+          id: 'wy_ac',
+          artist: '主唱A、合作者C',
+          title: '同名曲',
+          album: 'AlbumA',
+          reason: 'AI推荐',
+          journeyRole: 'open',
+          musicInfo: { id: 'wy_ac', name: '同名曲', singer: '主唱A、合作者C', source: 'wy', interval: '03:00', meta: { albumName: 'AlbumA' } } as any,
+        }],
+        meta: { sourceCounts: {}, recallError: null, aiRankError: null },
+      })
+      await session.startSession()
+      expect(mocks.explore).toHaveBeenCalledTimes(1)
+
+      // 编辑未启用的全局代理 host：不得触发新的 AI exploreOnce 请求
+      setting['network.proxy.host'] = '127.0.0.1'
+      setting['network.proxy.port'] = '8080'
+      await nextTick()
+      await vi.advanceTimersByTimeAsync(1500)
+      expect(mocks.explore).toHaveBeenCalledTimes(1)
+
+      // 当前正在播放不同主艺人的同名合作曲（主唱B、合作者C）：对路径项 wy_ac 点不再推荐不得调用 playNext 误切当前播放曲
+      mocks.player.musicInfo = {
+        id: 'tx_bc',
+        name: '同名曲',
+        singer: '主唱B、合作者C',
+        source: 'tx',
+        interval: '03:50',
+        meta: { albumName: 'AlbumB' },
+      }
+      session.dislikePathItem('wy_ac')
+      expect(mocks.playNext).not.toHaveBeenCalled()
+    } finally {
+      scope.stop()
+    }
   })
 })

@@ -300,10 +300,62 @@
   --background-image: none;
   --background-image-position: center;
   --background-image-size: cover;
+
+  /* 派生现代极简语义 Token：全部由现有主题变量推导，100% 兼容浅色/深色/自定义主题；
+     默认提供纯变量安全兜底以兼容旧版 Chromium（如 Win7 Electron 22），新内核经下方 @supports 渐进增强 */
+  --ui-radius-sm: 6px;
+  --ui-radius-md: 10px;
+  --ui-radius-lg: 14px;
+  --ui-radius-pill: 999px;
+  --ui-border-subtle: var(--color-primary-alpha-900);
+  --ui-border-strong: var(--color-primary-alpha-700);
+  --ui-surface-card: var(--color-primary-light-400-alpha-700);
+  --ui-surface-elevated: var(--color-content-background);
+  --ui-surface-hover: var(--color-primary-light-400-alpha-700);
+  --ui-surface-active: var(--color-primary-alpha-800);
+  --ui-on-primary: #fff;
+  --ui-primary-hover-bg: var(--color-primary-dark-100);
+  --ui-primary-border-soft: var(--color-primary-alpha-500);
+  --ui-primary-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  --ui-scrollbar-thumb: var(--color-primary-alpha-700);
+  --ui-scrollbar-thumb-hover: var(--color-primary-alpha-400);
+  --ui-badge-secondary-bg: var(--color-primary-light-400-alpha-700);
+  --ui-badge-tertiary-bg: var(--color-primary-light-400-alpha-700);
+  --ui-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --ui-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --ui-shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.22);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  :root {
+    --ui-border-subtle: color-mix(in srgb, var(--color-font) 8%, transparent);
+    --ui-border-strong: color-mix(in srgb, var(--color-font) 15%, transparent);
+    --ui-surface-card: color-mix(in srgb, var(--color-content-background) 82%, var(--color-primary-light-200-alpha-400));
+    --ui-surface-elevated: color-mix(in srgb, var(--color-content-background) 92%, var(--color-primary-light-400-alpha-600));
+    --ui-surface-hover: color-mix(in srgb, var(--color-font) 5%, transparent);
+    --ui-surface-active: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    --ui-primary-hover-bg: color-mix(in srgb, var(--color-primary) 86%, #000);
+    --ui-primary-border-soft: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    --ui-primary-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary) 28%, transparent);
+    --ui-scrollbar-thumb: color-mix(in srgb, var(--color-font) 18%, transparent);
+    --ui-scrollbar-thumb-hover: color-mix(in srgb, var(--color-primary) 55%, transparent);
+    --ui-badge-secondary-bg: color-mix(in srgb, var(--color-badge-secondary) 12%, transparent);
+    --ui-badge-tertiary-bg: color-mix(in srgb, var(--color-badge-tertiary) 12%, transparent);
+  }
+}
+
+@supports (color: oklch(from red l c h)) {
+  :root {
+    /* 自适应主色前景（OKLCH 感知亮度）：浅色/亮色/纯白主色自动切深色前景，确保 15 套内置与自定义主题默认与悬停均满足高对比度 */
+    --ui-on-primary: ~"oklch(from var(--color-primary) clamp(0.16, (0.65 - l) * 999, 0.99) 0 0)";
+  }
 }
 
 html {
   font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .nobreak {
@@ -427,30 +479,27 @@ input, textarea {
   &::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: transparent;
   }
   &::-webkit-scrollbar-track {
-    background-color: var(--color-primary-light-100-alpha-800);
-    border-radius: 3px;
-    // background-color: rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    border-radius: 999px;
   }
   &::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    background-color: var(--color-primary-alpha-600);
-    // background-color: rgba(0, 0, 0, 0.2);
-    transition: background-color 0.4s ease;
+    border-radius: 999px;
+    background-color: var(--ui-scrollbar-thumb);
+    transition: background-color 0.2s ease;
   }
   &::-webkit-scrollbar-thumb:hover {
-    border-radius: 3px;
-    background-color: var(--color-primary-alpha-400);
-    // background-color: rgba(0, 0, 0, 0.4);
-    transition: background-color 0.4s ease;
+    border-radius: 999px;
+    background-color: var(--ui-scrollbar-thumb-hover);
+    transition: background-color 0.2s ease;
   }
 }
 
 
 .thead {
-  border-bottom: var(--color-list-header-border-bottom);
+  border-bottom: 1px solid var(--ui-border-subtle);
   padding-right: 6px;
   flex: none;
 
@@ -458,10 +507,8 @@ input, textarea {
     .nobreak();
     .center();
     color: var(--color-font-label);
+    font-variant-numeric: tabular-nums;
   }
-  // box-shadow: 0 0 2px var(--color-primary-dark-500-alpha-800);
-  // position: relative;
-  // z-index: 2;
 }
 table {
   width: 100%;
@@ -470,10 +517,13 @@ table {
   overflow: hidden;
   color: var(--color-font);
   th {
-    font-size: 12px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--color-font-label);
+    letter-spacing: 0.02em;
     text-align: left;
-    line-height: 38px;
-    padding: 0 6px;
+    line-height: 36px;
+    padding: 0 8px;
   }
 }
 
@@ -490,35 +540,29 @@ table {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    // border-top: 1px solid rgba(0, 0, 0, 0.12);
-    transition: 0.2s ease;
-    transition-property: background-color, color;
-    // border-bottom: 1px solid @color-theme_2-line;
+    transition: background-color 0.16s ease, color 0.16s ease;
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: 12.5px;
+    border-radius: var(--ui-radius-sm);
 
     &:hover {
-      background-color: var(--color-primary-background-hover);
-
-      // .list-item-cell-action {
-      //   display: block;
-      // }
+      background-color: var(--ui-surface-hover);
     }
     &.active {
-      background-color: var(--color-primary-background-active);
+      background-color: var(--ui-surface-active);
+      color: var(--color-primary);
     }
     &.selected {
       background-color: var(--color-primary-background-hover);
     }
     &.disabled {
-      opacity: .5;
+      opacity: .45;
     }
     .list-item-cell {
       flex: none;
-      padding: 0 6px;
+      padding: 0 8px;
       position: relative;
-      // transition:  0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      line-height: 16px;
+      line-height: 18px;
       vertical-align: middle;
       box-sizing: border-box;
       .mixin-ellipsis-1();
@@ -532,7 +576,8 @@ table {
         .center();
         padding-left: 3px;
         padding-right: 3px;
-        font-size: 11px;
+        font-size: 11.5px;
+        font-variant-numeric: tabular-nums;
         color: var(--color-font-label);
       }
 
@@ -549,22 +594,10 @@ table {
         }
       }
       .badge {
-        margin-left: 3px;
-        opacity: .85;
+        margin-left: 4px;
+        opacity: .9;
       }
     }
-
-    // .list-item-cell-action {
-    //   white-space: nowrap;
-    //   display: none;
-    //   flex: auto;
-    //   text-align: right;
-    //   // position: absolute;
-    //   // right: 5px;
-    //   // top: -2px;
-    //   // opacity: 0;
-    //   // transition: opacity .1s ease;
-    // }
   }
 }
 

@@ -1,13 +1,13 @@
 /**
  * 平台相似推荐引擎（默认路径，零 LLM）。
  *
- * 当前歌曲 → 各平台准确定位同曲 → 平台单曲相似推荐 → 跨源合并与排名融合
- * → 本地过滤和偏好调整 → 稍后播放队列（平台相似推荐需求 1）。
+ * 当前歌曲 → 各平台准确定位同曲 → 平台单曲相似推荐（网易 / QQ / YouTube Music）
+ * → 跨源合并与排名融合 → 本地过滤、播放能力复核与偏好调整 → 稍后播放队列。
  *
  * 与旧 AI 引擎（engine.ts exploreOnce）的关系：
  * - 本路径为默认推荐路径，不要求 AI Key，全程 0 次 LLM 请求（分析/排序/画像摘要均不发起）；
- * - 平台全部失败时抛错走会话层有限重试；无匹配/空结果/过滤完/候选用尽为可区分的
- *   非失败状态（不重试、不静默回退关键词搜索/同艺人/旧 AI 排序）；
+ * - 平台全部失败时抛出携带本轮 providers 状态的 PlatformRecallFailedError 走会话层有限重试；
+ * - 无匹配/空结果/过滤完/候选用尽/无可用国内播放源为可区分的非失败状态（不重试、不静默回退）；
  * - 旧 AI 路径仅经显式设置（recommend.engine='ai'）进入，不因本路径失败被自动触发。
  */
 
@@ -18,11 +18,34 @@ import { getListMusics } from '@renderer/store/list/listManage/rendererListManag
 import { loveList } from '@renderer/store/list/listManage/state'
 import { hasDislike } from '@renderer/store/dislikeList/action'
 import { recallPlatformSimilar } from './platformRecall'
-import type { PlatformRecallAnchor, PlatformRecallState } from './platformRecall'
+import type { PlatformRecallAnchor, PlatformRecallState, ProviderCallStatus } from './platformRecall'
 import type { FusedCandidate, SimilarProviderId } from './similarFusion'
 import type { SongRef } from './sameSong'
 import { musicInfosOf, songRefs } from './songIdentity'
 import { filterForSubmission } from './submission'
+import type { YtmAdapter } from './ytmAdapter'
+import { DOMESTIC_BRIDGE_PROVIDERS, verifyYtmPlaybackSupport, type DomesticBridgeProvider } from './ytmBridge'
+
+/** 平台提供方状态投影（供 UI 非阻断状态徽章与错误透传）。 */
+export interface PlatformProviderStatus {
+  provider: SimilarProviderId
+  status: ProviderCallStatus
+  seedId: string | null
+  fromCache: boolean
+  error?: string
+}
+
+/** 全部平台失败时的类型化异常：携带本轮 providers 状态，防止会话层残留上一轮成功绿徽章。 */
+export class PlatformRecallFailedError extends Error {
+  readonly code = 'PLATFORM_RECALL_ALL_FAILED' as const
+  readonly providers: PlatformProviderStatus[]
+
+  constructor(message: string, providers: PlatformProviderStatus[]) {
+    super(message)
+    this.name = 'PlatformRecallFailedError'
+    this.providers = providers
+  }
+}
 
 /** 平台推荐引擎选项。 */
 export interface PlatformExploreOptions {
@@ -32,6 +55,16 @@ export interface PlatformExploreOptions {
   isCancelled?: () => boolean
   /** 队列追加模式：bottom=追加队尾（会话路径一律传此值）。 */
   appendMode?: 'top' | 'bottom'
+  /** 本轮启用的推荐提供方列表。 */
+  enabledProviders?: SimilarProviderId[]
+  /** YouTube Music 网络适配器（启用 ytm 时注入）。 */
+  ytmAdapter?: YtmAdapter
+  /** 规范化代理上下文键（隔离 YTM 缓存与可达性状态）。 */
+  ytmProxyContext?: string
+  /** 当前经 assertPlaybackSupport 筛选的可播国内桥接源（严禁空能力盲目回落）。 */
+  playableTargets?: DomesticBridgeProvider[]
+  /** 入队提交前复核 YTM 桥接候选的当前播放能力。 */
+  canPlaySource?: (source: LX.Source) => boolean
   /** 会话已推荐过的候选 id（续补避免重复入队）。 */
   excludeIds?: string[]
   /** 会话已推荐/已播曲目（同曲通道）。 */
@@ -50,7 +83,7 @@ export interface PlatformItemView {
   artist: string
   title: string
   album: string
-  /** 展示来源：'wy' | 'tx' | 'aggregated'（跨源共同推荐）。 */
+  /** 展示来源：'wy' | 'tx' | 'ytm' | 'aggregated'（跨源共同推荐）。 */
   source: string
   /** 可验证事实理由（不生成未经测量的听感描述）。 */
   reason: string
@@ -69,7 +102,7 @@ export interface PlatformExploreResult {
   meta: {
     state: PlatformRecallState
     /** 各平台调用状态（部分来源不可用时供非阻断提示）。 */
-    providers: Array<{ provider: SimilarProviderId, status: string, seedId: string | null, fromCache: boolean }>
+    providers: PlatformProviderStatus[]
     error: string | null
   }
 }
@@ -78,6 +111,13 @@ export interface PlatformExploreResult {
 const PROVIDER_LABEL: Record<SimilarProviderId, string> = {
   wy: '网易相似歌曲推荐',
   tx: 'QQ 音乐相关歌曲推荐',
+  ytm: 'YouTube Music 相关歌曲推荐',
+}
+
+const reasonForSources = (sources: FusedCandidate['sources']): string => {
+  if (sources.length >= 3) return '三个平台共同推荐'
+  if (sources.length === 2) return '两个平台共同推荐'
+  return PROVIDER_LABEL[sources[0].provider] ?? '平台相似推荐'
 }
 
 /** 读取红心歌（排除用；失败时按空处理，不阻塞推荐）。 */
@@ -99,7 +139,7 @@ const toView = (item: FusedCandidate): PlatformItemView => {
     title: item.title ?? '',
     album: item.album ?? '',
     source: aggregated ? 'aggregated' : item.sources[0].provider,
-    reason: aggregated ? '两个平台共同推荐' : (PROVIDER_LABEL[item.sources[0].provider] ?? '平台相似推荐'),
+    reason: reasonForSources(item.sources),
     // 平台模式无弧线角色语义，占位 open（视图在平台模式隐藏角色徽章）
     journeyRole: 'open',
     musicInfo: item.musicInfo as LX.Music.MusicInfoOnline,
@@ -109,8 +149,8 @@ const toView = (item: FusedCandidate): PlatformItemView => {
 }
 
 /**
- * 平台相似推荐一次计划：召回（种子定位 + 相似 + 融合 + 过滤）→ 入队。
- * 全部平台失败时抛错（会话层有限重试）；其余零候选状态以 meta.state 返回，不抛错。
+ * 平台相似推荐一次计划：召回（种子定位 + 相似 + 融合 + 过滤）→ 播放能力复核 → 入队。
+ * 全部平台失败时抛 PlatformRecallFailedError（会话层有限重试）；其余零候选状态以 meta.state 返回，不抛错。
  */
 export const explorePlatformOnce = async(options: PlatformExploreOptions): Promise<PlatformExploreResult> => {
   const anchor = options.anchor
@@ -125,8 +165,16 @@ export const explorePlatformOnce = async(options: PlatformExploreOptions): Promi
     queueTracks.push(...songRefs(item))
   }
 
+  // 显式透传 playableTargets；若省略则仅从 canPlaySource 派生，绝不盲目回落全五源
+  const playableTargets = options.playableTargets ??
+    (options.canPlaySource ? DOMESTIC_BRIDGE_PROVIDERS.filter(source => options.canPlaySource!(source)) : undefined)
+
   const recall = await recallPlatformSimilar(anchor, {
     isCancelled: options.isCancelled,
+    enabledProviders: options.enabledProviders,
+    ytmAdapter: options.ytmAdapter,
+    ytmProxyContext: options.ytmProxyContext,
+    playableTargets,
     excludeIds: options.excludeIds,
     excludeTracks: options.excludeTracks,
     queueTracks,
@@ -138,9 +186,9 @@ export const explorePlatformOnce = async(options: PlatformExploreOptions): Promi
   })
   if (options.isCancelled?.()) throw new Error('推荐计划已取消')
 
-  // 全部平台失败按请求失败处理（走会话层有限重试；不静默回退其他召回）
+  // 全部平台失败按请求失败处理（携带本轮 providers 状态走会话层有限重试；不静默回退其他召回）
   if (recall.state === 'all-failed') {
-    throw new Error(recall.error ?? '全部平台请求失败')
+    throw new PlatformRecallFailedError(recall.error ?? '全部平台请求失败', recall.providers)
   }
 
   let result: PlatformExploreResult = {
@@ -158,7 +206,17 @@ export const explorePlatformOnce = async(options: PlatformExploreOptions): Promi
       isCancelled: options.isCancelled,
       dislikedTracks: () => options.dislikedTracks ?? [],
     })
-    if (recall.items.length && !result.candidates.length) result.meta.state = 'empty-after-filter'
+    const checked = verifyYtmPlaybackSupport(result.candidates, options.canPlaySource)
+    result = { ...result, candidates: checked.kept }
+    if (recall.items.length && !result.candidates.length) {
+      result.meta.state = checked.droppedForPlayback > 0 ? 'no-playable-source' : 'empty-after-filter'
+    }
+  } else if (options.canPlaySource) {
+    const checked = verifyYtmPlaybackSupport(result.candidates, options.canPlaySource)
+    result = { ...result, candidates: checked.kept }
+    if (recall.items.length && !result.candidates.length && checked.droppedForPlayback > 0) {
+      result.meta.state = 'no-playable-source'
+    }
   }
   if (options.enqueue !== false && result.candidates.length) {
     addTempPlayList(result.candidates.flatMap(item => item.musicInfo ? [{

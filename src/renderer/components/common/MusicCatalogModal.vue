@@ -43,12 +43,44 @@ const playCatalogSong = (index: number) => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 18px 22px;
   gap: 12px;
+  color: var(--color-font);
 }
-.catalog h2 { font-size: 18px; padding-right: 20px; }
-.artists, .footer { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.songs { flex: 1; min-height: 0; }
-.status { font-size: 14px; line-height: 1.6; }
-.footer { justify-content: space-between; font-size: 13px; }
+.catalog h2 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  padding-right: 20px;
+}
+.artists, .footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.artists span {
+  font-size: 12.5px;
+  color: var(--color-font-label);
+}
+.songs {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border-subtle);
+  overflow: hidden;
+}
+.status {
+  font-size: 13px;
+  color: var(--color-font-label);
+  line-height: 1.5;
+  margin: 0;
+}
+.footer {
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--color-font-label);
+  font-variant-numeric: tabular-nums;
+  padding-top: 4px;
+}
 </style>

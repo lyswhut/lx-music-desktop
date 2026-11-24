@@ -21,7 +21,7 @@
           <use xlink:href="#icon-prevMusic" />
         </svg>
       </div>
-      <div :class="$style.playBtn" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
+      <div :class="[$style.playBtn, $style.playPrimary]" :aria-label="isPlay ? $t('player__pause') : $t('player__play')" @click="togglePlay">
         <svg v-if="isPlay" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="100%" viewBox="0 0 1024 1024" space="preserve">
           <use xlink:href="#icon-pause" />
         </svg>
@@ -96,10 +96,13 @@ const {
 }
 .timeLabel {
   width: 100%;
-  height: 18px;
+  height: 20px;
   display: flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-font-label);
   span {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 .status {
@@ -112,33 +115,50 @@ const {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 25px;
+  padding: 0 28px;
+  gap: 10px;
   color: var(--color-button-font);
 }
 .playBtn {
-  height: 40%;
-  padding: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 9px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   flex: none;
-  // transition: @transition-normal;
-  // transition-property: color;
-  color: var(--color-button-font);
-  transition: opacity 0.2s ease;
-  opacity: 1;
-  cursor: pointer;
+  color: var(--color-font);
+  transition: background-color @transition-fast, transform 0.12s ease, opacity @transition-fast;
+  opacity: 0.85;
 
-  +.playBtn {
-    margin-left: 10px;
-  }
   svg {
     fill: currentColor;
-    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
   }
   &:hover {
-    opacity: 0.8;
+    opacity: 1;
+    background-color: var(--ui-surface-hover);
   }
   &:active {
-    opacity: 0.6;
+    transform: scale(0.94);
+  }
+}
+.playPrimary {
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  opacity: 1;
+  background-color: var(--color-primary);
+  color: var(--ui-on-primary, #fff);
+  box-shadow: inset 0 0 0 1px var(--ui-border-strong), var(--ui-primary-shadow);
+  &:hover {
+    background-color: var(--ui-primary-hover-bg, var(--color-primary-dark-100));
+    transform: scale(1.04);
+  }
+  &:active {
+    transform: scale(0.95);
   }
 }
 

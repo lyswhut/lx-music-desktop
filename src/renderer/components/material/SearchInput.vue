@@ -203,106 +203,99 @@ export default {
 
 .container {
   position: relative;
-  width: 35%;
-  height: @height-toolbar * 0.52;
+  width: min(360px, 44%);
+  min-width: 210px;
+  height: 34px;
   -webkit-app-region: no-drag;
 }
 
 .search {
   position: absolute;
   width: 100%;
-  border-radius: @form-radius;
-  transition: box-shadow .4s ease, background-color @transition-normal;
+  border-radius: 17px;
+  border: 1px solid var(--ui-border-subtle);
+  transition: box-shadow @transition-fast, background-color @transition-fast, border-color @transition-fast, border-radius @transition-fast;
   display: flex;
   flex-flow: column nowrap;
-  background-color: var(--color-primary-light-300-alpha-700);
+  background-color: var(--ui-surface-hover);
+  overflow: hidden;
 
   &.active {
-    background-color: var(--color-primary-light-600-alpha-100);
-    box-shadow: 0 1px 5px 0 rgba(0,0,0,.2);
-    .form {
-      input {
-        border-bottom-left-radius: 0;
-
-      }
-      button {
-        border-bottom-right-radius: 0;
-      }
-    }
+    border-radius: 14px;
+    background-color: var(--color-content-background);
+    border-color: var(--ui-primary-border-soft);
+    box-shadow: var(--ui-shadow-md);
   }
   .form {
     display: flex;
-    height: @height-toolbar * 0.52;
+    align-items: center;
+    height: 34px;
+    padding: 0 6px 0 14px;
+    box-sizing: border-box;
     position: relative;
     input {
       flex: auto;
-      // border: 1px solid;
-      border-top-left-radius: 3px;
-      border-bottom-left-radius: 3px;
       background-color: transparent;
-      // border-bottom: 2px solid var(--color-primary);
-      // border-color: var(--color-primary);
       border: none;
       min-width: 0;
-
       outline: none;
-      // height: @height-toolbar * .7;
-      padding: 0 5px;
+      padding: 0 4px 0 0;
       overflow: hidden;
-      font-size: 13.5px;
-      line-height: @height-toolbar * 0.52 + 5px;
+      font-size: 13px;
+      line-height: 34px;
+      color: var(--color-font);
       &::placeholder {
-        color: var(--color-button-font);
-        font-size: .98em;
+        color: var(--color-font-label);
+        font-size: 12.5px;
       }
     }
     button {
       flex: none;
       border: none;
-      // background-color: @color-search-form-background;
       background-color: transparent;
       outline: none;
       cursor: pointer;
-      height: 100%;
-      padding: 6px 7px;
-      color: var(--color-button-font);
-      transition: background-color .2s ease;
-
-      &:last-child {
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-      }
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      padding: 6px;
+      box-sizing: border-box;
+      color: var(--color-font-label);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color @transition-fast, color @transition-fast;
 
       &:hover {
-        background-color: var(--color-button-background-hover);
+        color: var(--color-primary);
+        background-color: var(--ui-surface-hover);
       }
       &:active {
-        background-color: var(--color-button-background-active);
+        background-color: var(--ui-surface-active);
       }
     }
   }
   .list {
-    // background-color: @color-search-form-background;
     font-size: 13px;
-    transition: .3s ease;
+    transition: height 0.22s ease;
     height: 0;
-    transition-property: height;
     overflow: hidden;
+    border-top: 1px solid transparent;
+    .active & {
+      border-top-color: var(--ui-border-subtle);
+    }
     li {
       cursor: pointer;
-      padding: 8px 5px;
-      transition: background-color .2s ease;
-      line-height: 1.3;
+      padding: 8px 14px;
+      transition: background-color @transition-fast;
+      line-height: 1.35;
       span {
         .mixin-ellipsis-2();
       }
 
       &.select {
-        background-color: var(--color-primary-dark-100-alpha-700);
-      }
-      &:last-child {
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
+        background-color: var(--ui-surface-active);
+        color: var(--color-primary);
       }
     }
   }
@@ -310,16 +303,13 @@ export default {
 
 .big {
   width: 100%;
-  // input {
-  //   line-height: 30px;
-  // }
   .form {
-    height: 30px;
+    height: 36px;
     button {
-      padding: 6px 10px;
+      width: 30px;
+      height: 30px;
     }
   }
 }
-
 
 </style>

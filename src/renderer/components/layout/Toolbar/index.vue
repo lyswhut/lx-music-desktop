@@ -23,7 +23,9 @@ import SearchInput from './SearchInput.vue'
   height: @height-toolbar;
   align-items: center;
   justify-content: space-between;
-  padding-left: 15px;
+  padding: 0 18px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--ui-border-subtle);
   -webkit-app-region: drag;
   z-index: 2;
 
@@ -41,19 +43,22 @@ import SearchInput from './SearchInput.vue'
   }
   &.controlBtnRight {
     justify-content: space-between;
+    padding-right: 0;
   }
 }
 
 .logo {
   box-sizing: border-box;
-  padding: 0 @height-toolbar * .4;
+  padding: 0 6px;
   height: @height-toolbar;
   color: var(--color-primary);
+  opacity: 0.85;
   flex: none;
   text-align: center;
   line-height: @height-toolbar;
-  font-weight: bold;
-  // -webkit-app-region: no-drag;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
 }
 
 </style>

@@ -24,6 +24,7 @@ const defaultSetting: LX.AppSetting = {
   'common.transparentWindow': !isMac,
   'common.tryAutoUpdate': true,
   'common.showChangeLog': true,
+  'common.sidebarCollapsed': false,
 
   'player.startupAutoPlay': false,
   'player.togglePlayMethod': 'listLoop',
@@ -170,6 +171,12 @@ const defaultSetting: LX.AppSetting = {
   'recommend.radius': 35,
   'recommend.autoRefill': true,
   'recommend.radio': false,
+  'recommend.providers.wy': true,
+  'recommend.providers.tx': true,
+  'recommend.ytm.enable': true,
+  'recommend.ytm.proxy.enable': false,
+  'recommend.ytm.proxy.host': '',
+  'recommend.ytm.proxy.port': '',
 
 }
 

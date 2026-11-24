@@ -84,57 +84,81 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .controlBtn {
-  padding-left: 20px;
-  padding-right: 10px;
+  padding-left: 8px;
+  padding-right: 4px;
   flex: none;
   display: flex;
   flex-flow: row nowrap;
-  gap: 10px;
+  align-items: center;
+  gap: 3px;
 
   button {
-    color: var(--color-button-font);
+    color: var(--color-font-label);
   }
 }
 
 .titleBtn {
   flex: none;
-  height: 100%;
-  width: 24px;
-  transition: @transition-fast;
-  transition-property: color, opacity;
-  // color: var(--color-button-font);
+  height: 30px;
+  width: 30px;
+  border-radius: var(--ui-radius-sm);
+  transition: background-color @transition-fast, color @transition-fast, opacity @transition-fast;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   background-color: transparent;
   border: none;
-  width: 24px;
-  padding: 0;
+  padding: 6px;
+  box-sizing: border-box;
 
-  opacity: .6;
+  opacity: .78;
   cursor: pointer;
 
-  svg {
-    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.2));
-  }
   &:hover {
     opacity: 1;
+    color: var(--color-font);
+    background-color: var(--ui-surface-hover);
   }
   &:active {
     opacity: 1;
+    background-color: var(--ui-surface-active);
   }
   &[disabled] {
     opacity: .3;
     cursor: default;
+    &:hover {
+      background-color: transparent;
+    }
   }
 }
 
-// 电台开启状态样式：复用主题主色标示“正在跟随切歌”（不换图标，最小改动）
-.radioOn {
-  color: var(--color-primary);
-  opacity: 1;
+@media (max-width: 960px) {
+  .controlBtn {
+    padding-left: 2px;
+    padding-right: 1px;
+    gap: 1px;
+    > div > button {
+      width: 22px;
+      height: 24px;
+    }
+  }
+  .titleBtn {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+  }
 }
 
+// 电台开启状态样式：主题主色胶囊标示“正在跟随切歌”
+.radioOn {
+  color: var(--color-primary) !important;
+  background-color: var(--ui-surface-active);
+  opacity: 1;
+  &:hover {
+    background-color: var(--ui-surface-active);
+    background-color: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  }
+}
 
 </style>

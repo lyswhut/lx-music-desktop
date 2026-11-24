@@ -21,16 +21,20 @@ import { computed, ref, watch } from '@common/utils/vueTools'
 import { appSetting } from '@renderer/store/setting'
 import { isPlay, playInfo, playMusicInfo, tempPlayList } from '@renderer/store/player/state'
 import { addTempPlayList, removeTempPlayList } from '@renderer/store/player/action'
-import { playMusicInfoNow } from '@renderer/core/player'
+import { playMusicInfoNow, playNext } from '@renderer/core/player'
 import { getRecommendMetrics, saveRecommendMetrics } from '@renderer/utils/data'
 import { exploreOnce } from './engine'
 import type { AiConfig, ExploreAnchor, ExploreOptions, ExploreResult } from './engine'
 import { explorePlatformOnce } from './platformEngine'
-import type { PlatformExploreOptions, PlatformExploreResult } from './platformEngine'
+import type { PlatformExploreOptions, PlatformExploreResult, PlatformProviderStatus } from './platformEngine'
 import type { PlatformRecallAnchor, PlatformRecallState } from './platformRecall'
-import { parseIntervalSec } from './seedMatch'
+import { isStrictSameRecording, parseIntervalSec } from './seedMatch'
+import type { SimilarProviderId } from './similarFusion'
+import type { YtmAdapter } from './ytmAdapter'
+import { DOMESTIC_BRIDGE_PROVIDERS, verifyYtmPlaybackSupport } from './ytmBridge'
+import { resolveEffectiveYtmProxy, type GlobalProxyEnvSlice, type YtmProxyAddress } from './ytmProxy'
 import { startFeatureCollection, stopFeatureCollection } from './feature'
-import { musicInfosOf, sameIdentity, songRefs } from './songIdentity'
+import { musicInfosOf, songRefs } from './songIdentity'
 import type { SongIdentity } from './songIdentity'
 import { filterForSubmission } from './submission'
 import type { RankPathInput, TrackAnalysis } from './prompts'
@@ -53,11 +57,13 @@ import {
   createSession,
   decideOnSongChange,
   hydrateMetrics,
+  isStrictPathMatch,
   readPlayedMs,
   reanchorSession,
   recordPlanFailure,
   recordPlanSuccess,
   reduceMetrics,
+  samePathEntry,
   shouldEndRun,
   toView,
   updateInstruction as updateInstructionCore,
@@ -75,11 +81,25 @@ const REFILL_MAX_RETRY = 3
 // 模块级单例状态：播放栏与探索页共享同一会话实例。
 const state = ref<SessionState | null>(null)
 const lastResult = ref<ExploreResult | PlatformExploreResult | null>(null)
+type LastPlatformAttempt =
+  | { kind: 'success', result: PlatformExploreResult }
+  | { kind: 'failed', providers: PlatformProviderStatus[], error: string }
+  | null
+/** 平台引擎最近一次完整尝试（单源真值：派生 state/providers/sourceError，杜绝跨轮错误与绿徽章混拼）。 */
+const lastPlatformAttempt = ref<LastPlatformAttempt>(null)
 const lastError = ref<string | null>(null)
 /** 最近一次失败的类型（初始计划 / 续补），供页面区分文案。 */
 const lastErrorKind = ref<'initial' | 'refill' | null>(null)
 /** 续补状态：idle / refilling / retrying。 */
 const refillState = ref<'idle' | 'refilling' | 'retrying'>('idle')
+
+/** 平台运行时依赖（由应用启动入口 useApp/index.ts 注入，避免在无 window 的纯单测拉起 store/request）。 */
+export interface RecommendPlatformRuntime {
+  createYtmAdapter: (proxyOverride?: YtmProxyAddress) => YtmAdapter
+  assertPlaybackSupport: (source: LX.Source) => boolean
+  getGlobalProxy: () => GlobalProxyEnvSlice | null
+}
+let platformRuntime: RecommendPlatformRuntime | null = null
 
 let analysisCache: TrackAnalysis | null = null
 /** 缓存分析产出时所用的一句话约束快照（st.instruction 原样值，D3 作废判定用；与 analysisCache 同生命周期）。 */
@@ -89,13 +109,21 @@ let refillTimer: ReturnType<typeof setTimeout> | null = null
 let retryTimer: ReturnType<typeof setTimeout> | null = null
 // 开台/重锚首计划的防抖计时器（与续补防抖分开：两次切歌各自取消对方的待执行计划）
 let reanchorTimer: ReturnType<typeof setTimeout> | null = null
-// 单飞标记放在对象属性上（eslint require-atomic-updates 配置 allowProperties: true）
+// 单飞锁绑定具体计划代号：配置变更失效旧计划时立即释放锁，旧计划 finally 仅清理自身代号
 type RefillTrigger = 'automatic' | 'explicit'
-const refillFlight = { inFlight: false, pending: null as RefillTrigger | null }
+const refillFlight = { activeGeneration: null as number | null, pending: null as RefillTrigger | null }
 let scheduledRefillTrigger: RefillTrigger | null = null
 let refillRetry = 0
-// 会话代际号：end/start 时自增，在途计划完成后据此识别“已不属于当前会话”并丢弃
-let epoch = 0
+// 会话队列归属号：仅在开新台/收台时自增，确保配置变更取消在途计划时不会丢失已入队推荐的归属与计数
+let sessionQueueId = 0
+// 计划代际号：开台/重锚/收台/生效配置变更时自增，使在途计划立即识别为已失效并丢弃
+let planGeneration = 0
+
+const isPlatformRecallFailedError = (err: unknown): err is Error & { code: 'PLATFORM_RECALL_ALL_FAILED', providers: PlatformProviderStatus[] } => {
+  return err instanceof Error &&
+    (err as { code?: unknown }).code === 'PLATFORM_RECALL_ALL_FAILED' &&
+    Array.isArray((err as { providers?: unknown }).providers)
+}
 
 // ===== TT-4 本地指标（D9/D14）：编排层只在事件点构造事件，计数口径全部在 session-core =====
 /** 播放时长累计器：生命周期 = 单曲目，切歌结算上一首后换新零态（即“清零”动作）。 */
@@ -103,9 +131,12 @@ let playTime: PlayTimeState = createPlayTimeState()
 /** 上一首的 id 与推荐归属（trackEnded 的推荐归属取上一首切换时的 on-path 结论，与 trackStarted 同源）；
  * 艺人/曲名供推荐曲 <30s 跳过的画像 skips 回注（TP-3/D11，判定材料本层现成，profile 无感知）。 */
 let lastSongId: string | null = null
+let lastSongSource: string | null = null
 let lastSongRecommended = false
 let lastSongArtist = ''
 let lastSongTitle = ''
+let lastSongAlbum = ''
+let lastSongIntervalSec: number | null = null
 let lastSongStarted = false
 let lastSongInterrupted = false
 /** 指标状态（水合后常驻内存、每次事件后直写落盘；null = 尚未水合）。 */
@@ -162,6 +193,27 @@ const handlePlaybackInterrupted = (): void => {
  * 调用点放在 decideOnSongChange 判定之后、执行分支之前——on-path 归属取自转移前会话，不受影响。
  */
 const emitSongChangeMetrics = (play: ReturnType<typeof currentMusic>, nextOnPath: boolean, reason: LX.Player.MusicChangeReason): void => {
+  // 同曲切换音源/版本（含换源弹窗跨源试听发出的 user 事件）：保留当前曲目的播放时长与推荐归属，不触发跳过负反馈或重复记听
+  const isSameRecordingPreview = reason === 'user' &&
+    lastSongId != null &&
+    play != null &&
+    String(play.id) !== lastSongId &&
+    Boolean(lastSongSource && play.source && play.source !== lastSongSource) &&
+    Boolean(lastSongArtist && lastSongTitle && play.singer && play.name) &&
+    isStrictSameRecording(
+      { artist: lastSongArtist, title: lastSongTitle, album: lastSongAlbum, intervalSec: lastSongIntervalSec },
+      { artist: play.singer, title: play.name, album: play.album, intervalSec: play.intervalSec },
+      { simplifyChinese: true },
+    )
+  if (reason === 'version' || isSameRecordingPreview) {
+    lastSongId = play?.id != null ? String(play.id) : lastSongId
+    lastSongSource = play?.source ?? lastSongSource
+    lastSongArtist = play?.singer ?? lastSongArtist
+    lastSongTitle = play?.name ?? lastSongTitle
+    lastSongAlbum = play?.album ?? lastSongAlbum
+    lastSongIntervalSec = play?.intervalSec ?? lastSongIntervalSec
+    return
+  }
   const now = Date.now()
   if (lastSongId != null) {
     playTime = accumulatePlayTime(playTime, 'trackEnd', now)
@@ -179,9 +231,12 @@ const emitSongChangeMetrics = (play: ReturnType<typeof currentMusic>, nextOnPath
   // 清零换曲：新一首从 0 起计
   playTime = createPlayTimeState()
   lastSongId = play?.id != null ? String(play.id) : null
+  lastSongSource = play?.source ?? null
   lastSongRecommended = nextOnPath
   lastSongArtist = play?.singer ?? ''
   lastSongTitle = play?.name ?? ''
+  lastSongAlbum = play?.album ?? ''
+  lastSongIntervalSec = play?.intervalSec ?? null
   lastSongStarted = false
   lastSongInterrupted = false
   if (lastSongId != null) emitMetrics({ type: 'trackStarted', id: lastSongId, recommended: nextOnPath })
@@ -239,7 +294,7 @@ const outstandingRecommendedIds = (st: SessionState): string[] => {
   const out: string[] = []
   for (const item of tempPlayList) {
     const id = item?.musicInfo?.id
-    if (id && item.recommendationSessionId === epoch && recommended.has(id)) out.push(id)
+    if (id && item.recommendationSessionId === sessionQueueId && recommended.has(id)) out.push(id)
   }
   return out
 }
@@ -253,10 +308,20 @@ const mergeRefillTrigger = (pending: RefillTrigger | null, next: RefillTrigger):
   return pending === 'explicit' || next === 'explicit' ? 'explicit' : 'automatic'
 }
 
-/** 只清理由本代际实际插入的队列实例，保留手动加入的同 ID/同曲项。 */
+/** 只清理由本会话实际插入的队列实例，保留手动加入的同 ID/同曲项。 */
 const clearRecommendedQueue = (): void => {
   for (let i = tempPlayList.length - 1; i >= 0; i--) {
-    if (tempPlayList[i].recommendationSessionId === epoch) removeTempPlayList(i)
+    if (tempPlayList[i].recommendationSessionId === sessionQueueId) removeTempPlayList(i)
+  }
+}
+
+/** 从稍后播放队列移除本会话匹配的推荐实例（保留用户手动加入的条目）。 */
+const removeSessionQueuedTrack = (track: SongIdentity): void => {
+  for (let i = tempPlayList.length - 1; i >= 0; i--) {
+    const queued = tempPlayList[i]
+    if (queued.recommendationSessionId === sessionQueueId && samePathEntry(queued, track)) {
+      removeTempPlayList(i)
+    }
   }
 }
 
@@ -272,6 +337,7 @@ export const sessionView = computed<SessionView>(() => {
       positiveArtists: [],
       negativeArtists: [],
       recommendedIds: [],
+      likedTracks: [],
       dislikedTracks: [],
       path: [],
       remaining: 0,
@@ -288,20 +354,21 @@ export const lastResultEngine = computed<'platform' | 'ai' | 'local' | null>(() 
 
 /** 平台推荐模式：最近一次计划的整体状态（ok/全部失败外的可区分空态；非平台模式为 null）。 */
 export const lastPlatformState = computed<PlatformRecallState | null>(() => {
-  const result = lastResult.value
-  return result?.engine === 'platform' ? result.meta.state : null
+  const attempt = lastPlatformAttempt.value
+  return attempt?.kind === 'success' ? attempt.result.meta.state : null
 })
 
-/** 平台推荐模式：各平台调用状态（部分来源不可用时供非阻断提示；非平台模式为空数组）。 */
-export const lastPlatformProviders = computed<Array<{ provider: string, status: string, fromCache: boolean }>>(() => {
-  const result = lastResult.value
-  return result?.engine === 'platform' ? result.meta.providers : []
+/** 平台推荐模式：最近一轮各平台调用状态（失败时亦刷新为本轮状态，杜绝残留上轮绿徽章）。 */
+export const lastPlatformProviders = computed<PlatformProviderStatus[]>(() => {
+  const attempt = lastPlatformAttempt.value
+  if (!attempt) return []
+  return attempt.kind === 'success' ? attempt.result.meta.providers : attempt.providers
 })
 
-/** 平台推荐模式：部分来源失败的非阻断提示文案（成功批次附带；无失败为空串）。 */
+/** 平台推荐模式：部分来源失败的非阻断提示文案（仅成功批次附带；全失败或无失败为空串）。 */
 export const lastPlatformSourceError = computed<string>(() => {
-  const result = lastResult.value
-  return result?.engine === 'platform' ? (result.meta.error ?? '') : ''
+  const attempt = lastPlatformAttempt.value
+  return attempt?.kind === 'success' ? (attempt.result.meta.error ?? '') : ''
 })
 
 /** 最近一次 AI 排序的失败文案（无错误为空串；供页面在本地计划时展示失败原因）。 */
@@ -402,10 +469,18 @@ const buildExploreOptions = (mode: 'initial' | 'refill'): ExploreOptions | null 
   }
 }
 
+const resolveEnabledProviders = (): SimilarProviderId[] => {
+  const providers: SimilarProviderId[] = []
+  if (appSetting['recommend.providers.wy'] !== false) providers.push('wy')
+  if (appSetting['recommend.providers.tx'] !== false) providers.push('tx')
+  if (appSetting['recommend.ytm.enable'] !== false && platformRuntime) providers.push('ytm')
+  return providers
+}
+
 /**
  * 平台相似推荐选项（默认引擎路径，零 LLM）：
  * 锚点携带来源与原生平台标识（免搜索定位）；续补排除会话已消费曲目；
- * 「不再推荐」列表与本地画像有界加成随会话状态实时读取。
+ * 「不再推荐」列表、启用来源、YTM 代理与当前可播国内源均随设置/能力实时读取。
  */
 const buildPlatformOptions = (mode: 'initial' | 'refill'): PlatformExploreOptions | null => {
   const st = state.value
@@ -421,10 +496,24 @@ const buildPlatformOptions = (mode: 'initial' | 'refill'): PlatformExploreOption
     musicInfo: st.anchor.musicInfo,
     alternativeMusicInfos: st.anchor.alternativeMusicInfos,
   }
+  const enabledProviders = resolveEnabledProviders()
+  const runtime = platformRuntime
+  const effectiveProxy = resolveEffectiveYtmProxy(appSetting, runtime?.getGlobalProxy?.())
+  const playableTargets = runtime
+    ? DOMESTIC_BRIDGE_PROVIDERS.filter(source => runtime.assertPlaybackSupport(source))
+    : undefined
+  const ytmAdapter = runtime && enabledProviders.includes('ytm')
+    ? runtime.createYtmAdapter(effectiveProxy.proxyOverride)
+    : undefined
   return {
     anchor,
     // 队尾统一（与旧引擎会话路径一致）：不插队到用户手动排队的歌之前
     appendMode: 'bottom',
+    enabledProviders,
+    ...(ytmAdapter ? { ytmAdapter } : {}),
+    ytmProxyContext: effectiveProxy.contextKey,
+    ...(playableTargets !== undefined ? { playableTargets } : {}),
+    ...(runtime ? { canPlaySource: runtime.assertPlaybackSupport } : {}),
     dislikedTracks: st.dislikedTracks,
     // 本地画像有界次级调整（fusion 内 clamp ±15%，来源排名仍主导）
     profileBoost: buildPlatformProfileBoost(st),
@@ -459,12 +548,18 @@ const applyResult = (result: ExploreResult | PlatformExploreResult, batch: Pick<
       journeyRole: c.journeyRole,
       state: 'planned',
       batch: pathBatch,
+      recommendSources: result.engine === 'platform' && 'sources' in c
+        ? c.sources.map(s => ({ provider: s.provider, rank: s.rank }))
+        : undefined,
+      picUrl: c.musicInfo?.meta?.picUrl ?? null,
+      interval: c.musicInfo?.interval ?? null,
       musicInfo: c.musicInfo,
       alternativeMusicInfos: c.alternativeMusicInfos,
     })
   }
   state.value = next
   lastResult.value = result
+  lastPlatformAttempt.value = result.engine === 'platform' ? { kind: 'success', result } : null
   lastError.value = null
   lastErrorKind.value = null
   // 起点分析只为当前会话跑一次（LLM 分析贵且非确定），续补通过 reuseAnalysis 沿用，
@@ -493,10 +588,10 @@ const applyResult = (result: ExploreResult | PlatformExploreResult, batch: Pick<
 const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explicit'): Promise<void> => {
   if (!state.value) return
   if (trigger === 'automatic' && !canAutoRefill()) {
-    if (!refillFlight.inFlight) refillState.value = 'idle'
+    if (refillFlight.activeGeneration == null) refillState.value = 'idle'
     return
   }
-  if (refillFlight.inFlight) {
+  if (refillFlight.activeGeneration != null) {
     refillFlight.pending = mergeRefillTrigger(refillFlight.pending, trigger)
     return
   }
@@ -506,17 +601,17 @@ const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explici
   if (reanchorTimer) clearTimeout(reanchorTimer)
   retryTimer = refillTimer = reanchorTimer = null
   scheduledRefillTrigger = null
-  refillFlight.inFlight = true
+  // 捕获发起时的会话队列归属号与计划代际号：配置变更只推进 planGeneration，不丢队列归属
+  const mySessionId = sessionQueueId
+  const myPlanGen = planGeneration
+  refillFlight.activeGeneration = myPlanGen
   refillFlight.pending = null
   refillState.value = 'refilling'
-  // 捕获发起时的代际：await 期间会话可能被结束/重启，结果只属于发起时的会话
-  const e = epoch
-  const isCancelled = (): boolean => e !== epoch || (trigger === 'automatic' && !canAutoRefill())
+  const isCancelled = (): boolean => mySessionId !== sessionQueueId || myPlanGen !== planGeneration || (trigger === 'automatic' && !canAutoRefill())
+  const engineMode = recommendEngineMode()
   try {
     // 批次快照取计划发起时的半径与原样约束（await 期间用户改距离/约束不影响本批次标注）
     const stateAtPlan = state.value
-    // 引擎分流：平台相似为默认路径（零 LLM）；旧 AI/本地引擎仅显式设置进入，不因平台失败降级触发
-    const engineMode = recommendEngineMode()
     // 音频特征只服务旧 AI/本地引擎；平台模式不启动每秒 Analyser 采集。
     if (engineMode === 'platform') stopFeatureCollection()
     else startFeatureCollection()
@@ -531,12 +626,21 @@ const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explici
       result = await exploreOnce({ ...options, enqueue: false, isCancelled })
     }
     if (isCancelled()) return
+    const hadCandidatesBeforeFilter = result.candidates.length > 0
     result = await filterForSubmission(result, {
       isCancelled,
       dislikedTracks: () => state.value?.dislikedTracks ?? [],
     })
     if (isCancelled()) return
-    if (result.engine === 'platform' && result.meta.state === 'ok' && !result.candidates.length) result.meta.state = 'empty-after-filter'
+    let droppedForPlayback = 0
+    if (result.engine === 'platform' && platformRuntime) {
+      const checked = verifyYtmPlaybackSupport(result.candidates, platformRuntime.assertPlaybackSupport)
+      droppedForPlayback = checked.droppedForPlayback
+      result = { ...result, candidates: checked.kept }
+    }
+    if (result.engine === 'platform' && result.meta.state === 'ok' && !result.candidates.length && hadCandidatesBeforeFilter) {
+      result.meta.state = droppedForPlayback > 0 ? 'no-playable-source' : 'empty-after-filter'
+    }
     applyResult(result, { radius: stateAtPlan.radius, instruction: stateAtPlan.instruction })
     refillRetry = 0
     refillState.value = 'idle'
@@ -545,7 +649,7 @@ const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explici
       listId: LIST_IDS.PLAY_LATER,
       musicInfo: c.musicInfo,
       isTop: false,
-      recommendationSessionId: e,
+      recommendationSessionId: mySessionId,
       alternativeMusicInfos: c.alternativeMusicInfos,
     }] : [])
     if (enqueueItems.length) addTempPlayList(enqueueItems)
@@ -555,12 +659,19 @@ const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explici
     console.warn('[session] 计划失败', message)
     lastError.value = message
     lastErrorKind.value = mode
+    if (engineMode === 'platform') {
+      lastPlatformAttempt.value = {
+        kind: 'failed',
+        providers: isPlatformRecallFailedError(err) ? err.providers : [],
+        error: message,
+      }
+    }
     if (mode === 'refill' && refillRetry < REFILL_MAX_RETRY) {
       // 重试中不算“最终失败”（D13）：重试耗尽或 initial 失败才计入连续失败
       refillRetry++
       refillState.value = 'retrying'
       const delay = REFILL_RETRY_BASE_MS * refillRetry
-      // eslint-disable-next-line require-atomic-updates -- 本代际单飞且 catch 上方已校验 epoch，重试句柄归本计划所有
+      // eslint-disable-next-line require-atomic-updates -- 本代际单飞且 catch 上方已校验代际，重试句柄归本计划所有
       retryTimer = setTimeout(() => {
         retryTimer = null
         void plan('refill', trigger)
@@ -579,9 +690,9 @@ const plan = async(mode: 'initial' | 'refill', trigger: RefillTrigger = 'explici
       }
     }
   } finally {
-    // 只有本代际的计划才有权释放单飞标记（旧代际的 finally 不得影响新会话）
-    if (e === epoch) {
-      refillFlight.inFlight = false
+    // 只有本代际的计划才有权释放单飞标记（旧代际的 finally 不得影响新计划或新会话）
+    if (refillFlight.activeGeneration === myPlanGen) {
+      refillFlight.activeGeneration = null
       if (!retryTimer) refillState.value = 'idle'
       if (refillFlight.pending) {
         const pending = refillFlight.pending
@@ -618,25 +729,80 @@ const scheduleRadioPlan = (): void => {
   }, START_RADIO_DEBOUNCE_MS)
 }
 
-/** 清空计划上下文（错误/结果/分析缓存及其约束快照）并推进代际：开台与重锚共用的“开新台”动作。 */
+/** 清空计划上下文（错误/结果/分析缓存及其约束快照）并推进计划代际：开台与重锚共用的“开新台”动作。 */
 const resetPlanContext = (): void => {
   lastError.value = null
   lastResult.value = null
+  lastPlatformAttempt.value = null
   lastErrorKind.value = null
   analysisCache = null
   analysisInstruction = null
   refillRetry = 0
-  epoch++
+  planGeneration++
+}
+
+/** 生效配置变更（引擎/来源/YTM 代理/生效全局代理）时实时失效在途计划并释放单飞锁，不丢已入队推荐的队列归属。 */
+const invalidateInFlightPlans = (options: { engineChanged?: boolean, providerOrProxyChanged?: boolean } = {}): void => {
+  const engineChanged = options.engineChanged === true
+  const providerOrProxyChanged = options.providerOrProxyChanged === true
+  const hadActiveOrPendingWork = refillFlight.activeGeneration != null ||
+    refillTimer != null ||
+    retryTimer != null ||
+    reanchorTimer != null ||
+    lastError.value != null
+  if (refillTimer) {
+    clearTimeout(refillTimer)
+    refillTimer = null
+  }
+  if (retryTimer) {
+    clearTimeout(retryTimer)
+    retryTimer = null
+  }
+  if (reanchorTimer) {
+    clearTimeout(reanchorTimer)
+    reanchorTimer = null
+  }
+  planGeneration++
+  refillFlight.activeGeneration = null
+  refillFlight.pending = null
+  scheduledRefillTrigger = null
+  refillRetry = 0
+  refillState.value = 'idle'
+  // 仅切换引擎（如 local → ai）时清空旧锚点分析缓存，防止 AI 续补误复用本地规则分析，同时避免无关传输变更白白作废有效 AI 分析
+  if (engineChanged) {
+    analysisCache = null
+    analysisInstruction = null
+  }
+  if (!state.value) return
+  if (engineChanged || providerOrProxyChanged || hadActiveOrPendingWork) {
+    lastPlatformAttempt.value = null
+    lastError.value = null
+    lastErrorKind.value = null
+  }
+  if (state.value.path.length === 0) {
+    scheduleRadioPlan()
+    return
+  }
+  // 空闲 AI/本地会话关闭自动续补时，传输代理变更不主动触发新一轮收费 AI 请求；仅切引擎、打断在途计划、平台模式配置变更或满足自动续补时重排
+  if (
+    engineChanged ||
+    hadActiveOrPendingWork ||
+    (recommendEngineMode() === 'platform' && providerOrProxyChanged) ||
+    canAutoRefill()
+  ) {
+    scheduleRefill('explicit')
+  }
 }
 
 /**
  * 开新台公共序列（startRadioSession / startSession 共用）：
- * 清计划上下文 → 按设置默认半径建全新 run → 建立切歌订阅 → 记 run 开始指标；
+ * 推进队列归属号 → 清计划上下文 → 按设置默认半径建全新 run → 建立切歌订阅 → 记 run 开始指标；
  * 旧 AI/本地引擎在实际计划前按需启动特征采集，平台引擎不启动无消费者的 Analyser 采样；
  * 指标批次登记序号随新 run 归零（重锚属同一 run、复用 reanchorSession 路径，不经由本函数）。
  * 两入口各自的差异留在外层：startRadioSession 防抖发起首计划（切歌吸抖），startSession 幂等后直接 await 首计划。
  */
 const openSession = (anchor: SessionAnchor): void => {
+  sessionQueueId++
   resetPlanContext()
   metricsBatchSeq = 0
   state.value = createSession(anchor, { radius: appSetting['recommend.radius'] })
@@ -699,8 +865,9 @@ const handleMusicToggled = (reason: LX.Player.MusicChangeReason = 'user'): void 
       return
     case 'on-path': {
       if (!st || !play) return
-      // 与 appendToPath 的合并语义一致：同 id 或同曲（sameSong）都视为当前路径条目
-      const existing = st.path.find(p => sameIdentity(p, toAnchor(play), true))
+      // 与 appendToPath 的合并语义一致：覆盖全部保留来源 ID、同曲及繁简双向严格同录音跨源换源
+      const playAnchor = toAnchor(play)
+      const existing = st.path.find(p => samePathEntry(p, playAnchor))
       state.value = appendToPath(st, {
         id: play.id,
         artist: play.singer,
@@ -709,13 +876,21 @@ const handleMusicToggled = (reason: LX.Player.MusicChangeReason = 'user'): void 
         reason: existing?.reason ?? '',
         journeyRole: existing?.journeyRole ?? 'open',
         state: 'played',
-        // 切歌回写时带回既有批次快照（appendToPath 也会兜底继承，双保险不丢分组）
+        // 切歌回写时带回既有批次快照与推荐来源徽章（appendToPath 也会兜底继承，双保险不丢分组）
         batch: existing?.batch,
-        // 已播条目可能已离开稍后播放队列，保留 musicInfo 供路径点击重新入队播放
+        recommendSources: existing?.recommendSources,
+        picUrl: play.pic ?? existing?.picUrl ?? null,
+        interval: play.musicInfo?.interval ?? existing?.interval ?? null,
+        // 已播条目可能已离开稍后播放队列，保留 musicInfo 供路径点击重新入队播放，同时合并繁简/跨源既有录音证据
         musicInfo: play.musicInfo.source === 'local' ? existing?.musicInfo : play.musicInfo,
-        alternativeMusicInfos: play.alternativeMusicInfos,
+        alternativeMusicInfos: [
+          ...(existing
+            ? musicInfosOf(existing).filter((info): info is LX.Music.MusicInfoOnline => info.source !== 'local')
+            : []),
+          ...(play.alternativeMusicInfos ?? []),
+        ],
       })
-      scheduleRefill('automatic')
+      if (reason !== 'version') scheduleRefill('automatic')
       break
     }
     default:
@@ -744,9 +919,12 @@ const subscribeMusicToggled = (): void => {
     // 退订期间不可观测，重新订阅不能结算旧曲；同 run 重锚仍保留订阅。
     playTime = createPlayTimeState()
     lastSongId = null
+    lastSongSource = null
     lastSongRecommended = false
     lastSongArtist = ''
     lastSongTitle = ''
+    lastSongAlbum = ''
+    lastSongIntervalSec = null
     lastSongStarted = false
     lastSongInterrupted = false
   }
@@ -788,16 +966,52 @@ export const applyFeedback = (kind: FeedbackKind): void => {
   if (!st) return
   const play = currentMusic()
   const track = play ? { ...toAnchor(play), artist: play.singer, title: play.name } : undefined
-  const existing = track ? st.path.find(item => sameIdentity(item, track)) : undefined
-  state.value = applyFeedbackCore(
-    st,
-    kind,
-    play?.singer ?? '',
-    track && existing ? { ...track, alternativeMusicInfos: [...musicInfosOf(existing), ...(track.alternativeMusicInfos ?? [])] } : track,
-  )
+  const existing = track ? st.path.find(item => samePathEntry(item, track)) : undefined
+  const matchesAnchor = track ? samePathEntry(st.anchor, track) : false
+  const extraInfos = [
+    ...(existing ? musicInfosOf(existing) : []),
+    ...(matchesAnchor ? musicInfosOf(st.anchor) : []),
+  ]
+  const mergedTrack = track && extraInfos.length
+    ? { ...track, alternativeMusicInfos: [...extraInfos, ...(track.alternativeMusicInfos ?? [])] }
+    : track
+  state.value = applyFeedbackCore(st, kind, play?.singer ?? '', mergedTrack)
+  // dislike 同步移除该曲在本会话中的待播队列项（保留用户手动加入项）
+  if (kind === 'dislike' && mergedTrack) removeSessionQueuedTrack(mergedTrack)
   // TT-4 far/good 计数（D9）：只统计有会话时的有效反馈（上方守卫已保证）
   emitMetrics({ type: 'feedback', kind })
   scheduleRefill()
+}
+
+/** 路径单曲「不再推荐」：写入会话级不再推荐、清除相反喜欢态、移除本会话待播队列项；若正播则平滑切至下一首。 */
+export const dislikePathItem = (id: string | null): void => {
+  const st = state.value
+  if (!st || id == null) return
+  const pathItem = st.path.find(p => songRefs(p).some(ref => ref.id === id))
+  if (!pathItem) return
+  const track: SongIdentity = {
+    id: pathItem.id ?? undefined,
+    artist: pathItem.artist,
+    title: pathItem.title,
+    musicInfo: pathItem.musicInfo,
+    alternativeMusicInfos: pathItem.alternativeMusicInfos,
+  }
+  state.value = applyFeedbackCore(st, 'dislike', pathItem.artist, track)
+  emitMetrics({ type: 'feedback', kind: 'dislike' })
+  removeSessionQueuedTrack(track)
+  const current = currentMusic()
+  if (current && isStrictPathMatch(pathItem, toAnchor(current))) {
+    void playNext?.()
+  }
+  scheduleRefill('automatic')
+}
+
+/** 探索页手动「换一批 / 重试」：显式立即发起计划，绕过防抖并重置失败退避。 */
+export const refillNow = (): void => {
+  const st = state.value
+  if (!st) return
+  refillRetry = 0
+  void plan(st.path.length === 0 ? 'initial' : 'refill', 'explicit')
 }
 
 /**
@@ -859,7 +1073,7 @@ export const setInstruction = (instruction: string): void => {
 export const playPathItem = (id: string | null): void => {
   const st = state.value
   if (!st || id == null) return
-  const queued = tempPlayList.find(item => item.recommendationSessionId === epoch && songRefs(item).some(ref => ref.id === id))
+  const queued = tempPlayList.find(item => item.recommendationSessionId === sessionQueueId && songRefs(item).some(ref => ref.id === id))
   if (queued?.musicInfo) {
     const queueIndex = tempPlayList.indexOf(queued)
     removeTempPlayList(queueIndex)
@@ -903,17 +1117,29 @@ export const endSession = (options?: { keepRunAlive?: boolean }): void => {
     unsubMusicToggled = null
   }
   stopFeatureCollection()
-  // 代际自增：使在途计划完成时识别为旧会话并丢弃，不污染新会话
-  epoch++
+  // 同时推进会话归属号与计划代际号：使在途计划完成时识别为旧会话并丢弃，不污染新会话
+  sessionQueueId++
+  planGeneration++
   state.value = null
   lastResult.value = null
+  lastPlatformAttempt.value = null
   refillState.value = 'idle'
-  refillFlight.inFlight = false
+  refillFlight.activeGeneration = null
   refillFlight.pending = null
   scheduledRefillTrigger = null
   refillRetry = 0
   analysisCache = null
   analysisInstruction = null
+}
+
+/** 注册或清除平台推荐运行时依赖（生产由 useApp/index.ts 传入，测试可显式注入）。 */
+export const configurePlatformRuntime = (runtime: RecommendPlatformRuntime | null): void => {
+  platformRuntime = runtime
+}
+
+/** 供非响应式全局代理（如启动命令行 envProxy）变更时主动通知失效旧计划。 */
+export const notifyRecommendConfigChanged = (): void => {
+  invalidateInFlightPlans({ providerOrProxyChanged: true })
 }
 
 /**
@@ -922,9 +1148,11 @@ export const endSession = (options?: { keepRunAlive?: boolean }): void => {
  *   不立即开台，开台时机是订阅建立后的首个 musicToggled
  *   （含启动恢复阶段 useDataInit 经 playList 派发的那一个）；
  * - 开关变化同源响应：开 → 建立订阅，有播放中的歌时立即以当前歌开台（无则等首切歌）；
- *   关 → 收台并退订（无会话时只摘掉启动恢复建立的订阅）。
+ *   关 → 收台并退订（无会话时只摘掉启动恢复建立的订阅）；
+ * - 同时监听引擎/平台来源/YTM 独立代理/全局代理变更，实时失效在途计划并释放单飞锁。
  */
-export const initRecommendRadio = (): void => {
+export const initRecommendRadio = (runtime?: RecommendPlatformRuntime): void => {
+  if (runtime !== undefined) platformRuntime = runtime
   // TT-4 指标水合（D14/AC7）：启动时读档归一入内存；水合返回前到达的事件经缓冲在旧值上续归并
   void hydrateRecommendMetrics()
   watch(() => appSetting['recommend.radio'], (enabled) => {
@@ -943,6 +1171,35 @@ export const initRecommendRadio = (): void => {
       unsubMusicToggled = null
     }
   })
+  watch(
+    () => {
+      const globalProxy = platformRuntime?.getGlobalProxy?.()
+      const effectiveProxy = resolveEffectiveYtmProxy(appSetting, globalProxy)
+      const engine = normalizeRecommendEngine(appSetting['recommend.engine'])
+      const globalProxyEnabled = Boolean(appSetting['network.proxy.enable'])
+      return {
+        engine,
+        signature: JSON.stringify([
+          engine,
+          appSetting['recommend.providers.wy'] !== false,
+          appSetting['recommend.providers.tx'] !== false,
+          appSetting['recommend.ytm.enable'] !== false,
+          effectiveProxy.contextKey,
+          // 仅在全局代理启用时监听 host/port：未启用的全局代理草稿编辑不影响任何网络请求
+          globalProxyEnabled,
+          globalProxyEnabled ? String(appSetting['network.proxy.host'] ?? '').trim() : '',
+          globalProxyEnabled ? String(appSetting['network.proxy.port'] ?? '').trim() : '',
+          globalProxy?.envProxy?.host ?? '',
+          globalProxy?.envProxy?.port ?? '',
+        ]),
+      }
+    },
+    (next, prev) => {
+      if (prev && next.signature === prev.signature) return
+      const engineChanged = prev != null && next.engine !== prev.engine
+      invalidateInFlightPlans({ engineChanged, providerOrProxyChanged: !engineChanged })
+    },
+  )
   if (appSetting['recommend.radio']) subscribeMusicToggled()
 }
 

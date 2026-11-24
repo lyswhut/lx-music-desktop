@@ -89,6 +89,11 @@ declare global {
       'common.showChangeLog': boolean
 
       /**
+       * 是否折叠左侧导航栏为紧凑图标条
+       */
+      'common.sidebarCollapsed': boolean
+
+      /**
        * 启动时自动播放歌曲
        */
       'player.startupAutoPlay': boolean
@@ -744,6 +749,24 @@ declare global {
        * 是否开启探索电台（跟随切歌自动以当前歌重锚开台，推荐追加稍后播放队尾；持久开关，重启后为开时首次播放自动开台）
        */
       'recommend.radio': boolean
+
+      /** 平台推荐是否启用网易云音乐相似来源 */
+      'recommend.providers.wy': boolean
+
+      /** 平台推荐是否启用 QQ 音乐相似来源 */
+      'recommend.providers.tx': boolean
+
+      /** 平台推荐是否启用 YouTube Music 推荐来源 */
+      'recommend.ytm.enable': boolean
+
+      /** 是否为 YouTube Music 推荐启用独立 HTTP 代理（不影响国内音源） */
+      'recommend.ytm.proxy.enable': boolean
+
+      /** YouTube Music 独立代理主机地址 */
+      'recommend.ytm.proxy.host': string
+
+      /** YouTube Music 独立代理端口 */
+      'recommend.ytm.proxy.port': string
     }
   }
 

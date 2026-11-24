@@ -58,9 +58,15 @@ export default {
 .list {
   display: flex;
   flex-flow: row nowrap;
-  font-size: 12px;
-  gap: 25px;
-  padding: 0 15px;
+  font-size: 12.5px;
+  gap: 4px;
+  padding: 6px 14px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &.left {
     justify-content: flex-start;
@@ -74,25 +80,26 @@ export default {
 }
 .listItem {
   display: block;
-  // padding: 5px 15px;
+  flex: none;
   cursor: pointer;
-  transition: color @transition-normal;
-
+  border-radius: var(--ui-radius-pill);
+  color: var(--color-font-label);
+  transition: color @transition-fast, background-color @transition-fast;
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-font);
+    background-color: var(--ui-surface-hover);
   }
-
 
   &.active {
     color: var(--color-primary);
+    font-weight: 600;
+    background-color: var(--ui-surface-active);
     cursor: default;
 
     >.label {
       &:after {
-        // background-color: var(--color-primary);
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 0;
       }
     }
   }
@@ -101,20 +108,18 @@ export default {
 .label {
   display: block;
   position: relative;
-  padding: 8px 0;
+  padding: 5px 10px;
+  white-space: nowrap;
   &:after {
     .mixin-after();
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    left: 14px;
+    bottom: 2px;
+    width: calc(100% - 28px);
     height: 2px;
     border-radius: 20px;
-    background-color: transparent;
-    transform: translateY(-4px);
     opacity: 0;
-    background-color: var(--color-primary-alpha-300);
-    transition: @transition-fast;
-    transition-property: transform, opacity;
+    background-color: var(--color-primary);
+    transition: opacity @transition-fast;
   }
 }
 </style>

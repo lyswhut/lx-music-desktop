@@ -12,9 +12,11 @@
  * 播放器/事件/引擎的编排见 session.ts（薄层）。
  */
 
-import { groupIdentities, sameIdentity, songRefs, uniqueMusicInfos } from './songIdentity'
+import { musicInfosOf, songRefs, uniqueMusicInfos } from './songIdentity'
 import type { SongIdentity } from './songIdentity'
-import type { SongRef } from './sameSong'
+import { sameSong, type SongRef } from './sameSong'
+import { isStrictSameRecording, parseIntervalSec, sameSongSimplified, SEED_MATCH_DURATION_TOLERANCE_SEC } from './seedMatch'
+import type { SimilarProviderId } from './similarFusion'
 
 /** 探索距离下限（feedback far 的边界）。 */
 export const RADIUS_MIN = 10
@@ -72,7 +74,7 @@ export interface PathBatch {
   engine: 'platform' | 'ai' | 'local'
 }
 
-/** 路径条目（含来源原因与弧线角色）。 */
+/** 路径条目（含来源原因、来源徽章、封面与弧线角色）。 */
 export interface SessionPathItem {
   id: string | null
   artist: string
@@ -83,6 +85,12 @@ export interface SessionPathItem {
   state: PathState
   /** 批次快照（计划入队时写入；切歌回写 played 时继承，不丢失）。 */
   batch?: PathBatch
+  /** 结构化推荐来源徽章（平台推荐模式写入；切歌回写 played 时继承，不丢失）。 */
+  recommendSources?: Array<{ provider: SimilarProviderId, rank: number }>
+  /** 曲目封面 URL（可选，供探索页展示）。 */
+  picUrl?: string | null
+  /** 曲目时长展示字符串（可选，如 '04:20'）。 */
+  interval?: string | null
   /** 可播放的完整音乐信息（引擎透传；路径点击跳播用，无则不可跳播）。 */
   musicInfo?: LX.Music.MusicInfoOnline
   alternativeMusicInfos?: LX.Music.MusicInfoOnline[]
@@ -99,7 +107,11 @@ export interface SessionState {
   recommendedIds: string[]
   path: SessionPathItem[]
   /**
-   * 会话内明确「不再推荐」的曲目（dislike 反馈累积；同曲去重）。
+   * 会话内明确「喜欢这首」的曲目（good 反馈累积，与 dislikedTracks 严格互斥；收台与重锚清空）。
+   */
+  likedTracks: SongRef[]
+  /**
+   * 会话内明确「不再推荐」的曲目（dislike 反馈累积；同曲去重，与 likedTracks 严格互斥）。
    * 会话级生命周期：同 run 重锚沿用，收台/新会话清空；与收藏列表无关。
    */
   dislikedTracks: SongRef[]
@@ -138,6 +150,7 @@ export const createSession = (anchor: SessionAnchor, options: { radius?: number,
     negativeArtists: [],
     recommendedIds: [],
     path: [],
+    likedTracks: [],
     dislikedTracks: [],
     consecutivePlanFailures: 0,
   }
@@ -146,7 +159,7 @@ export const createSession = (anchor: SessionAnchor, options: { radius?: number,
 /**
  * 跟歌重锚（D2/D7）：单次切歌等价于“收旧台开新台，策略沿用”——
  * run 级字段（radius/instruction/正负艺人/连续计划失败计数）原样继承，
- * 锚点替换为新歌，recommendedIds/path 清空归零。
+ * 锚点替换为新歌，recommendedIds/path/likedTracks 清空归零。
  */
 export const reanchorSession = (state: SessionState, newAnchor: SessionAnchor): SessionState => {
   return {
@@ -154,6 +167,7 @@ export const reanchorSession = (state: SessionState, newAnchor: SessionAnchor): 
     anchor: newAnchor,
     recommendedIds: [],
     path: [],
+    likedTracks: [],
   }
 }
 
@@ -202,6 +216,11 @@ export const analysisStale = (state: SessionState | null, analysisInstruction?: 
   return String(state?.instruction ?? '') !== String(analysisInstruction ?? '')
 }
 
+const sameIdentitySimplified = (a: SongIdentity, b: SongIdentity): boolean => {
+  const right = songRefs(b)
+  return songRefs(a).some(left => right.some(ref => sameSongSimplified(left, ref)))
+}
+
 /**
  * 反馈转移：far → 半径减 8（下限 10）+ 当前艺人入 negativeArtists（仅旧引擎的半径语义）；
  * good → 半径不变 + 当前艺人入 positiveArtists；
@@ -216,19 +235,40 @@ export const applyFeedback = (state: SessionState, kind: FeedbackKind, artist: s
       negativeArtists: pushArtist(state.negativeArtists, artist),
     }
   }
+  const currentLiked = state.likedTracks ?? []
   if (kind === 'dislike') {
+    const trackIdentity: SongIdentity = { ...track, artist: track?.artist ?? artist }
     const dislikedTracks = [...state.dislikedTracks]
-    for (const { artist: sourceArtist, title } of songRefs({ ...track, artist: track?.artist ?? artist })) {
+    const refs = songRefs(trackIdentity)
+    for (const { artist: sourceArtist, title } of refs) {
       if (!String(title ?? '').trim()) continue
       // 保留每个来源的艺人证据；按 sameSong 去重会因共享合作者误丢另一主艺人写法。
       if (dislikedTracks.some(item => item.artist === sourceArtist && item.title === title)) continue
       dislikedTracks.push({ artist: sourceArtist, title })
     }
-    return dislikedTracks.length === state.dislikedTracks.length ? state : { ...state, dislikedTracks }
+    // 严格互斥（含繁简归一）：标记不再推荐时清除该曲的已喜欢记录
+    const likedTracks = refs.some(r => String(r.title ?? '').trim())
+      ? currentLiked.filter(item => !sameIdentitySimplified(item, trackIdentity))
+      : currentLiked
+    if (dislikedTracks.length === state.dislikedTracks.length && likedTracks.length === currentLiked.length) return state
+    return { ...state, likedTracks, dislikedTracks }
   }
+  const trackIdentity: SongIdentity | null = track ? { ...track, artist: track.artist ?? artist } : null
+  const refs = trackIdentity ? songRefs(trackIdentity).filter(r => String(r.title ?? '').trim()) : []
+  const likedTracks = [...currentLiked]
+  for (const { artist: sourceArtist, title } of refs) {
+    if (likedTracks.some(item => item.artist === sourceArtist && item.title === title)) continue
+    likedTracks.push({ artist: sourceArtist, title })
+  }
+  // 严格互斥（含繁简归一）：标记喜欢时清除该曲的不再推荐记录
+  const dislikedTracks = trackIdentity && refs.length
+    ? state.dislikedTracks.filter(item => !sameIdentitySimplified(item, trackIdentity))
+    : state.dislikedTracks
   return {
     ...state,
     positiveArtists: pushArtist(state.positiveArtists, artist),
+    likedTracks,
+    dislikedTracks,
   }
 }
 
@@ -252,11 +292,71 @@ export const addRecommendedIds = (state: SessionState, ids: string[]): SessionSt
  * 批次继承：新 item 带 batch 用新值，否则继承既有条目的 batch
  * （保证切歌回写 played 时批次快照不丢失）。
  */
+type PathEntryLike = SongIdentity & {
+  album?: string | null
+  interval?: string | null
+  intervalSec?: number | null
+}
+
+const collectRecordings = (item: PathEntryLike): Array<{ artist: string, title: string, album: string | null, intervalSec: number | null }> => {
+  const out: Array<{ artist: string, title: string, album: string | null, intervalSec: number | null }> = []
+  const unwrapped = unwrapMusicInfo(item.musicInfo)
+  const topArtist = String(item.artist ?? '').trim()
+  const topTitle = String(item.title ?? '').trim()
+  if (topArtist && topTitle) {
+    out.push({
+      artist: topArtist,
+      title: topTitle,
+      album: item.album ?? unwrapped?.meta?.albumName ?? null,
+      intervalSec: item.intervalSec ?? parseIntervalSec(item.interval ?? unwrapped?.interval),
+    })
+  }
+  for (const info of musicInfosOf(item)) {
+    const artist = String(info.singer ?? '').trim()
+    const title = String(info.name ?? '').trim()
+    if (!artist || !title) continue
+    out.push({
+      artist,
+      title,
+      album: info.meta?.albumName ?? null,
+      intervalSec: parseIntervalSec(info.interval),
+    })
+  }
+  return out
+}
+
+const looseRecordingMatch = (
+  ra: { artist: string, title: string, intervalSec: number | null },
+  rb: { artist: string, title: string, intervalSec: number | null },
+): boolean => {
+  if (!sameSong(ra, rb)) return false
+  if (ra.intervalSec != null && rb.intervalSec != null) {
+    return Math.abs(ra.intervalSec - rb.intervalSec) <= SEED_MATCH_DURATION_TOLERANCE_SEC
+  }
+  return true
+}
+
+/** 严格路径匹配（同 ID 或繁简双向严格同录音，不含宽松合作者回退；供切歌/删曲决策防误切不同录音）。 */
+export const isStrictPathMatch = (a: PathEntryLike, b: PathEntryLike): boolean => {
+  const aRefs = songRefs(a)
+  const bRefs = songRefs(b)
+  if (aRefs.some(left => left.id != null && bRefs.some(ref => ref.id === left.id))) return true
+  const aRecs = collectRecordings(a)
+  const bRecs = collectRecordings(b)
+  return aRecs.some(ra => bRecs.some(rb => isStrictSameRecording(ra, rb, { simplifyChinese: true })))
+}
+
+/** 路径与队列条目的统一归并判定：覆盖全部保留来源 ID、繁简双向严格同录音，并在同对录音上校验时长防跨对污染。 */
+export const samePathEntry = (a: PathEntryLike, b: PathEntryLike): boolean => {
+  if (isStrictPathMatch(a, b)) return true
+  const aRecs = collectRecordings(a)
+  const bRecs = collectRecordings(b)
+  return aRecs.some(ra => bRecs.some(rb => looseRecordingMatch(ra, rb)))
+}
+
 export const appendToPath = (state: SessionState, item: SessionPathItem): SessionState => {
-  // 后到的来源证据可能连接多个旧条目；整组归并，保留最早路径位置。
-  const group = groupIdentities([...state.path, item], (a, b) => sameIdentity(a, b, true))
-    .find(items => items.includes(item)) ?? [item]
-  const existingItems = state.path.filter(p => group.includes(p))
+  // 后到的来源证据（含繁简跨源同录音换源）可能连接多个旧条目；O(N) 找出所有与新项同曲/同录音的旧条目整组归并，保留最早路径位置。
+  const existingItems = state.path.filter(p => samePathEntry(p, item))
   let path: SessionPathItem[]
   if (existingItems.length) {
     const existing = existingItems[0]
@@ -271,6 +371,9 @@ export const appendToPath = (state: SessionState, item: SessionPathItem): Sessio
     path.splice(index, 0, {
       ...item,
       batch: item.batch ?? existing.batch,
+      recommendSources: item.recommendSources ?? existingItems.find(p => p.recommendSources?.length)?.recommendSources,
+      picUrl: item.picUrl ?? existingItems.find(p => p.picUrl)?.picUrl ?? null,
+      interval: item.interval ?? existingItems.find(p => p.interval)?.interval ?? null,
       musicInfo,
       alternativeMusicInfos: alternatives.length ? alternatives : undefined,
     })
@@ -355,16 +458,25 @@ export const buildReplanInstruction = (state: SessionState): string => {
 }
 
 /**
- * 切歌判定入参的新歌信息：判定只消费 id（on-path 归属 = 新歌 id 是否在本会话 recommendedIds 中）。
- * 编排层传宽对象即可（结构类型兼容）：其余字段服务于编排层自身（锚点构造/路径回写），
- * 判定侧不依赖、故不入列——类型收窄到真实消费的形状，避免“看起来会用”的假依赖。
+ * 切歌判定入参的新歌信息：
+ * 优先按已知 id（recommendedIds / anchor / path）判定；
+ * 若遇到陌生跨源 id（例如同曲换源或锚点版本切换）且提供元数据，则仅经严格录音匹配（isStrictSameRecording）识别，
+ * 绝不经宽松 sameSong 合作者交集误判。仅含 id 的最小形状保持完全兼容。
  */
 export interface SongChangeSong {
   /** 新歌 id（decideOnSongChange 内字符串化后判定；null/undefined 视为无有效新歌）。 */
   id?: string | null
+  singer?: string | null
+  name?: string | null
+  artist?: string | null
+  title?: string | null
+  album?: string | null
+  intervalSec?: number | null
+  musicInfo?: LX.Music.MusicInfo
+  alternativeMusicInfos?: LX.Music.MusicInfoOnline[]
 }
 
-/** 切歌判定入参。是否为“路径内”由本函数按 recommendedIds 自行判定（口径统一在此，调用方不再各自判断）。 */
+/** 切歌判定入参。是否为“路径内”由本函数统一判定（口径统一在此，调用方不再各自判断）。 */
 export interface DecideOnSongChangeArgs {
   /** 电台总开关（appSetting['recommend.radio']）。 */
   radioEnabled: boolean
@@ -375,7 +487,7 @@ export interface DecideOnSongChangeArgs {
 /**
  * 切歌判定输出。
  * - on-path：新歌在本会话路径上 → 记听/按需续补；
- * - ignore：不动作（电台关且不在路径上、无会话、无有效新歌）；
+ * - ignore：不动作（电台关且不在路径上、无会话、无有效新歌、或当前锚点同录音换源确认）；
  * - start：电台开且无会话 → 以新歌开台；
  * - reanchor：跟歌重锚，clearIds 为本会话已推荐 id（清场范围），
  *   该分支语义永远独立于任何队列清空概念——切歌伴随清空以重锚为准（D13/B7-C1 裁决）。
@@ -385,13 +497,71 @@ export interface SongChangeDecision {
   clearIds: string[]
 }
 
+const collectSongIds = (song: SongChangeSong | null): Set<string> => {
+  const ids = new Set<string>()
+  if (!song) return ids
+  if (song.id != null && String(song.id) !== '') ids.add(String(song.id))
+  for (const ref of songRefs(song)) {
+    if (ref.id != null && String(ref.id) !== '') ids.add(String(ref.id))
+  }
+  return ids
+}
+
+const unwrapMusicInfo = (info?: LX.Music.MusicInfo | LX.Download.ListItem | null): LX.Music.MusicInfo | undefined => {
+  if (!info) return undefined
+  return 'progress' in info ? info.metadata.musicInfo : info
+}
+
+const matchesStrictRecording = (
+  incoming: { artist: string, title: string, album?: string | null, intervalSec?: number | null },
+  target: SongIdentity & { album?: string | null, intervalSec?: number | null, interval?: string | null },
+): boolean => {
+  for (const rec of collectRecordings(target)) {
+    if (isStrictSameRecording(rec, incoming, { simplifyChinese: true })) return true
+  }
+  return false
+}
+
 /** 切歌判定（D2）：电台化后由本函数统一给出去向，编排层只负责执行。 */
 export const decideOnSongChange = (
   state: SessionState | null,
   args: DecideOnSongChangeArgs,
 ): SongChangeDecision => {
   const songId = args.song?.id != null ? String(args.song.id) : ''
-  const onPath = !!state && !!songId && state.recommendedIds.includes(songId)
+  const candidateIds = collectSongIds(args.song)
+
+  let onPath = false
+  let matchesAnchor = false
+  if (state && candidateIds.size > 0) {
+    const recSet = new Set(state.recommendedIds.map(String))
+    onPath = [...candidateIds].some(id => recSet.has(id) || state.path.some(p => songRefs(p).some(ref => ref.id === id)))
+    if (!onPath) {
+      const anchorIds = new Set<string>()
+      if (state.anchor.id != null && String(state.anchor.id) !== '') anchorIds.add(String(state.anchor.id))
+      for (const ref of songRefs(state.anchor)) {
+        if (ref.id != null) anchorIds.add(String(ref.id))
+      }
+      matchesAnchor = [...candidateIds].some(id => anchorIds.has(id))
+    }
+    if (!onPath && !matchesAnchor && args.song) {
+      const incomingArtist = String(args.song.singer ?? args.song.artist ?? args.song.musicInfo?.singer ?? '').trim()
+      const incomingTitle = String(args.song.name ?? args.song.title ?? args.song.musicInfo?.name ?? '').trim()
+      if (incomingArtist && incomingTitle) {
+        const incoming = {
+          artist: incomingArtist,
+          title: incomingTitle,
+          album: args.song.album ?? args.song.musicInfo?.meta?.albumName ?? null,
+          intervalSec: args.song.intervalSec ?? parseIntervalSec(args.song.musicInfo?.interval),
+        }
+        if (state.path.some(p => matchesStrictRecording(incoming, p))) {
+          onPath = true
+        } else if (matchesStrictRecording(incoming, state.anchor)) {
+          matchesAnchor = true
+        }
+      }
+    }
+  }
+
   // 电台关：维持“从此歌出发”手动会话的现状语义——路径内记听，路径外不自动续补
   if (!args.radioEnabled) return { kind: onPath ? 'on-path' : 'ignore', clearIds: [] }
   // 电台开但无有效新歌：无从开台/重锚
@@ -399,6 +569,8 @@ export const decideOnSongChange = (
   // 电台开且无会话：等首切歌开台（含启动恢复经 playList 派发的首个 musicToggled，D15）
   if (!state) return { kind: 'start', clearIds: [] }
   if (onPath) return { kind: 'on-path', clearIds: [] }
+  // 锚点同录音换源/版本确认：保持当前会话与待播队列，不触发重锚
+  if (matchesAnchor) return { kind: 'ignore', clearIds: [] }
   return { kind: 'reanchor', clearIds: [...state.recommendedIds] }
 }
 

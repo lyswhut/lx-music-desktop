@@ -1271,4 +1271,20 @@ describe('path identity bridge updates', () => {
     expect(state.path[0].batch).toEqual(firstBatch)
     expect(state.path[0].alternativeMusicInfos?.map(info => info.id)).toEqual(['a', 'b'])
   })
+
+  it('R3 回归：per-pair 时长冲突检验阻断跨对借用（[A、C 180s, A、D 230s] 不误并 B、C 230s）', () => {
+    const first = {
+      ...plannedItem('wy_ac', '主唱A、合作者C', '同名曲'),
+      interval: '03:00',
+      musicInfo: { ...sourceInfo('wy_ac', '主唱A、合作者C'), name: '同名曲', interval: '03:00' },
+      alternativeMusicInfos: [{ ...sourceInfo('tx_ad', '主唱A、合作者D'), name: '同名曲', interval: '03:50' }],
+    }
+    const second = {
+      ...plannedItem('tx_bc', '主唱B、合作者C', '同名曲'),
+      interval: '03:50',
+      musicInfo: { ...sourceInfo('tx_bc', '主唱B、合作者C'), name: '同名曲', interval: '03:50' },
+    }
+    const state = appendToPath(appendToPath(create(), first), second)
+    expect(state.path.map(p => p.id)).toEqual(['wy_ac', 'tx_bc'])
+  })
 })

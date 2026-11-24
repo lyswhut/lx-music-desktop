@@ -51,21 +51,21 @@ onBeforeUnmount(() => {
 <style lang="less" module>
 @import '@renderer/assets/styles/layout.less';
 
-@control-btn-width: @height-toolbar * .26;
-@control-btn-height: 6%;
+@control-btn-width: 13px;
 .controlBtn {
   box-sizing: border-box;
-  padding: 0 7px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: flex-start;
+  gap: 8px;
   width: 100%;
-  height: @control-btn-height;
+  height: 44px;
   -webkit-app-region: no-drag;
-  opacity: .5;
-  transition: opacity @transition-normal;
+  opacity: .72;
+  transition: opacity @transition-fast;
   &.hover {
-    opacity: .8;
+    opacity: 1;
     .controlBtniIcon {
       opacity: 1;
     }

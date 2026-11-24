@@ -83,7 +83,65 @@ describe('跨源相似候选融合', () => {
     ])
     // 同曲同排名：wy 来源序在前，首选播放条目取 wy
     expect(fused[0].musicInfo.id).toBe('wy_1')
-    expect(PROVIDER_ORDER).toEqual(['wy', 'tx'])
+    expect(PROVIDER_ORDER).toEqual(['wy', 'tx', 'ytm'])
+  })
+
+  it('YTM 候选仅按已验证精确国内 ID 归组，不经宽松合作者交集跨录音误投 RRF 票', () => {
+    const fused = fuseSimilarCandidates([
+      batch('wy', [['wy_a', 'Shared Title', '主唱A、合作者C']]),
+      {
+        provider: 'ytm',
+        candidates: [
+          { musicInfo: info('tx_b', 'Shared Title', '主唱B、合作者C'), rank: 1 },
+          { musicInfo: info('wy_a', 'Shared Title', '主唱A、合作者C'), rank: 2 },
+        ],
+      },
+    ])
+    expect(fused).toHaveLength(2)
+    const mergedWy = fused.find(f => f.musicInfo.id === 'wy_a')!
+    expect(mergedWy.sources.map(s => s.provider)).toEqual(['wy', 'ytm'])
+    const separateTx = fused.find(f => f.musicInfo.id === 'tx_b')!
+    expect(separateTx.sources.map(s => s.provider)).toEqual(['ytm'])
+  })
+
+  it('R2 回归：wy 与桥接到 kw 的严格同录音正常跨源融合，且国内宽松合作者混组时仅剥离严格同录音与 YTM 合并', () => {
+    const infoWithInterval = (id: string, name: string, singer: string, interval: string) => ({
+      id, name, singer, source: id.split('_')[0], interval, meta: { albumName: '' },
+    } as unknown as LX.Music.MusicInfo)
+
+    // 1) wy_1 与 ytm(kw_9) 严格同录音（含繁简）合并为一条双源候选，保留 wy 首选与 kw 备用
+    const mergedCross = fuseSimilarCandidates([
+      { provider: 'wy', candidates: [{ musicInfo: infoWithInterval('wy_1', '晴天', '周杰伦', '04:29'), rank: 1 }] },
+      { provider: 'ytm', candidates: [{ musicInfo: infoWithInterval('kw_9', '晴天', '周杰倫', '04:29'), rank: 1 }] },
+    ])
+    expect(mergedCross).toHaveLength(1)
+    expect(mergedCross[0].musicInfo.id).toBe('wy_1')
+    expect(mergedCross[0].sources.map(s => s.provider)).toEqual(['wy', 'ytm'])
+    expect(mergedCross[0].alternativeMusicInfos.map(m => m.id)).toEqual(['kw_9'])
+
+    // 2) wy(主唱A、合作者C, 03:00) + tx(主唱B、合作者C, 03:50) + ytm(tx)：
+    //    wy 不得被传递合并并错得 YTM 分数与徽章；tx 与 ytm 正常合并
+    const splitMixed = fuseSimilarCandidates([
+      { provider: 'wy', candidates: [{ musicInfo: infoWithInterval('wy_a', 'Shared Title', '主唱A、合作者C', '03:00'), rank: 1 }] },
+      { provider: 'tx', candidates: [{ musicInfo: infoWithInterval('tx_b', 'Shared Title', '主唱B、合作者C', '03:50'), rank: 1 }] },
+      { provider: 'ytm', candidates: [{ musicInfo: infoWithInterval('tx_b', 'Shared Title', '主唱B、合作者C', '03:50'), rank: 1 }] },
+    ])
+    expect(splitMixed).toHaveLength(2)
+    const txYtm = splitMixed.find(f => f.musicInfo.id === 'tx_b')!
+    const wyOnly = splitMixed.find(f => f.musicInfo.id === 'wy_a')!
+    expect(txYtm.sources.map(s => s.provider)).toEqual(['tx', 'ytm'])
+    expect(wyOnly.sources.map(s => s.provider)).toEqual(['wy'])
+    expect(wyOnly.alternativeMusicInfos).toEqual([])
+
+    // 3) R3 回归：180s (wy) ↔ 194s (tx) ↔ 208s (ytm/kw) 端点时长差 28s > 15s，阻断链式传递让 wy 误享 YTM 票
+    const noChainDrift = fuseSimilarCandidates([
+      { provider: 'wy', candidates: [{ musicInfo: infoWithInterval('wy_180', 'DriftSong', 'Artist', '03:00'), rank: 1 }] },
+      { provider: 'tx', candidates: [{ musicInfo: infoWithInterval('tx_194', 'DriftSong', 'Artist', '03:14'), rank: 1 }] },
+      { provider: 'ytm', candidates: [{ musicInfo: infoWithInterval('kw_208', 'DriftSong', 'Artist', '03:28'), rank: 1 }] },
+    ])
+    expect(noChainDrift).toHaveLength(2)
+    expect(noChainDrift.find(f => f.musicInfo.id === 'wy_180')?.sources.map(s => s.provider)).toEqual(['wy'])
+    expect(noChainDrift.find(f => f.musicInfo.id === 'tx_194')?.sources.map(s => s.provider)).toEqual(['tx', 'ytm'])
   })
 
   it('单源高排名候选仍保留展示机会（不被多源垄断）', () => {

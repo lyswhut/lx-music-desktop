@@ -124,16 +124,11 @@ export default {
   }
 }
 .timeContent {
-  // width: 30%;
   position: relative;
-  // flex: none;
-  color: var(--color-550);
-  font-size: 13px;
-  // padding-left: 10px;
-  // display: flex;
-  // flex-flow: column nowrap;
-  // align-items: center;
-  padding-bottom: 3px;
+  color: var(--color-font-label);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 4px;
 }
 
 .progress {
@@ -143,24 +138,18 @@ export default {
   width: 100%;
   flex: auto;
   margin-top: 2px;
-  // width: 160px;
-  // position: relative;
-  // padding-bottom: 6px;
-  // margin: 0 8px;
-  height: 2px;
-  opacity: .24;
+  height: 3px;
+  border-radius: 999px;
+  opacity: .45;
   overflow: hidden;
-  transition: @transition-normal;
-  transition-property: background-color, opacity;
-  background-color: var(--color-primary-light-100-alpha-800);
+  transition: background-color @transition-normal, opacity @transition-fast;
+  background-color: var(--ui-border-strong);
 
   .progressBar {
     height: 100%;
     width: 100%;
-    // position: absolute;
-    background-color: var(--color-primary-light-100-alpha-400);
-    // left: 0;
-    // top: 0;
+    border-radius: 999px;
+    background-color: var(--color-primary);
     transform-origin: 0;
     will-change: transform;
   }

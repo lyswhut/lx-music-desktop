@@ -441,7 +441,7 @@ export const restartSelectedVersion = (listId: string, musicInfo: LX.Music.Music
   const isOriginal = playMusicInfo.listId === listId && playMusicInfo.musicInfo?.id === musicInfo.id
   const isPreview = preview && playMusicInfo.musicInfo === preview.musicInfo && playMusicInfo.isTempPlay
   if (!isOriginal && !isPreview) return
-  setPlayMusicInfo(listId, musicInfo, isOriginal ? playMusicInfo.isTempPlay : preview!.isTempPlay, isOriginal ? playMusicInfo.alternativeMusicInfos : undefined)
+  setPlayMusicInfo(listId, musicInfo, isOriginal ? playMusicInfo.isTempPlay : preview!.isTempPlay, isOriginal ? playMusicInfo.alternativeMusicInfos : undefined, 'version')
   handlePlay()
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <button type="button" :class="$style.entry" :aria-label="$t('player__queue_title')" :title="playMusicInfo.versionNotice || $t('player__queue_open_tip')" @click="show = true">{{ $t('player__queue') }}<span v-if="playMusicInfo.versionNotice"> · {{ $t('player__temporary_version') }}</span></button>
+  <button type="button" :class="$style.entry" :aria-label="$t('player__queue_title')" :title="playMusicInfo.versionNotice || $t('player__queue_open_tip')" @click="show = true">{{ $t('player__queue') }}<span v-if="playMusicInfo.versionNotice" :class="$style.versionSuffix"> · {{ $t('player__temporary_version') }}</span></button>
   <material-modal :show="show" teleport="#root" @close="show = false">
     <section :class="$style.panel" :aria-label="$t('player__queue_title')">
       <h2>{{ $t('player__queue_title') }}</h2>
@@ -109,14 +109,166 @@ watch(() => [show.value, playMusicInfo.musicInfo, playInfo.playerPlayIndex, queu
 </script>
 
 <style lang="less" module>
-.entry { flex: none; margin: 0 8px; padding: 5px; color: var(--color-font); background: transparent; border: 0; cursor: pointer; }
-.panel { box-sizing: border-box; max-height: calc(76vh - 18px); overflow: auto; width: 540px; max-width: 80vw; padding: 20px; line-height: 1.6; p { margin: 10px 0; } button { margin-right: 12px; } }
-.list { max-height: 42vh; overflow: auto; list-style: decimal; padding-left: 24px; li { padding: 8px 0; border-bottom: 1px solid var(--color-primary-light-100-alpha-100); } }
-.current { padding-bottom: 8px; border-bottom: 1px solid var(--color-primary-light-100-alpha-100); }
-.actions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-.panel button { cursor: pointer; min-height: 30px; }
-.panel button:disabled { cursor: default; opacity: .4; }
-.panel button:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
-.song { background: transparent; border: 0; color: var(--color-font); text-align: left; }
-.hint { font-size: 12px; opacity: .75; }
+@import '@renderer/assets/styles/layout.less';
+
+.entry {
+  flex: none;
+  margin: 0 4px 0 8px;
+  padding: 5px 10px;
+  border-radius: var(--ui-radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-font-label);
+  background: var(--ui-surface-hover);
+  border: 1px solid var(--ui-border-subtle);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color @transition-fast, color @transition-fast, border-color @transition-fast;
+  &:hover {
+    color: var(--color-primary);
+    background: var(--ui-surface-active);
+    border-color: var(--ui-primary-border-soft);
+  }
+}
+
+@media (max-width: 960px) {
+  .entry {
+    margin: 0 2px 0 3px;
+    padding: 3px 6px;
+    font-size: 11px;
+    max-width: 68px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .versionSuffix {
+    display: none;
+  }
+}
+
+.panel {
+  box-sizing: border-box;
+  max-height: calc(76vh - 24px);
+  overflow: auto;
+  width: 560px;
+  max-width: 82vw;
+  padding: 20px 22px;
+  line-height: 1.55;
+  color: var(--color-font);
+
+  h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  p {
+    margin: 8px 0;
+    font-size: 12.5px;
+    color: var(--color-font-label);
+  }
+
+  button {
+    cursor: pointer;
+    min-height: 28px;
+    padding: 4px 11px;
+    margin-right: 8px;
+    border-radius: var(--ui-radius-pill);
+    border: 1px solid var(--ui-border-subtle);
+    background-color: var(--ui-surface-elevated);
+    color: var(--color-font);
+    font-size: 12px;
+    transition: background-color @transition-fast, border-color @transition-fast, color @transition-fast;
+    &:hover:not(:disabled) {
+      background-color: var(--ui-surface-active);
+      border-color: var(--ui-primary-border-soft);
+      color: var(--color-primary);
+    }
+    &:disabled {
+      cursor: default;
+      opacity: .38;
+    }
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.current {
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: var(--ui-radius-md);
+  background-color: var(--ui-surface-active);
+  border: 1px solid var(--ui-primary-border-soft);
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-font);
+  }
+}
+
+.list {
+  max-height: 40vh;
+  overflow: auto;
+  list-style: decimal;
+  padding-left: 22px;
+  margin: 10px 0;
+
+  li {
+    padding: 8px 8px;
+    border-radius: var(--ui-radius-sm);
+    border-bottom: 1px solid var(--ui-border-subtle);
+    font-variant-numeric: tabular-nums;
+    transition: background-color @transition-fast;
+    &:hover {
+      background-color: var(--ui-surface-hover);
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  button {
+    margin-right: 0;
+    min-height: 24px;
+    padding: 2px 9px;
+    font-size: 11.5px;
+    background-color: transparent;
+  }
+}
+
+.song {
+  background: transparent !important;
+  border: none !important;
+  padding: 2px 0 !important;
+  margin-right: 4px !important;
+  min-height: 24px !important;
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  color: var(--color-font) !important;
+  text-align: left;
+  &:hover:not(:disabled) {
+    color: var(--color-primary) !important;
+    text-decoration: underline;
+  }
+}
+
+.hint {
+  font-size: 11.5px;
+  opacity: .72;
+  margin-top: 12px;
+}
 </style>

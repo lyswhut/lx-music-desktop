@@ -86,37 +86,37 @@ export default {
 @import '@renderer/assets/styles/layout.less';
 
 .list {
-  font-size: 12px;
+  font-size: 12.5px;
   position: absolute;
   opacity: 0;
-  transform: scale(0);
+  transform: scale(0.95);
   transform-origin: 0 0 0;
+  padding: 4px;
   transition: .14s ease;
   transition-property: transform, opacity;
-  border-radius: @radius-border;
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border-subtle);
   background-color: var(--color-content-background);
-  box-shadow: 0 1px 8px 0 rgba(0,0,0,.2);
+  box-shadow: var(--ui-shadow-md);
   z-index: 1000;
   max-height: calc(100vh - 16px);
   overflow-y: auto;
-  // will-change: transform;
 }
 .listItem {
   cursor: pointer;
-  min-width: 96px;
-  line-height: 34px;
-  // color: var(--color-button-font);
-  padding: 0 10px;
-  text-align: center;
+  min-width: 112px;
+  line-height: 32px;
+  padding: 0 12px;
+  border-radius: var(--ui-radius-sm);
+  text-align: left;
   outline: none;
-  transition: @transition-normal;
-  transition-property: background-color, opacity;
+  transition: background-color @transition-fast, color @transition-fast, opacity @transition-fast;
   box-sizing: border-box;
   .mixin-ellipsis-1();
-  // background-color: var(--color-primary-light-600-alpha-800);
 
   &:hover {
-    background-color: var(--color-primary-background-hover);
+    background-color: var(--ui-surface-active);
+    color: var(--color-primary);
   }
   &:active {
     background-color: var(--color-primary-background-active);
@@ -124,9 +124,10 @@ export default {
 
   &[disabled] {
     cursor: default;
-    opacity: .4;
+    opacity: .38;
     &:hover {
       background: none !important;
+      color: inherit;
     }
   }
 }

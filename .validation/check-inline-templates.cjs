@@ -7,7 +7,7 @@ const { parse, compileScript } = require('@vue/compiler-sfc')
 const root = path.resolve(__dirname, '..')
 const directory = fs.mkdtempSync(path.join(__dirname, 'inline-'))
 try {
-  for (const file of ['src/renderer/components/common/MusicCatalogModal.vue', 'src/renderer/components/layout/PlayBar/PlaybackQueue.vue']) {
+  for (const file of ['src/renderer/components/common/MusicCatalogModal.vue', 'src/renderer/components/layout/PlayBar/PlaybackQueue.vue', 'src/renderer/views/Explore/index.vue']) {
     const source = process.argv[2] ? execFileSync('git', ['show', `${process.argv[2]}:${file}`], { cwd: root, encoding: 'utf8' }) : fs.readFileSync(path.join(root, file), 'utf8')
     const { descriptor } = parse(source, { filename: file })
     const id = path.basename(file, '.vue')

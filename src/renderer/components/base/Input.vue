@@ -93,14 +93,14 @@ export default {
 
 .input {
   display: inline-block;
-  border: none;
-  border-radius: @form-radius;
-  padding: 7px 8px;
-  color: var(--color-button-font);
+  border: 1px solid var(--ui-border-subtle);
+  border-radius: var(--ui-radius-sm);
+  padding: 7px 10px;
+  color: var(--color-font);
   outline: none;
-  transition: background-color 0.2s ease;
-  background-color: var(--color-primary-background);
-  font-size: 13.3px;
+  transition: background-color @transition-fast, border-color @transition-fast, box-shadow @transition-fast;
+  background-color: var(--ui-surface-hover);
+  font-size: 13px;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
@@ -112,16 +112,18 @@ export default {
     opacity: .4;
   }
 
-  &:hover, &:focus {
-    background-color: var(--color-primary-background-hover);
+  &:hover {
+    border-color: var(--ui-border-strong);
   }
-  &:active {
-    background-color: var(--color-primary-background-active);
+  &:focus {
+    background-color: var(--color-content-background);
+    border-color: var(--ui-primary-border-soft);
+    box-shadow: 0 0 0 2px var(--ui-surface-active);
   }
 }
 
 .min {
-  padding: 3px 8px;
+  padding: 4px 8px;
   font-size: 12px;
 }
 

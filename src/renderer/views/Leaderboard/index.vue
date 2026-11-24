@@ -115,9 +115,11 @@ export default {
 
 .lists {
   flex: none;
-  width: 14.8%;
+  width: 17%;
+  min-width: 146px;
   display: flex;
   flex-flow: column nowrap;
+  border-right: 1px solid var(--ui-border-subtle);
 }
 .listsHeader {
   position: relative;

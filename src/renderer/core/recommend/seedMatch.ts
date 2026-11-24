@@ -12,9 +12,10 @@
  */
 
 import { SEED_MATCH_DURATION_TOLERANCE_SEC } from '@common/recommendationConfig'
-import { normalizeTitle as normalizeSeedTitle, normalizeText, normalizeArtistTokens, primaryArtistVariants } from './sameSong'
+import { simplify } from '@renderer/utils/simplify-chinese-main'
+import { normalizeTitle as normalizeSeedTitle, normalizeText, normalizeArtistTokens, primaryArtistVariants, sameSong, type SongRef } from './sameSong'
 
-export { normalizeSeedTitle }
+export { normalizeSeedTitle, SEED_MATCH_DURATION_TOLERANCE_SEC }
 
 /** 种子匹配的目标（起点歌曲）。 */
 export interface SeedMatchTarget {
@@ -52,12 +53,37 @@ export const parseIntervalSec = (interval?: string | number | null): number | nu
   return seconds > 0 ? seconds : null
 }
 
+/** 严格匹配可选项：simplifyChinese=true 时仅在比对期做繁简统一，用于 YTM ↔ 国内源跨平台桥接与种子匹配。 */
+export interface SeedMatchOptions {
+  simplifyChinese?: boolean
+}
+
+const normTitle = (title?: string | null, simplifyChinese = false): string => {
+  const t = normalizeSeedTitle(title)
+  return simplifyChinese ? simplify(t) : t
+}
+
+const normText = (text?: string | null, simplifyChinese = false): string => {
+  const t = normalizeText(text)
+  return simplifyChinese ? simplify(t) : t
+}
+
+const normArtistTokens = (artist?: string | null, simplifyChinese = false): string[] => {
+  const tokens = normalizeArtistTokens(artist)
+  return simplifyChinese ? [...new Set(tokens.map(simplify))] : tokens
+}
+
+const normPrimaryVariants = (artist?: string | null, simplifyChinese = false): string[] => {
+  const variants = primaryArtistVariants(artist)
+  return simplifyChinese ? [...new Set(variants.map(simplify))] : variants
+}
+
 /** 主门禁：标题（含版本标记）一致 + 起点主艺人（含括号别名变体）命中候选艺人 token。 */
-const passesPrimaryGate = (target: SeedMatchTarget, row: SeedMatchRowLike): boolean => {
-  if (normalizeSeedTitle(target.title) !== normalizeSeedTitle(row.title)) return false
-  const primaryVariants = primaryArtistVariants(target.artist)
+const passesPrimaryGate = (target: SeedMatchTarget, row: SeedMatchRowLike, simplifyChinese = false): boolean => {
+  if (normTitle(target.title, simplifyChinese) !== normTitle(row.title, simplifyChinese)) return false
+  const primaryVariants = normPrimaryVariants(target.artist, simplifyChinese)
   if (!primaryVariants.length) return false
-  const rowTokens = normalizeArtistTokens(row.artist)
+  const rowTokens = normArtistTokens(row.artist, simplifyChinese)
   if (!rowTokens.length) return false
   return rowTokens.some(token => primaryVariants.includes(token))
 }
@@ -67,8 +93,9 @@ const passesPrimaryGate = (target: SeedMatchTarget, row: SeedMatchRowLike): bool
  * 返回命中的原始行（泛型透传），无可靠匹配返回 null。
  * 择优顺序：时长容差过滤 → 专辑一致优先 → 时长最接近 → 搜索序（先出现者）。
  */
-export const matchSeed = <T extends SeedMatchRowLike>(target: SeedMatchTarget, rows: T[]): T | null => {
-  const gated = rows.filter(row => passesPrimaryGate(target, row))
+export const matchSeed = <T extends SeedMatchRowLike>(target: SeedMatchTarget, rows: T[], options?: SeedMatchOptions): T | null => {
+  const sc = options?.simplifyChinese === true
+  const gated = rows.filter(row => passesPrimaryGate(target, row, sc))
   if (!gated.length) return null
 
   // 时长甄别（有起点时长数据时）：全部候选超容差 → 版本不符（如只剩 Live/DJ 版），无匹配
@@ -83,9 +110,9 @@ export const matchSeed = <T extends SeedMatchRowLike>(target: SeedMatchTarget, r
     else return null
   }
 
-  const targetAlbum = normalizeText(target.album)
+  const targetAlbum = normText(target.album, sc)
   const score = (row: SeedMatchRowLike): number => {
-    const albumMatch = targetAlbum && normalizeText(row.album) === targetAlbum ? 0 : 1
+    const albumMatch = targetAlbum && normText(row.album, sc) === targetAlbum ? 0 : 1
     const rowSec = parseIntervalSec(row.intervalSec)
     const durationDelta = targetSec != null && rowSec != null ? Math.abs(rowSec - targetSec) : Number.MAX_SAFE_INTEGER
     return albumMatch * 1e9 + durationDelta
@@ -100,4 +127,25 @@ export const matchSeed = <T extends SeedMatchRowLike>(target: SeedMatchTarget, r
     }
   }
   return best
+}
+
+/** 双向严格同录音判定：用于跨源换源/融合/锚点重放，避免宽松合作者交集放行不同录音（单侧缺失时长时不误杀）。 */
+export const isStrictSameRecording = (a: SeedMatchTarget, b: SeedMatchTarget, options?: SeedMatchOptions): boolean => {
+  const sc = options?.simplifyChinese === true
+  if (!passesPrimaryGate(a, b, sc) || !passesPrimaryGate(b, a, sc)) return false
+  const aSec = parseIntervalSec(a.intervalSec)
+  const bSec = parseIntervalSec(b.intervalSec)
+  if (aSec != null && bSec != null) {
+    return Math.abs(aSec - bSec) <= SEED_MATCH_DURATION_TOLERANCE_SEC
+  }
+  return true
+}
+
+/** 繁简归一版同曲判定：供反馈互斥与当前曲目状态比对，避免繁简切换后状态失配。 */
+export const sameSongSimplified = (a: SongRef, b: SongRef): boolean => {
+  if (sameSong(a, b)) return true
+  return sameSong(
+    { artist: simplify(String(a.artist ?? '')), title: simplify(String(a.title ?? '')) },
+    { artist: simplify(String(b.artist ?? '')), title: simplify(String(b.title ?? '')) },
+  )
 }
