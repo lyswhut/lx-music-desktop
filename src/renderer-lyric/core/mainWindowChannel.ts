@@ -25,6 +25,7 @@ const handleDesktopLyricMessage = (event: LX.DesktopLyric.LyricActions) => {
       lyrics.tlyric = event.data.tlrc
       lyrics.rlyric = event.data.rlrc
       lyrics.lxlyric = event.data.lxlrc
+      lyrics.plyric = event.data.plrc
       setLyric()
       if (event.data.isPlay) {
         setImmediate(() => {
@@ -37,6 +38,7 @@ const handleDesktopLyricMessage = (event: LX.DesktopLyric.LyricActions) => {
       lyrics.tlyric = event.data.tlrc
       lyrics.rlyric = event.data.rlrc
       lyrics.lxlyric = event.data.lxlrc
+      lyrics.plyric = event.data.plrc
       setLyric()
       break
     case 'set_status':
