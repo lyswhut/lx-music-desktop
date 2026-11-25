@@ -251,12 +251,12 @@ export const playListById = (listId: string, id: string) => {
  * @param listId 列表id
  * @param index 播放的歌曲位置
  */
-export const playList = (listId: string, index: number) => {
+export const playList = (listId: string, index: number, options?: { pauseRadio?: boolean }) => {
   const prevListId = playInfo.playerListId
   setPlayListId(listId)
   // pause()
-  playInfo.isSelectionQueue = false
-  setPlayMusicInfo(listId, getList(listId)[index])
+  playInfo.isSelectionQueue = options?.pauseRadio === true
+  setPlayMusicInfo(listId, getList(listId)[index], false, undefined, options?.pauseRadio === true ? 'selection' : 'user')
   if (appSetting['player.isAutoCleanPlayedList'] || prevListId != listId) clearPlayedList()
   clearTempPlayeList()
   handlePlay()

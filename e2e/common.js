@@ -235,14 +235,14 @@ const isTolerable = (e) => TOLERATED_ERRORS.some(re => re.test(e))
     if (!rows) throw new Error('搜索结果 0 行（网络受限/无结果）')
     if (/没有找到|暂无相关|暂无结果/.test(txt)) throw new Error('搜索结果显示无结果')
 
-    // 切换源 tab：小秋音乐(tx) → 小芸音乐(wy)，重新搜索仍出结果
+    // 切换源 tab：QQ音乐(tx) → 网易云音乐(wy)，重新搜索仍出结果
     const sourceChecks = []
-    for (const alias of ['小秋音乐', '小芸音乐']) {
-      await clickBaseTab(window, alias)
+    for (const label of ['QQ音乐', '网易云音乐']) {
+      await clickBaseTab(window, label)
       await window.waitForTimeout(6000)
       const n = await waitForListItems(window, 12000)
-      sourceChecks.push(`${alias}=${n}行`)
-      if (!n) throw new Error(`切换源 ${alias} 后无结果（网络敏感）`)
+      sourceChecks.push(`${label}=${n}行`)
+      if (!n) throw new Error(`切换源 ${label} 后无结果（网络敏感）`)
     }
     // 切换搜索类型：歌曲 → 歌单
     await clickBaseTab(window, '歌单')
@@ -255,9 +255,9 @@ const isTolerable = (e) => TOLERATED_ERRORS.some(re => re.test(e))
 
   // ================= C3 播放控制（网络敏感） =================
   await run(window, 'C3-播放/暂停/继续/下一首/上一首', async() => {
-    // 切回“歌曲”类型并切回默认源（小蜗音乐/kw）重新搜索
+    // 切回“歌曲”类型并切回默认源（酷我音乐/kw）重新搜索
     await clickBaseTab(window, '歌曲')
-    await clickBaseTab(window, '小蜗音乐')
+    await clickBaseTab(window, '酷我音乐')
     await window.waitForTimeout(2000)
     const input3 = window.getByPlaceholder('Search for something...').first()
     await input3.fill('周杰伦')

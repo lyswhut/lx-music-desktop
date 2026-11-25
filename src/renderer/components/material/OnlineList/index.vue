@@ -37,7 +37,7 @@
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
                   <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
-                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ sourceNames[item.source] || item.source }}</span>
                 </div>
                 <div class="list-item-cell" style="flex: 0 0 22%;"><common-catalog-link :music="item" kind="artist" /></div>
                 <div class="list-item-cell" style="flex: 0 0 22%;"><common-catalog-link :music="item" kind="album" /></div>
@@ -65,7 +65,7 @@
                   <span v-if="item.meta._qualitys.flac24bit" class="no-select badge badge-theme-primary">{{ $t('tag__lossless_24bit') }}</span>
                   <span v-else-if="item.meta._qualitys.ape || item.meta._qualitys.flac || item.meta._qualitys.wav" class="no-select badge badge-theme-primary">{{ $t('tag__lossless') }}</span>
                   <span v-else-if="item.meta._qualitys['320k']" class="no-select badge badge-theme-secondary">{{ $t('tag__high_quality') }}</span>
-                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ item.source }}</span>
+                  <span v-if="sourceTag" class="no-select badge badge-theme-tertiary">{{ sourceNames[item.source] || item.source }}</span>
                 </div>
                 <div class="list-item-cell" style="flex: 0 0 24%;"><common-catalog-link :music="item" kind="artist" /></div>
                 <div class="list-item-cell" style="flex: 0 0 27%;"><common-catalog-link :music="item" kind="album" /></div>
@@ -110,6 +110,7 @@ import useMusicDownload from './useMusicDownload'
 import useMusicAdd from './useMusicAdd'
 import useMusicActions from './useMusicActions'
 import { appSetting } from '@renderer/store/setting'
+import { sourceNames } from '@renderer/store'
 export default {
   name: 'MaterialOnlineList',
   props: {
@@ -140,6 +141,10 @@ export default {
       default: '',
     },
     checkApiSource: {
+      type: Boolean,
+      default: false,
+    },
+    playListMode: {
       type: Boolean,
       default: false,
     },
@@ -282,6 +287,7 @@ export default {
 
       scrollToTop,
       actionButtonsVisible,
+      sourceNames,
     }
   },
 }

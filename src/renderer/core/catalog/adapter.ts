@@ -2,6 +2,13 @@ import { MusicSdkResponseError } from '@renderer/utils/musicSdk/responseError'
 import { toNewMusicInfo } from '@common/utils/tools'
 import { type CatalogKind, type CatalogPage, type CatalogProviders, type CatalogTarget } from './types'
 
+export const getCatalogSourceLabel = (source: LX.OnlineSource): string => {
+  const prefix = window.lxData?.appSetting?.['common.sourceNameType'] === 'alias' ? 'source_alias_' : 'source_'
+  const key = `${prefix}${source}` as Parameters<typeof window.i18n.t>[0]
+  const translated = window.i18n.t(key)
+  return translated && translated !== key ? translated : source
+}
+
 export class CatalogError extends Error {
   constructor(public readonly code: 'unsupported' | 'not-integrated' | 'metadata' | 'response', message: string) {
     super(message)
@@ -14,7 +21,7 @@ export const createCatalogAdapter = (providers: CatalogProviders) => ({
   async resolve(kind: CatalogKind, music: LX.Music.MusicInfo): Promise<CatalogTarget[]> {
     if (music.source === 'local') throw new CatalogError('unsupported', window.i18n.t('catalog__local'))
     if (!providers[music.source]?.[kind]) {
-      throw new CatalogError('not-integrated', window.i18n.t(kind === 'artist' ? 'catalog__unsupported_artist' : 'catalog__unsupported_album', { source: music.source }))
+      throw new CatalogError('not-integrated', window.i18n.t(kind === 'artist' ? 'catalog__unsupported_artist' : 'catalog__unsupported_album', { source: getCatalogSourceLabel(music.source) }))
     }
     const provider = providers[music.source]!
     let metadata = music.meta

@@ -1,7 +1,44 @@
 import { httpFetch } from '../../request'
 
 import { formatPlayTime, sizeFormate } from '../../index'
-import { formatSingerName } from '../utils'
+import { formatSingerName, parseNonEmptyString, parseNonNegativeInt } from '../utils'
+import { MusicSdkResponseError } from '../responseError'
+import { buildSearchComm, getTxSearchId } from './musicSearch'
+import { signRequest } from './utils'
+
+export const normalizeTxImageUrl = url => {
+  if (typeof url !== 'string') return ''
+  const clean = url.trim()
+  if (!clean) return ''
+  return clean.replace(/^http:\/\//i, 'https://')
+}
+
+export const searchTxByType = (str, page, limit, searchType) => {
+  const req = signRequest({
+    comm: buildSearchComm(),
+    'music.search.SearchCgiService': {
+      module: 'music.search.SearchCgiService',
+      method: 'DoSearchForQQMusicDesktop',
+      param: {
+        grp: 1,
+        num_per_page: limit,
+        page_num: page,
+        query: str,
+        remoteplace: 'txt.newclient.top',
+        search_type: searchType,
+        searchid: getTxSearchId(),
+      },
+    },
+  })
+  const promise = req.then(({ body }) => {
+    const res = body?.['music.search.SearchCgiService'] ?? body?.req
+    if (!res || typeof body?.code !== 'number' || typeof res.code !== 'number') throw new MusicSdkResponseError()
+    if (body.code !== 0 || res.code !== 0) throw new Error('搜索失败')
+    return res.data
+  })
+  promise.cancel = () => req.cancel?.()
+  return promise
+}
 
 export const filterMusicInfoItem = item => {
   const types = []
@@ -98,6 +135,51 @@ export const createMusicuFetch = async(data, options, retryNum = 0) => {
 }
 
 export default {
+  limit: 20,
+  search(str, page = 1, limit = 20) {
+    const req = searchTxByType(str, page, limit, 1)
+    const promise = req.then(data => {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) throw new MusicSdkResponseError()
+      if (data.body != null && (typeof data.body !== 'object' || Array.isArray(data.body))) throw new MusicSdkResponseError()
+      if (data.body?.singer != null && (typeof data.body.singer !== 'object' || Array.isArray(data.body.singer))) throw new MusicSdkResponseError()
+      const rawList = data.body?.singer?.list
+      const total = parseNonNegativeInt(data.meta?.sum)
+      if (total === null) throw new MusicSdkResponseError()
+      if (!Array.isArray(rawList)) {
+        if (total === 0 && rawList == null) return { list: [], total: 0, page, limit, source: 'tx' }
+        throw new MusicSdkResponseError()
+      }
+      const list = []
+      for (const item of rawList) {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) throw new MusicSdkResponseError()
+        if (item.singerMID != null && typeof item.singerMID !== 'string') throw new MusicSdkResponseError()
+        const name = parseNonEmptyString(item.singerName)
+        if (!name) throw new MusicSdkResponseError()
+        // QQ 音乐 GetSingerSongList 仅接受 string singerMid，不能回退到数字 singerID
+        const mid = parseNonEmptyString(item.singerMID)
+        if (!mid || mid === '0') continue
+        const img = normalizeTxImageUrl(item.singerPic) || `https://y.gtimg.cn/music/photo_new/T001R300x300M000${mid}.jpg`
+        list.push({
+          id: mid,
+          name,
+          img,
+          songCount: parseNonNegativeInt(item.songNum),
+          albumCount: parseNonNegativeInt(item.albumNum),
+          source: 'tx',
+        })
+      }
+      if (rawList.length > 0 && list.length === 0) throw new MusicSdkResponseError()
+      return {
+        list,
+        total,
+        page,
+        limit,
+        source: 'tx',
+      }
+    })
+    promise.cancel = () => req.cancel?.()
+    return promise
+  },
   /**
    * 获取歌手信息
    * @param {*} id

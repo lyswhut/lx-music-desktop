@@ -3,6 +3,33 @@ import { formatPlayTime, sizeFormate } from '../../index'
 import { formatSingerName } from '../utils'
 import { signRequest } from './utils'
 
+export const buildSearchComm = () => ({
+  _channelid: '0',
+  _os_version: '6.2.9200-2',
+  ct: '19',
+  cv: '2151',
+  guid: '1F70E520B2EAA7D25E11760783C53CA9',
+  patch: '118',
+  psrf_access_token_expiresAt: 0,
+  psrf_qqaccess_token: '',
+  psrf_qqopenid: '',
+  psrf_qqunionid: '',
+  tmeAppID: 'qqmusic',
+  tmeLoginType: 0,
+  uin: '0',
+  wid: '7223299733393904640',
+})
+
+/**
+ * PC 客户端版 searchid：32 位大写十六进制 GUID + 5 位补零随机数 = 37 字符。
+ * 对应 QQ 音乐 PC 端 searchid 形状（服务端只需要唯一的会话 ID，形状一致即可）。
+ */
+export const getTxSearchId = () => {
+  let guid = ''
+  for (let i = 0; i < 32; i++) guid += Math.floor(Math.random() * 16).toString(16)
+  return guid.toUpperCase() + String(Math.floor(Math.random() * 100000)).padStart(5, '0')
+}
+
 export default {
   limit: 50,
   total: 0,
@@ -12,22 +39,7 @@ export default {
   musicSearch(str, page, limit, retryNum = 0, cancelState = { cancelled: false, request: null }) {
     if (cancelState.cancelled) return Promise.reject(new Error('request cancelled'))
     const searchRequest = signRequest({
-      comm: {
-        _channelid: '0',
-        _os_version: '6.2.9200-2',
-        ct: '19',
-        cv: '2151',
-        guid: '1F70E520B2EAA7D25E11760783C53CA9',
-        patch: '118',
-        psrf_access_token_expiresAt: 0,
-        psrf_qqaccess_token: '',
-        psrf_qqopenid: '',
-        psrf_qqunionid: '',
-        tmeAppID: 'qqmusic',
-        tmeLoginType: 0,
-        uin: '0',
-        wid: '7223299733393904640',
-      },
+      comm: buildSearchComm(),
       'music.search.SearchCgiService': {
         module: 'music.search.SearchCgiService',
         method: 'DoSearchForQQMusicDesktop',
@@ -59,14 +71,8 @@ export default {
     }
     return promise
   },
-  /**
-   * PC 客户端版 searchid：32 位大写十六进制 GUID + 5 位补零随机数 = 37 字符。
-   * 对应 QQ 音乐 PC 端 searchid 形状（服务端只需要唯一的会话 ID，形状一致即可）。
-   */
   getSearchId() {
-    let guid = ''
-    for (let i = 0; i < 32; i++) guid += Math.floor(Math.random() * 16).toString(16)
-    return guid.toUpperCase() + String(Math.floor(Math.random() * 100000)).padStart(5, '0')
+    return getTxSearchId()
   },
   handleResult(rawList) {
     // console.log(rawList)

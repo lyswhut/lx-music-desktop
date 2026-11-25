@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const root = path.resolve(__dirname, '../..')
 const mock = path.join(__dirname, 'mocks.ts')
 const alias = { '@renderer': path.join(root, 'src/renderer'), '@common': path.join(root, 'src/common'), vue: 'vue/dist/vue.esm-bundler.js' }
-for (const name of ['@renderer/store/player/state', '@renderer/store/player/action', '@renderer/store/setting', '@renderer/core/music/version', '@renderer/core/catalog', '@renderer/core/player/action', '@renderer/core/music/sourceCapabilities', '@common/utils/common', '@common/utils/electron', '@renderer/store/utils', '@renderer/utils/musicSdk', '@renderer/core/dislikeList', '@renderer/plugins/i18n', '@renderer/store/list/state', '@renderer/store/list/action', '@renderer/core/player']) alias[`${name}$`] = mock
+for (const name of ['@renderer/store', '@renderer/store/player/state', '@renderer/store/player/action', '@renderer/store/setting', '@renderer/core/music/version', '@renderer/core/catalog', '@renderer/core/player/action', '@renderer/core/music/sourceCapabilities', '@common/utils/common', '@common/utils/electron', '@renderer/store/utils', '@renderer/utils/musicSdk', '@renderer/core/dislikeList', '@renderer/plugins/i18n', '@renderer/store/list/state', '@renderer/store/list/action', '@renderer/core/player']) alias[`${name}$`] = mock
 module.exports = {
   mode: 'development',
   target: 'web',

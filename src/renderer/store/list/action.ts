@@ -83,11 +83,11 @@ export const createUserList = async({ name, id = `userlist_${Date.now()}`, list 
 
 
 export const setTempList = async(id: string, list: LX.Music.MusicInfoOnline[]) => {
-  tempListMeta.id = id
   await overwriteListMusics({
     listId: LIST_IDS.TEMP,
     musicInfos: list,
   })
+  tempListMeta.id = id
 }
 
 export {

@@ -24,7 +24,7 @@ const sources = {
       id: 'tx',
     },
     {
-      name: '网易音乐',
+      name: '网易云音乐',
       id: 'wy',
     },
     {

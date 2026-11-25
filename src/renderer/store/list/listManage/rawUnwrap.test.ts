@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { reactive } from 'vue'
+import { toNewMusicInfo } from '@common/utils/tools'
 import { unwrapMusicInfos } from './rawUnwrap'
 
 const createMusicInfo = (id: string): LX.Music.MusicInfo => ({
@@ -45,5 +46,29 @@ describe('unwrapMusicInfos - 逐条剥离 Vue 代理', () => {
     expect(result).not.toBe(input)
     expect(result).toEqual(input)
     expect(() => structuredClone(result)).not.toThrow()
+  })
+
+  it('外层为普通对象但嵌套 meta.qualitys 为 Vue Proxy（如 toNewMusicInfo(reactive(oldSong))）时递归解包并通过 structuredClone', () => {
+    const reactiveOldSong = reactive({
+      source: 'wy',
+      songmid: '1001',
+      name: '晴天',
+      singer: '周杰伦',
+      albumName: '叶惠美',
+      albumId: 18905,
+      interval: '04:29',
+      img: 'https://img.example/a.jpg',
+      types: [{ type: '128k', size: '4MB' }],
+      _types: { '128k': { size: '4MB' } },
+      artists: [{ id: 6452, name: '周杰伦' }],
+    })
+    const converted = toNewMusicInfo(reactiveOldSong)
+    // 复现外层普通对象、内层 meta.qualitys 残留 Proxy 导致 structuredClone 失败
+    expect(() => structuredClone(converted)).toThrow()
+
+    const result = unwrapMusicInfos([converted])
+    expect(() => structuredClone(result)).not.toThrow()
+    const cloned = structuredClone(result)[0] as LX.Music.MusicInfoOnline
+    expect(cloned.meta.qualitys).toEqual([{ type: '128k', size: '4MB' }])
   })
 })

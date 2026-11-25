@@ -1,8 +1,50 @@
 import { createHttpFetch } from './utils'
 import { filterMusicInfoList } from './musicInfo'
 import { formatPlayCount } from '../../index'
+import { MusicSdkResponseError } from '../responseError'
+import { parseNonEmptyString, parseNonNegativeInt, parseValidCatalogId } from '../utils'
+import { normalizeMiguImg, searchMiguCatalog } from './singer'
 
 export default {
+  limit: 20,
+  search(str, page = 1, limit = 20) {
+    const req = searchMiguCatalog(str, page, limit, 'album')
+    const promise = req.then(body => {
+      const data = body.albumResultData
+      if (!data || typeof data !== 'object' || Array.isArray(data)) throw new MusicSdkResponseError()
+      const total = parseNonNegativeInt(data.totalCount)
+      if (total === null) throw new MusicSdkResponseError()
+      const rawList = data.result
+      if (!Array.isArray(rawList)) {
+        if (total === 0 && rawList == null) return { list: [], total: 0, page, limit, source: 'mg' }
+        throw new MusicSdkResponseError()
+      }
+      const list = rawList.map(item => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) throw new MusicSdkResponseError()
+        const id = parseValidCatalogId(item.id)
+        const name = parseNonEmptyString(item.name)
+        if (!id || !name) throw new MusicSdkResponseError()
+        return {
+          id,
+          name,
+          singer: typeof item.singer === 'string' ? item.singer : '',
+          img: normalizeMiguImg(item.imgItems),
+          publishTime: typeof item.publishDate === 'string' ? item.publishDate.trim() : '',
+          songCount: parseNonNegativeInt(item.songCount ?? item.totalCount),
+          source: 'mg',
+        }
+      })
+      return {
+        list,
+        total,
+        page,
+        limit,
+        source: 'mg',
+      }
+    })
+    promise.cancel = () => req.cancel?.()
+    return promise
+  },
   /**
    * 通过AlbumId获取专辑
    * @param {*} id

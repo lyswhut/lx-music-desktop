@@ -121,6 +121,7 @@ export const updateListMusicsPosition = async(data: LX.List.ListActionMusicUpdat
  * @param data
  */
 export const overwriteListMusics = async(data: LX.List.ListActionMusicOverwrite) => {
+  data.musicInfos = unwrapMusicInfos(data.musicInfos)
   await rendererInvoke<LX.List.ListActionMusicOverwrite>(PLAYER_EVENT_NAME.list_music_overwrite, data)
 }
 

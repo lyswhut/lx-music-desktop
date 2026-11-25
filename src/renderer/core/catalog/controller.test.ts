@@ -88,7 +88,17 @@ describe('catalog state localization', () => {
     const state = createCatalogState()
     const controller = createCatalogController(state, { resolve: async() => [target], load: async() => { throw Error('offline') } })
     await controller.open('artist', song('origin'))
-    expect(state.title).toBe('Artist · Artist songs · wy')
+    expect(state.title).toBe('Artist · Artist songs · NetEase Cloud Music')
     expect(state.error).toBe('Catalog request failed (network or provider error). Please retry')
+  })
+
+  it('openTarget opens a known artist/album directly without needing a seed song', async() => {
+    const state = createCatalogState()
+    const load = vi.fn().mockResolvedValueOnce(page('direct-1', 1, false))
+    const controller = createCatalogController(state, { resolve: vi.fn(), load })
+    await controller.openTarget(target)
+    expect(state.show).toBe(true)
+    expect(state.target).toEqual(target)
+    expect(state.list.map(s => s.id)).toEqual(['direct-1'])
   })
 })

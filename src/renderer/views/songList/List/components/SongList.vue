@@ -14,7 +14,7 @@
               <div :class="$style.songlist_info">
                 <span v-if="item.total != null"><svg-icon name="music" />{{ item.total }}</span>
                 <span v-if="item.play_count != null"><svg-icon name="headphones" />{{ item.play_count }}</span>
-                <span v-if="visibleSource">{{ item.source }}</span>
+                <span v-if="visibleSource">{{ getSourceName(item.source) }}</span>
               </div>
             </div>
           </div>
@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { ref } from '@common/utils/vueTools'
+import { sourceNames } from '@renderer/store'
 import type { ListInfo, ListInfoItem } from '@renderer/store/songList/state'
 import { useRoute, useRouter } from '@common/utils/vueRouter'
 
@@ -56,6 +57,10 @@ const emit = defineEmits(['toggle-page'])
 
 const togglePage = (page: number) => {
   emit('toggle-page', page)
+}
+
+const getSourceName = (source: LX.Source) => {
+  return (sourceNames.value as Partial<Record<LX.Source, string>>)[source] ?? source
 }
 
 const toDetail = (info: ListInfoItem) => {

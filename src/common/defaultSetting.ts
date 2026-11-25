@@ -14,7 +14,7 @@ const defaultSetting: LX.AppSetting = {
   'common.langId': null,
   'common.apiSource': 'temp',
   'common.apiSourceBackups': [],
-  'common.sourceNameType': 'alias',
+  'common.sourceNameType': 'real',
   'common.font': '',
   'common.isShowAnimation': true,
   'common.randomAnimate': true,

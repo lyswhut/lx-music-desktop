@@ -272,7 +272,7 @@ const isTolerable = (e) => TOLERATED_ERRORS.some(re => re.test(e))
 
   // ================= U3+U4 播放回退全链路 + 写回 =================
   await run(window, 'U3-主源失败→换提供方→备源接管播放（网络敏感）', async() => {
-    // 搜索 kw 歌曲（默认源小蜗音乐）
+    // 搜索 kw 歌曲（默认源酷我音乐）
     await nav(window, '#/search')
     await window.waitForTimeout(800)
     const input = window.getByPlaceholder('Search for something...').first()

@@ -35,11 +35,42 @@ export interface EffectiveYtmProxy {
 }
 
 export const parseProxyAddress = (host?: string | null, port?: string | number | null): YtmProxyAddress | null => {
-  const cleanHost = String(host ?? '').trim()
+  const rawHost = String(host ?? '').trim()
+  if (!rawHost || /\s/.test(rawHost)) return null
+  // tunnel 的 httpOverHttp/httpsOverHttp 仅支持明文 HTTP 代理握手，拒绝 https:// / socks:// 等非 HTTP 代理协议
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(rawHost) && !/^http:\/\//i.test(rawHost)) return null
+
+  const withoutScheme = rawHost.replace(/^http:\/\//i, '')
+  const normalizedInput = /^http:\/\//i.test(rawHost)
+    ? rawHost
+    : `http://${/^[^[\]]*:[^[\]]*:/.test(withoutScheme) ? `[${withoutScheme}]` : withoutScheme}`
+
+  let parsedUrl: URL
+  try {
+    parsedUrl = new URL(normalizedInput)
+  } catch {
+    return null
+  }
+  if (parsedUrl.username || parsedUrl.password || parsedUrl.search || parsedUrl.hash) return null
+  if (parsedUrl.pathname && !/^\/+$/.test(parsedUrl.pathname)) return null
+
+  const cleanHost = parsedUrl.hostname.replace(/^\[|\]$/g, '')
   if (!cleanHost) return null
-  const cleanPort = String(port ?? '').trim()
-  if (!/^\d+$/.test(cleanPort)) return null
-  const parsedPort = Number(cleanPort)
+
+  // 从原始 authority 提取显式端口，避免 WHATWG URL 抹除默认端口 80/443
+  const authority = withoutScheme.replace(/\/+$/, '')
+  const portMatch = authority.startsWith('[')
+    ? /^\[[^\]]+\]:(\d+)$/.exec(authority)
+    : /^[^/:]+:(\d+)$/.exec(authority)
+  const embeddedPort = portMatch ? portMatch[1] : parsedUrl.port
+
+  const rawPort = String(port ?? '').trim()
+  if (rawPort && !/^\d+$/.test(rawPort)) return null
+  if (embeddedPort && rawPort && Number(embeddedPort) !== Number(rawPort)) return null
+
+  const chosenPort = rawPort || embeddedPort
+  if (!chosenPort || !/^\d+$/.test(chosenPort)) return null
+  const parsedPort = Number(chosenPort)
   if (!Number.isInteger(parsedPort) || parsedPort < 1 || parsedPort > 65535) return null
   return { host: cleanHost, port: parsedPort }
 }

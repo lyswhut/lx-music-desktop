@@ -77,7 +77,7 @@ node e2e/smoke.js  # 仅冒烟：启动+页面文本+错误采集
   常拦截后续点击造成随机级联超时；`harness.js` 已在新建 profile 时预写
   `LxDatas/config_v2.json` 关闭它。兜底仍保留 `pathProbe.dismissOverlayModal()`。
 - 播放栏按钮是 `div[aria-label]` 而非 `<button>`，选择器用 `[aria-label=…]` 通用属性匹配。
-- 默认开启“源名伪装”（小蜗=酷我、小芸=网易云、小秋=腾讯、小枸=酷狗），断言用别名。
+- 默认使用正式来源名称（酷我音乐=kw、网易云音乐=wy、QQ音乐=tx、酷狗音乐=kg、咪咕音乐=mg）。
 - 搜索/播放依赖外网音源，偶发失败属网络波动（套件其余步骤仍会继续）。
 - 截图、main/renderer console、进程 stdout/stderr、关闭/崩溃事件写入 `${RUNNER_TEMP}/lx-e2e-artifacts/`，
   本机未设置 `RUNNER_TEMP` 时使用系统临时目录；截图失败也保存错误文本。CI 测试失败时上传对应系统的诊断 artifact。

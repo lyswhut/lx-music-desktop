@@ -4,6 +4,7 @@ import kgSinger from '@renderer/utils/musicSdk/kg/singer'
 import txSinger from '@renderer/utils/musicSdk/tx/singer'
 import wySinger from '@renderer/utils/musicSdk/wy/singer'
 import kwAlbum from '@renderer/utils/musicSdk/kw/album'
+import kwSinger from '@renderer/utils/musicSdk/kw/singer'
 import kgAlbum from '@renderer/utils/musicSdk/kg/album'
 import mgAlbum from '@renderer/utils/musicSdk/mg/album'
 import getTxMusicInfo from '@renderer/utils/musicSdk/tx/musicInfo'
@@ -38,6 +39,9 @@ export const catalogAdapter = createCatalogAdapter({
     album: async(id, page, limit) => kgAlbum.getAlbumDetail(id, page, limit),
     detail: async(music) => music.source === 'kg' ? getKgMusicInfo(music.meta.hash) : null,
   },
-  kw: { album: (id, page) => kwAlbum.getAlbumListDetail(id, page) },
+  kw: {
+    artist: (id, page, limit) => kwSinger.getSongList(id, page, limit),
+    album: (id, page) => kwAlbum.getAlbumListDetail(id, page),
+  },
   mg: { album: async(id, page) => mgAlbum.getAlbumDetail(id, page), albumPageSize: 'response-length' },
 })

@@ -89,7 +89,7 @@ describe('catalog error localization', () => {
   it('uses the current locale for provider and metadata errors', async() => {
     window.i18n.setLanguage('en-us')
     const adapter = createCatalogAdapter({ wy: { artist: vi.fn() } })
-    await expect(adapter.resolve('album', music())).rejects.toMatchObject({ message: 'Album catalog integration is not implemented for provider wy' })
+    await expect(adapter.resolve('album', music())).rejects.toMatchObject({ message: 'Album catalog integration is not implemented for provider NetEase Cloud Music' })
     const input = music()
     delete input.meta.artists
     await expect(adapter.resolve('artist', input)).rejects.toMatchObject({ message: 'Song details do not include an exact artist ID, so the full catalog cannot be opened' })

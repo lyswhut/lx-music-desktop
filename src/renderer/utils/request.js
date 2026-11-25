@@ -5,19 +5,14 @@ import { requestMsg } from './message'
 import { bHh } from './musicSdk/options'
 import { deflateRaw } from 'zlib'
 import { proxy } from '@renderer/store'
+import { parseProxyAddress } from '@renderer/core/recommend/ytmProxy'
 import { httpOverHttp, httpsOverHttp } from 'tunnel'
 // import fs from 'fs'
 
 const httpsRxp = /^https:/
 const parseValidProxyOverride = (proxyOverride) => {
   if (!proxyOverride || typeof proxyOverride !== 'object') return null
-  const host = String(proxyOverride.host ?? '').trim()
-  if (!host) return null
-  const rawPort = String(proxyOverride.port ?? '').trim()
-  if (!/^\d+$/.test(rawPort)) return null
-  const port = Number(rawPort)
-  if (!Number.isInteger(port) || port < 1 || port > 65535) return null
-  return { host, port }
+  return parseProxyAddress(proxyOverride.host, proxyOverride.port)
 }
 
 const getRequestAgent = (url, proxyOverride) => {
@@ -56,14 +51,30 @@ const request = (url, options, callback) => {
   }
   options.response_timeout = options.timeout
 
+  const needleOptions = options.compressed
+    ? { ...options, parse_response: false }
+    : options
+
   // 返回 Needle 顶层请求流对象而非首跳 .request 快照，确保 301/302 重定向后 cancelHttp 仍中止当前活动连接
-  return needle.request(options.method || 'get', url, data, options, (err, resp, body) => {
+  return needle.request(options.method || 'get', url, data, needleOptions, (err, resp, body) => {
     if (!err) {
-      body = resp.body = resp.raw.toString()
-      try {
-        resp.body = JSON.parse(resp.body)
-      } catch (_) {}
-      body = resp.body
+      const contentEncoding = String(resp.headers?.['content-encoding'] ?? '').trim().toLowerCase()
+      const isCompressed = Boolean(options.compressed) && contentEncoding !== '' && contentEncoding !== 'identity'
+      if (isCompressed && body !== undefined) {
+        // compressed: true 且关闭 needle 自动解析（parse_response: false），
+        // 仅对解压后的正文执行一次 JSON.parse，避免 JSON 字符串 "123" 被二次解析为数字 123
+        body = Buffer.isBuffer(body) ? body.toString() : String(body)
+        try {
+          body = JSON.parse(body)
+        } catch (_) {}
+        resp.body = body
+      } else {
+        body = resp.body = resp.raw.toString()
+        try {
+          resp.body = JSON.parse(resp.body)
+        } catch (_) {}
+        body = resp.body
+      }
     }
     callback(err, resp, body)
   })

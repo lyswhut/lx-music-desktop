@@ -1,11 +1,68 @@
 import { httpFetch } from '../../request'
 import { decodeName } from '../../index'
+import { MusicSdkResponseError } from '../responseError'
+import { parseNonEmptyString, parseNonNegativeInt, parseValidCatalogId } from '../utils'
 import { formatSinger, objStr2JSON } from './util'
+
+const buildKwAlbumImg = (item, basePath = '') => {
+  const direct = parseNonEmptyString(item?.hts_img) ?? parseNonEmptyString(item?.img) ?? ''
+  if (direct && /^https?:\/\//i.test(direct)) return direct
+  const pic = parseNonEmptyString(item?.pic) ?? ''
+  if (!pic) return ''
+  if (/^https?:\/\//i.test(pic)) return pic
+  const base = typeof basePath === 'string' && basePath.trim()
+    ? basePath.trim()
+    : 'https://img4.kuwo.cn/star/albumcover/'
+  return `${base.replace(/\/+$/, '')}/${pic.replace(/^\/+/, '')}`
+}
 
 // let requestObj_list
 export default {
   limit_list: 36,
   limit_song: 1000,
+  search(str, page = 1, limit = 20) {
+    const req = httpFetch(
+      `http://search.kuwo.cn/r.s?client=kt&all=${encodeURIComponent(str)}&pn=${page - 1}&rn=${limit}&ft=album&encoding=utf8&rformat=json&mobi=1&newver=1`,
+    )
+    const promise = req.promise.then(({ statusCode, body }) => {
+      if (statusCode !== 200 || !body || typeof body !== 'object' || Array.isArray(body)) throw new MusicSdkResponseError()
+      const total = parseNonNegativeInt(body.total ?? body.TOTAL)
+      const rawList = body.albumlist
+      if (!Array.isArray(rawList)) {
+        // 酷我 ft=album 越界翻页（(page - 1) * limit >= total）会返回 {"SHOW":"0","abslist":[],"total":"N"} 并省略 albumlist
+        const isOutOfRangeEmpty = total !== null && (page - 1) * limit >= total && Array.isArray(body.abslist) && body.abslist.length === 0
+        if (rawList == null && (total === 0 || isOutOfRangeEmpty)) {
+          return { list: [], total, page, limit, source: 'kw' }
+        }
+        throw new MusicSdkResponseError()
+      }
+      if (total === null) throw new MusicSdkResponseError()
+      const list = rawList.map(item => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) throw new MusicSdkResponseError()
+        const id = parseValidCatalogId(item.albumid)
+        const name = parseNonEmptyString(item.name)
+        if (!id || !name) throw new MusicSdkResponseError()
+        return {
+          id,
+          name: decodeName(name),
+          singer: typeof item.artist === 'string' ? formatSinger(decodeName(item.artist)) : '',
+          img: buildKwAlbumImg(item, body.BASEPICPATH),
+          publishTime: typeof item.pub === 'string' ? item.pub.trim() : '',
+          songCount: parseNonNegativeInt(item.musiccnt),
+          source: 'kw',
+        }
+      })
+      return {
+        list,
+        total,
+        page,
+        limit,
+        source: 'kw',
+      }
+    })
+    promise.cancel = () => req.cancelHttp?.()
+    return promise
+  },
   filterListDetail(rawList, albumName, albumId) {
     // console.log(rawList)
     // console.log(rawList.length, rawList2.length)

@@ -1,8 +1,56 @@
 import { eapiRequest } from './utils/index'
 import { formatPlayTime, sizeFormate } from '../../index'
-import { formatSingerName } from '../utils'
+import { formatSingerName, parseNonEmptyString, parseNonNegativeInt, parseValidCatalogId } from '../utils'
+import { MusicSdkResponseError } from '../responseError'
 
 export default {
+  limit: 20,
+  search(str, page = 1, limit = 20) {
+    const req = eapiRequest('/api/cloudsearch/pc', {
+      s: str,
+      type: 100,
+      limit,
+      offset: limit * (page - 1),
+      total: true,
+    })
+    const promise = req.promise.then(({ body }) => {
+      if (!body || typeof body !== 'object' || body.code !== 200) throw new MusicSdkResponseError()
+      const result = body.result
+      if (!result || typeof result !== 'object' || Array.isArray(result)) throw new MusicSdkResponseError()
+      const total = parseNonNegativeInt(result.artistCount)
+      const rawList = result.artists
+      if (!Array.isArray(rawList)) {
+        if (total === 0 && rawList == null) return { list: [], total: 0, page, limit, source: 'wy' }
+        throw new MusicSdkResponseError()
+      }
+      if (total === null) throw new MusicSdkResponseError()
+      const list = rawList.map(item => {
+        if (!item || typeof item !== 'object' || Array.isArray(item)) throw new MusicSdkResponseError()
+        const id = parseValidCatalogId(item.id)
+        const name = parseNonEmptyString(item.name)
+        if (!id || !name) throw new MusicSdkResponseError()
+        const picUrl = typeof item.picUrl === 'string' ? item.picUrl.trim() : ''
+        const fallbackUrl = typeof item.img1v1Url === 'string' ? item.img1v1Url.trim() : ''
+        return {
+          id: typeof item.id === 'number' ? item.id : id,
+          name,
+          img: picUrl || fallbackUrl,
+          songCount: parseNonNegativeInt(item.musicSize),
+          albumCount: parseNonNegativeInt(item.albumSize),
+          source: 'wy',
+        }
+      })
+      return {
+        list,
+        total,
+        page,
+        limit,
+        source: 'wy',
+      }
+    })
+    promise.cancel = () => req.cancelHttp?.()
+    return promise
+  },
   /**
    * 获取歌手信息
    * @param {*} id

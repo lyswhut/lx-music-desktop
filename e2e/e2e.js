@@ -4,7 +4,7 @@
  *
  * 说明：
  * - 每步独立 try/catch，任何一步失败不阻断后续步骤；最终输出 PASS/FAIL 汇总。
- * - 默认使用“源名伪装”别名（小蜗=酷我 kw、小芸=网易云 wy、小秋=腾讯 tx、小枸=酷狗 kg），与默认设置一致。
+ * - 默认使用正式歌曲来源名称（酷我音乐 kw、网易云音乐 wy、QQ音乐 tx、酷狗音乐 kg、咪咕音乐 mg），与默认设置一致。
  */
 const { launchApp, collectErrors, screenshot, ART_DIR } = require('./harness')
 const { dismissOverlayModal } = require('./pathProbe')
@@ -65,8 +65,8 @@ async function modalOpen(window) {
   return window.evaluate(() => !!document.querySelector('header button'))
 }
 
-// 源名伪装别名（默认设置 common.sourceNameType = alias）
-const ALIAS = { wy: '小芸音乐', tx: '小秋音乐', kg: '小枸音乐', kw: '小蜗音乐', mg: '小蜜音乐' }
+// 正式歌曲来源名称（默认设置 common.sourceNameType = real）
+const ALIAS = { wy: '网易云音乐', tx: 'QQ音乐', kg: '酷狗音乐', kw: '酷我音乐', mg: '咪咕音乐' }
 const testUrl = { wy: 'https://music.163.com/#/playlist?id=1234567890', tx: 'https://y.qq.com/n/ryqq/playlist/5437801861', kg: 'https://www.kugou.com/special/single/12345678.html' };
 
 (async() => {

@@ -582,6 +582,8 @@ describe('ytmParser：YouTube Music InnerTube 纯解析与地区受限判定', (
 describe('ytmProxy：有效代理与缓存上下文单源解析', () => {
   it('严格校验整数端口范围 [1, 65535]：非法/空/脏后缀端口返回 null 并回退全局/直连，绝不回落端口 80', () => {
     expect(parseProxyAddress(' 127.0.0.1 ', '7890')).toEqual({ host: '127.0.0.1', port: 7890 })
+    expect(parseProxyAddress('http://127.0.0.1/', '7897')).toEqual({ host: '127.0.0.1', port: 7897 })
+    expect(parseProxyAddress('socks5://127.0.0.1', '7897')).toBeNull()
     expect(parseProxyAddress('127.0.0.1', '1')).toEqual({ host: '127.0.0.1', port: 1 })
     expect(parseProxyAddress('127.0.0.1', '65535')).toEqual({ host: '127.0.0.1', port: 65535 })
     expect(parseProxyAddress('127.0.0.1', '7890abc')).toBeNull()
@@ -652,7 +654,7 @@ describe('ytmAdapter：地区封锁识别、HTTP 状态异常类型与连通性�
     await expect(adapter.searchSongs('晴天')).rejects.toBeInstanceOf(MusicSdkResponseError)
   })
 
-  it('testYtmConnection 主页正常但搜索返回合法空数组时报告 error 而非 region-blocked；正文卡死时触发总截止并取消请求', async() => {
+  it('testYtmConnection 并行执行压缩探测：空目录报告 error、地区封锁立即取消搜索、正文卡死触发总截止并取消双路请求', async() => {
     adapterMocks.httpFetch
       .mockReturnValueOnce({
         promise: Promise.resolve({ statusCode: 200, body: '<html><title>YouTube Music</title></html>' }),
@@ -668,20 +670,137 @@ describe('ytmAdapter：地区封锁识别、HTTP 状态异常类型与连通性�
     const emptyRes = await testYtmConnection()
     expect(emptyRes.ok).toBe(false)
     expect(emptyRes.status).toBe('error')
+    expect(adapterMocks.httpFetch.mock.calls[0]?.[1]).toMatchObject({ compressed: true })
+    expect(adapterMocks.httpFetch.mock.calls[1]?.[1]).toMatchObject({ compressed: true })
 
-    // 模拟代理发回响应头后卡死正文：到达总截止后必须主动取消请求并返回超时错误
+    // 地区封锁立即早退并取消未完成的搜索请求
+    const cancelPendingSearch = vi.fn()
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: Promise.resolve({ statusCode: 200, body: '<html>YouTube Music is not available in your area</html>' }),
+        cancelHttp: vi.fn(),
+      })
+      .mockReturnValueOnce({
+        promise: new Promise(() => {}),
+        cancelHttp: cancelPendingSearch,
+      })
+    const blockedRes = await testYtmConnection()
+    expect(blockedRes.ok).toBe(false)
+    expect(blockedRes.status).toBe('region-blocked')
+    expect(cancelPendingSearch).toHaveBeenCalledTimes(1)
+
+    // 模拟代理发回响应头后卡死正文：到达总截止后必须主动取消两路请求并返回超时错误
     vi.useFakeTimers()
-    const cancelHttp = vi.fn()
-    adapterMocks.httpFetch.mockReturnValueOnce({
-      promise: new Promise(() => {}),
-      cancelHttp,
-    })
+    const cancelRegion = vi.fn()
+    const cancelSearch = vi.fn()
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: new Promise(() => {}),
+        cancelHttp: cancelRegion,
+      })
+      .mockReturnValueOnce({
+        promise: new Promise(() => {}),
+        cancelHttp: cancelSearch,
+      })
     const stalledPromise = testYtmConnection(undefined, 500)
     await vi.advanceTimersByTimeAsync(600)
     const stalledRes = await stalledPromise
     expect(stalledRes.ok).toBe(false)
     expect(stalledRes.status).toBe('error')
     expect(stalledRes.message).toContain('超时')
-    expect(cancelHttp).toHaveBeenCalledTimes(1)
+    expect(cancelRegion).toHaveBeenCalledTimes(1)
+    expect(cancelSearch).toHaveBeenCalledTimes(1)
+  })
+
+  it('testYtmConnection 主页探测报 503 且搜索成功时仍如实返回 error，不静默吞掉地区探测异常', async() => {
+    const validSearchBody = {
+      responseContext: {},
+      contents: {
+        musicShelfRenderer: {
+          contents: [{
+            musicResponsiveListItemRenderer: {
+              playlistItemData: { videoId: 'vid-ok-1' },
+              flexColumns: [
+                { musicResponsiveListItemFlexColumnRenderer: { text: { runs: [{ text: 'Blinding Lights' }] } } },
+                { musicResponsiveListItemFlexColumnRenderer: { text: { runs: [{ text: 'The Weeknd' }] } } },
+              ],
+            },
+          }],
+        },
+      },
+    }
+    // 顺序 1：region 先返回 503，search 后返回曲目
+    let resolveSearch!: (val: unknown) => void
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: Promise.resolve({ statusCode: 503, body: 'Service Unavailable' }),
+        cancelHttp: vi.fn(),
+      })
+      .mockReturnValueOnce({
+        promise: new Promise(resolve => { resolveSearch = resolve }),
+        cancelHttp: vi.fn(),
+      })
+    const p1 = testYtmConnection()
+    await Promise.resolve()
+    resolveSearch({ statusCode: 200, body: validSearchBody })
+    const res1 = await p1
+    expect(res1.ok).toBe(false)
+    expect(res1.status).toBe('error')
+    expect(res1.message).toContain('503')
+
+    // 顺序 2：search 先返回曲目，region 后返回 503
+    let resolveRegion!: (val: unknown) => void
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: new Promise(resolve => { resolveRegion = resolve }),
+        cancelHttp: vi.fn(),
+      })
+      .mockReturnValueOnce({
+        promise: Promise.resolve({ statusCode: 200, body: validSearchBody }),
+        cancelHttp: vi.fn(),
+      })
+    const p2 = testYtmConnection()
+    await Promise.resolve()
+    resolveRegion({ statusCode: 503, body: 'Service Unavailable' })
+    const res2 = await p2
+    expect(res2.ok).toBe(false)
+    expect(res2.status).toBe('error')
+    expect(res2.message).toContain('503')
+
+    // 顺序 3：region 已返回 503，search 卡死至超时，截止回调保留已知 503 错误并取消卡死的搜索请求
+    const cancelStalledSearch = vi.fn()
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: Promise.resolve({ statusCode: 503, body: 'Service Unavailable' }),
+        cancelHttp: vi.fn(),
+      })
+      .mockReturnValueOnce({
+        promise: new Promise(() => {}),
+        cancelHttp: cancelStalledSearch,
+      })
+    const res3 = await testYtmConnection(undefined, 25)
+    expect(res3.ok).toBe(false)
+    expect(res3.status).toBe('error')
+    expect(res3.message).toContain('503')
+    expect(cancelStalledSearch).toHaveBeenCalledTimes(1)
+
+    // 顺序 4：search 先返回 503，region 随后报底层超时，保留先发 503 错误
+    let rejectRegion!: (err: Error) => void
+    adapterMocks.httpFetch
+      .mockReturnValueOnce({
+        promise: new Promise((_resolve, reject) => { rejectRegion = reject }),
+        cancelHttp: vi.fn(),
+      })
+      .mockReturnValueOnce({
+        promise: Promise.resolve({ statusCode: 503, body: 'Service Unavailable' }),
+        cancelHttp: vi.fn(),
+      })
+    const p4 = testYtmConnection()
+    await Promise.resolve()
+    rejectRegion(new Error('ETIMEDOUT'))
+    const res4 = await p4
+    expect(res4.ok).toBe(false)
+    expect(res4.status).toBe('error')
+    expect(res4.message).toContain('503')
   })
 })

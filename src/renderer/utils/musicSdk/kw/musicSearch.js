@@ -79,9 +79,13 @@ export default {
 
       let interval = parseInt(info.DURATION)
 
+      const singerName = formatSinger(decodeName(info.ARTIST))
+      const artistId = String(info.ARTISTID ?? '').trim()
+
       result.push({
         name: decodeName(info.SONGNAME),
-        singer: formatSinger(decodeName(info.ARTIST)),
+        singer: singerName,
+        artists: artistId && artistId !== '0' && singerName && !singerName.includes('、') ? [{ id: artistId, name: singerName }] : undefined,
         source: 'kw',
         // img = (info.album.name === '' || info.album.name === '空')
         //   ? `http://player.kuwo.cn/webmusic/sj/dtflagdate?flag=6&rid=MUSIC_160911.jpg`
