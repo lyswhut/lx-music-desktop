@@ -3,7 +3,7 @@
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/top_playlist.js
 // https://github.com/Binaryify/NeteaseCloudMusicApi/blob/master/module/playlist_detail.js
 
-import { weapi, linuxapi } from './utils/crypto'
+import { weapi } from './utils/crypto'
 import { httpFetch } from '../../request'
 import { formatPlayTime, sizeFormate, dateFormat, formatPlayCount } from '../../index'
 import musicDetailApi from './musicDetail'
@@ -71,21 +71,10 @@ export default {
     const { id, cookie } = await this.getListId(rawId)
     if (cookie) this.cookie = cookie
 
-    const requestObj_listDetail = httpFetch('https://music.163.com/api/linux/forward', {
-      method: 'post',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-        Cookie: this.cookie,
-      },
-      form: linuxapi({
-        method: 'POST',
-        url: 'https://music.163.com/api/v3/playlist/detail',
-        params: {
-          id,
-          n: this.limit_song,
-          s: 8,
-        },
-      }),
+    const requestObj_listDetail = eapiRequest('/api/v3/playlist/detail', {
+      id,
+      n: this.limit_song,
+      s: 8,
     })
     const { statusCode, body } = await requestObj_listDetail.promise
     if (statusCode !== 200 || body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
