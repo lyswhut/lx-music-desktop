@@ -29,11 +29,13 @@ const list = shallowReactive([])
 
 
 const handleToggle = (id) => {
+  // YTM 切换至「排行榜」时同步清空残留心情/流派标签，保证界面标签与榜单内容一致
+  const nextTagId = props.source === 'ytm' && id === 'charts' ? '' : props.tagId
   void router.replace({
     path: route.path,
     query: {
       source: props.source,
-      tagId: props.tagId,
+      tagId: nextTagId,
       sortId: id,
     },
   })

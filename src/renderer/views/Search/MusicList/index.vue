@@ -22,8 +22,9 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from '@common/utils/vueTools'
+import { onBeforeUnmount, watch } from '@common/utils/vueTools'
 import { searchText } from '@renderer/store/search/state'
+import { cancelSearch } from '@renderer/store/search/music'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 import useList, { type SearchSource } from './useList'
 
@@ -43,17 +44,37 @@ const {
   handlePlayList,
 } = useList()
 
+let pendingTimer: ReturnType<typeof setTimeout> | null = null
+let activeSource: SearchSource = props.sourceId
+const clearPendingTimer = () => {
+  if (pendingTimer != null) {
+    clearTimeout(pendingTimer)
+    pendingTimer = null
+  }
+}
+const scheduleSearch = (text: string, sourceId: SearchSource, page: number) => {
+  clearPendingTimer()
+  if (activeSource !== sourceId) {
+    cancelSearch(activeSource)
+    activeSource = sourceId
+  }
+  pendingTimer = setTimeout(() => {
+    pendingTimer = null
+    void search(text, sourceId, page || 1)
+  })
+}
+
 watch(() => [props.sourceId, props.page], ([sourceId, page]) => {
-  setTimeout(() => {
-    void search(searchText.value, sourceId as SearchSource, page as number || 1)
-  })
+  scheduleSearch(searchText.value, sourceId as SearchSource, (page as number) || 1)
 })
-watch(searchText, (searchText) => {
-  setTimeout(() => {
-    void search(searchText, props.sourceId, props.page)
-  })
+watch(searchText, (text) => {
+  scheduleSearch(text, props.sourceId, props.page)
 }, {
   immediate: true,
+})
+onBeforeUnmount(() => {
+  clearPendingTimer()
+  cancelSearch(activeSource)
 })
 
 const handleTogglePage = (page: number) => {

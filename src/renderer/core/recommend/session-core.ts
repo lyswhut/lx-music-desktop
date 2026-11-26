@@ -56,7 +56,7 @@ export interface SessionAnchor extends SongIdentity {
   /** 起点音乐来源（'wy'|'tx'|其他；平台相似种子定位用，不解析全局 id 字符串猜测）。 */
   source?: string | null
   /** 起点在各平台的原生歌曲 id（当前歌曲来自 wy/tx 时直接可用，免搜索定位）。 */
-  seedIds?: { wy?: string, tx?: string } | null
+  seedIds?: { wy?: string, tx?: string, ytm?: string } | null
   /** 起点时长（秒；跨平台种子定位的版本甄别用，未知为 null）。 */
   intervalSec?: number | null
 }

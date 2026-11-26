@@ -82,6 +82,18 @@ export const DOWNLOAD_STATUS = {
   COMPLETED: 'completed',
 } as const
 
+export const DOMESTIC_ONLINE_SOURCES = ['kw', 'kg', 'tx', 'wy', 'mg'] as const
+type DomesticOnlineSourcesExact =
+  Exclude<LX.DomesticSource, (typeof DOMESTIC_ONLINE_SOURCES)[number]> extends never
+    ? (Exclude<(typeof DOMESTIC_ONLINE_SOURCES)[number], LX.DomesticSource> extends never ? true : never)
+    : never
+const assertDomesticSourcesExact: DomesticOnlineSourcesExact = true
+void assertDomesticSourcesExact
+
+export const isDomesticOnlineSource = (source: unknown): source is (typeof DOMESTIC_ONLINE_SOURCES)[number] => {
+  return typeof source === 'string' && (DOMESTIC_ONLINE_SOURCES as readonly string[]).includes(source)
+}
+
 export const QUALITYS = ['flac24bit', 'flac', 'wav', 'ape', '320k', '192k', '128k'] as const
 
 export const TRAY_AUTO_ID = -1

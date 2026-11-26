@@ -1,17 +1,18 @@
 <template>
   <material-modal :show="show" :bg-close="bgClose" :teleport="teleport" @close="handleClose">
     <main :class="$style.main">
-      <h2>{{ $t('download__multiple_tip', { len: list.length }) }}<br>{{ $t('download__multiple_tip2') }}</h2>
-      <base-btn :class="$style.btn" @click="handleClick('128k')">{{ $t('download__normal') }} - 128K</base-btn>
-      <base-btn :class="$style.btn" @click="handleClick('320k')">{{ $t('download__high_quality') }} - 320K</base-btn>
-      <base-btn :class="$style.btn" @click="handleClick('flac')">{{ $t('download__lossless') }} - FLAC</base-btn>
-      <base-btn :class="$style.btn" @click="handleClick('flac24bit')">{{ $t('download__lossless') }} - FLAC Hires</base-btn>
+      <h2>{{ $t('download__multiple_tip', { len: downloadableList.length }) }}<br>{{ $t('download__multiple_tip2') }}</h2>
+      <base-btn :class="$style.btn" :disabled="!downloadableList.length" @click="handleClick('128k')">{{ $t('download__normal') }} - 128K</base-btn>
+      <base-btn :class="$style.btn" :disabled="!downloadableList.length" @click="handleClick('320k')">{{ $t('download__high_quality') }} - 320K</base-btn>
+      <base-btn :class="$style.btn" :disabled="!downloadableList.length" @click="handleClick('flac')">{{ $t('download__lossless') }} - FLAC</base-btn>
+      <base-btn :class="$style.btn" :disabled="!downloadableList.length" @click="handleClick('flac24bit')">{{ $t('download__lossless') }} - FLAC Hires</base-btn>
     </main>
   </material-modal>
 </template>
 
 <script>
 import { createDownloadTasks } from '@renderer/store/download/action'
+import { canDirectDownload } from '@renderer/core/music/sourceCapabilities'
 
 export default {
   props: {
@@ -39,9 +40,15 @@ export default {
     },
   },
   emits: ['update:show', 'confirm'],
+  computed: {
+    downloadableList() {
+      return this.list.filter(item => canDirectDownload(item))
+    },
+  },
   methods: {
     handleClick(quality) {
-      void createDownloadTasks(this.list.filter(item => item.source != 'local'), quality, this.listId)
+      if (!this.downloadableList.length) return
+      void createDownloadTasks(this.downloadableList, quality, this.listId)
       this.handleClose()
       this.$emit('confirm')
     },

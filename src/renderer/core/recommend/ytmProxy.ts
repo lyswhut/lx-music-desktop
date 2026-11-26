@@ -4,10 +4,10 @@
  * 避免独立代理与全局/环境代理之间产生缓存串读或失效漏检。
  */
 
-export interface YtmProxyAddress {
-  host: string
-  port: number
-}
+import { parseProxyAddress, type ProxyAddress } from '@common/utils/proxyAddress'
+
+export type YtmProxyAddress = ProxyAddress
+export { parseProxyAddress }
 
 export interface YtmProxySettingSlice {
   'recommend.ytm.proxy.enable'?: boolean
@@ -32,47 +32,6 @@ export interface EffectiveYtmProxy {
   effective: YtmProxyAddress | null
   /** 规范化代理上下文键（供缓存与可达性状态隔离）。 */
   contextKey: string
-}
-
-export const parseProxyAddress = (host?: string | null, port?: string | number | null): YtmProxyAddress | null => {
-  const rawHost = String(host ?? '').trim()
-  if (!rawHost || /\s/.test(rawHost)) return null
-  // tunnel 的 httpOverHttp/httpsOverHttp 仅支持明文 HTTP 代理握手，拒绝 https:// / socks:// 等非 HTTP 代理协议
-  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(rawHost) && !/^http:\/\//i.test(rawHost)) return null
-
-  const withoutScheme = rawHost.replace(/^http:\/\//i, '')
-  const normalizedInput = /^http:\/\//i.test(rawHost)
-    ? rawHost
-    : `http://${/^[^[\]]*:[^[\]]*:/.test(withoutScheme) ? `[${withoutScheme}]` : withoutScheme}`
-
-  let parsedUrl: URL
-  try {
-    parsedUrl = new URL(normalizedInput)
-  } catch {
-    return null
-  }
-  if (parsedUrl.username || parsedUrl.password || parsedUrl.search || parsedUrl.hash) return null
-  if (parsedUrl.pathname && !/^\/+$/.test(parsedUrl.pathname)) return null
-
-  const cleanHost = parsedUrl.hostname.replace(/^\[|\]$/g, '')
-  if (!cleanHost) return null
-
-  // 从原始 authority 提取显式端口，避免 WHATWG URL 抹除默认端口 80/443
-  const authority = withoutScheme.replace(/\/+$/, '')
-  const portMatch = authority.startsWith('[')
-    ? /^\[[^\]]+\]:(\d+)$/.exec(authority)
-    : /^[^/:]+:(\d+)$/.exec(authority)
-  const embeddedPort = portMatch ? portMatch[1] : parsedUrl.port
-
-  const rawPort = String(port ?? '').trim()
-  if (rawPort && !/^\d+$/.test(rawPort)) return null
-  if (embeddedPort && rawPort && Number(embeddedPort) !== Number(rawPort)) return null
-
-  const chosenPort = rawPort || embeddedPort
-  if (!chosenPort || !/^\d+$/.test(chosenPort)) return null
-  const parsedPort = Number(chosenPort)
-  if (!Number.isInteger(parsedPort) || parsedPort < 1 || parsedPort > 65535) return null
-  return { host: cleanHost, port: parsedPort }
 }
 
 /**

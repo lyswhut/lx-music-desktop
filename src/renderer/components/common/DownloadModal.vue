@@ -12,6 +12,7 @@
 <script>
 import { qualityList } from '@renderer/store'
 import { createDownloadTasks } from '@renderer/store/download/action'
+import { getEffectiveSourceQualities } from '@renderer/core/music/sourceCapabilities'
 
 export default {
   props: {
@@ -47,7 +48,8 @@ export default {
       return this.musicInfo || {}
     },
     sourceQualityList() {
-      return this.qualityList[this.musicInfo.source] || []
+      if (!this.musicInfo?.source) return []
+      return getEffectiveSourceQualities(this.musicInfo.source)
     },
     qualitys() {
       return this.info.meta?.qualitys?.filter(quality => this.checkSource(quality.type)) || []

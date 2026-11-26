@@ -51,3 +51,21 @@ it.each(['download', 'local'])('records rescue details for %s containers without
   expect(playMusicInfo.versionNotice).toBe('临时播放')
   expect(JSON.stringify(original)).toBe(before)
 })
+
+it('suppresses temporary rescue notice for ytm tracks resolved to a domestic playback provider', async() => {
+  const ytmTrack: LX.Music.MusicInfoOnline = {
+    id: 'ytm_dQw4w9WgXcQ',
+    name: '晴天',
+    singer: '周杰伦',
+    source: 'ytm',
+    interval: '04:29',
+    meta: { songId: 'dQw4w9WgXcQ', albumName: '叶惠美', qualitys: [{ type: '128k', size: '' }], _qualitys: { '128k': { size: '' } } },
+  }
+  const domestic = song('wy_186016')
+  playMusicInfo.musicInfo = ytmTrack
+  playMusicInfo.versionNotice = 'stale notice'
+  await writebackToggleMusicInfo(ytmTrack, domestic)
+  expect(playMusicInfo.musicInfo).toBe(ytmTrack)
+  expect(playMusicInfo.resolvedMusicInfo).toBe(domestic)
+  expect(playMusicInfo.versionNotice).toBeUndefined()
+})

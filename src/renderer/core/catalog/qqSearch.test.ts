@@ -4,9 +4,9 @@ const mocks = vi.hoisted(() => ({ sign: vi.fn() }))
 vi.mock('@renderer/utils/musicSdk/tx/utils', () => ({ signRequest: mocks.sign }))
 vi.mock('@renderer/utils/index', () => ({ formatPlayTime: String, sizeFormate: String }))
 beforeEach(() => { vi.clearAllMocks() })
-it('QQ rejects a provider refusal once without blindly repeating it six times', async() => {
+it('QQ rejects a provider refusal once without blindly repeating it six times and appends diagnostic code', async() => {
   mocks.sign.mockResolvedValue({ body: { code: 0, req: { code: 1000 } } })
-  await expect(search.search('query')).rejects.toThrow()
+  await expect(search.search('query')).rejects.toThrow('搜索失败 (code=0/1000)')
   expect(mocks.sign).toHaveBeenCalledTimes(1)
 })
 it('QQ identifies a successful malformed payload as a response-format error', async() => {

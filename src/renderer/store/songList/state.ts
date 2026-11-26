@@ -79,6 +79,9 @@ export interface ListDetailInfo {
     play_count?: string
   }
   noItemLabel: string
+  hasMore?: boolean
+  truncated?: boolean
+  generation?: number
 }
 
 export const listInfo = reactive<ListInfo>({

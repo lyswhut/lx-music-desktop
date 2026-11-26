@@ -45,7 +45,9 @@ declare namespace LX {
     [key: string]: boolean | number | string
   }
 
-  type OnlineSource = 'kw' | 'kg' | 'tx' | 'wy' | 'mg'
+  // 与 src/common/constants.ts DOMESTIC_ONLINE_SOURCES 双向类型锁定
+  type DomesticSource = 'kw' | 'kg' | 'tx' | 'wy' | 'mg'
+  type OnlineSource = DomesticSource | 'ytm'
   type Source = OnlineSource | 'local'
   type Quality = '128k' | '320k' | 'flac' | 'flac24bit' | '192k' | 'ape' | 'wav'
 

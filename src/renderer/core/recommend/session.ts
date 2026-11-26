@@ -245,15 +245,16 @@ const emitSongChangeMetrics = (play: ReturnType<typeof currentMusic>, nextOnPath
   if (isPlay.value) playTime = accumulatePlayTime(playTime, 'play', now)
 }
 
-/** 起点在各平台的原生歌曲 id（当前歌曲来自 wy/tx 时直接可用；不解析全局 id 字符串猜测平台字段）。 */
-const nativeSeedIds = (info: any): { wy?: string, tx?: string } | null => {
+/** 起点在各平台的原生歌曲 id（当前歌曲来自 wy/tx/ytm 时直接可用；不解析全局 id 字符串猜测平台字段）。 */
+const nativeSeedIds = (info: any): { wy?: string, tx?: string, ytm?: string } | null => {
   if (info?.source === 'wy' && info.meta?.songId) return { wy: String(info.meta.songId) }
   if (info?.source === 'tx' && info.meta?.id) return { tx: String(info.meta.id) }
+  if (info?.source === 'ytm' && info.meta?.songId) return { ytm: String(info.meta.songId) }
   return null
 }
 
 /** 当前播放歌曲（含下载列表项兼容），用于锚点/切歌判定。 */
-const currentMusic = (): { id: string, singer: string, name: string, album: string, pic?: string | null, source?: string | null, seedIds?: { wy?: string, tx?: string } | null, intervalSec?: number | null, musicInfo: LX.Music.MusicInfo, alternativeMusicInfos?: LX.Music.MusicInfoOnline[] } | null => {
+const currentMusic = (): { id: string, singer: string, name: string, album: string, pic?: string | null, source?: string | null, seedIds?: { wy?: string, tx?: string, ytm?: string } | null, intervalSec?: number | null, musicInfo: LX.Music.MusicInfo, alternativeMusicInfos?: LX.Music.MusicInfoOnline[] } | null => {
   const play = playMusicInfo.musicInfo
   if (!play) return null
   const info: any = 'progress' in play ? play.metadata.musicInfo : play
@@ -502,6 +503,7 @@ const buildPlatformOptions = (mode: 'initial' | 'refill'): PlatformExploreOption
   const playableTargets = runtime
     ? DOMESTIC_BRIDGE_PROVIDERS.filter(source => runtime.assertPlaybackSupport(source))
     : undefined
+  const allowDirectYtmPlayback = runtime ? runtime.assertPlaybackSupport('ytm') : false
   const ytmAdapter = runtime && enabledProviders.includes('ytm')
     ? runtime.createYtmAdapter(effectiveProxy.proxyOverride)
     : undefined
@@ -513,6 +515,7 @@ const buildPlatformOptions = (mode: 'initial' | 'refill'): PlatformExploreOption
     ...(ytmAdapter ? { ytmAdapter } : {}),
     ytmProxyContext: effectiveProxy.contextKey,
     ...(playableTargets !== undefined ? { playableTargets } : {}),
+    ...(allowDirectYtmPlayback ? { allowDirectYtmPlayback: true } : {}),
     ...(runtime ? { canPlaySource: runtime.assertPlaybackSupport } : {}),
     dislikedTracks: st.dislikedTracks,
     // 本地画像有界次级调整（fusion 内 clamp ±15%，来源排名仍主导）

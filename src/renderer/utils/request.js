@@ -138,14 +138,24 @@ export const httpFetch = (url, options = { method: 'get' }) => {
     // console.log('出错', err)
     if (err.message === 'socket hang up') {
       // window.globalObj.apiSource = 'temp'
-      return Promise.reject(new Error(requestMsg.unachievable))
+      const wrapped = new Error(requestMsg.unachievable)
+      wrapped.code = err.code ?? 'ECONNRESET'
+      wrapped.isReset = true
+      return Promise.reject(wrapped)
     }
     switch (err.code) {
       case 'ETIMEDOUT':
-      case 'ESOCKETTIMEDOUT':
-        return Promise.reject(new Error(requestMsg.timeout))
-      case 'ENOTFOUND':
-        return Promise.reject(new Error(requestMsg.notConnectNetwork))
+      case 'ESOCKETTIMEDOUT': {
+        const wrapped = new Error(requestMsg.timeout)
+        wrapped.code = err.code
+        wrapped.isTimeout = true
+        return Promise.reject(wrapped)
+      }
+      case 'ENOTFOUND': {
+        const wrapped = new Error(requestMsg.notConnectNetwork)
+        wrapped.code = err.code
+        return Promise.reject(wrapped)
+      }
       default:
         return Promise.reject(err)
     }

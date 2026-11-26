@@ -6,6 +6,7 @@
 import { watch, ref, nextTick } from '@common/utils/vueTools'
 import { listInfo } from '@renderer/store/songList/state'
 import { getAndSetList } from '@renderer/store/songList/action'
+import { getLiveYtmContextKey } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 import { useRouter, useRoute, onBeforeRouteLeave } from '@common/utils/vueRouter'
 import SongList from './components/SongList.vue'
 
@@ -51,7 +52,7 @@ const togglePage = (page: number) => {
   // getListData(props.source, props.tagId, props.sortId ?? '', page)
 }
 
-watch(() => [props.source, props.tagId, props.sortId, props.page], ([source, tagId, sortId, page]) => {
+watch(() => [props.source, props.tagId, props.sortId, props.page, props.source === 'ytm' ? getLiveYtmContextKey() : ''], ([source, tagId, sortId, page]) => {
   // const source = (await getLeaderboardSetting()).source as LX.OnlineSource
   // console.log(source, tagId, sortId)
   if (!source || !sortId) return

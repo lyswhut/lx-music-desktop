@@ -63,6 +63,8 @@ export interface PlatformExploreOptions {
   ytmProxyContext?: string
   /** 当前经 assertPlaybackSupport 筛选的可播国内桥接源（严禁空能力盲目回落）。 */
   playableTargets?: DomesticBridgeProvider[]
+  /** 是否允许 YTM 推荐条目在无国内可播源或国内未命中时直接以原生 `source: 'ytm'` 播放。 */
+  allowDirectYtmPlayback?: boolean
   /** 入队提交前复核 YTM 桥接候选的当前播放能力。 */
   canPlaySource?: (source: LX.Source) => boolean
   /** 会话已推荐过的候选 id（续补避免重复入队）。 */
@@ -175,6 +177,7 @@ export const explorePlatformOnce = async(options: PlatformExploreOptions): Promi
     ytmAdapter: options.ytmAdapter,
     ytmProxyContext: options.ytmProxyContext,
     playableTargets,
+    allowDirectYtmPlayback: options.allowDirectYtmPlayback,
     excludeIds: options.excludeIds,
     excludeTracks: options.excludeTracks,
     queueTracks,

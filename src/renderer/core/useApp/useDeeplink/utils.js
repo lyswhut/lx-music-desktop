@@ -1,3 +1,4 @@
+import { DOMESTIC_ONLINE_SOURCES } from '@common/constants'
 import { useI18n } from '@renderer/plugins/i18n'
 import { dialog } from '@renderer/plugins/Dialog'
 
@@ -13,7 +14,7 @@ export const useDialog = () => {
   return errorDialog
 }
 
-export const sources = ['kw', 'kg', 'tx', 'wy', 'mg']
+export const sources = [...DOMESTIC_ONLINE_SOURCES, 'ytm']
 export const sourceVerify = source => {
   if (!sources.includes(source)) throw new Error('Source no match')
 }

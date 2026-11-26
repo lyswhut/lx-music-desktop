@@ -410,8 +410,11 @@ class Task extends EventEmitter {
     this.emit('stop')
   }
 
-  refreshUrl(url: string) {
+  refreshUrl(url: string, agent?: http.Agent) {
     this.downloadUrl = url
+    if (arguments.length >= 2) {
+      this.requestOptions.agent = agent
+    }
   }
 
   updateSaveInfo(filePath: string, fileName: string) {

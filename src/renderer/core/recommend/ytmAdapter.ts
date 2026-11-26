@@ -12,7 +12,13 @@ import { YTM_CONNECTION_TEST_TIMEOUT_MS, YTM_REQUEST_TIMEOUT_MS } from '@common/
 import { httpFetch } from '@renderer/utils/request'
 import { MusicSdkResponseError } from '@renderer/utils/musicSdk/responseError'
 import {
-  isValidInnerTubePayload,
+  attachCancel,
+  createYtmHttpStatusError,
+  postInnerTube,
+  YTM_HEADERS,
+  YTM_SEARCH_PARAMS,
+} from '@renderer/utils/musicSdk/ytm/client'
+import {
   isYtmRegionBlockedError,
   isYtmRegionBlockedHtml,
   parseYtmNextRadio,
@@ -45,36 +51,6 @@ export interface YtmConnectionTestResult {
   message: string
 }
 
-/** 构造携带 HTTP 状态码的 MusicSdkResponseError 实例（保证 instanceof MusicSdkResponseError 且满足 Error 约束）。 */
-const createHttpStatusError = (statusCode: number): Error => {
-  const err = new MusicSdkResponseError() as Error & { statusCode?: number }
-  err.message = `YouTube Music HTTP ${statusCode}`
-  err.statusCode = statusCode
-  return err
-}
-
-const YTM_BASE = 'https://music.youtube.com/youtubei/v1'
-const YTM_SONGS_FILTER_PARAMS = 'EgWKAQIIAWoKEAkQBRAKEAMQBA=='
-const YTM_CLIENT = {
-  clientName: 'WEB_REMIX',
-  clientVersion: '1.20250101.01.00',
-  hl: 'zh-CN',
-  gl: 'US',
-}
-const YTM_HEADERS = {
-  'Content-Type': 'application/json',
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-  Origin: 'https://music.youtube.com',
-  Referer: 'https://music.youtube.com/',
-  Cookie: 'SOCS=CAI',
-}
-
-const attachCancel = <T>(promise: Promise<T>, cancel: () => void): YtmCancellablePromise<T> => {
-  const wrapped = promise as YtmCancellablePromise<T>
-  wrapped.cancel = cancel
-  return wrapped
-}
-
 const rawHttpFetch = httpFetch as unknown as (
   url: string,
   options?: Record<string, unknown>,
@@ -83,47 +59,12 @@ const rawHttpFetch = httpFetch as unknown as (
   cancelHttp?: () => void
 }
 
-const postInnerTube = (
-  endpoint: 'search' | 'next' | 'browse',
-  payload: Record<string, unknown>,
-  proxyOverride: YtmProxyAddress | undefined,
-  timeoutMs: number,
-): YtmCancellablePromise<Record<string, any>> => {
-  const safeTimeout = Math.max(1000, timeoutMs)
-  const reqObj = rawHttpFetch(`${YTM_BASE}/${endpoint}?prettyPrint=false`, {
-    method: 'post',
-    compressed: true,
-    timeout: safeTimeout,
-    open_timeout: safeTimeout,
-    read_timeout: safeTimeout,
-    headers: YTM_HEADERS,
-    body: {
-      context: { client: YTM_CLIENT },
-      ...payload,
-    },
-    ...(proxyOverride ? { proxy: proxyOverride } : {}),
-  })
-  const promise = reqObj.promise.then(({ statusCode, body }: { statusCode: number, body: unknown }) => {
-    if (isYtmRegionBlockedHtml(body)) {
-      throw new YtmRegionBlockedError()
-    }
-    if (statusCode !== 200) {
-      throw createHttpStatusError(statusCode)
-    }
-    if (!isValidInnerTubePayload(body)) {
-      throw new MusicSdkResponseError()
-    }
-    return body
-  })
-  return attachCancel(promise, () => reqObj.cancelHttp?.())
-}
-
 /** 创建绑定特定代理配置的 YouTube Music 适配器实例。 */
 export const createYtmAdapter = (proxyOverride?: YtmProxyAddress): YtmAdapter => {
   /* eslint-disable @typescript-eslint/promise-function-async -- 适配器返回带 .cancel() 的同步包装 Promise */
   return {
     searchSongs(query: string, timeoutMs: number = YTM_REQUEST_TIMEOUT_MS) {
-      const req = postInnerTube('search', { query, params: YTM_SONGS_FILTER_PARAMS }, proxyOverride, timeoutMs)
+      const req = postInnerTube('search', { query, params: YTM_SEARCH_PARAMS.songs }, proxyOverride, timeoutMs)
       return attachCancel(
         req.then(body => {
           const parsed = parseYtmSearchSongs(body)
@@ -200,7 +141,7 @@ export const createYtmAdapter = (proxyOverride?: YtmProxyAddress): YtmAdapter =>
       })
       const promise = reqObj.promise.then(({ statusCode, body }: { statusCode: number, body: unknown }) => {
         if (isYtmRegionBlockedHtml(body)) return true
-        if (statusCode >= 400) throw createHttpStatusError(statusCode)
+        if (statusCode >= 400) throw createYtmHttpStatusError(statusCode)
         return false
       })
       return attachCancel(promise, () => reqObj.cancelHttp?.())

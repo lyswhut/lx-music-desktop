@@ -17,18 +17,18 @@ dd
         base-checkbox(id="setting_recommend_provider_tx" :model-value="appSetting['recommend.providers.tx']" :label="$t('setting__recommend_provider_tx')" @update:model-value="updateSetting({ 'recommend.providers.tx': $event })")
       .p(:class="$style.providerGroup")
         base-checkbox(id="setting_recommend_provider_ytm" :model-value="appSetting['recommend.ytm.enable']" :label="$t('setting__recommend_provider_ytm')" @update:model-value="updateSetting({ 'recommend.ytm.enable': $event })")
-      div(v-if="appSetting['recommend.ytm.enable']" :class="$style.ytmBox")
-        .p
-          base-checkbox(id="setting_recommend_ytm_proxy_enable" :model-value="appSetting['recommend.ytm.proxy.enable']" :label="$t('setting__recommend_ytm_proxy_enable')" @update:model-value="updateSetting({ 'recommend.ytm.proxy.enable': $event })")
-        .p(v-if="appSetting['recommend.ytm.proxy.enable']" :class="$style.proxyRow")
-          label(for="setting_recommend_ytm_proxy_host") {{ $t('setting__recommend_ytm_proxy_host') }}
-          base-input#setting_recommend_ytm_proxy_host.gap-left(:class="$style.hostInput" :model-value="ytmProxyHost" placeholder="127.0.0.1" @update:model-value="handleYtmProxyHostInput")
-          label.gap-left(for="setting_recommend_ytm_proxy_port") {{ $t('setting__recommend_ytm_proxy_port') }}
-          base-input#setting_recommend_ytm_proxy_port.gap-left(:class="$style.portInput" :model-value="ytmProxyPort" placeholder="7890" @update:model-value="handleYtmProxyPortInput")
-        .p.small {{ $t('setting__recommend_ytm_proxy_tip') }}
-        .p
-          base-btn.btn(min :disabled="ytmTestState === 'testing'" @click="handleTestYtm") {{ $t('setting__recommend_ytm_test_btn') }}
-          span.gap-left(:class="{ [$style.testing]: ytmTestState === 'testing', [$style.ok]: ytmTestState === 'ok', [$style.fail]: ytmTestState === 'fail' || ytmTestState === 'region-blocked' }") {{ ytmTestText }}
+    div(:class="$style.ytmBox")
+      .p
+        base-checkbox(id="setting_recommend_ytm_proxy_enable" :model-value="appSetting['recommend.ytm.proxy.enable']" :label="$t('setting__recommend_ytm_proxy_enable')" @update:model-value="updateSetting({ 'recommend.ytm.proxy.enable': $event })")
+      .p(v-if="appSetting['recommend.ytm.proxy.enable']" :class="$style.proxyRow")
+        label(for="setting_recommend_ytm_proxy_host") {{ $t('setting__recommend_ytm_proxy_host') }}
+        base-input#setting_recommend_ytm_proxy_host.gap-left(:class="$style.hostInput" :model-value="ytmProxyHost" placeholder="127.0.0.1" @update:model-value="handleYtmProxyHostInput")
+        label.gap-left(for="setting_recommend_ytm_proxy_port") {{ $t('setting__recommend_ytm_proxy_port') }}
+        base-input#setting_recommend_ytm_proxy_port.gap-left(:class="$style.portInput" :model-value="ytmProxyPort" placeholder="7890" @update:model-value="handleYtmProxyPortInput")
+      .p.small {{ $t('setting__recommend_ytm_proxy_tip') }}
+      .p
+        base-btn.btn(min :disabled="ytmTestState === 'testing'" @click="handleTestYtm") {{ $t('setting__recommend_ytm_test_btn') }}
+        span.gap-left(:class="{ [$style.testing]: ytmTestState === 'testing', [$style.ok]: ytmTestState === 'ok', [$style.fail]: ytmTestState === 'fail' || ytmTestState === 'region-blocked' }") {{ ytmTestText }}
     .p(v-if="!isPlatformEngine")
       | {{ $t('setting__recommend_radius') }}
       base-slider-bar.gap-left(:class="$style.radiusSlider" :value="appSetting['recommend.radius']" :min="10" :max="90" :step="5" @change="setRadius")
@@ -77,6 +77,7 @@ import { LLM_MAX_CONCURRENCY, normalizeLlmConcurrency, normalizeRecommendEngine 
 import { llmComplete } from '@renderer/core/recommend/llm'
 import { testYtmConnection } from '@renderer/core/recommend/ytmAdapter'
 import { parseProxyAddress, resolveEffectiveYtmProxy } from '@renderer/core/recommend/ytmProxy'
+import { sharedYtmRegionCache } from '@renderer/utils/musicSdk/ytm/regionCache'
 
 export default {
   name: 'SettingAi',
@@ -300,8 +301,10 @@ export default {
       const res = await testYtmConnection(effective.proxyOverride)
       if (seq !== ytmTestSeq) return
       if (res.ok) {
+        sharedYtmRegionCache.set(effective.contextKey, false)
         ytmTestState.value = 'ok'
       } else if (res.status === 'region-blocked') {
+        sharedYtmRegionCache.set(effective.contextKey, true)
         ytmTestState.value = 'region-blocked'
         ytmTestMessage.value = res.message
       } else {

@@ -1,5 +1,6 @@
 import apiSourceInfo from './api-source-info'
 import { apiSource, userApi } from '@renderer/store'
+import { getYtmMusicUrl } from './ytm/player'
 // import api_temp_kw from './kw/api-temp'
 // // import api_test_bd from './bd/api-test'
 // import api_test_tx from './tx/api-test'
@@ -9,6 +10,11 @@ import { apiSource, userApi } from '@renderer/store'
 // import api_test_wy from './wy/api-test'
 
 const allApi = {
+  ytm_builtin_ytm: {
+    getMusicUrl(songInfo, type, options) {
+      return getYtmMusicUrl(songInfo, type, options)
+    },
+  },
   // temp_kw: api_temp_kw,
   // // test_bd: api_test_bd,
   // test_tx: api_test_tx,

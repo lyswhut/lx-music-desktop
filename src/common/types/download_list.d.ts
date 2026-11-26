@@ -14,7 +14,7 @@ declare global {
       | 'error'
       | 'completed'
 
-      type FileExt = 'mp3' | 'flac' | 'wav' | 'ape'
+      type FileExt = 'mp3' | 'flac' | 'wav' | 'ape' | 'm4a'
 
       interface ProgressInfo {
         progress: number

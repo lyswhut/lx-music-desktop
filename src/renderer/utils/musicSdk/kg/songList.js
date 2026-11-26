@@ -998,30 +998,32 @@ export default {
   search(text, page, limit = 20) {
     // http://msearchretry.kugou.com/api/v3/search/special?version=9209&keyword=%E5%91%A8%E6%9D%B0%E4%BC%A6&pagesize=20&filter=0&page=1&sver=2&with_res_tag=0
     // return httpFetch(`http://ioscdn.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&plat=2&version=7910&correct=1&sver=5`)
-    return httpFetch(`http://msearchretry.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&filter=0&version=7910&sver=2`)
-      .promise.then(({ body }) => {
-        if (body.errcode != 0) throw new Error('filed')
-        // console.log(body.data.info)
-        return {
-          list: body.data.info.map(item => {
-            return {
-              play_count: formatPlayCount(item.playcount),
-              id: 'id_' + item.specialid,
-              author: item.nickname,
-              name: item.specialname,
-              time: dateFormat(item.publishtime, 'Y-M-D'),
-              img: item.imgurl,
-              grade: item.grade,
-              desc: item.intro,
-              total: item.songcount,
-              source: 'kg',
-            }
-          }),
-          limit,
-          total: body.data.total,
-          source: 'kg',
-        }
-      })
+    const requestObj = httpFetch(`http://msearchretry.kugou.com/api/v3/search/special?keyword=${encodeURIComponent(text)}&page=${page}&pagesize=${limit}&showtype=10&filter=0&version=7910&sver=2`)
+    const promise = requestObj.promise.then(({ body }) => {
+      if (body.errcode != 0) throw new Error('filed')
+      // console.log(body.data.info)
+      return {
+        list: body.data.info.map(item => {
+          return {
+            play_count: formatPlayCount(item.playcount),
+            id: 'id_' + item.specialid,
+            author: item.nickname,
+            name: item.specialname,
+            time: dateFormat(item.publishtime, 'Y-M-D'),
+            img: item.imgurl,
+            grade: item.grade,
+            desc: item.intro,
+            total: item.songcount,
+            source: 'kg',
+          }
+        }),
+        limit,
+        total: body.data.total,
+        source: 'kg',
+      }
+    })
+    promise.cancel = () => requestObj.cancelHttp?.()
+    return promise
   },
 }
 

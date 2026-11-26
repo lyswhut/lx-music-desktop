@@ -59,10 +59,19 @@ const verifyQueryParams = async function(this: any, to: { query: Query, path: st
       _sortId = setting.sortId
       _page = '1'
     }
+    if (_source === 'ytm' && _sortId === 'charts' && _tagId) _tagId = ''
 
     next({
       path: to.path,
       query: { ...to.query, source: _source, tagId: _tagId, sortId: _sortId, page: _page },
+    })
+    return
+  }
+  // 归一化历史设置或外部链接传入的 ytm + charts + 非空 tagId 组合
+  if (_source === 'ytm' && _sortId === 'charts' && _tagId) {
+    next({
+      path: to.path,
+      query: { ...to.query, source: _source, tagId: '', sortId: _sortId, page: _page },
     })
     return
   }

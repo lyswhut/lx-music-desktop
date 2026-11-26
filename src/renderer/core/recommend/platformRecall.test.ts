@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { MusicSdkResponseError } from '@renderer/utils/musicSdk/responseError'
 import { recallPlatformSimilar } from './platformRecall'
 import type { PlatformRecallAnchor } from './platformRecall'
 import { SimilarCandidateCache } from './similarCache'
@@ -344,4 +345,131 @@ it('缓存用尽不重搜，匹配证据变化或 TTL 到期后才重新定位',
   expect(mocks.wySearch).toHaveBeenCalledTimes(2)
   await recallPlatformSimilar({ ...localAnchor, title: '另一录音' }, { cache })
   expect(mocks.wySearch).toHaveBeenCalledTimes(3)
+})
+
+describe('tx:seed-search 有限可取消重试、繁简统一与 YTM 原生 seedIds 直连', () => {
+  it('tx 遇到业务拒绝（搜索失败）与连接重置（ECONNRESET）按预算重试最多 2 次并成功恢复', async() => {
+    const resetErr = Object.assign(new Error('socket hang up'), { code: 'ECONNRESET', isReset: true })
+    mocks.txSearch
+      .mockRejectedValueOnce(new Error('搜索失败 (code=0/1000)'))
+      .mockRejectedValueOnce(resetErr)
+      .mockResolvedValueOnce(searchResult([searchRow({ songmid: '0039MnYb0qxYhV', songId: 97773, source: 'tx' })]))
+    mocks.txSimi.mockResolvedValue({ source: 'tx', list: [simiRow('七里香', '周杰伦', { source: 'tx' })] })
+
+    const res = await call({ ...anchor, seedIds: { wy: '186016' } }, { enabledProviders: ['tx'] })
+    expect(mocks.txSearch).toHaveBeenCalledTimes(3)
+    expect(res.state).toBe('ok')
+    expect(res.items[0].title).toBe('七里香')
+  })
+
+  it('tx 超时、畸形响应（MusicSdkResponseError）与签名错误绝不重试', async() => {
+    const timeoutErr = Object.assign(new Error('timeout'), { code: 'ETIMEDOUT', isTimeout: true })
+    mocks.txSearch.mockRejectedValueOnce(timeoutErr)
+    await call({ ...anchor, seedIds: null }, { enabledProviders: ['tx'] })
+    expect(mocks.txSearch).toHaveBeenCalledTimes(1)
+
+    vi.clearAllMocks()
+    mocks.txSearch.mockRejectedValueOnce(new MusicSdkResponseError())
+    await call({ ...anchor, seedIds: null }, { enabledProviders: ['tx'] })
+    expect(mocks.txSearch).toHaveBeenCalledTimes(1)
+
+    vi.clearAllMocks()
+    mocks.txSearch.mockRejectedValueOnce(new Error('zzcSign invalid signature'))
+    await call({ ...anchor, seedIds: null }, { enabledProviders: ['tx'] })
+    expect(mocks.txSearch).toHaveBeenCalledTimes(1)
+  })
+
+  it('tx 种子搜索在退避期间被取消时立即中止，不再发出后续请求', async() => {
+    let cancelled = false
+    mocks.txSearch.mockImplementation(async() => {
+      // 第 1 次失败后立即进入取消状态，退避期不应继续发出第 2 次请求
+      setTimeout(() => { cancelled = true }, 20)
+      throw new Error('搜索失败 (code=0/1000)')
+    })
+
+    const res = await call({ ...anchor, seedIds: null }, {
+      enabledProviders: ['tx'],
+      isCancelled: () => cancelled,
+    })
+    expect(res.state).toBe('cancelled')
+    expect(mocks.txSearch).toHaveBeenCalledTimes(1)
+  })
+
+  it('tx 种子搜索在未启用 YTM 时共享同一截止时间，退避后若剩余预算低于门槛则不再发出重试', async() => {
+    let clock = 1000
+    mocks.txSearch.mockImplementationOnce(async() => {
+      // 第 1 次尝试耗时 7.2s（10s 总预算剩 2.8s，扣 200ms 退避剩 2.6s >= 2.5s 允许进入退避）
+      clock += 7_200
+      // 模拟退避期间时钟又前进 200ms（实际到退避结束仅剩 2.4s < 2.5s），不得再发出第 2 次请求
+      setTimeout(() => { clock += 400 }, 20)
+      throw new Error('搜索失败 (code=0/1000)')
+    })
+
+    const res = await call({ ...anchor, seedIds: null }, {
+      enabledProviders: ['tx'],
+      now: () => clock,
+    })
+    expect(mocks.txSearch).toHaveBeenCalledTimes(1)
+    expect(res.state).toBe('all-failed')
+    expect(res.error).toContain('搜索失败')
+  })
+
+  it('繁体锚点在 locateSeed 中自动转简体定位国内种子', async() => {
+    mocks.txSearch.mockResolvedValueOnce(searchResult([
+      searchRow({ name: '爱在西元前', singer: '周杰伦', albumName: '范特西', interval: '03:54', songmid: 'tx_azxyq', songId: 8888, source: 'tx' }),
+    ]))
+    mocks.txSimi.mockResolvedValueOnce({ source: 'tx', list: [simiRow('简单爱', '周杰伦', { source: 'tx' })] })
+
+    const res = await call({
+      artist: '周杰倫',
+      title: '愛在西元前',
+      album: '范特西',
+      intervalSec: 234,
+      id: 'ytm_azxyq123456',
+      source: 'ytm',
+      seedIds: { ytm: 'azxyq123456' },
+    }, { enabledProviders: ['tx'] })
+    expect(mocks.txSearch).toHaveBeenCalledWith('爱在西元前 周杰伦', 1, 30)
+    expect(res.state).toBe('ok')
+    expect(res.items[0].title).toBe('简单爱')
+  })
+
+  it('YTM 锚点携带原生 seedIds.ytm 时直接进入 YTM Radio 召回，0 次 YTM 种子搜索', async() => {
+    const ytmSearchSongs = vi.fn()
+    const ytmGetRadio = vi.fn(async() => ({
+      tracks: [{ videoId: 'recVid00001', title: '稻香', artist: '周杰伦', album: '魔杰座', intervalSec: 223, picUrl: null }],
+      continuation: null,
+      relatedBrowseId: null,
+      hasValidContainer: true,
+    }))
+    mocks.wySearch.mockResolvedValueOnce(searchResult([
+      searchRow({ name: '稻香', singer: '周杰伦', albumName: '魔杰座', interval: '03:43', songmid: 'dx', source: 'wy' }),
+    ]))
+    const ytmAnchor: PlatformRecallAnchor = {
+      artist: '周杰伦',
+      title: '晴天',
+      album: '叶惠美',
+      intervalSec: 269,
+      id: 'ytm_nativeVid01',
+      source: 'ytm',
+      seedIds: { ytm: 'nativeVid01' },
+    }
+
+    const res = await call(ytmAnchor, {
+      enabledProviders: ['ytm'],
+      ytmAdapter: {
+        searchSongs: ytmSearchSongs,
+        getRadio: ytmGetRadio,
+        getRelated: vi.fn(),
+        checkRegionBlocked: vi.fn(async() => false),
+      },
+      ytmProxyContext: 'direct',
+      playableTargets: ['wy'],
+    })
+
+    expect(ytmSearchSongs).not.toHaveBeenCalled()
+    expect(ytmGetRadio).toHaveBeenCalledWith('nativeVid01', expect.any(Number))
+    expect(res.state).toBe('ok')
+    expect(res.items[0].title).toBe('稻香')
+  })
 })

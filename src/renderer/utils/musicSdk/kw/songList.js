@@ -460,29 +460,31 @@ export default {
   },
 
   search(text, page, limit = 20) {
-    return httpFetch(`http://search.kuwo.cn/r.s?all=${encodeURIComponent(text)}&pn=${page - 1}&rn=${limit}&rformat=json&encoding=utf8&ver=mbox&vipver=MUSIC_8.7.7.0_BCS37&plat=pc&devid=28156413&ft=playlist&pay=0&needliveshow=0`)
-      .promise.then(({ body }) => {
-        body = objStr2JSON(body)
-        // console.log(body)
-        return {
-          list: body.abslist.map(item => {
-            return {
-              play_count: this.formatPlayCount(item.playcnt),
-              id: String(item.playlistid),
-              author: decodeName(item.nickname),
-              name: decodeName(item.name),
-              total: item.songnum,
-              // time: item.publish_time,
-              img: item.pic,
-              desc: decodeName(item.intro),
-              source: 'kw',
-            }
-          }),
-          limit,
-          total: parseInt(body.TOTAL),
-          source: 'kw',
-        }
-      })
+    const requestObj = httpFetch(`http://search.kuwo.cn/r.s?all=${encodeURIComponent(text)}&pn=${page - 1}&rn=${limit}&rformat=json&encoding=utf8&ver=mbox&vipver=MUSIC_8.7.7.0_BCS37&plat=pc&devid=28156413&ft=playlist&pay=0&needliveshow=0`)
+    const promise = requestObj.promise.then(({ body }) => {
+      body = objStr2JSON(body)
+      // console.log(body)
+      return {
+        list: body.abslist.map(item => {
+          return {
+            play_count: this.formatPlayCount(item.playcnt),
+            id: String(item.playlistid),
+            author: decodeName(item.nickname),
+            name: decodeName(item.name),
+            total: item.songnum,
+            // time: item.publish_time,
+            img: item.pic,
+            desc: decodeName(item.intro),
+            source: 'kw',
+          }
+        }),
+        limit,
+        total: parseInt(body.TOTAL),
+        source: 'kw',
+      }
+    })
+    promise.cancel = () => requestObj.cancelHttp?.()
+    return promise
   },
 }
 

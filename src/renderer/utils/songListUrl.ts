@@ -5,6 +5,8 @@
  * 避免自动识别出 SDK 无法打开的链接形式。
  */
 
+import { extractYtmListParam, isUnsupportedYtmMixId, normalizeYtmPlaylistId } from '@renderer/utils/musicSdk/ytm/parser'
+
 export interface ParsedSongListUrl {
   source: LX.OnlineSource
   id: string
@@ -17,6 +19,7 @@ const sourceHostRegExps: Array<{ source: LX.OnlineSource, regExp: RegExp }> = [
   { source: 'kw', regExp: /(^|\.)kuwo\.cn$/ },
   { source: 'wy', regExp: /(^|\.)music\.163\.com$/ },
   { source: 'mg', regExp: /(^|\.)migu\.cn$/ },
+  { source: 'ytm', regExp: /(^|\.)(?:youtube\.com|youtu\.be)$/ },
 ]
 
 // 与 src/renderer/utils/musicSdk/wy/songList.js 的 regExps.listDetailLink / listDetailLink2 保持一致
@@ -55,6 +58,46 @@ const parseIdBySource: Record<LX.OnlineSource, (url: string) => string | null> =
     }
     return mgRegExp.exec(url)?.[1] ?? null
   },
+  ytm: url => {
+    const listParam = extractYtmListParam(url)
+    return listParam ? normalizeYtmPlaylistId(listParam) : null
+  },
+}
+
+/** 识别明确属于 YouTube / YouTube Music 链接但为不可浏览自动混音（如 `list=RD...`）或缺少有效 list 参数的输入。 */
+export const isUnsupportedYtmPlaylistUrl = (input: string, allowBareId = true): boolean => {
+  const value = input.trim()
+  if (!value) return false
+  const explicitUrl = value.match(/https?:\/\/[^\s]+/i)?.[0]
+  if (explicitUrl) {
+    const urlText = explicitUrl.replace(/[.,;!?'"()（\u4e00-\u9fff，。；：！？、）】》'’”]+$/, '')
+    try {
+      const url = new URL(urlText)
+      const host = url.hostname.toLowerCase()
+      if (!/(^|\.)(?:youtube\.com|youtu\.be)$/.test(host)) return false
+      const list = url.searchParams.get('list')?.trim() ?? ''
+      if (!list) return true
+      return normalizeYtmPlaylistId(list) == null
+    } catch {
+      return false
+    }
+  }
+  if (!/\s/.test(value) && value.includes('/')) {
+    const urlText = value.replace(/[.,;!?'"()（\u4e00-\u9fff，。；：！？、）】》'’”]+$/, '')
+    try {
+      const url = new URL(`https://${urlText}`)
+      const host = url.hostname.toLowerCase()
+      if (/(^|\.)(?:youtube\.com|youtu\.be)$/.test(host)) {
+        const list = url.searchParams.get('list')?.trim() ?? ''
+        if (!list) return true
+        return normalizeYtmPlaylistId(list) == null
+      }
+      return false
+    } catch {
+      return false
+    }
+  }
+  return allowBareId ? isUnsupportedYtmMixId(value) : false
 }
 
 /**

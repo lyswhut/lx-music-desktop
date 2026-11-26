@@ -60,7 +60,12 @@ export default {
       // console.log(body)
       const req = body?.['music.search.SearchCgiService'] ?? body?.req
       if (!req || typeof body.code !== 'number' || typeof req.code !== 'number') throw new MusicSdkResponseError()
-      if (body.code !== this.successCode || req.code !== this.successCode) throw new Error('搜索失败')
+      if (body.code !== this.successCode || req.code !== this.successCode) {
+        const err = new Error(`搜索失败 (code=${body.code}/${req.code})`)
+        err.bodyCode = body.code
+        err.reqCode = req.code
+        throw err
+      }
       const data = req.data
       if (!Array.isArray(data?.body?.song?.list) || !Number.isFinite(data?.meta?.sum) || data.meta.sum < 0) throw new MusicSdkResponseError()
       return data

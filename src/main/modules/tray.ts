@@ -153,12 +153,21 @@ const i18n = {
   },
 }
 
-const getIconPath = (id: number) => {
-  let theme = id == TRAY_AUTO_ID
-    ? global.lx.theme.shouldUseDarkColors
-      ? themeList[0] : themeList[2]
-    : themeList.find(item => item.id === id) ?? themeList[0]
-  return path.join(global.staticPath, 'images/tray', theme.fileName + (isWin ? '.ico' : '.png'))
+export const resolveTrayTheme = (id: number, shouldUseDarkColors: boolean, mac = isMac) => {
+  if (id == TRAY_AUTO_ID) {
+    if (mac) return themeList[0]
+    return shouldUseDarkColors ? themeList[0] : themeList[2]
+  }
+  return themeList.find(item => item.id === id) ?? themeList[0]
+}
+
+export const createTrayImage = (id: number) => {
+  const theme = resolveTrayTheme(id, global.lx.theme.shouldUseDarkColors)
+  const image = nativeImage.createFromPath(path.join(global.staticPath, 'images/tray', theme.fileName + (isWin ? '.ico' : '.png')))
+  if (isMac) {
+    image.setTemplateImage(theme.isNative)
+  }
+  return image
 }
 
 export const createTray = () => {
@@ -166,7 +175,7 @@ export const createTray = () => {
   if ((tray && !tray.isDestroyed()) || !global.lx.appSetting['tray.enable']) return
 
   // 托盘
-  tray = new Tray(nativeImage.createFromPath(getIconPath(global.lx.appSetting['tray.themeId'])))
+  tray = new Tray(createTrayImage(global.lx.appSetting['tray.themeId']))
 
   // tray.setToolTip('LX Music')
   // createMenu()
@@ -318,7 +327,7 @@ export const createMenu = () => {
 
 export const setTrayImage = (themeId: number) => {
   if (!tray) return
-  tray.setImage(nativeImage.createFromPath(getIconPath(themeId)))
+  tray.setImage(createTrayImage(themeId))
 }
 
 const setLyric = (lyricLineText?: string) => {

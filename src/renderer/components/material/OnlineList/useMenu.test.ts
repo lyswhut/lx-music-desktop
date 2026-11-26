@@ -1,11 +1,12 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 import useMenu from './useMenu'
-import { assertPlaybackSupport } from '@renderer/core/music/sourceCapabilities'
+import { assertPlaybackSupport, canDirectDownload } from '@renderer/core/music/sourceCapabilities'
 
 const mocks = vi.hoisted(() => {
   const userApi: { apis: Record<string, any>, qualityLists: Record<string, any> } = { apis: {}, qualityLists: {} }
+  const qualityList: { value: Record<string, any> } = { value: {} }
   return {
-    qualityList: { value: {} },
+    qualityList,
     userApi,
     setting: { 'common.apiSource': 'primary', 'common.apiSourceBackups': ['backup'] },
   }
@@ -17,15 +18,21 @@ vi.mock('@renderer/plugins/i18n', () => ({ useI18n: () => (key: string) => key }
 vi.mock('@renderer/core/dislikeList', () => ({ hasDislike: () => false }))
 
 beforeEach(() => {
+  mocks.qualityList.value = {}
   mocks.userApi.apis = {}
   mocks.userApi.qualityLists = {}
 })
 
-const showMenu = (checkApiSource = true) => {
+const showMenu = (
+  checkApiSource = true,
+  musicInfo: { source: LX.Source, id?: string, meta?: { _qualitys?: Record<string, any> } } = { source: 'wy', id: 'wy_1' },
+  assertApiSupport = () => false,
+) => {
   const menu = useMenu({
     props: { checkApiSource },
-    assertApiSupport: () => false,
+    assertApiSupport,
     assertPlaybackSupport,
+    canDirectDownload,
     emit: vi.fn(),
     handleShowDownloadModal: vi.fn(),
     handlePlayMusic: vi.fn(),
@@ -35,7 +42,7 @@ const showMenu = (checkApiSource = true) => {
     handleOpenMusicDetail: vi.fn(),
     handleDislikeMusic: vi.fn(),
   })
-  menu.showMenu({ pageX: 0, pageY: 0 }, { source: 'wy' })
+  menu.showMenu({ pageX: 0, pageY: 0 }, musicInfo)
   return Object.fromEntries(menu.menus.value.map(item => [item.action, item.disabled]))
 }
 
@@ -51,4 +58,24 @@ it('no supporting source disables both playback actions and Download', () => {
 
 it('lists that do not require source support preserve their playback actions', () => {
   expect(showMenu(false)).toMatchObject({ play: false, playLater: false, download: true })
+})
+
+it('ytm tracks with built-in qualities always enable Play, Play Later, and Download even without domestic scripts', () => {
+  expect(showMenu(true, {
+    source: 'ytm',
+    id: 'ytm_abc12345678',
+    meta: { _qualitys: { '128k': { size: '' }, '320k': { size: '' } } },
+  })).toMatchObject({
+    play: false,
+    playLater: false,
+    download: false,
+  })
+})
+
+it('ytm tracks lacking _qualitys still enable direct Play/Play Later but disable Download', () => {
+  expect(showMenu(true, { source: 'ytm', id: 'ytm_abc12345678', meta: { _qualitys: {} } })).toMatchObject({
+    play: false,
+    playLater: false,
+    download: true,
+  })
 })

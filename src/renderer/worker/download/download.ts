@@ -1,4 +1,6 @@
+import path from 'node:path'
 import { createDownload, type DownloaderType, type Options as DownloadOptions } from '@common/utils/download'
+import { getRequestAgent } from '@common/utils/download/util'
 // import music from '@renderer/utils/musicSdk'
 import { createDownloadInfo } from './utils'
 // import {
@@ -224,14 +226,23 @@ const createTask = async(downloadInfo: LX.Download.ListItem, savePath: string, s
   dls.set(downloadInfo.id, createDownload(downloadOptions))
 }
 
-export const updateUrl = (id: string, url: string) => {
+export const updateUrl = (
+  id: string,
+  url: string,
+  options?: { savePath?: string, fileName?: string, proxy?: { host: string, port: number } },
+) => {
   const task = tasks.get(id)
   if (!task) return
   task.metadata.url = url
+  if (options?.fileName) task.metadata.fileName = options.fileName
   // commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
   const dl = dls.get(id)
   if (!dl) return
-  dl.refreshUrl(url)
+  if (options?.savePath && options?.fileName) {
+    task.metadata.filePath = path.join(options.savePath, options.fileName)
+    dl.updateSaveInfo(options.savePath, options.fileName)
+  }
+  dl.refreshUrl(url, getRequestAgent(url, options?.proxy))
   dl.start().catch(err => {
     sendAction(id, {
       action: 'error',

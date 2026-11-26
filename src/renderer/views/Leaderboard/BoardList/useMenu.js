@@ -1,5 +1,6 @@
 import { computed, ref, reactive, nextTick } from '@common/utils/vueTools'
 import { useI18n } from '@renderer/plugins/i18n'
+import { dialog } from '@renderer/plugins/Dialog'
 import { addSongListDetail, playSongListDetail } from '../action'
 
 export default ({
@@ -52,12 +53,15 @@ export default ({
     if (!action) return
     // const id = `board__${this.source}__${board.id}`
     const board = list[index]
+    if (!board) return
     switch (action.action) {
       case 'play':
         playSongListDetail(board.id)
         break
       case 'collect':
-        addSongListDetail(board.id, board.name, source)
+        addSongListDetail(board.id, board.name, source).catch(err => {
+          dialog({ message: err?.message || window.i18n.t('list__load_failed') })
+        })
         break
     }
   }

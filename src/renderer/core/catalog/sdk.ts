@@ -7,6 +7,7 @@ import kwAlbum from '@renderer/utils/musicSdk/kw/album'
 import kwSinger from '@renderer/utils/musicSdk/kw/singer'
 import kgAlbum from '@renderer/utils/musicSdk/kg/album'
 import mgAlbum from '@renderer/utils/musicSdk/mg/album'
+import { singer as ytmSinger, album as ytmAlbum } from '@renderer/utils/musicSdk/ytm'
 import getTxMusicInfo from '@renderer/utils/musicSdk/tx/musicInfo'
 import getWyMusicInfo from '@renderer/utils/musicSdk/wy/musicInfo'
 import { getMusicInfo as getKgMusicInfo } from '@renderer/utils/musicSdk/kg/musicInfo'
@@ -44,4 +45,8 @@ export const catalogAdapter = createCatalogAdapter({
     album: (id, page) => kwAlbum.getAlbumListDetail(id, page),
   },
   mg: { album: async(id, page) => mgAlbum.getAlbumDetail(id, page), albumPageSize: 'response-length' },
+  ytm: {
+    artist: (id, page, limit) => ytmSinger.getSongList(id, page, limit),
+    album: (id, page, limit) => ytmAlbum.getAlbumDetail(id, page, limit),
+  },
 })

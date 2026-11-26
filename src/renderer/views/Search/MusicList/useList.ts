@@ -28,8 +28,15 @@ export default () => {
     const version = ++searchVersion
     listInfo.value = listInfos[source] as ListInfo
     if (text.length) void addHistoryWord(text).catch(error => { console.log(error) })
+    if (source === 'all' && text.length) {
+      // 聚合搜索采用国内源先出、YTM 后补的渐进渲染：切词/翻页起手归顶，避免 YTM 晚到或超时后再次把已滚动用户拉回顶部
+      setTimeout(() => {
+        if (version === searchVersion && listRef.value) listRef.value.scrollToTop()
+      })
+    }
     return searchMusic(text, page, source).then((list: LX.Music.MusicInfo[]) => {
       if (version !== searchVersion) return
+      if (source === 'all') return
       if (list.length) {
         setTimeout(() => {
           if (version === searchVersion && listRef.value) listRef.value.scrollToTop()

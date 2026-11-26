@@ -757,3 +757,27 @@ export const dislikeMusic = async() => {
   await addDislikeInfo([{ name: minfo.name, singer: minfo.singer }])
   await playNext(true, 'user')
 }
+
+let picFallbackEpoch = -1
+let picFallbackMusicId = ''
+
+/**
+ * 播放栏封面 `<img>` 加载失败时的统一处理：
+ * 先清空失效图，对 `source === 'ytm'` 曲目执行本次播放最多一次的国内封面回落（跳过已失败 URL 并校验当前曲目归属）。
+ */
+export const handlePlayerPicError = () => {
+  const failedUrl = _musicInfo.pic
+  setMusicInfo({ pic: null })
+  const current = playMusicInfo.musicInfo
+  if (!current || 'progress' in current || current.source !== 'ytm') return
+  const epoch = playbackEpoch
+  if (picFallbackEpoch === epoch && picFallbackMusicId === current.id) return
+  picFallbackEpoch = epoch
+  picFallbackMusicId = current.id
+  void getPicPath({ musicInfo: current, listId: playMusicInfo.listId, isRefresh: true, skipPrimary: true }).then((url: string) => {
+    if (!url || url === failedUrl) return
+    if (epoch !== playbackEpoch || !isCurrentMusic(current)) return
+    setMusicInfo({ pic: url })
+    window.app_event.picUpdated()
+  }).catch(() => {})
+}

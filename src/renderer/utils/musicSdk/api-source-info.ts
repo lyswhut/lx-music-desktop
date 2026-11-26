@@ -6,6 +6,14 @@ const sources: Array<{
   disabled: boolean
   supportQualitys: Partial<Record<LX.OnlineSource, LX.Quality[]>>
 }> = [
+  {
+    id: 'ytm_builtin',
+    name: 'YouTube Music（内置直连）',
+    disabled: false,
+    supportQualitys: {
+      ytm: ['128k', '320k'],
+    },
+  },
   // {
   //   id: 'test',
   //   name: '测试接口',

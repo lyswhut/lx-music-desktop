@@ -47,7 +47,12 @@ vi.mock('@renderer/utils', () => ({
     singer: raw.singer,
     source: raw.source,
     interval: raw.interval ?? '04:00',
-    meta: { songId: raw.songmid, albumName: raw.albumName ?? '' },
+    meta: {
+      songId: raw.songmid,
+      albumName: raw.albumName ?? '',
+      qualitys: raw.types ?? [],
+      _qualitys: raw._types ?? {},
+    },
   }),
 }))
 
@@ -876,5 +881,43 @@ describe('YouTube Music 三方融合、整页尾部消费、安全续页与预�
     })
     expect(second.state).toBe('ok')
     expect(second.items[0].musicInfo.source).toBe('kw')
+  })
+
+  it('YouTube Music 平权直播：启用 allowDirectYtmPlayback 后即使无国内可播源或国内未命中也可直接返回原生 ytm 可播曲目', async() => {
+    const exclusiveTrack = rawTrack(1, 'YtmOnlyExclusive')
+    const adapter = createMockAdapter({
+      getRadio: vi.fn(() => cancellable(Promise.resolve({
+        tracks: [exclusiveTrack],
+        continuation: null,
+        relatedBrowseId: null,
+        hasValidContainer: true,
+      }))),
+    })
+
+    // 场景 A：无任何国内自定义源（playableTargets=[]）→ 仍直接返回 source='ytm' 原生可播曲目
+    const noDomesticRes = await recallPlatformSimilar(anchor, {
+      cache: new SimilarCandidateCache(),
+      enabledProviders: ['ytm'],
+      ytmAdapter: adapter,
+      playableTargets: [],
+      allowDirectYtmPlayback: true,
+    })
+    expect(noDomesticRes.state).toBe('ok')
+    expect(noDomesticRes.items).toHaveLength(1)
+    expect(noDomesticRes.items[0].musicInfo.source).toBe('ytm')
+    expect(noDomesticRes.items[0].musicInfo.id).toBe(`ytm_${exclusiveTrack.videoId}`)
+    expect((noDomesticRes.items[0].musicInfo as LX.Music.MusicInfoOnline).meta._qualitys).toMatchObject({ '128k': { size: null }, '320k': { size: null } })
+
+    // 场景 B：有国内源但国内搜索 0 命中 → 平滑保留原生 ytm 曲目直接进探索队列
+    mocks.wySearch.mockResolvedValue({ list: [] })
+    const unmatchedDomesticRes = await recallPlatformSimilar(anchor, {
+      cache: new SimilarCandidateCache(),
+      enabledProviders: ['ytm'],
+      ytmAdapter: adapter,
+      playableTargets: ['wy'],
+      allowDirectYtmPlayback: true,
+    })
+    expect(unmatchedDomesticRes.state).toBe('ok')
+    expect(unmatchedDomesticRes.items[0].musicInfo.source).toBe('ytm')
   })
 })

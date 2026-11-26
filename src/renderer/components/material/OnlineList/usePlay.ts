@@ -17,7 +17,7 @@ export default ({ selectedList, props, removeAllSelect, emit }: {
   emit: (event: 'show-menu' | 'play-list' | 'togglePage', ...args: any[]) => void
 }) => {
   let clickTime = 0
-  let clickIndex = -1
+  let clickId: string | null = null
 
   const handlePlayMusic = async(index: number, single: boolean) => {
     if (props.playListMode && (single || selectedList.value.length <= 1)) {
@@ -54,12 +54,14 @@ export default ({ selectedList, props, removeAllSelect, emit }: {
   }
 
   const doubleClickPlay = (index: number) => {
+    const targetId = props.list[index]?.id ?? null
     if (
+      !targetId ||
       window.performance.now() - clickTime > 400 ||
-      clickIndex !== index
+      clickId !== targetId
     ) {
       clickTime = window.performance.now()
-      clickIndex = index
+      clickId = targetId
       return
     }
     if (props.playListMode === true || appSetting['list.isClickPlayList']) {
@@ -68,7 +70,7 @@ export default ({ selectedList, props, removeAllSelect, emit }: {
       void handlePlayMusic(index, true)
     }
     clickTime = 0
-    clickIndex = -1
+    clickId = null
   }
 
   return {

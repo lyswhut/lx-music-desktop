@@ -398,37 +398,39 @@ export default {
   },
 
   search(text, page, limit = 20) {
-    return httpFetch(`http://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist?page_no=${page - 1}&num_per_page=${limit}&format=json&query=${encodeURIComponent(text)}&remoteplace=txt.yqq.playlist&inCharset=utf8&outCharset=utf-8`, {
+    const requestObj = httpFetch(`http://c.y.qq.com/soso/fcgi-bin/client_music_search_songlist?page_no=${page - 1}&num_per_page=${limit}&format=json&query=${encodeURIComponent(text)}&remoteplace=txt.yqq.playlist&inCharset=utf8&outCharset=utf-8`, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
         Referer: 'http://y.qq.com/portal/search.html',
       },
     })
-      .promise.then(({ body }) => {
-        if (typeof body?.code !== 'number') throw new MusicSdkResponseError()
-        if (body.code !== 0) throw new Error('搜索失败')
-        if (!Array.isArray(body.data?.list) || !Number.isFinite(body.data?.sum) || body.data.sum < 0) throw new MusicSdkResponseError()
-        // console.log(body.data.list)
-        return {
-          list: body.data.list.map(item => {
-            return {
-              play_count: formatPlayCount(item.listennum),
-              id: String(item.dissid),
-              author: decodeName(item.creator.name),
-              name: decodeName(item.dissname),
-              time: dateFormat(item.createtime, 'Y-M-D'),
-              img: item.imgurl,
-              // grade: item.favorcnt / 10,
-              total: item.song_count,
-              desc: decodeName(decodeName(item.introduction)).replace(/<br>/g, '\n'),
-              source: 'tx',
-            }
-          }),
-          limit,
-          total: body.data.sum,
-          source: 'tx',
-        }
-      })
+    const promise = requestObj.promise.then(({ body }) => {
+      if (typeof body?.code !== 'number') throw new MusicSdkResponseError()
+      if (body.code !== 0) throw new Error('搜索失败')
+      if (!Array.isArray(body.data?.list) || !Number.isFinite(body.data?.sum) || body.data.sum < 0) throw new MusicSdkResponseError()
+      // console.log(body.data.list)
+      return {
+        list: body.data.list.map(item => {
+          return {
+            play_count: formatPlayCount(item.listennum),
+            id: String(item.dissid),
+            author: decodeName(item.creator.name),
+            name: decodeName(item.dissname),
+            time: dateFormat(item.createtime, 'Y-M-D'),
+            img: item.imgurl,
+            // grade: item.favorcnt / 10,
+            total: item.song_count,
+            desc: decodeName(decodeName(item.introduction)).replace(/<br>/g, '\n'),
+            source: 'tx',
+          }
+        }),
+        limit,
+        total: body.data.sum,
+        source: 'tx',
+      }
+    })
+    promise.cancel = () => requestObj.cancelHttp?.()
+    return promise
   },
 }
 

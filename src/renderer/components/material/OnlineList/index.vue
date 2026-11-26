@@ -43,7 +43,7 @@
                 <div class="list-item-cell" style="flex: 0 0 22%;"><common-catalog-link :music="item" kind="album" /></div>
                 <div class="list-item-cell" style="flex: 0 0 9%;"><span class="no-select">{{ item.interval || '--/--' }}</span></div>
                 <div class="list-item-cell" style="flex: 0 0 16%; padding-left: 0; padding-right: 0;">
-                  <material-list-buttons :index="index" :remove-btn="false" :download-btn="assertApiSupport(item.source)" :play-btn="checkApiSource ? assertPlaybackSupport(item.source) : true" @btn-click="handleListBtnClick" />
+                  <material-list-buttons :index="index" :remove-btn="false" :download-btn="canDirectDownload(item)" :play-btn="checkApiSource ? assertPlaybackSupport(item.source) : true" @btn-click="handleListBtnClick" />
                 </div>
               </div>
             </template>
@@ -101,7 +101,7 @@
 <script>
 import { clipboardWriteText } from '@common/utils/electron'
 import { assertApiSupport } from '@renderer/store/utils'
-import { assertPlaybackSupport } from '@renderer/core/music/sourceCapabilities'
+import { assertPlaybackSupport, canDirectDownload } from '@renderer/core/music/sourceCapabilities'
 import { ref } from '@common/utils/vueTools'
 import useList from './useList'
 import useMenu from './useMenu'
@@ -199,6 +199,7 @@ export default {
       props,
       assertApiSupport,
       assertPlaybackSupport,
+      canDirectDownload,
       emit,
 
       handleShowDownloadModal,
@@ -210,6 +211,7 @@ export default {
       handleDislikeMusic,
     })
 
+    let rightClickTargetId = null
     const handleListItemClick = (event, index) => {
       if (rightClickSelectedIndex.value > -1) return
       handleSelectData(index)
@@ -217,11 +219,21 @@ export default {
     }
     const handleListItemRightClick = (event, index) => {
       rightClickSelectedIndex.value = index
+      rightClickTargetId = props.list[index]?.id ?? null
       showMenu(event, props.list[index], index)
     }
     const handleMenuClick = (action) => {
-      let index = rightClickSelectedIndex.value
+      const targetId = rightClickTargetId
+      const fallbackIndex = rightClickSelectedIndex.value
       rightClickSelectedIndex.value = -1
+      rightClickTargetId = null
+      const index = targetId != null
+        ? props.list.findIndex(item => item.id === targetId)
+        : fallbackIndex
+      if (index < 0) {
+        menuClick(null, -1)
+        return
+      }
       menuClick(action, index)
     }
     const handleListRightClick = (event) => {
@@ -276,6 +288,7 @@ export default {
       handleListRightClick,
       assertApiSupport,
       assertPlaybackSupport,
+      canDirectDownload,
 
       isShowListAdd,
       isShowListAddMultiple,

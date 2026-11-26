@@ -132,9 +132,13 @@ const runSearch = async(kind: CatalogSearchKind, text: string, source: CatalogSe
   const version = ++searchVersion
   listInfo.value = getCatalogSearchListInfo(kind, source) ?? createFallbackInfo()
   if (text.trim().length) void addHistoryWord(text.trim()).catch(error => { console.log(error) })
+  if (source === 'all' && text.trim().length) {
+    // 聚合搜索渐进渲染：在 searchCatalog 隐藏容器前同步归顶一次，避免 YTM 延迟收敛或超时时将已滚动用户拉回顶部
+    domListRef.value?.scrollTo({ top: 0 })
+  }
   const list = await searchCatalog(kind, text, page || 1, source)
   if (version !== searchVersion) return
-  if (list.length && domListRef.value) {
+  if (source !== 'all' && list.length && domListRef.value) {
     void nextTick(() => {
       if (version === searchVersion) domListRef.value?.scrollTo({ top: 0 })
     })

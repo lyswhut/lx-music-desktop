@@ -5,6 +5,7 @@ import { hasDislike } from '@renderer/core/dislikeList'
 
 export default ({
   assertApiSupport,
+  canDirectDownload,
   emit,
 
   handleShowDownloadModal,
@@ -107,7 +108,9 @@ export default ({
     itemMenuControl.sourceDetail = !!musicSdk[musicInfo.source]?.getMusicDetailPageUrl
     // itemMenuControl.play =
     //   itemMenuControl.playLater =
-    itemMenuControl.download = assertApiSupport(musicInfo.source) && musicInfo.source != 'local'
+    itemMenuControl.download = canDirectDownload
+      ? canDirectDownload(musicInfo)
+      : (assertApiSupport(musicInfo.source) && musicInfo.source != 'local')
 
     itemMenuControl.dislike = !hasDislike(musicInfo)
 

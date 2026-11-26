@@ -1,3 +1,4 @@
+import { DOMESTIC_ONLINE_SOURCES } from '@common/constants'
 import {
   queryMusicUrl,
   insertMusicUrl,
@@ -22,7 +23,8 @@ export const getMusicUrl = (id: string): LX.Music.MusicUrlInfo | null => {
     if (typeof cached?.url !== 'string' || !cached.url) return null
     const info = cached.musicInfo
     const validInfo = info && typeof info.id === 'string' && typeof info.name === 'string' &&
-      typeof info.singer === 'string' && ['kw', 'kg', 'tx', 'wy', 'mg'].includes(info.source) &&
+      typeof info.singer === 'string' &&
+      (info.source === 'ytm' || (DOMESTIC_ONLINE_SOURCES as readonly string[]).includes(info.source)) &&
       info.meta && typeof info.meta === 'object'
     return { id, url: cached.url, ...(validInfo ? { musicInfo: info } : {}) }
   } catch {

@@ -10,6 +10,10 @@ import {
 } from './state'
 import { markRaw, toRaw } from '@common/utils/vueTools'
 import { getMusicUrl, getPicUrl, getLyricInfo } from '@renderer/core/music/online'
+import { BUILTIN_YTM_QUALITIES, canDirectDownload } from '@renderer/core/music/sourceCapabilities'
+import { isYtmStreamUrlExpired } from '@renderer/utils/musicSdk/ytm/streamUtils'
+import { resolveLiveYtmProxy } from '@renderer/utils/musicSdk/ytm/runtimeContext'
+import { getExt } from '@renderer/worker/download/utils'
 import { appSetting } from '../setting'
 import { qualityList } from '..'
 import { proxyCallback } from '@renderer/worker/utils'
@@ -133,7 +137,22 @@ const setStatus = (downloadInfo: LX.Download.ListItem, status: LX.Download.Downl
 // 修复 1.1.x版本 酷狗源歌词格式
 const fixKgLyric = (lrc: string) => /\[00:\d\d:\d\d.\d+\]/.test(lrc) ? lrc.replace(/(?:\[00:(\d\d:\d\d.\d+\]))/gm, '[$1') : lrc
 
-const getProxy = () => {
+const isYtmMediaHost = (rawUrl?: string | null): boolean => {
+  if (!rawUrl) return false
+  try {
+    const host = new URL(rawUrl).hostname.toLowerCase()
+    return /(^|\.)(googlevideo\.com|youtube\.com|youtu\.be|ytimg\.com|ggpht\.com)$/.test(host) ||
+      /^(?:lh\d+|yt\d+)\.googleusercontent\.com$/.test(host)
+  } catch {
+    return false
+  }
+}
+
+const getProxy = (musicInfo?: LX.Music.MusicInfoOnline, targetUrl?: string | null) => {
+  if (isYtmMediaHost(targetUrl) || (!targetUrl && musicInfo?.source === 'ytm')) {
+    const ytmProxy = resolveLiveYtmProxy().lockedProxy
+    return ytmProxy || undefined
+  }
   return proxy.enable && proxy.host ? {
     host: proxy.host,
     port: parseInt(proxy.port || '80'),
@@ -176,7 +195,7 @@ const saveMeta = (downloadInfo: LX.Download.ListItem) => {
       album: downloadInfo.metadata.musicInfo.meta.albumName,
       APIC: imgUrl,
     }
-    void window.lx.worker.download.writeMeta(info, lyrics ?? { lyric: '' }, getProxy())
+    void window.lx.worker.download.writeMeta(info, lyrics ?? { lyric: '' }, getProxy(downloadInfo.metadata.musicInfo, imgUrl))
   })
 }
 
@@ -205,43 +224,61 @@ const downloadLyric = (downloadInfo: LX.Download.ListItem) => {
   })
 }
 
+const syncDownloadExt = (downloadInfo: LX.Download.ListItem, resolvedSource?: LX.OnlineSource) => {
+  if (!resolvedSource || downloadInfo.downloaded > 0) return
+  const expectedExt = getExt(downloadInfo.metadata.quality, resolvedSource)
+  if (downloadInfo.metadata.ext === expectedExt) return
+  downloadInfo.metadata.ext = expectedExt
+  const dotIdx = downloadInfo.metadata.fileName.lastIndexOf('.')
+  if (dotIdx > 0) {
+    downloadInfo.metadata.fileName = `${downloadInfo.metadata.fileName.slice(0, dotIdx)}.${expectedExt}`
+  } else {
+    downloadInfo.metadata.fileName = `${downloadInfo.metadata.fileName}.${expectedExt}`
+  }
+  throttleUpdateTask([downloadInfo])
+}
+
 const getUrl = async(downloadInfo: LX.Download.ListItem, isRefresh: boolean = false) => {
   let toggleMusicInfo = downloadInfo.metadata.musicInfo.meta.toggleMusicInfo
-  return (toggleMusicInfo ? getMusicUrl({
+  let resolvedSource: LX.OnlineSource | undefined
+  const url = await (toggleMusicInfo ? getMusicUrl({
     musicInfo: toggleMusicInfo,
     isRefresh,
     quality: downloadInfo.metadata.quality,
     allowToggleSource: false,
+    preferMp4: true,
+    onResolvedMusicInfo: info => { resolvedSource = info.source },
   }) : Promise.reject(new Error('not found'))).catch(() => {
     return getMusicUrl({
       musicInfo: downloadInfo.metadata.musicInfo,
-      isRefresh: false,
+      isRefresh,
       quality: downloadInfo.metadata.quality,
       allowToggleSource: appSetting['download.isUseOtherSource'],
+      preferMp4: true,
+      onResolvedMusicInfo: info => { resolvedSource = info.source },
     })
   }).catch(() => '')
+  if (url) syncDownloadExt(downloadInfo, resolvedSource)
+  return url
 }
 const handleRefreshUrl = (downloadInfo: LX.Download.ListItem) => {
   setStatusText(downloadInfo, window.i18n.t('download_status_error_refresh_url'))
-  let toggleMusicInfo = downloadInfo.metadata.musicInfo.meta.toggleMusicInfo
-  ;(toggleMusicInfo ? getMusicUrl({
-    musicInfo: toggleMusicInfo,
-    isRefresh: true,
-    quality: downloadInfo.metadata.quality,
-    allowToggleSource: false,
-  }) : Promise.reject(new Error('not found'))).catch(() => {
-    return getMusicUrl({
-      musicInfo: downloadInfo.metadata.musicInfo,
-      isRefresh: true,
-      quality: downloadInfo.metadata.quality,
-      allowToggleSource: appSetting['download.isUseOtherSource'],
-    })
-  })
-    .catch(() => '')
+  void getUrl(downloadInfo, true)
     .then(url => {
-    // commit('setStatusText', { downloadInfo, text: '链接刷新成功' })
+      if (downloadInfo.status != DOWNLOAD_STATUS.RUN) return
+      if (!url) {
+        handleError(downloadInfo, window.i18n.t('download_status_error_url_failed'))
+        return
+      }
+      const savePath = buildSavePath(downloadInfo)
+      const filePath = joinPath(savePath, downloadInfo.metadata.fileName)
+      if (downloadInfo.metadata.filePath != filePath) updateFilePath(downloadInfo, filePath)
       setUrl(downloadInfo, url)
-      void window.lx.worker.download.updateUrl(downloadInfo.id, url)
+      void window.lx.worker.download.updateUrl(downloadInfo.id, url, {
+        savePath,
+        fileName: downloadInfo.metadata.fileName,
+        proxy: getProxy(downloadInfo.metadata.musicInfo, url),
+      })
     })
     .catch(err => {
       console.log(err)
@@ -256,9 +293,10 @@ const handleError = (downloadInfo: LX.Download.ListItem, message?: string) => {
 }
 
 const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
-  if (!downloadInfo.metadata.url) {
+  const isExpiredYtmUrl = isYtmStreamUrlExpired(downloadInfo.metadata.url)
+  if (!downloadInfo.metadata.url || isExpiredYtmUrl) {
     setStatusText(downloadInfo, window.i18n.t('download_status_url_getting'))
-    const url = await getUrl(downloadInfo)
+    const url = await getUrl(downloadInfo, isExpiredYtmUrl)
     if (!url) {
       handleError(downloadInfo, window.i18n.t('download_status_error_url_failed'))
       return
@@ -306,7 +344,7 @@ const handleStartTask = async(downloadInfo: LX.Download.ListItem) => {
       default:
         break
     }
-  }), getProxy())
+  }), getProxy(downloadInfo.metadata.musicInfo, downloadInfo.metadata.url))
 }
 const startTask = async(downloadInfo: LX.Download.ListItem) => {
   setStatus(downloadInfo, DOWNLOAD_STATUS.RUN)
@@ -355,10 +393,16 @@ const filterTask = (list: LX.Download.ListItem[]) => {
  * @param quality 下载音质
  */
 export const createDownloadTasks = async(list: LX.Music.MusicInfoOnline[], quality: LX.Quality, listId?: string) => {
-  if (!list.length) return
-  const tasks = filterTask(await window.lx.worker.download.createDownloadTasks(list, quality,
+  const downloadable = list.filter(item => canDirectDownload(item))
+  if (!downloadable.length) return
+  const rawQualityList = toRaw(qualityList.value)
+  const effectiveQualityList: LX.QualityList = {
+    ...rawQualityList,
+    ytm: Array.isArray(rawQualityList.ytm) && rawQualityList.ytm.length ? rawQualityList.ytm : BUILTIN_YTM_QUALITIES,
+  }
+  const tasks = filterTask(await window.lx.worker.download.createDownloadTasks(downloadable, quality,
     appSetting['download.fileName'],
-    toRaw(qualityList.value), listId),
+    effectiveQualityList, listId),
   )
 
   if (tasks.length) await addTasks(tasks)

@@ -4,6 +4,7 @@ import { appSetting } from './setting'
 import pkg from '../../../package.json'
 import { type ProgressInfo } from 'electron-updater'
 import music from '@renderer/utils/musicSdk'
+import { setYtmRuntimeContext } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 process.versions.app = pkg.version
 
 export const apiSource = ref<string | null>(null)
@@ -16,11 +17,16 @@ export const proxy: {
     host: string
     port: string
   }
-} = {
+} = reactive({
   enable: false,
   host: '',
   port: '',
-}
+})
+
+setYtmRuntimeContext({
+  getAppSetting: () => appSetting,
+  getProxy: () => proxy,
+})
 export const sync: {
   enable: boolean
   mode: LX.AppSetting['sync.mode']
@@ -95,6 +101,7 @@ export const sourceNames = computed(() => {
     kg: 'kg',
     mg: 'mg',
     wy: 'wy',
+    ytm: 'ytm',
     all: window.i18n.t(prefix + 'all' as any),
   }
   for (const { id } of music.sources) {

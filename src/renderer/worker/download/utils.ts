@@ -31,7 +31,8 @@ export const saveLrc = async(lrcData: LX.Music.LyricInfo, info: {
   }
 }
 
-export const getExt = (type: string): LX.Download.FileExt => {
+export const getExt = (type: string, source?: LX.OnlineSource): LX.Download.FileExt => {
+  if (source === 'ytm') return 'm4a'
   switch (type) {
     case 'ape':
       return 'ape'
@@ -71,7 +72,7 @@ export const getMusicType = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quali
 
 export const createDownloadInfo = (musicInfo: LX.Music.MusicInfoOnline, type: LX.Quality, fileName: string, qualityList: LX.QualityList, listId?: string) => {
   type = getMusicType(musicInfo, type, qualityList)
-  let ext = getExt(type)
+  let ext = getExt(type, musicInfo.source)
   const key = `${musicInfo.id}_${type}_${ext}`
   // if (checkExistList(list, musicInfo, type, ext)) return null
   const downloadInfo: LX.Download.ListItem = {

@@ -27,6 +27,9 @@ import {
 } from '@common/recommendationConfig'
 import { toNewMusicInfo } from '@renderer/utils'
 import musicSdk from '@renderer/utils/musicSdk'
+import { MusicSdkResponseError } from '@renderer/utils/musicSdk/responseError'
+import { toLegacyYtmSong } from '@renderer/utils/musicSdk/ytm/parser'
+import { sharedYtmRegionCache } from '@renderer/utils/musicSdk/ytm/regionCache'
 import { normalizeArtistTokens, sameSong } from './sameSong'
 import type { SongRef } from './sameSong'
 import { musicInfosOf, sameIdentity, songRefs, type SongIdentity } from './songIdentity'
@@ -58,7 +61,7 @@ export interface PlatformRecallAnchor extends SongIdentity {
   /** 起点音乐来源（'wy' | 'tx' | 其他）。 */
   source?: string | null
   /** 起点在各平台的原生歌曲 id（当前歌曲来自该平台时可直接使用，免搜索定位）。 */
-  seedIds?: { wy?: string, tx?: string } | null
+  seedIds?: { wy?: string, tx?: string, ytm?: string } | null
 }
 
 /** 单平台调用状态（可区分成功/空结果/无匹配/地区受限/无可用国内源/错误/已取消）。 */
@@ -105,6 +108,8 @@ export interface PlatformRecallOptions {
   ytmProxyContext?: string
   /** 当前经 assertPlaybackSupport 筛选出的可播国内桥接源（严禁空能力盲目回落）。 */
   playableTargets?: DomesticBridgeProvider[]
+  /** 是否允许未桥接至国内源（或无国内可播源）的 YTM 原始曲目直接以原生 YTM 身份进入推荐队列。 */
+  allowDirectYtmPlayback?: boolean
   /** 会话已推荐/已消费的候选 id（同 id 通道）。 */
   excludeIds?: string[]
   /** 会话已推荐/已消费的曲目（同曲通道，防同曲不同 id 变体）。 */
@@ -135,8 +140,15 @@ export interface PlatformRecallResult {
   error: string | null
 }
 
-/** 模块级缓存单例（TTL/容量由 recommendationConfig 集中配置）。 */
-const similarCache = new SimilarCandidateCache()
+/** 模块级缓存单例（TTL/容量由 recommendationConfig 集中配置；YTM 地区状态与搜索/歌单 SDK 共用同一 TTL 缓存）。 */
+const similarCache = new SimilarCandidateCache(
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+  sharedYtmRegionCache,
+)
 
 /** 可取消 Promise：平台 SDK 适配器将底层 httpFetch.cancelHttp 暴露到此边界。 */
 type CancellablePromise<T> = Promise<T> & {
@@ -223,42 +235,126 @@ export const primaryArtist = (artist?: string | null): string => {
 
 type DomesticSimilarProvider = 'wy' | 'tx'
 
-/** 种子定位（国内源 wy/tx）：原生标识优先；否则平台搜索 + 严格匹配（找不到可靠匹配返回 null）。 */
+const TX_SEED_SEARCH_MAX_RETRIES = 2
+const TX_SEED_RETRY_MIN_BUDGET_MS = 2_500
+const TRANSIENT_RESET_CODES = new Set(['ECONNRESET', 'ECONNREFUSED', 'EPIPE', 'EAI_AGAIN'])
+
+const isRetryableTxSeedSearchError = (err: unknown): boolean => {
+  if (!err || typeof err !== 'object') return false
+  if (err instanceof MusicSdkResponseError) return false
+  const e = err as Error & { code?: string, isTimeout?: boolean, isReset?: boolean, bodyCode?: number, reqCode?: number }
+  if (e.isTimeout === true || e.code === 'ETIMEDOUT' || e.code === 'ESOCKETTIMEDOUT') return false
+  if (/cancel|取消|超时|timeout/i.test(String(e.message ?? ''))) return false
+  if (e.isReset === true || (typeof e.code === 'string' && TRANSIENT_RESET_CODES.has(e.code))) return true
+  if (typeof e.bodyCode === 'number' || typeof e.reqCode === 'number') return true
+  return String(e.message ?? '').includes('搜索失败')
+}
+
+/** 绑定取消信号与会话取消检查的退避等待：取消时立即清理定时器并 reject，不悬空挂起。 */
+const waitCancellableBackoff = async(
+  delayMs: number,
+  isCancelled?: () => boolean,
+  signal?: AbortSignal,
+): Promise<void> => {
+  return new Promise<void>((resolve, reject) => {
+    if (signal?.aborted === true || isCancelled?.() === true) {
+      reject(new Error('推荐计划已取消'))
+      return
+    }
+    let settled = false
+    let timer: ReturnType<typeof setTimeout> | null = null
+    let pollTimer: ReturnType<typeof setInterval> | null = null
+    const cleanup = () => {
+      if (timer != null) clearTimeout(timer)
+      if (pollTimer != null) clearInterval(pollTimer)
+      if (signal) signal.removeEventListener('abort', onAbort)
+    }
+    const finish = (err?: Error) => {
+      if (settled) return
+      settled = true
+      cleanup()
+      if (err) reject(err)
+      else resolve()
+    }
+    const onAbort = () => { finish(new Error('推荐计划已取消')) }
+    if (signal) signal.addEventListener('abort', onAbort, { once: true })
+    if (isCancelled) {
+      pollTimer = setInterval(() => {
+        if (isCancelled()) finish(new Error('推荐计划已取消'))
+      }, 50)
+    }
+    timer = setTimeout(() => { finish() }, Math.max(0, delayMs))
+  })
+}
+
+/** 种子定位（国内源 wy/tx）：原生标识优先；否则繁简统一后平台搜索 + 严格匹配（tx 对偶发风控/连接重置执行预算感知有限重试）。 */
 const locateSeed = async(
   provider: DomesticSimilarProvider,
   anchor: PlatformRecallAnchor,
   isCancelled?: () => boolean,
   getRemainingBudgetMs?: () => number,
   budgetSignal?: AbortSignal,
+  getNow: () => number = () => Date.now(),
 ): Promise<{ seedId: string | null, error?: string }> => {
   const native = anchor.seedIds?.[provider]
   if (native) return { seedId: String(native) }
-  if (!String(anchor.title ?? '').trim() || !primaryArtist(anchor.artist)) return { seedId: null }
+  const cleanTitle = simplifyForMatch(String(anchor.title ?? '').trim()).trim()
+  const cleanArtist = simplifyForMatch(primaryArtist(anchor.artist)).trim()
+  if (!cleanTitle || !cleanArtist) return { seedId: null }
 
-  const keyword = `${String(anchor.title).trim()} ${primaryArtist(anchor.artist)}`
-  const rem = getRemainingBudgetMs ? getRemainingBudgetMs() : SIMILAR_SEED_SEARCH_TIMEOUT_MS
-  if (getRemainingBudgetMs && (budgetSignal?.aborted === true || rem <= 200)) {
-    return { seedId: null, error: 'seed-search: 请求超时' }
-  }
-  const reqTimeout = Math.min(SIMILAR_SEED_SEARCH_TIMEOUT_MS, Math.max(1, rem))
+  const keyword = `${cleanTitle} ${cleanArtist}`
+  const maxRetries = provider === 'tx' ? TX_SEED_SEARCH_MAX_RETRIES : 0
+  // 即使未启用 YTM 共享预算，单次 locateSeed 内多次尝试也共享同一总截止时间，防止每次重试重获满额 10s
+  const localDeadline = getNow() + SIMILAR_SEED_SEARCH_TIMEOUT_MS
+  const remainingBudget = (): number => (
+    getRemainingBudgetMs ? getRemainingBudgetMs() : Math.max(0, localDeadline - getNow())
+  )
+  const isBudgetAborted = (): boolean => budgetSignal?.aborted === true
   let result: any
-  try {
-    // SDK musicSearch.search 自带有限内部重试（wy≤3/tx≤5）；本层不叠加搜索重试
-    result = await withTimeout(
-      similarSdk[provider].musicSearch!.search(keyword, 1, 30),
-      reqTimeout,
-      isCancelled,
-      budgetSignal,
-    )
-  } catch (err) {
-    if (isCancelled?.()) return { seedId: null }
-    if (budgetSignal?.aborted === true || (getRemainingBudgetMs && getRemainingBudgetMs() <= 0)) {
+
+  for (let attempt = 0; ; attempt++) {
+    const rem = remainingBudget()
+    if (isBudgetAborted() || rem <= 200) {
       return { seedId: null, error: 'seed-search: 请求超时' }
     }
-    return { seedId: null, error: `seed-search: ${(err as Error).message}` }
+    const reqTimeout = Math.min(SIMILAR_SEED_SEARCH_TIMEOUT_MS, Math.max(1, rem))
+    try {
+      // wy SDK 内部已有有限重试（≤3）；tx SDK 保持单次快失败，由本层在预算允许时对偶发风控/重置做 ≤2 次重试
+      result = await withTimeout(
+        similarSdk[provider].musicSearch!.search(keyword, 1, 30),
+        reqTimeout,
+        isCancelled,
+        budgetSignal,
+      )
+      break
+    } catch (err) {
+      if (isCancelled?.()) return { seedId: null }
+      if (isBudgetAborted() || remainingBudget() <= 0) {
+        return { seedId: null, error: 'seed-search: 请求超时' }
+      }
+      const backoffMs = 200 * (attempt + 1)
+      const remBeforeBackoff = remainingBudget()
+      const canRetry = attempt < maxRetries &&
+        isRetryableTxSeedSearchError(err) &&
+        (remBeforeBackoff - backoffMs) >= TX_SEED_RETRY_MIN_BUDGET_MS
+      if (!canRetry) {
+        return { seedId: null, error: `seed-search: ${(err as Error).message}` }
+      }
+      try {
+        await waitCancellableBackoff(backoffMs, isCancelled, budgetSignal)
+      } catch {
+        if (isCancelled?.()) return { seedId: null }
+        return { seedId: null, error: 'seed-search: 请求超时' }
+      }
+      // 退避结束后再次核对剩余预算，确保实际发包前仍满足最低预算门槛
+      if (isCancelled?.()) return { seedId: null }
+      if (isBudgetAborted() || remainingBudget() < TX_SEED_RETRY_MIN_BUDGET_MS) {
+        return { seedId: null, error: `seed-search: ${(err as Error).message}` }
+      }
+    }
   }
   if (isCancelled?.()) return { seedId: null }
-  if (budgetSignal?.aborted === true || (getRemainingBudgetMs && getRemainingBudgetMs() <= 0)) {
+  if (isBudgetAborted() || remainingBudget() <= 0) {
     return { seedId: null, error: 'seed-search: 请求超时' }
   }
   const rows: any[] = Array.isArray(result?.list) ? result.list : []
@@ -276,6 +372,7 @@ const locateSeed = async(
       intervalSec: parseIntervalSec(r.interval),
       raw: r,
     })),
+    { simplifyChinese: true },
   )
   if (!matched) return { seedId: null }
   const raw = (matched as unknown as { raw: Record<string, any> }).raw
@@ -334,13 +431,14 @@ const runDomesticProvider = async(
   isCancelled?: () => boolean,
   getRemainingBudgetMs?: () => number,
   budgetSignal?: AbortSignal,
+  getNow: () => number = () => Date.now(),
 ): Promise<ProviderCallResult> => {
   const base = { provider, seedId: null as string | null, fromCache: false }
   const cancelCheck = (): boolean => Boolean(isCancelled?.())
   if (cancelCheck()) return { ...base, status: 'cancelled', items: [] }
 
   const knownSeed = anchor.seedIds?.[provider] ?? cache.getSeed(provider, anchorKey)
-  const located = knownSeed ? { seedId: knownSeed } : await locateSeed(provider, anchor, isCancelled, getRemainingBudgetMs, budgetSignal)
+  const located = knownSeed ? { seedId: knownSeed } : await locateSeed(provider, anchor, isCancelled, getRemainingBudgetMs, budgetSignal, getNow)
   if (cancelCheck()) return { ...base, status: 'cancelled', items: [] }
   if (!located.seedId) {
     return {
@@ -573,13 +671,14 @@ const runYtmStage1 = async(
   getNow: () => number,
   cancelCheck: () => boolean,
   budgetSignal?: AbortSignal,
+  allowDirectYtmPlayback = false,
 ): Promise<YtmStage1Outcome> => {
   const base = { provider: 'ytm' as const, seedId: null as string | null, fromCache: false }
   const remainingMs = (): number => Math.max(0, ytmDeadline - getNow())
   const ytmCancelled = (): boolean => cancelCheck() || remainingMs() <= 0 || budgetSignal?.aborted === true
 
   if (cancelCheck()) return { kind: 'done', result: { ...base, status: 'cancelled', items: [] } }
-  if (!playableTargets.length) {
+  if (!playableTargets.length && !allowDirectYtmPlayback) {
     return {
       kind: 'done',
       result: { ...base, status: 'no-playable-source', items: [], error: '当前没有可用的国内播放源' },
@@ -598,8 +697,8 @@ const runYtmStage1 = async(
     }
   }
 
-  // 1) 定位 YTM 种子 videoId
-  let seedId = cache.getSeed('ytm', anchorKey, proxyContext)
+  // 1) 定位 YTM 种子 videoId（若起点本身为 YTM 曲目，直接复用原生 seedIds.ytm 免去种子搜索）
+  let seedId = (anchor.seedIds?.ytm ? String(anchor.seedIds.ytm) : null) ?? cache.getSeed('ytm', anchorKey, proxyContext)
   if (!seedId) {
     const cleanTitle = String(anchor.title ?? '').trim()
     const cleanArtist = primaryArtist(anchor.artist)
@@ -849,6 +948,10 @@ const runYtmStage2 = async(
   let bridgeErrorCount = 0
   let lastBridgeError: string | null = null
 
+  const toDirectMusicInfo = options.allowDirectYtmPlayback
+    ? (track: YtmRawTrack): LX.Music.MusicInfoOnline => toNewMusicInfo(toLegacyYtmSong(track)) as LX.Music.MusicInfoOnline
+    : undefined
+
   const firstBridge = await bridgeYtmTracks(currentState.tracks, {
     anchor,
     existingDomestic: getExistingDomestic(),
@@ -867,6 +970,7 @@ const runYtmStage2 = async(
     now: options.now,
     isCancelled: cancelCheck,
     signal: budgetSignal,
+    ...(toDirectMusicInfo ? { toDirectMusicInfo } : {}),
   })
   if (cancelCheck()) {
     return {
@@ -973,6 +1077,7 @@ const runYtmStage2 = async(
       now: options.now,
       isCancelled: cancelCheck,
       signal: budgetSignal,
+      ...(toDirectMusicInfo ? { toDirectMusicInfo } : {}),
     })
     if (cancelCheck()) {
       return {
@@ -1188,7 +1293,7 @@ export const recallPlatformSimilar = async(
   try {
     const domesticPromise = Promise.all(
       domesticProviders.map(async provider => {
-        const res = await runDomesticProvider(provider, anchor, anchorKey, cache, isCancelled, getRemainingBudgetMs, budgetSignal)
+        const res = await runDomesticProvider(provider, anchor, anchorKey, cache, isCancelled, getRemainingBudgetMs, budgetSignal, getNow)
         settledDomestic.set(provider, res)
         return res
       }),
@@ -1207,6 +1312,7 @@ export const recallPlatformSimilar = async(
             getNow,
             cancelCheck,
             budgetSignal,
+            options.allowDirectYtmPlayback === true,
           )
           if (stage1.kind === 'done' || !options.ytmAdapter) {
             return {

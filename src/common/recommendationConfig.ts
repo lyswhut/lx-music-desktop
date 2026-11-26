@@ -46,6 +46,9 @@ export const YTM_TOTAL_BUDGET_MS = 12_000
 /** YTM 单次 InnerTube HTTP 请求超时上限（毫秒；实际受剩余总预算约束）。 */
 export const YTM_REQUEST_TIMEOUT_MS = 8_000
 
+/** 聚合搜索（all）中 YTM 增量合并软超时预算（毫秒；超时后立即取消，不影响国内源结果展示）。 */
+export const YTM_AGGREGATE_SEARCH_TIMEOUT_MS = 4_000
+
 /** 设置页「测试 YouTube Music 连通性」总超时预算（毫秒；覆盖代理冷握手与并行探测）。 */
 export const YTM_CONNECTION_TEST_TIMEOUT_MS = 15_000
 

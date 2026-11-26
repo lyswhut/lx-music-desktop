@@ -22,8 +22,8 @@
 
 <script setup>
 import { watch, shallowReactive, ref, onMounted, onBeforeUnmount, computed, reactive } from '@common/utils/vueTools'
-import { setTags, getTags } from '@renderer/store/songList/action'
-import { tags } from '@renderer/store/songList/state'
+import { setTags, getTags, getCachedTags } from '@renderer/store/songList/action'
+import { getLiveYtmContextKey } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 import { useI18n } from '@renderer/plugins/i18n'
 
@@ -48,22 +48,56 @@ const t = useI18n()
 
 const list = shallowReactive([])
 const handleToggleTag = (id) => {
+  // YTM 在「排行榜」排序下点选心情/流派标签时切回「推荐」排序，避免被排行榜优先级忽略
+  const nextSortId = props.source === 'ytm' && id && props.sortId === 'charts' ? 'featured' : props.sortId
   void router.replace({
     path: route.path,
     query: {
       source: props.source,
       tagId: id,
-      sortId: props.sortId,
+      sortId: nextSortId,
     },
   })
   handleHide()
 }
-watch(() => props.source, async(source) => {
-  if (!source) return
-  // const source = (await getLeaderboardSetting()).source as LX.OnlineSource
-  let tagInfo = tags[source]
-  // console.log(await getTags(source))
-  if (tagInfo == null) setTags(tagInfo = await getTags(source), source)
+let tagLoadVersion = 0
+let activeTagReq = null
+watch(() => [props.source, props.source === 'ytm' ? getLiveYtmContextKey() : ''], async([source], _prev, onCleanup) => {
+  const version = ++tagLoadVersion
+  onCleanup(() => {
+    if (tagLoadVersion === version) tagLoadVersion++
+    activeTagReq?.cancel?.()
+    activeTagReq = null
+  })
+  if (!source) {
+    list.splice(0, list.length)
+    return
+  }
+  let tagInfo = getCachedTags(source)
+  if (tagInfo == null) {
+    // 切源且未命中缓存时先清空旧来源标签，避免异步加载窗口内误点残留国内标签
+    list.splice(0, list.length)
+    const contextKey = source === 'ytm' ? getLiveYtmContextKey() : undefined
+    try {
+      const req = getTags(source)
+      activeTagReq = req
+      const fetched = await req
+      if (activeTagReq === req) activeTagReq = null
+      if (version !== tagLoadVersion) return
+      if (source === 'ytm' && contextKey !== getLiveYtmContextKey()) return
+      if (!fetched) {
+        list.splice(0, list.length)
+        return
+      }
+      setTags(fetched, source, contextKey)
+      tagInfo = fetched
+    } catch (error) {
+      if (version === tagLoadVersion) list.splice(0, list.length)
+      console.log(error)
+      return
+    }
+  }
+  if (version !== tagLoadVersion) return
 
   list.splice(0, list.length, ...[{ name: window.i18n.t('songlist__tag_info_hot_tag'), list: [...tagInfo.hotTag] }, ...tagInfo.tags])
 }, {
@@ -109,6 +143,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  tagLoadVersion++
+  activeTagReq?.cancel?.()
+  activeTagReq = null
   document.removeEventListener('click', handleHide)
   window.removeEventListener('resize', setTagPopupWidth)
 })

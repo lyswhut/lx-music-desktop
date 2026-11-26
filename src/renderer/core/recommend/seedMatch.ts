@@ -70,12 +70,16 @@ const normText = (text?: string | null, simplifyChinese = false): string => {
 
 const normArtistTokens = (artist?: string | null, simplifyChinese = false): string[] => {
   const tokens = normalizeArtistTokens(artist)
-  return simplifyChinese ? [...new Set(tokens.map(simplify))] : tokens
+    .map(t => normText(t, simplifyChinese))
+    .filter(Boolean)
+  return [...new Set(tokens)]
 }
 
 const normPrimaryVariants = (artist?: string | null, simplifyChinese = false): string[] => {
   const variants = primaryArtistVariants(artist)
-  return simplifyChinese ? [...new Set(variants.map(simplify))] : variants
+    .map(v => normText(v, simplifyChinese))
+    .filter(Boolean)
+  return [...new Set(variants)]
 }
 
 /** 主门禁：标题（含版本标记）一致 + 起点主艺人（含括号别名变体）命中候选艺人 token。 */
@@ -137,6 +141,64 @@ export const isStrictSameRecording = (a: SeedMatchTarget, b: SeedMatchTarget, op
   const bSec = parseIntervalSec(b.intervalSec)
   if (aSec != null && bSec != null) {
     return Math.abs(aSec - bSec) <= SEED_MATCH_DURATION_TOLERANCE_SEC
+  }
+  return true
+}
+
+/** 完整艺人集合双向一对一覆盖判定（保留括号别名与繁简归一，忽略合唱顺序；仅当一方去括号主名落入另一方变体时视为同一艺人，杜绝共享括号团名将不同艺人误合或误配）。 */
+export const hasExactArtistSetMatch = (artistA?: string | null, artistB?: string | null, simplifyChinese = false): boolean => {
+  interface ArtistGroup {
+    bases: string[]
+    variants: string[]
+  }
+  const matchesGroup = (g1: ArtistGroup, g2: ArtistGroup): boolean => (
+    g1.bases.some(b => g2.variants.includes(b)) ||
+    g2.bases.some(b => g1.variants.includes(b))
+  )
+  const splitEntries = (raw?: string | null): ArtistGroup[] => {
+    const parts = String(raw ?? '')
+      .split(/[、,&;；/|，]+|\s+(?:feat\.?|ft\.?|with|x)\s+/i)
+      .map(part => part.trim())
+      .filter(Boolean)
+    const groups: ArtistGroup[] = []
+    for (const part of parts) {
+      const variants = normPrimaryVariants(part, simplifyChinese)
+      if (!variants.length) continue
+      const stripped = normText(part.replace(/[（(][^（）()]*[)）]/g, ' '), simplifyChinese)
+      const base = stripped || variants[0]
+      const mergedVariants = variants.includes(base) ? [...variants] : [...variants, base]
+      const candidate: ArtistGroup = { bases: [base], variants: mergedVariants }
+      // 仅当一方去括号主名命中另一方变体时才同侧合并（如 "周杰伦 / Jay Chou (周杰伦)"），绝不因共享括号团名（如 "V (BTS)、Jungkook (BTS)"）合并不同艺人
+      const existing = groups.find(g => matchesGroup(g, candidate))
+      if (existing) {
+        if (!existing.bases.includes(base)) existing.bases.push(base)
+        for (const v of variants) {
+          if (!existing.variants.includes(v)) existing.variants.push(v)
+        }
+      } else {
+        groups.push(candidate)
+      }
+    }
+    return groups
+  }
+  const aGroups = splitEntries(artistA)
+  const bGroups = splitEntries(artistB)
+  if (!aGroups.length || aGroups.length !== bGroups.length) return false
+  // 二分图完美匹配：确保每个艺人组一一对应，杜绝单组同时覆盖多个不同艺人
+  const matchB = new Array<number>(bGroups.length).fill(-1)
+  const tryMatch = (ai: number, visited: boolean[]): boolean => {
+    for (let bi = 0; bi < bGroups.length; bi++) {
+      if (visited[bi] || !matchesGroup(aGroups[ai], bGroups[bi])) continue
+      visited[bi] = true
+      if (matchB[bi] === -1 || tryMatch(matchB[bi], visited)) {
+        matchB[bi] = ai
+        return true
+      }
+    }
+    return false
+  }
+  for (let ai = 0; ai < aGroups.length; ai++) {
+    if (!tryMatch(ai, new Array<boolean>(bGroups.length).fill(false))) return false
   }
   return true
 }

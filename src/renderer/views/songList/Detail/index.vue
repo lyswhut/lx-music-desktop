@@ -19,7 +19,7 @@
         <base-btn
           :class="$style.headerRightBtn"
           :disabled="!!listDetailInfo.noItemLabel"
-          @click="addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name)"
+          @click="handleCollect"
         >
           {{ $t('list__collect') }}
         </base-btn>
@@ -46,6 +46,8 @@ import { ref, watch } from '@common/utils/vueTools'
 import { listDetailInfo } from '@renderer/store/songList/state'
 import { setVisibleListDetail } from '@renderer/store/songList/action'
 import { useRouter } from '@common/utils/vueRouter'
+import { dialog } from '@renderer/plugins/Dialog'
+import { getLiveYtmContextKey } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 import { addSongListDetail, playSongListDetail } from './action'
 import useList from './useList'
 import useKeyBack from './useKeyBack'
@@ -118,7 +120,8 @@ export default {
 
 
     const togglePage = (page: number) => {
-      void getListData(source.value, id.value, page, refresh.value)
+      // YTM 翻页不透传初始路由 refresh=true（防重置续页游标）；国内歌单保留原 refresh 语义
+      void getListData(source.value, id.value, page, source.value === 'ytm' ? false : refresh.value)
     }
 
     const handleBack = () => {
@@ -129,17 +132,22 @@ export default {
 
     useKeyBack(handleBack)
 
-    watch([source, id, page, refresh], async([_source, _id, _page, _refresh]) => {
-      if (!_source || !_id) return router.replace({ path: '/songList/list' })
-      // console.log(_source, _id, _page, _refresh, picUrl.value)
-      // source.value = _source
-      // id.value = _id
-      // refresh.value = _refresh
-      // page.value = _page ?? 1
-      void getListData(_source, _id, _page, _refresh)
-    }, {
-      immediate: true,
-    })
+    watch(
+      [source, id, page, refresh, () => (source.value === 'ytm' ? getLiveYtmContextKey() : '')],
+      async([_source, _id, _page, _refresh]) => {
+        if (!_source || !_id) return router.replace({ path: '/songList/list' })
+        void getListData(_source, _id, _page, _refresh)
+      },
+      {
+        immediate: true,
+      },
+    )
+
+    const handleCollect = () => {
+      void addSongListDetail(listDetailInfo.id, listDetailInfo.source, listDetailInfo.info.name).catch((err: any) => {
+        void dialog({ message: err?.message || window.i18n.t('list__load_failed') })
+      })
+    }
 
     return {
       source,
@@ -149,7 +157,7 @@ export default {
       listDetailInfo,
       listRef,
       togglePage,
-      addSongListDetail,
+      handleCollect,
       playSongListDetail,
       handlePlayList,
       handleBack,

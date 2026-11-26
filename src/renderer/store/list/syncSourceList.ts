@@ -10,9 +10,9 @@ const fetchList = async(id: string, source: LX.OnlineSource, sourceListId: strin
   let promise
   if (/^board__/.test(sourceListId)) {
     const id = sourceListId.replace(/^board__/, '')
-    promise = id ? getBoardListAll(id, true) : Promise.reject(new Error('id not defined: ' + sourceListId))
+    promise = id ? getBoardListAll(id, true, { failOnTruncated: true }) : Promise.reject(new Error('id not defined: ' + sourceListId))
   } else {
-    promise = getListDetailAll(sourceListId, source, true)
+    promise = getListDetailAll(sourceListId, source, true, { failOnTruncated: true })
   }
   return promise.finally(() => {
     setFetchingListStatus(id, false)

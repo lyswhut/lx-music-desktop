@@ -62,11 +62,10 @@ import {
   playMusicInfo,
 } from '@renderer/store/player/state'
 import {
-  setMusicInfo,
   setShowPlayerDetail,
 } from '@renderer/store/player/action'
 import { appSetting } from '@renderer/store/setting'
-import { togglePlay, playNext, playPrev } from '@renderer/core/player'
+import { togglePlay, playNext, playPrev, handlePlayerPicError } from '@renderer/core/player'
 import { LIST_IDS } from '@common/constants'
 import { formatMusicName } from '@renderer/utils'
 
@@ -97,8 +96,7 @@ export default {
     }
 
     const imgError = () => {
-      // console.log(e)
-      setMusicInfo({ pic: null })
+      handlePlayerPicError()
     }
 
     const handleToMusicLocation = () => {

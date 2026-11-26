@@ -21,11 +21,11 @@ export const addSongListDetail = async(id: string, name: string, source: LX.Onli
       confirmButtonText: window.i18n.t('confirm_button_text'),
     })
     if (!confirm) return
-    void syncSourceList(targetList)
+    await syncSourceList(targetList)
     return
   }
 
-  const list = await getListDetailAll(id)
+  const list = await getListDetailAll(id, source === 'ytm', source === 'ytm' ? { failOnTruncated: true } : undefined)
   await createUserList({
     name,
     id: `${source}_${toMD5(listId)}`,

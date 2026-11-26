@@ -23,9 +23,9 @@
 </template>
 
 <script setup>
-import { watch, shallowReactive, ref } from '@common/utils/vueTools'
-import { getBoardsList, setBoard } from '@renderer/store/leaderboard/action'
-import { boards } from '@renderer/store/leaderboard/state'
+import { watch, shallowReactive, ref, onBeforeUnmount } from '@common/utils/vueTools'
+import { clearListDetail, getBoardsList, setBoard, getCachedBoard } from '@renderer/store/leaderboard/action'
+import { getLiveYtmContextKey } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 import useMenu from './useMenu'
 import { useRouter, useRoute } from '@common/utils/vueRouter'
 
@@ -78,12 +78,80 @@ const handleMenuClick = (action) => {
 }
 
 
-watch(() => props.source, async(source) => {
-  // const source = (await getLeaderboardSetting()).source as LX.OnlineSource
-  let boardList = boards[source]
-  if (boardList == null) setBoard(boardList = await getBoardsList(source), source)
+let boardLoadVersion = 0
+let activeBoardReq = null
+onBeforeUnmount(() => {
+  boardLoadVersion++
+  activeBoardReq?.cancel?.()
+  activeBoardReq = null
+})
+watch(() => [props.source, props.source === 'ytm' ? getLiveYtmContextKey() : ''], async([source], _prev, onCleanup) => {
+  const version = ++boardLoadVersion
+  const originPath = route.path
+  onCleanup(() => {
+    if (boardLoadVersion === version) boardLoadVersion++
+    activeBoardReq?.cancel?.()
+    activeBoardReq = null
+  })
+  if (!source) {
+    handleMenuClick()
+    list.splice(0, list.length)
+    return
+  }
+  const isSameSourceBoard = () => Boolean(props.boardId?.startsWith(`${source}__`))
+  let boardList = getCachedBoard(source)
+  if (boardList == null) {
+    // 切换来源且未命中缓存时先清空旧侧栏并关闭右键菜单，防止异步加载窗口内误点/误藏旧国内榜单
+    handleMenuClick()
+    list.splice(0, list.length)
+    if (!isSameSourceBoard()) {
+      clearListDetail(window.i18n.t('list__loading'))
+    }
+    const contextKey = source === 'ytm' ? getLiveYtmContextKey() : undefined
+    try {
+      const req = getBoardsList(source)
+      activeBoardReq = req
+      const fetched = await req
+      if (activeBoardReq === req) activeBoardReq = null
+      if (version !== boardLoadVersion) return
+      // 代理上下文在途漂移时直接丢弃旧响应，不缓存、不渲染也不触发自动跳转
+      if (source === 'ytm' && contextKey !== getLiveYtmContextKey()) return
+      if (!fetched) {
+        handleMenuClick()
+        list.splice(0, list.length)
+        if (!isSameSourceBoard()) {
+          clearListDetail(window.i18n.t('list__load_failed'))
+        }
+        return
+      }
+      if (!fetched.partial) {
+        setBoard(fetched, source, contextKey)
+      }
+      boardList = fetched
+    } catch (error) {
+      if (version === boardLoadVersion) {
+        handleMenuClick()
+        list.splice(0, list.length)
+        if (!isSameSourceBoard()) {
+          clearListDetail(window.i18n.t('list__load_failed'))
+        }
+      }
+      console.log(error)
+      return
+    }
+  }
+  if (version !== boardLoadVersion) return
+  handleMenuClick()
   list.splice(0, list.length, ...boardList.list)
-  if (!props.boardId && boardList.list.length) handleToggleList(boardList.list[0].id)
+  const sameSourceBoardNow = isSameSourceBoard()
+  const hasCurrentBoard = Boolean(sameSourceBoardNow && boardList.list.some(item => item.id == props.boardId))
+  if (props.source === source && route.path === originPath) {
+    if ((!sameSourceBoardNow || (!boardList.partial && !hasCurrentBoard)) && boardList.list.length) {
+      handleToggleList(boardList.list[0].id)
+    } else if (!sameSourceBoardNow && !boardList.list.length) {
+      clearListDetail(window.i18n.t('no_item'))
+    }
+  }
 }, {
   immediate: true,
 })

@@ -5,6 +5,13 @@ import wy from './wy/index'
 import mg from './mg/index'
 import bd from './bd/index'
 import xm from './xm'
+import ytm from './ytm'
+import { DOMESTIC_ONLINE_SOURCES } from '@common/constants'
+import { YTM_AGGREGATE_SEARCH_TIMEOUT_MS } from '@common/recommendationConfig'
+import { simplify } from '@renderer/utils/simplify-chinese-main'
+import { hasExactArtistSetMatch, isStrictSameRecording, matchSeed, parseIntervalSec } from '@renderer/core/recommend/seedMatch'
+import { getLiveYtmContextKey, isYtmAggregateSearchEnabled } from './ytm/runtimeContext'
+import { sharedYtmRegionCache } from './ytm/regionCache'
 import { supportQuality } from './api-source'
 import { versionChars } from './versionChars'
 
@@ -32,6 +39,10 @@ const sources = {
       id: 'mg',
     },
     {
+      name: 'YouTube Music',
+      id: 'ytm',
+    },
+    {
       name: '虾米音乐',
       id: 'xm',
     },
@@ -45,6 +56,7 @@ const sources = {
   tx,
   wy,
   mg,
+  ytm,
   bd,
   xm,
 }
@@ -62,12 +74,41 @@ export default {
 
   async searchMusic({ name, singer, source: s, limit = 25 }) {
     const trimStr = str => typeof str == 'string' ? str.trim() : str
-    const musicName = trimStr(name)
+    const isYtmOrigin = s === 'ytm'
+    const musicName = isYtmOrigin ? simplify(trimStr(name) || '') : trimStr(name)
+    const musicSinger = isYtmOrigin ? simplify(trimStr(singer) || '') : singer
     const tasks = []
-    const excludeSource = ['xm']
-    for (const source of sources.sources) {
-      if (!sources[source.id].musicSearch || source.id == s || excludeSource.includes(source.id)) continue
-      tasks.push(sources[source.id].musicSearch.search(`${musicName} ${singer || ''}`.trim(), 1, limit).catch(_ => null))
+    // 正向遍历国内音源白名单；国内源保留原有关键词拼接
+    for (const sourceId of DOMESTIC_ONLINE_SOURCES) {
+      if (!sources[sourceId]?.musicSearch || sourceId == s) continue
+      const keyword = isYtmOrigin ? `${musicName} ${musicSinger}`.trim() : `${musicName} ${musicSinger || ''}`.trim()
+      tasks.push(sources[sourceId].musicSearch.search(keyword, 1, limit).catch(_ => null))
+    }
+    // 双向平权：国内曲目换源时，若已开启 YouTube Music 且当前代理上下文未地区受限，
+    // 以 4s 软超时并行纳入 ytm 候选，VIP/版权受限国内歌曲亦可自动回落至 YouTube Music 播放
+    if (
+      !isYtmOrigin &&
+      sources.ytm?.musicSearch &&
+      isYtmAggregateSearchEnabled() &&
+      sharedYtmRegionCache.get(getLiveYtmContextKey()) !== true
+    ) {
+      const ytmKeyword = `${trimStr(name) || ''} ${trimStr(singer) || ''}`.trim()
+      if (ytmKeyword) {
+        tasks.push(new Promise((resolve) => {
+          const req = sources.ytm.musicSearch.search(ytmKeyword, 1, Math.min(limit, 20))
+          const timer = setTimeout(() => {
+            req?.cancel?.()
+            resolve(null)
+          }, YTM_AGGREGATE_SEARCH_TIMEOUT_MS)
+          Promise.resolve(req).then(res => {
+            clearTimeout(timer)
+            resolve(res)
+          }).catch(() => {
+            clearTimeout(timer)
+            resolve(null)
+          })
+        }))
+      }
     }
     return (await Promise.all(tasks)).filter(s => s)
   },
@@ -76,6 +117,33 @@ export default {
     const lists = await this.searchMusic({ name, singer, source: s, limit: 25 })
     // console.log(lists)
     // console.log({ name, singer, albumName, interval, source: s })
+
+    if (s === 'ytm') {
+      const target = {
+        artist: String(singer ?? ''),
+        title: String(name ?? ''),
+        album: String(albumName ?? ''),
+        intervalSec: parseIntervalSec(interval),
+      }
+      const strictPerSource = lists.map(source => {
+        const rows = (Array.isArray(source.list) ? source.list : [])
+          .map(item => ({
+            artist: String(item.singer ?? ''),
+            title: String(item.name ?? ''),
+            album: String(item.albumName ?? ''),
+            intervalSec: parseIntervalSec(item.interval),
+            raw: item,
+          }))
+          .filter(row => (
+            isStrictSameRecording(target, row, { simplifyChinese: true }) &&
+            hasExactArtistSetMatch(target.artist, row.artist, true)
+          ))
+        if (!rows.length) return null
+        const matched = matchSeed(target, rows, { simplifyChinese: true })
+        return matched ? matched.raw : null
+      }).filter(Boolean)
+      return strictPerSource
+    }
 
     const singersRxp = /、|&|;|；|\/|,|，|\|/
     const sortSingle = singer => singersRxp.test(singer)
@@ -110,7 +178,9 @@ export default {
       return intv
     }
     const trimStr = str => typeof str == 'string' ? str.trim() : (str || '')
-    const filterStr = str => typeof str == 'string' ? str.replace(/\s|'|\.|,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[|!|！/g, '') : String(str || '')
+    const filterStr = str => typeof str == 'string'
+      ? str.replace(/\s|'|\.|,|，|&|"|、|\(|\)|（|）|`|~|-|<|>|\||\/|\]|\[|!|！/g, '')
+      : String(str || '')
     const fMusicName = filterStr(name).toLowerCase()
     const fSinger = filterStr(sortSingle(singer)).toLowerCase()
     const fAlbumName = filterStr(albumName).toLowerCase()
@@ -126,7 +196,10 @@ export default {
     const isIncludesSinger = (singer) => fSinger ? (fSinger.includes(singer) || singer.includes(fSinger)) : true
     const isEqualsAlbum = (album) => fAlbumName ? fAlbumName == album : true
 
-    const result = lists.map(source => {
+    const domesticLists = lists.filter(item => item.source !== 'ytm')
+    const ytmLists = lists.filter(item => item.source === 'ytm')
+
+    const result = domesticLists.map(source => {
       for (const item of source.list) {
         item.name = trimStr(item.name)
         item.singer = trimStr(item.singer)
@@ -169,6 +242,31 @@ export default {
         delete item.fInterval
       }
       newResult.push(...result)
+    }
+    if (ytmLists.length) {
+      const target = {
+        artist: String(singer ?? ''),
+        title: String(name ?? ''),
+        album: String(albumName ?? ''),
+        intervalSec: parseIntervalSec(interval),
+      }
+      for (const ytmSource of ytmLists) {
+        const rows = (Array.isArray(ytmSource.list) ? ytmSource.list : [])
+          .map(item => ({
+            artist: String(item.singer ?? ''),
+            title: String(item.name ?? ''),
+            album: String(item.albumName ?? ''),
+            intervalSec: parseIntervalSec(item.interval),
+            raw: item,
+          }))
+          .filter(row => (
+            isStrictSameRecording(target, row, { simplifyChinese: true }) &&
+            hasExactArtistSetMatch(target.artist, row.artist, true)
+          ))
+        if (!rows.length) continue
+        const matched = matchSeed(target, rows, { simplifyChinese: true })
+        if (matched) newResult.push(matched.raw)
+      }
     }
     // console.log(newResult)
     return newResult

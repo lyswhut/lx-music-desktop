@@ -9,15 +9,17 @@
  * 5. 并发受控（<= YTM_BRIDGE_CONCURRENCY）+ 共享截止时间预算 + 取消即时中止在途搜索。
  */
 
+import type { DOMESTIC_ONLINE_SOURCES } from '@common/constants'
 import { YTM_BRIDGE_CONCURRENCY, YTM_BRIDGE_TARGET_EXTRA } from '@common/recommendationConfig'
 import { normalizeArtistTokens, sameSong, type SongRef } from './sameSong'
-import { isStrictSameRecording, matchSeed, parseIntervalSec } from './seedMatch'
+import { hasExactArtistSetMatch, isStrictSameRecording, matchSeed, parseIntervalSec } from './seedMatch'
 import { songRefs, type SongIdentity } from './songIdentity'
 import type { CachedSimilarItem, SimilarCandidateCache } from './similarCache'
 import { simplifyForMatch, type RankedYtmTrack, type YtmRawTrack } from './ytmParser'
 
-export const DOMESTIC_BRIDGE_PROVIDERS = ['wy', 'tx', 'kw', 'kg', 'mg'] as const
-export type DomesticBridgeProvider = typeof DOMESTIC_BRIDGE_PROVIDERS[number]
+export type DomesticBridgeProvider = typeof DOMESTIC_ONLINE_SOURCES[number]
+// 国内桥接查询优先级（从 DOMESTIC_ONLINE_SOURCES 全集派生并按命中质量排序）
+export const DOMESTIC_BRIDGE_PROVIDERS: readonly DomesticBridgeProvider[] = ['wy', 'tx', 'kw', 'kg', 'mg'] as const
 
 export type BridgeFilterRule = 'anchor' | 'session' | 'queue' | 'loved' | 'disliked'
 
@@ -108,6 +110,8 @@ export interface BridgeYtmOptions {
   isCancelled?: () => boolean
   /** 外部预算/取消信号：触发时立即中止在途国内桥接搜索。 */
   signal?: AbortSignal
+  /** 允许将未匹配国内源（或无国内可播源）的 YTM 原始曲目直接转为原生可播 YTM 条目。 */
+  toDirectMusicInfo?: (track: YtmRawTrack) => LX.Music.MusicInfoOnline
 }
 
 export interface BridgeYtmResult {
@@ -182,7 +186,10 @@ export const matchYtmToInfos = (track: YtmRawTrack, infos: LX.Music.MusicInfoOnl
       intervalSec: parseIntervalSec(info.interval),
       info,
     }))
-    .filter(row => isStrictSameRecording(target, row, { simplifyChinese: true }))
+    .filter(row => (
+      isStrictSameRecording(target, row, { simplifyChinese: true }) &&
+      hasExactArtistSetMatch(target.artist, row.artist, true)
+    ))
   if (!strictRows.length) return null
   const matched = matchSeed(target, strictRows, { simplifyChinese: true })
   return matched ? matched.info : null
@@ -502,6 +509,37 @@ export const bridgeYtmTracks = async(
     } finally {
       if (deadlineTimer != null) clearTimeout(deadlineTimer)
       if (externalSignal) externalSignal.removeEventListener('abort', onExternalAbort)
+    }
+  }
+
+  // 当允许原生 YTM 直连播放时，将未能桥接国内源（或无国内可播源）的通过预过滤曲目转为原生 YTM 可播条目
+  if (options.toDirectMusicInfo && resolvedUniqueCount < neededUnique && !isAborted()) {
+    const directCandidates: RankedYtmTrack[] = options.playableTargets.length === 0
+      ? toResolve
+      : unmatchedTracks
+    const remainingUnmatched: RankedYtmTrack[] = []
+    for (const entry of directCandidates) {
+      if (resolvedUniqueCount >= neededUnique) {
+        if (options.playableTargets.length > 0) remainingUnmatched.push(entry)
+        continue
+      }
+      const directInfo = options.toDirectMusicInfo(entry.track)
+      if (directInfo.id != null && excludeIdSet.has(String(directInfo.id))) {
+        bump('session')
+        continue
+      }
+      if (options.isExcluded?.(directInfo)) {
+        bump('disliked')
+        continue
+      }
+      resolved.push({ musicInfo: directInfo, rank: entry.rank })
+      resolvedUniqueCount++
+    }
+    if (options.playableTargets.length === 0) {
+      cursor = toResolve.length
+    } else {
+      unmatchedTracks.splice(0, unmatchedTracks.length, ...remainingUnmatched)
+      unmatchedCount = remainingUnmatched.length
     }
   }
 

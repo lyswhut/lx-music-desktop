@@ -45,15 +45,27 @@ export default {
     })
 
 
+    let tipSearchSeq = 0
     const tipSearch = debounce(async() => {
-      if (searchText.value === '' && prevTempSearchSource) {
+      const seq = ++tipSearchSeq
+      const text = searchText.value
+      if (text === '') {
         tipList.value = []
-        music[prevTempSearchSource].tipSearch.cancelTipSearch()
+        if (prevTempSearchSource) {
+          music[prevTempSearchSource]?.tipSearch?.cancelTipSearch?.()
+        }
         return
       }
+      const routeSource = route.path == '/search' ? route.query.source : ''
       const { temp_source } = await getSearchSetting()
-      prevTempSearchSource ||= temp_source
-      music[prevTempSearchSource].tipSearch.search(searchText.value).then(list => {
+      if (seq !== tipSearchSeq || searchText.value === '') return
+      const targetSource = routeSource === 'ytm' && music.ytm?.tipSearch ? 'ytm' : temp_source
+      if (prevTempSearchSource && prevTempSearchSource !== targetSource) {
+        music[prevTempSearchSource]?.tipSearch?.cancelTipSearch?.()
+      }
+      prevTempSearchSource = targetSource
+      music[prevTempSearchSource]?.tipSearch?.search(text).then(list => {
+        if (seq !== tipSearchSeq || searchText.value !== text) return
         tipList.value = list
       }).catch(() => {})
     }, 50)

@@ -1,8 +1,11 @@
+import { DOMESTIC_ONLINE_SOURCES } from '@common/constants'
+import { YTM_AGGREGATE_SEARCH_TIMEOUT_MS } from '@common/recommendationConfig'
 import { markRaw, markRawList, reactive } from '@common/utils/vueTools'
 import { similar, sortInsert } from '@common/utils/common'
 import { getCatalogSourceLabel } from '@renderer/core/catalog/adapter'
 import { requestMsg } from '@renderer/utils/message'
 import music from '@renderer/utils/musicSdk'
+import { getLiveYtmContextKey, isYtmAggregateSearchEnabled } from '@renderer/utils/musicSdk/ytm/runtimeContext'
 
 export type CatalogSearchKind = 'artist' | 'album'
 export type CatalogSearchSource = LX.OnlineSource | 'all'
@@ -38,7 +41,12 @@ export interface CatalogSearchPageResult {
 type CancellableCatalogPromise = Promise<CatalogSearchPageResult> & { cancel?: () => void }
 type CatalogSearchProvider = (text: string, page: number, limit: number) => CancellableCatalogPromise
 
-const DEFAULT_SOURCES: LX.OnlineSource[] = ['kw', 'kg', 'tx', 'wy', 'mg']
+const getRegisteredSources = (): LX.OnlineSource[] => {
+  const list = Array.isArray((music as { sources?: Array<{ id: string }> }).sources)
+    ? (music as { sources: Array<{ id: string }> }).sources.map(s => s.id as LX.OnlineSource)
+    : [...DOMESTIC_ONLINE_SOURCES, 'ytm'] as LX.OnlineSource[]
+  return list
+}
 
 const sortByKeyword = (list: SearchCatalogItem[], keyword: string): SearchCatalogItem[] => {
   const arr: Array<{ num: number, data: SearchCatalogItem }> = []
@@ -65,10 +73,21 @@ const getDefaultProvider = (kind: CatalogSearchKind, source: LX.OnlineSource): C
   return typeof mod?.search === 'function' ? mod.search.bind(mod) : null
 }
 
+export interface CatalogSearchStoreOptions {
+  isYtmAggregateEnabled?: (contextKey?: string) => boolean
+  getYtmContextKey?: () => string
+  ytmAggregateTimeoutMs?: number
+}
+
 export const createCatalogSearchStore = (
   resolveProvider: (kind: CatalogSearchKind, source: LX.OnlineSource) => CatalogSearchProvider | null = getDefaultProvider,
-  availableSources: LX.OnlineSource[] = DEFAULT_SOURCES,
+  availableSources: LX.OnlineSource[] = getRegisteredSources(),
+  options: CatalogSearchStoreOptions = {},
 ) => {
+  const checkYtmAggregate = options.isYtmAggregateEnabled ?? isYtmAggregateSearchEnabled
+  const getYtmCtx = options.getYtmContextKey ?? getLiveYtmContextKey
+  const ytmAggTimeoutMs = options.ytmAggregateTimeoutMs ?? YTM_AGGREGATE_SEARCH_TIMEOUT_MS
+
   const createKindState = (kind: CatalogSearchKind) => {
     const enabledSources: LX.OnlineSource[] = []
     const infos: Partial<Record<LX.OnlineSource, CatalogSearchListInfo>> & { all: CatalogSearchListInfo } = {
@@ -135,6 +154,42 @@ export const createCatalogSearchStore = (
     return []
   }
 
+  const applyAggregateResults = (
+    listInfo: CatalogSearchListInfo,
+    successful: CatalogSearchPageResult[],
+    safePage: number,
+    trimmed: string,
+  ): SearchCatalogItem[] => {
+    const merged: SearchCatalogItem[] = []
+    const seenKeys = new Set<string>()
+    let maxTotal = 0
+    let maxAllPage = 0
+    for (const res of successful) {
+      for (const item of res.list) {
+        const itemKey = `${item.source}:${item.id}`
+        if (seenKeys.has(itemKey)) continue
+        seenKeys.add(itemKey)
+        merged.push(item)
+      }
+      maxTotal = Math.max(maxTotal, res.total)
+      if (res.total > 0 && res.limit > 0) {
+        maxAllPage = Math.max(maxAllPage, Math.ceil(res.total / res.limit))
+      }
+    }
+    markRawList(merged)
+    listInfo.list = sortByKeyword(merged, trimmed)
+    listInfo.page = safePage
+    // 聚合页宽保持固定 15 不被单源（如 20）改写，防止国内源翻页跳项；total 在全页统一按最大页数对齐
+    const pageLimit = listInfo.limit
+    const alignedTotal = maxAllPage > 1
+      ? Math.max(maxTotal, (maxAllPage - 1) * pageLimit + 1)
+      : maxTotal
+    listInfo.total = merged.length
+      ? Math.max(alignedTotal, (safePage - 1) * pageLimit + 1)
+      : alignedTotal
+    return listInfo.list
+  }
+
   const search = async(
     kind: CatalogSearchKind,
     text: string,
@@ -148,7 +203,15 @@ export const createCatalogSearchStore = (
     if (!trimmed) return resetListInfo(kind, sourceId)
 
     const safePage = Number.isInteger(page) && page > 0 ? page : 1
-    const key = `${safePage}__${trimmed}`
+    const hasYtmEnabled = bucket.enabledSources.includes('ytm')
+    const ytmCtx = (sourceId === 'ytm' || (sourceId === 'all' && hasYtmEnabled)) ? getYtmCtx() : ''
+    const includeYtmInAll = sourceId === 'all' && hasYtmEnabled && checkYtmAggregate(ytmCtx)
+    const key = sourceId === 'all'
+      ? `${safePage}__${trimmed}__ytm=${includeYtmInAll ? `1:${ytmCtx}` : '0'}`
+      : sourceId === 'ytm'
+        ? `${safePage}__${trimmed}__ctx=${ytmCtx}`
+        : `${safePage}__${trimmed}`
+
     if (bucket.completedKeys.get(sourceId) === key && listInfo.key === key && listInfo.list.length && !listInfo.error) {
       return listInfo.list
     }
@@ -163,24 +226,39 @@ export const createCatalogSearchStore = (
     listInfo.error = ''
     listInfo.noItemLabel = window.i18n.t('list__loading')
 
-    const targets: LX.OnlineSource[] = sourceId === 'all'
-      ? bucket.enabledSources
-      : [sourceId]
     const failures: LX.OnlineSource[] = []
     let cancelled = false
     const cancels: Array<() => void> = []
     bucket.activeCancels.set(sourceId, cancels)
 
-    const loadOne = async(source: LX.OnlineSource): Promise<CatalogSearchPageResult | null> => {
+    const loadOne = async(source: LX.OnlineSource, softTimeoutMs?: number): Promise<CatalogSearchPageResult | null> => {
       const provider = resolveProvider(kind, source)
       if (!provider) {
         failures.push(source)
         return null
       }
+      let timer: ReturnType<typeof setTimeout> | null = null
+      let timedOut = false
       try {
         const req = provider(trimmed, safePage, listInfo.limit)
-        if (typeof req?.cancel === 'function') cancels.push(() => req.cancel?.())
-        const data = await req
+        const abortReq = () => {
+          try { req?.cancel?.() } catch {}
+        }
+        cancels.push(abortReq)
+        let data: CatalogSearchPageResult
+        if (softTimeoutMs && softTimeoutMs > 0) {
+          data = await new Promise<CatalogSearchPageResult>((resolve, reject) => {
+            timer = setTimeout(() => {
+              timedOut = true
+              abortReq()
+              reject(new Error('search timeout'))
+            }, softTimeoutMs)
+            cancels.push(() => { if (timer != null) clearTimeout(timer) })
+            req.then(resolve, reject)
+          })
+        } else {
+          data = await req
+        }
         if (
           !data ||
           data.source !== source ||
@@ -194,53 +272,29 @@ export const createCatalogSearchStore = (
         }
         return data
       } catch (error) {
-        if (error instanceof Error && (error.message === requestMsg.cancelRequest || /cancel/i.test(error.message))) cancelled = true
+        if (!timedOut && error instanceof Error && (error.message === requestMsg.cancelRequest || /cancel/i.test(error.message))) cancelled = true
         else failures.push(source)
         return null
+      } finally {
+        if (timer != null) clearTimeout(timer)
       }
     }
 
     try {
-      const results = await Promise.all(targets.map(loadOne))
-      if (!isCurrent()) return []
-      bucket.activeCancels.delete(sourceId)
-
-      const successful = results.filter((data): data is CatalogSearchPageResult => data !== null)
-      if (!successful.length) {
-        listInfo.list = []
-        listInfo.total = 0
-        listInfo.page = safePage
-        listInfo.error = failures.length ? window.i18n.t('list__load_failed') : ''
-        listInfo.noItemLabel = listInfo.error || window.i18n.t('no_item')
-        return []
-      }
-
-      if (sourceId === 'all') {
-        const merged: SearchCatalogItem[] = []
-        const seenKeys = new Set<string>()
-        let maxTotal = 0
-        let maxLimit = 0
-        for (const res of successful) {
-          for (const item of res.list) {
-            const itemKey = `${item.source}:${item.id}`
-            if (seenKeys.has(itemKey)) continue
-            seenKeys.add(itemKey)
-            merged.push(item)
-          }
-          maxTotal = Math.max(maxTotal, res.total)
-          maxLimit = Math.max(maxLimit, res.limit)
+      if (sourceId !== 'all') {
+        const result = await loadOne(sourceId)
+        if (!isCurrent()) return []
+        if (!result) {
+          listInfo.list = []
+          listInfo.total = 0
+          listInfo.page = safePage
+          listInfo.error = failures.length ? window.i18n.t('list__load_failed') : ''
+          listInfo.noItemLabel = listInfo.error || window.i18n.t('no_item')
+          if (cancelled) listInfo.key = null
+          return []
         }
-        markRawList(merged)
-        listInfo.list = sortByKeyword(merged, trimmed)
-        listInfo.page = safePage
-        listInfo.limit = maxLimit || listInfo.limit
-        listInfo.total = merged.length
-          ? Math.max(maxTotal, (safePage - 1) * listInfo.limit + 1)
-          : maxTotal
-      } else {
-        const res = successful[0]
         const seenKeys = new Set<string>()
-        const deduped = res.list.filter(item => {
+        const deduped = result.list.filter(item => {
           const itemKey = `${item.source}:${item.id}`
           if (seenKeys.has(itemKey)) return false
           seenKeys.add(itemKey)
@@ -248,10 +302,53 @@ export const createCatalogSearchStore = (
         })
         listInfo.list = markRawList(deduped)
         listInfo.page = safePage
-        listInfo.limit = res.limit
+        listInfo.limit = result.limit
         listInfo.total = deduped.length
-          ? Math.max(res.total, (safePage - 1) * res.limit + deduped.length)
-          : res.total
+          ? Math.max(result.total, (safePage - 1) * result.limit + deduped.length)
+          : result.total
+        listInfo.error = ''
+        listInfo.noItemLabel = listInfo.list.length ? '' : window.i18n.t('no_item')
+        if (cancelled) listInfo.key = null
+        else bucket.completedKeys.set(sourceId, key)
+        return listInfo.list
+      }
+
+      const domesticTargets = bucket.enabledSources.filter(s => s !== 'ytm')
+      const domesticPromise = Promise.all(domesticTargets.map(async s => loadOne(s)))
+      const ytmPromise = includeYtmInAll ? loadOne('ytm', ytmAggTimeoutMs) : null
+
+      const domesticResults = await domesticPromise
+      if (!isCurrent()) return []
+      const domesticSuccessful = domesticResults.filter((data): data is CatalogSearchPageResult => data !== null)
+
+      // 渐进发布国内源结果，不因 YTM pending 阻塞展示
+      if (domesticSuccessful.length) {
+        applyAggregateResults(listInfo, domesticSuccessful, safePage, trimmed)
+        const earlyFailLabels = failures.map(getCatalogSourceLabel)
+        listInfo.error = earlyFailLabels.length ? `${window.i18n.t('list__load_failed')} (${earlyFailLabels.join(', ')})` : ''
+        listInfo.noItemLabel = listInfo.list.length
+          ? ''
+          : (ytmPromise ? window.i18n.t('list__loading') : (listInfo.error || window.i18n.t('no_item')))
+      }
+
+      let finalSuccessful = domesticSuccessful
+      if (ytmPromise) {
+        const ytmResult = await ytmPromise
+        if (!isCurrent()) return []
+        if (ytmResult) {
+          finalSuccessful = [...domesticSuccessful, ytmResult]
+          applyAggregateResults(listInfo, finalSuccessful, safePage, trimmed)
+        }
+      }
+
+      if (!finalSuccessful.length) {
+        listInfo.list = []
+        listInfo.total = 0
+        listInfo.page = safePage
+        listInfo.error = failures.length ? window.i18n.t('list__load_failed') : ''
+        listInfo.noItemLabel = listInfo.error || window.i18n.t('no_item')
+        if (cancelled) listInfo.key = null
+        return []
       }
 
       const failureLabels = failures.map(getCatalogSourceLabel)
@@ -266,10 +363,11 @@ export const createCatalogSearchStore = (
     } catch (error) {
       if (!isCurrent()) return []
       console.error(error)
-      bucket.activeCancels.delete(sourceId)
       listInfo.error = window.i18n.t('list__load_failed')
       listInfo.noItemLabel = listInfo.list.length ? '' : listInfo.error
       return []
+    } finally {
+      if (bucket.activeCancels.get(sourceId) === cancels) bucket.activeCancels.delete(sourceId)
     }
   }
 

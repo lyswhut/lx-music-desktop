@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { playMusicInfoNow, playMusicSelection, restartSelectedVersion, getNextPlayMusicInfo, resetRandomNextMusicInfo, playNext, setMusicUrl, collectMusic, uncollectMusic } from './action'
+import { playMusicInfoNow, playMusicSelection, restartSelectedVersion, getNextPlayMusicInfo, resetRandomNextMusicInfo, playNext, setMusicUrl, collectMusic, uncollectMusic, handlePlayerPicError } from './action'
 import { playInfo, playMusicInfo, tempPlayList, playedList } from '@renderer/store/player/state'
 import { clearTempPlayeList, setPlayMusicInfo, removeTempPlayList, addPlayedList, getList, setMusicInfo } from '@renderer/store/player/action'
 import { setResource, setStop } from '@renderer/plugins/player'
@@ -365,5 +365,49 @@ it('late artwork and lyrics from the previous version cannot overwrite the same 
   vi.mocked(setMusicInfo).mockClear()
   oldPic('old-cover'); oldLyric({ lyric: 'old-lyrics', rawlrcInfo: { lyric: 'old-lyrics' } })
   for (let i = 0; i < 15; i++) await Promise.resolve()
+  expect(setMusicInfo).not.toHaveBeenCalled()
+})
+
+it('handlePlayerPicError triggers one-shot domestic cover fallback for YTM and discards late result after track switch', async() => {
+  const ytmSong: LX.Music.MusicInfoOnline = {
+    id: 'ytm_picErr01',
+    name: '晴天',
+    singer: '周杰伦',
+    source: 'ytm',
+    interval: '04:29',
+    meta: { songId: 'picErr01', albumName: '叶惠美', picUrl: 'https://lh3.googleusercontent.com/blocked.jpg', qualitys: [], _qualitys: {} },
+  }
+  playMusicInfo.musicInfo = ytmSong
+  playMusicInfo.listId = 'temp'
+  vi.mocked(setMusicInfo).mockClear()
+  vi.mocked(getPicPath).mockClear()
+  vi.mocked(getPicPath).mockResolvedValueOnce('https://domestic.cdn/cover.jpg')
+
+  handlePlayerPicError()
+  // 同一首曲目第二次触发图片报错不再重复拉取（防死循环）
+  handlePlayerPicError()
+  for (let i = 0; i < 10; i++) await Promise.resolve()
+  expect(getPicPath).toHaveBeenCalledTimes(1)
+  expect(getPicPath).toHaveBeenCalledWith(expect.objectContaining({
+    musicInfo: ytmSong,
+    listId: 'temp',
+    isRefresh: true,
+  }))
+  expect(setMusicInfo).toHaveBeenCalledWith({ pic: 'https://domestic.cdn/cover.jpg' })
+
+  // 切歌后迟到的旧图回落不覆盖新曲封面
+  const ytmSong2: LX.Music.MusicInfoOnline = { ...ytmSong, id: 'ytm_picErr02' }
+  playMusicInfo.musicInfo = ytmSong2
+  let resolveLate!: (url: string) => void
+  vi.mocked(getPicPath).mockImplementationOnce(async() => new Promise<string>(resolve => { resolveLate = resolve }))
+  vi.mocked(setMusicInfo).mockClear()
+
+  handlePlayerPicError()
+  // 触发报错时先同步清空损坏封面，再启动回落
+  expect(setMusicInfo).toHaveBeenCalledWith({ pic: null })
+  vi.mocked(setMusicInfo).mockClear()
+  playMusicInfo.musicInfo = onlineSong('next-track')
+  resolveLate('https://stale.cdn/old.jpg')
+  for (let i = 0; i < 10; i++) await Promise.resolve()
   expect(setMusicInfo).not.toHaveBeenCalled()
 })

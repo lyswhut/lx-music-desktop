@@ -101,6 +101,7 @@ const usePlayMusic = () => {
         ], musicInfo)
         break
       case 'wy':
+      case 'ytm':
         musicInfo = dataVerify([
           { key: 'name', types: ['string'], required: true, max: 200 },
           { key: 'singer', types: ['string'], required: true, max: 200 },

@@ -17,6 +17,7 @@ import {
   YTM_BRIDGE_CACHE_MAX_ENTRIES,
   YTM_REGION_CACHE_TTL_MS,
 } from '@common/recommendationConfig'
+import { YtmRegionCache } from '@renderer/utils/musicSdk/ytm/regionCache'
 import type { SimilarProviderId } from './similarFusion'
 import type { RankedYtmTrack } from './ytmParser'
 
@@ -53,7 +54,7 @@ export class SimilarCandidateCache {
   private readonly seeds = new Map<string, { seedId: string, fetchedAt: number }>()
   private readonly ytmPages = new Map<string, YtmPageCacheEntry>()
   private readonly bridges = new Map<string, { musicInfo: LX.Music.MusicInfoOnline | null, fetchedAt: number }>()
-  private readonly regions = new Map<string, { blocked: boolean, fetchedAt: number }>()
+  private readonly regionCache: YtmRegionCache
 
   constructor(
     private readonly maxEntries: number = SIMILAR_CACHE_MAX_ENTRIES,
@@ -61,7 +62,14 @@ export class SimilarCandidateCache {
     private readonly now: () => number = () => Date.now(),
     private readonly maxBridgeEntries: number = YTM_BRIDGE_CACHE_MAX_ENTRIES,
     private readonly regionTtlMs: number = YTM_REGION_CACHE_TTL_MS,
-  ) {}
+    regionCache?: YtmRegionCache,
+  ) {
+    this.regionCache = regionCache ?? new YtmRegionCache({
+      ttlMs: this.regionTtlMs,
+      maxEntries: this.maxEntries,
+      now: this.now,
+    })
+  }
 
   /** 缓存键：平台 + 种子原生 id（不含认证信息；代理/账号上下文由调用方拼入 key）。 */
   static key(provider: SimilarProviderId, seedId: string, accountContext = ''): string {
@@ -166,19 +174,11 @@ export class SimilarCandidateCache {
 
   /** 读取按实际代理上下文隔离的 YTM 区域可达性缓存。 */
   getRegionStatus(proxyContext: string): boolean | null {
-    const entry = this.regions.get(proxyContext)
-    if (!entry) return null
-    if (this.now() - entry.fetchedAt > this.regionTtlMs) {
-      this.regions.delete(proxyContext)
-      return null
-    }
-    return entry.blocked
+    return this.regionCache.get(proxyContext)
   }
 
   setRegionStatus(proxyContext: string, blocked: boolean): void {
-    this.regions.delete(proxyContext)
-    this.regions.set(proxyContext, { blocked, fetchedAt: this.now() })
-    this.evictLru(this.regions, this.maxEntries)
+    this.regionCache.set(proxyContext, blocked)
   }
 
   /** 删除单条（测试/失效用）。 */
@@ -191,7 +191,7 @@ export class SimilarCandidateCache {
     this.seeds.clear()
     this.ytmPages.clear()
     this.bridges.clear()
-    this.regions.clear()
+    this.regionCache.clear()
   }
 
   get size(): number {

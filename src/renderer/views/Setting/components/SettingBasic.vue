@@ -260,12 +260,17 @@ export default {
     }
     const apiSources = computed(() => {
       return [
-        ...apiSourceInfo.map(api => ({
-          id: api.id,
-          name: api.name,
-          label: api.name,
-          disabled: api.disabled,
-        })),
+        ...apiSourceInfo.map(api => {
+          const localizedName = api.id === 'ytm_builtin'
+            ? t('setting__basic_source_ytm_builtin')
+            : api.name
+          return {
+            id: api.id,
+            name: localizedName,
+            label: localizedName,
+            disabled: api.disabled,
+          }
+        }),
         ...userApi.list.map(api => ({
           id: api.id,
           name: api.name,

@@ -18,6 +18,7 @@ export interface BoardItem {
 export interface Board {
   list: BoardItem[]
   source: LX.OnlineSource
+  partial?: boolean
 }
 type Boards = Partial<Record<LX.OnlineSource, Board>>
 
@@ -32,6 +33,9 @@ export interface ListDetailInfo {
   key: string | null
   id: string
   noItemLabel: string
+  hasMore?: boolean
+  truncated?: boolean
+  generation?: number
 }
 
 export const listDetailInfo = reactive<ListDetailInfo>({

@@ -52,20 +52,22 @@ export const getPicPath = async({
   musicInfo,
   isRefresh = false,
   listId,
+  skipPrimary = false,
   onToggleSource,
 }: {
   musicInfo: LX.Music.MusicInfo | LX.Download.ListItem
   listId?: string | null
   isRefresh?: boolean
+  skipPrimary?: boolean
   onToggleSource?: (musicInfo?: LX.Music.MusicInfoOnline) => void
 }): Promise<string> => {
   if ('progress' in musicInfo) return getDownloadPicUrl({ musicInfo, isRefresh, listId, onToggleSource })
   const preferred = getPreferredMusicInfo(musicInfo)
-  if (preferred !== musicInfo && preferred.source !== 'local') return getOnlinePicUrl({ musicInfo: preferred, isRefresh, onToggleSource })
+  if (preferred !== musicInfo && preferred.source !== 'local') return getOnlinePicUrl({ musicInfo: preferred, isRefresh, skipPrimary, onToggleSource })
   if (musicInfo.source == 'local') {
     return getLocalPicUrl({ musicInfo, isRefresh, listId, onToggleSource })
   } else {
-    return getOnlinePicUrl({ musicInfo, isRefresh, listId, onToggleSource })
+    return getOnlinePicUrl({ musicInfo, isRefresh, listId, skipPrimary, onToggleSource })
   }
 }
 

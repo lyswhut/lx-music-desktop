@@ -229,4 +229,33 @@ describe('平台相似推荐引擎', () => {
     expect(dropped.meta.state).toBe('no-playable-source')
     expect(mocks.addQueue).not.toHaveBeenCalled()
   })
+
+  it('向 recallPlatformSimilar 透传 allowDirectYtmPlayback，确保无国内源时原生 ytm 候选可直出队列', async() => {
+    const ytmInfo = { id: 'ytm_only1', name: 'Only On YTM', singer: 'Indie', source: 'ytm', meta: { albumName: '' } } as any
+    mocks.recall.mockResolvedValueOnce(recallResult({
+      items: [{
+        artist: 'Indie',
+        title: 'Only On YTM',
+        album: '',
+        musicInfo: ytmInfo,
+        alternativeMusicInfos: [],
+        fusionScore: 0.02,
+        sources: [{ provider: 'ytm', rank: 1, musicInfo: ytmInfo }],
+      }],
+    }))
+    const res = await explorePlatformOnce({
+      anchor,
+      enabledProviders: ['ytm'],
+      playableTargets: [],
+      allowDirectYtmPlayback: true,
+      canPlaySource: source => source === 'ytm',
+    })
+    expect(mocks.recall).toHaveBeenCalledWith(anchor, expect.objectContaining({
+      allowDirectYtmPlayback: true,
+      playableTargets: [],
+    }))
+    expect(res.candidates).toHaveLength(1)
+    expect(res.candidates[0].musicInfo?.id).toBe('ytm_only1')
+    expect(mocks.addQueue).toHaveBeenCalledTimes(1)
+  })
 })
