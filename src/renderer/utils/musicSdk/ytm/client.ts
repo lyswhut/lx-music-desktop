@@ -45,6 +45,36 @@ export const YTM_HEADERS = {
   Cookie: 'SOCS=CAI',
 }
 
+export const YTM_ANDROID_CLIENT = {
+  clientName: 'ANDROID',
+  clientVersion: '21.02.35',
+  hl: 'zh-CN',
+  gl: 'US',
+  osName: 'Android',
+  osVersion: '15',
+  androidSdkVersion: 35,
+}
+
+export const YTM_ANDROID_HEADERS = {
+  'Content-Type': 'application/json',
+  'User-Agent': 'com.google.android.youtube/21.02.35 (Linux; U; Android 15) gzip',
+}
+
+export const YTM_ANDROID_FALLBACK_CLIENT = {
+  clientName: 'ANDROID',
+  clientVersion: '20.10.38',
+  hl: 'zh-CN',
+  gl: 'US',
+  osName: 'Android',
+  osVersion: '14',
+  androidSdkVersion: 34,
+}
+
+export const YTM_ANDROID_FALLBACK_HEADERS = {
+  'Content-Type': 'application/json',
+  'User-Agent': 'com.google.android.youtube/20.10.38 (Linux; U; Android 14) gzip',
+}
+
 export const YTM_IOS_CLIENT = {
   clientName: 'IOS',
   clientVersion: '20.10.4',
@@ -74,20 +104,6 @@ export const YTM_ANDROID_MUSIC_CLIENT = {
 export const YTM_ANDROID_MUSIC_HEADERS = {
   'Content-Type': 'application/json',
   'User-Agent': 'com.google.android.apps.youtube.music/8.05.51 (Linux; U; Android 14) gzip',
-}
-
-export const YTM_TV_EMBED_CLIENT = {
-  clientName: 'TVHTML5_SIMPLY_EMBEDDED_PLAYER',
-  clientVersion: '2.0',
-  hl: 'zh-CN',
-  gl: 'US',
-}
-
-export const YTM_TV_EMBED_HEADERS = {
-  'Content-Type': 'application/json',
-  'User-Agent': 'Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 TV Safari/537.36',
-  Origin: 'https://www.youtube.com',
-  Referer: 'https://www.youtube.com/',
 }
 
 export type YtmInnerTubeEndpoint = 'search' | 'next' | 'browse' | 'player' | 'music/get_search_suggestions'

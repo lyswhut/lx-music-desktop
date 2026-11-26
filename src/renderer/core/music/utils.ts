@@ -251,6 +251,7 @@ const fetchMusicUrlByApi = async(
   quality: LX.Quality,
   apiId?: string,
   preferMp4 = false,
+  verifyOpenRange = false,
 ): Promise<{ url: string, type: LX.Quality }> => {
   let reqPromise: Promise<{ url: string, type: LX.Quality }> | null = null
   try {
@@ -262,6 +263,9 @@ const fetchMusicUrlByApi = async(
       const handler = apis(musicInfo.source, apiId)
       if (handler?.getMusicUrl) reqPromise = handler.getMusicUrl(toOldMusicInfo(musicInfo), quality).promise
     } else if (musicInfo.source === 'ytm') {
+      const ytmOptions = preferMp4 || verifyOpenRange
+        ? { ...(preferMp4 ? { preferMp4: true } : {}), ...(verifyOpenRange ? { verifyOpenRange: true } : {}) }
+        : undefined
       let customHandler: any = null
       if (!preferMp4 && appSetting['common.apiSource'] !== 'ytm_builtin') {
         try {
@@ -270,10 +274,10 @@ const fetchMusicUrlByApi = async(
       }
       if (customHandler && typeof customHandler.getMusicUrl === 'function') {
         reqPromise = customHandler.getMusicUrl(toOldMusicInfo(musicInfo), quality).promise.catch(() => (
-          musicSdk.ytm.getMusicUrl(toOldMusicInfo(musicInfo), quality).promise
+          musicSdk.ytm.getMusicUrl(toOldMusicInfo(musicInfo), quality, ytmOptions).promise
         ))
       } else {
-        reqPromise = musicSdk.ytm.getMusicUrl(toOldMusicInfo(musicInfo), quality, preferMp4 ? { preferMp4: true } : undefined).promise
+        reqPromise = musicSdk.ytm.getMusicUrl(toOldMusicInfo(musicInfo), quality, ytmOptions).promise
       }
     } else {
       reqPromise = musicSdk[musicInfo.source].getMusicUrl(toOldMusicInfo(musicInfo), quality).promise
@@ -288,12 +292,13 @@ const fetchMusicUrlByApi = async(
  * 主源失败后按序轮换备源（提供方内层）。429 限流与普通失败同样立即切下一个源，不做同源等待重试。
  * allowToggleSource 为 false 时不轮换（保持既有语义：换源重放分支与关闭自动换源的下载不切换）。
  */
-const fetchMusicUrlWithRotation = async({ musicInfo, quality, onToggleApiSource, allowToggleSource, preferMp4 = false }: {
+const fetchMusicUrlWithRotation = async({ musicInfo, quality, onToggleApiSource, allowToggleSource, preferMp4 = false, isRefresh = false }: {
   musicInfo: LX.Music.MusicInfoOnline
   quality?: LX.Quality
   onToggleApiSource?: () => void
   allowToggleSource: boolean
   preferMp4?: boolean
+  isRefresh?: boolean
 }): Promise<{ url: string, quality: LX.Quality }> => {
   let firstError: any
   try {
@@ -301,7 +306,7 @@ const fetchMusicUrlWithRotation = async({ musicInfo, quality, onToggleApiSource,
     // ytm 内置直链引擎不依赖第三方自定义源初始化成功，即使未装国内脚本仍可直接播放/下载
     if (!apiReady && musicInfo.source !== 'ytm') throw new Error('source init failed')
     const primaryQuality = quality ?? getPlayQuality(appSetting['player.playQuality'], musicInfo)
-    const { url, type } = await fetchMusicUrlByApi(musicInfo, primaryQuality, undefined, preferMp4)
+    const { url, type } = await fetchMusicUrlByApi(musicInfo, primaryQuality, undefined, preferMp4, isRefresh)
     return { url, quality: type }
   } catch (err: any) {
     firstError = err
@@ -314,7 +319,7 @@ const fetchMusicUrlWithRotation = async({ musicInfo, quality, onToggleApiSource,
     if (quality != null && !musicInfo.meta._qualitys[itemQuality]) continue
     onToggleApiSource?.()
     try {
-      const { url, type } = await fetchMusicUrlByApi(musicInfo, itemQuality, apiId, preferMp4)
+      const { url, type } = await fetchMusicUrlByApi(musicInfo, itemQuality, apiId, preferMp4, isRefresh)
       return { url, quality: type }
     } catch (err: any) {
       console.log(err)
@@ -366,7 +371,7 @@ export const getOnlineOtherSourceMusicUrl = async({ musicInfos, quality, onToggl
 
   // 提供方内层：主源 → 备源按序轮换；穷尽后递归下一个候选提供方
   try {
-    const { url, quality: type } = await fetchMusicUrlWithRotation({ musicInfo, quality, onToggleApiSource, allowToggleSource: true, preferMp4 })
+    const { url, quality: type } = await fetchMusicUrlWithRotation({ musicInfo, quality, onToggleApiSource, allowToggleSource: true, preferMp4, isRefresh })
     return { musicInfo, url, quality: type, isFromCache: false }
   } catch (err: any) {
     console.log(err)
@@ -395,7 +400,7 @@ export const handleGetOnlineMusicUrl = async({ musicInfo, quality, onToggleSourc
   // console.log(musicInfo.source)
   // 提供方内层：先穷尽本提供方的所有启用音源（主源 → 备源按序）
   try {
-    const { url, quality: type } = await fetchMusicUrlWithRotation({ musicInfo, quality, onToggleApiSource, allowToggleSource, preferMp4 })
+    const { url, quality: type } = await fetchMusicUrlWithRotation({ musicInfo, quality, onToggleApiSource, allowToggleSource, preferMp4, isRefresh })
     return { musicInfo, url, quality: type, isFromCache: false }
   } catch (err: any) {
     console.log(err)

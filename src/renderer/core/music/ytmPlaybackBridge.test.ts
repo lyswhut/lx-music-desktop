@@ -406,9 +406,9 @@ describe('getOtherSource cache hygiene & getCachedLyricInfo for YTM', () => {
         _qualitys: { '128k': { size: '' }, '320k': { size: '' } },
       },
     }
-    const freshUrl = 'https://rr1---sn-test.googlevideo.com/videoplayback?itag=251&expire=2999999999'
-    const expiredUrl = 'https://rr1---sn-test.googlevideo.com/videoplayback?itag=251&expire=1000000000'
-    mocks.getMusicUrlInfo.mockResolvedValueOnce({ url: expiredUrl, type: '320k', musicInfo: ytmDirect })
+    const freshUrl = 'https://rr1---sn-test.googlevideo.com/videoplayback?c=ANDROID&itag=18&expire=2999999999'
+    const staleIosAdaptiveUrl = 'https://rr1---sn-test.googlevideo.com/videoplayback?c=IOS&itag=251&expire=2999999999'
+    mocks.getMusicUrlInfo.mockResolvedValueOnce({ url: staleIosAdaptiveUrl, type: '320k', musicInfo: ytmDirect })
     mocks.ytmGetMusicUrl.mockReturnValueOnce({ promise: Promise.resolve({ url: freshUrl, type: '320k' }) })
 
     const resolvedUrl = await getMusicUrl({ musicInfo: ytmDirect, isRefresh: false })
@@ -417,7 +417,35 @@ describe('getOtherSource cache hygiene & getCachedLyricInfo for YTM', () => {
     expect(mocks.wySearch).not.toHaveBeenCalled()
     expect(mocks.saveMusicUrl).toHaveBeenCalledWith(ytmDirect, '320k', freshUrl, ytmDirect)
 
-    // 双向平权：国内曲目在所有国内源失败时，若 recommend.ytm.enable=true 可通过 YTM 原生直链救回
+    // 刷新重试（isRefresh=true）向 YTM 引擎透传 verifyOpenRange: true；若下载刷新（preferMp4+isRefresh）同时透传两项
+    mocks.ytmGetMusicUrl.mockReturnValueOnce({ promise: Promise.resolve({ url: freshUrl, type: '320k' }) })
+    await expect(getMusicUrl({ musicInfo: ytmDirect, isRefresh: true })).resolves.toBe(freshUrl)
+    expect(mocks.ytmGetMusicUrl).toHaveBeenLastCalledWith(ytmDirect, '320k', { verifyOpenRange: true })
+
+    mocks.ytmGetMusicUrl.mockReturnValueOnce({ promise: Promise.resolve({ url: freshUrl, type: '320k' }) })
+    await expect(getMusicUrl({ musicInfo: ytmDirect, isRefresh: true, preferMp4: true })).resolves.toBe(freshUrl)
+    expect(mocks.ytmGetMusicUrl).toHaveBeenLastCalledWith(ytmDirect, '320k', { preferMp4: true, verifyOpenRange: true })
+
+    // 刷新重试（isRefresh=true）遇到 403 探针拒绝时，立刻触发国内源跨源救回
+    vi.stubGlobal('window', {
+      lx: { apiInitPromise: [Promise.resolve(true)] },
+      i18n: { t: (key: string) => key },
+    })
+    mocks.qualityList.value = { wy: ['128k'] }
+    mocks.ytmGetMusicUrl.mockReturnValueOnce({ promise: Promise.reject(new Error('YouTube Music stream rejected (ANDROID): HTTP 403')) })
+    mocks.wySearch.mockResolvedValueOnce({
+      list: [row('wy', 'wyRescue403', 'Only On YouTube', 'Indie Artist', '', '03:21')],
+    })
+    mocks.wyGetMusicUrl.mockReturnValueOnce({ promise: Promise.resolve({ url: 'https://wy.cdn/rescue403.mp3', type: '128k' }) })
+    const rescuedFrom403 = await getMusicUrl({ musicInfo: ytmDirect, isRefresh: true, allowToggleSource: true })
+    expect(rescuedFrom403).toBe('https://wy.cdn/rescue403.mp3')
+
+    // 双向平权：国内曲目在所有国内源失败时，若 recommend.ytm.enable=true 且 isRefresh=true 可透传 verifyOpenRange 并通过 YTM 原生直链救回
+    mocks.qualityList.value = {}
+    vi.stubGlobal('window', {
+      lx: { apiInitPromise: [Promise.resolve(false)] },
+      i18n: { t: (key: string) => key },
+    })
     mocks.appSetting['recommend.ytm.enable'] = true
     mocks.ytmSearch.mockResolvedValueOnce({
       list: [{
@@ -426,7 +454,7 @@ describe('getOtherSource cache hygiene & getCachedLyricInfo for YTM', () => {
         _types: { '128k': { size: '' }, '320k': { size: '' } },
       }],
     })
-    const rescueUrl = 'https://rr2---sn-test.googlevideo.com/videoplayback?itag=140&expire=2999999999'
+    const rescueUrl = 'https://rr2---sn-test.googlevideo.com/videoplayback?c=ANDROID&itag=18&expire=2999999999'
     mocks.ytmGetMusicUrl.mockReturnValueOnce({ promise: Promise.resolve({ url: rescueUrl, type: '128k' }) })
     const domesticSong: LX.Music.MusicInfoOnline = {
       id: 'wy_rescue01',
@@ -440,11 +468,16 @@ describe('getOtherSource cache hygiene & getCachedLyricInfo for YTM', () => {
     const onResolved = vi.fn()
     const rescued = await getMusicUrl({
       musicInfo: domesticSong,
-      isRefresh: false,
+      isRefresh: true,
       allowToggleSource: true,
       onResolvedMusicInfo: onResolved,
     })
     expect(rescued).toBe(rescueUrl)
+    expect(mocks.ytmGetMusicUrl).toHaveBeenLastCalledWith(
+      expect.objectContaining({ id: 'ytm_ytmRescue01', source: 'ytm' }),
+      '128k',
+      { verifyOpenRange: true },
+    )
     expect(onResolved).toHaveBeenCalledWith(expect.objectContaining({ id: 'ytm_ytmRescue01', source: 'ytm' }))
     expect(mocks.saveMusicUrl).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'ytm_ytmRescue01' }),

@@ -1,3 +1,4 @@
+import http from 'node:http'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MusicSdkResponseError } from '@renderer/utils/musicSdk/responseError'
 import {
@@ -19,7 +20,7 @@ import {
 import { YtmPaginationCache, sharedYtmPaginationCache, type YtmCancellablePromise } from './paginationCache'
 import { sharedYtmRegionCache } from './regionCache'
 import { setYtmRuntimeContext } from './runtimeContext'
-import { isYtmStreamUrlExpired, selectYtmAudioStream } from './player'
+import { extractYtmAudioFormats, isYtmStreamUrlExpired, probeYtmOpenRangeStream, selectYtmAudioStream } from './player'
 import { formatLrcTimestamp } from './lyric'
 import ytm from './index'
 
@@ -1307,33 +1308,51 @@ describe('YTM SDK endpoints & proxy context isolation', () => {
     expect(partialBoards.partial).toBe(true)
   })
 
-  it('first-class YTM parity: player direct streams (IOS + TV_EMBED fallback, preferMp4, expire), timed/untimed lyrics, pic, hotSearch, tipSearch, simiSong', async() => {
-    // 1. googlevideo 签名直链过期判断（含提前 5 分钟缓冲）
+  it('first-class YTM parity: player direct streams (ANDROID itag 18 primary, verified IOS fallback, open-range probe, PO-token cache guard), timed/untimed lyrics, pic, hotSearch, tipSearch, simiSong', async() => {
+    // 1. googlevideo 签名直链过期与旧版无 pot 自适应 403 缓存自愈判断（含提前 5 分钟缓冲）
     const nowMs = 1_700_000_000_000
     const nowSec = Math.floor(nowMs / 1000)
     expect(isYtmStreamUrlExpired('https://cdn.example.com/song.mp3', nowMs)).toBe(false)
     expect(isYtmStreamUrlExpired('https://rr1---sn-test.googlevideo.com/videoplayback?itag=140', nowMs)).toBe(true)
     expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?expire=${nowSec + 120}`, nowMs)).toBe(true)
     expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?expire=${nowSec + 3600}`, nowMs)).toBe(false)
+    // 无 pot 的 IOS/ANDROID 非渐进式音频流（itag 140/251）开放 Range 会返回 403，必须自动视为失效
+    expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?c=IOS&itag=251&expire=${nowSec + 3600}`, nowMs)).toBe(true)
+    expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?c=ANDROID&itag=140&expire=${nowSec + 3600}`, nowMs)).toBe(true)
+    // ANDROID 渐进式 itag 18 与带有效 pot 的流在有效期内保持有效
+    expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?c=ANDROID&itag=18&expire=${nowSec + 3600}`, nowMs)).toBe(false)
+    expect(isYtmStreamUrlExpired(`https://rr1---sn-test.googlevideo.com/videoplayback?c=IOS&itag=251&pot=token123&expire=${nowSec + 3600}`, nowMs)).toBe(false)
 
-    // 2. 流择优：128k 优先 itag 140 AAC；320k 优先 itag 251 Opus；preferMp4 锁定 audio/mp4 (.m4a)
+    // 2. 流提取与择优：渐进式 itag 18 (video/mp4+mp4a) 识别为 MP4/m4a；preferProgressive 锁定 itag 18；preferMp4 拒绝纯 webm
     const sampleFormats = [
-      { url: 'https://rr1.googlevideo.com/aac140', itag: 140, mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000, contentLength: 3_000_000 },
-      { url: 'https://rr1.googlevideo.com/opus251', itag: 251, mimeType: 'audio/webm; codecs="opus"', bitrate: 162_000, contentLength: 3_500_000 },
+      { url: 'https://rr1.googlevideo.com/prog18', itag: 18, mimeType: 'video/mp4; codecs="avc1.42001E, mp4a.40.2"', bitrate: 154_000, contentLength: 4_000_000, isProgressive: true },
+      { url: 'https://rr1.googlevideo.com/aac140', itag: 140, mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000, contentLength: 3_000_000, isProgressive: false },
+      { url: 'https://rr1.googlevideo.com/opus251', itag: 251, mimeType: 'audio/webm; codecs="opus"', bitrate: 162_000, contentLength: 3_500_000, isProgressive: false },
     ]
+    expect(selectYtmAudioStream(sampleFormats, '320k', { preferProgressive: true })).toMatchObject({ url: 'https://rr1.googlevideo.com/prog18', type: '320k', itag: 18, ext: 'm4a' })
+    expect(selectYtmAudioStream(sampleFormats, '320k', { preferMp4: true, preferProgressive: true })).toMatchObject({ url: 'https://rr1.googlevideo.com/prog18', type: '320k', itag: 18, ext: 'm4a' })
     expect(selectYtmAudioStream(sampleFormats, '128k')).toMatchObject({ url: 'https://rr1.googlevideo.com/aac140', type: '128k', ext: 'm4a' })
     expect(selectYtmAudioStream(sampleFormats, '320k')).toMatchObject({ url: 'https://rr1.googlevideo.com/opus251', type: '320k', ext: 'webm' })
     expect(selectYtmAudioStream(sampleFormats, '320k', { preferMp4: true })).toMatchObject({ url: 'https://rr1.googlevideo.com/aac140', type: '320k', ext: 'm4a' })
-    expect(selectYtmAudioStream([sampleFormats[1]], '320k', { preferMp4: true })).toBeNull()
+    expect(selectYtmAudioStream([sampleFormats[0]], '320k', { preferMp4: true })).toMatchObject({ url: 'https://rr1.googlevideo.com/prog18', type: '320k', ext: 'm4a' })
+    expect(selectYtmAudioStream([sampleFormats[2]], '320k', { preferMp4: true })).toBeNull()
+    expect(extractYtmAudioFormats({
+      streamingData: {
+        formats: [{ itag: 18, url: 'https://rr1.googlevideo.com/p18', mimeType: 'video/mp4; codecs="avc1.42001E, mp4a.40.2"', bitrate: 150_000 }],
+        adaptiveFormats: [{ itag: 137, url: 'https://rr1.googlevideo.com/v137', mimeType: 'video/mp4; codecs="avc1.640028"', bitrate: 2_000_000 }],
+      },
+    })).toHaveLength(1)
 
-    // 3. getMusicUrl：IOS 失败时自动回退 TV_EMBED 并返回有效直链；非法 videoId 拒绝
-    const playerOk = {
+    // 3. getMusicUrl：主路径 ANDROID 失败时回退 ANDROID_FALLBACK 获取渐进式 itag 18（无须额外探针）
+    const androidProgressiveOk = {
       responseContext: {},
       playabilityStatus: { status: 'OK' },
       streamingData: {
+        formats: [
+          { itag: 18, url: 'https://rr1.googlevideo.com/videoplayback?c=ANDROID&itag=18&expire=2999999999', mimeType: 'video/mp4; codecs="avc1.42001E, mp4a.40.2"', bitrate: 154_000, audioChannels: 2 },
+        ],
         adaptiveFormats: [
-          { itag: 140, url: 'https://rr1.googlevideo.com/videoplayback?itag=140&expire=2999999999', mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000 },
-          { itag: 251, url: 'https://rr1.googlevideo.com/videoplayback?itag=251&expire=2999999999', mimeType: 'audio/webm; codecs="opus"', bitrate: 160_000 },
+          { itag: 140, url: 'https://rr1.googlevideo.com/videoplayback?c=ANDROID&itag=140&expire=2999999999', mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000 },
         ],
       },
       videoDetails: {
@@ -1345,19 +1364,90 @@ describe('YTM SDK endpoints & proxy context isolation', () => {
         },
       },
     }
+    const probeSpy = vi.fn(() => ({ promise: Promise.resolve({ ok: true, statusCode: 206 }), cancel: vi.fn() }))
     mocks.httpFetch
-      .mockImplementationOnce(() => makeMockHttpFetch({ responseContext: {}, playabilityStatus: { status: 'UNPLAYABLE', reason: 'age restricted' } }))
-      .mockImplementationOnce(() => makeMockHttpFetch(playerOk))
-    const stream = await ytm.getMusicUrl({ songmid: 'dQw4w9WgXcQ' }, '320k').promise
+      .mockImplementationOnce(() => makeMockHttpFetch({ responseContext: {}, playabilityStatus: { status: 'UNPLAYABLE', reason: 'transient' } }))
+      .mockImplementationOnce(() => makeMockHttpFetch(androidProgressiveOk))
+    const stream = await ytm.getMusicUrl({ songmid: 'dQw4w9WgXcQ' }, '320k', { probeStreamUrl: probeSpy }).promise
     expect(stream).toMatchObject({
       type: '320k',
-      url: 'https://rr1.googlevideo.com/videoplayback?itag=251&expire=2999999999',
-      ext: 'webm',
+      url: 'https://rr1.googlevideo.com/videoplayback?c=ANDROID&itag=18&expire=2999999999',
+      ext: 'm4a',
     })
+    expect(probeSpy).not.toHaveBeenCalled()
+
+    // 3b. 当两个 ANDROID 均无渐进式流（即便 adaptiveFormats 含 140/251 也绝不未验直接返回）而落入 IOS_VERIFIED 时，
+    // 强制执行开放 Range 探针：403 必须干净拒绝，绝不把 403 坏链交给播放器
+    const adaptiveOnlyPayload = {
+      responseContext: {},
+      playabilityStatus: { status: 'OK' },
+      streamingData: {
+        formats: [],
+        adaptiveFormats: [
+          { itag: 140, url: 'https://rr1.googlevideo.com/videoplayback?c=ANDROID&itag=140&expire=2999999999', mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000 },
+          { itag: 251, url: 'https://rr1.googlevideo.com/videoplayback?c=ANDROID&itag=251&expire=2999999999', mimeType: 'audio/webm; codecs="opus"', bitrate: 160_000 },
+        ],
+      },
+    }
+    const iosAdaptiveOnly = {
+      responseContext: {},
+      playabilityStatus: { status: 'OK' },
+      streamingData: {
+        adaptiveFormats: [
+          { itag: 140, url: 'https://rr1.googlevideo.com/videoplayback?c=IOS&itag=140&expire=2999999999', mimeType: 'audio/mp4; codecs="mp4a.40.2"', bitrate: 130_000 },
+          { itag: 251, url: 'https://rr1.googlevideo.com/videoplayback?c=IOS&itag=251&expire=2999999999', mimeType: 'audio/webm; codecs="opus"', bitrate: 160_000 },
+        ],
+      },
+    }
+    const probe403 = vi.fn(() => ({ promise: Promise.resolve({ ok: false, statusCode: 403, reason: 'HTTP 403' }), cancel: vi.fn() }))
+    mocks.httpFetch
+      .mockImplementationOnce(() => makeMockHttpFetch(adaptiveOnlyPayload))
+      .mockImplementationOnce(() => makeMockHttpFetch(adaptiveOnlyPayload))
+      .mockImplementationOnce(() => makeMockHttpFetch(iosAdaptiveOnly))
+    await expect(ytm.getMusicUrl({ songmid: 'dQw4w9WgXcQ' }, '320k', { probeStreamUrl: probe403 }).promise).rejects.toThrow(/HTTP 403/)
+    expect(probe403).toHaveBeenCalledTimes(1)
+
+    // 3c. verifyOpenRange=true（刷新重试路径）遇 403 沿 ANDROID -> ANDROID_FALLBACK -> IOS_VERIFIED 级联探测，命中 206 才放行；并验证探针阶段 cancelHttp
+    const probeCascade = vi.fn()
+      .mockImplementationOnce(() => ({ promise: Promise.resolve({ ok: false, statusCode: 403, reason: 'HTTP 403' }), cancel: vi.fn() }))
+      .mockImplementationOnce(() => ({ promise: Promise.resolve({ ok: false, statusCode: 403, reason: 'HTTP 403' }), cancel: vi.fn() }))
+      .mockImplementationOnce(() => ({ promise: Promise.resolve({ ok: true, statusCode: 206 }), cancel: vi.fn() }))
+    mocks.httpFetch
+      .mockImplementationOnce(() => makeMockHttpFetch(androidProgressiveOk))
+      .mockImplementationOnce(() => makeMockHttpFetch(androidProgressiveOk))
+      .mockImplementationOnce(() => makeMockHttpFetch(iosAdaptiveOnly))
+    const cascaded = await ytm.getMusicUrl({ songmid: 'dQw4w9WgXcQ' }, '128k', { verifyOpenRange: true, probeStreamUrl: probeCascade }).promise
+    expect(cascaded).toMatchObject({ type: '128k', url: 'https://rr1.googlevideo.com/videoplayback?c=IOS&itag=140&expire=2999999999', ext: 'm4a' })
+    expect(probeCascade).toHaveBeenCalledTimes(3)
+
+    let cancelProbeSpy = vi.fn()
+    let rejectProbe!: (e: Error) => void
+    let notifyProbeStarted!: () => void
+    const probeStarted = new Promise<void>(resolve => { notifyProbeStarted = resolve })
+    mocks.httpFetch.mockImplementationOnce(() => makeMockHttpFetch(androidProgressiveOk))
+    const cancellable = ytm.getMusicUrl({ songmid: 'dQw4w9WgXcQ' }, '128k', {
+      verifyOpenRange: true,
+      probeStreamUrl: () => {
+        notifyProbeStarted()
+        return {
+          promise: new Promise((_resolve, reject) => { rejectProbe = reject }),
+          cancel: () => {
+            cancelProbeSpy()
+            rejectProbe(new Error('request cancelled'))
+          },
+        }
+      },
+    })
+    await probeStarted
+    cancellable.cancelHttp()
+    expect(cancelProbeSpy).toHaveBeenCalledTimes(1)
+    await expect(cancellable.promise).rejects.toThrow(/cancelled/i)
     await expect(ytm.getMusicUrl({ songmid: 'bad' }, '128k').promise).rejects.toThrow(/invalid/i)
 
-    // 4. getPic 返回最高分辨率缩略图；getMusicDetailPageUrl 返回规范观看链接
-    mocks.httpFetch.mockImplementationOnce(() => makeMockHttpFetch(playerOk))
+    // 4. getPic 主客户端失败时回退下一客户端仍返回最高分辨率缩略图；getMusicDetailPageUrl 返回规范观看链接
+    mocks.httpFetch
+      .mockImplementationOnce(() => ({ promise: Promise.reject(new Error('android transient')), cancelHttp: vi.fn() }))
+      .mockImplementationOnce(() => makeMockHttpFetch(androidProgressiveOk))
     expect(await ytm.getPic({ songmid: 'dQw4w9WgXcQ' })).toBe('https://i.ytimg.com/maxres.jpg')
     expect(ytm.getMusicDetailPageUrl({ songmid: 'dQw4w9WgXcQ' })).toBe('https://music.youtube.com/watch?v=dQw4w9WgXcQ')
 
@@ -1529,5 +1619,75 @@ describe('YTM SDK endpoints & proxy context isolation', () => {
     await expect(hot1).rejects.toThrow(/cancelled/i)
     await expect(hot2).resolves.toMatchObject({ source: 'ytm', list: ['APT.', '晴天'] })
     expect(mocks.httpFetch).toHaveBeenCalledTimes(callsBeforeHotRace + 2)
+  })
+
+  it('probeYtmOpenRangeStream verifies Range: bytes=0- (206 ok, 403/0-len/text-html reject, 302 redirect/limit, in-flight cancel, deadline timeout)', async() => {
+    const receivedRanges: string[] = []
+    const timers: NodeJS.Timeout[] = []
+    let onSlowArrived: (() => void) | null = null
+    const server = http.createServer((req, res) => {
+      receivedRanges.push(String(req.headers.range ?? ''))
+      if (req.url === '/ok206') {
+        res.writeHead(206, { 'Content-Type': 'video/mp4', 'Content-Length': '102400' })
+        res.end('x'.repeat(64))
+      } else if (req.url === '/deny403') {
+        res.writeHead(403, { 'Content-Type': 'text/plain', 'Content-Length': '0' })
+        res.end()
+      } else if (req.url === '/empty200') {
+        res.writeHead(200, { 'Content-Type': 'video/mp4', 'Content-Length': '0' })
+        res.end()
+      } else if (req.url === '/html200') {
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '128' })
+        res.end('<html>blocked</html>')
+      } else if (req.url === '/redir') {
+        res.writeHead(302, { Location: '/ok206' })
+        res.end()
+      } else if (req.url === '/redir-loop') {
+        res.writeHead(302, { Location: '/redir-loop' })
+        res.end()
+      } else if (req.url === '/redir-slow') {
+        res.writeHead(302, { Location: '/slow' })
+        res.end()
+      } else if (req.url === '/slow') {
+        onSlowArrived?.()
+        onSlowArrived = null
+        timers.push(setTimeout(() => {
+          if (!res.writableEnded) {
+            res.writeHead(200, { 'Content-Type': 'video/mp4', 'Content-Length': '1024' })
+            res.end()
+          }
+        }, 5000))
+      } else {
+        res.writeHead(404)
+        res.end()
+      }
+    })
+    await new Promise<void>(resolve => { server.listen(0, '127.0.0.1', resolve) })
+    const addr = server.address() as { port: number }
+    const base = `http://127.0.0.1:${addr.port}`
+    try {
+      expect(await probeYtmOpenRangeStream(`${base}/ok206`, false, 3000).promise).toMatchObject({ ok: true, statusCode: 206 })
+      expect(await probeYtmOpenRangeStream(`${base}/deny403`, false, 3000).promise).toMatchObject({ ok: false, statusCode: 403 })
+      expect(await probeYtmOpenRangeStream(`${base}/empty200`, false, 3000).promise).toMatchObject({ ok: false, statusCode: 200, reason: 'empty response (HTTP 200)' })
+      expect(await probeYtmOpenRangeStream(`${base}/html200`, false, 3000).promise).toMatchObject({ ok: false, statusCode: 200 })
+      expect(await probeYtmOpenRangeStream(`${base}/redir`, false, 3000).promise).toMatchObject({ ok: true, statusCode: 206 })
+      expect(await probeYtmOpenRangeStream(`${base}/redir-loop`, false, 3000).promise).toMatchObject({ ok: false, reason: 'too many redirects' })
+
+      // 真正在途取消（经 302 到达 /slow 后取消）
+      const slowArrived = new Promise<void>(resolve => { onSlowArrived = resolve })
+      const slowProbe = probeYtmOpenRangeStream(`${base}/redir-slow`, false, 3000)
+      await slowArrived
+      slowProbe.cancel()
+      await expect(slowProbe.promise).rejects.toThrow(/cancelled/i)
+
+      // 整链共享 deadline 超时
+      const timeoutRes = await probeYtmOpenRangeStream(`${base}/slow`, false, 150).promise
+      expect(timeoutRes).toMatchObject({ ok: false, reason: 'probe timeout' })
+
+      expect(receivedRanges.every(r => r === 'bytes=0-')).toBe(true)
+    } finally {
+      for (const t of timers) clearTimeout(t)
+      await new Promise<void>(resolve => { server.close(() => { resolve() }) })
+    }
   })
 })
