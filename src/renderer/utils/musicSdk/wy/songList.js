@@ -75,7 +75,7 @@ export default {
       id,
       n: this.limit_song,
       s: 8,
-    })
+    }, this.cookie)
     const { statusCode, body } = await requestObj_listDetail.promise
     if (statusCode !== 200 || body.code !== this.successCode) return this.getListDetail(id, page, ++tryNum)
     let limit = 1000
