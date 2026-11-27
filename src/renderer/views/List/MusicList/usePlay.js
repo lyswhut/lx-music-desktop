@@ -1,12 +1,15 @@
 import { addTempPlayList } from '@renderer/store/player/action'
-import { playList } from '@renderer/core/player'
+import { playListById } from '@renderer/core/player/action'
 
 export default ({ props, selectedList, list, removeAllSelect }) => {
   let clickTime = 0
   let clickIndex = -1
 
   const handlePlayMusic = (index) => {
-    playList(props.listId, index)
+    const musicInfo = list.value[index]
+    if (musicInfo) {
+      playListById(props.listId, musicInfo.id)
+    }
   }
 
   const handlePlayMusicLater = (index, single) => {
