@@ -5,6 +5,7 @@
       <component :is="Component" class="view-container" />
       <!-- </transition> -->
     </router-view>
+    <common-back-to-top />
   </div>
 </template>
 

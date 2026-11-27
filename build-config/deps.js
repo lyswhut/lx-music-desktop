@@ -16,6 +16,7 @@ exports.beforePack = async() => {
 }
 exports.afterPack = async() => {
   if (fs.existsSync(bindingFilePath)) return
+  if (!fs.existsSync(bindingBakFilePath)) return
   fs.renameSync(bindingBakFilePath, bindingFilePath)
   // try {
   //   fs.writeFileSync(

@@ -3,6 +3,8 @@ import { ref } from '@common/utils/vueTools'
 import { playList } from '@renderer/core/player/action'
 import { getListMusics, addListMusics } from '@renderer/store/list/action'
 import { addHistoryWord } from '@renderer/store/search/action'
+import { searchText } from '@renderer/store/search/state'
+import { deduplicationList } from '@renderer/utils'
 // import { useI18n } from '@renderer/plugins/i18n'
 // import { } from '@renderer/store/search/state'
 import { search as searchMusic, listInfos, type ListInfo } from '@renderer/store/search/music'
@@ -10,7 +12,7 @@ import { assertApiSupport } from '@renderer/store/utils'
 
 export type SearchSource = LX.OnlineSource | 'all'
 
-export default () => {
+export default (getSourceId: () => SearchSource) => {
   const listRef = ref<any>(null)
 
   const listInfo = ref<ListInfo>({
@@ -35,6 +37,30 @@ export default () => {
     })
   }
 
+  const isLoadingMore = ref(false)
+
+  // 无限滚动：加载下一页并追加到当前列表
+  const handleLoadMore = async() => {
+    const info = listInfo.value
+    const source = getSourceId()
+    if (isLoadingMore.value || !searchText.value) return
+    if (!info.list.length || info.page >= info.maxPage) return
+    if (listInfos[source] !== info) return
+    isLoadingMore.value = true
+    const prevList = info.list.slice()
+    const nextPage = info.page + 1
+    try {
+      const pageList = await searchMusic(searchText.value, nextPage, source)
+      if (listInfo.value !== info) return
+      info.list = deduplicationList([...prevList, ...pageList])
+      info.page = nextPage
+    } catch {
+      // 加载失败保持原状，可再次滚动重试
+    } finally {
+      isLoadingMore.value = false
+    }
+  }
+
   const handlePlayList = async(index: number) => {
     let targetSong = listInfo.value.list[index]
 
@@ -52,6 +78,8 @@ export default () => {
     listRef,
     listInfo,
     search,
+    isLoadingMore,
+    handleLoadMore,
     handlePlayList,
   }
 }

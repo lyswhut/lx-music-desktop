@@ -1,9 +1,6 @@
 <template lang="pug">
 div(:class="$style.header")
   div(ref="dom_btns" :class="$style.controBtn")
-    button(ref="dom_hide_btn" type="button" :class="$style.hide" :aria-label="$t('player__hide_detail_tip')" ignore-tip :title="$t('player__hide_detail_tip')" @click="hide")
-      svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="35%" viewBox="0 0 30.727 30.727" space="preserve")
-        use(xlink:href="#icon-window-hide")
     button(ref="dom_fullscreen_btn" type="button" :class="$style.fullscreenExit" :aria-label="$t('fullscreen_exit')" ignore-tip :title="$t('fullscreen_exit')" @click="fullscreenExit")
       svg(:class="$style.controBtnIcon" version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="60%")
         use(xlink:href="#icon-fullscreen-exit")
@@ -21,7 +18,6 @@ div(:class="$style.header")
 <script setup>
 import { onMounted, onBeforeUnmount, ref, useCssModule } from '@common/utils/vueTools'
 import { isFullscreen } from '@renderer/store'
-import { setShowPlayerDetail } from '@renderer/store/player/action'
 import { closeWindow, minWindow, setFullScreen } from '@renderer/utils/ipc'
 
 const dom_btns = ref()
@@ -58,11 +54,6 @@ onBeforeUnmount(() => {
   dom_btns.value.removeEventListener('mouseout', handle_mouseout)
 })
 
-const dom_hide_btn = ref()
-const hide = () => {
-  dom_hide_btn.value?.classList.remove(cssModule.hover)
-  setShowPlayerDetail(false)
-}
 const dom_fullscreen_btn = ref()
 const fullscreenExit = () => {
   dom_fullscreen_btn.value?.classList.remove(cssModule.hover)

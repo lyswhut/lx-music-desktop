@@ -140,6 +140,12 @@ export default (setting: any): Partial<LX.AppSetting> => {
     setting.version = '2.1.0'
   }
 
+  // 默认窗口尺寸由「大」改为「更大」，仍停留在旧默认值的用户一并切过去，手动选过其他尺寸的保持不变
+  if (compareVer(setting.version, '2.2.0') < 0) {
+    if (setting['common.windowSizeId'] === 3) setting['common.windowSizeId'] = 4
+    setting.version = '2.2.0'
+  }
+
 
   return setting
 }

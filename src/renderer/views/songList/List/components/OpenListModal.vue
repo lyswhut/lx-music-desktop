@@ -3,14 +3,26 @@
     <main class="scroll" :class="$style.main">
       <h2>{{ $t('songlist__import_input_title') }}</h2>
       <div :class="$style.inputContent">
-        <base-selection v-model="source" :class="$style.select" :list="props.sourceList" item-key="id" item-name="name" />
-        <base-input
-          ref="input"
-          v-model.trim="text"
-          :class="$style.input"
-          :placeholder="$t('songlist__import_input_tip')"
-          @submit="handleSubmit"
-        />
+        <div :class="$style.sourceList">
+          <div
+            v-for="item in props.sourceList"
+            :key="item.id"
+            :class="[$style.sourceItem, source === item.id ? $style.active : '']"
+            @click="source = item.id"
+          >
+            {{ item.name }}
+          </div>
+        </div>
+        <div :class="$style.inputRow">
+          <base-input
+            ref="input"
+            v-model.trim="text"
+            :class="$style.input"
+            :placeholder="$t('songlist__import_input_tip')"
+            @submit="handleSubmit"
+          />
+          <base-btn :class="$style.btn" @click="handleSubmit">{{ $t('songlist__import_input_btn_confirm') }}</base-btn>
+        </div>
       </div>
       <div :class="$style.footer">
         <div :class="$style.tips">
@@ -28,7 +40,6 @@
             </li>
           </ul>
         </div>
-        <base-btn :class="$style.btn" @click="handleSubmit">{{ $t('songlist__import_input_btn_confirm') }}</base-btn>
       </div>
     </main>
   </material-modal>
@@ -58,7 +69,8 @@ const source = ref('')
 
 watch(() => props.modelValue, (visible) => {
   if (!visible) return
-  source.value = openSongListInputInfo.source || route.query.source
+  // 默认选中第一个音源，若此前选过则恢复上次选择（跳过空字符串，与 || 语义一致）
+  source.value = [openSongListInputInfo.source, route.query.source, props.sourceList[0]?.id].find(Boolean) ?? ''
   // text.value = openSongListInputInfo.text
 })
 
@@ -101,44 +113,45 @@ const handleSubmit = () => {
 }
 .inputContent {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
+  gap: 10px;
 }
-.select {
-  width: auto;
-  :global {
-    .label-content {
-      height: 100%;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    .selection-list {
-      li {
-        // background-color: var(--color-main-background);
-        text-align: center;
-        line-height: 32px;
-        font-size: 13px;
-        &:hover {
-          background-color: var(--color-button-background-hover);
-        }
-        &:active {
-          background-color: var(--color-button-background-active);
-        }
-      }
-    }
+.sourceList {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 8px;
+}
+.sourceItem {
+  padding: 4px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--color-button-background);
+  color: var(--color-font);
+  transition: background-color @transition-normal, color @transition-normal;
+  &:hover {
+    background-color: var(--color-button-background-hover);
   }
+  &:active {
+    background-color: var(--color-button-background-active);
+  }
+  &.active {
+    background-color: var(--color-primary);
+    color: #fff;
+  }
+}
+.inputRow {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
 }
 .input {
   flex: auto;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  // width: 100%;
-  // height: 26px;
   padding: 8px 8px;
   color: var(--color-font);
 }
 .footer {
-  margin: 50px 0 15px;
+  margin: 15px 0;
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-end;
@@ -149,9 +162,13 @@ const handleSubmit = () => {
   font-size: 12px;
   color: var(--color-font);
   line-height: 1.5;
+  background-color: var(--color-button-background);
+  border-radius: 6px;
+  padding: 12px 15px;
   ul {
     list-style: decimal;
     padding-left: 15px;
+    margin: 0;
   }
 }
 

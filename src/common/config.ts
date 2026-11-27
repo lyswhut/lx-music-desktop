@@ -50,6 +50,9 @@ export const windowSizeList: WindowSize[] = [
   },
 ]
 
+// 默认窗口尺寸：「更大」
+export const defaultWindowSizeId = 4
+
 export const navigationUrlWhiteList: RegExp[] = []
 
 // 基础黑白色

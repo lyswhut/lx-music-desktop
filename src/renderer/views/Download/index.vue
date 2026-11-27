@@ -1,7 +1,36 @@
 <template>
-  <div :class="$style.download">
+  <div :class="[$style.download, 'with-cover']">
+    <div :class="$style.pageHeader">
+      <div :class="$style.pageIcon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 0 425.2 425.2" space="preserve">
+          <use xlink:href="#icon-download-2" />
+        </svg>
+      </div>
+      <div :class="$style.pageInfo">
+        <span :class="$style.pageTitle">{{ $t('download') }}</span>
+        <div>
+          <button :class="$style.openDirBtn" :aria-label="$t('download__open_dir')" @click="handleOpenDownloadDir">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" height="70%" viewBox="0 0 100 100" space="preserve">
+              <use xlink:href="#icon-folder" />
+            </svg>
+            <span>{{ $t('download__open_dir') }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
     <div :class="$style.header">
-      <base-tab v-model="activeTab" :class="$style.tab" :list="tabs" />
+      <div :class="$style.tabs" role="tablist">
+        <button
+          v-for="item in tabs"
+          :key="item.id"
+          type="button"
+          role="tab"
+          :aria-label="item.label"
+          :aria-selected="activeTab == item.id"
+          :class="[$style.tabBtn, { [$style.tabBtnActive]: activeTab == item.id }]"
+          @click="handleTabChange(item.id)"
+        >{{ item.label }}</button>
+      </div>
     </div>
     <div :class="$style.content">
       <div class="thead" :class="$style.thead">
@@ -39,6 +68,7 @@
               </transition>
             </div>
             <div class="list-item-cell auto name">
+              <material-music-cover :music-info="item" @play="handlePlayMusic(index, true)" />
               <span class="select name" :aria-label="getName(item)">{{ getName(item) }}</span>
             </div>
             <div class="list-item-cell" style="flex: 0 0 20%;">{{ item.progress }}%<span v-if="item.status == downloadStatus.RUN && item.speed"> - {{ item.speed }}/s</span></div>
@@ -80,6 +110,7 @@ import useTaskActions from './useTaskActions'
 import useMusicAdd from './useMusicAdd'
 import { downloadStatus } from '@renderer/store/download/state'
 import { appSetting } from '@renderer/store/setting'
+import { openDirInExplorer } from '@renderer/utils/ipc'
 import { formatMusicName } from '@renderer/utils'
 
 export default {
@@ -209,6 +240,13 @@ export default {
     const getTypeName = (quality) => {
       return quality == 'flac24bit' ? 'FLAC Hires' : quality?.toUpperCase()
     }
+    const handleTabChange = (id) => {
+      if (id == activeTab.value) return
+      activeTab.value = id
+    }
+    const handleOpenDownloadDir = () => {
+      void openDirInExplorer(appSetting['download.savePath'])
+    }
     return {
       listRef,
       list,
@@ -217,6 +255,7 @@ export default {
       dom_listContent,
       tabs,
       activeTab,
+      handleTabChange,
       selectedList,
       listItemHeight,
       playTaskId,
@@ -235,6 +274,8 @@ export default {
       handleListItemRightClick,
       handleMenuClick,
       handleListBtnClick,
+      handleOpenDownloadDir,
+      handlePlayMusic,
 
       getName,
       getTypeName,
@@ -259,14 +300,110 @@ export default {
     }
   }
 }
+.pageHeader {
+  flex: none;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0 15px;
+}
+.pageIcon {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: var(--color-primary-light-300-alpha-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  svg {
+    width: 36px;
+    height: 36px;
+    fill: currentColor;
+  }
+}
+.pageInfo {
+  flex: auto;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 4px;
+}
+.pageTitle {
+  font-size: 28px;
+  font-weight: normal;
+  color: var(--color-primary);
+}
+.openDirBtn {
+  background: var(--color-primary-background);
+  height: 24px;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 1;
+  transition: all @transition-fast;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 7px;
+  font-size: 11px;
+  svg {
+    vertical-align: bottom;
+    flex-shrink: 0;
+    width: 11px;
+    height: 11px;
+  }
+  span {
+    white-space: nowrap;
+  }
+  &:active {
+    background: var(--color-primary-alpha-800);
+  }
+  &:hover {
+    background: var(--color-primary-alpha-900);
+  }
+}
+.header {
+  flex: none;
+  padding: 8px 0;
+}
+.tabs {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 4px;
+  padding: 0 15px;
+}.tabBtn {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-font);
+  font-size: 13px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease;
+  border-radius: 4px;
+
+  &:hover:not(.tabBtnActive) {
+    background-color: var(--color-button-background-hover);
+  }
+}
+.tabBtnActive {
+  color: var(--color-primary);
+  font-weight: 500;
+  background-color: var(--color-primary-light-400-alpha-300);
+}
+
 .num {
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-}
-.playIcon {
+}.playIcon {
   position: absolute;
   left: 0;
   top: 0;
@@ -288,6 +425,10 @@ export default {
   flex: auto;
 }
 
+.thead {
+  margin-top: 4px;
+}
+
 .noItem {
   position: relative;
   height: 100%;
@@ -303,4 +444,3 @@ export default {
 }
 
 </style>
-

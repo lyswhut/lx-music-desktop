@@ -1,12 +1,19 @@
 <template>
-  <SongList ref="list_ref" :list-info="listInfo" @toggle-page="togglePage" />
+  <SongList
+    :key="`${source}__${tagId}__${sortId ?? ''}`"
+    ref="list_ref"
+    :list-info="listInfo"
+    :infinite-scroll="true"
+    :loading-more="isLoadingMore"
+    @load-more="handleLoadMore"
+  />
 </template>
 
 <script setup lang="ts">
 import { watch, ref, nextTick } from '@common/utils/vueTools'
 import { listInfo } from '@renderer/store/songList/state'
 import { getAndSetList } from '@renderer/store/songList/action'
-import { useRouter, useRoute, onBeforeRouteLeave } from '@common/utils/vueRouter'
+import { onBeforeRouteLeave } from '@common/utils/vueRouter'
 import SongList from './components/SongList.vue'
 
 
@@ -20,9 +27,6 @@ const props = defineProps<{
 
 const list_ref = ref<any>(null)
 
-const router = useRouter()
-const route = useRoute()
-
 const getListData = async(source: LX.OnlineSource, tabId: string, sortId: string, page: number) => {
   // console.log(source, tabId, sortId, page)
   await getAndSetList(source, tabId, sortId, page).then(() => {
@@ -33,22 +37,29 @@ const getListData = async(source: LX.OnlineSource, tabId: string, sortId: string
     } else if (list_ref.value) {
       window.lx.songListInfo.songlistKey = null
       void nextTick(() => {
-        list_ref.value.scrollTo(0)
+        list_ref.value?.scrollTo(0)
       })
     }
+  }).catch(error => {
+    // 加载失败仅记录，页面保留原状态，避免 Uncaught runtime error
+    console.log(error)
   })
 }
 
-const togglePage = (page: number) => {
-  void router.replace({
-    path: route.path,
-    query: {
-      ...route.query,
-      sortId: props.sortId ?? '',
-      page,
-    },
-  })
-  // getListData(props.source, props.tagId, props.sortId ?? '', page)
+const isLoadingMore = ref(false)
+
+// 无限滚动：向下滚动每次加载下一页（每页 30 条，追加模式）
+const handleLoadMore = async() => {
+  if (isLoadingMore.value || !listInfo.list.length) return
+  if (listInfo.total && listInfo.list.length >= listInfo.total) return
+  isLoadingMore.value = true
+  try {
+    await getAndSetList(props.source, props.tagId, props.sortId ?? '', listInfo.page + 1, false, true)
+  } catch {
+    // 加载失败保持原状，可再次滚动重试
+  } finally {
+    isLoadingMore.value = false
+  }
 }
 
 watch(() => [props.source, props.tagId, props.sortId, props.page], ([source, tagId, sortId, page]) => {
