@@ -56,7 +56,7 @@
 
 软件变化请查看[更新日志](https://github.com/lyswhut/lx-music-desktop/blob/master/CHANGELOG.md)。
 
-软件下载请查看 [GitHub Releases](https://github.com/lyswhut/lx-music-desktop/releases)。
+软件下载请查看 [GitHub Releases](https://github.com/lyswhut/lx-music-desktop/releases)。中文用户也可以在 [FossNest](https://fossnest.org/zh-CN/repo/lyswhut/lx-music-desktop) 查看中文介绍与下载镜像（安装包与官方 Release 完全一致）。
 
 使用常见问题请参阅[桌面版常见问题](https://lyswhut.github.io/lx-music-doc/desktop/faq)。
 
