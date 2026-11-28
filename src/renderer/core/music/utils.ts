@@ -142,6 +142,7 @@ export const getCachedLyricInfo = async(musicInfo: LX.Music.MusicInfo): Promise<
           case 'mg':
           case 'wy':
           case 'tx':
+          case 'sd':
             break
           default:
             return lrcInfo
