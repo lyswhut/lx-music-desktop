@@ -164,7 +164,7 @@ export const getLocalMusicFilePic = async(path: string) => {
 //   return lyricInfo
 // }
 
-type IComment = NonNullable<IAudioMetadata['common']['comment']> extends Array<infer U> ? U : never
+type IComment = NonNullable<IAudioMetadata['common']['comments']> extends Array<infer U> ? U : never
 
 /**
  * 获取歌曲文件歌词
