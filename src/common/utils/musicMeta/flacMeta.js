@@ -6,7 +6,7 @@ const download = require('./downloader')
 const extReg = /^(\.(?:jpe?g|png)).*$/
 
 module.exports = async(filePath, meta, proxy) => {
-  const { updateFile } = await import('music-metadata')
+  const { updateFile } = await import('music-metadata/node')
   const patch = {
     title: meta.title,
     artist: meta.artist,

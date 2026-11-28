@@ -1,6 +1,6 @@
 import {
   type IAudioMetadata as iAudioMetadata,
-} from 'music-metadata'
+} from 'music-metadata/node'
 
 declare global {
   namespace LX {
