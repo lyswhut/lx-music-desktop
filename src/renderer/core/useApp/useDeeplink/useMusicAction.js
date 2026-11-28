@@ -52,7 +52,7 @@ const useSearchMusic = () => {
   }
 }
 
-const usePlayMusic = () => {
+export const usePlayMusic = () => {
   const filterInfoByPlayMusic = musicInfo => {
     switch (musicInfo.source) {
       case 'kw':
@@ -161,7 +161,7 @@ const usePlayMusic = () => {
 }
 
 
-const useSearchPlayMusic = () => {
+export const useSearchPlayMusic = () => {
   const verifyInfo = (info) => {
     return dataVerify([
       { key: 'name', types: ['string'], required: true, max: 200 },
@@ -210,8 +210,10 @@ const useSearchPlayMusic = () => {
         addTempPlayList([{ listId: LIST_IDS.PLAY_LATER, musicInfo, isTop: true }])
         if (isPlaying) playNext()
       }
+      return musicInfo
     } else {
       console.log('msuic not found:', info)
+      return null
     }
   }
 }

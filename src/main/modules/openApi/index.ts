@@ -3,6 +3,7 @@ import querystring from 'node:querystring'
 import type { Socket } from 'node:net'
 import { getAddress } from '@common/utils/nodejs'
 import { sendTaskbarButtonClick } from '@main/modules/winMain'
+import { handleDshBridgeRequest } from './dshBridge'
 
 const sendResponse = (res: http.ServerResponse, code = 200, msg: string | Record<any, unknown> = 'OK', contentType = 'text/plain; charset=utf-8') => {
   res.writeHead(code, {
@@ -85,6 +86,11 @@ const handleSubscribePlayerStatus = (req: http.IncomingMessage, res: http.Server
 const handleStartServer = async(port: number, ip: string) => new Promise<void>((resolve, reject) => {
   playerStatusKeys = Object.keys(global.lx.player_status) as SubscribeKeys[]
   httpServer = http.createServer((req, res): void => {
+    // DSH Bridge 端点（/dsh/*）单独处理，不参与下方的 /xxx 单段路由匹配
+    if (req.url?.startsWith('/dsh/')) {
+      void handleDshBridgeRequest(req, res)
+      return
+    }
     const [endUrl, query] = `/${req.url?.split('/').at(-1) ?? ''}`.split('?')
     let code = 200
     let msg = 'OK'

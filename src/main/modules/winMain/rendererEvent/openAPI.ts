@@ -1,10 +1,11 @@
-import { mainHandle } from '@common/mainIpc'
+import { mainHandle, mainOn } from '@common/mainIpc'
 import { WIN_MAIN_RENDERER_EVENT_NAME } from '@common/ipcNames'
 import {
   startServer,
   stopServer,
   getStatus,
 } from '@main/modules/openApi'
+import { handleDshBridgeResponse } from '@main/modules/openApi/dshBridge'
 
 
 export default () => {
@@ -15,4 +16,6 @@ export default () => {
       case 'status': return getStatus()
     }
   })
+  // DSH Bridge：接收渲染进程回传的搜索/播放结果
+  mainOn<LX.DshBridge.Response>(WIN_MAIN_RENDERER_EVENT_NAME.dsh_bridge_response, handleDshBridgeResponse)
 }

@@ -131,6 +131,9 @@ const modules = {
     get_music_url_count: 'get_music_url_count',
 
     open_api_action: 'open_api_action',
+    // DSH Bridge：本地 HTTP 接口与渲染进程之间的搜索/播放中转（见 docs/DSH_BRIDGE.md）
+    dsh_bridge_request: 'dsh_bridge_request',
+    dsh_bridge_response: 'dsh_bridge_response',
     sync_action: 'sync_action',
     sync_get_server_devices: 'sync_get_server_devices',
     sync_remove_server_device: 'sync_remove_server_device',
